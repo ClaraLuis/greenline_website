@@ -1,0 +1,28 @@
+.checkbox {
+    background-color: transparent;
+    color: var(--text);
+    font-weight: 500;
+    font-size: 12px;
+    transition: all 0.1s;
+    cursor: pointer;
+}
+.checkbox:checked {
+    color: var(--primary);
+    font-family: Carbona-Black !important;
+}
+.checkboxinputstyles {
+    box-shadow: inset 0 0 0 2px var(--text);
+    background-color: transparent;
+}
+.checkboxinputstyles:hover:not(:checked) {
+    box-shadow: inset 0 0 0 2px var(--secondary) !important;
+    background-color: transparent;
+}
+.checkboxinputstyles:checked {
+    box-shadow: inset 0 0 0 2px var(--secondary);
+    background-color: var(--secondary);
+}
+
+.svgstyles {
+    stroke: var(--stroke, white);
+}

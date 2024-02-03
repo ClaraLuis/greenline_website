@@ -1,0 +1,469 @@
+import React, { useContext } from 'react';
+// import { fetch_collection_data } from '../../../API/API';
+
+// Icons
+import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
+import Inputfield from './Inputfield';
+import Companyinputfield from './Companyinputfield';
+import Select, { components } from 'react-select';
+import { defaultstyles, defaultstylesdanger } from './Website/Generalfiles/selectstyles';
+import formstyles from '../components/Website/Generalfiles/CSS_GENERAL/form.module.css';
+import Leadinputfield from './Leadinputfield';
+import TextareaAutosize from 'react-textarea-autosize';
+import { Contexthandlerscontext } from '../Contexthandlerscontext';
+import API from '../API/API';
+import { useQuery } from 'react-query';
+
+const Form = (props) => {
+    const { fetchAuthorizationQueryContext } = useContext(Contexthandlerscontext);
+    const { FetchAllSecuritylayers_API } = API();
+    const FetchInstitueSecurityLayersQuery = useQuery(['FetchAllSecuritylayers_API'], () => FetchAllSecuritylayers_API(), {
+        keepPreviousData: true,
+        staleTime: Infinity,
+    });
+    var exist = false;
+    props?.attr.map((item, index) => {
+        if (props?.payload[item.attr]?.length == 0 && item?.type != 'time' && item?.name != 'Notes') {
+            if (item?.type == 'companyid') {
+                if (fetchAuthorizationQueryContext?.data?.data?.userinfo?.user_profile?.usertype == 'liftupadmin') {
+                    exist = true;
+                }
+            } else {
+                exist = true;
+            }
+        }
+    });
+    return (
+        <>
+            {props?.attr?.map((item, index) => {
+                if (item?.type == undefined) {
+                    return (
+                        <div class={item.size == '6' ? 'col-lg-6' : 'col-lg-12'}>
+                            <Inputfield
+                                disabled={item?.disabled}
+                                submit={props?.submit}
+                                setsubmit={props?.setsubmit}
+                                placeholder={item?.name}
+                                value={props?.payload[item.attr]}
+                                onChange={(event) => {
+                                    props?.setsubmit(false);
+                                    var temp = { ...props?.payload };
+                                    temp[item?.attr] = event.target.value;
+                                    props?.setpayload({ ...temp });
+                                }}
+                                type={'text'}
+                            />
+                        </div>
+                    );
+                } else if (item?.type == 'companyid') {
+                    if (fetchAuthorizationQueryContext?.data?.data?.userinfo?.user_profile?.usertype == 'liftupadmin') {
+                        return (
+                            <div class={item.size == '6' ? 'col-lg-6' : 'col-lg-12'}>
+                                <Companyinputfield
+                                    disabled={item?.disabled}
+                                    submit={props?.submit}
+                                    setsubmit={props?.setsubmit}
+                                    placeholder={item?.name}
+                                    value={props?.payload[item.attr]}
+                                    onClick={(event) => {
+                                        var temp = { ...props?.payload };
+                                        temp[item?.attr] = event?.id;
+                                        props?.setpayload({ ...temp });
+                                    }}
+                                />
+                            </div>
+                        );
+                    }
+                } else if (item?.type == 'leadid') {
+                    return (
+                        <div class={item.size == '6' ? 'col-lg-6' : 'col-lg-12'}>
+                            <Leadinputfield
+                                disabled={item?.disabled}
+                                submit={props?.submit}
+                                setsubmit={props?.setsubmit}
+                                placeholder={item?.name}
+                                value={props?.payload[item.attr]}
+                                onClick={(event) => {
+                                    var temp = { ...props?.payload };
+                                    temp[item?.attr] = event?.id;
+                                    props?.setpayload({ ...temp });
+                                }}
+                            />
+                        </div>
+                    );
+                } else if (item?.type == 'date') {
+                    return (
+                        <div class={item.size == '6' ? 'col-lg-6' : 'col-lg-12'}>
+                            <Inputfield
+                                disabled={item?.disabled}
+                                submit={props?.submit}
+                                setsubmit={props?.setsubmit}
+                                placeholder={item?.name}
+                                value={props?.payload[item.attr]}
+                                onChange={(event) => {
+                                    props?.setsubmit(false);
+                                    var temp = { ...props?.payload };
+                                    temp[item?.attr] = event.target.value;
+                                    props?.setpayload({ ...temp });
+                                }}
+                                type={'date'}
+                            />
+                        </div>
+                    );
+                } else if (item?.type == 'time') {
+                    return (
+                        <div class={item.size == '6' ? 'col-lg-6' : 'col-lg-12'}>
+                            <Inputfield
+                                disabled={item?.disabled}
+                                submit={props?.submit}
+                                setsubmit={props?.setsubmit}
+                                placeholder={item?.name}
+                                value={props?.payload[item.attr]}
+                                onChange={(event) => {
+                                    props?.setsubmit(false);
+                                    var temp = { ...props?.payload };
+                                    temp[item?.attr] = event.target.value;
+                                    props?.setpayload({ ...temp });
+                                }}
+                                type={'time'}
+                            />
+                        </div>
+                    );
+                } else if (item?.type == 'color') {
+                    return (
+                        <div class={item.size == '6' ? 'col-lg-6' : 'col-lg-12'}>
+                            <Inputfield
+                                disabled={item?.disabled}
+                                submit={props?.submit}
+                                setsubmit={props?.setsubmit}
+                                placeholder={item?.name}
+                                value={props?.payload[item.attr]}
+                                onChange={(event) => {
+                                    props?.setsubmit(false);
+                                    var temp = { ...props?.payload };
+                                    temp[item?.attr] = event.target.value;
+                                    props?.setpayload({ ...temp });
+                                }}
+                                type={'color'}
+                            />
+                        </div>
+                    );
+                } else if (item?.type == 'textarea') {
+                    return (
+                        <div class={item.size == '6' ? 'col-lg-6' : 'col-lg-12'}>
+                            <div class="row m-0 w-100  ">
+                                <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                    <label for="name" class={formstyles.form__label}>
+                                        {item.name}
+                                    </label>
+                                    <TextareaAutosize
+                                        disabled={item?.disabled}
+                                        type={props?.type}
+                                        class={formstyles.form__field}
+                                        value={props?.payload[item?.attr]}
+                                        placeholder={item?.name}
+                                        minRows={5}
+                                        maxRows={5}
+                                        style={{
+                                            border: props?.payload[item?.attr]?.length == 0 && props?.submit && item?.name != 'Notes' ? '1px solid var(--danger)' : '',
+                                        }}
+                                        onChange={(event) => {
+                                            props?.setsubmit(false);
+                                            var temp = { ...props?.payload };
+                                            temp[item?.attr] = event?.target.value;
+                                            props?.setpayload({ ...temp });
+                                        }}
+                                    />
+                                    {props?.payload[item?.attr]?.length == 0 && props?.submit && item?.name != 'Notes' && (
+                                        <div class="col-lg-12 px-2 pt-2" style={{ color: 'var(--danger)', fontSize: '11px' }}>
+                                            {item.name} is required
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    );
+                } else if (item?.type == 'gender') {
+                    return (
+                        <div class={item.size == '6' ? 'col-lg-6' : 'col-lg-12'} style={{ marginBottom: '15px' }}>
+                            <label for="name" class={formstyles.form__label}>
+                                {item.name}
+                            </label>
+                            <Select
+                                isDisabled={item?.disabled}
+                                options={[
+                                    { label: 'Male', value: 'male' },
+                                    { label: 'Female', value: 'female' },
+                                ]}
+                                styles={props?.payload[item?.attr]?.length == 0 && props?.submit ? defaultstylesdanger : defaultstyles}
+                                value={[
+                                    { label: 'Male', value: 'male' },
+                                    { label: 'Female', value: 'female' },
+                                ].filter((option) => option.value == props?.payload[item?.attr])}
+                                onChange={(option) => {
+                                    props?.setsubmit(false);
+                                    var temp = { ...props?.payload };
+                                    temp[item?.attr] = option.value;
+                                    props?.setpayload({ ...temp });
+                                }}
+                            />
+                            {props?.payload[item?.attr]?.length == 0 && props?.submit && (
+                                <div class="col-lg-12 px-2 pt-2" style={{ color: 'var(--danger)', fontSize: '11px' }}>
+                                    {item?.name} is required
+                                </div>
+                            )}
+                        </div>
+                    );
+                } else if (item?.type == 'phaseaction') {
+                    return (
+                        <div class={item.size == '6' ? 'col-lg-6' : 'col-lg-12'} style={{ marginBottom: '15px' }}>
+                            <label for="name" class={formstyles.form__label}>
+                                {item.name}
+                            </label>
+                            <Select
+                                isDisabled={item?.disabled}
+                                options={[
+                                    { label: 'No action', value: null },
+                                    { label: 'Add Call', value: 'Add Call' },
+                                    { label: 'Add Meeting', value: 'Add Meeting' },
+                                    { label: 'Add Follow up', value: 'Add Follow up' },
+                                    { label: 'Add Deal', value: 'Add Deal' },
+                                ]}
+                                styles={props?.payload[item?.attr]?.length == 0 && props?.submit ? defaultstylesdanger : defaultstyles}
+                                value={[
+                                    { label: 'No action', value: null },
+                                    { label: 'Add Call', value: 'Add Call' },
+                                    { label: 'Add Meeting', value: 'Add Meeting' },
+                                    { label: 'Add Follow up', value: 'Add Follow up' },
+                                    { label: 'Add Deal', value: 'Add Deal' },
+                                ].filter((option) => option.value == props?.payload[item?.attr])}
+                                onChange={(option) => {
+                                    props?.setsubmit(false);
+                                    var temp = { ...props?.payload };
+                                    temp[item?.attr] = option.value;
+                                    props?.setpayload({ ...temp });
+                                }}
+                            />
+                            {props?.payload[item?.attr]?.length == 0 && props?.submit && (
+                                <div class="col-lg-12 px-2 pt-2" style={{ color: 'var(--danger)', fontSize: '11px' }}>
+                                    {item?.name} is required
+                                </div>
+                            )}
+                        </div>
+                    );
+                } else if (item?.type == 'securitylayer') {
+                    return (
+                        <div class={item.size == '6' ? 'col-lg-6' : 'col-lg-12'} style={{ marginBottom: '15px' }}>
+                            <label for="name" class={formstyles.form__label}>
+                                {item.name}
+                            </label>
+                            <Select
+                                isDisabled={item?.disabled}
+                                options={FetchInstitueSecurityLayersQuery?.data?.data?.data}
+                                value={FetchInstitueSecurityLayersQuery?.data?.data?.data?.filter((option) => option.id == props?.payload[item?.attr])}
+                                getOptionLabel={(option) => option.name}
+                                getOptionValue={(option) => option.id}
+                                styles={props?.payload[item?.attr]?.length == 0 && props?.submit ? defaultstylesdanger : defaultstyles}
+                                onChange={(option) => {
+                                    props?.setsubmit(false);
+                                    var temp = { ...props?.payload };
+                                    temp[item?.attr] = option.id;
+                                    props?.setpayload({ ...temp });
+                                }}
+                            />
+                            {props?.payload[item?.attr]?.length == 0 && props?.submit && (
+                                <div class="col-lg-12 px-2 pt-2" style={{ color: 'var(--danger)', fontSize: '11px' }}>
+                                    {item?.name} is required
+                                </div>
+                            )}
+                        </div>
+                    );
+                } else if (item?.type == 'followupstatus') {
+                    return (
+                        <div class={item.size == '6' ? 'col-lg-6' : 'col-lg-12'} style={{ marginBottom: '15px' }}>
+                            <label for="name" class={formstyles.form__label}>
+                                {item.name}
+                            </label>
+                            <Select
+                                isDisabled={item?.disabled}
+                                options={[
+                                    { label: 'Pending', value: 'pending' },
+                                    { label: 'Done', value: 'done' },
+                                ]}
+                                styles={props?.payload[item?.attr]?.length == 0 && props?.submit ? defaultstylesdanger : defaultstyles}
+                                value={[
+                                    { label: 'Pending', value: 'pending' },
+                                    { label: 'Done', value: 'done' },
+                                ].filter((option) => option.value == props?.payload[item?.attr])}
+                                onChange={(option) => {
+                                    props?.setsubmit(false);
+                                    var temp = { ...props?.payload };
+                                    temp[item?.attr] = option.value;
+                                    props?.setpayload({ ...temp });
+                                }}
+                            />
+                            {props?.payload[item?.attr]?.length == 0 && props?.submit && (
+                                <div class="col-lg-12 px-2 pt-2" style={{ color: 'var(--danger)', fontSize: '11px' }}>
+                                    {item?.name} is required
+                                </div>
+                            )}
+                        </div>
+                    );
+                } else if (item?.type == 'priority') {
+                    return (
+                        <div class={item.size == '6' ? 'col-lg-6' : 'col-lg-12'} style={{ marginBottom: '15px' }}>
+                            <label for="name" class={formstyles.form__label}>
+                                {item.name}
+                            </label>
+                            <Select
+                                isDisabled={item?.disabled}
+                                options={[
+                                    { label: 'Low', value: 'low' },
+                                    { label: 'Medium', value: 'medium' },
+                                    { label: 'High', value: 'high' },
+                                ]}
+                                styles={props?.payload[item?.attr]?.length == 0 && props?.submit ? defaultstylesdanger : defaultstyles}
+                                value={[
+                                    { label: 'Low', value: 'low' },
+                                    { label: 'Medium', value: 'medium' },
+                                    { label: 'High', value: 'high' },
+                                ].filter((option) => option.value == props?.payload[item?.attr])}
+                                onChange={(option) => {
+                                    props?.setsubmit(false);
+                                    var temp = { ...props?.payload };
+                                    temp[item?.attr] = option.value;
+                                    props?.setpayload({ ...temp });
+                                }}
+                            />
+                            {props?.payload[item?.attr]?.length == 0 && props?.submit && (
+                                <div class="col-lg-12 px-2 pt-2" style={{ color: 'var(--danger)', fontSize: '11px' }}>
+                                    {item?.name} is required
+                                </div>
+                            )}
+                        </div>
+                    );
+                } else if (item?.type == 'status') {
+                    return (
+                        <div class={item.size == '6' ? 'col-lg-6' : 'col-lg-12'} style={{ marginBottom: '15px' }}>
+                            <label for="name" class={formstyles.form__label}>
+                                {item.name}
+                            </label>
+                            <Select
+                                isDisabled={item?.disabled}
+                                options={[
+                                    { label: 'Active', value: 'active' },
+                                    { label: 'No Answer', value: 'noanswer' },
+                                    { label: 'User busy', value: 'userbusy' },
+                                    { label: 'No Service', value: 'noservice' },
+                                ]}
+                                styles={props?.payload[item?.attr]?.length == 0 && props?.submit ? defaultstylesdanger : defaultstyles}
+                                value={[
+                                    { label: 'Active', value: 'active' },
+                                    { label: 'No Answer', value: 'noanswer' },
+                                    { label: 'User busy', value: 'userbusy' },
+                                    { label: 'No Service', value: 'noservice' },
+                                ].filter((option) => option.value == props?.payload[item?.attr])}
+                                onChange={(option) => {
+                                    props?.setsubmit(false);
+                                    var temp = { ...props?.payload };
+                                    temp[item?.attr] = option.value;
+                                    props?.setpayload({ ...temp });
+                                }}
+                            />
+                            {props?.payload[item?.attr]?.length == 0 && props?.submit && (
+                                <div class="col-lg-12 px-2 pt-2" style={{ color: 'var(--danger)', fontSize: '11px' }}>
+                                    {item?.name} is required
+                                </div>
+                            )}
+                        </div>
+                    );
+                } else if (item?.type == 'usertype') {
+                    return (
+                        <div class={item.size == '6' ? 'col-lg-6' : 'col-lg-12'} style={{ marginBottom: '15px' }}>
+                            <label for="name" class={formstyles.form__label}>
+                                {item.name}
+                            </label>
+                            <Select
+                                isDisabled={item?.disabled}
+                                options={[
+                                    { label: 'Company Owner', value: 'companyowner' },
+                                    { label: 'User', value: 'user' },
+                                ]}
+                                styles={props?.payload[item?.attr]?.length == 0 && props?.submit ? defaultstylesdanger : defaultstyles}
+                                value={[
+                                    { label: 'Company Owner', value: 'companyowner' },
+                                    { label: 'User', value: 'user' },
+                                ].filter((option) => option.value == props?.payload[item?.attr])}
+                                onChange={(option) => {
+                                    props?.setsubmit(false);
+                                    var temp = { ...props?.payload };
+                                    temp[item?.attr] = option.value;
+                                    props?.setpayload({ ...temp });
+                                }}
+                            />
+                            {props?.payload[item?.attr]?.length == 0 && props?.submit && (
+                                <div class="col-lg-12 px-2 pt-2" style={{ color: 'var(--danger)', fontSize: '11px' }}>
+                                    {item?.name} is required
+                                </div>
+                            )}
+                        </div>
+                    );
+                } else if (item?.type == 'number') {
+                    return (
+                        <div class={item.size == '6' ? 'col-lg-6' : 'col-lg-12'}>
+                            <Inputfield
+                                disabled={item?.disabled}
+                                submit={props?.submit}
+                                setsubmit={props?.setsubmit}
+                                placeholder={item?.name}
+                                value={props?.payload[item.attr]}
+                                onChange={(event) => {
+                                    props?.setsubmit(false);
+                                    var temp = { ...props?.payload };
+                                    temp[item?.attr] = event.target.value;
+                                    props?.setpayload({ ...temp });
+                                }}
+                                type={'number'}
+                            />
+                        </div>
+                    );
+                }
+            })}
+            <div class="col-lg-12 p-0">
+                <div class="row m-0 w-100 allcentered">
+                    <button
+                        onClick={() => {
+                            if (exist) {
+                                props?.setsubmit(true);
+                            } else {
+                                props?.button1onClick();
+                            }
+                        }}
+                        disabled={props?.button1disabled}
+                        class={props?.button1class}
+                    >
+                        {props?.button1disabled && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                        {!props?.button1disabled && <span>{props?.button1placeholder}</span>}
+                    </button>
+                    {props?.button2 && (
+                        <button
+                            onClick={() => {
+                                if (exist) {
+                                    props?.setsubmit(true);
+                                } else {
+                                    props?.button2onClick();
+                                }
+                            }}
+                            disabled={props?.button2disabled}
+                            class={props?.button2class}
+                        >
+                            {props?.button2disabled && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                            {!props?.button2disabled && <span>{props?.button2placeholder}</span>}
+                        </button>
+                    )}
+                </div>
+            </div>
+        </>
+    );
+};
+export default Form;

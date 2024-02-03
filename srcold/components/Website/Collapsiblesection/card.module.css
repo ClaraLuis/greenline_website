@@ -1,0 +1,54 @@
+.accordion {
+    width: 100% !important;
+    position: relative;
+}
+.accordion input {
+    position: absolute;
+    display: none !important;
+}
+.accordion label {
+    /* background-image: linear-gradient(to bottom, #f5f5f5 0, #e8e8e8 100%); */
+    /* background-repeat: repeat-x; */
+    /* border: 1px solid #bbb; */
+    /* border-radius: 5px 5px 5px 5px; */
+    /* box-shadow: 0px 3px 5px 0px #e8e8e8 inset, 0px 12px 10px 0px #fff inset; */
+    display: flex;
+    padding: 0px;
+    /* margin: 5px 10px 0px; */
+    justify-content: space-between;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.4s;
+}
+.accordion input[type='checkbox']:checked + label {
+    border-radius: 0px 0px 0px 0px;
+    padding-bottom: 0px;
+}
+.icon {
+    transform: rotate(0deg);
+    transition: transform 0.4s linear;
+    margin-left: 16px;
+    position: absolute;
+    bottom: 50%;
+    right: 0%;
+    font-size: 1.1rem !important;
+}
+.accordion p {
+    width: 100%;
+    height: 0;
+    transition: height 0.4s ease;
+    -webkit-transition: height 0.4s ease;
+    color: #5e6b92;
+    font-size: 0.82rem;
+    padding-left: 10px;
+    visibility: hidden;
+}
+.accordion input[type='checkbox']:checked + label + .icon + p {
+    height: 30px;
+    transition: height 0.4s ease;
+    -webkit-transition: height 0.4s ease;
+    visibility: visible;
+}
+.accordion input[type='checkbox']:checked + label + .icon {
+    transform: rotate(180deg);
+}

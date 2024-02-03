@@ -1,0 +1,26 @@
+.footercontainer {
+    background-color: #e9e8f9 !important;
+    padding: 25px 180px;
+    bottom: 0% !important;
+}
+.footertilte {
+    font-weight: 600;
+    letter-spacing: normal;
+    color: var(--text);
+    font-size: 15px;
+    text-decoration: none !important;
+    margin-bottom: 0.8rem;
+}
+.footertxt {
+    font-weight: 100 !important;
+    letter-spacing: normal;
+    color: #2a2f4f;
+    font-size: 13px;
+    text-decoration: none !important;
+    margin-bottom: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.footertxt:hover {
+    color: var(--primary);
+}
