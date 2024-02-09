@@ -103,14 +103,16 @@ button:focus {
 }
 .btn_primary {
     color: #fff;
-    background: linear-gradient(90deg, rgb(93, 38, 133), rgb(243, 113, 37), rgb(93, 38, 133) 98.57%);
+    background: #20674c;
     /* border-color: var(--primary); */
     transition: all 0.4s;
 }
 .btn_primary:hover {
     color: #fff;
     /* background: linear-gradient(90deg, rgb(243, 113, 37), rgb(93, 38, 133), rgb(243, 113, 37) 98.57%); */
-    transform: scale(101%);
+    /* transform: scale(101%); */
+    background: var(--primary);
+
     /* border-color: var(--secondary); */
 }
 .btn_danger {

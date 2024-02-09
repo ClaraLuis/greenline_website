@@ -1,20 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { FaMoneyBillWave, FaRegBuilding, FaRegHandshake, FaUserLock } from 'react-icons/fa';
-import { FiPhoneCall, FiUsers } from 'react-icons/fi';
+import { FiUsers } from 'react-icons/fi';
 
-import { MdOutlineMeetingRoom, MdOutlinePersonSearch } from 'react-icons/md';
-import { HiOutlineUserGroup } from 'react-icons/hi';
-import { BsFillMegaphoneFill, BsGraphUp, BsShare } from 'react-icons/bs';
-import { HiOutlineArrowsRightLeft } from 'react-icons/hi2';
 import { useMutation, useQuery } from 'react-query';
+import { LiaSitemapSolid } from 'react-icons/lia';
 import API from './API/API';
 
 import { useHistory } from 'react-router-dom';
-import { IoChatbubblesOutline } from 'react-icons/io5';
 
 import { NotificationManager } from 'react-notifications';
 import Cookies from 'universal-cookie';
-import { BiHomeAlt } from 'react-icons/bi';
+import { MdOutlineHub, MdOutlineInventory2 } from 'react-icons/md';
 export const Contexthandlerscontext = React.createContext();
 export const Contexthandlerscontext_provider = (props) => {
     let history = useHistory();
@@ -115,43 +110,6 @@ export const Contexthandlerscontext_provider = (props) => {
                 {
                     maintitle: 'Settings',
                     subitems: [
-                        // {
-                        //     name: 'Phases',
-                        //     isselected: false,
-                        //     icon: (
-                        //         <i class={'allcentered'}>
-                        //             <BsShare size={18} />
-                        //         </i>
-                        //     ),
-                        //     path: '/phases',
-                        //     permissionpage: 'Show Phases Page',
-                        //     show: isshowuserpage('Show Phases Page'),
-                        // },
-                        // {
-                        //     name: 'Leads Groups',
-                        //     isselected: false,
-                        //     icon: (
-                        //         <i class={'allcentered'}>
-                        //             <HiOutlineUserGroup size={18} />
-                        //         </i>
-                        //     ),
-                        //     path: '/groups',
-                        //     permissionpage: 'Groups page',
-                        //     show: isshowuserpage('Groups page'),
-                        // },
-                        // {
-                        //     name: 'Companies',
-                        //     isselected: false,
-                        //     icon: (
-                        //         <i class={'allcentered'}>
-                        //             <FaRegBuilding size={18} />
-                        //         </i>
-                        //     ),
-                        //     path: '/companies',
-                        //     permissionpage: 'Show Companies Page',
-                        //     show: isshowuserpage('Show Companies Page'),
-                        // },
-
                         {
                             name: 'Users',
                             isselected: false,
@@ -164,161 +122,49 @@ export const Contexthandlerscontext_provider = (props) => {
                             permissionpage: 'Show Users Page',
                             show: isshowuserpage('Show Users Page'),
                         },
+                    ],
+                },
+                {
+                    maintitle: 'Inventory',
+                    subitems: [
                         {
-                            name: 'Roles',
+                            name: 'Inventory details',
                             isselected: false,
                             icon: (
                                 <i class={'allcentered'}>
-                                    <FaUserLock size={18} />
+                                    <MdOutlineInventory2 size={18} />
                                 </i>
                             ),
-                            path: '/securitylayers',
-                            permissionpage: 'Show Security Layers Page',
-                            show: isshowuserpage('Show Security Layers Page'),
+                            path: '/inventorydetails',
+                            permissionpage: 'Show Users Page',
+                            show: isshowuserpage('Show Users Page'),
+                        },
+                        {
+                            name: 'Inventory Items',
+                            isselected: false,
+                            icon: (
+                                <i class={'allcentered'}>
+                                    <LiaSitemapSolid size={18} />
+                                </i>
+                            ),
+                            path: '/inventoryitems',
+                            permissionpage: 'Show Users Page',
+                            show: isshowuserpage('Show Users Page'),
+                        },
+                        {
+                            name: 'Hub Items',
+                            isselected: false,
+                            icon: (
+                                <i class={'allcentered'}>
+                                    <MdOutlineHub size={18} />
+                                </i>
+                            ),
+                            path: '/hubitems',
+                            permissionpage: 'Show Users Page',
+                            show: isshowuserpage('Show Users Page'),
                         },
                     ],
                 },
-                // {
-                //     maintitle: 'Dashboard',
-                //     subitems: [
-                //         // {
-                //         //     name: 'Home',
-                //         //     isselected: false,
-                //         //     icon: (
-                //         //         <i class={'allcentered'}>
-                //         //             <BiHomeAlt size={18} />
-                //         //         </i>
-                //         //     ),
-                //         //     path: '/home',
-                //         //     // permissionpage: 'Show Leads Page',
-                //         //     show: true,
-                //         // },
-                //         {
-                //             name: 'Leads',
-                //             isselected: true,
-                //             icon: (
-                //                 <i class={'allcentered'}>
-                //                     <MdOutlinePersonSearch size={18} />
-                //                 </i>
-                //             ),
-                //             path: '/leads',
-                //             permissionpage: 'Show Leads Page',
-
-                //             show: isshowuserpage('Show Leads Page'),
-                //         },
-                //     ],
-                // },
-
-                // {
-                //     maintitle: 'Reports',
-                //     subitems: [
-                //         {
-                //             name: 'Campaign Analytics',
-                //             isselected: false,
-                //             icon: (
-                //                 <i class={'allcentered'}>
-                //                     <BsGraphUp size={18} />
-                //                 </i>
-                //             ),
-                //             path: '/analytics',
-                //             permissionpage: 'Show Campaigns Analytics',
-
-                //             show: isshowuserpage('Show Campaigns Analytics'),
-                //         },
-                //         {
-                //             name: 'Phases Analytics',
-                //             isselected: false,
-                //             icon: (
-                //                 <i class={'allcentered'}>
-                //                     <HiOutlineArrowsRightLeft size={18} />
-                //                 </i>
-                //             ),
-                //             path: '/phasesanalytics',
-                //             permissionpage: 'Show Phases Analytics',
-
-                //             show: isshowuserpage('Show Phases Analytics'),
-                //         },
-                //         {
-                //             name: 'User Analytics',
-                //             isselected: false,
-                //             icon: (
-                //                 <i class={'allcentered'}>
-                //                     <HiOutlineUserGroup size={18} />
-                //                 </i>
-                //             ),
-                //             path: '/useranalytics',
-                //             permissionpage: 'Show Users Analytics',
-
-                //             show: isshowuserpage('Show Users Analytics'),
-                //         },
-                //     ],
-                // },
-                // {
-                //     maintitle: 'Actions',
-                //     subitems: [
-                //         {
-                //             name: 'Campaigns',
-                //             isselected: false,
-                //             icon: (
-                //                 <i class={'allcentered'}>
-                //                     <BsFillMegaphoneFill size={18} />
-                //                 </i>
-                //             ),
-                //             path: '/campaigns',
-                //             permissionpage: 'Show Campaigns Page',
-                //             show: isshowuserpage('Show Campaigns Page'),
-                //         },
-                //         {
-                //             name: 'Calls',
-                //             isselected: false,
-                //             icon: (
-                //                 <i class={'allcentered'}>
-                //                     <FiPhoneCall size={18} />
-                //                 </i>
-                //             ),
-                //             path: '/calls',
-                //             permissionpage: 'Calls Page',
-
-                //             show: isshowuserpage('Calls Page'),
-                //         },
-                //         {
-                //             name: 'Meetings',
-                //             isselected: false,
-                //             icon: (
-                //                 <i class={'allcentered'}>
-                //                     <MdOutlineMeetingRoom size={18} />
-                //                 </i>
-                //             ),
-                //             path: '/encounters?type=meeting',
-                //             permissionpage: 'Meetings Page',
-                //             show: isshowuserpage('Meetings Page'),
-                //         },
-                //         {
-                //             name: 'Followups',
-                //             isselected: false,
-                //             icon: (
-                //                 <i class={'allcentered'}>
-                //                     <IoChatbubblesOutline size={18} />
-                //                 </i>
-                //             ),
-                //             path: '/encounters?type=followup',
-                //             permissionpage: 'Follow-up Page',
-                //             show: isshowuserpage('Follow-up Page'),
-                //         },
-                //         {
-                //             name: 'Deals',
-                //             isselected: false,
-                //             icon: (
-                //                 <i class={'allcentered'}>
-                //                     <FaRegHandshake size={18} />
-                //                 </i>
-                //             ),
-                //             path: '/deals',
-                //             permissionpage: 'Deals Page',
-                //             show: isshowuserpage('Deals Page'),
-                //         },
-                //     ],
-                // },
             ];
             // FetchPhases?.data?.data?.data?.map((item, index) => {
             //     pagesarr[0].subitems.push({

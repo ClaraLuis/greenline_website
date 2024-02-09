@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
+import { gql, useMutation, useQuery } from '@apollo/client';
 
 const API = () => {
     const axiosheaders = {
@@ -17,6 +18,54 @@ const API = () => {
         // var serverbaselinktemp = 'http://localhost:8000';
         // var serverbaselinktemp = 'http://192.168.1.120:8000';
         return serverbaselinktemp;
+    };
+    const addUser = (payload) => {
+        return gql`
+        mutation cruser {
+            createUser(createUserInput: { name: ${JSON.stringify(payload?.name)}, type: ${JSON.stringify(payload?.type)}, phone: ${JSON.stringify(payload?.phone)}, email: ${JSON.stringify(
+            payload?.email,
+        )}, birthdate: ${JSON.stringify(payload?.birthdate)} })
+        }
+    `;
+    };
+    const fetchUsers = (payload) => {
+        return gql`
+            query findUsers {
+                paginateUsers(paginateUsersInput: { limit: 10, isAsc: false }) {
+                    data {
+                        id
+                        name
+                        type
+                        email
+                        phone
+                    }
+                    cursor
+                }
+            }
+        `;
+    };
+
+    const useQueryGQL = (token, query) => {
+        return useQuery(query, {
+            context: {
+                headers: {
+                    Authorization:
+                        ' Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVuTFgzTXZ0UzFZOXJjQjN0WDhKM0d0N1F4IiwiaHViSWQiOm51bGwsIm1lcmNoYW50SWQiOm51bGwsInR5cGUiOiJjb3VyaWVyIiwicm9sZXMiOlsxXSwiaWF0IjoxNzA2ODE0NzQzLCJleHAiOjE4MDY4MTY1NDN9.BnUOLRuoV1QgSzbYtiQKZONguDLQyBCmhNnBwB4OPC4',
+                },
+            },
+        });
+    };
+
+    const useMutationGQL = (query) => {
+        const addUser1 = useMutation(query, {
+            context: {
+                headers: {
+                    Authorization:
+                        ' Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVuTFgzTXZ0UzFZOXJjQjN0WDhKM0d0N1F4IiwiaHViSWQiOm51bGwsIm1lcmNoYW50SWQiOm51bGwsInR5cGUiOiJjb3VyaWVyIiwicm9sZXMiOlsxXSwiaWF0IjoxNzA2ODE0NzQzLCJleHAiOjE4MDY4MTY1NDN9.BnUOLRuoV1QgSzbYtiQKZONguDLQyBCmhNnBwB4OPC4',
+                },
+            },
+        });
+        return addUser1;
     };
 
     const Checkauth_API = async (axiosdata) => {
@@ -538,6 +587,10 @@ const API = () => {
     };
 
     return {
+        useMutationGQL,
+        addUser,
+        useQueryGQL,
+        fetchUsers,
         FetchUserAnalytics_API,
         FetchCampaignOveralls_API,
         Changepassword_API,

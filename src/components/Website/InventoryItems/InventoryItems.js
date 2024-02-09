@@ -1,0 +1,255 @@
+import React, { useContext, useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
+import { LanguageContext } from '../../../LanguageContext.js';
+import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
+// import { fetch_collection_data } from '../../../API/API';
+import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
+import { FaLayerGroup } from 'react-icons/fa';
+import Select, { components } from 'react-select';
+import { defaultstyles, defaultstylesdanger } from '../Generalfiles/selectstyles.js';
+import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
+
+import { Accordion, AccordionItem, AccordionItemHeading, AccordionItemButton, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
+import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
+// Icons
+import API from '../../../API/API.js';
+import UserInfo from './UserInfo.js';
+import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
+
+const { ValueContainer, Placeholder } = components;
+
+const HubItems = (props) => {
+    const queryParameters = new URLSearchParams(window.location.search);
+    let history = useHistory();
+    const { setpageactive_context, setpagetitle_context, dateformatter } = useContext(Contexthandlerscontext);
+    const { fetchUsers, useQueryGQL } = API();
+
+    const { lang, langdetect } = useContext(LanguageContext);
+
+    const [openModal, setopenModal] = useState(false);
+    const [selectedinventory, setselectedinventory] = useState('');
+    const [chosenracks, setchosenracks] = useState([]);
+    const [itemsarray, setitemsarray] = useState([
+        { sku: '123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1' },
+        { sku: '123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1' },
+        { sku: '123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1' },
+    ]);
+
+    const [leadpayload, setleadpayload] = useState({
+        functype: 'add',
+        id: 'add',
+        name: '',
+        type: '',
+        phone: '',
+        email: '',
+        birthdate: '',
+    });
+    const [filterobj, setfilterobj] = useState({
+        page: 1,
+        search: '',
+    });
+
+    const fetchusers = useQueryGQL('', fetchUsers());
+    // const fetchusers = [];
+    useEffect(() => {
+        setpageactive_context('/hubitems');
+    }, []);
+
+    return (
+        <div class="row m-0 w-100 p-md-2 pt-2">
+            <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
+                <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
+                    <p class=" p-0 m-0" style={{ fontSize: '27px' }}>
+                        Inventory Items
+                    </p>
+                </div>
+                <div style={{ borderRadius: '0px', background: 'white' }} class={' mb-3 col-lg-12 p-2'}>
+                    <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
+                        <AccordionItem class={`${generalstyles.innercard}` + ' '}>
+                            <AccordionItemHeading>
+                                <AccordionItemButton>
+                                    <div class="row m-0 w-100">
+                                        <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
+                                            <p class={generalstyles.cardTitle + '  m-0 p-0 '}>Filter:</p>
+                                        </div>
+                                        <div class="col-lg-4 col-md-4 col-sm-4 p-0 d-flex align-items-center justify-content-end">
+                                            <AccordionItemState>
+                                                {(state) => {
+                                                    if (state.expanded == true) {
+                                                        return (
+                                                            <i class="h-100 d-flex align-items-center justify-content-center">
+                                                                <BsChevronDown />
+                                                            </i>
+                                                        );
+                                                    } else {
+                                                        return (
+                                                            <i class="h-100 d-flex align-items-center justify-content-center">
+                                                                <BsChevronUp />
+                                                            </i>
+                                                        );
+                                                    }
+                                                }}
+                                            </AccordionItemState>
+                                        </div>
+                                    </div>
+                                </AccordionItemButton>
+                            </AccordionItemHeading>
+                            <AccordionItemPanel>
+                                <hr className="mt-2 mb-3" />
+                                <div class="row m-0 w-100">
+                                    <div class={'col-lg-2'} style={{ marginBottom: '15px' }}>
+                                        <label for="name" class={formstyles.form__label}>
+                                            Inventories
+                                        </label>
+                                        <Select
+                                            options={[
+                                                { label: 'Inv 1', value: '1' },
+                                                { label: 'Inv 2', value: '2' },
+                                            ]}
+                                            styles={defaultstyles}
+                                            value={
+                                                [
+                                                    { label: 'Inv 1', value: '1' },
+                                                    { label: 'Inv 2', value: '2' },
+                                                ]
+                                                // .filter((option) => option.value == props?.payload[item?.attr])
+                                            }
+                                            onChange={(option) => {
+                                                // props?.setsubmit(false);
+                                                // var temp = { ...props?.payload };
+                                                // temp[item?.attr] = option.value;
+                                                // props?.setpayload({ ...temp });
+                                            }}
+                                        />
+                                    </div>
+                                    <div class={'col-lg-2'} style={{ marginBottom: '15px' }}>
+                                        <label for="name" class={formstyles.form__label}>
+                                            Merchant
+                                        </label>
+                                        <Select
+                                            options={[
+                                                { label: 'Merch 1', value: '1' },
+                                                { label: 'Merch 2', value: '2' },
+                                            ]}
+                                            styles={defaultstyles}
+                                            value={
+                                                [
+                                                    { label: 'Merch 1', value: '1' },
+                                                    { label: 'Merch 2', value: '2' },
+                                                ]
+                                                // .filter((option) => option.value == props?.payload[item?.attr])
+                                            }
+                                            onChange={(option) => {
+                                                // props?.setsubmit(false);
+                                                // var temp = { ...props?.payload };
+                                                // temp[item?.attr] = option.value;
+                                                // props?.setpayload({ ...temp });
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                            </AccordionItemPanel>
+                        </AccordionItem>
+                    </Accordion>
+                </div>
+                <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-2'}>
+                    <div class="col-lg-12 p-0 ">
+                        <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
+                            <input
+                                // disabled={props?.disabled}
+                                // type={props?.type}
+                                class={formstyles.form__field}
+                                // value={}
+                                placeholder={'Search by name or SKU'}
+
+                                // onChange={}
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div class={generalstyles.card + ' row m-0 w-100'}>
+                    <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                        {fetchusers?.loading && (
+                            <div style={{ height: '70vh' }} class="row w-100 allcentered m-0">
+                                <CircularProgress color="var(--primary)" width="60px" height="60px" duration="1s" />
+                            </div>
+                        )}
+                        {!fetchusers?.loading && fetchusers?.data != undefined && (
+                            <>
+                                {fetchusers?.data?.paginateUsers?.data?.length == 0 && (
+                                    <div style={{ height: '70vh' }} class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
+                                        <div class="row m-0 w-100">
+                                            <FaLayerGroup size={40} class=" col-lg-12" />
+                                            <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
+                                                No Users
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                                {fetchusers?.data?.length != 0 && (
+                                    <table style={{}} className={'table'}>
+                                        <thead>
+                                            <th>SKU</th>
+                                            <th>Name</th>
+
+                                            <th>Size</th>
+
+                                            <th>Color</th>
+                                            <th>Count in Inventory</th>
+                                            <th>Merchant name</th>
+                                        </thead>
+                                        <tbody>
+                                            {itemsarray?.map((item, index) => {
+                                                return (
+                                                    <tr>
+                                                        <td>
+                                                            <p className={' m-0 p-0 wordbreak '}>{item?.sku}</p>
+                                                        </td>
+                                                        <td>
+                                                            <p className={' m-0 p-0 wordbreak '}>{item?.name}</p>
+                                                        </td>
+
+                                                        <td>
+                                                            <p className={' m-0 p-0 wordbreak '}>{item?.size}</p>
+                                                        </td>
+                                                        <td>
+                                                            <p className={' m-0 p-0 wordbreak '}>{item?.color}</p>
+                                                        </td>
+
+                                                        <td>
+                                                            <p className={' m-0 p-0 wordbreak '}>{item?.countinventory}</p>
+                                                        </td>
+
+                                                        <td>
+                                                            <p className={' m-0 p-0 wordbreak '}>{item?.merchantname}</p>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                        </tbody>
+                                    </table>
+                                )}
+                                {/* <Pagespaginatecomponent
+                                totaldatacount={FetchUsers?.data?.data?.total}
+                                numofitemsperpage={FetchUsers?.data?.data?.per_page}
+                                pagenumbparams={FetchUsers?.data?.data?.current_page}
+                                nextpagefunction={(nextpage) => {
+                                    history.push({
+                                        pathname: '/users',
+                                        search: '&page=' + nextpage,
+                                    });
+                                }}
+                            /> */}
+                            </>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            <UserInfo openModal={openModal} setopenModal={setopenModal} leadpayload={leadpayload} setleadpayload={setleadpayload} refetchUsers={fetchusers.refetch} />
+        </div>
+    );
+};
+export default HubItems;

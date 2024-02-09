@@ -223,7 +223,7 @@ textarea {
     padding: 0.3125rem 1.25rem;
     font-size: 13px;
     height: 2.875rem;
-    border-radius: 0.625rem;
+    border-radius: 0rem;
     transition: border-color 0.2s;
 }
 .form__fielddate {
@@ -232,11 +232,11 @@ textarea {
     border: 0.0625rem solid #cecece;
     padding: 0.3125rem 1.25rem;
     height: 2.875rem;
-    border-radius: 0.625rem;
+    border-radius: 0rem;
     transition: border-color 0.2s;
 }
 .form__field::placeholder {
-    color: transparent;
+    /* color: transparent; */
 }
 .form__field:placeholder-shown ~ .form__label {
     font-size: 14px !important;

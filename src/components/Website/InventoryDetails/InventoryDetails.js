@@ -24,7 +24,7 @@ import { defaultstyles } from '../Generalfiles/selectstyles.js';
 
 const { ValueContainer, Placeholder } = components;
 
-const Users = (props) => {
+const InventoryDetails = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, dateformatter } = useContext(Contexthandlerscontext);
@@ -33,6 +33,12 @@ const Users = (props) => {
     const { lang, langdetect } = useContext(LanguageContext);
 
     const [openModal, setopenModal] = useState(false);
+    const [chosenracks, setchosenracks] = useState([]);
+    const [itemsarray, setitemsarray] = useState([
+        { name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1' },
+        { name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1' },
+        { name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1' },
+    ]);
 
     const [leadpayload, setleadpayload] = useState({
         functype: 'add',
@@ -51,46 +57,89 @@ const Users = (props) => {
     const fetchusers = useQueryGQL('', fetchUsers());
     // const fetchusers = [];
     useEffect(() => {
-        setpageactive_context('/users');
+        setpageactive_context('/inventorydetails');
     }, []);
-
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
                 <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
                     <p class=" p-0 m-0" style={{ fontSize: '27px' }}>
-                        Users
+                        Inventory Details
                     </p>
                 </div>
-                <div class={generalstyles.card + ' row m-0 w-100'}>
-                    <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
-                        <p class=" p-0 m-0" style={{ fontSize: '24px' }}>
-                            <span style={{ color: 'var(--info)' }}> {fetchusers?.data?.paginateUsers?.data?.length} </span>
+                <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
+                    <div class={' col-lg-12 col-md-12 col-sm-12 p-0 d-flex align-items-center justify-content-start '}>
+                        <p class=" p-0 m-0" style={{ fontSize: '15px' }}>
+                            <span style={{ color: 'var(--info)' }}>Racks </span>
                         </p>
                     </div>
-                    <div class={' col-lg-6 col-md-6 col-sm-6 p-0 pr-3 pr-md-1 pr-sm-0 d-flex align-items-center justify-content-end pb-1 '}>
-                        <button
-                            style={{ height: '35px' }}
-                            class={generalstyles.roundbutton + ' bg-info bg-infohover mb-1'}
-                            onClick={() => {
-                                setleadpayload({
-                                    functype: 'add',
-                                    id: 'add',
-                                    name: '',
-                                    type: '',
-                                    phone: '',
-                                    email: '',
-                                    birthdate: '',
+                    <div class="col-lg-12 p-0">
+                        <div style={{ width: '100px', overflowY: 'scroll', flexDirection: 'row', flexWrap: 'nowrap' }} class=" scrollmenuclasssubscrollbar row m-0 w-100">
+                            {[...Array(20)].map((element, arrayindex) => {
+                                var selected = false;
+                                chosenracks.map((item, index) => {
+                                    if (item == arrayindex) {
+                                        selected = true;
+                                    }
                                 });
-                                setopenModal(true);
-                            }}
-                        >
-                            Add User
-                        </button>
+                                return (
+                                    <div
+                                        onClick={() => {
+                                            var exist = false;
+                                            var chosenindex = 0;
+                                            var array = [...chosenracks];
+                                            chosenracks.map((item, index) => {
+                                                if (item == arrayindex) {
+                                                    exist = true;
+                                                    chosenindex = index;
+                                                }
+                                            });
+                                            if (exist) {
+                                                array.splice(chosenindex, 1);
+                                            } else {
+                                                array.push(arrayindex);
+                                            }
+                                            setchosenracks([...array]);
+                                        }}
+                                        class={selected ? 'searchpillselected' : 'searchpill'}
+                                    >
+                                        Rack {arrayindex}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+                <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
+                    <div class={' col-lg-12 col-md-12 col-sm-12 p-0 d-flex align-items-center justify-content-start '}>
+                        <p class=" p-0 m-0" style={{ fontSize: '15px' }}>
+                            <span style={{ color: 'var(--info)' }}> Ballots </span>
+                        </p>
                     </div>
                     <div class="col-lg-12 p-0">
-                        <hr class="mt-1" />
+                        <div style={{ width: '100px', overflowY: 'scroll', flexDirection: 'row', flexWrap: 'nowrap' }} class=" scrollmenuclasssubscrollbar row m-0 w-100">
+                            {[...Array(20)].map((element, arrayindex) => {
+                                return <div class="searchpill">Ballot {arrayindex}</div>;
+                            })}
+                        </div>
                     </div>
+                </div>
+                <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
+                    <div class={' col-lg-12 col-md-12 col-sm-12 p-0 d-flex align-items-center justify-content-start '}>
+                        <p class=" p-0 m-0" style={{ fontSize: '15px' }}>
+                            <span style={{ color: 'var(--info)' }}>Boxes </span>
+                        </p>
+                    </div>
+                    <div class="col-lg-12 p-0">
+                        <div style={{ width: '100px', overflowY: 'scroll', flexDirection: 'row', flexWrap: 'nowrap' }} class=" scrollmenuclasssubscrollbar row m-0 w-100">
+                            {[...Array(20)].map((element, arrayindex) => {
+                                return <div class="searchpill">Box {arrayindex}</div>;
+                            })}
+                        </div>
+                    </div>
+                </div>
+
+                <div class={generalstyles.card + ' row m-0 w-100'}>
                     <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
                         {fetchusers?.loading && (
                             <div style={{ height: '70vh' }} class="row w-100 allcentered m-0">
@@ -112,42 +161,35 @@ const Users = (props) => {
                                 {fetchusers?.data?.length != 0 && (
                                     <table style={{}} className={'table'}>
                                         <thead>
-                                            <th style={{ minWidth: '100px' }} class="col-lg-1">
-                                                Manage
-                                            </th>
                                             <th>Name</th>
 
-                                            <th>{lang.email}</th>
+                                            <th>Size</th>
 
-                                            <th>{lang.phonenumber}</th>
+                                            <th>Color</th>
+                                            <th>Count in Inventory</th>
+                                            <th>Merchant name</th>
                                         </thead>
                                         <tbody>
-                                            {fetchusers?.data?.paginateUsers?.data?.map((item, index) => {
+                                            {itemsarray?.map((item, index) => {
                                                 return (
                                                     <tr>
-                                                        <td style={{ minWidth: '100px' }} class="col-lg-1">
-                                                            <BiShowAlt
-                                                                onClick={() => {
-                                                                    var temp = { ...item };
-                                                                    temp.functype = 'edit';
-                                                                    setleadpayload({ ...temp });
-                                                                    setopenModal(true);
-                                                                }}
-                                                                size={20}
-                                                                class={reviewsstyles.icon + ' ml-2'}
-                                                            />
-                                                        </td>
-
                                                         <td>
                                                             <p className={' m-0 p-0 wordbreak '}>{item?.name}</p>
                                                         </td>
 
                                                         <td>
-                                                            <p className={' m-0 p-0 wordbreak '}>{item?.email}</p>
+                                                            <p className={' m-0 p-0 wordbreak '}>{item?.size}</p>
+                                                        </td>
+                                                        <td>
+                                                            <p className={' m-0 p-0 wordbreak '}>{item?.color}</p>
                                                         </td>
 
                                                         <td>
-                                                            <p className={' m-0 p-0 wordbreak '}>{item?.phone}</p>
+                                                            <p className={' m-0 p-0 wordbreak '}>{item?.countinventory}</p>
+                                                        </td>
+
+                                                        <td>
+                                                            <p className={' m-0 p-0 wordbreak '}>{item?.merchantname}</p>
                                                         </td>
                                                     </tr>
                                                 );
@@ -176,4 +218,4 @@ const Users = (props) => {
         </div>
     );
 };
-export default Users;
+export default InventoryDetails;

@@ -1,7 +1,7 @@
 export const defaultstyles = {
     option: (provided, state) => ({
         ...provided,
-        borderBottom: '1px solid #b1b3b6',
+        borderBottom: '0px solid #b1b3b6',
         backgroundColor: state.isSelected ? '' : '',
         padding: 5,
         textTransform: 'capitalize',
@@ -22,10 +22,10 @@ export const defaultstyles = {
         ...provided,
 
         color: '#5e6b92',
-        height: '2.875rem',
+        height: '2rem',
 
-        border: '0.0625rem solid #cecece',
-        borderRadius: '0.625rem',
+        border: '0.02rem solid #cecece',
+        borderRadius: '0rem',
         backgroundColor: 'transparent',
         display: 'flex',
         cursor: 'pointer',
@@ -76,7 +76,7 @@ export const defaultstyles = {
     }),
     menu: (provided) => ({
         ...provided,
-        zIndex: 100,
+        zIndex: 10000,
         color: 'var(--priamry)',
         top: '40px',
         borderRadius: '5px',

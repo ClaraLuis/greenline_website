@@ -214,6 +214,31 @@ const Form = (props) => {
                             )}
                         </div>
                     );
+                } else if (item?.type == 'type') {
+                    return (
+                        <div class={item.size == '6' ? 'col-lg-6' : 'col-lg-12'} style={{ marginBottom: '15px' }}>
+                            <label for="name" class={formstyles.form__label}>
+                                {item.name}
+                            </label>
+                            <Select
+                                isDisabled={item?.disabled}
+                                options={[{ label: 'Finance', value: 'finance' }]}
+                                styles={props?.payload[item?.attr]?.length == 0 && props?.submit ? defaultstylesdanger : defaultstyles}
+                                value={[{ label: 'Finance', value: 'finance' }].filter((option) => option.value == props?.payload[item?.attr])}
+                                onChange={(option) => {
+                                    props?.setsubmit(false);
+                                    var temp = { ...props?.payload };
+                                    temp[item?.attr] = option.value;
+                                    props?.setpayload({ ...temp });
+                                }}
+                            />
+                            {props?.payload[item?.attr]?.length == 0 && props?.submit && (
+                                <div class="col-lg-12 px-2 pt-2" style={{ color: 'var(--danger)', fontSize: '11px' }}>
+                                    {item?.name} is required
+                                </div>
+                            )}
+                        </div>
+                    );
                 } else if (item?.type == 'phaseaction') {
                     return (
                         <div class={item.size == '6' ? 'col-lg-6' : 'col-lg-12'} style={{ marginBottom: '15px' }}>

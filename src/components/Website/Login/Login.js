@@ -52,96 +52,92 @@ const Login = () => {
     }, []);
 
     return (
-        <div class="row m-0 w-100 d-flex allcentered mt-md-0 pt-5 p-md-0">
-            <div class="col-lg-12 p-0 allcentered mt-5 ">
-                <div style={{ cursor: 'pointer' }} class={loginstyles.logo + ' p-0 '}>
-                    <img src={logo} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-                </div>
-            </div>
-            {step == 0 && (
-                <div class="col-lg-7 p-0">
-                    <div class="row m-0 w-100 p-5 d-flex justify-content-center p-sm-3">
-                        <div class="col-lg-8 p-0 ">
-                            <div class="row m-0 w-100">
-                                <div class="col-lg-12 flex-column mb-4 p-0 p-md-0">
-                                    <p class="font-15 font-weight-500 mb-1"> Email </p>
-                                    <input
-                                        name="email"
-                                        type="email"
-                                        class={'inputfeild'}
-                                        value={email}
-                                        onChange={(event) => {
-                                            setemail(event.target.value);
-                                        }}
-                                    />
-                                </div>
-                                <div class="col-lg-12 flex-column mb-4 p-0 p-md-0">
-                                    <p class="font-15 font-weight-500 mb-1"> Password </p>
-                                    <input
-                                        name="password"
-                                        type="password"
-                                        class={'inputfeild'}
-                                        value={password}
-                                        onChange={(event) => {
-                                            setpassword(event.target.value);
-                                        }}
-                                    />
-                                </div>
+        <div style={{ width: '100%', height: '100vh', background: '#eef2f6' }} class="row m-0 w-100 d-flex allcentered mt-md-0  p-md-0">
+            <div class={loginstyles.rightcontainer + ' col-lg-4 pb-3'}>
+                <div class="row m-0 w-100">
+                    <div class="col-lg-12 p-0 allcentered  ">
+                        <div style={{ cursor: 'pointer' }} class={loginstyles.logo + ' p-0 '}>
+                            <img src={logo} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                        </div>
+                    </div>
+                    <div class="col-lg-12 allcentered mt-3 mb-1" style={{ color: '#20674c', fontSize: '22px', fontWeight: 700 }}>
+                        Hi, Welcome Back
+                    </div>
+                    <div class="col-lg-12 allcentered" style={{ color: 'grey', fontSize: '14px' }}>
+                        Enter your credentials to continue
+                    </div>
+                    {step == 0 && (
+                        <div class="col-lg-12 p-0">
+                            <div class="row m-0 w-100  px-2 d-flex justify-content-center p-sm-3">
+                                <div class="col-lg-12 p-0 ">
+                                    <div class="row m-0 w-100">
+                                        <div class="col-lg-12 flex-column mb-4 p-0 p-md-0">
+                                            <p class="font-15 font-weight-500 mb-1"> Email </p>
+                                            <input
+                                                name="email"
+                                                type="email"
+                                                class={'inputfeild'}
+                                                value={email}
+                                                onChange={(event) => {
+                                                    setemail(event.target.value);
+                                                }}
+                                            />
+                                        </div>
+                                        <div class="col-lg-12 flex-column mb-4 p-0 p-md-0">
+                                            <p class="font-15 font-weight-500 mb-1"> Password </p>
+                                            <input
+                                                name="password"
+                                                type="password"
+                                                class={'inputfeild'}
+                                                value={password}
+                                                onChange={(event) => {
+                                                    setpassword(event.target.value);
+                                                }}
+                                            />
+                                        </div>
 
-                                <div class="col-lg-12 p-0 flex-column mt-0 p-md-0">
-                                    <button
-                                        onClick={() => {
-                                            LoginmutationContext.mutate({ email: email, password: password });
-                                        }}
-                                        class={`${generalstyles.btn} ${generalstyles.btn_primary}` + ' font-15 allcentered '}
-                                        style={{
-                                            width: '100%',
-                                            height: 48,
-                                        }}
-                                        disabled={LoginmutationContext.isLoading}
-                                    >
-                                        {LoginmutationContext.isLoading && <CircularProgress color="white" width="20px" height="20px" duration="1s" />}
-                                        {!LoginmutationContext.isLoading && <span>Login</span>}
-                                    </button>
-                                </div>
-
-                                <div class={generalstyles.orrow}>
-                                    <span>{'or'}</span>
-                                </div>
-                                <div class="col-lg-12 p-0 d-flex allcentered flex-column mt-0 p-md-0">
-                                    <span
-                                        onClick={() => {
-                                            setstep(1);
-                                        }}
-                                        class="text-primary text-primaryhover"
-                                    >
-                                        Signup
-                                    </span>
+                                        <div class="col-lg-12 p-0 flex-column mt-0 p-md-0">
+                                            <button
+                                                onClick={() => {
+                                                    LoginmutationContext.mutate({ email: email, password: password });
+                                                }}
+                                                class={`${generalstyles.btn} ${generalstyles.btn_primary}` + ' font-15 allcentered '}
+                                                style={{
+                                                    width: '100%',
+                                                    height: 48,
+                                                }}
+                                                disabled={LoginmutationContext.isLoading}
+                                            >
+                                                {LoginmutationContext.isLoading && <CircularProgress color="white" width="20px" height="20px" duration="1s" />}
+                                                {!LoginmutationContext.isLoading && <span>Verify Email</span>}
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            )}
+                    )}
 
-            {step == 1 && (
-                <div class="col-lg-7 p-0">
-                    <Signup />
-                    <div class={generalstyles.orrow}>
-                        <span>{'or'}</span>
-                    </div>
-                    <div class="col-lg-12 p-0 d-flex allcentered flex-column mt-0 p-md-0 pb-5">
-                        <span
-                            onClick={() => {
-                                setstep(0);
-                            }}
-                            class="text-primary text-primaryhover"
-                        >
-                            Login
-                        </span>
-                    </div>
+                    {step == 1 && (
+                        <div class="col-lg-7 p-0">
+                            <Signup />
+                            <div class={generalstyles.orrow}>
+                                <span>{'or'}</span>
+                            </div>
+                            <div class="col-lg-12 p-0 d-flex allcentered flex-column mt-0 p-md-0 pb-5">
+                                <span
+                                    onClick={() => {
+                                        setstep(0);
+                                    }}
+                                    class="text-primary text-primaryhover"
+                                >
+                                    Login
+                                </span>
+                            </div>
+                        </div>
+                    )}
                 </div>
-            )}
+            </div>
         </div>
     );
 };
