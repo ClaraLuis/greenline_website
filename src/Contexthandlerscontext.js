@@ -6,6 +6,7 @@ import { LiaSitemapSolid } from 'react-icons/lia';
 import API from './API/API';
 
 import { useHistory } from 'react-router-dom';
+import { LuPackageOpen } from 'react-icons/lu';
 
 import { NotificationManager } from 'react-notifications';
 import Cookies from 'universal-cookie';
@@ -140,7 +141,7 @@ export const Contexthandlerscontext_provider = (props) => {
                             show: isshowuserpage('Show Users Page'),
                         },
                         {
-                            name: 'Inventory Items',
+                            name: 'Inventories',
                             isselected: false,
                             icon: (
                                 <i class={'allcentered'}>
@@ -160,6 +161,18 @@ export const Contexthandlerscontext_provider = (props) => {
                                 </i>
                             ),
                             path: '/hubitems',
+                            permissionpage: 'Show Users Page',
+                            show: isshowuserpage('Show Users Page'),
+                        },
+                        {
+                            name: 'Orders',
+                            isselected: false,
+                            icon: (
+                                <i class={'allcentered'}>
+                                    <LuPackageOpen size={18} />
+                                </i>
+                            ),
+                            path: '/orders',
                             permissionpage: 'Show Users Page',
                             show: isshowuserpage('Show Users Page'),
                         },

@@ -20,6 +20,7 @@ import user from './user.png';
 import InventoryDetails from './InventoryDetails/InventoryDetails.js';
 import InventoryItems from './InventoryItems/InventoryItems.js';
 import HubItems from './HubItems/HubItems.js';
+import Orders from './Orders/Orders.js';
 const App = (props) => {
     const history = useHistory();
     const location = useLocation();
@@ -273,6 +274,7 @@ const App = (props) => {
                                                         <Route exact path="/inventorydetails" component={InventoryDetails} />
                                                         <Route exact path="/inventoryitems" component={InventoryItems} />
                                                         <Route exact path="/hubitems" component={HubItems} />
+                                                        <Route exact path="/orders" component={Orders} />
                                                     </Switch>
                                                 );
                                             }}

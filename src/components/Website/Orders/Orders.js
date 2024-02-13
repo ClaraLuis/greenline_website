@@ -18,7 +18,7 @@ import API from '../../../API/API.js';
 
 const { ValueContainer, Placeholder } = components;
 
-const HubItems = (props) => {
+const Orders = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, dateformatter } = useContext(Contexthandlerscontext);
@@ -52,7 +52,7 @@ const HubItems = (props) => {
     const fetchusers = useQueryGQL('', fetchUsers());
     // const fetchusers = [];
     useEffect(() => {
-        setpageactive_context('/hubitems');
+        setpageactive_context('/orders');
     }, []);
 
     return (
@@ -60,7 +60,7 @@ const HubItems = (props) => {
             <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
                 <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
                     <p class=" p-0 m-0" style={{ fontSize: '27px' }}>
-                        Hub Items
+                        Orders
                     </p>
                 </div>
                 <div style={{ borderRadius: '0px', background: 'white' }} class={' mb-3 col-lg-12 p-2'}>
@@ -160,7 +160,7 @@ const HubItems = (props) => {
                                 // type={props?.type}
                                 class={formstyles.form__field}
                                 // value={}
-                                placeholder={'Search by name or SKU'}
+                                placeholder={'Search by order# '}
 
                                 // onChange={}
                             />
@@ -182,7 +182,7 @@ const HubItems = (props) => {
                                         <div class="row m-0 w-100">
                                             <FaLayerGroup size={40} class=" col-lg-12" />
                                             <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
-                                                No Users
+                                                No Orders
                                             </div>
                                         </div>
                                     </div>
@@ -190,35 +190,21 @@ const HubItems = (props) => {
                                 {fetchusers?.data?.length != 0 && (
                                     <table style={{}} className={'table'}>
                                         <thead>
-                                            <th>SKU</th>
-                                            <th>Name</th>
+                                            <th>Order#</th>
 
-                                            <th>Size</th>
+                                            <th>Items count</th>
 
-                                            <th>Color</th>
-                                            <th>Count in Inventory</th>
-                                            <th>Merchant name</th>
+                                            <th>Merchant</th>
                                         </thead>
                                         <tbody>
                                             {itemsarray?.map((item, index) => {
                                                 return (
                                                     <tr>
                                                         <td>
-                                                            <p className={' m-0 p-0 wordbreak '}>{item?.sku}</p>
+                                                            <p className={' m-0 p-0 wordbreak '}>123</p>
                                                         </td>
                                                         <td>
-                                                            <p className={' m-0 p-0 wordbreak '}>{item?.name}</p>
-                                                        </td>
-
-                                                        <td>
-                                                            <p className={' m-0 p-0 wordbreak '}>{item?.size}</p>
-                                                        </td>
-                                                        <td>
-                                                            <p className={' m-0 p-0 wordbreak '}>{item?.color}</p>
-                                                        </td>
-
-                                                        <td>
-                                                            <p className={' m-0 p-0 wordbreak '}>{item?.countinventory}</p>
+                                                            <p className={' m-0 p-0 wordbreak text-secondaryhover '}>5</p>
                                                         </td>
 
                                                         <td>
@@ -249,4 +235,4 @@ const HubItems = (props) => {
         </div>
     );
 };
-export default HubItems;
+export default Orders;
