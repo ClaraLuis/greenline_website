@@ -21,6 +21,9 @@ import InventoryDetails from './InventoryDetails/InventoryDetails.js';
 import InventoryItems from './InventoryItems/InventoryItems.js';
 import HubItems from './HubItems/HubItems.js';
 import Orders from './Orders/Orders.js';
+import MerchantHome from './MerchantHome/MerchantHome.js';
+import Finance from './Finance/Finance.js';
+import MerchantItems from './MerchantItems/MerchantItems.js';
 const App = (props) => {
     const history = useHistory();
     const location = useLocation();
@@ -274,7 +277,10 @@ const App = (props) => {
                                                         <Route exact path="/inventorydetails" component={InventoryDetails} />
                                                         <Route exact path="/inventoryitems" component={InventoryItems} />
                                                         <Route exact path="/hubitems" component={HubItems} />
+                                                        <Route exact path="/merchanthome" component={MerchantHome} />
                                                         <Route exact path="/orders" component={Orders} />
+                                                        <Route exact path="/merchantfinance" component={Finance} />
+                                                        <Route exact path="/merchantitems" component={MerchantItems} />
                                                     </Switch>
                                                 );
                                             }}

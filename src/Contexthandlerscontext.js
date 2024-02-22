@@ -11,6 +11,9 @@ import { LuPackageOpen } from 'react-icons/lu';
 import { NotificationManager } from 'react-notifications';
 import Cookies from 'universal-cookie';
 import { MdOutlineHub, MdOutlineInventory2 } from 'react-icons/md';
+import { BiSolidCoinStack } from 'react-icons/bi';
+import { CiBoxes } from 'react-icons/ci';
+import { IoMdHome } from 'react-icons/io';
 export const Contexthandlerscontext = React.createContext();
 export const Contexthandlerscontext_provider = (props) => {
     let history = useHistory();
@@ -87,7 +90,7 @@ export const Contexthandlerscontext_provider = (props) => {
         return new Date(date).toLocaleDateString(undefined, options);
     };
     const isshowuserpage = (page) => {
-        var show = false;
+        var show = true;
         if (
             fetchAuthorizationQueryContext?.data?.data?.currentcompanyusertype == 'companyowner' ||
             fetchAuthorizationQueryContext?.data?.data?.userinfo?.user_profile?.usertype == 'adminuser' ||
@@ -161,6 +164,59 @@ export const Contexthandlerscontext_provider = (props) => {
                                 </i>
                             ),
                             path: '/hubitems',
+                            permissionpage: 'Show Users Page',
+                            show: isshowuserpage('Show Users Page'),
+                        },
+                        {
+                            name: 'Orders',
+                            isselected: false,
+                            icon: (
+                                <i class={'allcentered'}>
+                                    <LuPackageOpen size={18} />
+                                </i>
+                            ),
+                            path: '/orders',
+                            permissionpage: 'Show Users Page',
+                            show: isshowuserpage('Show Users Page'),
+                        },
+                    ],
+                },
+                {
+                    maintitle: 'Merchant',
+                    subitems: [
+                        {
+                            name: 'Home',
+                            isselected: false,
+                            icon: (
+                                <i class={'allcentered'}>
+                                    <IoMdHome size={18} />
+                                </i>
+                            ),
+                            path: '/merchanthome',
+                            permissionpage: 'Show Users Page',
+                            show: isshowuserpage('Show Users Page'),
+                        },
+                        {
+                            name: 'Finance',
+                            isselected: false,
+                            icon: (
+                                <i class={'allcentered'}>
+                                    <BiSolidCoinStack size={18} />
+                                </i>
+                            ),
+                            path: '/merchantfinance',
+                            permissionpage: 'Show Users Page',
+                            show: isshowuserpage('Show Users Page'),
+                        },
+                        {
+                            name: 'Items',
+                            isselected: false,
+                            icon: (
+                                <i class={'allcentered'}>
+                                    <CiBoxes size={18} />
+                                </i>
+                            ),
+                            path: '/merchantitems',
                             permissionpage: 'Show Users Page',
                             show: isshowuserpage('Show Users Page'),
                         },

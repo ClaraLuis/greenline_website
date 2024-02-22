@@ -24,6 +24,7 @@ export const Loggedincontext_provider = (props) => {
     //     config.headers = defaultheaders;
     //     return config;
     // });
+    const [loggedincontext, setloggedincontext] = useState(false);
 
     const [tokencontext, settokencontext] = useState('');
     // const fetchuseauthorizationQueryContext = useQuery(['fetchuseauthorization'], () => fetchuseauthorization(), {
@@ -86,6 +87,8 @@ export const Loggedincontext_provider = (props) => {
                 settokencontext,
                 headersContext,
                 getoken,
+                loggedincontext,
+                setloggedincontext,
             }}
         >
             {props.children}

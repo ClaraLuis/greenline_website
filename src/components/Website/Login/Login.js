@@ -15,6 +15,7 @@ import '../Generalfiles/CSS_GENERAL/Phonenumberinput.css';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
 import Signup from '../Signup/Signup.js';
 import { MdArrowBackIosNew } from 'react-icons/md';
+import { Loggedincontext } from '../../../Loggedincontext.js';
 
 const Login = () => {
     const { Login_API } = API();
@@ -22,7 +23,7 @@ const Login = () => {
     const [otp, setOtp] = useState('');
     const [value, setValue] = useState('');
     const queryParameters = new URLSearchParams(window.location.search);
-
+    const { loggedincontext, setloggedincontext } = useContext(Loggedincontext);
     const { setpageactive_context, setpagetitle_context, LoginmutationContext } = useContext(Contexthandlerscontext);
     useEffect(() => {
         setpagetitle_context('login');
@@ -99,7 +100,9 @@ const Login = () => {
                                         <div class="col-lg-12 p-0 flex-column mt-0 p-md-0">
                                             <button
                                                 onClick={() => {
-                                                    LoginmutationContext.mutate({ email: email, password: password });
+                                                    setloggedincontext(true);
+                                                    history.push('/users');
+                                                    // LoginmutationContext.mutate({ email: email, password: password });
                                                 }}
                                                 class={`${generalstyles.btn} ${generalstyles.btn_primary}` + ' font-15 allcentered '}
                                                 style={{

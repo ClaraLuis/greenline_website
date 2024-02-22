@@ -15,6 +15,7 @@ import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import API from '../../../API/API.js';
+import ItemsTable from './ItemsTable.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -170,79 +171,7 @@ const HubItems = (props) => {
 
                 <div class={generalstyles.card + ' row m-0 w-100'}>
                     <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
-                        {fetchusers?.loading && (
-                            <div style={{ height: '70vh' }} class="row w-100 allcentered m-0">
-                                <CircularProgress color="var(--primary)" width="60px" height="60px" duration="1s" />
-                            </div>
-                        )}
-                        {!fetchusers?.loading && fetchusers?.data != undefined && (
-                            <>
-                                {fetchusers?.data?.paginateUsers?.data?.length == 0 && (
-                                    <div style={{ height: '70vh' }} class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
-                                        <div class="row m-0 w-100">
-                                            <FaLayerGroup size={40} class=" col-lg-12" />
-                                            <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
-                                                No Users
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-                                {fetchusers?.data?.length != 0 && (
-                                    <table style={{}} className={'table'}>
-                                        <thead>
-                                            <th>SKU</th>
-                                            <th>Name</th>
-
-                                            <th>Size</th>
-
-                                            <th>Color</th>
-                                            <th>Count in Inventory</th>
-                                            <th>Merchant name</th>
-                                        </thead>
-                                        <tbody>
-                                            {itemsarray?.map((item, index) => {
-                                                return (
-                                                    <tr>
-                                                        <td>
-                                                            <p className={' m-0 p-0 wordbreak '}>{item?.sku}</p>
-                                                        </td>
-                                                        <td>
-                                                            <p className={' m-0 p-0 wordbreak '}>{item?.name}</p>
-                                                        </td>
-
-                                                        <td>
-                                                            <p className={' m-0 p-0 wordbreak '}>{item?.size}</p>
-                                                        </td>
-                                                        <td>
-                                                            <p className={' m-0 p-0 wordbreak '}>{item?.color}</p>
-                                                        </td>
-
-                                                        <td>
-                                                            <p className={' m-0 p-0 wordbreak '}>{item?.countinventory}</p>
-                                                        </td>
-
-                                                        <td>
-                                                            <p className={' m-0 p-0 wordbreak '}>{item?.merchantname}</p>
-                                                        </td>
-                                                    </tr>
-                                                );
-                                            })}
-                                        </tbody>
-                                    </table>
-                                )}
-                                {/* <Pagespaginatecomponent
-                                totaldatacount={FetchUsers?.data?.data?.total}
-                                numofitemsperpage={FetchUsers?.data?.data?.per_page}
-                                pagenumbparams={FetchUsers?.data?.data?.current_page}
-                                nextpagefunction={(nextpage) => {
-                                    history.push({
-                                        pathname: '/users',
-                                        search: '&page=' + nextpage,
-                                    });
-                                }}
-                            /> */}
-                            </>
-                        )}
+                        <ItemsTable />
                     </div>
                 </div>
             </div>

@@ -15,11 +15,11 @@ import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import API from '../../../API/API.js';
-import OrdersTable from './OrdersTable.js';
+import FinanceTable from './FinanceTable.js';
 
 const { ValueContainer, Placeholder } = components;
 
-const Orders = (props) => {
+const HubItems = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, dateformatter } = useContext(Contexthandlerscontext);
@@ -53,7 +53,7 @@ const Orders = (props) => {
     const fetchusers = useQueryGQL('', fetchUsers());
     // const fetchusers = [];
     useEffect(() => {
-        setpageactive_context('/orders');
+        setpageactive_context('/merchantfinance');
     }, []);
 
     return (
@@ -61,10 +61,10 @@ const Orders = (props) => {
             <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
                 <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
                     <p class=" p-0 m-0" style={{ fontSize: '27px' }}>
-                        Orders
+                        Finance
                     </p>
                 </div>
-                <div style={{ borderRadius: '0px', background: 'white' }} class={' mb-3 col-lg-12 p-2'}>
+                {/* <div style={{ borderRadius: '0px', background: 'white' }} class={' mb-3 col-lg-12 p-2'}>
                     <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
                         <AccordionItem class={`${generalstyles.innercard}` + ' '}>
                             <AccordionItemHeading>
@@ -152,8 +152,8 @@ const Orders = (props) => {
                             </AccordionItemPanel>
                         </AccordionItem>
                     </Accordion>
-                </div>
-                <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-2'}>
+                </div> */}
+                {/* <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-2'}>
                     <div class="col-lg-12 p-0 ">
                         <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
                             <input
@@ -161,21 +161,48 @@ const Orders = (props) => {
                                 // type={props?.type}
                                 class={formstyles.form__field}
                                 // value={}
-                                placeholder={'Search by order# '}
+                                placeholder={'Search by name or SKU'}
 
                                 // onChange={}
                             />
                         </div>
                     </div>
+                </div> */}
+
+                <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
+                    <div class={' col-lg-12 col-md-12 col-sm-12 p-0 d-flex align-items-center justify-content-start '}>
+                        <p class=" p-0 m-0" style={{ fontSize: '15px' }}>
+                            <span style={{ color: 'var(--info)' }}>Past Transactions</span>
+                        </p>
+                    </div>
+                    <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                        <FinanceTable />
+                    </div>
                 </div>
 
-                <div class={generalstyles.card + ' row m-0 w-100'}>
+                <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
+                    <div class={' col-lg-12 col-md-12 col-sm-12 p-0 d-flex align-items-center justify-content-start '}>
+                        <p class=" p-0 m-0" style={{ fontSize: '15px' }}>
+                            <span style={{ color: 'var(--info)' }}>Awaiting Transactions</span>
+                        </p>
+                    </div>
                     <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
-                        <OrdersTable />
+                        <FinanceTable />
+                    </div>
+                </div>
+
+                <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
+                    <div class={' col-lg-12 col-md-12 col-sm-12 p-0 d-flex align-items-center justify-content-start '}>
+                        <p class=" p-0 m-0" style={{ fontSize: '15px' }}>
+                            <span style={{ color: 'var(--info)' }}>Invoices</span>
+                        </p>
+                    </div>
+                    <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                        <FinanceTable />
                     </div>
                 </div>
             </div>
         </div>
     );
 };
-export default Orders;
+export default HubItems;

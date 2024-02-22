@@ -1,4 +1,4 @@
-import React, { Suspense, useContext } from 'react';
+import React, { Suspense, useContext, useState } from 'react';
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 import { NotificationContainer } from 'react-notifications';
 import 'react-notifications/lib/notifications.css';
@@ -22,13 +22,12 @@ const Login = React.lazy(() => import('./components/Website/Login/Login'));
 
 const App = (props) => {
     let history = useHistory();
-    const { fetchAuthorizationQueryContext } = useContext(Loggedincontext);
+    const { fetchAuthorizationQueryContext, loggedincontext, setloggedincontext } = useContext(Loggedincontext);
 
     const client = new ApolloClient({
         uri: 'http://localhost:3001/graphql',
         cache: new InMemoryCache(),
     });
-
     axios.interceptors.request.use(function (config) {
         const cookies = new Cookies();
 
@@ -42,7 +41,7 @@ const App = (props) => {
         return config;
     });
     const isadminandloggedin = () => {
-        return fetchAuthorizationQueryContext?.data?.data?.loggedin;
+        return loggedincontext;
     };
     return (
         <ApolloProvider client={client}>
