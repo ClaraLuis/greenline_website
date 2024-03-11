@@ -22,10 +22,10 @@ export const defaultstyles = {
         ...provided,
 
         color: '#5e6b92',
-        height: '2rem',
+        height: '2.875rem',
 
-        border: '0.02rem solid #cecece',
-        borderRadius: '0rem',
+        border: '0.0625rem solid #eee',
+        borderRadius: '7px',
         backgroundColor: 'transparent',
         display: 'flex',
         cursor: 'pointer',

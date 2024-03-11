@@ -219,17 +219,17 @@ textarea {
 .form__field {
     width: 100%;
     background: #fff;
-    border: 0.0625rem solid #cecece;
+    border: 0.0625rem solid #eee;
     padding: 0.3125rem 1.25rem;
     font-size: 13px;
     height: 2.875rem;
-    border-radius: 0rem;
+    border-radius: 7px;
     transition: border-color 0.2s;
 }
 .form__fielddate {
     width: 100%;
     background: #fff;
-    border: 0.0625rem solid #cecece;
+    border: 0.0625rem solid #eee;
     padding: 0.3125rem 1.25rem;
     height: 2.875rem;
     border-radius: 0rem;
@@ -372,7 +372,7 @@ textarea {
     display: flex;
     align-items: center;
     width: 100%;
-    border-radius: 0.3125rem;
+    border-radius: 7px;
     cursor: pointer;
     position: relative;
     white-space: nowrap;
@@ -383,7 +383,7 @@ textarea {
 
     padding: 10px !important;
     background-color: #fff;
-    border: 1px solid #e4e6ee;
+    border: 0.0625rem solid #eee;
 }
 
 .checkbox input,
@@ -560,7 +560,7 @@ textarea {
     width: calc(97%);
     margin-left: -1px;
     max-height: 21.125rem;
-    border: 1px solid #e4e6ee;
+    border: 0.0625rem solid #eee;
     border-top: none;
     box-sizing: border-box;
     border-top-left-radius: 0 !important;

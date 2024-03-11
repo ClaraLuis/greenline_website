@@ -64,7 +64,7 @@ const Orders = (props) => {
                         Orders
                     </p>
                 </div>
-                <div style={{ borderRadius: '0px', background: 'white' }} class={' mb-3 col-lg-12 p-2'}>
+                <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>
                     <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
                         <AccordionItem class={`${generalstyles.innercard}` + ' '}>
                             <AccordionItemHeading>

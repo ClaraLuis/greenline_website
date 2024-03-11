@@ -31,8 +31,8 @@ const ItemsTable = (props) => {
     const [chosenracks, setchosenracks] = useState([]);
     const [itemsarray, setitemsarray] = useState([
         { sku: '123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1' },
-        { sku: '123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1' },
-        { sku: '123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1' },
+        { sku: '123123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1' },
+        { sku: '123123123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1' },
     ]);
 
     const [leadpayload, setleadpayload] = useState({
@@ -72,7 +72,7 @@ const ItemsTable = (props) => {
                                     </div>
                                 )} */}
             {fetchusers?.data?.length != 0 && (
-                <table style={{}} className={'table'}>
+                <table style={{}} className={props?.clickable ? 'table table_hover' : 'table'}>
                     <thead>
                         <th>SKU</th>
                         <th>Name</th>
@@ -86,7 +86,13 @@ const ItemsTable = (props) => {
                     <tbody>
                         {itemsarray?.map((item, index) => {
                             return (
-                                <tr>
+                                <tr
+                                    onClick={() => {
+                                        if (props?.clickable) {
+                                            props?.actiononclick(item);
+                                        }
+                                    }}
+                                >
                                     <td>
                                         <p className={' m-0 p-0 wordbreak '}>{item?.sku}</p>
                                     </td>

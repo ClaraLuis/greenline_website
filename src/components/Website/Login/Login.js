@@ -41,6 +41,7 @@ const Login = () => {
     const [openModal, setopenModal] = useState(false);
     const [email, setemail] = useState('');
     const [step, setstep] = useState(0);
+    const [verified, setverified] = useState(false);
 
     const [password, setpassword] = useState('');
     useEffect(() => {
@@ -75,6 +76,7 @@ const Login = () => {
                                         <div class="col-lg-12 flex-column mb-4 p-0 p-md-0">
                                             <p class="font-15 font-weight-500 mb-1"> Email </p>
                                             <input
+                                                disabled={verified}
                                                 name="email"
                                                 type="email"
                                                 class={'inputfeild'}
@@ -84,24 +86,30 @@ const Login = () => {
                                                 }}
                                             />
                                         </div>
-                                        <div class="col-lg-12 flex-column mb-4 p-0 p-md-0">
-                                            <p class="font-15 font-weight-500 mb-1"> Password </p>
-                                            <input
-                                                name="password"
-                                                type="password"
-                                                class={'inputfeild'}
-                                                value={password}
-                                                onChange={(event) => {
-                                                    setpassword(event.target.value);
-                                                }}
-                                            />
-                                        </div>
+                                        {verified && (
+                                            <div class="col-lg-12 flex-column mb-4 p-0 p-md-0">
+                                                <p class="font-15 font-weight-500 mb-1"> Password </p>
+                                                <input
+                                                    name="password"
+                                                    type="password"
+                                                    class={'inputfeild'}
+                                                    value={password}
+                                                    onChange={(event) => {
+                                                        setpassword(event.target.value);
+                                                    }}
+                                                />
+                                            </div>
+                                        )}
 
                                         <div class="col-lg-12 p-0 flex-column mt-0 p-md-0">
                                             <button
                                                 onClick={() => {
-                                                    setloggedincontext(true);
-                                                    history.push('/users');
+                                                    if (verified) {
+                                                        setloggedincontext(true);
+                                                        history.push('/users');
+                                                    } else {
+                                                        setverified(true);
+                                                    }
                                                     // LoginmutationContext.mutate({ email: email, password: password });
                                                 }}
                                                 class={`${generalstyles.btn} ${generalstyles.btn_primary}` + ' font-15 allcentered '}
@@ -112,7 +120,7 @@ const Login = () => {
                                                 disabled={LoginmutationContext.isLoading}
                                             >
                                                 {LoginmutationContext.isLoading && <CircularProgress color="white" width="20px" height="20px" duration="1s" />}
-                                                {!LoginmutationContext.isLoading && <span>Verify Email</span>}
+                                                {!LoginmutationContext.isLoading && <span>{verified ? 'Submit' : 'Verify Email'} </span>}
                                             </button>
                                         </div>
                                     </div>

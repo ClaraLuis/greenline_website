@@ -66,7 +66,7 @@ const Sidenav = (props) => {
     }, [pageactive_context]);
 
     return (
-        <div class="w-100">
+        <div class={hidesidenav_context ? 'w-100 pt-5 mt-3' : 'w-100 pt-5'}>
             <div class={`${sidenavstyles.app_sidebar}`} id="sidenavContainer">
                 <div class="row m-0 w-100 ">
                     <div class="col-lg-12 p-0">

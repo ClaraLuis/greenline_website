@@ -21,6 +21,7 @@ import API from '../../../API/API.js';
 import UserInfo from './UserInfo.js';
 import { FiPlus } from 'react-icons/fi';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
+import UsersTable from './UsersTable.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -92,82 +93,7 @@ const Users = (props) => {
                         <hr class="mt-1" />
                     </div>
                     <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
-                        {fetchusers?.loading && (
-                            <div style={{ height: '70vh' }} class="row w-100 allcentered m-0">
-                                <CircularProgress color="var(--primary)" width="60px" height="60px" duration="1s" />
-                            </div>
-                        )}
-                        {!fetchusers?.loading && fetchusers?.data != undefined && (
-                            <>
-                                {fetchusers?.data?.paginateUsers?.data?.length == 0 && (
-                                    <div style={{ height: '70vh' }} class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
-                                        <div class="row m-0 w-100">
-                                            <FaLayerGroup size={40} class=" col-lg-12" />
-                                            <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
-                                                No Users
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-                                {fetchusers?.data?.length != 0 && (
-                                    <table style={{}} className={'table'}>
-                                        <thead>
-                                            <th style={{ minWidth: '100px' }} class="col-lg-1">
-                                                Manage
-                                            </th>
-                                            <th>Name</th>
-
-                                            <th>{lang.email}</th>
-
-                                            <th>{lang.phonenumber}</th>
-                                        </thead>
-                                        <tbody>
-                                            {fetchusers?.data?.paginateUsers?.data?.map((item, index) => {
-                                                return (
-                                                    <tr>
-                                                        <td style={{ minWidth: '100px' }} class="col-lg-1">
-                                                            <BiShowAlt
-                                                                onClick={() => {
-                                                                    var temp = { ...item };
-                                                                    temp.functype = 'edit';
-                                                                    setleadpayload({ ...temp });
-                                                                    setopenModal(true);
-                                                                }}
-                                                                size={20}
-                                                                class={reviewsstyles.icon + ' ml-2'}
-                                                            />
-                                                        </td>
-
-                                                        <td>
-                                                            <p className={' m-0 p-0 wordbreak '}>{item?.name}</p>
-                                                        </td>
-
-                                                        <td>
-                                                            <p className={' m-0 p-0 wordbreak '}>{item?.email}</p>
-                                                        </td>
-
-                                                        <td>
-                                                            <p className={' m-0 p-0 wordbreak '}>{item?.phone}</p>
-                                                        </td>
-                                                    </tr>
-                                                );
-                                            })}
-                                        </tbody>
-                                    </table>
-                                )}
-                                {/* <Pagespaginatecomponent
-                                totaldatacount={FetchUsers?.data?.data?.total}
-                                numofitemsperpage={FetchUsers?.data?.data?.per_page}
-                                pagenumbparams={FetchUsers?.data?.data?.current_page}
-                                nextpagefunction={(nextpage) => {
-                                    history.push({
-                                        pathname: '/users',
-                                        search: '&page=' + nextpage,
-                                    });
-                                }}
-                            /> */}
-                            </>
-                        )}
+                        <UsersTable fetchusers={fetchusers} />
                     </div>
                 </div>
             </div>

@@ -15,11 +15,11 @@ import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import API from '../../../API/API.js';
-import ItemsTable from './ItemsTable.js';
+import OrdersTable from '../Orders/OrdersTable.js';
 
 const { ValueContainer, Placeholder } = components;
 
-const HubItems = (props) => {
+const MerchantOrders = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, dateformatter } = useContext(Contexthandlerscontext);
@@ -53,7 +53,7 @@ const HubItems = (props) => {
     const fetchusers = useQueryGQL('', fetchUsers());
     // const fetchusers = [];
     useEffect(() => {
-        setpageactive_context('/hubitems');
+        setpageactive_context('/merchantorders');
     }, []);
 
     return (
@@ -61,8 +61,19 @@ const HubItems = (props) => {
             <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
                 <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
                     <p class=" p-0 m-0" style={{ fontSize: '27px' }}>
-                        Hub Items
+                        Orders
                     </p>
+                </div>
+                <div class={' col-lg-6 col-md-6 col-sm-6 p-0 pr-3 pr-md-1 pr-sm-0 d-flex align-items-center justify-content-end pb-1 '}>
+                    <button
+                        style={{ height: '35px' }}
+                        class={generalstyles.roundbutton + ' bg-info bg-infohover mb-1 mx-2'}
+                        onClick={() => {
+                            history.push('/addorder');
+                        }}
+                    >
+                        Add Order
+                    </button>
                 </div>
                 <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>
                     <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
@@ -161,7 +172,7 @@ const HubItems = (props) => {
                                 // type={props?.type}
                                 class={formstyles.form__field}
                                 // value={}
-                                placeholder={'Search by name or SKU'}
+                                placeholder={'Search by order# '}
 
                                 // onChange={}
                             />
@@ -171,11 +182,11 @@ const HubItems = (props) => {
 
                 <div class={generalstyles.card + ' row m-0 w-100'}>
                     <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
-                        <ItemsTable />
+                        <OrdersTable />
                     </div>
                 </div>
             </div>
         </div>
     );
 };
-export default HubItems;
+export default MerchantOrders;

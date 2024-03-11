@@ -141,7 +141,7 @@ button:focus {
     /* min-height: 100vh; */
     padding: 0%;
     margin: 0px !important;
-    background-color: #f8f8f8;
+    background-color: white;
 }
 .app_main {
     position: relative;
@@ -179,7 +179,7 @@ button:focus {
     padding-top: 13vh !important;
 }
 .app_container_inner {
-    background-color: #f8f8f8;
+    background-color: white;
     padding-left: 2vh;
     padding-right: 4vh;
     padding-top: 1vh !important;
@@ -206,6 +206,7 @@ button:focus {
     border: 0rem solid transparent;
     border-radius: 0px;
     /* box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1); */
+    box-shadow: #919eab4d 0 0 2px, #919eab1f 0 12px 24px -4px;
     /* height: auto; */
     padding-bottom: 24px;
     display: flex;
@@ -216,6 +217,8 @@ button:focus {
     /* min-height: 100vh; */
     margin-top: 0px !important;
     z-index: 1000;
+    border-radius: 7px;
+    margin-bottom: 30px !important;
 }
 .card_header {
     border-color: #cecece;
@@ -432,6 +435,7 @@ button:focus {
     outline: none;
     transition: all 0.3s;
     font-size: 0.875rem;
+    border-radius: 7px;
 }
 .roundbutton:hover {
     background-color: var(--secondary);
@@ -752,4 +756,32 @@ button:focus {
 }
 .sidenav__logo img {
     width: 100%;
+}
+
+.filter_container {
+    background: white;
+    border-radius: 7px;
+    box-shadow: #919eab4d 0 0 2px, #919eab1f 0 12px 24px -4px;
+}
+.card_header {
+    padding: 16px 24px;
+    border-bottom: 1px solid #e5eaef;
+    display: flex;
+    width: 100%;
+}
+
+.tab {
+    color: rgba(0, 0, 0, 0.6);
+    padding: 16px 24px;
+    transition: all 0.4s;
+    cursor: pointer;
+}
+.tab:hover {
+    background-color: #c3dfd075;
+}
+
+.tab_active {
+    color: var(--primary);
+    border-bottom: 2px solid var(--primary);
+    font-weight: 500;
 }

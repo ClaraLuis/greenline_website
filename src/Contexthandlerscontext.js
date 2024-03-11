@@ -228,7 +228,7 @@ export const Contexthandlerscontext_provider = (props) => {
                                     <LuPackageOpen size={18} />
                                 </i>
                             ),
-                            path: '/orders',
+                            path: '/merchantorders',
                             permissionpage: 'Show Users Page',
                             show: isshowuserpage('Show Users Page'),
                         },

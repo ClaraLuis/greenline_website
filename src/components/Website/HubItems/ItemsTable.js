@@ -74,7 +74,7 @@ const ItemsTable = (props) => {
             {fetchusers?.data?.length != 0 && (
                 <table style={{}} className={'table'}>
                     <thead>
-                        <th>SKU</th>
+                        <th style={{ minWidth: '100px', maxWidth: '100px' }}>SKU</th>
                         <th>Name</th>
 
                         <th>Size</th>
@@ -87,11 +87,21 @@ const ItemsTable = (props) => {
                         {itemsarray?.map((item, index) => {
                             return (
                                 <tr>
-                                    <td>
+                                    <td style={{ minWidth: '100px', maxWidth: '100px' }}>
                                         <p className={' m-0 p-0 wordbreak '}>{item?.sku}</p>
                                     </td>
                                     <td>
-                                        <p className={' m-0 p-0 wordbreak '}>{item?.name}</p>
+                                        <div class="row m-0 w-100">
+                                            <div style={{ width: '50px', height: '50px', borderRadius: '7px', marginInlineEnd: '10px' }}>
+                                                <img
+                                                    src="https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg"
+                                                    style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
+                                                />
+                                            </div>
+                                            <div>
+                                                <p className={' m-0 p-0 wordbreak '}>{item?.name}</p>
+                                            </div>
+                                        </div>
                                     </td>
 
                                     <td>

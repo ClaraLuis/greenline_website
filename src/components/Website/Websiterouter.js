@@ -24,6 +24,8 @@ import Orders from './Orders/Orders.js';
 import MerchantHome from './MerchantHome/MerchantHome.js';
 import Finance from './Finance/Finance.js';
 import MerchantItems from './MerchantItems/MerchantItems.js';
+import MerchantOrders from './MerchantOrders/MerchantOrders.js';
+import AddOrder from './MerchantOrders/AddOrder.js';
 const App = (props) => {
     const history = useHistory();
     const location = useLocation();
@@ -75,8 +77,8 @@ const App = (props) => {
     return (
         <div class="row m-0 w-100">
             <Router>
-                <div class="row m-0 w-100" style={{ overflow: 'hidden' }}>
-                    <div class="col-lg-12 p-0">
+                <div class="row m-0 w-100 d-flex justify-content-end" style={{ overflow: 'hidden' }}>
+                    <div style={{ position: 'fixed', top: 0, zIndex: 100, background: 'white' }} class="col-lg-12 p-0">
                         <div class="row m-0 w-100">
                             <div class="col-lg-6 p-0 px-2  ">
                                 <div class="row m-0 w-100">
@@ -249,10 +251,10 @@ const App = (props) => {
                             </div>
                         </div>
                     </div>
-                    <div class=" p-0" style={{ width: hidesidenav_context ? '5%' : '14%', transition: 'all 0.4s' }}>
+                    <div class=" p-0" style={{ width: hidesidenav_context ? '5%' : '14%', transition: 'all 0.4s', position: 'fixed', top: 0, left: 0 }}>
                         <Sidenav />
                     </div>
-                    <div class="p-0" style={{ width: hidesidenav_context ? '95%' : '86%', transition: 'all 0.4s' }}>
+                    <div class="pl-0 pr-0 pb-0" style={{ width: hidesidenav_context ? '95%' : '86%', transition: 'all 0.4s', paddingTop: '75px' }}>
                         <div class={generalstyles.app_container + ' w-100 '}>
                             <div class="row m-0 w-100">
                                 <div class={`${generalstyles.app_main}` + '  app_main  '}>
@@ -281,6 +283,8 @@ const App = (props) => {
                                                         <Route exact path="/orders" component={Orders} />
                                                         <Route exact path="/merchantfinance" component={Finance} />
                                                         <Route exact path="/merchantitems" component={MerchantItems} />
+                                                        <Route exact path="/merchantorders" component={MerchantOrders} />
+                                                        <Route exact path="/addorder" component={AddOrder} />
                                                     </Switch>
                                                 );
                                             }}
