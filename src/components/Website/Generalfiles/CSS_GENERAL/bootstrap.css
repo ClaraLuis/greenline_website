@@ -3740,7 +3740,10 @@ hr {
     transition: 0.3s;
 }
 .text-success {
-    color: var(--aquagreen) !important;
+    color: #13deb9 !important;
+}
+.text-warning {
+    color: #ffae1f !important;
 }
 .text-successhover:hover {
     color: #007050 !important;
@@ -3750,16 +3753,32 @@ hr {
 .text-secondary {
     color: var(--secondary) !important;
 }
+
 .text-danger {
-    color: var(--danger) !important;
+    color: #fa896b !important;
 }
 .bg-danger {
     border-color: var(--danger) !important ;
     background: var(--danger) !important;
 }
+.bg-light-success {
+    background-color: #e6fffa !important;
+}
 .bg-dangerhover:hover {
     border-color: var(--dangerhover) !important ;
     background: var(--dangerhover) !important;
+}
+.bg-light-warning {
+    background-color: #fef5e5 !important;
+}
+.bg-light-danger {
+    background-color: #fdede8 !important;
+}
+.rounded-pill {
+    border-radius: 25px !important;
+    font-size: 12px;
+    padding: 3px 10px;
+    width: fit-content;
 }
 .bg-borderdanger {
     border-color: var(--danger) !important ;

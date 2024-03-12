@@ -11,7 +11,7 @@ import { LuPackageOpen } from 'react-icons/lu';
 import { NotificationManager } from 'react-notifications';
 import Cookies from 'universal-cookie';
 import { MdOutlineHub, MdOutlineInventory2 } from 'react-icons/md';
-import { BiSolidCoinStack } from 'react-icons/bi';
+import { BiSolidCoinStack, BiSolidSpreadsheet } from 'react-icons/bi';
 import { CiBoxes } from 'react-icons/ci';
 import { IoMdHome } from 'react-icons/io';
 export const Contexthandlerscontext = React.createContext();
@@ -229,6 +229,35 @@ export const Contexthandlerscontext_provider = (props) => {
                                 </i>
                             ),
                             path: '/merchantorders',
+                            permissionpage: 'Show Users Page',
+                            show: isshowuserpage('Show Users Page'),
+                        },
+                    ],
+                },
+                {
+                    maintitle: 'Courier',
+                    subitems: [
+                        {
+                            name: 'Home',
+                            isselected: false,
+                            icon: (
+                                <i class={'allcentered'}>
+                                    <IoMdHome size={18} />
+                                </i>
+                            ),
+                            path: '/courierhome',
+                            permissionpage: 'Show Users Page',
+                            show: isshowuserpage('Show Users Page'),
+                        },
+                        {
+                            name: 'Sheets',
+                            isselected: false,
+                            icon: (
+                                <i class={'allcentered'}>
+                                    <BiSolidSpreadsheet size={18} />
+                                </i>
+                            ),
+                            path: '/couriersheets',
                             permissionpage: 'Show Users Page',
                             show: isshowuserpage('Show Users Page'),
                         },

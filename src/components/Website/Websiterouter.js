@@ -26,6 +26,10 @@ import Finance from './Finance/Finance.js';
 import MerchantItems from './MerchantItems/MerchantItems.js';
 import MerchantOrders from './MerchantOrders/MerchantOrders.js';
 import AddOrder from './MerchantOrders/AddOrder.js';
+import CourierHome from './Courier/CourierHome.js';
+import CourierSheets from './Courier/CourierSheets.js';
+import CourierSheet from './Courier/CourierSheet.js';
+import AddSheet from './Courier/AddSheet.js';
 const App = (props) => {
     const history = useHistory();
     const location = useLocation();
@@ -285,6 +289,10 @@ const App = (props) => {
                                                         <Route exact path="/merchantitems" component={MerchantItems} />
                                                         <Route exact path="/merchantorders" component={MerchantOrders} />
                                                         <Route exact path="/addorder" component={AddOrder} />
+                                                        <Route exact path="/courierhome" component={CourierHome} />
+                                                        <Route exact path="/couriersheets" component={CourierSheets} />
+                                                        <Route exact path="/couriersheet" component={CourierSheet} />
+                                                        <Route exact path="/addsheet" component={AddSheet} />
                                                     </Switch>
                                                 );
                                             }}
