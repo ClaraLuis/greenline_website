@@ -11,7 +11,7 @@ import { LuPackageOpen } from 'react-icons/lu';
 import { NotificationManager } from 'react-notifications';
 import Cookies from 'universal-cookie';
 import { MdOutlineHub, MdOutlineInventory2, MdSwitchAccount } from 'react-icons/md';
-import { BiSolidCoinStack, BiSolidSpreadsheet } from 'react-icons/bi';
+import { BiSolidCoinStack, BiSolidSpreadsheet, BiTransfer } from 'react-icons/bi';
 import { CiBoxes } from 'react-icons/ci';
 import { IoMdHome } from 'react-icons/io';
 export const Contexthandlerscontext = React.createContext();
@@ -114,6 +114,45 @@ export const Contexthandlerscontext_provider = (props) => {
         { label: 'Waiting For Finance', value: 'waitingForFinance' },
         { label: 'Complete', value: 'complete' },
     ]);
+
+    const [expensesTypeContext, setexpensesTypeContext] = useState([
+        { label: 'Salary', value: 'salary' },
+        { label: 'Rent', value: 'rent' },
+        { label: 'Utilities', value: 'utilities' },
+        { label: 'Office Supplies', value: 'officeSupplies' },
+        { label: 'Vehicle Maintenance', value: 'vehicleMaintenance' },
+        { label: 'Fuel', value: 'fuel' },
+
+        { label: 'Insurance', value: 'insurance' },
+        { label: 'Equipment Purchase', value: 'equipmentPurchase' },
+        { label: 'Marketing', value: 'marketing' },
+        { label: 'Software Subscriptions', value: 'softwareSubscriptions' },
+        { label: 'Legal Fees', value: 'legalFees' },
+        { label: 'Training', value: 'training' },
+        { label: 'Taxes', value: 'taxes' },
+        { label: 'Loan Repayments', value: 'loanRepayments' },
+        { label: 'Interest', value: 'interest' },
+
+        { label: 'Office Rent', value: 'officeRent' },
+        { label: 'Warehouse Rent', value: 'warehouseRent' },
+        { label: 'Travel Expenses', value: 'travelExpenses' },
+        { label: 'Professional Services', value: 'professionalServices' },
+        { label: 'Security Services', value: 'securityServices' },
+        { label: 'Packaging Materials', value: 'packagingMaterials' },
+        { label: 'Cleaning Services', value: 'cleaningServices' },
+        { label: 'Waste Disposal', value: 'wasteDisposal' },
+        { label: 'Office Equipment', value: 'officeEquipment' },
+
+        { label: 'Internet Services', value: 'internetServices' },
+        { label: 'Telecommunication', value: 'telecommunication' },
+        { label: 'Office Furniture', value: 'officeFurniture' },
+        { label: 'Membership Fees', value: 'membershipFees' },
+        { label: 'Professional Development', value: 'professionalDevelopment' },
+        { label: 'Vehicle Lease', value: 'vehicleLease' },
+        { label: 'Advertising', value: 'advertising' },
+        { label: 'Delivery Expenses', value: 'deliveryExpenses' },
+        { label: 'Miscellaneous', value: 'miscellaneous' },
+    ]);
     const [orderTypeContext, setorderTypeContext] = useState([
         { label: 'Delivery', value: 'delivery' },
         { label: 'Exchange', value: 'exchange' },
@@ -147,7 +186,7 @@ export const Contexthandlerscontext_provider = (props) => {
         { label: 'Failed', value: 'failed' },
     ]);
 
-    const [trnasactionTypesContext, settrnasactionTypesContext] = useState([
+    const [transactionTypesContext, settransactionTypesContext] = useState([
         { label: 'Deposit', value: 'deposit' },
         { label: 'Withdrawal', value: 'withdrawal' },
         { label: 'Transfer', value: 'transfer' },
@@ -369,6 +408,18 @@ export const Contexthandlerscontext_provider = (props) => {
                             permissionpage: 'Show Users Page',
                             show: isshowuserpage('Show Users Page'),
                         },
+                        {
+                            name: 'Transactions',
+                            isselected: false,
+                            icon: (
+                                <i class={'allcentered'}>
+                                    <BiTransfer size={18} />
+                                </i>
+                            ),
+                            path: '/financetransactions',
+                            permissionpage: 'Show Users Page',
+                            show: isshowuserpage('Show Users Page'),
+                        },
                     ],
                 },
             ];
@@ -446,10 +497,12 @@ export const Contexthandlerscontext_provider = (props) => {
                 setorderStatusesContext,
                 transactionStatusesContext,
                 settransactionStatusesContext,
-                trnasactionTypesContext,
-                settrnasactionTypesContext,
+                transactionTypesContext,
+                settransactionTypesContext,
                 orderTypeContext,
                 setorderTypeContext,
+                expensesTypeContext,
+                setexpensesTypeContext,
             }}
         >
             {props.children}

@@ -7,6 +7,7 @@ import Inputfield from './Inputfield';
 import Companyinputfield from './Companyinputfield';
 import Select, { components } from 'react-select';
 import { defaultstyles, defaultstylesdanger } from './Website/Generalfiles/selectstyles';
+import { TbCameraPlus } from 'react-icons/tb';
 import formstyles from '../components/Website/Generalfiles/CSS_GENERAL/form.module.css';
 import Leadinputfield from './Leadinputfield';
 import TextareaAutosize from 'react-textarea-autosize';
@@ -53,6 +54,37 @@ const Form = (props) => {
                                 }}
                                 type={'text'}
                             />
+                        </div>
+                    );
+                } else if (item?.type == 'image') {
+                    var companylogoimgPreviewer = '';
+                    return (
+                        <div class={generalstyles.avatar_upload + ' text-center justify-content-center align-items-center m-auto '}>
+                            <div class={generalstyles.avatar_edit}>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    name="updatecompanybanner"
+                                    id="updatecompanybanner"
+                                    hidden
+                                    onChange={(event) => {
+                                        var temp = { ...props?.payload };
+                                        temp[item?.attr] = URL.createObjectURL(event.target.files[0]);
+                                        props?.setpayload({ ...temp });
+                                    }}
+                                    style={{ display: 'none' }}
+                                />
+                            </div>
+                            <label for="updatecompanybanner" class={generalstyles.avatar_preview + ' pointer '}>
+                                <div class={generalstyles.imgpreviewtxt + ' text-capitalize'}>
+                                    <i class="">
+                                        <TbCameraPlus size={25} />
+                                    </i>
+                                    <br />
+                                    upload {item?.name}
+                                </div>
+                                <img src={props?.payload[item.attr]} class={props?.payload[item.attr] == '' ? 'd-none' : 'd-block'} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                            </label>
                         </div>
                     );
                 } else if (item?.type == 'companyid') {

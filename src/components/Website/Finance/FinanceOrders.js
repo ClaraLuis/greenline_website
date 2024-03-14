@@ -103,32 +103,19 @@ const FinanceOrders = (props) => {
                                 <div class="row m-0 w-100">
                                     <div class={'col-lg-2'} style={{ marginBottom: '15px' }}>
                                         <label for="name" class={formstyles.form__label}>
-                                            Type
+                                            Merchant
                                         </label>
                                         <Select
-                                            options={orderTypeContext}
+                                            options={[
+                                                { label: 'Merch 1', value: '1' },
+                                                { label: 'Merch 2', value: '2' },
+                                            ]}
                                             styles={defaultstyles}
                                             value={
-                                                orderTypeContext
-                                                // .filter((option) => option.value == props?.payload[item?.attr])
-                                            }
-                                            onChange={(option) => {
-                                                // props?.setsubmit(false);
-                                                // var temp = { ...props?.payload };
-                                                // temp[item?.attr] = option.value;
-                                                // props?.setpayload({ ...temp });
-                                            }}
-                                        />
-                                    </div>
-                                    <div class={'col-lg-2'} style={{ marginBottom: '15px' }}>
-                                        <label for="name" class={formstyles.form__label}>
-                                            Status
-                                        </label>
-                                        <Select
-                                            options={orderStatusesContext}
-                                            styles={defaultstyles}
-                                            value={
-                                                orderStatusesContext
+                                                [
+                                                    { label: 'Merch 1', value: '1' },
+                                                    { label: 'Merch 2', value: '2' },
+                                                ]
                                                 // .filter((option) => option.value == props?.payload[item?.attr])
                                             }
                                             onChange={(option) => {

@@ -35,6 +35,7 @@ import FinanceSheets from './Finance/FinanceSheets.js';
 import FinancialAccounts from './Finance/FinancialAccounts.js';
 import FinancialAccountInfo from './Finance/FinancialAccountInfo.js';
 import FinanceOrders from './Finance/FinanceOrders.js';
+import FinanceTransactions from './Finance/FinanceTransactions.js';
 const App = (props) => {
     const history = useHistory();
     const location = useLocation();
@@ -303,6 +304,7 @@ const App = (props) => {
                                                         <Route exact path="/financialaccounts" component={FinancialAccounts} />
                                                         <Route exact path="/financialaccountinfo" component={FinancialAccountInfo} />
                                                         <Route exact path="/financeorders" component={FinanceOrders} />
+                                                        <Route exact path="/financetransactions" component={FinanceTransactions} />
                                                     </Switch>
                                                 );
                                             }}
