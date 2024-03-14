@@ -30,6 +30,11 @@ import CourierHome from './Courier/CourierHome.js';
 import CourierSheets from './Courier/CourierSheets.js';
 import CourierSheet from './Courier/CourierSheet.js';
 import AddSheet from './Courier/AddSheet.js';
+import FinanceHome from './Finance/FinanceHome.js';
+import FinanceSheets from './Finance/FinanceSheets.js';
+import FinancialAccounts from './Finance/FinancialAccounts.js';
+import FinancialAccountInfo from './Finance/FinancialAccountInfo.js';
+import FinanceOrders from './Finance/FinanceOrders.js';
 const App = (props) => {
     const history = useHistory();
     const location = useLocation();
@@ -293,6 +298,11 @@ const App = (props) => {
                                                         <Route exact path="/couriersheets" component={CourierSheets} />
                                                         <Route exact path="/couriersheet" component={CourierSheet} />
                                                         <Route exact path="/addsheet" component={AddSheet} />
+                                                        <Route exact path="/financehome" component={FinanceHome} />
+                                                        <Route exact path="/financesheets" component={FinanceSheets} />
+                                                        <Route exact path="/financialaccounts" component={FinancialAccounts} />
+                                                        <Route exact path="/financialaccountinfo" component={FinancialAccountInfo} />
+                                                        <Route exact path="/financeorders" component={FinanceOrders} />
                                                     </Switch>
                                                 );
                                             }}

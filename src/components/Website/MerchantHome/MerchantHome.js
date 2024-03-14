@@ -21,7 +21,7 @@ import API from '../../../API/API.js';
 import UserInfo from './UserInfo.js';
 import { FiPlus } from 'react-icons/fi';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
-import FinanceTable from '../Finance/FinanceTable.js';
+import TransactionsTable from '../Finance/TransactionsTable.js';
 import OrdersTable from '../Orders/OrdersTable.js';
 import ItemsTable from '../HubItems/ItemsTable.js';
 
@@ -77,7 +77,7 @@ const MerchantHome = (props) => {
                         </p>
                     </div>
                     <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
-                        <FinanceTable />
+                        <TransactionsTable />
                     </div>
                 </div>
                 <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>

@@ -24,20 +24,20 @@ const { ValueContainer, Placeholder } = components;
 const OrdersTable = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, dateformatter } = useContext(Contexthandlerscontext);
+    const { orderStatusesContext } = useContext(Contexthandlerscontext);
     const { fetchUsers, useQueryGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
 
-    const [openModal, setopenModal] = useState(false);
     const [selectedinventory, setselectedinventory] = useState('');
     const [changestatusmodal, setchangestatusmodal] = useState(false);
     const [submit, setsubmit] = useState(false);
 
     const [itemsarray, setitemsarray] = useState([
-        { id: '1', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1', status: 'Done' },
-        { id: '2', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1', status: 'Pending' },
-        { id: '3', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1', status: 'Cancelled' },
+        { id: '1', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1', status: 'idle' },
+        { id: '2', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1', status: 'shippedFromCourier' },
+        { id: '3', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1', status: 'delivered' },
+        { id: '4', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1', status: 'failedDeliveryAttempt' },
     ]);
 
     const [leadpayload, setleadpayload] = useState({
@@ -115,14 +115,18 @@ const OrdersTable = (props) => {
                                         }}
                                         style={{ cursor: 'pointer' }}
                                         className={
-                                            item.status == 'Done'
+                                            item.status == 'delivered'
                                                 ? ' wordbreak text-success bg-light-success rounded-pill  '
-                                                : item?.status == 'Pending'
-                                                ? ' wordbreak text-warning bg-light-warning rounded-pill  '
-                                                : ' wordbreak text-danger bg-light-danger rounded-pill  '
+                                                : item?.status == 'postponed' || item?.status == 'failedDeliveryAttempt'
+                                                ? ' wordbreak text-danger bg-light-danger rounded-pill  '
+                                                : ' wordbreak text-warning bg-light-warning rounded-pill  '
                                         }
                                     >
-                                        <span>{item.status}</span>
+                                        {orderStatusesContext?.map((i, ii) => {
+                                            if (i.value == item?.status) {
+                                                return <span>{i.label}</span>;
+                                            }
+                                        })}
                                     </div>
                                 </td>
                             </tr>
@@ -181,11 +185,7 @@ const OrdersTable = (props) => {
                                     name: 'Status',
                                     attr: 'status',
                                     type: 'select',
-                                    options: [
-                                        { label: 'Done', value: 'Done' },
-                                        { label: 'Pending', value: 'Pending' },
-                                        { label: 'Cancelled', value: 'Cancelled' },
-                                    ],
+                                    options: orderStatusesContext,
                                     size: '12',
                                 },
                             ]}

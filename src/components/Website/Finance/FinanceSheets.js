@@ -15,11 +15,15 @@ import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import API from '../../../API/API.js';
-import SheetsTable from './SheetsTable.js';
+import TransactionsTable from './TransactionsTable.js';
+import AccountsTable from './AccountsTable.js';
+import OrdersTable from '../Orders/OrdersTable.js';
+import ExpensesTable from './ExpensesTable.js';
+import SheetsTable from '../Courier/SheetsTable.js';
 
 const { ValueContainer, Placeholder } = components;
 
-const CourierSheets = (props) => {
+const FinanceSheets = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, dateformatter } = useContext(Contexthandlerscontext);
@@ -28,11 +32,32 @@ const CourierSheets = (props) => {
     const { lang, langdetect } = useContext(LanguageContext);
 
     const [openModal, setopenModal] = useState(false);
+    const [selectedinventory, setselectedinventory] = useState('');
+    const [chosenracks, setchosenracks] = useState([]);
+    const [itemsarray, setitemsarray] = useState([
+        { sku: '123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1' },
+        { sku: '123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1' },
+        { sku: '123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1' },
+    ]);
+
+    const [leadpayload, setleadpayload] = useState({
+        functype: 'add',
+        id: 'add',
+        name: '',
+        type: '',
+        phone: '',
+        email: '',
+        birthdate: '',
+    });
+    const [filterobj, setfilterobj] = useState({
+        page: 1,
+        search: '',
+    });
 
     const fetchusers = useQueryGQL('', fetchUsers());
     // const fetchusers = [];
     useEffect(() => {
-        setpageactive_context('/couriersheets');
+        setpageactive_context('/financesheets');
     }, []);
 
     return (
@@ -40,21 +65,10 @@ const CourierSheets = (props) => {
             <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
                 <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
                     <p class=" p-0 m-0" style={{ fontSize: '27px' }}>
-                        Sheets
+                        Home
                     </p>
                 </div>
-                <div class={' col-lg-6 col-md-6 col-sm-6 p-0 pr-3 pr-md-1 pr-sm-0 d-flex align-items-center justify-content-end pb-1 '}>
-                    <button
-                        style={{ height: '35px' }}
-                        class={generalstyles.roundbutton + ' bg-info bg-infohover mb-1'}
-                        onClick={() => {
-                            history.push('/addsheet');
-                        }}
-                    >
-                        Add Sheet
-                    </button>
-                </div>
-                <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>
+                {/* <div style={{ borderRadius: '0px', background: 'white' }} class={' mb-3 col-lg-12 p-2'}>
                     <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
                         <AccordionItem class={`${generalstyles.innercard}` + ' '}>
                             <AccordionItemHeading>
@@ -90,18 +104,18 @@ const CourierSheets = (props) => {
                                 <div class="row m-0 w-100">
                                     <div class={'col-lg-2'} style={{ marginBottom: '15px' }}>
                                         <label for="name" class={formstyles.form__label}>
-                                            Couriers
+                                            Inventories
                                         </label>
                                         <Select
                                             options={[
-                                                { label: 'Courier 1', value: '1' },
-                                                { label: 'Courier 2', value: '2' },
+                                                { label: 'Inv 1', value: '1' },
+                                                { label: 'Inv 2', value: '2' },
                                             ]}
                                             styles={defaultstyles}
                                             value={
                                                 [
-                                                    { label: 'Courier 1', value: '1' },
-                                                    { label: 'Courier 2', value: '2' },
+                                                    { label: 'Inv 1', value: '1' },
+                                                    { label: 'Inv 2', value: '2' },
                                                 ]
                                                 // .filter((option) => option.value == props?.payload[item?.attr])
                                             }
@@ -115,18 +129,18 @@ const CourierSheets = (props) => {
                                     </div>
                                     <div class={'col-lg-2'} style={{ marginBottom: '15px' }}>
                                         <label for="name" class={formstyles.form__label}>
-                                            Status
+                                            Merchant
                                         </label>
                                         <Select
                                             options={[
-                                                { label: 'Pending', value: '1' },
-                                                { label: 'Done', value: '2' },
+                                                { label: 'Merch 1', value: '1' },
+                                                { label: 'Merch 2', value: '2' },
                                             ]}
                                             styles={defaultstyles}
                                             value={
                                                 [
-                                                    { label: 'Pending', value: '1' },
-                                                    { label: 'Done', value: '2' },
+                                                    { label: 'Merch 1', value: '1' },
+                                                    { label: 'Merch 2', value: '2' },
                                                 ]
                                                 // .filter((option) => option.value == props?.payload[item?.attr])
                                             }
@@ -142,15 +156,35 @@ const CourierSheets = (props) => {
                             </AccordionItemPanel>
                         </AccordionItem>
                     </Accordion>
-                </div>
+                </div> */}
+                {/* <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-2'}>
+                    <div class="col-lg-12 p-0 ">
+                        <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
+                            <input
+                                // disabled={props?.disabled}
+                                // type={props?.type}
+                                class={formstyles.form__field}
+                                // value={}
+                                placeholder={'Search by name or SKU'}
 
-                <div class={generalstyles.card + ' row m-0 w-100'}>
+                                // onChange={}
+                            />
+                        </div>
+                    </div>
+                </div> */}
+
+                <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
+                    <div class={' col-lg-12 col-md-12 col-sm-12 p-0 d-flex align-items-center justify-content-start '}>
+                        <p class=" p-0 m-0" style={{ fontSize: '15px' }}>
+                            <span style={{ color: 'var(--info)' }}>Sheets</span>
+                        </p>
+                    </div>
                     <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
-                        <SheetsTable clickable={true} />
+                        <SheetsTable />
                     </div>
                 </div>
             </div>
         </div>
     );
 };
-export default CourierSheets;
+export default FinanceSheets;

@@ -10,7 +10,7 @@ import { LuPackageOpen } from 'react-icons/lu';
 
 import { NotificationManager } from 'react-notifications';
 import Cookies from 'universal-cookie';
-import { MdOutlineHub, MdOutlineInventory2 } from 'react-icons/md';
+import { MdOutlineHub, MdOutlineInventory2, MdSwitchAccount } from 'react-icons/md';
 import { BiSolidCoinStack, BiSolidSpreadsheet } from 'react-icons/bi';
 import { CiBoxes } from 'react-icons/ci';
 import { IoMdHome } from 'react-icons/io';
@@ -108,6 +108,61 @@ export const Contexthandlerscontext_provider = (props) => {
         }
         return show;
     };
+    const [sheetStatusesContext, setsheetStatusesContext] = useState([
+        { label: 'In Progress', value: 'inProgress' },
+        { label: 'Waiting For Admin', value: 'waitingForAdmin' },
+        { label: 'Waiting For Finance', value: 'waitingForFinance' },
+        { label: 'Complete', value: 'complete' },
+    ]);
+    const [orderTypeContext, setorderTypeContext] = useState([
+        { label: 'Delivery', value: 'delivery' },
+        { label: 'Exchange', value: 'exchange' },
+        { label: 'Refund', value: 'refund' },
+        { label: 'Free Delivery', value: 'freeDelivery' },
+        { label: 'Gift', value: 'gift' },
+        { label: 'Free Of Charge', value: 'freeOfCharge' },
+    ]);
+
+    const [orderStatusesContext, setorderStatusesContext] = useState([
+        { label: 'Idle', value: 'idle' },
+        { label: 'Shipped From Courier', value: 'shippedFromCourier' },
+        { label: 'Transferring', value: 'transferring' },
+        { label: 'Assigned To Courier', value: 'assignedToCourier' },
+        { label: 'Out For Delivery', value: 'outForDelivery' },
+        { label: 'Delivered', value: 'delivered' },
+        { label: 'Partially Delivered', value: 'partiallyDelivered' },
+        { label: 'Failed Delivery Attempt', value: 'failedDeliveryAttempt' },
+        { label: 'Postponed', value: 'postponed' },
+    ]);
+
+    const [transactionStatusesContext, settransactionStatusesContext] = useState([
+        { label: 'Pending Sender', value: 'pendingSender' },
+        { label: 'Pending Receiver', value: 'pendingReceiver' },
+        { label: 'Processing By Sender', value: 'processingBySender' },
+        { label: 'Processing By Receiver', value: 'processingByReceiver' },
+        { label: 'Rejected By Sender', value: 'rejectedBySender' },
+        { label: 'Rejected By Receiver', value: 'rejectedByReceiver' },
+        { label: 'Cancelled By Sender', value: 'cancelledBySender' },
+        { label: 'Completed', value: 'completed' },
+        { label: 'Failed', value: 'failed' },
+    ]);
+
+    const [trnasactionTypesContext, settrnasactionTypesContext] = useState([
+        { label: 'Deposit', value: 'deposit' },
+        { label: 'Withdrawal', value: 'withdrawal' },
+        { label: 'Transfer', value: 'transfer' },
+        { label: 'Refund', value: 'refund' },
+        { label: 'Adjustment', value: 'adjustment' },
+        { label: 'Interest', value: 'interest' },
+        { label: 'Donation', value: 'donation' },
+        { label: 'Conversion', value: 'conversion' },
+        { label: 'Reward', value: 'reward' },
+        { label: 'Subscription', value: 'subscription' },
+        { label: 'Rent', value: 'rent' },
+        { label: 'Payment', value: 'payment' },
+        { label: 'Other', value: 'other' },
+    ]);
+
     useEffect(() => {
         if (FetchPhases?.isSuccess && !FetchPhases?.isFetching) {
             var pagesarr = [
@@ -263,6 +318,59 @@ export const Contexthandlerscontext_provider = (props) => {
                         },
                     ],
                 },
+                {
+                    maintitle: 'Finance',
+                    subitems: [
+                        {
+                            name: 'Home',
+                            isselected: false,
+                            icon: (
+                                <i class={'allcentered'}>
+                                    <IoMdHome size={18} />
+                                </i>
+                            ),
+                            path: '/financehome',
+                            permissionpage: 'Show Users Page',
+                            show: isshowuserpage('Show Users Page'),
+                        },
+                        {
+                            name: 'Sheets',
+                            isselected: false,
+                            icon: (
+                                <i class={'allcentered'}>
+                                    <BiSolidSpreadsheet size={18} />
+                                </i>
+                            ),
+                            path: '/financesheets',
+                            permissionpage: 'Show Users Page',
+                            show: isshowuserpage('Show Users Page'),
+                        },
+                        {
+                            name: 'Financial Accounts',
+                            isselected: false,
+                            icon: (
+                                <i class={'allcentered'}>
+                                    <MdSwitchAccount size={18} />
+                                </i>
+                            ),
+                            path: '/financialaccounts',
+                            permissionpage: 'Show Users Page',
+                            show: isshowuserpage('Show Users Page'),
+                        },
+                        {
+                            name: 'Financial Orders',
+                            isselected: false,
+                            icon: (
+                                <i class={'allcentered'}>
+                                    <LuPackageOpen size={18} />
+                                </i>
+                            ),
+                            path: '/financeorders',
+                            permissionpage: 'Show Users Page',
+                            show: isshowuserpage('Show Users Page'),
+                        },
+                    ],
+                },
             ];
             // FetchPhases?.data?.data?.data?.map((item, index) => {
             //     pagesarr[0].subitems.push({
@@ -332,6 +440,16 @@ export const Contexthandlerscontext_provider = (props) => {
                 LoginmutationContext,
                 value,
                 setValue,
+                sheetStatusesContext,
+                setsheetStatusesContext,
+                orderStatusesContext,
+                setorderStatusesContext,
+                transactionStatusesContext,
+                settransactionStatusesContext,
+                trnasactionTypesContext,
+                settrnasactionTypesContext,
+                orderTypeContext,
+                setorderTypeContext,
             }}
         >
             {props.children}

@@ -15,11 +15,11 @@ import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import API from '../../../API/API.js';
-import FinanceTable from './FinanceTable.js';
+import TransactionsTable from './TransactionsTable.js';
 
 const { ValueContainer, Placeholder } = components;
 
-const HubItems = (props) => {
+const Finance = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, dateformatter } = useContext(Contexthandlerscontext);
@@ -176,7 +176,7 @@ const HubItems = (props) => {
                         </p>
                     </div>
                     <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
-                        <FinanceTable />
+                        <TransactionsTable />
                     </div>
                 </div>
 
@@ -187,7 +187,7 @@ const HubItems = (props) => {
                         </p>
                     </div>
                     <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
-                        <FinanceTable />
+                        <TransactionsTable />
                     </div>
                 </div>
 
@@ -198,11 +198,11 @@ const HubItems = (props) => {
                         </p>
                     </div>
                     <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
-                        <FinanceTable />
+                        <TransactionsTable />
                     </div>
                 </div>
             </div>
         </div>
     );
 };
-export default HubItems;
+export default Finance;

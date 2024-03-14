@@ -19,7 +19,7 @@ import { IoMdArrowDown, IoMdArrowUp } from 'react-icons/io';
 
 const { ValueContainer, Placeholder } = components;
 
-const ItemsTable = (props) => {
+const AccountsTable = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, dateformatter } = useContext(Contexthandlerscontext);
@@ -31,8 +31,9 @@ const ItemsTable = (props) => {
     const [selectedinventory, setselectedinventory] = useState('');
     const [chosenracks, setchosenracks] = useState([]);
     const [itemsarray, setitemsarray] = useState([
-        { id: '123', value: '5000', type: 'Order Transaction', inandout: 'in', from: 'CIB bank', date: '2/22/2024' },
-        { id: '123', value: '7000', type: 'Order Transaction', inandout: 'out', from: 'CIB bank', date: '2/22/2024' },
+        { id: '1', name: 'Account 1', type: 'hub', user: 'User 1', merchant: 'Merchant 1', balance: '1000' },
+        { id: '2', name: 'Account 2', type: 'merchant', user: 'User 1', merchant: 'Merchant 1', balance: '3000' },
+        { id: '3', name: 'Account 3', type: 'bank', user: 'User 1', merchant: 'Merchant 2', balance: '40000' },
     ]);
 
     const [leadpayload, setleadpayload] = useState({
@@ -73,43 +74,44 @@ const ItemsTable = (props) => {
                                     </div>
                                 )} */}
             {fetchusers?.data?.length != 0 && (
-                <table style={{}} className={'table'}>
+                <table style={{}} className={props?.clickable ? 'table table_hover' : 'table'}>
                     <thead>
                         <th>#</th>
-                        <th>Value</th>
-
+                        <th>Name</th>
                         <th>Type</th>
-
-                        <th>From</th>
-                        <th>Date</th>
+                        <th>User</th>
+                        <th>Merchant</th>
+                        <th>Balance</th>
                     </thead>
                     <tbody>
                         {itemsarray?.map((item, index) => {
                             return (
-                                <tr>
+                                <tr
+                                    onClick={() => {
+                                        if (props?.clickable) {
+                                            history.push('/financialaccountinfo');
+                                        }
+                                    }}
+                                >
                                     <td>
                                         <p className={' m-0 p-0 wordbreak '}>{item?.id}</p>
                                     </td>
                                     <td>
-                                        <p className={' m-0 p-0 wordbreak '}>{item?.value}</p>
+                                        <p className={' m-0 p-0 wordbreak '}>{item?.name}</p>
                                     </td>
 
                                     <td>
-                                        <p
-                                            className={
-                                                item?.inandout == 'out' ? ' text-danger m-0 p-0 wordbreak d-flex align-items-center ' : ' text-success m-0 p-0 wordbreak d-flex align-items-center'
-                                            }
-                                        >
-                                            {item?.type}
-                                            {item?.inandout == 'out' ? <IoMdArrowDown className="mx-1" /> : <IoMdArrowUp className="mx-1" />}
-                                        </p>
-                                    </td>
-                                    <td>
-                                        <p className={' m-0 p-0 wordbreak '}>{item?.from}</p>
+                                        <p className={' m-0 p-0 wordbreak '}>{item?.type}</p>
                                     </td>
 
                                     <td>
-                                        <p className={' m-0 p-0 wordbreak '}>{item?.date}</p>
+                                        <p className={' m-0 p-0 wordbreak '}>{item?.user}</p>
+                                    </td>
+                                    <td>
+                                        <p className={' m-0 p-0 wordbreak '}>{item?.merchant}</p>
+                                    </td>
+                                    <td>
+                                        <p className={' m-0 p-0 wordbreak '}>{item?.balance}</p>
                                     </td>
                                 </tr>
                             );
@@ -133,4 +135,4 @@ const ItemsTable = (props) => {
         </>
     );
 };
-export default ItemsTable;
+export default AccountsTable;
