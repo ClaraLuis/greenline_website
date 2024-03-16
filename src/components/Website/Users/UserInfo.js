@@ -22,7 +22,7 @@ const { ValueContainer, Placeholder } = components;
 const UserInfo = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, dateformatter } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, userTypesContext, dateformatter } = useContext(Contexthandlerscontext);
     const { UserMutation_API, DeleteUserMutation_API, useQueryGQL, fetchUsers, useMutationGQL, addUser } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -103,7 +103,13 @@ const UserInfo = (props) => {
                                     setsubmit={setsubmit}
                                     attr={[
                                         { name: 'Name', attr: 'name', size: '6' },
-                                        { name: 'Type', attr: 'type', type: 'type', size: '6' },
+                                        {
+                                            name: 'Type',
+                                            attr: 'type',
+                                            type: 'select',
+                                            options: userTypesContext,
+                                            size: '6',
+                                        },
                                         { name: 'Email', attr: 'email', size: '6' },
                                         { name: 'Phone number', attr: 'phone', type: 'number', size: '6' },
                                         { name: 'Birthdate', attr: 'birthdate', type: 'date', size: '6' },
@@ -130,7 +136,15 @@ const UserInfo = (props) => {
                                     size={'lg'}
                                     submit={submit}
                                     setsubmit={setsubmit}
-                                    attr={[{ name: 'Type', attr: 'type', type: 'type', size: '6' }]}
+                                    attr={[
+                                        {
+                                            name: 'Type',
+                                            attr: 'type',
+                                            type: 'select',
+                                            options: userTypesContext,
+                                            size: '6',
+                                        },
+                                    ]}
                                     payload={props?.leadpayload}
                                     setpayload={props?.setleadpayload}
                                     // button1disabled={UserMutation.isLoading}

@@ -186,6 +186,16 @@ export const Contexthandlerscontext_provider = (props) => {
         { label: 'Failed', value: 'failed' },
     ]);
 
+    const [userTypesContext, setuserTypesContext] = useState([
+        { label: 'Admin', value: 'admin' },
+        { label: 'Finance', value: 'finance' },
+        { label: 'Inventory', value: 'inventory' },
+        { label: 'Merchant', value: 'merchant' },
+        { label: 'Courier', value: 'courier' },
+        { label: 'Customer', value: 'customer' },
+        { label: 'Customer Service', value: 'customerService' },
+    ]);
+
     const [transactionTypesContext, settransactionTypesContext] = useState([
         { label: 'Deposit', value: 'deposit' },
         { label: 'Withdrawal', value: 'withdrawal' },
@@ -503,6 +513,8 @@ export const Contexthandlerscontext_provider = (props) => {
                 setorderTypeContext,
                 expensesTypeContext,
                 setexpensesTypeContext,
+                userTypesContext,
+                setuserTypesContext,
             }}
         >
             {props.children}

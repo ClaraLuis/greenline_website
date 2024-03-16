@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
+import { Modal } from 'react-bootstrap';
 // import { fetch_collection_data } from '../../../API/API';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
 import { FaLayerGroup } from 'react-icons/fa';
@@ -15,7 +16,8 @@ import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import API from '../../../API/API.js';
-import { IoMdArrowDown, IoMdArrowUp } from 'react-icons/io';
+import { IoMdArrowDown, IoMdArrowUp, IoMdClose } from 'react-icons/io';
+import { MdHistory } from 'react-icons/md';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -28,8 +30,12 @@ const TransactionsTable = (props) => {
     const { lang, langdetect } = useContext(LanguageContext);
 
     const [openModal, setopenModal] = useState(false);
-    const [selectedinventory, setselectedinventory] = useState('');
-    const [chosenracks, setchosenracks] = useState([]);
+    const [transactionhistory, settransactionhistory] = useState([
+        { status: 'pendingSender', date: '3/16/2024', by: 'user 1' },
+        { status: 'pendingReceiver', date: '4/16/2024', by: 'user 1' },
+        { status: 'completed', date: '10/16/2024', by: 'user 1' },
+    ]);
+    const [transactionhistorymodal, settransactionhistorymodal] = useState(false);
     const [itemsarray, setitemsarray] = useState([
         { id: '1', type: 'deposit', description: 'money 123', fromAccount: 'Account 1', toAccount: 'Account 2', amount: '1000', receipt: 'receipt', status: 'pendingSender', approvedBy: 'user 1' },
         {
@@ -95,6 +101,7 @@ const TransactionsTable = (props) => {
                         <th>Reciept</th>
                         <th>Status</th>
                         <th>Approved by</th>
+                        <th>History</th>
                     </thead>
                     <tbody>
                         {itemsarray?.map((item, index) => {
@@ -134,10 +141,34 @@ const TransactionsTable = (props) => {
                                         <p className={' m-0 p-0 wordbreak '}>{item?.receipt}</p>
                                     </td>
                                     <td>
-                                        <p className={' m-0 p-0 wordbreak '}>{item?.status}</p>
+                                        {transactionStatusesContext?.map((i, ii) => {
+                                            if (i.value == item.status) {
+                                                return (
+                                                    <div
+                                                        className={
+                                                            item.status == 'completed'
+                                                                ? ' wordbreak text-success bg-light-success rounded-pill  '
+                                                                : ' wordbreak text-warning bg-light-warning rounded-pill  '
+                                                        }
+                                                    >
+                                                        <p className={' m-0 p-0 wordbreak '}>{i.label}</p>
+                                                    </div>
+                                                );
+                                            }
+                                        })}
                                     </td>
                                     <td>
                                         <p className={' m-0 p-0 wordbreak '}>{item?.approvedBy}</p>
+                                    </td>
+                                    <td>
+                                        {/* <p className={' m-0 p-0 wordbreak '}>{item?.approvedBy}</p> */}
+                                        <MdHistory
+                                            onClick={() => {
+                                                settransactionhistorymodal(true);
+                                            }}
+                                            class="text-primary text-secondaryhover"
+                                            size={20}
+                                        />
                                     </td>
                                 </tr>
                             );
@@ -158,6 +189,76 @@ const TransactionsTable = (props) => {
                 // /> */}
                 // </>
             )}
+
+            <Modal
+                show={transactionhistorymodal}
+                onHide={() => {
+                    settransactionhistorymodal(false);
+                }}
+                centered
+                size={'lg'}
+            >
+                <Modal.Header>
+                    <div className="row w-100 m-0 p-0">
+                        <div class="col-lg-6 pt-3 ">
+                            <div className="row w-100 m-0 p-0">History</div>
+                        </div>
+                        <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
+                            <div
+                                class={'close-modal-container'}
+                                onClick={() => {
+                                    settransactionhistorymodal(false);
+                                }}
+                            >
+                                <IoMdClose />
+                            </div>
+                        </div>{' '}
+                    </div>
+                </Modal.Header>
+                <Modal.Body>
+                    <div class="row m-0 w-100 py-2">
+                        <table style={{}} className={'table'}>
+                            <thead>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>By</th>
+                            </thead>
+                            <tbody>
+                                {transactionhistory?.map((item, index) => {
+                                    return (
+                                        <tr>
+                                            <td>
+                                                {transactionStatusesContext?.map((i, ii) => {
+                                                    if (i.value == item.status) {
+                                                        return (
+                                                            <div
+                                                                className={
+                                                                    item.status == 'completed'
+                                                                        ? ' wordbreak text-success bg-light-success rounded-pill  '
+                                                                        : ' wordbreak text-warning bg-light-warning rounded-pill  '
+                                                                }
+                                                            >
+                                                                <p className={' m-0 p-0 wordbreak '}>{i.label}</p>
+                                                            </div>
+                                                        );
+                                                    }
+                                                })}
+                                            </td>
+
+                                            <td>
+                                                <p className={' m-0 p-0 wordbreak '}>{item?.date}</p>
+                                            </td>
+                                            <td>
+                                                <p className={' m-0 p-0 wordbreak '}>{item?.by}</p>
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
+                </Modal.Body>
+            </Modal>
         </>
     );
 };
