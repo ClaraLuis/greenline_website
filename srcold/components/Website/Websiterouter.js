@@ -37,46 +37,7 @@ const App = (props) => {
     const location = useLocation();
     const params = new URLSearchParams(location.search);
     const { UserChooseCurrentCompan_API } = API();
-    const { hidesidenav_context, fetchAuthorizationQueryContext, setopenloginmodalcontext, openloginmodalcontext, pagetitle_context } = React.useContext(Contexthandlerscontext);
-    useEffect(() => {
-        // if (openloginmodalcontext != true) {
-        //     const foo = params.get('secondtrial');
-        //     if (foo != 'true') {
-        //         setopenloginmodalcontext(true);
-        //     }
-        //     setTimeout(() => {
-        //         alert('s');
-        //         params.delete('secondtrial');
-        //         history.replace({
-        //             search: params.toString(),
-        //         });
-        //         clearTimeout(this);
-        //     }, 2000);
-        // }
-    }, []);
-    const UserChooseCurrentCompanyMutation = useMutation('UserChooseCurrentCompan_API', {
-        mutationFn: UserChooseCurrentCompan_API,
-        onMutate: (variables) => {},
-        onError: (error, variables, context) => {
-            NotificationManager.warning('', 'Error');
-        },
-        onSuccess: (data, variables, context) => {
-            if (data.data.status) {
-                window.location.reload();
-                // fetchAuthorizationQueryContext?.refetch();
-                NotificationManager.success('', 'Success');
-            } else {
-                NotificationManager.warning(data.data.reason, 'Warning');
-            }
-        },
-    });
-    useEffect(() => {
-        // if (fetchAuthorizationQueryContext?.isSuccess && !fetchAuthorizationQueryContext?.isFetching) {
-        //     if (fetchAuthorizationQueryContext?.data?.data?.currentcompanyusertype?.length == 0 && fetchAuthorizationQueryContext?.data?.data?.userinfo?.user_profile?.usertype != 'liftupadmin') {
-        //         UserChooseCurrentCompanyMutation.mutate({ company_id: fetchAuthorizationQueryContext?.data?.data?.userinfo?.user_company_junc[0]?.company?.id?.toString() });
-        //     }
-        // }
-    }, []);
+    const { hidesidenav_context, setopenloginmodalcontext, openloginmodalcontext, pagetitle_context } = React.useContext(Contexthandlerscontext);
 
     return (
         <div class="row m-0 w-100">
@@ -95,7 +56,7 @@ const App = (props) => {
                                         <div style={{ fontSize: '14px' }} class=" text-capitalize d-flex align-items-center row m-0 ">
                                             <Dropdown>
                                                 <Dropdown.Toggle>
-                                                    <span style={{ color: 'lightgrey' }}>Hello,</span> {fetchAuthorizationQueryContext?.data?.data?.userinfo?.user_profile?.fname}
+                                                    <span style={{ color: 'lightgrey' }}>Hello,</span>
                                                 </Dropdown.Toggle>
                                                 <Dropdown.Menu>
                                                     <Dropdown.Item
@@ -103,7 +64,6 @@ const App = (props) => {
                                                             const cookies = new Cookies();
                                                             cookies.set('coas8866612efaasasdscjckkkkas32131asdsadsassjjscjjjeasd123!@_#!@3123', null);
                                                             history.push('/login');
-                                                            fetchAuthorizationQueryContext.refetch();
                                                         }}
                                                     >
                                                         Logout
@@ -111,30 +71,7 @@ const App = (props) => {
                                                 </Dropdown.Menu>
                                             </Dropdown>
                                             <br />
-                                            {fetchAuthorizationQueryContext?.data?.data?.userinfo?.user_profile?.usertype == 'liftupadmin' && (
-                                                <div style={{ fontSize: '10px', color: 'grey' }} class=" text-capitalize col-lg-12 p-0">
-                                                    Super admin account
-                                                </div>
-                                            )}
                                         </div>
-
-                                        {fetchAuthorizationQueryContext?.data?.data?.userinfo?.user_profile?.usertype != 'liftupadmin' && (
-                                            <div style={{ fontSize: '10px', color: 'grey' }} class="col-lg-7 text-capitalize ">
-                                                <select
-                                                    class={formstyles.form__field}
-                                                    style={{ width: '100%', height: '100%' }}
-                                                    value={fetchAuthorizationQueryContext?.data?.data?.userinfo?.user_profile?.emp_company?.id}
-                                                    onChange={(event) => {
-                                                        UserChooseCurrentCompanyMutation.mutate({ company_id: event.target.value });
-                                                    }}
-                                                >
-                                                    <option value="">Choose</option>
-                                                    {fetchAuthorizationQueryContext?.data?.data?.userinfo?.user_company_junc?.map(function (item, index) {
-                                                        return <option value={item?.company?.id}>{item?.company?.companyname}</option>;
-                                                    })}
-                                                </select>
-                                            </div>
-                                        )}
                                     </div>
                                 </div>
                             </div>

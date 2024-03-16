@@ -37,6 +37,7 @@ import FinancialAccountInfo from './Finance/FinancialAccountInfo.js';
 import FinanceOrders from './Finance/FinanceOrders.js';
 import FinanceTransactions from './Finance/FinanceTransactions.js';
 import AddInvoice from './Finance/AddInvoice.js';
+import { getAuth, signOut } from 'firebase/auth';
 const App = (props) => {
     const history = useHistory();
     const location = useLocation();
@@ -70,20 +71,12 @@ const App = (props) => {
         onSuccess: (data, variables, context) => {
             if (data.data.status) {
                 window.location.reload();
-                // fetchAuthorizationQueryContext?.refetch();
                 NotificationManager.success('', 'Success');
             } else {
                 NotificationManager.warning(data.data.reason, 'Warning');
             }
         },
     });
-    useEffect(() => {
-        // if (fetchAuthorizationQueryContext?.isSuccess && !fetchAuthorizationQueryContext?.isFetching) {
-        //     if (fetchAuthorizationQueryContext?.data?.data?.currentcompanyusertype?.length == 0 && fetchAuthorizationQueryContext?.data?.data?.userinfo?.user_profile?.usertype != 'liftupadmin') {
-        //         UserChooseCurrentCompanyMutation.mutate({ company_id: fetchAuthorizationQueryContext?.data?.data?.userinfo?.user_company_junc[0]?.company?.id?.toString() });
-        //     }
-        // }
-    }, []);
 
     return (
         <div class="row m-0 w-100">
@@ -162,36 +155,6 @@ const App = (props) => {
                                                     <hr class="p-0 m-0" />
                                                 </div>
                                             </div>
-                                            {/* <Dropdown.Item>
-                                                <p
-                                                    class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}
-                                                    onClick={() => {
-                                                        NotificationManager.success('Logged out');
-                                                        const cookies = new Cookies();
-                                                        cookies.set('coas12312efaasasdafasdas32131asdsadsadsaqweasdkjenfjenfk kern123!@_#!@3123', null);
-                                                        history.push('/');
-                                                        fetchAuthorizationQueryContext.refetch();
-                                                    }}
-                                                >
-                                                    <IoSettingsOutline size={15} style={{ marginInlineEnd: '10px' }} />
-                                                    Account Settings
-                                                </p>
-                                            </Dropdown.Item>
-                                            <Dropdown.Item>
-                                                <p
-                                                    class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}
-                                                    onClick={() => {
-                                                        NotificationManager.success('Logged out');
-                                                        const cookies = new Cookies();
-                                                        cookies.set('coas12312efaasasdafasdas32131asdsadsadsaqweasdkjenfjenfk kern123!@_#!@3123', null);
-                                                        history.push('/');
-                                                        fetchAuthorizationQueryContext.refetch();
-                                                    }}
-                                                >
-                                                    <IoSettingsOutline size={15} style={{ marginInlineEnd: '10px' }} />
-                                                    Account Settings
-                                                </p>
-                                            </Dropdown.Item> */}
                                         </div>
                                     </Dropdown.Menu>
                                 </Dropdown>
@@ -231,15 +194,11 @@ const App = (props) => {
                                             <p
                                                 class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}
                                                 onClick={() => {
-                                                    NotificationManager.success('Logged out');
-                                                    const cookies = new Cookies();
-                                                    cookies.set('coas12312efaasasdafasdas32131asdsadsadsaqweasdkjenfjenfk kern123!@_#!@3123', null);
-                                                    history.push('/');
-                                                    fetchAuthorizationQueryContext.refetch();
+                                                    signOut(getAuth());
                                                 }}
                                             >
                                                 <IoSettingsOutline size={15} style={{ marginInlineEnd: '10px' }} />
-                                                Account Settings
+                                                Logout
                                             </p>
                                         </Dropdown.Item>
                                         <Dropdown.Item>

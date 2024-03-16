@@ -16,24 +16,13 @@ import API from '../API/API';
 import { useQuery } from 'react-query';
 import generalstyles from '../components/Website/Generalfiles/CSS_GENERAL/general.module.css';
 const Form = (props) => {
-    const { fetchAuthorizationQueryContext } = useContext(Contexthandlerscontext);
     const { FetchAllSecuritylayers_API } = API();
     const FetchInstitueSecurityLayersQuery = useQuery(['FetchAllSecuritylayers_API'], () => FetchAllSecuritylayers_API(), {
         keepPreviousData: true,
         staleTime: Infinity,
     });
     var exist = false;
-    props?.attr.map((item, index) => {
-        if (props?.payload[item.attr]?.length == 0 && item?.type != 'time' && item?.name != 'Notes') {
-            if (item?.type == 'companyid') {
-                if (fetchAuthorizationQueryContext?.data?.data?.userinfo?.user_profile?.usertype == 'liftupadmin') {
-                    exist = true;
-                }
-            } else {
-                exist = true;
-            }
-        }
-    });
+
     return (
         <>
             {props?.attr?.map((item, index) => {
@@ -87,25 +76,6 @@ const Form = (props) => {
                             </label>
                         </div>
                     );
-                } else if (item?.type == 'companyid') {
-                    if (fetchAuthorizationQueryContext?.data?.data?.userinfo?.user_profile?.usertype == 'liftupadmin') {
-                        return (
-                            <div class={item.size == '6' ? 'col-lg-6' : 'col-lg-12'}>
-                                <Companyinputfield
-                                    disabled={item?.disabled}
-                                    submit={props?.submit}
-                                    setsubmit={props?.setsubmit}
-                                    placeholder={item?.name}
-                                    value={props?.payload[item.attr]}
-                                    onClick={(event) => {
-                                        var temp = { ...props?.payload };
-                                        temp[item?.attr] = event?.id;
-                                        props?.setpayload({ ...temp });
-                                    }}
-                                />
-                            </div>
-                        );
-                    }
                 } else if (item?.type == 'leadid') {
                     return (
                         <div class={item.size == '6' ? 'col-lg-6' : 'col-lg-12'}>

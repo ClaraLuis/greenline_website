@@ -23,10 +23,7 @@ export const Contexthandlerscontext_provider = (props) => {
     const cookies = new Cookies();
     const [openloginmodalcontext, setopenloginmodalcontext] = useState(true);
     const [allcachedproductscontext, setallcachedproductscontext] = useState([]);
-    const fetchAuthorizationQueryContext = useQuery(['Checkauth_API'], () => Checkauth_API(), {
-        keepPreviousData: true,
-        staleTime: Infinity,
-    });
+
     const [filterobj, setfilterobj] = useState({
         page: 1,
         search: '',
@@ -46,7 +43,6 @@ export const Contexthandlerscontext_provider = (props) => {
             if (data.data.status) {
                 NotificationManager.success('Login Success', 'Success');
                 cookies.set('coas8866612efaasasdscjckkkkas32131asdsadsassjjscjjjeasd123!@_#!@3123', data.data.access);
-                fetchAuthorizationQueryContext.refetch();
                 window.open(window.location.origin + '/leads', '_self');
             } else {
                 NotificationManager.warning(data.data.reason, 'Warning');
@@ -91,21 +87,21 @@ export const Contexthandlerscontext_provider = (props) => {
     };
     const isshowuserpage = (page) => {
         var show = true;
-        if (
-            fetchAuthorizationQueryContext?.data?.data?.currentcompanyusertype == 'companyowner' ||
-            fetchAuthorizationQueryContext?.data?.data?.userinfo?.user_profile?.usertype == 'adminuser' ||
-            fetchAuthorizationQueryContext?.data?.data?.userinfo?.user_profile?.usertype == 'liftupadmin'
-        ) {
-            show = true;
-        } else {
-            fetchAuthorizationQueryContext?.data?.data?.permissions?.map((item, index) => {
-                if (item?.permission?.permissiontype == 'Page') {
-                    if (item?.permission?.name == page) {
-                        show = true;
-                    }
-                }
-            });
-        }
+        // if (
+        //     fetchAuthorizationQueryContext?.data?.data?.currentcompanyusertype == 'companyowner' ||
+        //     fetchAuthorizationQueryContext?.data?.data?.userinfo?.user_profile?.usertype == 'adminuser' ||
+        //     fetchAuthorizationQueryContext?.data?.data?.userinfo?.user_profile?.usertype == 'liftupadmin'
+        // ) {
+        //     show = true;
+        // } else {
+        //     fetchAuthorizationQueryContext?.data?.data?.permissions?.map((item, index) => {
+        //         if (item?.permission?.permissiontype == 'Page') {
+        //             if (item?.permission?.name == page) {
+        //                 show = true;
+        //             }
+        //         }
+        //     });
+        // }
         return show;
     };
     const [sheetStatusesContext, setsheetStatusesContext] = useState([
@@ -474,7 +470,7 @@ export const Contexthandlerscontext_provider = (props) => {
 
             setpagesarray_context([...temp]);
         }
-    }, [fetchAuthorizationQueryContext?.isSuccess, fetchAuthorizationQueryContext?.data, FetchPhases?.isSuccess, FetchPhases?.data, filterLeadscontext]);
+    }, [FetchPhases?.isSuccess, FetchPhases?.data, filterLeadscontext]);
 
     return (
         <Contexthandlerscontext.Provider
@@ -492,7 +488,7 @@ export const Contexthandlerscontext_provider = (props) => {
                 sethidesidenav_context,
                 openloginmodalcontext,
                 setopenloginmodalcontext,
-                fetchAuthorizationQueryContext,
+
                 allcachedproductscontext,
                 setallcachedproductscontext,
                 scroll,

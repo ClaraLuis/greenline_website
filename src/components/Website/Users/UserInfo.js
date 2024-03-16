@@ -38,7 +38,13 @@ const UserInfo = (props) => {
         }
     `;
 
-    const [addUser1] = useMutationGQL(props?.leadpayload);
+    const [addUser1] = useMutationGQL(addUser(), {
+        name: props?.leadpayload?.name,
+        type: props?.leadpayload?.type,
+        phone: props?.leadpayload?.phone,
+        email: props?.leadpayload?.email,
+        birthdate: props?.leadpayload?.birthdate,
+    });
     const { refetch: refetchUsers } = useQueryGQL('', fetchUsers());
 
     const handleAddUser = async () => {

@@ -16,9 +16,11 @@ import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
 import Signup from '../Signup/Signup.js';
 import { MdArrowBackIosNew } from 'react-icons/md';
 import { Loggedincontext } from '../../../Loggedincontext.js';
-
+import { signInWithEmailAndPassword, getAuth, createUserWithEmailAndPassword, fetchSignInMethodsForEmail, fetchProviders, EmailAuthProvider } from 'firebase/auth';
+import firebaseConfig from '../../../Auth/firebaseconfig.js';
 const Login = () => {
-    const { Login_API } = API();
+    const auth = getAuth();
+    const { isValidEmailMutation, useMutationGQL, useQueryGQL, useLazyQueryGQL, requestLoginResponse } = API();
     let history = useHistory();
     const [otp, setOtp] = useState('');
     const [value, setValue] = useState('');
@@ -40,10 +42,79 @@ const Login = () => {
 
     const [openModal, setopenModal] = useState(false);
     const [email, setemail] = useState('');
+    const [email1, setemail1] = useState('');
     const [step, setstep] = useState(0);
-    const [verified, setverified] = useState(false);
+    const [inFirebase, setinFirebase] = useState(false);
+    const [isValid, setisValid] = useState(false);
+    const [isNew, setisNew] = useState(false);
 
     const [password, setpassword] = useState('');
+    const [confirmpassword, setconfirmpassword] = useState('');
+    const [payload, setpayload] = useState({ id: null, token: null });
+
+    const [checkEmail, { loading, error, data }] = useLazyQueryGQL(isValidEmailMutation());
+
+    const handleSubmit = async () => {
+        try {
+            const result = await fetchSignInMethodsForEmail(auth, email);
+            if (result.length > 0) {
+                setinFirebase(true);
+            }
+        } catch (e) {
+            // alert(JSON.stringify(e));
+        }
+        try {
+            await checkEmail({
+                variables: {
+                    email: email,
+                },
+            });
+        } catch (error) {
+            console.error('Error adding user:', error);
+        }
+    };
+
+    const [requestLogin, { loadingrequestLogin, errorrequestLogin, requestLoginData }] = useMutationGQL(requestLoginResponse());
+
+    const handleRequestLoginResponse = async (tokenpayload) => {
+        try {
+            const data123 = await requestLogin({
+                variables: {
+                    input: {
+                        firebaseToken: tokenpayload?.token,
+                        // firebaseToken: 'kkkk',
+                        id: tokenpayload?.id,
+                    },
+                },
+            });
+            if (data123 != null) {
+                history.push('/users');
+                // TODO store user data
+            }
+
+            // history.push()
+        } catch (error) {
+            alert(JSON.stringify(error));
+        }
+    };
+
+    useEffect(() => {
+        if (error) {
+            alert(JSON.stringify(error));
+        }
+        if (data) {
+            if (!data?.isValidEmail?.isValid) {
+            } else {
+                setisValid(true);
+                setpayload({ ...payload, id: data?.isValidEmail?.id });
+                if (data?.isValidEmail?.id != null) {
+                    // setisNew(true);
+                } else {
+                }
+            }
+            // alert(JSON.stringify(data?.isValidEmail?.isValid));
+        }
+    }, [data, error]);
     useEffect(() => {
         if (queryParameters.get('signup') == undefined) {
         } else {
@@ -76,7 +147,7 @@ const Login = () => {
                                         <div class="col-lg-12 flex-column mb-4 p-0 p-md-0">
                                             <p class="font-15 font-weight-500 mb-1"> Email </p>
                                             <input
-                                                disabled={verified}
+                                                disabled={isValid}
                                                 name="email"
                                                 type="email"
                                                 class={'inputfeild'}
@@ -86,30 +157,82 @@ const Login = () => {
                                                 }}
                                             />
                                         </div>
-                                        {verified && (
-                                            <div class="col-lg-12 flex-column mb-4 p-0 p-md-0">
-                                                <p class="font-15 font-weight-500 mb-1"> Password </p>
-                                                <input
-                                                    name="password"
-                                                    type="password"
-                                                    class={'inputfeild'}
-                                                    value={password}
-                                                    onChange={(event) => {
-                                                        setpassword(event.target.value);
-                                                    }}
-                                                />
-                                            </div>
+                                        {isValid && (
+                                            <>
+                                                <div class="col-lg-12 flex-column mb-4 p-0 p-md-0">
+                                                    <p class="font-15 font-weight-500 mb-1"> Password </p>
+                                                    <input
+                                                        name="password"
+                                                        type="password"
+                                                        class={'inputfeild'}
+                                                        value={password}
+                                                        onChange={(event) => {
+                                                            setpassword(event.target.value);
+                                                        }}
+                                                    />
+                                                </div>
+                                                {!inFirebase && (
+                                                    <div class="col-lg-12 flex-column mb-4 p-0 p-md-0">
+                                                        <p class="font-15 font-weight-500 mb-1">Confirm Password </p>
+                                                        <input
+                                                            name="password"
+                                                            type="password"
+                                                            class={'inputfeild'}
+                                                            value={confirmpassword}
+                                                            onChange={(event) => {
+                                                                setconfirmpassword(event.target.value);
+                                                            }}
+                                                        />
+                                                    </div>
+                                                )}
+                                            </>
                                         )}
 
                                         <div class="col-lg-12 p-0 flex-column mt-0 p-md-0">
                                             <button
                                                 onClick={() => {
-                                                    if (verified) {
-                                                        setloggedincontext(true);
-                                                        history.push('/users');
+                                                    // if (verified) {
+                                                    if (!isValid) {
+                                                        handleSubmit();
                                                     } else {
-                                                        setverified(true);
+                                                        if (!inFirebase) {
+                                                            if (password && confirmpassword) {
+                                                                createUserWithEmailAndPassword(auth, email, password)
+                                                                    .then((response) => {
+                                                                        if (response) {
+                                                                            var temp = { ...payload };
+                                                                            temp.token = response.user.accessToken;
+                                                                            handleRequestLoginResponse(temp);
+                                                                        }
+                                                                    })
+                                                                    .catch((error) => {
+                                                                        console.log(error);
+                                                                        alert('error' + JSON.stringify(error));
+                                                                    });
+                                                            } else {
+                                                                NotificationManager.warning("Passwords don't match", 'Warning');
+                                                            }
+                                                        } else {
+                                                            signInWithEmailAndPassword(auth, email, password)
+                                                                .then((response) => {
+                                                                    if (response) {
+                                                                        // alert(JSON.stringify(response.user));
+                                                                        var temp = { ...payload };
+                                                                        temp.token = response.user.accessToken;
+
+                                                                        handleRequestLoginResponse(temp);
+                                                                    }
+                                                                })
+                                                                .catch((error) => {
+                                                                    console.log(error);
+                                                                    alert('error1' + JSON.stringify(error));
+                                                                });
+                                                        }
                                                     }
+
+                                                    // } else {
+                                                    //     setverified(true);
+                                                    // }
                                                     // LoginmutationContext.mutate({ email: email, password: password });
                                                 }}
                                                 class={`${generalstyles.btn} ${generalstyles.btn_primary}` + ' font-15 allcentered '}
@@ -117,10 +240,10 @@ const Login = () => {
                                                     width: '100%',
                                                     height: 48,
                                                 }}
-                                                disabled={LoginmutationContext.isLoading}
+                                                disabled={loading}
                                             >
-                                                {LoginmutationContext.isLoading && <CircularProgress color="white" width="20px" height="20px" duration="1s" />}
-                                                {!LoginmutationContext.isLoading && <span>{verified ? 'Submit' : 'Login'} </span>}
+                                                {loading && <CircularProgress color="white" width="20px" height="20px" duration="1s" />}
+                                                {!loading && <span>{isNew ? 'Signup' : 'Login'} </span>}
                                             </button>
                                         </div>
                                     </div>
