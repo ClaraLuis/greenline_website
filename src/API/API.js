@@ -21,13 +21,33 @@ const API = () => {
     };
     const addUser = (payload) => {
         return gql`
-        mutation cruser {
-            createUser(createUserInput: { name: ${JSON.stringify(payload?.name)}, type: ${JSON.stringify(payload?.type)}, phone: ${JSON.stringify(payload?.phone)}, email: ${JSON.stringify(
-            payload?.email,
-        )}, birthdate: ${JSON.stringify(payload?.birthdate)} })
-        }
-    `;
+            mutation cruser($input: CreateUserInput!) {
+                createUser(createUserInput: $input)
+            }
+        `;
     };
+
+    const useMutationGQL = (payload) => {
+        const addUser1 = useMutation(addUser(), {
+            variables: {
+                input: {
+                    name: payload?.name,
+                    type: payload?.type,
+                    phone: payload?.phone,
+                    email: payload?.email,
+                    birthdate: payload?.birthdate,
+                },
+            },
+            context: {
+                headers: {
+                    Authorization:
+                        ' Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVuTFgzTXZ0UzFZOXJjQjN0WDhKM0d0N1F4IiwiaHViSWQiOm51bGwsIm1lcmNoYW50SWQiOm51bGwsInR5cGUiOiJjb3VyaWVyIiwicm9sZXMiOlsxXSwiaWF0IjoxNzA2ODE0NzQzLCJleHAiOjE4MDY4MTY1NDN9.BnUOLRuoV1QgSzbYtiQKZONguDLQyBCmhNnBwB4OPC4',
+                },
+            },
+        });
+        return addUser1;
+    };
+
     const fetchUsers = (payload) => {
         return gql`
             query findUsers {
@@ -54,18 +74,6 @@ const API = () => {
                 },
             },
         });
-    };
-
-    const useMutationGQL = (query) => {
-        const addUser1 = useMutation(query, {
-            context: {
-                headers: {
-                    Authorization:
-                        ' Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVuTFgzTXZ0UzFZOXJjQjN0WDhKM0d0N1F4IiwiaHViSWQiOm51bGwsIm1lcmNoYW50SWQiOm51bGwsInR5cGUiOiJjb3VyaWVyIiwicm9sZXMiOlsxXSwiaWF0IjoxNzA2ODE0NzQzLCJleHAiOjE4MDY4MTY1NDN9.BnUOLRuoV1QgSzbYtiQKZONguDLQyBCmhNnBwB4OPC4',
-                },
-            },
-        });
-        return addUser1;
     };
 
     const Checkauth_API = async (axiosdata) => {

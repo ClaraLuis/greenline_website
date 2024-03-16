@@ -30,14 +30,6 @@ const UserInfo = (props) => {
     const [changerolesmodal, setchangerolesmodal] = useState(false);
     const [newpassword, setnewpassword] = useState('');
 
-    const ADD_USER = gql`
-        mutation cruser {
-            createUser(createUserInput: { name: ${JSON.stringify(props?.leadpayload?.name)}, type: ${JSON.stringify(props?.leadpayload?.type)}, phone: ${JSON.stringify(
-        props?.leadpayload?.phone,
-    )}, email: ${JSON.stringify(props?.leadpayload?.email)}, birthdate: ${JSON.stringify(props?.leadpayload?.birthdate)} })
-        }
-    `;
-
     const [addUser1] = useMutationGQL(addUser(props?.leadpayload));
     const { refetch: refetchUsers } = useQueryGQL('', fetchUsers());
 

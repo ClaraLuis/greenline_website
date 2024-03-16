@@ -38,7 +38,7 @@ const UserInfo = (props) => {
         }
     `;
 
-    const [addUser1] = useMutationGQL(addUser(props?.leadpayload));
+    const [addUser1] = useMutationGQL(props?.leadpayload);
     const { refetch: refetchUsers } = useQueryGQL('', fetchUsers());
 
     const handleAddUser = async () => {

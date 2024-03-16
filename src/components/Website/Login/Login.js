@@ -120,7 +120,7 @@ const Login = () => {
                                                 disabled={LoginmutationContext.isLoading}
                                             >
                                                 {LoginmutationContext.isLoading && <CircularProgress color="white" width="20px" height="20px" duration="1s" />}
-                                                {!LoginmutationContext.isLoading && <span>{verified ? 'Submit' : 'Verify Email'} </span>}
+                                                {!LoginmutationContext.isLoading && <span>{verified ? 'Submit' : 'Login'} </span>}
                                             </button>
                                         </div>
                                     </div>

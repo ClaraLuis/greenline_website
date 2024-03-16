@@ -121,3 +121,5 @@ web-build/
 dist/
 
 # @end expo-cli
+
+src/Auth/firebaseconfig.js
