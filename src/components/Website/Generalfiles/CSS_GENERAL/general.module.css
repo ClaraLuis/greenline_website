@@ -785,3 +785,20 @@ button:focus {
     border-bottom: 2px solid var(--primary);
     font-weight: 500;
 }
+
+.cart_button {
+    background-color: #292929;
+    /* padding: 5px; */
+    width: 27px;
+    height: 27px;
+    border-radius: 100%;
+    transition: all 0.4s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.cart_button:hover {
+    scale: 1.2;
+}

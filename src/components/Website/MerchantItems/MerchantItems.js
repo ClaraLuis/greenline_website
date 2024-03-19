@@ -139,7 +139,7 @@ const MerchantItems = (props) => {
                         Add Compound Item
                     </button>
                 </div>
-                <div class={generalstyles.card + ' row m-0 w-100 mb-4 p-2 px-2'}>
+                {/* <div class={generalstyles.card + ' row m-0 w-100 mb-4 p-2 px-2'}>
                     <div class={' col-lg-12 p-0'}>
                         <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
                             <AccordionItem class={`${generalstyles.innercard}` + ' '}>
@@ -229,7 +229,7 @@ const MerchantItems = (props) => {
                             </AccordionItem>
                         </Accordion>
                     </div>
-                </div>
+                </div> */}
                 <div class={generalstyles.card + ' row m-0 w-100 mb-4 p-2 px-2'}>
                     <div class="col-lg-12 p-0 ">
                         <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
@@ -247,8 +247,8 @@ const MerchantItems = (props) => {
                 </div>
 
                 <div class={generalstyles.card + ' row m-0 w-100'}>
-                    <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
-                        <ItemsTable />
+                    <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                        <ItemsTable card="col-lg-3" />
                     </div>
                 </div>
             </div>

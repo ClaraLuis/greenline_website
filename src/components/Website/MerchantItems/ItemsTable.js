@@ -5,7 +5,7 @@ import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
-import { FaLayerGroup } from 'react-icons/fa';
+import { FaLayerGroup, FaPlus } from 'react-icons/fa';
 import Select, { components } from 'react-select';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
@@ -30,9 +30,11 @@ const ItemsTable = (props) => {
     const [selectedinventory, setselectedinventory] = useState('');
     const [chosenracks, setchosenracks] = useState([]);
     const [itemsarray, setitemsarray] = useState([
-        { sku: '123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1' },
-        { sku: '123123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1' },
-        { sku: '123123123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1' },
+        { sku: '123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1', colors: ['#ee6396', '#5c4057'] },
+        { sku: '123123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1', colors: ['#041595', '#cc5500', '#648b7f'] },
+        { sku: '163123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1', colors: ['#5c4057', '#648b7f'] },
+        { sku: '129123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1', colors: ['#ee6396', '#77c1fb', '#5c4057'] },
+        { sku: '1223', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1', colors: ['#cc5500', '#77c1fb', '#648b7f'] },
     ]);
 
     const [leadpayload, setleadpayload] = useState({
@@ -72,53 +74,53 @@ const ItemsTable = (props) => {
                                     </div>
                                 )} */}
             {fetchusers?.data?.length != 0 && (
-                <table style={{}} className={props?.clickable ? 'table table_hover' : 'table'}>
-                    <thead>
-                        <th>SKU</th>
-                        <th>Name</th>
+                <div class="row m-0 w-100">
+                    {itemsarray?.map((item, index) => {
+                        return (
+                            <div class={props?.card}>
+                                <div class={generalstyles.card + ' p-3 row m-0 w-100'}>
+                                    <div class="col-lg-12 p-0">
+                                        <div style={{ width: '100%', height: '200px' }}>
+                                            <img
+                                                src="https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg"
+                                                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-8 p-0 mt-2 wordbreak" style={{ fontWeight: 700, fontSize: '16px' }}>
+                                        {item?.name}
+                                    </div>
 
-                        <th>Size</th>
-
-                        <th>Color</th>
-                        <th>Count in Inventory</th>
-                        <th>Merchant name</th>
-                    </thead>
-                    <tbody>
-                        {itemsarray?.map((item, index) => {
-                            return (
-                                <tr
-                                    onClick={() => {
-                                        if (props?.clickable) {
-                                            props?.actiononclick(item);
-                                        }
-                                    }}
-                                >
-                                    <td>
-                                        <p className={' m-0 p-0 wordbreak '}>{item?.sku}</p>
-                                    </td>
-                                    <td>
-                                        <p className={' m-0 p-0 wordbreak '}>{item?.name}</p>
-                                    </td>
-
-                                    <td>
-                                        <p className={' m-0 p-0 wordbreak '}>{item?.size}</p>
-                                    </td>
-                                    <td>
-                                        <p className={' m-0 p-0 wordbreak '}>{item?.color}</p>
-                                    </td>
-
-                                    <td>
-                                        <p className={' m-0 p-0 wordbreak '}>{item?.countinventory}</p>
-                                    </td>
-
-                                    <td>
-                                        <p className={' m-0 p-0 wordbreak '}>{item?.merchantname}</p>
-                                    </td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
+                                    {props?.clickable && (
+                                        <div class="col-lg-4 d-flex justify-content-end mt-2 p-0">
+                                            <div
+                                                onClick={() => {
+                                                    props?.actiononclick(item);
+                                                }}
+                                                class={generalstyles.cart_button}
+                                            >
+                                                <FaPlus color="white" />
+                                            </div>
+                                        </div>
+                                    )}
+                                    <div class="col-lg-12 p-0" style={{ fontWeight: 600, fontSize: '13px', color: 'lightgray' }}>
+                                        {item?.sku}
+                                    </div>
+                                    <div class="col-lg-12 p-0 mt-2" style={{ fontWeight: 700, fontSize: '15px' }}>
+                                        300 EGP
+                                    </div>
+                                    <div class="col-lg-12 p-0 mt-1">
+                                        <div class="row m-0 w-100">
+                                            {item?.colors?.map((color, colorindex) => {
+                                                return <div style={{ width: '18px', height: '18px', borderRadius: '100%', backgroundColor: color, marginInlineEnd: '5px' }}></div>;
+                                            })}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
                 //     )}
                 //     {/* <Pagespaginatecomponent
                 //     totaldatacount={FetchUsers?.data?.data?.total}

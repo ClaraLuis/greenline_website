@@ -30,10 +30,19 @@ const Finance = (props) => {
     const [openModal, setopenModal] = useState(false);
     const [selectedinventory, setselectedinventory] = useState('');
     const [chosenracks, setchosenracks] = useState([]);
-    const [itemsarray, setitemsarray] = useState([
-        { sku: '123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1' },
-        { sku: '123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1' },
-        { sku: '123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1' },
+    const [statistics, seetstatistics] = useState([
+        {
+            title: 'Total Transactions',
+            number: '10000',
+        },
+        {
+            title: 'Awaiting Transactions',
+            number: '5000',
+        },
+        {
+            title: 'Invoices',
+            number: '300',
+        },
     ]);
 
     const [leadpayload, setleadpayload] = useState({
@@ -63,6 +72,24 @@ const Finance = (props) => {
                     <p class=" p-0 m-0" style={{ fontSize: '27px' }}>
                         Finance
                     </p>
+                </div>
+                <div class="col-lg-12 p-0">
+                    <div class="row m-0 w-100">
+                        {statistics?.map((item, index) => {
+                            return (
+                                <div class="col-lg-3">
+                                    <div class={generalstyles.card + ' row m-0 p-3 w-100'}>
+                                        <div style={{ fontSize: '17px' }} class="col-lg-12 mb-1">
+                                            {item?.title}
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <span style={{ fontWeight: 800, fontSize: '23px' }}>{item?.number}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
                 </div>
                 {/* <div style={{ borderRadius: '0px', background: 'white' }} class={' mb-3 col-lg-12 p-2'}>
                     <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
@@ -168,7 +195,7 @@ const Finance = (props) => {
                         </div>
                     </div>
                 </div> */}
-
+                {/* 
                 <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
                     <div class={' col-lg-12 col-md-12 col-sm-12 p-0 d-flex align-items-center justify-content-start '}>
                         <p class=" p-0 m-0" style={{ fontSize: '15px' }}>
@@ -200,7 +227,7 @@ const Finance = (props) => {
                     <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
                         <TransactionsTable />
                     </div>
-                </div>
+                </div> */}
             </div>
         </div>
     );

@@ -110,54 +110,20 @@ const MerchantOrders = (props) => {
                                 <hr className="mt-2 mb-3" />
                                 <div class="row m-0 w-100">
                                     <div class={'col-lg-2'} style={{ marginBottom: '15px' }}>
-                                        <label for="name" class={formstyles.form__label}>
-                                            Inventories
-                                        </label>
-                                        <Select
-                                            options={[
-                                                { label: 'Inv 1', value: '1' },
-                                                { label: 'Inv 2', value: '2' },
-                                            ]}
-                                            styles={defaultstyles}
-                                            value={
-                                                [
-                                                    { label: 'Inv 1', value: '1' },
-                                                    { label: 'Inv 2', value: '2' },
-                                                ]
-                                                // .filter((option) => option.value == props?.payload[item?.attr])
-                                            }
-                                            onChange={(option) => {
-                                                // props?.setsubmit(false);
-                                                // var temp = { ...props?.payload };
-                                                // temp[item?.attr] = option.value;
-                                                // props?.setpayload({ ...temp });
-                                            }}
-                                        />
+                                        <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
+                                            <label for="name" class={formstyles.form__label}>
+                                                From date
+                                            </label>
+                                            <input type={'date'} class={formstyles.form__field} placeholder={''} />
+                                        </div>
                                     </div>
                                     <div class={'col-lg-2'} style={{ marginBottom: '15px' }}>
-                                        <label for="name" class={formstyles.form__label}>
-                                            Merchant
-                                        </label>
-                                        <Select
-                                            options={[
-                                                { label: 'Merch 1', value: '1' },
-                                                { label: 'Merch 2', value: '2' },
-                                            ]}
-                                            styles={defaultstyles}
-                                            value={
-                                                [
-                                                    { label: 'Merch 1', value: '1' },
-                                                    { label: 'Merch 2', value: '2' },
-                                                ]
-                                                // .filter((option) => option.value == props?.payload[item?.attr])
-                                            }
-                                            onChange={(option) => {
-                                                // props?.setsubmit(false);
-                                                // var temp = { ...props?.payload };
-                                                // temp[item?.attr] = option.value;
-                                                // props?.setpayload({ ...temp });
-                                            }}
-                                        />
+                                        <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
+                                            <label for="name" class={formstyles.form__label}>
+                                                To date
+                                            </label>
+                                            <input type={'date'} class={formstyles.form__field} placeholder={''} />
+                                        </div>
                                     </div>
                                 </div>
                             </AccordionItemPanel>
