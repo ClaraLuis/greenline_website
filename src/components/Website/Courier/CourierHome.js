@@ -61,7 +61,7 @@ const CourierHome = (props) => {
             <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
                 <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
                     <p class=" p-0 m-0" style={{ fontSize: '27px' }}>
-                        Home
+                        Dashboard
                     </p>
                 </div>
                 <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>

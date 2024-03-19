@@ -19,18 +19,8 @@ import 'simplebar-react/dist/simplebar.min.css';
 const Sidenav = (props) => {
     let history = useHistory();
     const { logout, login_API, UserChooseCurrentCompan_API } = API();
-    const {
-        filterLeadscontext,
-        setfilterLeadscontext,
-        pagesarray_context,
-        setpageactive_context,
-        pageactive_context,
-        hidesidenav_context,
-        sethidesidenav_context,
-        fetchAuthorizationQueryContext,
-        value,
-        setValue,
-    } = React.useContext(Contexthandlerscontext);
+    const { pagesarray_context, setpageactive_context, pageactive_context, hidesidenav_context, sethidesidenav_context, fetchAuthorizationQueryContext, value, setValue } =
+        React.useContext(Contexthandlerscontext);
     const containerRef = useRef(null);
 
     const [isScrolling, setIsScrolling] = useState(false);
@@ -101,9 +91,6 @@ const Sidenav = (props) => {
                                                                             style={{ cursor: 'pointer' }}
                                                                             to={subitem.path}
                                                                             onClick={() => {
-                                                                                if (subitem?.name == 'Leads') {
-                                                                                    setfilterLeadscontext({ ...filterLeadscontext, phase_id: 'all' });
-                                                                                }
                                                                                 history.push(subitem.path);
                                                                                 setpageactive_context(subitem.path);
                                                                             }}

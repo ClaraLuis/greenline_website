@@ -26,7 +26,7 @@ const Login = () => {
     const [value, setValue] = useState('');
     const queryParameters = new URLSearchParams(window.location.search);
     const { loggedincontext, setloggedincontext } = useContext(Loggedincontext);
-    const { setpageactive_context, setpagetitle_context, LoginmutationContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, setUserInfoContext } = useContext(Contexthandlerscontext);
     useEffect(() => {
         setpagetitle_context('login');
         setpageactive_context('/login');
@@ -59,6 +59,7 @@ const Login = () => {
             const result = await fetchSignInMethodsForEmail(auth, email);
             if (result.length > 0) {
                 setinFirebase(true);
+            } else {
             }
         } catch (e) {
             // alert(JSON.stringify(e));
@@ -78,16 +79,17 @@ const Login = () => {
 
     const handleRequestLoginResponse = async (tokenpayload) => {
         try {
-            const data123 = await requestLogin({
+            const requestLoginData = await requestLogin({
                 variables: {
                     input: {
                         firebaseToken: tokenpayload?.token,
-                        // firebaseToken: 'kkkk',
                         id: tokenpayload?.id,
                     },
                 },
             });
-            if (data123 != null) {
+            if (requestLoginData != null) {
+                // alert(JSON.stringify(requestLoginData?.data?.requestToken?.user));
+                setUserInfoContext(requestLoginData?.data?.requestToken);
                 history.push('/users');
                 // TODO store user data
             }
@@ -95,22 +97,21 @@ const Login = () => {
             // history.push()
         } catch (error) {
             alert(JSON.stringify(error));
+            // NotificationManager.warning(error?.message, '');
         }
     };
 
     useEffect(() => {
         if (error) {
             alert(JSON.stringify(error));
+            // NotificationManager.warning(JSON.stringify(error.message), 'Warning');
         }
         if (data) {
             if (!data?.isValidEmail?.isValid) {
+                NotificationManager.warning('Email is not Valid', 'Warning');
             } else {
                 setisValid(true);
                 setpayload({ ...payload, id: data?.isValidEmail?.id });
-                if (data?.isValidEmail?.id != null) {
-                    // setisNew(true);
-                } else {
-                }
             }
             // alert(JSON.stringify(data?.isValidEmail?.isValid));
         }
@@ -192,12 +193,31 @@ const Login = () => {
                                             <button
                                                 onClick={() => {
                                                     // if (verified) {
-                                                    if (!isValid) {
-                                                        handleSubmit();
-                                                    } else {
-                                                        if (!inFirebase) {
-                                                            if (password && confirmpassword) {
-                                                                createUserWithEmailAndPassword(auth, email, password)
+                                                    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+                                                    if (email != undefined && email?.length != 0 && regex.test(email)) {
+                                                        if (!isValid) {
+                                                            handleSubmit();
+                                                        } else {
+                                                            if (!inFirebase) {
+                                                                if (password === confirmpassword) {
+                                                                    createUserWithEmailAndPassword(auth, email, password)
+                                                                        .then((response) => {
+                                                                            if (response) {
+                                                                                var temp = { ...payload };
+                                                                                temp.token = response.user.accessToken;
+                                                                                handleRequestLoginResponse(temp);
+                                                                            }
+                                                                        })
+                                                                        .catch((error) => {
+                                                                            console.log(error);
+                                                                            alert('error' + JSON.stringify(error));
+                                                                        });
+                                                                } else {
+                                                                    NotificationManager.warning("Passwords don't match", 'Warning');
+                                                                }
+                                                            } else {
+                                                                signInWithEmailAndPassword(auth, email, password)
                                                                     .then((response) => {
                                                                         if (response) {
                                                                             var temp = { ...payload };
@@ -206,34 +226,17 @@ const Login = () => {
                                                                         }
                                                                     })
                                                                     .catch((error) => {
-                                                                        console.log(error);
-                                                                        alert('error' + JSON.stringify(error));
+                                                                        if (error?.code == 'auth/missing-password') {
+                                                                            NotificationManager.warning('Please Enter Your Password', 'Warning');
+                                                                        } else if (error?.code == 'auth/wrong-password') {
+                                                                            NotificationManager.warning('Wrong Password', 'Warning');
+                                                                        }
                                                                     });
-                                                            } else {
-                                                                NotificationManager.warning("Passwords don't match", 'Warning');
                                                             }
-                                                        } else {
-                                                            signInWithEmailAndPassword(auth, email, password)
-                                                                .then((response) => {
-                                                                    if (response) {
-                                                                        // alert(JSON.stringify(response.user));
-                                                                        var temp = { ...payload };
-                                                                        temp.token = response.user.accessToken;
-
-                                                                        handleRequestLoginResponse(temp);
-                                                                    }
-                                                                })
-                                                                .catch((error) => {
-                                                                    console.log(error);
-                                                                    alert('error1' + JSON.stringify(error));
-                                                                });
                                                         }
+                                                    } else {
+                                                        NotificationManager.warning('Please enter a valid email', 'Warning');
                                                     }
-
-                                                    // } else {
-                                                    //     setverified(true);
-                                                    // }
-                                                    // LoginmutationContext.mutate({ email: email, password: password });
                                                 }}
                                                 class={`${generalstyles.btn} ${generalstyles.btn_primary}` + ' font-15 allcentered '}
                                                 style={{

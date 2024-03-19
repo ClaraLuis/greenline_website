@@ -8,29 +8,12 @@ import API from './API/API';
 export const Loggedincontext = React.createContext();
 
 export const Loggedincontext_provider = (props) => {
-    const { Checkauth_API } = API();
-
     // const { fetchuseauthorization } = API();
     const [cookies, setCookie] = useCookies();
-    // axios.interceptors.request.use(function (config) {
-    //     var defaultheaders = config.headers;
-    //     var token = cookies['12312easdasdas32131asdsadsadsaqweasd123!@_#!@3123'];
-
-    //     if (token != undefined) {
-    //         // if (token.access != undefined) {
-    //         defaultheaders.Authorization = 'Bearer ' + token;
-    //         // }
-    //     }
-    //     config.headers = defaultheaders;
-    //     return config;
-    // });
     const [loggedincontext, setloggedincontext] = useState(false);
 
     const [tokencontext, settokencontext] = useState('');
-    // const fetchuseauthorizationQueryContext = useQuery(['fetchuseauthorization'], () => fetchuseauthorization(), {
-    //     keepPreviousData: true,
-    //     staleTime: 500000000000000000,
-    // });
+
     useEffect(() => {
         var token = cookies['12312easdasdas32131asdsadsadsaqweasd123!@_#!@3123'];
         settokencontext(token);
@@ -68,10 +51,6 @@ export const Loggedincontext_provider = (props) => {
             instlogo: '',
         },
     });
-    const fetchAuthorizationQueryContext = useQuery(['Checkauth_API'], () => Checkauth_API(), {
-        keepPreviousData: true,
-        staleTime: Infinity,
-    });
 
     return (
         <Loggedincontext.Provider
@@ -82,7 +61,6 @@ export const Loggedincontext_provider = (props) => {
                 setuserloggedinfobjcontext,
                 instbranchescontext,
                 setinstbranchescontext,
-                fetchAuthorizationQueryContext,
                 tokencontext,
                 settokencontext,
                 headersContext,

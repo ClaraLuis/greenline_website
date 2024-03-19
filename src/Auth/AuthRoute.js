@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import logo from '../components/Website/Generalfiles/images/logo.png';
 import API from '../API/API';
+import { NotificationManager } from 'react-notifications';
 
 const AuthRoute = (props) => {
     const { useLazyQueryGQL, useMutationGQL, isValidEmailMutation, requestLoginResponse } = API();
@@ -59,7 +60,8 @@ const AuthRoute = (props) => {
     }, [auth]);
     useEffect(() => {
         if (error) {
-            alert(JSON.stringify(error));
+            NotificationManager.warning(error, '');
+            // alert(JSON.stringify(error));
         }
         if (data) {
             if (!data?.isValidEmail?.isValid) {

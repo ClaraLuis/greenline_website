@@ -20,7 +20,7 @@ const Signup = () => {
     const { Login_API } = API();
     const cookies = new Cookies();
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, LoginmutationContext, fetchAuthorizationQueryContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, fetchAuthorizationQueryContext } = useContext(Contexthandlerscontext);
     const [otp, setOtp] = useState('');
     const [value, setValue] = useState('');
     const [signupobj, setsignupobj] = useState({
@@ -81,8 +81,6 @@ const Signup = () => {
             .then((response) => {
                 console.log(response.data);
                 if (response?.data?.status) {
-                    // NotificationManager.success('', 'Your request is being reviewed and an email will be sent to you upon acceptance and rejection with its reasoning');
-                    // LoginmutationContext.mutate({ email: signupobj.email, password: signupobj.password });
                     cookies.set('coas12312efaasasdafasdas32131asdsadsadsaqweasdkjenfjenfk kern123!@_#!@3123', response.data.token);
                     fetchAuthorizationQueryContext.refetch();
                 } else {
