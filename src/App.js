@@ -1,4 +1,4 @@
-import React, { Suspense, useContext, useState } from 'react';
+import React, { Suspense, useContext, useEffect, useState } from 'react';
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 import { NotificationContainer } from 'react-notifications';
 import 'react-notifications/lib/notifications.css';
@@ -34,9 +34,6 @@ const App = (props) => {
         cache: new InMemoryCache(),
     });
 
-    const isadminandloggedin = () => {
-        return loggedincontext;
-    };
     return (
         <ApolloProvider client={client}>
             <Contexthandlerscontext_provider>
@@ -74,9 +71,9 @@ const App = (props) => {
                                                         return <Redirect to={'/users'} />;
                                                     }}
                                                 />
-                                                <AuthRoute>
-                                                    <Route exact path="*" component={Websiterouter} />
-                                                </AuthRoute>
+
+                                                <AuthRoute>{loggedincontext && <Route exact path="*" component={Websiterouter} />}</AuthRoute>
+
                                                 {/* <AuthRoute> */}
                                                 <Route exact path="/login" component={Login} />
                                                 {/* </AuthRoute> */}

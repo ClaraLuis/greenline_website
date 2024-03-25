@@ -90,6 +90,7 @@ const Login = () => {
             if (requestLoginData != null) {
                 // alert(JSON.stringify(requestLoginData?.data?.requestToken?.user));
                 setUserInfoContext(requestLoginData?.data?.requestToken);
+                setloggedincontext(true);
                 history.push('/users');
                 // TODO store user data
             }

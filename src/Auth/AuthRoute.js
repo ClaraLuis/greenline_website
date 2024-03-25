@@ -1,14 +1,16 @@
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 // import { useNavigate } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import logo from '../components/Website/Generalfiles/images/logo.png';
 import API from '../API/API';
 import { NotificationManager } from 'react-notifications';
+import { Loggedincontext } from '../Loggedincontext';
 
 const AuthRoute = (props) => {
     const { useLazyQueryGQL, useMutationGQL, isValidEmailMutation, requestLoginResponse } = API();
     const { children } = props;
+    const { loggedincontext, setloggedincontext } = useContext(Loggedincontext);
 
     const auth = getAuth();
     // const navigate = useNavigate();
@@ -41,6 +43,9 @@ const AuthRoute = (props) => {
             console.log('checking');
             if (user) {
                 setaccessUser(user);
+                var temp = true;
+                setloggedincontext(true);
+
                 try {
                     await checkEmail({
                         variables: {

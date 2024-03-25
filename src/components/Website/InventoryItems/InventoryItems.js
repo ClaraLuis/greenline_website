@@ -6,6 +6,7 @@ import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
 import { components } from 'react-select';
+import { FaLayerGroup } from 'react-icons/fa';
 
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
@@ -252,7 +253,7 @@ const InventoryItems = (props) => {
                                 {fetchusers?.data?.paginateUsers?.data?.length == 0 && (
                                     <div style={{ height: '70vh' }} class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
                                         <div class="row m-0 w-100">
-                                            <FaLayerGroups size={40} class=" col-lg-12" />
+                                            <FaLayerGroup size={40} class=" col-lg-12" />
                                             <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
                                                 No History
                                             </div>
