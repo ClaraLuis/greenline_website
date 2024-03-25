@@ -35,6 +35,22 @@ const API = () => {
         `;
     };
 
+    const addInventory = () => {
+        return gql`
+            mutation createInventory($input: CreateInventoryInput!) {
+                createInventory(CreateInventoryInput: $input)
+            }
+        `;
+    };
+
+    const importNew = () => {
+        return gql`
+            mutation importNew($input: ImportNewItemInput!) {
+                importNewItem(input: $input)
+            }
+        `;
+    };
+
     const requestLoginResponse = () => {
         return gql`
             mutation requestTokenMutation($input: TokenRequestInput!) {
@@ -64,6 +80,66 @@ const API = () => {
                 isValidEmail(email: $email) {
                     isValid
                     id
+                }
+            }
+        `;
+    };
+
+    const fetchInventories = () => {
+        return gql`
+            query paginateInventories {
+                paginateInventories(input: { limit: 10 }) {
+                    data {
+                        id
+                        hubId
+                        name
+                    }
+                    cursor
+                }
+            }
+        `;
+    };
+
+    const fetchItemsInBox = () => {
+        return gql`
+            query paginateItemsInBox {
+                paginateItemInBox(input: { limit: 10, isAsc: true }) {
+                    data {
+                        id
+                        itemSku
+                        inventoryId
+                        count
+                        totalCount
+                        item {
+                            name
+                            merchantId
+                        }
+                    }
+                    cursor
+                }
+            }
+        `;
+    };
+    const fetchIdleOrders = () => {
+        return gql`
+            query findOrders {
+                paginateOrders(input: { merchantIds: [], statuses: [idle], limit: 5 }) {
+                    data {
+                        id
+                        shippingPrice
+                        items {
+                            itemSku
+                            frozenPrice
+                            frozenCurrency
+                            info {
+                                name
+                            }
+                            inventory {
+                                count
+                            }
+                        }
+                    }
+                    cursor
                 }
             }
         `;
@@ -148,6 +224,43 @@ const API = () => {
             }
         `;
     };
+    const fetchRacks = (payload) => {
+        return gql`
+        query paginateRacks{
+            paginateRacks(input: {
+              limit: ${JSON.stringify(payload?.limit)},
+              invetoryIds: ${JSON.stringify(payload?.invetoryIds)},
+              
+            }){
+              data{
+                name,
+                ballots{
+                  id
+                  name
+                }
+              },
+              
+              cursor
+            }
+          }
+        `;
+    };
+    const fetchItemHistory = (itemInBoxId) => {
+        return gql`
+        query paginateItemHistory{
+            paginateItemHistory(input: {
+              itemInBoxId: ${JSON.stringify(itemInBoxId)},
+              
+            }){
+                data{
+                amount,
+                description,
+              },
+              cursor
+            }
+          }
+        `;
+    };
 
     const useQueryGQL = (token, query) => {
         return useQuery(query, {
@@ -171,6 +284,13 @@ const API = () => {
         requestLoginResponse,
         fetchMerchantItems,
         addItem,
+        fetchInventories,
+        addInventory,
+        fetchItemsInBox,
+        importNew,
+        fetchIdleOrders,
+        fetchRacks,
+        fetchItemHistory,
     };
 };
 export default API;

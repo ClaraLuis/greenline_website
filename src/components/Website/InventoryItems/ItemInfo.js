@@ -25,7 +25,7 @@ const ItemInfo = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, dateformatter } = useContext(Contexthandlerscontext);
-    const { UserMutation_API, DeleteUserMutation_API, useQueryGQL, fetchUsers, useMutationGQL, addUser } = API();
+    const { UserMutation_API, DeleteUserMutation_API, useQueryGQL, useMutationGQL, addUser } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [submit, setsubmit] = useState(false);
@@ -39,21 +39,7 @@ const ItemInfo = (props) => {
         { type: 'export', count: 30, inventory: 'inv 3' },
         { type: 'export', count: 30, inventory: 'inv 3' },
     ]);
-    const [addUser1] = useMutationGQL(addUser(props?.leadpayload));
-    const { refetch: refetchUsers } = useQueryGQL('', fetchUsers());
-    const fetchusers = useQueryGQL('', fetchUsers());
 
-    const handleAddUser = async () => {
-        try {
-            const { data } = await addUser1();
-            props?.setopenModal(false);
-            refetchUsers();
-
-            console.log(data); // Handle response
-        } catch (error) {
-            console.error('Error adding user:', error);
-        }
-    };
     return (
         <>
             <Modal
@@ -68,9 +54,9 @@ const ItemInfo = (props) => {
                     <div className="row w-100 m-0 p-0">
                         <div class="col-lg-6 pt-3 ">
                             <div className="row w-100 m-0 p-0 d-flex align-items-center">
-                                Item : {props?.leadpayload.name}{' '}
-                                <span class="mx-1" style={{ fontSize: '13px', color: 'var(--primary)' }}>
-                                    ({props?.leadpayload?.sku})
+                                Item : {props?.item?.item?.name}{' '}
+                                <span class="mx-1 mt-1" style={{ fontSize: '13px', color: 'var(--primary)' }}>
+                                    ({props?.item?.itemSku})
                                 </span>
                             </div>
                         </div>
@@ -87,31 +73,24 @@ const ItemInfo = (props) => {
                     </div>
                 </Modal.Header>
                 <Modal.Body>
-                    <div style={{ fontSize: '14px' }} class="row m-0 w-100 py-2">
-                        <div class=" mr-2 mb-2" style={{ width: '120px', height: '120px', border: '1px solid var(--secondary)' }}>
-                            <img
-                                src={'https://www.shutterstock.com/image-vector/new-label-shopping-icon-vector-260nw-1894227709.jpg'}
-                                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-                            />
-                        </div>
-
+                    <div style={{ fontSize: '14px' }} class="row m-0 w-100 pb-2">
                         <div class="col-lg-7 p-0">
-                            <div class="row m-0 w-100">
+                            <div style={{ border: '1px solid #eee', borderRadius: '15px' }} class="row m-0 p-2 px-3 mb-2 w-100">
                                 <div class="col-lg-12 p-0 mt-2">
-                                    <span>Size: </span>
-                                    <span style={{ fontWeight: 600 }}> {props?.leadpayload?.size}</span>
+                                    <span>Inventory: </span>
+                                    <span style={{ fontWeight: 600 }}> {props?.item.inventoryId}</span>
                                 </div>
                                 <div class="col-lg-12 p-0 mt-1">
-                                    <span>Color: </span>
-                                    <span style={{ fontWeight: 600 }}> {props?.leadpayload?.color}</span>
+                                    <span>Count: </span>
+                                    <span style={{ fontWeight: 600 }}> {props?.item.count}</span>
                                 </div>
                                 <div class="col-lg-12 p-0 mt-1">
-                                    <span>Count in Inventory: </span>
-                                    <span style={{ fontWeight: 600 }}> {props?.leadpayload?.countinventory}</span>
+                                    <span>Total Count: </span>
+                                    <span style={{ fontWeight: 600 }}> {props?.item.totalCount}</span>
                                 </div>
                                 <div class="col-lg-12 p-0 mt-1">
                                     <span>Merchant: </span>
-                                    <span style={{ fontWeight: 600 }}> {props?.leadpayload?.merchantname}</span>
+                                    <span style={{ fontWeight: 600 }}> {props?.item?.item?.merchantId}</span>
                                 </div>
                             </div>
                         </div>
@@ -119,14 +98,14 @@ const ItemInfo = (props) => {
                             <span style={{ fontWeight: 600 }}> Item History:</span>
                         </div>
                         <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
-                            {fetchusers?.loading && (
+                            {props?.fetchItemHistoryQuery?.loading && (
                                 <div style={{ height: '70vh' }} class="row w-100 allcentered m-0">
                                     <CircularProgress color="var(--primary)" width="60px" height="60px" duration="1s" />
                                 </div>
                             )}
-                            {!fetchusers?.loading && fetchusers?.data != undefined && (
+                            {!props?.fetchItemHistoryQuery?.loading && props?.fetchItemHistoryQuery?.data != undefined && (
                                 <>
-                                    {fetchusers?.data?.paginateUsers?.data?.length == 0 && (
+                                    {props?.fetchItemHistoryQuery?.data?.paginateItemHistory?.data?.length == 0 && (
                                         <div style={{ height: '70vh' }} class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
                                             <div class="row m-0 w-100">
                                                 <FaLayerGroup size={40} class=" col-lg-12" />
@@ -136,25 +115,21 @@ const ItemInfo = (props) => {
                                             </div>
                                         </div>
                                     )}
-                                    {fetchusers?.data?.length != 0 && (
+                                    {props?.fetchItemHistoryQuery?.data?.paginateItemHistory?.data?.length != 0 && (
                                         <table style={{}} className={'table text-capitalize'}>
                                             <thead>
-                                                <th>Type</th>
-                                                <th>Count</th>
-                                                <th>inventory</th>
+                                                <th>Amount</th>
+                                                <th>Description</th>
                                             </thead>
                                             <tbody>
-                                                {itemsarray?.map((item, index) => {
+                                                {props?.fetchItemHistoryQuery?.data?.paginateItemHistory?.data?.map((item, index) => {
                                                     return (
                                                         <tr>
                                                             <td>
-                                                                <p className={item?.type == 'import' ? ' text-success m-0 p-0 wordbreak ' : ' text-danger m-0 p-0 wordbreak '}>{item?.type}</p>
+                                                                <p className={' m-0 p-0 wordbreak '}>{item?.amount}</p>
                                                             </td>
                                                             <td>
-                                                                <p className={' m-0 p-0 wordbreak '}>{item?.count}</p>
-                                                            </td>
-                                                            <td>
-                                                                <p className={' m-0 p-0 wordbreak '}>{item?.inventory}</p>
+                                                                <p className={' m-0 p-0 wordbreak '}>{item?.description}</p>
                                                             </td>
                                                         </tr>
                                                     );
@@ -163,9 +138,9 @@ const ItemInfo = (props) => {
                                         </table>
                                     )}
                                     {/* <Pagespaginatecomponent
-                                totaldatacount={FetchUsers?.data?.data?.total}
-                                numofitemsperpage={FetchUsers?.data?.data?.per_page}
-                                pagenumbparams={FetchUsers?.data?.data?.current_page}
+                                totaldatacount={props?.fetchItemHistoryQuery?.data?.data?.total}
+                                numofitemsperpage={props?.fetchItemHistoryQuery?.data?.data?.per_page}
+                                pagenumbparams={props?.fetchItemHistoryQuery?.data?.data?.current_page}
                                 nextpagefunction={(nextpage) => {
                                     history.push({
                                         pathname: '/users',

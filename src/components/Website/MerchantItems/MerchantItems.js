@@ -299,10 +299,33 @@ const MerchantItems = (props) => {
                         </div>
                     </div>
                 </div>
-
                 <div class={generalstyles.card + ' row m-0 w-100'}>
                     <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
                         <ItemsTable card="col-lg-3" fetchMerchantItemsQuery={fetchMerchantItemsQuery} />
+                    </div>
+                    <div class="col-lg-6  d-flex align-items-center ">
+                        {fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.beforeCursor != null && (
+                            <div
+                                onClick={() => {
+                                    setfiter({ ...filter, beforeCursor: fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.beforeCursor, afterCursor: null });
+                                }}
+                                class={'text-secondaryhover'}
+                            >
+                                Previous
+                            </div>
+                        )}
+                    </div>
+                    <div class="col-lg-6  d-flex align-items-center justify-content-end ">
+                        {fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.afterCursor != null && (
+                            <div
+                                onClick={() => {
+                                    setfiter({ ...filter, afterCursor: fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.afterCursor, beforeCursor: null });
+                                }}
+                                class={'text-secondaryhover'}
+                            >
+                                Next
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

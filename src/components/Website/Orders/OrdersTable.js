@@ -60,7 +60,7 @@ const OrdersTable = (props) => {
 
     return (
         <>
-            {fetchusers?.loading && (
+            {props?.fetchIdleOrdersQuery?.loading && (
                 <div style={{ height: '70vh' }} class="row w-100 allcentered m-0">
                     <CircularProgress color="var(--primary)" width="60px" height="60px" duration="1s" />
                 </div>
@@ -84,11 +84,10 @@ const OrdersTable = (props) => {
 
                     <th>Items count</th>
 
-                    <th>Merchant</th>
                     <th>Status</th>
                 </thead>
                 <tbody>
-                    {itemsarray?.map((item, index) => {
+                    {props?.fetchIdleOrdersQuery?.data?.fetchIdleOrdersQuery?.data?.map((item, index) => {
                         return (
                             <tr
                                 onClick={() => {
@@ -101,13 +100,10 @@ const OrdersTable = (props) => {
                                     <p className={' m-0 p-0 wordbreak '}>{item.id}</p>
                                 </td>
                                 <td>
-                                    <p className={' m-0 p-0 wordbreak  '}>5</p>
+                                    <p className={' m-0 p-0 wordbreak  '}>{item?.items?.length}</p>
                                     {/* <p className={' m-0 p-0 wordbreak text-secondaryhover '}>5</p> */}
                                 </td>
 
-                                <td>
-                                    <p className={' m-0 p-0 wordbreak '}>{item?.merchantname}</p>
-                                </td>
                                 <td>
                                     <div
                                         onClick={() => {
@@ -115,18 +111,20 @@ const OrdersTable = (props) => {
                                         }}
                                         style={{ cursor: 'pointer' }}
                                         className={
-                                            item.status == 'delivered'
-                                                ? ' wordbreak text-success bg-light-success rounded-pill  '
-                                                : item?.status == 'postponed' || item?.status == 'failedDeliveryAttempt'
-                                                ? ' wordbreak text-danger bg-light-danger rounded-pill  '
-                                                : ' wordbreak text-warning bg-light-warning rounded-pill  '
+                                            // item.status == 'delivered'
+                                            //     ? ' wordbreak text-success bg-light-success rounded-pill  '
+                                            //     : item?.status == 'postponed' || item?.status == 'failedDeliveryAttempt'
+                                            //     ? ' wordbreak text-danger bg-light-danger rounded-pill  '
+                                            //     :
+                                            ' wordbreak text-warning bg-light-warning rounded-pill  '
                                         }
                                     >
-                                        {orderStatusesContext?.map((i, ii) => {
+                                        {/* {orderStatusesContext?.map((i, ii) => {
                                             if (i.value == item?.status) {
                                                 return <span>{i.label}</span>;
                                             }
-                                        })}
+                                        })} */}
+                                        Idle
                                     </div>
                                 </td>
                             </tr>

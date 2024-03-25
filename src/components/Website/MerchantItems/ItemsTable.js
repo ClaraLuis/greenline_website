@@ -26,17 +26,6 @@ const ItemsTable = (props) => {
 
     const { lang, langdetect } = useContext(LanguageContext);
 
-    const [openModal, setopenModal] = useState(false);
-    const [selectedinventory, setselectedinventory] = useState('');
-    const [chosenracks, setchosenracks] = useState([]);
-    const [itemsarray, setitemsarray] = useState([
-        { sku: '123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1', colors: ['#ee6396', '#5c4057'] },
-        { sku: '123123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1', colors: ['#041595', '#cc5500', '#648b7f'] },
-        { sku: '163123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1', colors: ['#5c4057', '#648b7f'] },
-        { sku: '129123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1', colors: ['#ee6396', '#77c1fb', '#5c4057'] },
-        { sku: '1223', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1', colors: ['#cc5500', '#77c1fb', '#648b7f'] },
-    ]);
-
     return (
         <>
             {props?.fetchMerchantItemsQuery?.loading && (
@@ -92,7 +81,13 @@ const ItemsTable = (props) => {
                                         {item?.sku}
                                     </div>
                                     <div class="col-lg-12 p-0 mt-2" style={{ fontWeight: 700, fontSize: '15px' }}>
-                                        300 EGP
+                                        {item?.prices?.map((price, priceindex) => {
+                                            return (
+                                                <>
+                                                    {price?.info[0]?.price} {price?.info[0]?.currency}
+                                                </>
+                                            );
+                                        })}
                                     </div>
                                     <div class="col-lg-12 p-0 mt-1">
                                         <div class="row m-0 w-100">

@@ -166,6 +166,16 @@ export const Contexthandlerscontext_provider = (props) => {
         { label: 'Other', value: 'other' },
     ]);
 
+    const [inventoryTypesContext, setinventoryTypesContext] = useState([
+        { label: 'Item', value: 'item' },
+        { label: 'Box', value: 'box' },
+        { label: 'Ballot', value: 'ballot' },
+        { label: 'Refund', value: 'refund' },
+        { label: 'Rack', value: 'rack' },
+        { label: 'Inventory', value: 'inventory' },
+        { label: 'Meter', value: 'meter' },
+    ]);
+
     useEffect(() => {
         var pagesarr = [
             {
@@ -439,6 +449,8 @@ export const Contexthandlerscontext_provider = (props) => {
                 setuserTypesContext,
                 UserInfoContext,
                 setUserInfoContext,
+                inventoryTypesContext,
+                setinventoryTypesContext,
             }}
         >
             {props.children}
