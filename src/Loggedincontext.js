@@ -8,7 +8,6 @@ import API from './API/API';
 export const Loggedincontext = React.createContext();
 
 export const Loggedincontext_provider = (props) => {
-    // const { fetchuseauthorization } = API();
     const [cookies, setCookie] = useCookies();
     const [loggedincontext, setloggedincontext] = useState(false);
 

@@ -134,87 +134,6 @@ const AddOrder = (props) => {
                                 }}
                                 card="col-lg-4"
                             />
-
-                            {orderpayload?.items?.length != 0 && (
-                                <>
-                                    <div class="col-lg-12 py-4 px-3" style={{ fontSize: '17px', fontWeight: 700 }}>
-                                        Items
-                                    </div>
-                                    {orderpayload?.items?.map((item, index) => {
-                                        return (
-                                            <div class={' col-lg-4'}>
-                                                <div class={generalstyles.card + ' p-3 row m-0 w-100'}>
-                                                    <div class="col-lg-12 p-0">
-                                                        <div style={{ width: '100%', height: '200px' }}>
-                                                            <img
-                                                                src="https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg"
-                                                                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-7 p-0 mt-2 wordbreak" style={{ fontWeight: 700, fontSize: '16px' }}>
-                                                        {item?.item?.name}
-                                                    </div>
-
-                                                    <div class="col-lg-5 d-flex justify-content-end mt-2 p-0">
-                                                        <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
-                                                            <FaWindowMinimize
-                                                                onClick={() => {
-                                                                    if (orderpayload.items[index].count > 0) {
-                                                                        var temp = { ...orderpayload };
-                                                                        temp.items[index].count -= 1;
-                                                                        setorderpayload({ ...temp });
-                                                                    } else {
-                                                                        var temp = { ...orderpayload };
-                                                                        temp.items.splice(index, 1);
-                                                                        setorderpayload({ ...temp });
-                                                                    }
-                                                                }}
-                                                                class=" mb-2 text-danger text-dangerhover"
-                                                            />
-
-                                                            <input
-                                                                // disabled={props?.disabled}
-                                                                type={'number'}
-                                                                class={formstyles.form__field + ' mx-2 p-1'}
-                                                                style={{ height: '25px', width: '52%' }}
-                                                                value={item?.count}
-                                                                placeholder={'Search by name or SKU'}
-                                                                onChange={(event) => {
-                                                                    var temp = { ...orderpayload };
-                                                                    temp.items[index].count = event.target.value;
-                                                                    setorderpayload({ ...temp });
-                                                                }}
-                                                            />
-                                                            <FaPlus
-                                                                onClick={() => {
-                                                                    var temp = { ...orderpayload };
-                                                                    temp.items[index].count += 1;
-                                                                    setorderpayload({ ...temp });
-                                                                }}
-                                                                class=" text-secondaryhover"
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-12 p-0" style={{ fontWeight: 600, fontSize: '13px', color: 'lightgray' }}>
-                                                        {item?.item?.sku}
-                                                    </div>
-                                                    <div class="col-lg-12 p-0 mt-2" style={{ fontWeight: 700, fontSize: '15px' }}>
-                                                        300 EGP
-                                                    </div>
-                                                    <div class="col-lg-12 p-0 mt-1">
-                                                        <div class="row m-0 w-100">
-                                                            {item?.item?.colors?.map((color, colorindex) => {
-                                                                return <div style={{ width: '18px', height: '18px', borderRadius: '100%', backgroundColor: color, marginInlineEnd: '5px' }}></div>;
-                                                            })}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
-                                </>
-                            )}
                         </div>
                     </div>
                 )}
@@ -251,7 +170,7 @@ const AddOrder = (props) => {
                                                 Email: <span style={{ fontWeight: 600 }}>{selecteduser?.email}</span>
                                             </div>
                                             <div class="col-lg-12">
-                                                Phone Number: <span style={{ fontWeight: 600 }}>{selecteduser?.phonenumber}</span>
+                                                Phone Number: <span style={{ fontWeight: 600 }}>{selecteduser?.phone}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -312,6 +231,75 @@ const AddOrder = (props) => {
                     </div>
                 )}
                 <div class="col-lg-4 mb-3">
+                    <div class="col-lg-12">
+                        {orderpayload?.items?.length != 0 && (
+                            <>
+                                <div class="col-lg-12 pb-2 px-3" style={{ fontSize: '17px', fontWeight: 700 }}>
+                                    Cart ({orderpayload?.items?.length})
+                                </div>
+                                {orderpayload?.items?.map((item, index) => {
+                                    return (
+                                        <div class={' col-lg-12 p-0'}>
+                                            <div class={generalstyles.filter_container + ' py-2 row m-0 mb-2 w-100 allcentered'}>
+                                                <div class="col-lg-2 mr-2 p-0">
+                                                    <div style={{ width: '100%', height: '40px' }}>
+                                                        <img
+                                                            src="https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg"
+                                                            style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-4 p-0 wordbreak" style={{ fontWeight: 700, fontSize: '16px' }}>
+                                                    {item?.item?.name}
+                                                </div>
+
+                                                <div class="col-lg-5 d-flex justify-content-end  p-0">
+                                                    <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
+                                                        <FaWindowMinimize
+                                                            onClick={() => {
+                                                                if (orderpayload.items[index].count > 0) {
+                                                                    var temp = { ...orderpayload };
+                                                                    temp.items[index].count -= 1;
+                                                                    setorderpayload({ ...temp });
+                                                                } else {
+                                                                    var temp = { ...orderpayload };
+                                                                    temp.items.splice(index, 1);
+                                                                    setorderpayload({ ...temp });
+                                                                }
+                                                            }}
+                                                            class=" mb-2 text-danger text-dangerhover"
+                                                        />
+
+                                                        <input
+                                                            // disabled={props?.disabled}
+                                                            type={'number'}
+                                                            class={formstyles.form__field + ' mx-2 p-1'}
+                                                            style={{ height: '25px', width: '52%' }}
+                                                            value={item?.count}
+                                                            placeholder={'Search by name or SKU'}
+                                                            onChange={(event) => {
+                                                                var temp = { ...orderpayload };
+                                                                temp.items[index].count = event.target.value;
+                                                                setorderpayload({ ...temp });
+                                                            }}
+                                                        />
+                                                        <FaPlus
+                                                            onClick={() => {
+                                                                var temp = { ...orderpayload };
+                                                                temp.items[index].count += 1;
+                                                                setorderpayload({ ...temp });
+                                                            }}
+                                                            class=" text-secondaryhover"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </>
+                        )}
+                    </div>
                     <Form
                         size={'lg'}
                         submit={submit}
@@ -319,7 +307,6 @@ const AddOrder = (props) => {
                         attr={[
                             { name: 'Order type', attr: 'ordertype', type: 'select', options: [{ label: 'Delivery', value: 'delivery' }], size: '12' },
                             { name: 'Payment type', attr: 'paymenttype', type: 'select', options: [{ label: 'Cash', value: 'cash' }], size: '12' },
-                            { name: 'Shipping price', attr: 'shippingprice', type: 'number', size: '12' },
                             { name: 'Can be oppened', attr: 'canbeoppened', type: 'checkbox', size: '12' },
                             { name: 'Fragile', attr: 'fragile', type: 'checkbox', size: '12' },
                             { name: 'Partial delivery', attr: 'partialdelivery', type: 'checkbox', size: '12' },

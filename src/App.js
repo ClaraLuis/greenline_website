@@ -33,18 +33,7 @@ const App = (props) => {
         uri: 'http://localhost:3001/graphql',
         cache: new InMemoryCache(),
     });
-    axios.interceptors.request.use(function (config) {
-        const cookies = new Cookies();
 
-        var defaultheaders = config.headers;
-        var token = cookies.get('coas8866612efaasasdscjckkkkas32131asdsadsassjjscjjjeasd123!@_#!@3123');
-        if (token != undefined) {
-            defaultheaders.Authorization = 'Bearer ' + token;
-        }
-
-        config.headers = defaultheaders;
-        return config;
-    });
     const isadminandloggedin = () => {
         return loggedincontext;
     };
@@ -86,7 +75,7 @@ const App = (props) => {
                                                     }}
                                                 />
                                                 <AuthRoute>
-                                                    <Route exact path="/users" component={Websiterouter} />
+                                                    <Route exact path="*" component={Websiterouter} />
                                                 </AuthRoute>
                                                 {/* <AuthRoute> */}
                                                 <Route exact path="/login" component={Login} />

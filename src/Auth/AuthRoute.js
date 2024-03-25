@@ -77,14 +77,14 @@ const AuthRoute = (props) => {
 
     if (loading)
         return (
-            <div style={{ height: '100vh' }} class="row w-100 allcentered m-0">
-                <div class="col-lg-12 p-0">
-                    <div class="row m-0 w-100">
-                        <div class="col-lg-12 p-0 d-flex allcentered">
+            <div style={{ height: '100vh' }} className="row w-100 allcentered m-0">
+                <div className="col-lg-12 p-0">
+                    <div className="row m-0 w-100">
+                        <div className="col-lg-12 p-0 d-flex allcentered">
                             <img style={{ objectFit: 'contain', widht: '15vh', height: '15vh' }} src={logo} />
                         </div>
-                        <div class="col-lg-12 p-0 d-flex allcentered mt-3">
-                            <p class="font-weight-600">Loading...</p>
+                        <div className="col-lg-12 p-0 d-flex allcentered mt-3">
+                            <p className="font-weight-600">Loading...</p>
                         </div>
                     </div>
                 </div>

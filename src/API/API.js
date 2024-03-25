@@ -26,6 +26,15 @@ const API = () => {
             }
         `;
     };
+
+    const addItem = () => {
+        return gql`
+            mutation createSingles($input: [SingleItemRefInput!]!) {
+                createMerchantItemSingles(input: $input)
+            }
+        `;
+    };
+
     const requestLoginResponse = () => {
         return gql`
             mutation requestTokenMutation($input: TokenRequestInput!) {
@@ -75,8 +84,9 @@ const API = () => {
         return mutation;
     };
 
-    const useLazyQueryGQL = (query) => {
+    const useLazyQueryGQL = (query, fetchPolicy) => {
         const mutation = useLazyQuery(query, {
+            fetchPolicy: fetchPolicy ?? 'network-only',
             context: {
                 headers: {
                     Authorization:
@@ -104,8 +114,44 @@ const API = () => {
         `;
     };
 
+    const fetchMerchantItems = (payload) => {
+        return gql`
+            query paginateItms{
+                paginateItems(itemPageInput: {
+                limit: ${JSON.stringify(payload?.limit)}, 
+                isAsc: true,
+                afterCursor: ${JSON.stringify(payload?.afterCursor)},
+                beforeCursor: ${JSON.stringify(payload?.beforeCursor)},
+                name: ${JSON.stringify(payload?.name)},
+                sku:  ${JSON.stringify(payload?.sku)},
+                }){
+            
+                data{
+                    sku,
+                    name,
+                    merchantSku,
+                    size,
+                    color,
+                    colorHex,
+                    description,
+                    name,
+                    imageUrl,
+                    prices{
+                    info{
+                        currency
+                        price
+                    }
+                    }
+                }
+                cursor
+                }
+            }
+        `;
+    };
+
     const useQueryGQL = (token, query) => {
         return useQuery(query, {
+            fetchPolicy: 'network-only',
             context: {
                 headers: {
                     Authorization:
@@ -123,6 +169,8 @@ const API = () => {
         isValidEmailMutation,
         useLazyQueryGQL,
         requestLoginResponse,
+        fetchMerchantItems,
+        addItem,
     };
 };
 export default API;

@@ -44,7 +44,6 @@ const App = (props) => {
     const params = new URLSearchParams(location.search);
     const [isOpen, setIsOpen] = useState(false);
     const [isOpen1, setIsOpen1] = useState(false);
-    const { UserChooseCurrentCompan_API } = API();
     const { hidesidenav_context, sethidesidenav_context, setopenloginmodalcontext, openloginmodalcontext, pagetitle_context } = React.useContext(Contexthandlerscontext);
     useEffect(() => {
         // if (openloginmodalcontext != true) {
@@ -62,21 +61,6 @@ const App = (props) => {
         //     }, 2000);
         // }
     }, []);
-    const UserChooseCurrentCompanyMutation = useMutation('UserChooseCurrentCompan_API', {
-        mutationFn: UserChooseCurrentCompan_API,
-        onMutate: (variables) => {},
-        onError: (error, variables, context) => {
-            NotificationManager.warning('', 'Error');
-        },
-        onSuccess: (data, variables, context) => {
-            if (data.data.status) {
-                window.location.reload();
-                NotificationManager.success('', 'Success');
-            } else {
-                NotificationManager.warning(data.data.reason, 'Warning');
-            }
-        },
-    });
 
     return (
         <div class="row m-0 w-100">
@@ -241,7 +225,7 @@ const App = (props) => {
                                                             exact
                                                             path="/"
                                                             render={(props) => {
-                                                                return <Redirect to={'/users'} />;
+                                                                return <Redirect to={'/merchantitems'} />;
                                                             }}
                                                         />
 

@@ -104,7 +104,6 @@ const Login = () => {
     useEffect(() => {
         if (error) {
             alert(JSON.stringify(error));
-            // NotificationManager.warning(JSON.stringify(error.message), 'Warning');
         }
         if (data) {
             if (!data?.isValidEmail?.isValid) {

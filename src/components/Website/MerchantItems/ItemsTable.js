@@ -22,7 +22,7 @@ const ItemsTable = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, dateformatter } = useContext(Contexthandlerscontext);
-    const { fetchUsers, useQueryGQL } = API();
+    const { fetchMerchantItems, useQueryGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
 
@@ -37,45 +37,30 @@ const ItemsTable = (props) => {
         { sku: '1223', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1', colors: ['#cc5500', '#77c1fb', '#648b7f'] },
     ]);
 
-    const [leadpayload, setleadpayload] = useState({
-        functype: 'add',
-        id: 'add',
-        name: '',
-        type: '',
-        phone: '',
-        email: '',
-        birthdate: '',
-    });
-    const [filterobj, setfilterobj] = useState({
-        page: 1,
-        search: '',
-    });
-
-    const fetchusers = useQueryGQL('', fetchUsers());
-
     return (
         <>
-            {/*       
-      {fetchusers?.loading && (
-                            <div style={{ height: '70vh' }} class="row w-100 allcentered m-0">
-                                <CircularProgress color="var(--primary)" width="60px" height="60px" duration="1s" />
+            {props?.fetchMerchantItemsQuery?.loading && (
+                <div style={{ height: '70vh' }} class="row w-100 allcentered m-0">
+                    <CircularProgress color="var(--primary)" width="60px" height="60px" duration="1s" />
+                </div>
+            )}
+            {!props?.fetchMerchantItemsQuery?.loading && props?.fetchMerchantItemsQuery?.data != undefined && (
+                <>
+                    {props?.fetchMerchantItemsQuery?.data?.paginateItems?.data?.length == 0 && (
+                        <div style={{ height: '70vh' }} class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
+                            <div class="row m-0 w-100">
+                                <FaLayerGroup size={40} class=" col-lg-12" />
+                                <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
+                                    No Items
+                                </div>
                             </div>
-                        )}
-                        {!fetchusers?.loading && fetchusers?.data != undefined && (
-                            <>
-                                {fetchusers?.data?.paginateUsers?.data?.length == 0 && (
-                                    <div style={{ height: '70vh' }} class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
-                                        <div class="row m-0 w-100">
-                                            <FaLayerGroup size={40} class=" col-lg-12" />
-                                            <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
-                                                No Users
-                                            </div>
-                                        </div>
-                                    </div>
-                                )} */}
-            {fetchusers?.data?.length != 0 && (
+                        </div>
+                    )}
+                </>
+            )}
+            {props?.fetchMerchantItemsQuery?.data?.paginateItems?.data?.length != 0 && (
                 <div class="row m-0 w-100">
-                    {itemsarray?.map((item, index) => {
+                    {props?.fetchMerchantItemsQuery?.data?.paginateItems?.data?.map((item, index) => {
                         return (
                             <div class={props?.card}>
                                 <div class={generalstyles.card + ' p-3 row m-0 w-100'}>
@@ -123,9 +108,9 @@ const ItemsTable = (props) => {
                 </div>
                 //     )}
                 //     {/* <Pagespaginatecomponent
-                //     totaldatacount={FetchUsers?.data?.data?.total}
-                //     numofitemsperpage={FetchUsers?.data?.data?.per_page}
-                //     pagenumbparams={FetchUsers?.data?.data?.current_page}
+                //     totaldatacount={props?.fetchMerchantItemsQuery?.data?.data?.total}
+                //     numofitemsperpage={props?.fetchMerchantItemsQuery?.data?.data?.per_page}
+                //     pagenumbparams={props?.fetchMerchantItemsQuery?.data?.data?.current_page}
                 //     nextpagefunction={(nextpage) => {
                 //         history.push({
                 //             pathname: '/users',

@@ -4,23 +4,17 @@ import React, { useContext } from 'react';
 // Icons
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
 import Inputfield from './Inputfield';
-import Companyinputfield from './Companyinputfield';
 import Select, { components } from 'react-select';
 import { defaultstyles, defaultstylesdanger } from './Website/Generalfiles/selectstyles';
 import { TbCameraPlus } from 'react-icons/tb';
 import formstyles from '../components/Website/Generalfiles/CSS_GENERAL/form.module.css';
-import Leadinputfield from './Leadinputfield';
+
 import TextareaAutosize from 'react-textarea-autosize';
 import { Contexthandlerscontext } from '../Contexthandlerscontext';
 import API from '../API/API';
 import { useQuery } from 'react-query';
 import generalstyles from '../components/Website/Generalfiles/CSS_GENERAL/general.module.css';
 const Form = (props) => {
-    const { FetchAllSecuritylayers_API } = API();
-    const FetchInstitueSecurityLayersQuery = useQuery(['FetchAllSecuritylayers_API'], () => FetchAllSecuritylayers_API(), {
-        keepPreviousData: true,
-        staleTime: Infinity,
-    });
     var exist = false;
 
     return (
@@ -74,23 +68,6 @@ const Form = (props) => {
                                 </div>
                                 <img src={props?.payload[item.attr]} class={props?.payload[item.attr] == '' ? 'd-none' : 'd-block'} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                             </label>
-                        </div>
-                    );
-                } else if (item?.type == 'leadid') {
-                    return (
-                        <div class={item.size == '6' ? 'col-lg-6' : 'col-lg-12'}>
-                            <Leadinputfield
-                                disabled={item?.disabled}
-                                submit={props?.submit}
-                                setsubmit={props?.setsubmit}
-                                placeholder={item?.name}
-                                value={props?.payload[item.attr]}
-                                onClick={(event) => {
-                                    var temp = { ...props?.payload };
-                                    temp[item?.attr] = event?.id;
-                                    props?.setpayload({ ...temp });
-                                }}
-                            />
                         </div>
                     );
                 } else if (item?.type == 'date') {
@@ -293,33 +270,6 @@ const Form = (props) => {
                                     props?.setsubmit(false);
                                     var temp = { ...props?.payload };
                                     temp[item?.attr] = option.value;
-                                    props?.setpayload({ ...temp });
-                                }}
-                            />
-                            {props?.payload[item?.attr]?.length == 0 && props?.submit && (
-                                <div class="col-lg-12 px-2 pt-2" style={{ color: 'var(--danger)', fontSize: '11px' }}>
-                                    {item?.name} is required
-                                </div>
-                            )}
-                        </div>
-                    );
-                } else if (item?.type == 'securitylayer') {
-                    return (
-                        <div class={item.size == '6' ? 'col-lg-6' : 'col-lg-12'} style={{ marginBottom: '15px' }}>
-                            <label for="name" class={formstyles.form__label}>
-                                {item.name}
-                            </label>
-                            <Select
-                                isDisabled={item?.disabled}
-                                options={FetchInstitueSecurityLayersQuery?.data?.data?.data}
-                                value={FetchInstitueSecurityLayersQuery?.data?.data?.data?.filter((option) => option.id == props?.payload[item?.attr])}
-                                getOptionLabel={(option) => option.name}
-                                getOptionValue={(option) => option.id}
-                                styles={props?.payload[item?.attr]?.length == 0 && props?.submit ? defaultstylesdanger : defaultstyles}
-                                onChange={(option) => {
-                                    props?.setsubmit(false);
-                                    var temp = { ...props?.payload };
-                                    temp[item?.attr] = option.id;
                                     props?.setpayload({ ...temp });
                                 }}
                             />

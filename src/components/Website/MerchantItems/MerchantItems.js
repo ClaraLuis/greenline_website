@@ -18,6 +18,7 @@ import { BsChevronDown, BsChevronUp, BsTrash } from 'react-icons/bs';
 import { IoMdClose } from 'react-icons/io';
 import API from '../../../API/API.js';
 import ItemsTable from './ItemsTable.js';
+import { NotificationManager } from 'react-notifications';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -25,7 +26,7 @@ const MerchantItems = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, dateformatter } = useContext(Contexthandlerscontext);
-    const { fetchUsers, useQueryGQL } = API();
+    const { fetchMerchantItems, useQueryGQL, useMutationGQL, addItem } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
 
@@ -50,13 +51,15 @@ const MerchantItems = (props) => {
         itemPrices: [],
         colorsarray: [],
         colorHEXarray: [],
+        imageUrl: '',
+        imageUrls: [],
     });
     const [itemprice, setitemprice] = useState({
         currency: '',
         price: '',
-        discount: '',
-        startdiscount: '',
-        enddiscount: '',
+        discount: null,
+        startDiscount: null,
+        endDiscount: null,
     });
     const [colorpayload, setcolorpayload] = useState({
         color: '',
@@ -66,8 +69,44 @@ const MerchantItems = (props) => {
         page: 1,
         search: '',
     });
+    const [filter, setfiter] = useState({
+        limit: 10,
+        isAsc: true,
+        afterCursor: '',
+        beforeCursor: '',
+        name: '',
+        sku: '',
+    });
+    const fetchMerchantItemsQuery = useQueryGQL('', fetchMerchantItems(filter));
 
-    const fetchusers = useQueryGQL('', fetchUsers());
+    const [addItemMutation] = useMutationGQL(addItem(), [
+        {
+            priceReference: 0,
+            name: itempayload?.name,
+            merchantSku: itempayload?.merchansku,
+            color: itempayload?.color,
+            colorHex: itempayload?.colorHEX,
+            description: itempayload?.description,
+            size: itempayload?.size,
+            imageUrl: itempayload?.imageUrl,
+            itemPrices: itempayload?.itemPrices,
+        },
+    ]);
+    const { refetch: refetchItems } = useQueryGQL('', fetchMerchantItems(filter));
+
+    const handleAddItem = async () => {
+        try {
+            const { data } = await addItemMutation();
+            // setop(false);
+            refetchItems();
+
+            // console.log(data); // Handle response
+        } catch (error) {
+            console.error('Error adding user:', error);
+        }
+    };
+
+    // const fetchusers = useQueryGQL('', fetchUsers());
     // const fetchusers = [];
     useEffect(() => {
         setpageactive_context('/merchantitems');
@@ -101,9 +140,9 @@ const MerchantItems = (props) => {
                             setitemprice({
                                 currency: '',
                                 price: '',
-                                discount: '',
-                                startdiscount: '',
-                                enddiscount: '',
+                                discount: null,
+                                startDiscount: null,
+                                endDiscount: null,
                             });
                             setopenModal(true);
                         }}
@@ -129,9 +168,9 @@ const MerchantItems = (props) => {
                             setitemprice({
                                 currency: '',
                                 price: '',
-                                discount: '',
-                                startdiscount: '',
-                                enddiscount: '',
+                                discount: null,
+                                startDiscount: null,
+                                endDiscount: null,
                             });
                             setopenCompounditemsModal(true);
                         }}
@@ -231,16 +270,31 @@ const MerchantItems = (props) => {
                     </div>
                 </div> */}
                 <div class={generalstyles.card + ' row m-0 w-100 mb-4 p-2 px-2'}>
-                    <div class="col-lg-12 p-0 ">
+                    <div class="col-lg-6">
                         <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
                             <input
                                 // disabled={props?.disabled}
                                 // type={props?.type}
                                 class={formstyles.form__field}
-                                // value={}
-                                placeholder={'Search by name or SKU'}
-
-                                // onChange={}
+                                value={filter?.name}
+                                placeholder={'Search by name '}
+                                onChange={() => {
+                                    setfiter({ ...filter, name: event.target.value });
+                                }}
+                            />
+                        </div>
+                    </div>
+                    <div class="col-lg-6 ">
+                        <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
+                            <input
+                                // disabled={props?.disabled}
+                                // type={props?.type}
+                                class={formstyles.form__field}
+                                value={filter?.sku}
+                                placeholder={'Search by SKU'}
+                                onChange={() => {
+                                    setfiter({ ...filter, sku: event.target.value });
+                                }}
                             />
                         </div>
                     </div>
@@ -248,7 +302,7 @@ const MerchantItems = (props) => {
 
                 <div class={generalstyles.card + ' row m-0 w-100'}>
                     <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
-                        <ItemsTable card="col-lg-3" />
+                        <ItemsTable card="col-lg-3" fetchMerchantItemsQuery={fetchMerchantItemsQuery} />
                     </div>
                 </div>
             </div>
@@ -544,14 +598,14 @@ const MerchantItems = (props) => {
                                             <input
                                                 type={'date'}
                                                 class={formstyles.form__field}
-                                                value={itemprice.startdiscount}
+                                                value={itemprice.startDiscount}
                                                 style={
                                                     {
                                                         // border: props?.value?.length == 0 && props?.submit && props?.type != 'time' ? '1px solid var(--danger)' : '',
                                                     }
                                                 }
                                                 onChange={(event) => {
-                                                    setitemprice({ ...itemprice, startdiscount: event.target.value });
+                                                    setitemprice({ ...itemprice, startDiscount: event.target.value });
                                                 }}
                                             />
                                             {/* {props?.value?.length == 0 && props?.submit && props?.type != 'time' && (
@@ -570,14 +624,14 @@ const MerchantItems = (props) => {
                                             <input
                                                 type={'date'}
                                                 class={formstyles.form__field}
-                                                value={itemprice.enddiscount}
+                                                value={itemprice.endDiscount}
                                                 style={
                                                     {
                                                         // border: props?.value?.length == 0 && props?.submit && props?.type != 'time' ? '1px solid var(--danger)' : '',
                                                     }
                                                 }
                                                 onChange={(event) => {
-                                                    setitemprice({ ...itemprice, enddiscount: event.target.value });
+                                                    setitemprice({ ...itemprice, endDiscount: event.target.value });
                                                 }}
                                             />
                                             {/* {props?.value?.length == 0 && props?.submit && props?.type != 'time' && (
@@ -599,9 +653,9 @@ const MerchantItems = (props) => {
                                             setitemprice({
                                                 currency: '',
                                                 price: '',
-                                                discount: '',
-                                                startdiscount: '',
-                                                enddiscount: '',
+                                                discount: null,
+                                                startDiscount: null,
+                                                endDiscount: null,
                                             });
                                         }}
                                     >
@@ -619,8 +673,8 @@ const MerchantItems = (props) => {
                                         </div>
                                         <div class="col-lg-12 p-0">Price: {item.price}</div>
                                         <div class="col-lg-12 p-0">Discount: {item.discount}</div>
-                                        <div class="col-lg-12 p-0">Discount start date: {item.startdiscount}</div>
-                                        <div class="col-lg-12 p-0">Discount end date: {item.enddiscount}</div>
+                                        <div class="col-lg-12 p-0">Discount start date: {item.startDiscount}</div>
+                                        <div class="col-lg-12 p-0">Discount end date: {item.endDiscount}</div>
                                     </div>
                                     <div style={{ position: 'absolute', top: '10px', right: '30px' }}>
                                         <BsTrash
@@ -702,6 +756,31 @@ const MerchantItems = (props) => {
                         <div class="col-lg-6">
                             <div class="row m-0 w-100  ">
                                 <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                    <label class={formstyles.form__label}>Image URL</label>
+                                    <input
+                                        type={'text'}
+                                        class={formstyles.form__field}
+                                        value={itempayload.imageUrl}
+                                        style={
+                                            {
+                                                // border: props?.value?.length == 0 && props?.submit && props?.type != 'time' ? '1px solid var(--danger)' : '',
+                                            }
+                                        }
+                                        onChange={(event) => {
+                                            setitempayload({ ...itempayload, imageUrl: event.target.value });
+                                        }}
+                                    />
+                                    {/* {props?.value?.length == 0 && props?.submit && props?.type != 'time' && (
+                    <div class="col-lg-12 px-2 pt-2" style={{ color: 'var(--danger)', fontSize: '11px' }}>
+                        {props?.placeholder} is required
+                    </div>
+                )} */}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="row m-0 w-100  ">
+                                <div class={`${formstyles.form__group} ${formstyles.field}`}>
                                     <label class={formstyles.form__label}>Name</label>
                                     <input
                                         type={'text'}
@@ -731,7 +810,7 @@ const MerchantItems = (props) => {
                                     <input
                                         type={'text'}
                                         class={formstyles.form__field}
-                                        value={itempayload.name}
+                                        value={itempayload.color}
                                         style={
                                             {
                                                 // border: props?.value?.length == 0 && props?.submit && props?.type != 'time' ? '1px solid var(--danger)' : '',
@@ -912,14 +991,14 @@ const MerchantItems = (props) => {
                                             <input
                                                 type={'date'}
                                                 class={formstyles.form__field}
-                                                value={itemprice.startdiscount}
+                                                value={itemprice.startDiscount}
                                                 style={
                                                     {
                                                         // border: props?.value?.length == 0 && props?.submit && props?.type != 'time' ? '1px solid var(--danger)' : '',
                                                     }
                                                 }
                                                 onChange={(event) => {
-                                                    setitemprice({ ...itemprice, startdiscount: event.target.value });
+                                                    setitemprice({ ...itemprice, startDiscount: event.target.value });
                                                 }}
                                             />
                                             {/* {props?.value?.length == 0 && props?.submit && props?.type != 'time' && (
@@ -938,14 +1017,14 @@ const MerchantItems = (props) => {
                                             <input
                                                 type={'date'}
                                                 class={formstyles.form__field}
-                                                value={itemprice.enddiscount}
+                                                value={itemprice.endDiscount}
                                                 style={
                                                     {
                                                         // border: props?.value?.length == 0 && props?.submit && props?.type != 'time' ? '1px solid var(--danger)' : '',
                                                     }
                                                 }
                                                 onChange={(event) => {
-                                                    setitemprice({ ...itemprice, enddiscount: event.target.value });
+                                                    setitemprice({ ...itemprice, endDiscount: event.target.value });
                                                 }}
                                             />
                                             {/* {props?.value?.length == 0 && props?.submit && props?.type != 'time' && (
@@ -967,9 +1046,9 @@ const MerchantItems = (props) => {
                                             setitemprice({
                                                 currency: '',
                                                 price: '',
-                                                discount: '',
-                                                startdiscount: '',
-                                                enddiscount: '',
+                                                discount: null,
+                                                startDiscount: null,
+                                                endDiscount: null,
                                             });
                                         }}
                                     >
@@ -987,15 +1066,28 @@ const MerchantItems = (props) => {
                                         </div>
                                         <div class="col-lg-12 p-0">Price: {item.price}</div>
                                         <div class="col-lg-12 p-0">Discount: {item.discount}</div>
-                                        <div class="col-lg-12 p-0">Discount start date: {item.startdiscount}</div>
-                                        <div class="col-lg-12 p-0">Discount end date: {item.enddiscount}</div>
+                                        <div class="col-lg-12 p-0">Discount start date: {item.startDiscount}</div>
+                                        <div class="col-lg-12 p-0">Discount end date: {item.endDiscount}</div>
                                     </div>
                                 </div>
                             );
                         })}
 
                         <div class="col-lg-12 p-0 allcentered">
-                            <button style={{ height: '35px' }} class={generalstyles.roundbutton + ' bg-info bg-infohover mb-1'} onClick={() => {}}>
+                            <button
+                                style={{ height: '35px' }}
+                                class={generalstyles.roundbutton + ' bg-info bg-infohover mb-1'}
+                                onClick={() => {
+                                    if (itempayload?.name?.length == 0) {
+                                        NotificationManager.warning('Name Can not be empty', 'Warning');
+                                    } else {
+                                        if (itempayload?.itemPrices?.length < 1) {
+                                        } else {
+                                            handleAddItem();
+                                        }
+                                    }
+                                }}
+                            >
                                 Add item
                             </button>
                         </div>
