@@ -85,10 +85,14 @@ const API = () => {
         `;
     };
 
-    const fetchInventories = () => {
+    const fetchInventories = (payload) => {
         return gql`
             query paginateInventories {
-                paginateInventories(input: { limit: 10 }) {
+                paginateInventories(input: {
+                    limit: ${JSON.stringify(payload?.limit)},
+                    afterCursor: ${JSON.stringify(payload?.afterCursor)},
+                    beforeCursor: ${JSON.stringify(payload?.beforeCursor)},
+                }) {
                     data {
                         id
                         hubId
@@ -113,6 +117,7 @@ const API = () => {
                         item {
                             name
                             merchantId
+                            imageUrl
                         }
                     }
                     cursor
@@ -143,34 +148,6 @@ const API = () => {
                 }
             }
         `;
-    };
-
-    const useMutationGQL = (query, payload) => {
-        const mutation = useMutation(query, {
-            variables: {
-                input: payload,
-            },
-            context: {
-                headers: {
-                    Authorization:
-                        ' Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVuTFgzTXZ0UzFZOXJjQjN0WDhKM0d0N1F4IiwiaHViSWQiOm51bGwsIm1lcmNoYW50SWQiOm51bGwsInR5cGUiOiJjb3VyaWVyIiwicm9sZXMiOlsxXSwiaWF0IjoxNzA2ODE0NzQzLCJleHAiOjE4MDY4MTY1NDN9.BnUOLRuoV1QgSzbYtiQKZONguDLQyBCmhNnBwB4OPC4',
-                },
-            },
-        });
-        return mutation;
-    };
-
-    const useLazyQueryGQL = (query, fetchPolicy) => {
-        const mutation = useLazyQuery(query, {
-            fetchPolicy: fetchPolicy ?? 'network-only',
-            context: {
-                headers: {
-                    Authorization:
-                        ' Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVuTFgzTXZ0UzFZOXJjQjN0WDhKM0d0N1F4IiwiaHViSWQiOm51bGwsIm1lcmNoYW50SWQiOm51bGwsInR5cGUiOiJjb3VyaWVyIiwicm9sZXMiOlsxXSwiaWF0IjoxNzA2ODE0NzQzLCJleHAiOjE4MDY4MTY1NDN9.BnUOLRuoV1QgSzbYtiQKZONguDLQyBCmhNnBwB4OPC4',
-                },
-            },
-        });
-        return mutation;
     };
 
     const fetchUsers = (payload) => {
@@ -260,6 +237,34 @@ const API = () => {
             }
           }
         `;
+    };
+
+    const useMutationGQL = (query, payload) => {
+        const mutation = useMutation(query, {
+            variables: {
+                input: payload,
+            },
+            context: {
+                headers: {
+                    Authorization:
+                        ' Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVuTFgzTXZ0UzFZOXJjQjN0WDhKM0d0N1F4IiwiaHViSWQiOm51bGwsIm1lcmNoYW50SWQiOm51bGwsInR5cGUiOiJjb3VyaWVyIiwicm9sZXMiOlsxXSwiaWF0IjoxNzA2ODE0NzQzLCJleHAiOjE4MDY4MTY1NDN9.BnUOLRuoV1QgSzbYtiQKZONguDLQyBCmhNnBwB4OPC4',
+                },
+            },
+        });
+        return mutation;
+    };
+
+    const useLazyQueryGQL = (query, fetchPolicy) => {
+        const mutation = useLazyQuery(query, {
+            fetchPolicy: fetchPolicy ?? 'network-only',
+            context: {
+                headers: {
+                    Authorization:
+                        ' Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVuTFgzTXZ0UzFZOXJjQjN0WDhKM0d0N1F4IiwiaHViSWQiOm51bGwsIm1lcmNoYW50SWQiOm51bGwsInR5cGUiOiJjb3VyaWVyIiwicm9sZXMiOlsxXSwiaWF0IjoxNzA2ODE0NzQzLCJleHAiOjE4MDY4MTY1NDN9.BnUOLRuoV1QgSzbYtiQKZONguDLQyBCmhNnBwB4OPC4',
+                },
+            },
+        });
+        return mutation;
     };
 
     const useQueryGQL = (token, query) => {

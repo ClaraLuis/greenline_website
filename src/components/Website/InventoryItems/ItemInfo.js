@@ -74,9 +74,19 @@ const ItemInfo = (props) => {
                 </Modal.Header>
                 <Modal.Body>
                     <div style={{ fontSize: '14px' }} class="row m-0 w-100 pb-2">
+                        <div class=" mr-2 mb-2" style={{ width: '120px', height: '120px', border: '1px solid var(--secondary)', borderRadius: '5px' }}>
+                            <img
+                                src={
+                                    props?.item?.item?.imageUrl?.length != 0 && props?.item?.item?.imageUrl != null
+                                        ? props?.item?.item?.imageUrl
+                                        : 'https://www.shutterstock.com/image-vector/new-label-shopping-icon-vector-260nw-1894227709.jpg'
+                                }
+                                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '5px' }}
+                            />
+                        </div>
                         <div class="col-lg-7 p-0">
-                            <div style={{ border: '1px solid #eee', borderRadius: '15px' }} class="row m-0 p-2 px-3 mb-2 w-100">
-                                <div class="col-lg-12 p-0 mt-2">
+                            <div>
+                                <div class="col-lg-12 p-0 mt-0">
                                     <span>Inventory: </span>
                                     <span style={{ fontWeight: 600 }}> {props?.item.inventoryId}</span>
                                 </div>
@@ -93,6 +103,9 @@ const ItemInfo = (props) => {
                                     <span style={{ fontWeight: 600 }}> {props?.item?.item?.merchantId}</span>
                                 </div>
                             </div>
+                        </div>
+                        <div class="col-lg-12 p-0 mt-1">
+                            <hr class="p-0 m-0" />
                         </div>
                         <div class="col-lg-12 p-0 my-2">
                             <span style={{ fontWeight: 600 }}> Item History:</span>
@@ -119,7 +132,7 @@ const ItemInfo = (props) => {
                                         <table style={{}} className={'table text-capitalize'}>
                                             <thead>
                                                 <th>Amount</th>
-                                                <th>Description</th>
+                                                <th style={{ minWidth: '400px' }}>Description</th>
                                             </thead>
                                             <tbody>
                                                 {props?.fetchItemHistoryQuery?.data?.paginateItemHistory?.data?.map((item, index) => {
@@ -128,7 +141,7 @@ const ItemInfo = (props) => {
                                                             <td>
                                                                 <p className={' m-0 p-0 wordbreak '}>{item?.amount}</p>
                                                             </td>
-                                                            <td>
+                                                            <td style={{ minWidth: '400px' }}>
                                                                 <p className={' m-0 p-0 wordbreak '}>{item?.description}</p>
                                                             </td>
                                                         </tr>

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
@@ -6,15 +6,12 @@ import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
 import { FaLayerGroup, FaPlus } from 'react-icons/fa';
-import Select, { components } from 'react-select';
-import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
-import { defaultstyles } from '../Generalfiles/selectstyles.js';
+import { components } from 'react-select';
 
-import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
-import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import API from '../../../API/API.js';
+import ImportNewItem from '../InventoryItems/ImportNewItem.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -23,6 +20,17 @@ const ItemsTable = (props) => {
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, dateformatter } = useContext(Contexthandlerscontext);
     const { fetchMerchantItems, useQueryGQL } = API();
+    const [importItemModel, setimportItemModel] = useState(false);
+
+    const [importItemPayload, setimportItemPayload] = useState({
+        itemSku: '',
+        ownedByOneMerchant: true,
+        ballotId: '',
+        inventoryId: '',
+        boxName: '',
+        count: 0,
+        minCount: 0,
+    });
 
     const { lang, langdetect } = useContext(LanguageContext);
 
@@ -56,7 +64,11 @@ const ItemsTable = (props) => {
                                     <div class="col-lg-12 p-0">
                                         <div style={{ width: '100%', height: '200px' }}>
                                             <img
-                                                src="https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg"
+                                                src={
+                                                    item?.imageUrl?.lenth != 0 && item?.imageUrl != null
+                                                        ? item?.imageUrl
+                                                        : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'
+                                                }
                                                 style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
                                             />
                                         </div>
@@ -96,11 +108,34 @@ const ItemsTable = (props) => {
                                             })}
                                         </div>
                                     </div>
+                                    <div class="col-lg-12 p-0 mt-1">
+                                        <p class=" p-0 m-0" style={{ fontSize: '14px' }}>
+                                            <span
+                                                onClick={() => {
+                                                    setimportItemPayload({
+                                                        itemSku: item?.sku,
+                                                        ownedByOneMerchant: true,
+                                                        ballotId: '',
+                                                        inventoryId: '',
+                                                        boxName: '',
+                                                        count: 0,
+                                                        minCount: 0,
+                                                    });
+                                                    setimportItemModel(true);
+                                                }}
+                                                class="text-primary text-secondaryhover"
+                                                style={{ textDecoration: 'underline' }}
+                                            >
+                                                Import new item
+                                            </span>
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         );
                     })}
                 </div>
+
                 //     )}
                 //     {/* <Pagespaginatecomponent
                 //     totaldatacount={props?.fetchMerchantItemsQuery?.data?.data?.total}
@@ -115,6 +150,7 @@ const ItemsTable = (props) => {
                 // /> */}
                 // </>
             )}
+            <ImportNewItem openModal={importItemModel} setopenModal={setimportItemModel} importItemPayload={importItemPayload} setimportItemPayload={setimportItemPayload} />
         </>
     );
 };

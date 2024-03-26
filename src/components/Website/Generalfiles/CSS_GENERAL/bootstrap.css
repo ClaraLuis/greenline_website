@@ -332,10 +332,11 @@ th {
     flex: 150 0 auto;
     margin-bottom: 10px;
     position: sticky !important;
-    top: 0;
+    top: -10px;
     /* border: 2px solid #eceffa; */
     background-color: white;
     border-radius: 0.5rem;
+    z-index: 1000;
     /* border-bottom: 1px solid rgba(94, 38, 132, 0.4); */
 
     /* border-bottom: 2px solid #eceffa; */

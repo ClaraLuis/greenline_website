@@ -18,6 +18,8 @@ import ItemInfo from './ItemInfo.js';
 import OrderInfo from './OrderInfo.js';
 import { IoMdClose } from 'react-icons/io';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
+import { MdArrowBackIos, MdArrowForwardIos, MdOutlineArrowBack, MdOutlineArrowForward } from 'react-icons/md';
+import ImportNewItem from './ImportNewItem.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -52,7 +54,7 @@ const InventoryItems = (props) => {
         { sku: '123', name: 'item 1', type: 'export', count: 30, inventory: 'inv 3' },
         { sku: '123', name: 'item 1', type: 'export', count: 30, inventory: 'inv 3' },
     ]);
-    const [inventoryPayload, setinventoryPayload] = useState({
+    const [inventoryPayload, setinvenfatoryPayload] = useState({
         functype: 'add',
         rentType: '',
         location: { long: 0, lat: 0 },
@@ -71,6 +73,12 @@ const InventoryItems = (props) => {
     const [filter, setfilter] = useState({
         limit: 50,
         invetoryIds: [],
+    });
+
+    const [filterInventories, setfilterInventories] = useState({
+        limit: 5,
+        afterCursor: null,
+        beforeCursor: null,
     });
 
     const [addInvrntoryMutation] = useMutationGQL(addInventory(), {
@@ -119,7 +127,7 @@ const InventoryItems = (props) => {
             console.error('Error adding user:', error);
         }
     };
-    const fetchinventories = useQueryGQL('', fetchInventories());
+    const fetchinventories = useQueryGQL('', fetchInventories(filterInventories));
     const fetchItemsInBoxQuery = useQueryGQL('', fetchItemsInBox());
     const fetchRacksQuery = useQueryGQL('', fetchRacks(filter));
     const fetchItemHistoryQuery = useQueryGQL('', fetchItemHistory(parseInt(chosenitem?.id)));
@@ -165,6 +173,19 @@ const InventoryItems = (props) => {
                             </div>
                         )}
                         <div style={{ width: '100px', overflowY: 'scroll', flexDirection: 'row', flexWrap: 'nowrap' }} class=" scrollmenuclasssubscrollbar row m-0 w-100">
+                            <div class="d-flex align-items-center ">
+                                {fetchinventories?.data?.paginateInventories?.cursor?.beforeCursor != null && (
+                                    <div
+                                        onClick={() => {
+                                            setfilterInventories({ ...filterInventories, beforeCursor: fetchinventories?.data?.paginateInventories?.cursor?.beforeCursor, afterCursor: null });
+                                        }}
+                                        class={'text-secondaryhover'}
+                                    >
+                                        <MdArrowBackIos />
+                                    </div>
+                                )}
+                            </div>
+
                             {fetchinventories?.data?.paginateInventories?.data?.map((item, index) => {
                                 return (
                                     <div style={{ fontSize: '13px' }} class="card col-lg-2">
@@ -183,6 +204,18 @@ const InventoryItems = (props) => {
                                     </div>
                                 );
                             })}
+                            <div class="d-flex align-items-center justify-content-end ">
+                                {fetchinventories?.data?.paginateInventories?.cursor?.afterCursor != null && (
+                                    <div
+                                        onClick={() => {
+                                            setfilterInventories({ ...filterInventories, afterCursor: fetchinventories?.data?.paginateInventories?.cursor?.afterCursor, beforeCursor: null });
+                                        }}
+                                        class={'text-secondaryhover'}
+                                    >
+                                        <MdArrowForwardIos />
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -208,6 +241,15 @@ const InventoryItems = (props) => {
                             <p class=" p-0 m-0" style={{ fontSize: '14px' }}>
                                 <span
                                     onClick={() => {
+                                        setimportItemPayload({
+                                            itemSku: 'item.e',
+                                            ownedByOneMerchant: true,
+                                            ballotId: '',
+                                            inventoryId: '',
+                                            boxName: '',
+                                            count: 0,
+                                            minCount: 0,
+                                        });
                                         setimportItemModel(true);
                                     }}
                                     class="text-primary text-secondaryhover"
@@ -229,10 +271,21 @@ const InventoryItems = (props) => {
                         return (
                             <div style={{ fontSize: '13px' }} class=" col-lg-4 p-2 mb-1">
                                 <div class="row m-0 w-100 card">
-                                    <div class="col-lg-12 p-0 mb-1 mt-2 " style={{ fontSize: '15px' }}>
+                                    <div class=" mr-2" style={{ width: '50px', height: '50px', borderRadius: '5px' }}>
+                                        <img
+                                            src={
+                                                element?.item?.imageUrl?.length != 0 && element?.item?.imageUrl != null
+                                                    ? element?.item?.imageUrl
+                                                    : 'https://www.shutterstock.com/image-vector/new-label-shopping-icon-vector-260nw-1894227709.jpg'
+                                            }
+                                            style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '5px' }}
+                                        />
+                                    </div>
+                                    <div class="col-lg-7 p-0 mb-1 mt-2 " style={{ fontSize: '15px' }}>
                                         {element?.item?.name} <span style={{ fontSize: '12px', color: 'var(--primary)' }}>({element.itemSku})</span>
                                     </div>
-                                    <div class="col-lg-12 p-0">
+
+                                    <div class="col-lg-12 mt-2 p-0">
                                         <hr class="p-0 m-0" />
                                     </div>
                                     <div class="col-lg-12 p-0 mt-2">
@@ -528,143 +581,7 @@ const InventoryItems = (props) => {
                 </Modal.Body>
             </Modal>
 
-            <Modal
-                show={importItemModel}
-                onHide={() => {
-                    setimportItemModel(false);
-                }}
-                centered
-                size={'lg'}
-            >
-                <Modal.Header>
-                    <div className="row w-100 m-0 p-0">
-                        <div class="col-lg-6 pt-3 ">
-                            <div className="row w-100 m-0 p-0">Import new item</div>
-                        </div>
-                        <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
-                            <div
-                                class={'close-modal-container'}
-                                onClick={() => {
-                                    setimportItemModel(false);
-                                }}
-                            >
-                                <IoMdClose />
-                            </div>
-                        </div>{' '}
-                    </div>
-                </Modal.Header>
-                <Modal.Body>
-                    <div class="row m-0 w-100 py-2">
-                        <div class="col-lg-6">
-                            <div class="row m-0 w-100  ">
-                                <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                    <label class={formstyles.form__label}>Box Name</label>
-                                    <input
-                                        type={'text'}
-                                        class={formstyles.form__field}
-                                        value={importItemPayload.boxName}
-                                        onChange={(event) => {
-                                            setimportItemPayload({ ...importItemPayload, boxName: event.target.value });
-                                        }}
-                                    />
-                                </div>
-                            </div>
-                        </div>{' '}
-                        <div class="col-lg-6">
-                            <div class="row m-0 w-100  ">
-                                <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                    <label class={formstyles.form__label}>Count</label>
-                                    <input
-                                        type={'number'}
-                                        class={formstyles.form__field}
-                                        value={importItemPayload.count}
-                                        onChange={(event) => {
-                                            setimportItemPayload({ ...importItemPayload, count: event.target.value });
-                                        }}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="row m-0 w-100  ">
-                                <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                    <label class={formstyles.form__label}>Min Count</label>
-                                    <input
-                                        type={'number'}
-                                        class={formstyles.form__field}
-                                        value={importItemPayload.minCount}
-                                        onChange={(event) => {
-                                            setimportItemPayload({ ...importItemPayload, minCount: event.target.value });
-                                        }}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                        <div class={'col-lg-6'} style={{ marginBottom: '15px' }}>
-                            <label for="name" class={formstyles.form__label}>
-                                Inventory
-                            </label>
-                            <Select
-                                options={fetchinventories?.data?.paginateInventories?.data}
-                                styles={defaultstyles}
-                                value={fetchinventories?.data?.paginateInventories?.data?.filter((option) => option.value == importItemPayload?.inventoryId)}
-                                getOptionLabel={(option) => option.name}
-                                getOptionValue={(option) => option.id}
-                                onChange={(option) => {
-                                    setimportItemPayload({ ...importItemPayload, inventoryId: option.id });
-                                    setfilter({ ...filter, invetoryIds: [option.id] });
-                                }}
-                            />
-                        </div>
-                        {importItemPayload?.inventoryId?.length != 0 && (
-                            <>
-                                {fetchRacksQuery?.data?.paginateRacks?.data?.map((item, index) => {
-                                    return (
-                                        <div class="col-lg-6 mb-2">
-                                            <div class="row m-0 w-100 p-2" style={{ border: '1px solid #eee', borderRadius: '15px', fontSize: '12px' }}>
-                                                <div class="col-lg-12 p-0" style={{ fontWeight: 700 }}>
-                                                    Rack {item.name}
-                                                </div>
-                                                <div class="col-lg-12 p-0">
-                                                    <hr class="p-0 m-0" />
-                                                </div>
-                                                <div class="col-lg-12 p-0 mt-1">
-                                                    <div class="row m-0 w-100">
-                                                        {item?.ballots?.map((ballot, ballotindex) => {
-                                                            return (
-                                                                <div
-                                                                    onClick={() => {
-                                                                        setimportItemPayload({ ...importItemPayload, ballotId: ballot.id });
-                                                                    }}
-                                                                    class={importItemPayload.ballotId == ballot.id ? 'searchpillselected' : 'searchpill'}
-                                                                >
-                                                                    {' '}
-                                                                    {ballot?.name}
-                                                                </div>
-                                                            );
-                                                        })}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    );
-                                })}
-                            </>
-                        )}
-                        <div class="col-lg-12 p-0 mt-2 allcentered">
-                            <button
-                                style={{ height: '35px' }}
-                                class={generalstyles.roundbutton + ' bg-info bg-infohover mb-1'}
-                                onClick={() => {
-                                    handleIMportNewItem();
-                                }}
-                            >
-                                Import
-                            </button>
-                        </div>
-                    </div>
-                </Modal.Body>
-            </Modal>
+            <ImportNewItem openModal={importItemModel} setopenModal={setimportItemModel} importItemPayload={importItemPayload} setimportItemPayload={setimportItemPayload} />
 
             <ItemInfo openModal={openModal} setopenModal={setopenModal} item={chosenitem} fetchItemHistoryQuery={fetchItemHistoryQuery} />
             {/* <OrderInfo openModal={openOrderModal} setopenModal={setopenOrderModal} leadpayload={leadpayload} setleadpayload={setleadpayload} refetchUsers={fetchusers.refetch} /> */}
