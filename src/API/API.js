@@ -27,6 +27,21 @@ const API = () => {
         `;
     };
 
+    const exportItem = () => {
+        return gql`
+            mutation export($input: ItemCountInput!) {
+                exportItem(input: $input)
+            }
+        `;
+    };
+    const importItem = () => {
+        return gql`
+            mutation import($input: ItemCountInput!) {
+                importItem(input: $input)
+            }
+        `;
+    };
+
     const addItem = () => {
         return gql`
             mutation createSingles($input: [SingleItemRefInput!]!) {
@@ -296,6 +311,8 @@ const API = () => {
         fetchIdleOrders,
         fetchRacks,
         fetchItemHistory,
+        exportItem,
+        importItem,
     };
 };
 export default API;

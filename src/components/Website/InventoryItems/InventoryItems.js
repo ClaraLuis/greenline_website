@@ -27,14 +27,18 @@ const InventoryItems = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, inventoryTypesContext, dateformatter } = useContext(Contexthandlerscontext);
-    const { fetchUsers, useQueryGQL, fetchInventories, useMutationGQL, addInventory, fetchItemsInBox, fetchRacks, importNew, fetchItemHistory } = API();
+    const { fetchUsers, useQueryGQL, fetchInventories, useMutationGQL, addInventory, fetchItemsInBox, fetchRacks, importNew, fetchItemHistory, exportItem, importItem } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
 
     const [openModal, setopenModal] = useState(false);
     const [openInventoryModal, setopenInventoryModal] = useState(false);
-    const [openOrderModal, setopenOrderModal] = useState(false);
-    const [selectedinventory, setselectedinventory] = useState('');
+    const [importpayload, setimportpayload] = useState({
+        id: '',
+        count: '',
+        type: '',
+    });
+    const [importmodal, setimportmodal] = useState({ open: false, type: '' });
     const [chosenitem, setchosenitem] = useState('');
     const [importItemModel, setimportItemModel] = useState(false);
     const [importItemPayload, setimportItemPayload] = useState({
@@ -47,14 +51,7 @@ const InventoryItems = (props) => {
         minCount: 0,
     });
 
-    const [itemsarrayhistory, setitemsarrayhistory] = useState([
-        { sku: '123', name: 'item 1', type: 'import', count: 15, inventory: 'inv 1' },
-        { sku: '123', name: 'item 1', type: 'export', count: 30, inventory: 'inv 1' },
-        { sku: '123', name: 'item 1', type: 'import', count: 15, inventory: 'inv 3' },
-        { sku: '123', name: 'item 1', type: 'export', count: 30, inventory: 'inv 3' },
-        { sku: '123', name: 'item 1', type: 'export', count: 30, inventory: 'inv 3' },
-    ]);
-    const [inventoryPayload, setinvenfatoryPayload] = useState({
+    const [inventoryPayload, setinventoryPayload] = useState({
         functype: 'add',
         rentType: '',
         location: { long: 0, lat: 0 },
@@ -92,29 +89,17 @@ const InventoryItems = (props) => {
         inventoryPrices: inventoryPayload?.inventoryPrices,
     });
 
-    const [importNewMutation] = useMutationGQL(importNew(), {
-        itemSku: importItemPayload?.itemSku,
-        ownedByOneMerchant: importItemPayload?.ownedByOneMerchant,
-        ballotId: importItemPayload?.ballotId,
-        inventoryId: importItemPayload?.inventoryId,
-        boxName: importItemPayload?.boxName,
-        count: parseInt(importItemPayload?.count),
-        minCount: parseInt(importItemPayload?.minCount),
+    const [importMutation] = useMutationGQL(importItem(), {
+        id: chosenitem?.id,
+        count: parseInt(importpayload?.count),
+    });
+    const [exportMutation] = useMutationGQL(exportItem(), {
+        id: chosenitem?.id,
+        count: parseInt(importpayload?.count),
+        type: importpayload?.type,
     });
 
     const { refetch: refetchInventories } = useQueryGQL('', fetchInventories());
-
-    const handleIMportNewItem = async () => {
-        try {
-            const { data } = await importNewMutation();
-            // setop(false);
-            // refetchInventories();
-            setimportItemModel(false);
-            // console.log(data); // Handle response
-        } catch (error) {
-            console.error('Error adding user:', error);
-        }
-    };
 
     const handleAddInventory = async () => {
         try {
@@ -129,6 +114,8 @@ const InventoryItems = (props) => {
     };
     const fetchinventories = useQueryGQL('', fetchInventories(filterInventories));
     const fetchItemsInBoxQuery = useQueryGQL('', fetchItemsInBox());
+    const { refetch: reetchfetchItemsInBox } = useQueryGQL('', fetchItemsInBox());
+
     const fetchRacksQuery = useQueryGQL('', fetchRacks(filter));
     const fetchItemHistoryQuery = useQueryGQL('', fetchItemHistory(parseInt(chosenitem?.id)));
 
@@ -281,8 +268,45 @@ const InventoryItems = (props) => {
                                             style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '5px' }}
                                         />
                                     </div>
-                                    <div class="col-lg-7 p-0 mb-1 mt-2 " style={{ fontSize: '15px' }}>
-                                        {element?.item?.name} <span style={{ fontSize: '12px', color: 'var(--primary)' }}>({element.itemSku})</span>
+                                    <div class="col-lg-9 p-0 mb-1 mt-0 " style={{ fontSize: '15px' }}>
+                                        <div class="row m-0 w-100">
+                                            <div style={{ fontSize: '11px' }} class="col-lg-12 p-0 mt-1 d-flex justify-content-end">
+                                                <span
+                                                    onClick={() => {
+                                                        setchosenitem(element);
+                                                        // setopenModal(true);
+                                                        setimportpayload({
+                                                            id: '',
+                                                            count: '',
+                                                            type: '',
+                                                        });
+                                                        setimportmodal({ open: true, type: 'import' });
+                                                    }}
+                                                    class="text-primary text-secondaryhover mr-2"
+                                                    style={{ textDecoration: 'underline' }}
+                                                >
+                                                    import
+                                                </span>
+                                                <span
+                                                    onClick={() => {
+                                                        setchosenitem(element);
+                                                        setimportpayload({
+                                                            id: '',
+                                                            count: '',
+                                                            type: '',
+                                                        });
+                                                        setimportmodal({ open: true, type: 'export' });
+                                                    }}
+                                                    class="text-danger text-dangerhover"
+                                                    style={{ textDecoration: 'underline' }}
+                                                >
+                                                    export
+                                                </span>
+                                            </div>
+                                            <div class="col-lg-12 p-0">
+                                                {element?.item?.name} <span style={{ fontSize: '12px', color: 'var(--primary)' }}>({element.itemSku})</span>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <div class="col-lg-12 mt-2 p-0">
@@ -575,6 +599,103 @@ const InventoryItems = (props) => {
                                 }}
                             >
                                 Add item
+                            </button>
+                        </div>
+                    </div>
+                </Modal.Body>
+            </Modal>
+
+            <Modal
+                show={importmodal?.open}
+                onHide={() => {
+                    setimportmodal({ open: false, type: '' });
+                }}
+                centered
+                size={'md'}
+            >
+                <Modal.Header>
+                    <div className="row w-100 m-0 p-0">
+                        <div class="col-lg-6 pt-3 ">
+                            <div className="row w-100 m-0 p-0">{importmodal?.type}</div>
+                        </div>
+                        <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
+                            <div
+                                class={'close-modal-container'}
+                                onClick={() => {
+                                    setimportmodal({ open: false, type: '' });
+                                }}
+                            >
+                                <IoMdClose />
+                            </div>
+                        </div>{' '}
+                    </div>
+                </Modal.Header>
+                <Modal.Body>
+                    <div class="row m-0 w-100 py-2">
+                        <div class="col-lg-12">
+                            <div class="row m-0 w-100  ">
+                                <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                    <label class={formstyles.form__label}>Count</label>
+                                    <input
+                                        type={'number'}
+                                        class={formstyles.form__field}
+                                        value={importpayload.count}
+                                        onChange={(event) => {
+                                            setimportpayload({ ...importpayload, count: event.target.value });
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        {importmodal?.type == 'export' && (
+                            <div class={'col-lg-12'} style={{ marginBottom: '15px' }}>
+                                <label for="name" class={formstyles.form__label}>
+                                    Export Type
+                                </label>
+                                <Select
+                                    options={[
+                                        { label: 'Export', value: 'export' },
+                                        { label: 'Order Export', value: 'orderExport' },
+                                    ]}
+                                    styles={defaultstyles}
+                                    value={[
+                                        { label: 'Export', value: 'export' },
+                                        { label: 'Order Export', value: 'orderExport' },
+                                    ]?.filter((option) => option.value == importpayload?.type)}
+                                    onChange={(option) => {
+                                        var temp = { ...importpayload };
+                                        temp.type = option.value;
+                                        setimportpayload({ ...temp });
+                                    }}
+                                />
+                            </div>
+                        )}
+
+                        <div class="col-lg-12 p-0 allcentered">
+                            <button
+                                style={{ height: '35px' }}
+                                class={generalstyles.roundbutton + ' bg-info bg-infohover mb-1 text-capitalize'}
+                                onClick={async () => {
+                                    if (importmodal?.type == 'import') {
+                                        try {
+                                            const { data } = await importMutation();
+                                            setimportmodal({ open: false, type: '' });
+                                            reetchfetchItemsInBox();
+                                        } catch (error) {
+                                            console.error('Error importing item:', error);
+                                        }
+                                    } else {
+                                        try {
+                                            const { data } = await exportMutation();
+                                            setimportmodal({ open: false, type: '' });
+                                            reetchfetchItemsInBox();
+                                        } catch (error) {
+                                            console.error('Error exporting item:', error);
+                                        }
+                                    }
+                                }}
+                            >
+                                {importmodal?.type} item
                             </button>
                         </div>
                     </div>
