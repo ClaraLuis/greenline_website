@@ -1,0 +1,393 @@
+export const defaultstyles = {
+    option: (provided, state) => ({
+        ...provided,
+        borderBottom: '0px solid #b1b3b6',
+        backgroundColor: state.isSelected ? '' : '',
+        padding: 5,
+        textTransform: 'capitalize',
+        color: 'var(--primary)',
+        transition: '.3s',
+        '&:hover': {
+            // color: '#eac435',
+            cursor: 'pointer',
+            color: 'var(--primary)',
+        },
+        '&:focus': {
+            // color: '#eac435',
+            cursor: 'pointer',
+            color: 'var(--primary)',
+        },
+    }),
+    control: (provided, state) => ({
+        ...provided,
+        color: '#5e6b92',
+        height: '1.4375em',
+
+        border: '0.0625rem solid #eee',
+        borderRadius: '18px',
+        backgroundColor: 'transparent',
+        display: 'flex',
+        cursor: 'pointer',
+
+        transition: '.3s',
+        borderColor: state.isFocused ? 'var(--primary) !important' : '',
+
+        position: 'relative',
+        boxShadow: '0px !important',
+    }),
+    indicatorSeparator: () => ({
+        display: 'none',
+    }),
+    dropdownIndicator: (provided, state) => ({
+        ...provided,
+        color: 'var(--priamry)',
+
+        transform: state.isFocused ? 'rotate(180deg)' : '',
+        fontSize: '11px !important',
+        width: '30px',
+    }),
+    valueContainer: (provided, state) => ({
+        ...provided,
+        overflow: 'visible',
+        textAlign: 'left',
+        color: '#5e6b92',
+    }),
+    placeholder: (provided, state) => ({
+        ...provided,
+        textAlign: 'left',
+        color: '#5e6b92 !important',
+        position: 'absolute',
+        zIndex: 10,
+        top: state.hasValue || state.selectProps.inputValue ? -20 : '',
+        transition: 'top 0.1s, font-size 0.1s',
+        fontSize: state.hasValue || state.selectProps.inputValue ? 13 : 14,
+        backgroundColor: 'white',
+        left: '5px',
+    }),
+    input: (provided) => ({
+        ...provided,
+        color: 'var(--text)',
+    }),
+    singleValue: (provided) => ({
+        ...provided,
+        fontSize: '13px',
+        padding: ' 0rem 0.5rem',
+    }),
+    menu: (provided) => ({
+        ...provided,
+        position: 'absolute',
+        zIndex: 10000,
+        color: 'var(--priamry)',
+        top: '40px',
+        borderRadius: '5px',
+        border: '0px',
+        boxShadow: '0 8px 24px rgba(57,68,104,0.08) !important',
+        // backgroundColor: 'red',
+    }),
+    MenuList: (provided) => ({
+        ...provided,
+        border: '0px',
+        boxShadow: '0px',
+        // position: 'absolute',
+        // zIndex: 10000,
+    }),
+    option: (provided, state) => ({
+        ...provided,
+        color: 'var(--text)',
+        backgroundColor: 'transparent !important',
+        border: '0px',
+        boxShadow: '0px',
+        cursor: 'pointer',
+        fontSize: '13px',
+        transition: 'all 0.4s',
+        '&:selection': {
+            backgroundColor: 'transparent !important',
+        },
+        '&:hover': {
+            backgroundColor: 'lightgray !important',
+        },
+    }),
+};
+export const defaultstylesdanger = {
+    option: (provided, state) => ({
+        ...provided,
+        borderBottom: '1px solid #b1b3b6',
+        backgroundColor: state.isSelected ? '' : '',
+        padding: 5,
+        textTransform: 'capitalize',
+        color: 'var(--primary)',
+        transition: '.3s',
+        '&:hover': {
+            // color: '#eac435',
+            cursor: 'pointer',
+            color: 'var(--primary)',
+        },
+        '&:focus': {
+            // color: '#eac435',
+            cursor: 'pointer',
+            color: 'var(--primary)',
+        },
+    }),
+    control: (provided, state) => ({
+        ...provided,
+
+        color: '#5e6b92',
+        height: '2.875rem',
+
+        border: '0.0625rem solid var(--danger)',
+        borderRadius: '0.625rem',
+        backgroundColor: 'transparent',
+        display: 'flex',
+        cursor: 'pointer',
+
+        transition: '.3s',
+        borderColor: state.isFocused ? 'var(--primary) !important' : '',
+
+        position: 'relative',
+        boxShadow: '0px !important',
+    }),
+    indicatorSeparator: () => ({
+        display: 'none',
+    }),
+    dropdownIndicator: (provided, state) => ({
+        ...provided,
+        color: 'var(--priamry)',
+
+        transform: state.isFocused ? 'rotate(180deg)' : '',
+        fontSize: '11px !important',
+        width: '30px',
+    }),
+    valueContainer: (provided, state) => ({
+        ...provided,
+        overflow: 'visible',
+        textAlign: 'left',
+        color: '#5e6b92',
+    }),
+    placeholder: (provided, state) => ({
+        ...provided,
+        textAlign: 'left',
+        color: '#5e6b92 !important',
+        position: 'absolute',
+        zIndex: 10,
+        top: state.hasValue || state.selectProps.inputValue ? -20 : '',
+        transition: 'top 0.1s, font-size 0.1s',
+        fontSize: state.hasValue || state.selectProps.inputValue ? 13 : 14,
+        backgroundColor: 'white',
+        left: '5px',
+    }),
+    input: (provided) => ({
+        ...provided,
+        color: 'var(--text)',
+    }),
+    singleValue: (provided) => ({
+        ...provided,
+        fontSize: '13px',
+        padding: ' 0rem 0.5rem',
+    }),
+    menu: (provided) => ({
+        ...provided,
+        zIndex: 100,
+        color: 'var(--priamry)',
+        top: '40px',
+        borderRadius: '5px',
+        border: '0px',
+        boxShadow: '0 8px 24px rgba(57,68,104,0.08) !important',
+    }),
+    MenuList: (provided) => ({
+        ...provided,
+        border: '0px',
+        boxShadow: '0px',
+    }),
+    option: (provided, state) => ({
+        ...provided,
+        color: 'var(--text)',
+        backgroundColor: 'transparent !important',
+        border: '0px',
+        boxShadow: '0px',
+        cursor: 'pointer',
+        fontSize: '13px',
+        transition: 'all 0.4s',
+        '&:selection': {
+            backgroundColor: 'transparent !important',
+        },
+        '&:hover': {
+            backgroundColor: 'lightgray !important',
+        },
+    }),
+};
+
+export const defaultstyles1 = {
+    option: (provided, state) => ({
+        ...provided,
+        borderBottom: '0px',
+        backgroundColor: 'transparent',
+        padding: '0px',
+        textTransform: 'capitalize',
+        color: 'var(--primary)',
+        transition: '.3s',
+        fontSize: '12px !important',
+        '&:hover': {
+            // color: '#eac435',
+            cursor: 'pointer',
+            color: 'var(--primary)',
+        },
+        '&:focus': {
+            // color: '#eac435',
+            cursor: 'pointer',
+            color: 'var(--primary)',
+        },
+    }),
+    control: (provided, state) => ({
+        ...provided,
+        color: 'var(--priamry)',
+        border: '0px',
+        borderRadius: '0px',
+        backgroundColor: 'transparent',
+        display: 'flex',
+        cursor: 'pointer',
+        padding: 0,
+        transition: '.3s',
+        borderColor: state.isFocused ? 'var(--primary) !important' : '',
+        borderBottomLeftRadius: state.isFocused ? '0px' : '',
+        borderBottomRightRadius: state.isFocused ? '0px' : '',
+        marginTop: '0px',
+        fontSize: '14px',
+        boxShadow: '0px !important',
+    }),
+    indicatorSeparator: () => ({
+        display: 'none',
+    }),
+    dropdownIndicator: (provided, state) => ({
+        ...provided,
+        color: 'var(--priamry)',
+        transition: '.3s',
+        transform: state.isFocused ? 'rotate(180deg)' : '',
+        fontSize: '11px !important',
+        width: '30px',
+    }),
+    placeholder: (provided, state) => ({
+        ...provided,
+        textAlign: 'left',
+        // color: 'var(--priamry)',
+    }),
+    input: (provided) => ({
+        ...provided,
+        color: 'var(--priamry)',
+    }),
+    singleValue: (provided) => ({
+        ...provided,
+        color: 'var(--priamry)',
+        textAlign: 'left',
+    }),
+    menu: (provided) => ({
+        ...provided,
+        color: 'var(--priamry)',
+        top: '31px',
+        borderRadius: '0px',
+        border: '0px',
+        boxShadow: '0 8px 24px rgba(57,68,104,0.08) !important',
+    }),
+    MenuList: (provided) => ({
+        ...provided,
+
+        border: '0px',
+        boxShadow: '0px',
+    }),
+    option: (provided, state) => ({
+        ...provided,
+        color: 'var(--text)',
+        backgroundColor: 'transparent !important',
+        border: '0px',
+        boxShadow: '0px',
+        cursor: 'pointer',
+        '&:selection': {
+            backgroundColor: 'transparent !important',
+        },
+    }),
+};
+
+export const tabledefaultstyles = {
+    control: (provided, state) => ({
+        ...provided,
+
+        color: '#5e6b92',
+        height: '20px',
+        border: '0.0625rem solid #cecece',
+        borderRadius: '5px',
+        backgroundColor: 'transparent',
+        display: 'flex',
+        cursor: 'pointer',
+        transition: '.3s',
+        borderColor: state.isFocused ? 'var(--primary) !important' : '',
+        position: 'relative',
+        boxShadow: '0px !important',
+    }),
+    indicatorSeparator: () => ({
+        display: 'none',
+    }),
+    dropdownIndicator: (provided, state) => ({
+        ...provided,
+        color: 'var(--priamry)',
+
+        transform: state.isFocused ? 'rotate(180deg)' : '',
+        fontSize: '11px !important',
+        width: '30px',
+    }),
+    valueContainer: (provided, state) => ({
+        ...provided,
+        overflow: 'visible',
+        textAlign: 'left',
+        color: '#5e6b92',
+    }),
+    placeholder: (provided, state) => ({
+        ...provided,
+        textAlign: 'left',
+        color: '#5e6b92 !important',
+        position: 'absolute',
+        zIndex: 10,
+        top: state.hasValue || state.selectProps.inputValue ? -20 : '',
+        transition: 'top 0.1s, font-size 0.1s',
+        fontSize: state.hasValue || state.selectProps.inputValue ? 13 : 14,
+        backgroundColor: 'transparent',
+        left: '5px',
+    }),
+    input: (provided) => ({
+        ...provided,
+        color: 'var(--text)',
+    }),
+    singleValue: (provided) => ({
+        ...provided,
+        fontSize: '13px',
+        padding: ' 0rem 0.5rem',
+    }),
+    menu: (provided) => ({
+        ...provided,
+        zIndex: 100,
+        color: 'var(--priamry)',
+        top: '30px',
+        borderRadius: '5px',
+        border: '0px',
+        boxShadow: '0 8px 24px rgba(57,68,104,0.08) !important',
+    }),
+    MenuList: (provided) => ({
+        ...provided,
+        border: '0px',
+        boxShadow: '0px',
+    }),
+    option: (provided, state) => ({
+        ...provided,
+        color: 'var(--text)',
+        backgroundColor: 'transparent !important',
+        border: '0px',
+        boxShadow: '0px',
+        cursor: 'pointer',
+        fontSize: '13px',
+        transition: 'all 0.4s',
+        '&:selection': {
+            backgroundColor: 'transparent !important',
+        },
+        '&:hover': {
+            backgroundColor: 'lightgray !important',
+        },
+    }),
+};
