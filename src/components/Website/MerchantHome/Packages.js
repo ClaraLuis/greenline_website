@@ -18,11 +18,11 @@ import { defaultstyles } from '../Generalfiles/selectstyles.js';
 import ItemsTable from './ItemsTable.js';
 import { NotificationManager } from 'react-notifications';
 
-const MerchanReturns = (props) => {
+const Packages = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, paymentTypeContext, returnPackageTypesContext } = useContext(Contexthandlerscontext);
-    const { useMutationGQL, fetchMerchants, fetchInventories, fetchCustomerAddresses, fetchMerchantItemReturns, useQueryGQL, createReturnPackage } = API();
+    const { setpageactive_context, setpagetitle_context, returnPackageStatusContext, returnPackageTypesContext } = useContext(Contexthandlerscontext);
+    const { useMutationGQL, fetchMerchants, fetchInventories, fetchCustomerAddresses, fetchPackages, useQueryGQL, createReturnPackage } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [cartItems, setcartItems] = useState([]);
@@ -55,8 +55,8 @@ const MerchanReturns = (props) => {
         beforeCursor: '',
     });
 
-    const fetchMerchantItemReturnsQuery = useQueryGQL('', fetchMerchantItemReturns(), filter);
-    const { refetch: refetchMerchantItemReturnsQuery } = useQueryGQL('', fetchMerchantItemReturns(), filter);
+    const fetchPackagesQuery = useQueryGQL('', fetchPackages(), filter);
+    const { refetch: refetchPackagesQuery } = useQueryGQL('', fetchPackages(), filter);
 
     const [createReturnPackageMutation] = useMutationGQL(createReturnPackage(), {
         ids: cartItems,
@@ -66,7 +66,7 @@ const MerchanReturns = (props) => {
     });
 
     useEffect(() => {
-        setpageactive_context('/merchantreturns');
+        setpageactive_context('/packages');
     }, []);
 
     return (
@@ -76,36 +76,55 @@ const MerchanReturns = (props) => {
                     <div class="row m-0 w-100">
                         <div class="col-lg-12 p-0 mb-3">
                             <Pagination
-                                beforeCursor={fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.cursor?.beforeCursor}
-                                afterCursor={fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.cursor?.afterCursor}
+                                beforeCursor={fetchPackagesQuery?.data?.PaginateReturnPackages?.cursor?.beforeCursor}
+                                afterCursor={fetchPackagesQuery?.data?.PaginateReturnPackages?.cursor?.afterCursor}
                                 filter={filter}
                                 setfiter={setfiter}
                             />
                         </div>
-                        <ItemsTable
-                            clickable={true}
-                            actiononclick={(item) => {
-                                var temp = { ...packagepayload };
-                                var exist = false;
-                                var chosenindex = null;
-                                temp.ids.map((i, ii) => {
-                                    if (i?.orderItem?.info?.sku == item?.orderItem?.info?.sku) {
-                                        exist = true;
-                                        chosenindex = ii;
-                                    }
-                                });
-                                if (!exist) {
-                                    temp.ids.push(item);
-                                }
-                                setpackagepayload({ ...temp });
-                            }}
-                            card="col-lg-4 px-1"
-                            items={fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.data}
-                        />
+                        {fetchPackagesQuery?.data?.PaginateReturnPackages?.data?.map((item, index) => {
+                            return (
+                                <div className="col-lg-4 p-1">
+                                    {/* <div style={{ background: 'white' }} class={' p-3 row m-0 w-100 card'}>
+                                    <div className="col-lg-4 p-0">
+                                        <span style={{ fontWeight: 700, fontSize: '16px' }}># {item?.id}</span>
+                                    </div>
+                                    <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
+                                        <div
+                                            className={
+                                                item.status == 'completed'
+                                                    ? ' wordbreak text-success bg-light-success rounded-pill allcentered  '
+                                                    : ' wordbreak text-warning bg-light-warning rounded-pill allcentered '
+                                            }
+                                        >
+                                            {sheetStatusesContext?.map((i, ii) => {
+                                                if (i.value == item?.status) {
+                                                    return <span>{i.label}</span>;
+                                                }
+                                            })}
+                                        </div>
+                                    </div>
+                                    <div className="col-lg-12 p-0 my-2">
+                                        <hr className="m-0" />
+                                    </div>
+                                    <div className="col-lg-12 p-0 mb-2">
+                                        Courier Name:{' '}
+                                        <span style={{ fontWeight: 600 }} class="text-capitalize">
+                                            {item?.userInfo?.name}
+                                        </span>
+                                    </div>
+                                    <div className="col-lg-12 p-0 mb-2">
+                                        Orders Count: <span style={{ fontWeight: 600 }}>{item?.orderCount}</span>
+                                    </div>
+
+                                </div> */}
+                                </div>
+                            );
+                        })}
                         <div class="col-lg-12 p-0">
                             <Pagination
-                                beforeCursor={fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.cursor?.beforeCursor}
-                                afterCursor={fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.cursor?.afterCursor}
+                                beforeCursor={fetchPackagesQuery?.data?.PaginateReturnPackages?.cursor?.beforeCursor}
+                                afterCursor={fetchPackagesQuery?.data?.PaginateReturnPackages?.cursor?.afterCursor}
                                 filter={filter}
                                 setfiter={setfiter}
                             />
@@ -228,7 +247,7 @@ const MerchanReturns = (props) => {
                                             });
                                             await setcartItems([...temp]);
                                             await createReturnPackageMutation();
-                                            refetchMerchantItemReturnsQuery();
+                                            refetchPackagesQuery();
                                         } else {
                                             NotificationManager.warning('Please Complete all fields', 'Warning!');
                                         }
@@ -245,4 +264,4 @@ const MerchanReturns = (props) => {
         </div>
     );
 };
-export default MerchanReturns;
+export default Packages;

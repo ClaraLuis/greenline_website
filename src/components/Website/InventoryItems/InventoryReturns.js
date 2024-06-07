@@ -18,11 +18,11 @@ import { defaultstyles } from '../Generalfiles/selectstyles.js';
 import ItemsTable from './ItemsTable.js';
 import { NotificationManager } from 'react-notifications';
 
-const MerchanReturns = (props) => {
+const InventoryReturns = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, paymentTypeContext, returnPackageTypesContext } = useContext(Contexthandlerscontext);
-    const { useMutationGQL, fetchMerchants, fetchInventories, fetchCustomerAddresses, fetchMerchantItemReturns, useQueryGQL, createReturnPackage } = API();
+    const { useMutationGQL, fetchMerchants, fetchInventories, fetchCustomerAddresses, fetchInventoryItemReturns, useQueryGQL, createReturnPackage } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [cartItems, setcartItems] = useState([]);
@@ -55,8 +55,8 @@ const MerchanReturns = (props) => {
         beforeCursor: '',
     });
 
-    const fetchMerchantItemReturnsQuery = useQueryGQL('', fetchMerchantItemReturns(), filter);
-    const { refetch: refetchMerchantItemReturnsQuery } = useQueryGQL('', fetchMerchantItemReturns(), filter);
+    const fetchInventoryItemReturnsQuery = useQueryGQL('', fetchInventoryItemReturns(), filter);
+    const { refetch: refetchInventoryItemReturnsQuery } = useQueryGQL('', fetchInventoryItemReturns(), filter);
 
     const [createReturnPackageMutation] = useMutationGQL(createReturnPackage(), {
         ids: cartItems,
@@ -66,7 +66,7 @@ const MerchanReturns = (props) => {
     });
 
     useEffect(() => {
-        setpageactive_context('/merchantreturns');
+        setpageactive_context('/inventoryreturns');
     }, []);
 
     return (
@@ -76,8 +76,8 @@ const MerchanReturns = (props) => {
                     <div class="row m-0 w-100">
                         <div class="col-lg-12 p-0 mb-3">
                             <Pagination
-                                beforeCursor={fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.cursor?.beforeCursor}
-                                afterCursor={fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.cursor?.afterCursor}
+                                beforeCursor={fetchInventoryItemReturnsQuery?.data?.paginateItemReturns?.cursor?.beforeCursor}
+                                afterCursor={fetchInventoryItemReturnsQuery?.data?.paginateItemReturns?.cursor?.afterCursor}
                                 filter={filter}
                                 setfiter={setfiter}
                             />
@@ -100,12 +100,12 @@ const MerchanReturns = (props) => {
                                 setpackagepayload({ ...temp });
                             }}
                             card="col-lg-4 px-1"
-                            items={fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.data}
+                            items={fetchInventoryItemReturnsQuery?.data?.paginateItemReturns?.data}
                         />
                         <div class="col-lg-12 p-0">
                             <Pagination
-                                beforeCursor={fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.cursor?.beforeCursor}
-                                afterCursor={fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.cursor?.afterCursor}
+                                beforeCursor={fetchInventoryItemReturnsQuery?.data?.paginateItemReturns?.cursor?.beforeCursor}
+                                afterCursor={fetchInventoryItemReturnsQuery?.data?.paginateItemReturns?.cursor?.afterCursor}
                                 filter={filter}
                                 setfiter={setfiter}
                             />
@@ -228,7 +228,7 @@ const MerchanReturns = (props) => {
                                             });
                                             await setcartItems([...temp]);
                                             await createReturnPackageMutation();
-                                            refetchMerchantItemReturnsQuery();
+                                            refetchInventoryItemReturnsQuery();
                                         } else {
                                             NotificationManager.warning('Please Complete all fields', 'Warning!');
                                         }
@@ -245,4 +245,4 @@ const MerchanReturns = (props) => {
         </div>
     );
 };
-export default MerchanReturns;
+export default InventoryReturns;

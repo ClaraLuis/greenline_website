@@ -15,6 +15,7 @@ import { BiSolidCoinStack, BiSolidSpreadsheet, BiTransfer } from 'react-icons/bi
 import { CiBoxes } from 'react-icons/ci';
 import { IoMdHome } from 'react-icons/io';
 import { FaMap } from 'react-icons/fa';
+import { TbArrowsExchange, TbPackages } from 'react-icons/tb';
 export const Contexthandlerscontext = React.createContext();
 export const Contexthandlerscontext_provider = (props) => {
     let history = useHistory();
@@ -280,6 +281,13 @@ export const Contexthandlerscontext_provider = (props) => {
         { label: 'Cash', value: 'cash' },
         { label: 'Card', value: 'card' },
         { label: 'Free', value: 'free' },
+    ];
+
+    const returnPackageStatusContext = [
+        { label: 'Idle', value: 'idle' },
+        { label: 'Assigned to Courier', value: 'assignedToCourier' },
+        { label: 'Transferring', value: 'transferring' },
+        { label: 'Delivered', value: 'delivered' },
     ];
     const returnPackageTypesContext = [
         { label: 'Inventory', value: 'inventory' },
@@ -550,19 +558,31 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/merchantorders',
                         permissionpage: [1],
-                        show: isAuth([1]),
+                        show: isAuth([1, 52]),
                     },
                     {
                         name: 'Returns',
                         isselected: false,
                         icon: (
                             <i class={'allcentered'}>
-                                <LuPackageOpen size={18} />
+                                <TbArrowsExchange size={18} />
                             </i>
                         ),
                         path: '/merchantreturns',
                         permissionpage: [1],
-                        show: isAuth([1]),
+                        show: isAuth([1, 52]),
+                    },
+                    {
+                        name: 'Packages',
+                        isselected: false,
+                        icon: (
+                            <i class={'allcentered'}>
+                                <TbPackages size={18} />
+                            </i>
+                        ),
+                        path: '/packages',
+                        permissionpage: [1],
+                        show: isAuth([1, 52]),
                     },
                 ],
             },
@@ -779,6 +799,7 @@ export const Contexthandlerscontext_provider = (props) => {
                 userRolesContext,
                 transactionStatusesSelectContext,
                 returnPackageTypesContext,
+                returnPackageStatusContext,
             }}
         >
             {props.children}

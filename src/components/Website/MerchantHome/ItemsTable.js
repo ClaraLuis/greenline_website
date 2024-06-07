@@ -5,7 +5,7 @@ import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
-import { FaLayerGroup, FaPlus } from 'react-icons/fa';
+import { FaCheck, FaLayerGroup, FaPlus } from 'react-icons/fa';
 import { components } from 'react-select';
 
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
@@ -85,7 +85,7 @@ const ItemsTable = (props) => {
                                                 }}
                                                 class={generalstyles.cart_button}
                                             >
-                                                <FaPlus color="white" />
+                                                <FaCheck color="white" />
                                             </div>
                                         </div>
                                     )}

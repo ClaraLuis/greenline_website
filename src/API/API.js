@@ -507,6 +507,22 @@ const API = () => {
             }
         `;
     };
+    const fetchInventoryItemReturns = (payload) => {
+        return gql`
+            query paginateInventoryReturns($input: PaginateInventoryReturnInput!) {
+                paginateInventoryReturns(input: $input) {
+                    data {
+                        id
+                       
+                      
+                        }
+                        createdAt
+                    }
+                    cursor
+                }
+            }
+        `;
+    };
     const fetchRacks = (payload) => {
         return gql`
         query paginateRacks{
@@ -788,6 +804,29 @@ const API = () => {
             }
         `;
     };
+
+    const fetchPackages = (payload) => {
+        return gql`
+            query PaginateReturnPackages($input: PaginateReturnPackageInput!) {
+                PaginateReturnPackages(input: $input) {
+                    data {
+                        id
+                        sku
+                        type
+                        hubId
+                        courierId
+                        toInventoryId
+                        toMerchantId
+                        status
+                        createdAt
+                        updatedAt
+                    }
+                    cursor
+                }
+            }
+        `;
+    };
+
     const useMutationGQL = (query, payload) => {
         const mutation = useMutation(query, {
             variables: {
@@ -885,6 +924,8 @@ const API = () => {
         completeMerchantPayments,
         fetchMerchantItemReturns,
         createReturnPackage,
+        fetchPackages,
+        fetchInventoryItemReturns,
     };
 };
 export default API;

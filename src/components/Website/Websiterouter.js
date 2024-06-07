@@ -43,6 +43,7 @@ import Merchants from './MerchantHome/Merchants.js';
 import CourierCollection from './Finance/CourierCollection.js';
 import MerchantPayments from './Finance/MerchantPayments.js';
 import MerchanReturns from './MerchantHome/MerchanReturns.js';
+import Packages from './MerchantHome/Packages.js';
 const App = (props) => {
     const history = useHistory();
     const location = useLocation();
@@ -270,6 +271,7 @@ const App = (props) => {
                                                         <Route exact path="/governorates" component={Shipping} />
                                                         <Route exact path="/merchants" component={Merchants} />
                                                         <Route exact path="/merchantreturns" component={MerchanReturns} />
+                                                        <Route exact path="/packages" component={Packages} />
                                                     </Switch>
                                                 );
                                             }}

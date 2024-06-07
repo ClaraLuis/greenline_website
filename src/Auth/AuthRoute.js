@@ -1,4 +1,4 @@
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 import { useContext, useEffect, useState } from 'react';
 // import { useNavigate } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
@@ -45,7 +45,11 @@ const AuthRoute = (props) => {
                 history.push('/users');
             }
         } catch (error) {
-            console.error('Error adding user:', error);
+            signOut(getAuth());
+            const cookies = new Cookies();
+            cookies.set('accessToken', null);
+            cookies.set('merchantId', null);
+            window.open('/login', '_self');
         }
     };
 

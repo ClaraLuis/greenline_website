@@ -79,47 +79,25 @@ const OrdersTable = (props) => {
                         </div>
                     )}
                     {fetchusers?.data?.length != 0 && ( */}
-            <table style={{}} className={props?.clickable ? 'table table_hover' : 'table'}>
-                <thead>
-                    <th>Order#</th>
-                    <th>Mercant</th>
-                    <th>Price</th>
-                    <th>Shipping price</th>
-                    <th>Payment Type</th>
-                    <th>Status</th>
-                    <th>Date</th>
-                </thead>
-                <tbody>
-                    {props?.fetchOrdersQuery?.data?.paginateOrders?.data?.map((item, index) => {
-                        const timestamp = item?.orderDate; // Convert milliseconds to seconds
-                        const date = new Date(timestamp);
-                        return (
-                            <tr
-                                onClick={() => {
-                                    if (props?.clickable) {
-                                        props?.actiononclick(item);
-                                    }
-                                }}
-                            >
-                                <td>
-                                    <p className={' m-0 p-0 wordbreak '}>{item.id}</p>
-                                </td>
-                                <td>
-                                    <p className={' m-0 p-0 wordbreak  '}>{item?.merchant?.name}</p>
-                                </td>
-
-                                <td>
-                                    <p className={' m-0 p-0 wordbreak  '}>{item?.price}</p>
-                                </td>
-                                <td>
-                                    <p className={' m-0 p-0 wordbreak  '}>{item?.shippingPrice}</p>
-                                </td>
-
-                                <td>
-                                    <p className={' m-0 p-0 wordbreak  '}>{item?.paymentType}</p>
-                                </td>
-
-                                <td>
+            <div class="row m-0 w-100">
+                {props?.fetchOrdersQuery?.data?.paginateOrders?.data?.map((item, index) => {
+                    const timestamp = item?.orderDate; // Convert milliseconds to seconds
+                    const date = new Date(timestamp);
+                    return (
+                        <div
+                            onClick={() => {
+                                if (props?.clickable) {
+                                    props?.actiononclick(item);
+                                }
+                            }}
+                            style={{ cursor: props?.clickable ? 'pointer' : '' }}
+                            className="col-lg-6 p-1"
+                        >
+                            <div style={{ background: 'white' }} class={' p-3 row m-0 w-100 card'}>
+                                <div className="col-lg-4 p-0">
+                                    <span style={{ fontWeight: 700, fontSize: '16px' }}># {item?.id}</span>
+                                </div>
+                                <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
                                     <div
                                         onClick={() => {
                                             setchangestatusmodal(true);
@@ -139,29 +117,33 @@ const OrdersTable = (props) => {
                                             }
                                         })}
                                     </div>
-                                </td>
-                                <td>
+                                </div>
+                                <div className="col-lg-12 p-0 my-2">
+                                    <hr className="m-0" />
+                                </div>
+                                <div className="col-lg-12 p-0 mb-2">
+                                    Merchant Name:{' '}
+                                    <span style={{ fontWeight: 600 }} class="text-capitalize">
+                                        {item?.merchant?.name}
+                                    </span>
+                                </div>
+                                <div className="col-lg-12 p-0 mb-2">
+                                    Price: <span style={{ fontWeight: 600 }}>{item?.price}</span>
+                                </div>
+                                <div className="col-lg-12 p-0 mb-2">
+                                    Shipping: <span style={{ fontWeight: 600 }}>{item?.shippingPrice}</span>
+                                </div>
+                                <div className="col-lg-12 p-0 mb-2">
+                                    Payment type: <span style={{ fontWeight: 600 }}>{item?.paymentType}</span>
+                                </div>
+                                <div class="col-lg-12 p-0 d-flex justify-content-end ">
                                     <p className={' m-0 p-0 wordbreak  '}>{date.toUTCString()}</p>
-                                </td>
-                            </tr>
-                        );
-                    })}
-                </tbody>
-            </table>
-            {/* )} */}
-            {/* <Pagespaginatecomponent
-                                totaldatacount={FetchUsers?.data?.data?.total}
-                                numofitemsperpage={FetchUsers?.data?.data?.per_page}
-                                pagenumbparams={FetchUsers?.data?.data?.current_page}
-                                nextpagefunction={(nextpage) => {
-                                    history.push({
-                                        pathname: '/users',
-                                        search: '&page=' + nextpage,
-                                    });
-                                }}
-                            />
-                </>
-            )} */}
+                                </div>
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
 
             <Modal
                 show={changestatusmodal}
