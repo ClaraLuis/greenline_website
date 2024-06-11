@@ -196,54 +196,65 @@ const FinancialAccountInfo = (props) => {
                         </div>
                     </div>
                 </div>
-                <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
-                    <div class={' col-lg-12 col-md-12 col-sm-12 p-0 d-flex align-items-center justify-content-start '}>
-                        <p class=" p-0 m-0 text-uppercase" style={{ fontSize: '15px' }}>
-                            <span style={{ color: 'var(--info)' }}>sent transactions</span>
-                        </p>
-                    </div>
-                    <div class="col-lg-12 p-0">
-                        <Pagination
-                            beforeCursor={fetchSenttTransactionsQuery?.data?.paginateFinancialTransaction?.cursor?.beforeCursor}
-                            afterCursor={fetchSenttTransactionsQuery?.data?.paginateFinancialTransaction?.cursor?.afterCursor}
-                            filter={filterSentTransactionsObj}
-                            setfilter={setfilterSentTransactionsObj}
-                        />
-                    </div>
-                    <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
-                        <TransactionsTable
-                            query={fetchSenttTransactionsQuery}
-                            paginationAttr="paginateFinancialTransaction"
-                            srctype="sent"
-                            refetchFunc={() => {
-                                Refetch();
-                            }}
-                        />
-                    </div>
-                </div>
-                <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
-                    <div class={' col-lg-12 col-md-12 col-sm-12 p-0 d-flex align-items-center justify-content-start '}>
-                        <p class=" p-0 m-0 text-uppercase" style={{ fontSize: '15px' }}>
-                            <span style={{ color: 'var(--info)' }}>recieved transactions</span>
-                        </p>
-                    </div>
-                    <div class="col-lg-12 p-0">
-                        <Pagination
-                            beforeCursor={fetchRecievedTransactionsQuery?.data?.paginateFinancialTransaction?.cursor?.beforeCursor}
-                            afterCursor={fetchRecievedTransactionsQuery?.data?.paginateFinancialTransaction?.cursor?.afterCursor}
-                            filter={filterRecievedTransactionsObj}
-                            setfilter={setfilterRecievedTransactionsObj}
-                        />
-                    </div>
-                    <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
-                        <TransactionsTable
-                            query={fetchRecievedTransactionsQuery}
-                            paginationAttr="paginateFinancialTransaction"
-                            srctype="recieved"
-                            refetchFunc={() => {
-                                Refetch();
-                            }}
-                        />
+                <div class="col-lg-12 p-0">
+                    <div class="row m-0 w-100">
+                        <div class="col-lg-6">
+                            {' '}
+                            <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
+                                <div class={' col-lg-12 col-md-12 col-sm-12 p-0 d-flex align-items-center justify-content-start '}>
+                                    <p class=" p-0 m-0 text-uppercase" style={{ fontSize: '15px' }}>
+                                        <span style={{ color: 'var(--info)' }}>sent transactions</span>
+                                    </p>
+                                </div>
+                                <div class="col-lg-12 p-0">
+                                    <Pagination
+                                        beforeCursor={fetchSenttTransactionsQuery?.data?.paginateFinancialTransaction?.cursor?.beforeCursor}
+                                        afterCursor={fetchSenttTransactionsQuery?.data?.paginateFinancialTransaction?.cursor?.afterCursor}
+                                        filter={filterSentTransactionsObj}
+                                        setfilter={setfilterSentTransactionsObj}
+                                    />
+                                </div>
+                                <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                                    <TransactionsTable
+                                        width={'100%'}
+                                        query={fetchSenttTransactionsQuery}
+                                        paginationAttr="paginateFinancialTransaction"
+                                        srctype="sent"
+                                        refetchFunc={() => {
+                                            Refetch();
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
+                                <div class={' col-lg-12 col-md-12 col-sm-12 p-0 d-flex align-items-center justify-content-start '}>
+                                    <p class=" p-0 m-0 text-uppercase" style={{ fontSize: '15px' }}>
+                                        <span style={{ color: 'var(--info)' }}>recieved transactions</span>
+                                    </p>
+                                </div>
+                                <div class="col-lg-12 p-0">
+                                    <Pagination
+                                        beforeCursor={fetchRecievedTransactionsQuery?.data?.paginateFinancialTransaction?.cursor?.beforeCursor}
+                                        afterCursor={fetchRecievedTransactionsQuery?.data?.paginateFinancialTransaction?.cursor?.afterCursor}
+                                        filter={filterRecievedTransactionsObj}
+                                        setfilter={setfilterRecievedTransactionsObj}
+                                    />
+                                </div>
+                                <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                                    <TransactionsTable
+                                        width={'100%'}
+                                        query={fetchRecievedTransactionsQuery}
+                                        paginationAttr="paginateFinancialTransaction"
+                                        srctype="recieved"
+                                        refetchFunc={() => {
+                                            Refetch();
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <Modal
@@ -289,23 +300,31 @@ const FinancialAccountInfo = (props) => {
                                                       size: '12',
                                                   },
                                                   { name: 'Description', attr: 'description', type: 'textarea', size: '12' },
+
                                                   {
-                                                      name: 'From Account',
+                                                      title: 'From Account',
+                                                      filter: filterAllFinancialAccountsObj,
+                                                      setfilter: setfilterAllFinancialAccountsObj,
+                                                      options: fetchAllFinancialAccountsQuery,
+                                                      optionsAttr: 'paginateFinancialAccounts',
+                                                      label: 'name',
+                                                      value: 'id',
+                                                      size: '12',
                                                       attr: 'fromAccountId',
-                                                      type: 'select',
-                                                      options: [{ name: 'Choose', id: '' }, ...fetchAllFinancialAccountsQuery?.data?.paginateFinancialAccounts?.data],
-                                                      optionLabel: 'name',
-                                                      optionValue: 'id',
-                                                      size: '12',
+                                                      type: 'fetchSelect',
                                                   },
+
                                                   {
-                                                      name: 'To Account',
-                                                      attr: 'toAccountId',
-                                                      type: 'select',
-                                                      options: [{ name: 'Choose', id: '' }, ...fetchAllFinancialAccountsQuery?.data?.paginateFinancialAccounts?.data],
-                                                      optionLabel: 'name',
-                                                      optionValue: 'id',
+                                                      title: 'To Account',
+                                                      filter: filterAllFinancialAccountsObj,
+                                                      setfilter: setfilterAllFinancialAccountsObj,
+                                                      options: fetchAllFinancialAccountsQuery,
+                                                      optionsAttr: 'paginateFinancialAccounts',
+                                                      label: 'name',
+                                                      value: 'id',
                                                       size: '12',
+                                                      attr: 'toAccountId',
+                                                      type: 'fetchSelect',
                                                   },
                                                   { name: 'Amount', attr: 'amount', type: 'number', size: '12' },
                                                   { name: 'Receipt', attr: 'receipt', previewerAttr: 'previewerReceipt', type: 'image', size: '12' },
@@ -321,13 +340,16 @@ const FinancialAccountInfo = (props) => {
                                                   { name: 'Description', attr: 'description', type: 'textarea', size: '12' },
 
                                                   {
-                                                      name: 'To Account',
-                                                      attr: 'toAccountId',
-                                                      type: 'select',
-                                                      options: [{ name: 'Choose', id: '' }, ...fetchAllFinancialAccountsQuery?.data?.paginateFinancialAccounts?.data],
-                                                      optionLabel: 'name',
-                                                      optionValue: 'id',
+                                                      title: 'To Account',
+                                                      filter: filterAllFinancialAccountsObj,
+                                                      setfilter: setfilterAllFinancialAccountsObj,
+                                                      options: fetchAllFinancialAccountsQuery,
+                                                      optionsAttr: 'paginateFinancialAccounts',
+                                                      label: 'name',
+                                                      value: 'id',
                                                       size: '12',
+                                                      attr: 'toAccountId',
+                                                      type: 'fetchSelect',
                                                   },
                                                   { name: 'Amount', attr: 'amount', type: 'number', size: '12' },
                                                   { name: 'Receipt', attr: 'receipt', previewerAttr: 'previewerReceipt', type: 'image', size: '12' },
@@ -376,15 +398,18 @@ const FinancialAccountInfo = (props) => {
                                             options: expensesTypeContext,
                                             size: '12',
                                         },
+
                                         {
-                                            name: 'From Account',
-                                            attr: 'fromAccountId',
-                                            type: 'select',
-                                            options: [
-                                                { label: 'account 1', value: 'account1' },
-                                                { label: 'account 2', value: 'account2' },
-                                            ],
+                                            title: 'From Account',
+                                            filter: filterAllFinancialAccountsObj,
+                                            setfilter: setfilterAllFinancialAccountsObj,
+                                            options: fetchAllFinancialAccountsQuery,
+                                            optionsAttr: 'paginateFinancialAccounts',
+                                            label: 'name',
+                                            value: 'id',
                                             size: '12',
+                                            attr: 'fromAccountId',
+                                            type: 'fetchSelect',
                                         },
                                         { name: 'Amount', attr: 'amount', type: 'number', size: '12' },
                                         { name: 'Receipt', attr: 'receipt', type: 'image', size: '12' },

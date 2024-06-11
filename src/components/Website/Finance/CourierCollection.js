@@ -23,7 +23,7 @@ import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
 import TransactionsTable from './TransactionsTable.js';
 import Pagination from '../../Pagination.js';
-import { FiCheckCircle } from 'react-icons/fi';
+import { FiCheckCircle, FiCircle } from 'react-icons/fi';
 import SelectComponent from '../../SelectComponent.js';
 
 const CourierCollection = (props) => {
@@ -258,15 +258,28 @@ const CourierCollection = (props) => {
                                                 }}
                                                 className="iconhover allcentered mr-1"
                                             >
-                                                <FiCheckCircle
-                                                    style={{ transition: 'all 0.4s' }}
-                                                    color={
-                                                        selectedArray?.length == fetchCourierCollectionTransactionsQuery?.data?.paginateCourierCollectionTransactions?.data?.length
-                                                            ? 'var(--success)'
-                                                            : ''
-                                                    }
-                                                    size={18}
-                                                />
+                                                {selectedArray?.length != fetchCourierCollectionTransactionsQuery?.data?.paginateCourierCollectionTransactions?.data?.length && (
+                                                    <FiCircle
+                                                        style={{ transition: 'all 0.4s' }}
+                                                        color={
+                                                            selectedArray?.length == fetchCourierCollectionTransactionsQuery?.data?.paginateCourierCollectionTransactions?.data?.length
+                                                                ? 'var(--success)'
+                                                                : ''
+                                                        }
+                                                        size={18}
+                                                    />
+                                                )}
+                                                {selectedArray?.length == fetchCourierCollectionTransactionsQuery?.data?.paginateCourierCollectionTransactions?.data?.length && (
+                                                    <FiCheckCircle
+                                                        style={{ transition: 'all 0.4s' }}
+                                                        color={
+                                                            selectedArray?.length == fetchCourierCollectionTransactionsQuery?.data?.paginateCourierCollectionTransactions?.data?.length
+                                                                ? 'var(--success)'
+                                                                : ''
+                                                        }
+                                                        size={18}
+                                                    />
+                                                )}
                                             </div>
                                             {selectedArray?.length != fetchCourierCollectionTransactionsQuery?.data?.paginateCourierCollectionTransactions?.data?.length
                                                 ? 'Select All'
@@ -283,6 +296,7 @@ const CourierCollection = (props) => {
                                     </div>
                                     <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
                                         <TransactionsTable
+                                            width={'50%'}
                                             query={fetchCourierCollectionTransactionsQuery}
                                             paginationAttr="paginateCourierCollectionTransactions"
                                             srctype="courierCollection"
@@ -389,14 +403,18 @@ const CourierCollection = (props) => {
                                 payload?.type == 'transfer'
                                     ? [
                                           {
-                                              name: 'To Account',
-                                              attr: 'toAccountId',
-                                              type: 'select',
-                                              options: [{ name: 'Choose', id: '' }, ...(fetchAllFinancialAccountsQuery?.data?.paginateFinancialAccounts?.data || [])],
-                                              optionLabel: 'name',
-                                              optionValue: 'id',
+                                              title: 'To Account',
+                                              filter: filterAllFinancialAccountsObj,
+                                              setfilter: setfilterAllFinancialAccountsObj,
+                                              options: fetchAllFinancialAccountsQuery,
+                                              optionsAttr: 'paginateFinancialAccounts',
+                                              label: 'name',
+                                              value: 'id',
                                               size: '12',
+                                              attr: 'toAccountId',
+                                              type: 'fetchSelect',
                                           },
+
                                           { name: 'Description', attr: 'description', type: 'textarea', size: '12' },
                                       ]
                                     : [{ name: 'Description', attr: 'description', type: 'textarea', size: '12' }]

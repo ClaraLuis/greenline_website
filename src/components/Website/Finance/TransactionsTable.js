@@ -104,7 +104,15 @@ const TransactionsTable = (props) => {
                             {props?.query?.data[props?.paginationAttr]?.data?.map((item, index) => {
                                 const selected = selectedArray.includes(item.id);
                                 return (
-                                    <div style={{ fontSize: '13px' }} className="col-lg-6 p-1 pb-0">
+                                    <div
+                                        style={{ fontSize: '13px', cursor: props?.allowSelect ? 'pointer' : '', width: props?.width }}
+                                        onClick={() => {
+                                            if (props?.allowSelect) {
+                                                handleSelect(item);
+                                            }
+                                        }}
+                                        className="p-1 pb-0"
+                                    >
                                         <div class={generalstyles.card + ' p-2 px-3 row m-0 w-100 allcentered'}>
                                             <div className="col-lg-3 p-0">
                                                 <span style={{ fontWeight: 700, fontSize: '16px' }} class=" d-flex align-items-center">
@@ -278,18 +286,18 @@ const TransactionsTable = (props) => {
                                                     {item?.description}
                                                 </span>
                                             </div>
-                                            {props?.allowSelect && (
-                                                <div className="col-lg-12 p-0 d-flex justify-content-end ">
-                                                    <div
-                                                        onClick={() => handleSelect(item)}
-                                                        style={{
-                                                            width: '30px',
-                                                            height: '30px',
-                                                        }}
-                                                        className="iconhover allcentered"
-                                                    >
-                                                        <FiCheckCircle style={{ transition: 'all 0.4s' }} color={selected ? 'var(--success)' : ''} size={18} />
-                                                    </div>
+                                            {props?.allowSelect && selected && (
+                                                <div
+                                                    style={{
+                                                        width: '30px',
+                                                        height: '30px',
+                                                        position: 'absolute',
+                                                        right: 15,
+                                                        bottom: 30,
+                                                    }}
+                                                    className=" allcentered"
+                                                >
+                                                    <FiCheckCircle style={{ transition: 'all 0.4s' }} color={selected ? 'var(--success)' : ''} size={18} />
                                                 </div>
                                             )}
                                             {!props?.allowSelect && (

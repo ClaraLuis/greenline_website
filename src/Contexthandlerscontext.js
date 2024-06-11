@@ -746,18 +746,6 @@ export const Contexthandlerscontext_provider = (props) => {
                     },
 
                     {
-                        name: 'Financial Orders',
-                        isselected: false,
-                        icon: (
-                            <i class={'allcentered'}>
-                                <LuPackageOpen size={18} />
-                            </i>
-                        ),
-                        path: '/financeorders',
-                        permissionpage: [1],
-                        show: isAuth([1, 51]),
-                    },
-                    {
                         name: 'Transactions',
                         isselected: false,
                         icon: (

@@ -23,7 +23,8 @@ import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
 import TransactionsTable from './TransactionsTable.js';
 import Pagination from '../../Pagination.js';
-import { FiCheckCircle } from 'react-icons/fi';
+import { FiCheckCircle, FiCircle } from 'react-icons/fi';
+import SelectComponent from '../../SelectComponent.js';
 
 const MerchantPayments = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -78,7 +79,13 @@ const MerchantPayments = (props) => {
             processing: undefined,
         });
     }, []);
-    const fetchMerchantsQuery = useQueryGQL('', fetchMerchants());
+    const [filteMerchants, setfilteMerchants] = useState({
+        isAsc: true,
+        limit: 10,
+        afterCursor: undefined,
+        beforeCursor: undefined,
+    });
+    const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filteMerchants);
     const { refetch: refetchMerchantPaymentTransactionsQuery } = useQueryGQL('', fetchMerchantPaymentTransactions(), filterobj);
 
     const [completeMerchantPaymentsMutation] = useMutationGQL(completeMerchantPayments(), {
@@ -150,16 +157,15 @@ const MerchantPayments = (props) => {
                                 <hr className="mt-2 mb-3" />
                                 <div class="row m-0 w-100">
                                     <div class={'col-lg-2'} style={{ marginBottom: '15px' }}>
-                                        <label for="name" class={formstyles.form__label}>
-                                            Merchant
-                                        </label>
-                                        <Select
-                                            options={fetchMerchantsQuery?.data?.paginateMerchants?.data}
-                                            styles={defaultstyles}
-                                            defaultValue={fetchMerchantsQuery?.data?.paginateMerchants?.data.filter((option) => option.id == cookies.get('merchantId'))}
-                                            getOptionLabel={(option) => option.name}
-                                            getOptionValue={(option) => option.id}
-                                            onChange={(option) => {
+                                        <SelectComponent
+                                            title={'Merchant'}
+                                            filter={filteMerchants}
+                                            setfilter={setfilteMerchants}
+                                            options={fetchMerchantsQuery}
+                                            attr={'paginateMerchants'}
+                                            label={'name'}
+                                            value={'id'}
+                                            onClick={(option) => {
                                                 var temp = filterobj?.merchantIds ?? [];
                                                 var exist = false;
                                                 filterobj?.merchantIds?.map((i, ii) => {
@@ -261,13 +267,28 @@ const MerchantPayments = (props) => {
                                                 }}
                                                 className="iconhover allcentered mr-1"
                                             >
-                                                <FiCheckCircle
-                                                    style={{ transition: 'all 0.4s' }}
-                                                    color={
-                                                        selectedArray?.length == fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data?.length ? 'var(--success)' : ''
-                                                    }
-                                                    size={18}
-                                                />
+                                                {selectedArray?.length != fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data?.length && (
+                                                    <FiCircle
+                                                        style={{ transition: 'all 0.4s' }}
+                                                        color={
+                                                            selectedArray?.length == fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data?.length
+                                                                ? 'var(--success)'
+                                                                : ''
+                                                        }
+                                                        size={18}
+                                                    />
+                                                )}
+                                                {selectedArray?.length == fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data?.length && (
+                                                    <FiCheckCircle
+                                                        style={{ transition: 'all 0.4s' }}
+                                                        color={
+                                                            selectedArray?.length == fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data?.length
+                                                                ? 'var(--success)'
+                                                                : ''
+                                                        }
+                                                        size={18}
+                                                    />
+                                                )}
                                             </div>
                                             {selectedArray?.length != fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data?.length ? 'Select All' : 'Deselect All'}
                                         </div>
@@ -282,6 +303,7 @@ const MerchantPayments = (props) => {
                                     </div>
                                     <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
                                         <TransactionsTable
+                                            width={'50%'}
                                             query={fetchMerchantPaymentTransactionsQuery}
                                             paginationAttr="paginateMerchantPaymentTransactions"
                                             srctype="all"

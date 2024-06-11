@@ -24,6 +24,7 @@ import ExpensesTable from './ExpensesTable.js';
 import Form from '../../Form.js';
 import { NotificationManager } from 'react-notifications';
 import Pagination from '../../Pagination.js';
+import SelectComponent from '../../SelectComponent.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -153,18 +154,17 @@ const FinanceTransactions = (props) => {
                                         />
                                     </div>
                                     <div className={'col-lg-2'} style={{ marginBottom: '15px' }}>
-                                        <label htmlFor="name" className={formstyles.form__label}>
-                                            From Account
-                                        </label>
-                                        <Select
-                                            options={[{ name: 'All', id: undefined }, ...(fetchAllFinancialAccountsQuery?.data?.paginateFinancialAccounts?.data || [])]}
-                                            styles={defaultstyles}
-                                            value={[{ name: 'All', id: undefined }, ...(fetchAllFinancialAccountsQuery?.data?.paginateFinancialAccounts?.data || [])].find(
-                                                (option) => option.id === filterTransactionsObj?.fromAccountId,
-                                            )}
-                                            getOptionLabel={(option) => option.name}
-                                            getOptionValue={(option) => option.id}
-                                            onChange={(option) => {
+                                        <SelectComponent
+                                            title={'From Account'}
+                                            filter={filterAllFinancialAccountsObj}
+                                            setfilter={setfilterAllFinancialAccountsObj}
+                                            options={fetchAllFinancialAccountsQuery}
+                                            attr={'paginateFinancialAccounts'}
+                                            label={'name'}
+                                            value={'id'}
+                                            payload={filterTransactionsObj}
+                                            payloadAttr={'fromAccountId'}
+                                            onClick={(option) => {
                                                 setfilterTransactionsObj({
                                                     ...filterTransactionsObj,
                                                     fromAccountId: option.id,
@@ -173,18 +173,17 @@ const FinanceTransactions = (props) => {
                                         />
                                     </div>
                                     <div className={'col-lg-2'} style={{ marginBottom: '15px' }}>
-                                        <label htmlFor="name" className={formstyles.form__label}>
-                                            To Account
-                                        </label>
-                                        <Select
-                                            options={[{ name: 'All', id: undefined }, ...(fetchAllFinancialAccountsQuery?.data?.paginateFinancialAccounts?.data || [])]}
-                                            styles={defaultstyles}
-                                            value={[{ name: 'All', id: undefined }, ...(fetchAllFinancialAccountsQuery?.data?.paginateFinancialAccounts?.data || [])].find(
-                                                (option) => option.id === filterTransactionsObj?.toAccountId,
-                                            )}
-                                            getOptionLabel={(option) => option.name}
-                                            getOptionValue={(option) => option.id}
-                                            onChange={(option) => {
+                                        <SelectComponent
+                                            title={'To Account'}
+                                            filter={filterAllFinancialAccountsObj}
+                                            setfilter={setfilterAllFinancialAccountsObj}
+                                            options={fetchAllFinancialAccountsQuery}
+                                            attr={'paginateFinancialAccounts'}
+                                            label={'name'}
+                                            value={'id'}
+                                            payload={filterTransactionsObj}
+                                            payloadAttr={'toAccountId'}
+                                            onClick={(option) => {
                                                 setfilterTransactionsObj({
                                                     ...filterTransactionsObj,
                                                     toAccountId: option.id,
@@ -214,6 +213,7 @@ const FinanceTransactions = (props) => {
                     </div>
                     <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
                         <TransactionsTable
+                            width={'50%'}
                             query={fetchAllTransactionsQuery}
                             paginationAttr="paginateFinancialTransaction"
                             srctype="all"
