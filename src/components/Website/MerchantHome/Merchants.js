@@ -104,7 +104,7 @@ const Merchants = (props) => {
                                 beforeCursor={fetchMerchantsQuery?.data?.paginateMerchants?.cursor?.beforeCursor}
                                 afterCursor={fetchMerchantsQuery?.data?.paginateMerchants?.cursor?.afterCursor}
                                 filter={filterMerchants}
-                                setfiter={setfilterMerchants}
+                                setfilter={setfilterMerchants}
                             />
                         </div>
                         <div style={{ minHeight: '60vh' }} class="row m-0 w-100 d-flex align-items-start align-content-start">

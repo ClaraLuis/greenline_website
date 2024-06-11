@@ -207,7 +207,7 @@ const FinancialAccountInfo = (props) => {
                             beforeCursor={fetchSenttTransactionsQuery?.data?.paginateFinancialTransaction?.cursor?.beforeCursor}
                             afterCursor={fetchSenttTransactionsQuery?.data?.paginateFinancialTransaction?.cursor?.afterCursor}
                             filter={filterSentTransactionsObj}
-                            setfiter={setfilterSentTransactionsObj}
+                            setfilter={setfilterSentTransactionsObj}
                         />
                     </div>
                     <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
@@ -232,7 +232,7 @@ const FinancialAccountInfo = (props) => {
                             beforeCursor={fetchRecievedTransactionsQuery?.data?.paginateFinancialTransaction?.cursor?.beforeCursor}
                             afterCursor={fetchRecievedTransactionsQuery?.data?.paginateFinancialTransaction?.cursor?.afterCursor}
                             filter={filterRecievedTransactionsObj}
-                            setfiter={setfilterRecievedTransactionsObj}
+                            setfilter={setfilterRecievedTransactionsObj}
                         />
                     </div>
                     <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>

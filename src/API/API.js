@@ -3,15 +3,19 @@ import axios from 'axios';
 import { gql, useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { Contexthandlerscontext } from '../Contexthandlerscontext';
 import Cookies from 'universal-cookie';
+import { getAuth, signOut } from 'firebase/auth';
 
 const API = () => {
+    const cookies = new Cookies();
+
     const { setUserInfoContext, UserInfoContext } = useContext(Contexthandlerscontext);
-    var accessToken = UserInfoContext?.accessToken;
-    useEffect(() => {
-        accessToken = UserInfoContext?.accessToken;
-        const cookies = new Cookies();
-        accessToken = cookies.get('accessToken');
-    }, [UserInfoContext]);
+    var accessToken =
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InNKa1lDeVFWOU5RREhEYVdLaUZHWmFZblY3UDIiLCJodWJJZCI6MSwiaW52ZW50b3J5SWQiOm51bGwsInR5cGUiOiJFbXBsb3llZSIsIm1lcmNoYW50SWQiOm51bGwsInJvbGVzIjpbMV0sImlhdCI6MTcxMjg0MTk2OSwiZXhwIjoxNzE2ODQzNzY5fQ.vb1L0BcnM0TeJiJmbmAlMm5EB7TVTBq4TCgw3r24x2w';
+
+    // useEffect(() => {
+    //     accessToken = UserInfoContext?.accessToken;
+    //     accessToken = cookies.get('accessToken');
+    // }, [UserInfoContext]);
 
     const addUser = () => {
         return gql`
@@ -126,6 +130,13 @@ const API = () => {
         return gql`
             mutation createMerchant($input: CreateMerchantInput!) {
                 createMerchant(input: $input)
+            }
+        `;
+    };
+    const assignPackageToCourier = () => {
+        return gql`
+            mutation assignPackagesToCourier($input: AssignPackageToCourierInput!) {
+                assignPackagesToCourier(input: $input)
             }
         `;
     };
@@ -513,8 +524,26 @@ const API = () => {
                 paginateInventoryReturns(input: $input) {
                     data {
                         id
-                       
-                      
+                        inventoryId
+                        hubId
+                        restockedToId
+                        packageId
+                        orderItemId
+                        status
+                        orderItem {
+                            info {
+                                id
+                                sku
+                                name
+                                merchantSku
+                                itemId
+                                isEnabled
+                                imageUrl
+                                price
+                                weight
+                                createdAt
+                                lastModified
+                            }
                         }
                         createdAt
                     }
@@ -827,16 +856,17 @@ const API = () => {
         `;
     };
 
+    var refreshing = false;
     const useMutationGQL = (query, payload) => {
         const mutation = useMutation(query, {
             variables: {
                 input: payload,
             },
-            context: {
-                headers: {
-                    Authorization: ` Bearer ${accessToken}`,
-                },
-            },
+            // context: {
+            //     headers: {
+            //         Authorization: ` Bearer ${accessToken}`,
+            //     },
+            // },
         });
         return mutation;
     };
@@ -844,26 +874,25 @@ const API = () => {
     const useLazyQueryGQL = (query, fetchPolicy) => {
         const mutation = useLazyQuery(query, {
             fetchPolicy: fetchPolicy ?? 'network-only',
-            context: {
-                headers: {
-                    Authorization: ` Bearer ${accessToken}`,
-                },
-            },
+            // context: {
+            //     headers: {
+            //         Authorization: ` Bearer ${accessToken}`,
+            //     },
+            // },
         });
         return mutation;
     };
-
     const useQueryGQL = (token, query, payload) => {
         return useQuery(query, {
             fetchPolicy: 'network-only',
             variables: {
                 input: payload,
             },
-            context: {
-                headers: {
-                    Authorization: ` Bearer ${accessToken}`,
-                },
-            },
+            // context: {
+            //     headers: {
+            //         Authorization: `Bearer ${accessToken}`,
+            //     },
+            // },
         });
     };
 
@@ -926,6 +955,7 @@ const API = () => {
         createReturnPackage,
         fetchPackages,
         fetchInventoryItemReturns,
+        assignPackageToCourier,
     };
 };
 export default API;

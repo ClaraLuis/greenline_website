@@ -44,6 +44,9 @@ import CourierCollection from './Finance/CourierCollection.js';
 import MerchantPayments from './Finance/MerchantPayments.js';
 import MerchanReturns from './MerchantHome/MerchanReturns.js';
 import Packages from './MerchantHome/Packages.js';
+import InventoryReturns from './InventoryItems/InventoryReturns.js';
+import InventoryPackages from './InventoryItems/InventoryPackages.js';
+import MerchantPackages from './MerchantHome/MerchantPackages.js';
 const App = (props) => {
     const history = useHistory();
     const location = useLocation();
@@ -197,8 +200,9 @@ const App = (props) => {
                                                                 onClick={() => {
                                                                     signOut(getAuth());
                                                                     const cookies = new Cookies();
-                                                                    cookies.set('accessToken', null);
-                                                                    cookies.set('merchantId', null);
+                                                                    cookies.remove('accessToken');
+                                                                    cookies.remove('merchantId');
+                                                                    cookies.remove('userInfo');
                                                                     window.open('/login', '_self');
                                                                 }}
                                                             >
@@ -272,6 +276,9 @@ const App = (props) => {
                                                         <Route exact path="/merchants" component={Merchants} />
                                                         <Route exact path="/merchantreturns" component={MerchanReturns} />
                                                         <Route exact path="/packages" component={Packages} />
+                                                        <Route exact path="/inventoryreturns" component={InventoryReturns} />
+                                                        <Route exact path="/inventorypackages" component={InventoryPackages} />
+                                                        <Route exact path="/merchantpackages" component={MerchantPackages} />
                                                     </Switch>
                                                 );
                                             }}

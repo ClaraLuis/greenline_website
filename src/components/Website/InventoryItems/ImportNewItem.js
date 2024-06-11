@@ -13,6 +13,7 @@ import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 import { IoMdClose } from 'react-icons/io';
 import API from '../../../API/API.js';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
+import SelectComponent from '../../SelectComponent.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -56,7 +57,7 @@ const ImportNewItem = (props) => {
             console.error('Error adding user:', error);
         }
     };
-    const fetchinventories = useQueryGQL('', fetchInventories(filterInventories));
+    const fetchinventories = useQueryGQL('', fetchInventories(), filterInventories);
     const fetchRacksQuery = useQueryGQL('', fetchRacks(filter));
 
     // const fetchusers = [];
@@ -138,16 +139,17 @@ const ImportNewItem = (props) => {
                         </div>
                     </div>
                     <div class={'col-lg-6'} style={{ marginBottom: '15px' }}>
-                        <label for="name" class={formstyles.form__label}>
-                            Inventory
-                        </label>
-                        <Select
-                            options={fetchinventories?.data?.paginateInventories?.data}
-                            styles={defaultstyles}
-                            value={fetchinventories?.data?.paginateInventories?.data?.filter((option) => option.value == props?.importItemPayload?.inventoryId)}
-                            getOptionLabel={(option) => option.name}
-                            getOptionValue={(option) => option.id}
-                            onChange={(option) => {
+                        <SelectComponent
+                            title={'Inventory'}
+                            filter={filterInventories}
+                            setfilter={setfilterInventories}
+                            options={fetchinventories}
+                            attr={'paginateInventories'}
+                            label={'name'}
+                            value={'id'}
+                            payload={props?.importItemPayload}
+                            payloadAttr={'inventoryId'}
+                            onClick={(option) => {
                                 props?.setimportItemPayload({ ...props?.importItemPayload, inventoryId: option.id });
                                 setfilter({ ...filter, invetoryIds: [option.id] });
                             }}

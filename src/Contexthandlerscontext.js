@@ -441,6 +441,18 @@ export const Contexthandlerscontext_provider = (props) => {
                         permissionpage: [1],
                         show: isAuth([1, 43]),
                     },
+                    {
+                        name: 'Hubs',
+                        isselected: false,
+                        icon: (
+                            <i class={'allcentered'}>
+                                <MdOutlineHub size={18} />
+                            </i>
+                        ),
+                        path: '/hubs',
+                        permissionpage: [1],
+                        show: isAuth([1]),
+                    },
                 ],
             },
             {
@@ -491,6 +503,18 @@ export const Contexthandlerscontext_provider = (props) => {
                             </i>
                         ),
                         path: '/orders',
+                        permissionpage: [1],
+                        show: isAuth([1]),
+                    },
+                    {
+                        name: 'Packages',
+                        isselected: false,
+                        icon: (
+                            <i class={'allcentered'}>
+                                <TbPackages size={18} />
+                            </i>
+                        ),
+                        path: '/inventorypackages',
                         permissionpage: [1],
                         show: isAuth([1]),
                     },
@@ -561,7 +585,25 @@ export const Contexthandlerscontext_provider = (props) => {
                         show: isAuth([1, 52]),
                     },
                     {
-                        name: 'Returns',
+                        name: 'Packages',
+                        isselected: false,
+                        icon: (
+                            <i class={'allcentered'}>
+                                <TbPackages size={18} />
+                            </i>
+                        ),
+                        path: '/merchantpackages',
+                        permissionpage: [1],
+                        show: isAuth([1, 52]),
+                    },
+                ],
+            },
+            {
+                maintitle: 'Hubs',
+                // path: '/hubs',
+                subitems: [
+                    {
+                        name: 'Item Returns',
                         isselected: false,
                         icon: (
                             <i class={'allcentered'}>
@@ -570,7 +612,19 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/merchantreturns',
                         permissionpage: [1],
-                        show: isAuth([1, 52]),
+                        show: isAuth([1]),
+                    },
+                    {
+                        name: 'Inventory Returns',
+                        isselected: false,
+                        icon: (
+                            <i class={'allcentered'}>
+                                <TbArrowsExchange size={18} />
+                            </i>
+                        ),
+                        path: '/inventoryreturns',
+                        permissionpage: [1],
+                        show: isAuth([1]),
                     },
                     {
                         name: 'Packages',
@@ -582,7 +636,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/packages',
                         permissionpage: [1],
-                        show: isAuth([1, 52]),
+                        show: isAuth([1]),
                     },
                 ],
             },

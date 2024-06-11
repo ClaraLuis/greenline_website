@@ -6,17 +6,19 @@ import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
 import { FaPlus, FaWindowMinimize } from 'react-icons/fa';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
+import { Accordion, AccordionItem, AccordionItemHeading, AccordionItemButton, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
 import Select from 'react-select';
+import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import API from '../../../API/API.js';
 import Form from '../../Form.js';
 import Pagination from '../../Pagination.js';
 import SelectComponent from '../../SelectComponent.js';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
-import ItemsTable from './ItemsTable.js';
 import { NotificationManager } from 'react-notifications';
+import ItemsTable from '../MerchantHome/ItemsTable.js';
 
 const InventoryReturns = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -28,7 +30,7 @@ const InventoryReturns = (props) => {
     const [cartItems, setcartItems] = useState([]);
     const [packagepayload, setpackagepayload] = useState({
         ids: [],
-        type: '',
+        type: 'inventory',
         toInventoryId: undefined,
         toMerchantId: undefined,
     });
@@ -48,11 +50,13 @@ const InventoryReturns = (props) => {
     });
     const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filterMerchants);
 
-    const [filter, setfiter] = useState({
+    const [filter, setfilter] = useState({
         limit: 20,
         isAsc: true,
         afterCursor: '',
         beforeCursor: '',
+        assigned: false,
+        inventoryId: undefined,
     });
 
     const fetchInventoryItemReturnsQuery = useQueryGQL('', fetchInventoryItemReturns(), filter);
@@ -60,9 +64,8 @@ const InventoryReturns = (props) => {
 
     const [createReturnPackageMutation] = useMutationGQL(createReturnPackage(), {
         ids: cartItems,
-        type: packagepayload?.type,
+        type: 'inventory',
         toInventoryId: packagepayload?.toInventoryId,
-        toMerchantId: packagepayload?.toMerchantId,
     });
 
     useEffect(() => {
@@ -74,12 +77,68 @@ const InventoryReturns = (props) => {
             <div class="row m-0 w-100 d-flex  justify-content-start mt-sm-2 pb-5 pb-md-0">
                 <div className={' col-lg-8 p-0 '}>
                     <div class="row m-0 w-100">
+                        <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>
+                            <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
+                                <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
+                                    <AccordionItemHeading>
+                                        <AccordionItemButton>
+                                            <div class="row m-0 w-100">
+                                                <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
+                                                    <p class={generalstyles.cardTitle + '  m-0 p-0 '}>Filter:</p>
+                                                </div>
+                                                <div class="col-lg-4 col-md-4 col-sm-4 p-0 d-flex align-items-center justify-content-end">
+                                                    <AccordionItemState>
+                                                        {(state) => {
+                                                            if (state.expanded == true) {
+                                                                return (
+                                                                    <i class="h-100 d-flex align-items-center justify-content-center">
+                                                                        <BsChevronDown />
+                                                                    </i>
+                                                                );
+                                                            } else {
+                                                                return (
+                                                                    <i class="h-100 d-flex align-items-center justify-content-center">
+                                                                        <BsChevronUp />
+                                                                    </i>
+                                                                );
+                                                            }
+                                                        }}
+                                                    </AccordionItemState>
+                                                </div>
+                                            </div>
+                                        </AccordionItemButton>
+                                    </AccordionItemHeading>
+                                    <AccordionItemPanel>
+                                        <hr className="mt-2 mb-3" />
+                                        <div class="row m-0 w-100">
+                                            <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                                <SelectComponent
+                                                    title={'Inventory'}
+                                                    filter={filterInventories}
+                                                    setfilter={setfilterInventories}
+                                                    options={fetchinventories}
+                                                    attr={'paginateInventories'}
+                                                    label={'name'}
+                                                    value={'id'}
+                                                    payload={filter}
+                                                    payloadAttr={'inventoryId'}
+                                                    onClick={(option) => {
+                                                        setfilter({ ...filter, inventoryId: option.id });
+                                                        setpackagepayload({ ...packagepayload, toInventoryId: option.id });
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
+                                    </AccordionItemPanel>
+                                </AccordionItem>
+                            </Accordion>
+                        </div>
                         <div class="col-lg-12 p-0 mb-3">
                             <Pagination
-                                beforeCursor={fetchInventoryItemReturnsQuery?.data?.paginateItemReturns?.cursor?.beforeCursor}
-                                afterCursor={fetchInventoryItemReturnsQuery?.data?.paginateItemReturns?.cursor?.afterCursor}
+                                beforeCursor={fetchInventoryItemReturnsQuery?.data?.paginateInventoryReturns?.cursor?.beforeCursor}
+                                afterCursor={fetchInventoryItemReturnsQuery?.data?.paginateInventoryReturns?.cursor?.afterCursor}
                                 filter={filter}
-                                setfiter={setfiter}
+                                setfilter={setfilter}
                             />
                         </div>
                         <ItemsTable
@@ -100,14 +159,14 @@ const InventoryReturns = (props) => {
                                 setpackagepayload({ ...temp });
                             }}
                             card="col-lg-4 px-1"
-                            items={fetchInventoryItemReturnsQuery?.data?.paginateItemReturns?.data}
+                            items={fetchInventoryItemReturnsQuery?.data?.paginateInventoryReturns?.data}
                         />
                         <div class="col-lg-12 p-0">
                             <Pagination
-                                beforeCursor={fetchInventoryItemReturnsQuery?.data?.paginateItemReturns?.cursor?.beforeCursor}
-                                afterCursor={fetchInventoryItemReturnsQuery?.data?.paginateItemReturns?.cursor?.afterCursor}
+                                beforeCursor={fetchInventoryItemReturnsQuery?.data?.paginateInventoryReturns?.cursor?.beforeCursor}
+                                afterCursor={fetchInventoryItemReturnsQuery?.data?.paginateInventoryReturns?.cursor?.afterCursor}
                                 filter={filter}
-                                setfiter={setfiter}
+                                setfilter={setfilter}
                             />
                         </div>
                     </div>
@@ -163,65 +222,29 @@ const InventoryReturns = (props) => {
                                 </>
                             )}
                         </div>
+
                         <div class={'col-lg-12'} style={{ marginBottom: '15px' }}>
-                            <label for="name" class={formstyles.form__label}>
-                                Package Type
-                            </label>
-                            <Select
-                                options={returnPackageTypesContext}
-                                styles={defaultstyles}
-                                value={returnPackageTypesContext.filter((option) => option.value == packagepayload?.type)}
-                                onChange={(option) => {
-                                    setpackagepayload({ ...packagepayload, type: option.value });
+                            <SelectComponent
+                                title={'Inventory'}
+                                filter={filterInventories}
+                                setfilter={setfilterInventories}
+                                options={fetchinventories}
+                                attr={'paginateInventories'}
+                                label={'name'}
+                                value={'id'}
+                                payload={packagepayload}
+                                payloadAttr={'toInventoryId'}
+                                onClick={(option) => {
+                                    setpackagepayload({ ...packagepayload, toInventoryId: option.id });
                                 }}
                             />
                         </div>
-                        {packagepayload?.type == 'inventory' && (
-                            <div class={'col-lg-12'} style={{ marginBottom: '15px' }}>
-                                <SelectComponent
-                                    title={'Inventory'}
-                                    filter={filterInventories}
-                                    setfilter={setfilterInventories}
-                                    options={fetchinventories}
-                                    attr={'paginateInventories'}
-                                    label={'name'}
-                                    value={'id'}
-                                    payload={packagepayload}
-                                    payloadAttr={'toInventoryId'}
-                                    onClick={(option) => {
-                                        setpackagepayload({ ...packagepayload, toInventoryId: option.id });
-                                    }}
-                                />
-                            </div>
-                        )}
-                        {packagepayload?.type == 'merchant' && (
-                            <div class={'col-lg-12'} style={{ marginBottom: '15px' }}>
-                                <SelectComponent
-                                    title={'Merchant'}
-                                    filter={filterMerchants}
-                                    setfilter={setfilterMerchants}
-                                    options={fetchMerchantsQuery}
-                                    attr={'paginateMerchants'}
-                                    label={'name'}
-                                    value={'id'}
-                                    payload={packagepayload}
-                                    payloadAttr={'toMerchantId'}
-                                    onClick={(option) => {
-                                        setpackagepayload({ ...packagepayload, toMerchantId: option.id });
-                                    }}
-                                />
-                            </div>
-                        )}
+
                         <div class="col-lg-12 p-0 allcentered">
                             <button
                                 onClick={async () => {
                                     try {
-                                        if (
-                                            packagepayload?.ids?.length != 0 &&
-                                            packagepayload?.type?.length != 0 &&
-                                            ((packagepayload?.type == 'inventory' && packagepayload?.toInventoryId != undefined) ||
-                                                (packagepayload?.type == 'merchat' && packagepayload?.toMerchantId != undefined))
-                                        ) {
+                                        if (packagepayload?.ids?.length != 0 && packagepayload?.type?.length != 0 && packagepayload?.toInventoryId?.length != 0) {
                                             var temp = [];
                                             await packagepayload?.ids?.map((item, index) => {
                                                 temp.push(item.id);

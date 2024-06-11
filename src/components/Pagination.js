@@ -17,7 +17,7 @@ const Pagination = (props) => {
                     <Select
                         value={props?.filter?.limit}
                         onChange={(event) => {
-                            props?.setfiter({ ...props?.filter, limit: event.target.value, beforeCursor: null, afterCursor: null });
+                            props?.setfilter({ ...props?.filter, limit: event.target.value, beforeCursor: null, afterCursor: null });
                         }}
                     >
                         {array?.map((item, index) => {
@@ -28,7 +28,7 @@ const Pagination = (props) => {
             </div>
             <div
                 onClick={() => {
-                    props?.setfiter({ ...props?.filter, beforeCursor: props?.beforeCursor, afterCursor: null });
+                    props?.setfilter({ ...props?.filter, beforeCursor: props?.beforeCursor, afterCursor: null });
                 }}
                 class={props?.beforeCursor === null ? `${generalstyles.mui_1774owm_disabled} ${generalstyles.mui_1774owm}` : generalstyles.mui_1774owm}
             >
@@ -36,7 +36,7 @@ const Pagination = (props) => {
             </div>
             <div
                 onClick={() => {
-                    props?.setfiter({ ...props?.filter, afterCursor: props?.afterCursor, beforeCursor: null });
+                    props?.setfilter({ ...props?.filter, afterCursor: props?.afterCursor, beforeCursor: null });
                 }}
                 class={props?.afterCursor === null ? `${generalstyles.mui_1774owm_disabled} ${generalstyles.mui_1774owm}` : generalstyles.mui_1774owm}
             >

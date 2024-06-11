@@ -77,7 +77,6 @@ const AddOrder = (props) => {
     const [loading, setloading] = useState(false);
     const [customerFound, setcustomerFound] = useState(false);
     const [customerData, setcustomerData] = useState({});
-    const [fetchMerchantItemVariantsQuery, setfetchMerchantItemVariantsQuery] = useState({ loading: true });
 
     const [customerDataSuggestions, setcustomerDataSuggestions] = useState({});
     const [addresspayload, setaddresspayload] = useState({
@@ -94,12 +93,12 @@ const AddOrder = (props) => {
         merchantId: merchantId,
     });
 
-    const [filter, setfiter] = useState({
+    const [filter, setfilter] = useState({
         limit: 20,
         isAsc: true,
         afterCursor: '',
         beforeCursor: '',
-        name: '',
+        name: undefined,
         merchantId: merchantId,
     });
 
@@ -111,7 +110,7 @@ const AddOrder = (props) => {
     });
 
     const [checkCustomerNameSuggestions] = useLazyQueryGQL(fetchCustomerNameSuggestions());
-    const [fetchMerchantItemVariantsFunc] = useLazyQueryGQL(fetchMerchantItemVariants());
+    const fetchMerchantItemVariantsQuery = useQueryGQL('', fetchMerchantItemVariants(), filter);
 
     const [linkCustomerMutation] = useMutationGQL(linkCustomerMerchant(), {
         customerId: orderpayload?.customerId,
@@ -242,19 +241,20 @@ const AddOrder = (props) => {
         }
     }, [orderpayload?.customerId]);
 
-    useEffect(async () => {
-        if (queryParameters.get('merchantId')) {
-            const merchantIdtemp = parseInt(queryParameters.get('merchantId'));
-            setmerchantId(merchantIdtemp);
-            // alert(merchantId);
-            var { data, loading } = await fetchMerchantItemVariantsFunc({
-                variables: {
-                    input: filter,
-                },
-            });
-            setfetchMerchantItemVariantsQuery({ data: data, loading: loading });
-        }
-    }, []);
+    useEffect(() => {
+        alert(queryParameters.get('merchantId'));
+        const merchantIdtemp = parseInt(queryParameters.get('merchantId'));
+        setmerchantId(merchantIdtemp);
+        setfilter({
+            limit: 20,
+            isAsc: true,
+            afterCursor: '',
+            beforeCursor: '',
+            name: undefined,
+            merchantId: merchantIdtemp,
+        });
+    }, [queryParameters.get('merchantId')]);
+
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div class="row m-0 w-100 d-flex  justify-content-start mt-sm-2 pb-5 pb-md-0">
@@ -296,7 +296,11 @@ const AddOrder = (props) => {
                                                 value={filter?.name}
                                                 placeholder={'Search by name '}
                                                 onChange={() => {
-                                                    setfiter({ ...filter, name: event.target.value });
+                                                    if (event.target.value?.length == 0) {
+                                                        setfilter({ ...filter, name: undefined });
+                                                    } else {
+                                                        setfilter({ ...filter, name: event.target.value });
+                                                    }
                                                 }}
                                             />
                                         </div>
@@ -310,7 +314,7 @@ const AddOrder = (props) => {
                                                 value={filter?.sku}
                                                 placeholder={'Search by SKU'}
                                                 onChange={() => {
-                                                    setfiter({ ...filter, sku: event.target.value });
+                                                    setfilter({ ...filter, sku: event.target.value });
                                                 }}
                                             />
                                         </div>
@@ -322,11 +326,12 @@ const AddOrder = (props) => {
                                     beforeCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.beforeCursor}
                                     afterCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.afterCursor}
                                     filter={filter}
-                                    setfiter={setfiter}
+                                    setfilter={setfilter}
                                 />
                             </div>
                             <ItemsTable
                                 clickable={true}
+                                selectedItems={orderpayload?.items}
                                 actiononclick={(item) => {
                                     var temp = { ...orderpayload };
                                     var exist = false;
@@ -352,7 +357,7 @@ const AddOrder = (props) => {
                                     beforeCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.beforeCursor}
                                     afterCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.afterCursor}
                                     filter={filter}
-                                    setfiter={setfiter}
+                                    setfilter={setfilter}
                                 />
                             </div>
                         </div>
@@ -659,7 +664,7 @@ const AddOrder = (props) => {
                                                                         >
                                                                             <div class="col-lg-12">
                                                                                 <span style={{ fontWeight: 600 }}>
-                                                                                    {item?.address?.country}, {item?.address?.city}
+                                                                                    {item?.address?.city}, {item?.address?.country}
                                                                                 </span>
                                                                             </div>
 
@@ -727,7 +732,7 @@ const AddOrder = (props) => {
                                                                         >
                                                                             <div class="col-lg-12">
                                                                                 <span style={{ fontWeight: 600 }}>
-                                                                                    {item?.address?.country}, {item?.address?.city}
+                                                                                    {item?.address?.city}, {item?.address?.country}
                                                                                 </span>
                                                                             </div>
                                                                             <div class="col-lg-12">

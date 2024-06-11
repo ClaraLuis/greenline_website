@@ -4974,3 +4974,8 @@ ul {
     border-color: #3aac5d; /* Change the active step border color */
     background: #3aac5d; /* Change the active step background color */
 }
+
+.cardhover:hover {
+    scale: 1.02;
+    transition: all 0.4s;
+}

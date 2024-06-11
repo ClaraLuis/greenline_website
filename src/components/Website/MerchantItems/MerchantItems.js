@@ -74,7 +74,7 @@ const MerchantItems = (props) => {
         color: '',
         colorHEX: '',
     });
-    const [payload, setfiter] = useState({
+    const [payload, setfilter] = useState({
         limit: 5,
         isAsc: true,
         afterCursor: '',
@@ -122,7 +122,7 @@ const MerchantItems = (props) => {
     }, []);
 
     useEffect(() => {
-        setfiter({
+        setfilter({
             limit: 5,
             isAsc: true,
             afterCursor: '',
@@ -383,7 +383,7 @@ const MerchantItems = (props) => {
                                         value={payload?.name}
                                         placeholder={'Search by name '}
                                         onChange={() => {
-                                            setfiter({ ...payload, name: event.target.value });
+                                            setfilter({ ...payload, name: event.target.value });
                                         }}
                                     />
                                 </div>
@@ -397,7 +397,7 @@ const MerchantItems = (props) => {
                                         value={payload?.sku}
                                         placeholder={'Search by SKU'}
                                         onChange={() => {
-                                            setfiter({ ...payload, sku: event.target.value });
+                                            setfilter({ ...payload, sku: event.target.value });
                                         }}
                                     />
                                 </div>
@@ -409,7 +409,7 @@ const MerchantItems = (props) => {
                                     beforeCursor={fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.beforeCursor}
                                     afterCursor={fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.afterCursor}
                                     payload={payload}
-                                    setfiter={setfiter}
+                                    setfilter={setfilter}
                                 />
                             </div>
                             <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
@@ -420,7 +420,7 @@ const MerchantItems = (props) => {
                                     beforeCursor={fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.beforeCursor}
                                     afterCursor={fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.afterCursor}
                                     payload={payload}
-                                    setfiter={setfiter}
+                                    setfilter={setfilter}
                                 />
                             </div>
                         </div>

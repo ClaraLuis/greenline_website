@@ -53,7 +53,7 @@ const FinanceSheets = (props) => {
         page: 1,
         search: '',
     });
-    const [filter, setfiter] = useState({
+    const [filter, setfilter] = useState({
         limit: 20,
         isAsc: true,
         afterCursor: '',

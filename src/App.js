@@ -15,24 +15,153 @@ import './trans.css';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import logo from './components/Website/Generalfiles/images/logo.png';
-import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { firebaseConfig } from './Auth/firebaseconfig.js';
 import { initializeApp } from 'firebase/app';
 import AuthRoute from './Auth/AuthRoute.js';
+import { getAuth, signOut } from 'firebase/auth';
+import { ApolloClient, InMemoryCache, HttpLink, ApolloLink, from, ApolloProvider, gql, Observable } from '@apollo/client';
+import { onError } from '@apollo/link-error';
+import { setContext } from '@apollo/client/link/context';
 
 initializeApp(firebaseConfig);
+const cookies = new Cookies();
 
 const Websiterouter = React.lazy(() => import('./components/Website/Websiterouter'));
 const Login = React.lazy(() => import('./components/Website/Login/Login'));
+let isRefreshing = false;
+let pendingRequests = [];
+
+const resolvePendingRequests = (newToken) => {
+    pendingRequests.map((callback) => callback(newToken));
+    pendingRequests = [];
+};
+
+const errorLink = onError(({ graphQLErrors, networkError, operation, forward }) => {
+    if (graphQLErrors) {
+        for (let err of graphQLErrors) {
+            if (err.message === 'expired jwt token.') {
+                if (!isRefreshing) {
+                    isRefreshing = true;
+
+                    cookies.remove('accessToken');
+                    cookies.remove('userInfo');
+                    refreshAuthToken()
+                        .then((newToken) => {
+                            isRefreshing = false;
+                            resolvePendingRequests(newToken);
+                        })
+                        .catch((error) => {
+                            console.error('Token refresh failed:', error);
+                            isRefreshing = false;
+                            pendingRequests = [];
+                        });
+                }
+
+                return new Observable((observer) => {
+                    pendingRequests.push((newToken) => {
+                        operation.setContext(({ headers = {} }) => ({
+                            headers: {
+                                ...headers,
+                                authorization: `Bearer ${newToken}`,
+                            },
+                        }));
+                        observer.next();
+                        observer.complete();
+                    });
+                }).flatMap(() => forward(operation));
+            } else {
+                console.log(`[GraphQL error]: ${err.message}`);
+            }
+        }
+    }
+
+    if (networkError) {
+        console.log(`[Network error]: ${networkError}`);
+    }
+});
+
+const authLink = setContext(async (_, { headers }) => {
+    const token = await getAccessToken();
+    return {
+        headers: {
+            ...headers,
+            authorization: token ? `Bearer ${token}` : '',
+        },
+    };
+});
+
+const httpLink = new HttpLink({
+    uri: 'http://localhost:3001/graphql',
+});
+
+const client = new ApolloClient({
+    link: from([errorLink, authLink, httpLink]),
+    cache: new InMemoryCache(),
+});
+
+async function getAccessToken() {
+    const token = cookies.get('accessToken');
+    return token ? `${token}` : '';
+}
+
+async function refreshAuthToken() {
+    try {
+        const firebaseToken = await getAuth()?.currentUser?.getIdToken(true); // force refresh token from Firebase
+        if (!firebaseToken) throw new Error('No Firebase token available');
+
+        const { data } = await client.mutate({
+            mutation: gql`
+                mutation signIn($input: TokenRequestInput!) {
+                    signIn(input: $input) {
+                        user {
+                            id
+                            email
+                            phone
+                            hubId
+                            merchantId
+                            inventoryId
+                            name
+                            type
+                            birthdate
+                            createdAt
+                            lastModified
+                            deletedAt
+                            roles {
+                                roleId
+                            }
+                        }
+                        accessToken
+                    }
+                }
+            `,
+            variables: {
+                input: {
+                    firebaseToken,
+                },
+            },
+        });
+
+        const newAccessToken = data?.signIn?.accessToken;
+        const userInfo = data?.signIn?.user;
+        cookies.set('accessToken', newAccessToken);
+        cookies.set('userInfo', JSON.stringify(userInfo));
+
+        if (!newAccessToken) throw new Error('Failed to refresh access token');
+
+        return newAccessToken;
+    } catch (error) {
+        signOut(getAuth());
+        cookies.remove('accessToken');
+        cookies.remove('userInfo');
+        window.location.reload();
+        console.error('Token refresh failed:', error);
+        throw error;
+    }
+}
 
 const App = (props) => {
     let history = useHistory();
     const { loggedincontext, setloggedincontext } = useContext(Loggedincontext);
-
-    const client = new ApolloClient({
-        uri: 'http://localhost:3001/graphql',
-        cache: new InMemoryCache(),
-    });
 
     return (
         <ApolloProvider client={client}>

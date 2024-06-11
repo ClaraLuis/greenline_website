@@ -277,7 +277,7 @@ const MerchantPayments = (props) => {
                                             beforeCursor={fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.cursor?.beforeCursor}
                                             afterCursor={fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.cursor?.afterCursor}
                                             filter={filterobj}
-                                            setfiter={setfilterobj}
+                                            setfilter={setfilterobj}
                                         />
                                     </div>
                                     <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>

@@ -5,13 +5,14 @@ import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
-import { FaLayerGroup, FaPlus } from 'react-icons/fa';
+import { FaCheck, FaLayerGroup, FaPlus } from 'react-icons/fa';
 import { components } from 'react-select';
 
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
 import API from '../../../API/API.js';
 import ImportNewItem from '../InventoryItems/ImportNewItem.js';
+import { FiCheckCircle } from 'react-icons/fi';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -58,9 +59,37 @@ const ItemsTable = (props) => {
             {props?.items?.length != 0 && (
                 <div class="row m-0 w-100">
                     {props?.items?.map((item, index) => {
+                        var selected = false;
+                        props?.selectedItems?.map((i) => {
+                            if (i.item.sku == item.sku) {
+                                selected = true;
+                            }
+                        });
                         return (
                             <div class={props?.card}>
-                                <div class={generalstyles.card + ' p-3 row m-0 w-100'}>
+                                <div
+                                    style={{
+                                        cursor: props?.clickable ? 'pointer' : '',
+                                    }}
+                                    onClick={() => {
+                                        props?.actiononclick(item);
+                                    }}
+                                    class={generalstyles.card + ' p-3 row m-0 w-100'}
+                                >
+                                    {' '}
+                                    {selected && (
+                                        <div
+                                            style={{
+                                                position: 'absolute',
+                                                top: 10,
+                                                right: 20,
+                                                zIndex: 100,
+                                            }}
+                                            class={generalstyles.cart_button}
+                                        >
+                                            <FaCheck color="white" />
+                                        </div>
+                                    )}
                                     <div class="col-lg-12 p-0">
                                         <div style={{ width: '100%', height: '200px' }}>
                                             <img
@@ -76,19 +105,16 @@ const ItemsTable = (props) => {
                                     <div class="col-lg-8 p-0 mt-2 wordbreak" style={{ fontWeight: 700, fontSize: '16px' }}>
                                         {item?.name}
                                     </div>
-
-                                    {props?.clickable && (
+                                    {/* {props?.clickable && (
                                         <div class="col-lg-4 d-flex justify-content-end mt-2 p-0">
                                             <div
-                                                onClick={() => {
-                                                    props?.actiononclick(item);
-                                                }}
+                                                
                                                 class={generalstyles.cart_button}
                                             >
                                                 <FaPlus color="white" />
                                             </div>
                                         </div>
-                                    )}
+                                    )} */}
                                     <div class="col-lg-12 p-0" style={{ fontWeight: 600, fontSize: '13px', color: 'lightgray' }}>
                                         {item?.sku}
                                     </div>

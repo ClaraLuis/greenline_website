@@ -22,6 +22,7 @@ import Form from '../../Form.js';
 import OrdersTable from '../Orders/OrdersTable.js';
 import { FiCheckCircle } from 'react-icons/fi';
 import { NotificationManager } from 'react-notifications';
+import { MdOutlineLocationOn } from 'react-icons/md';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -123,9 +124,31 @@ const AddSheet = (props) => {
                                     return (
                                         <>
                                             <div className="col-lg-6 p-1">
-                                                <div class={generalstyles.card + ' p-3 row m-0 w-100 allcentered'}>
+                                                <div
+                                                    onClick={() => {
+                                                        var temp = { ...sheetpayload };
+                                                        var exist = false;
+                                                        var chosenindex = null;
+                                                        temp.orders.map((i, ii) => {
+                                                            if (i.id == item.id) {
+                                                                exist = true;
+                                                                chosenindex = ii;
+                                                            }
+                                                        });
+                                                        if (!exist) {
+                                                            temp.orders.push(item);
+                                                            temp.orderIds.push(item.id);
+                                                        } else {
+                                                            temp.orders.splice(chosenindex, 1);
+                                                            temp.orderIds.splice(chosenindex, 1);
+                                                        }
+                                                        setsheetpayload({ ...temp });
+                                                    }}
+                                                    style={{ cursor: 'pointer' }}
+                                                    class={generalstyles.card + ' p-3 row m-0 w-100 allcentered '}
+                                                >
                                                     <div className="col-lg-6 p-0">
-                                                        <span style={{ fontWeight: 700, fontSize: '16px' }}># {item?.id}</span>
+                                                        <span style={{ fontWeight: 700 }}># {item?.id}</span>
                                                     </div>
                                                     <div className="col-lg-6 p-0 d-flex justify-content-end align-items-center">
                                                         <div
@@ -148,12 +171,12 @@ const AddSheet = (props) => {
                                                         <hr className="m-0" />
                                                     </div>
                                                     <div className="col-lg-12 p-0 mb-2">
-                                                        <span style={{ fontWeight: 600 }}>{item?.merchant?.name}</span>
+                                                        <span style={{ fontWeight: 600, fontSize: '16px' }}>{item?.merchant?.name}</span>
                                                     </div>
-                                                    <div className="col-lg-12 p-0 mb-1">
-                                                        Address:{' '}
-                                                        <span style={{ fontWeight: 600 }}>
-                                                            {item?.address?.country}, {item?.address?.city}
+                                                    <div className="col-lg-12 p-0 mb-1 d-flex align-items-center">
+                                                        <MdOutlineLocationOn class="mr-1" />
+                                                        <span style={{ fontWeight: 400 }}>
+                                                            {item?.address?.city}, {item?.address?.country}
                                                         </span>
                                                     </div>
                                                     <div className="col-lg-12 p-0 ">
@@ -161,36 +184,20 @@ const AddSheet = (props) => {
                                                             {item?.address?.streetAddress}, {item?.address?.buildingNumber}, {item?.address?.apartmentFloor}
                                                         </span>
                                                     </div>
-                                                    <div className="col-lg-12 p-0 d-flex justify-content-end ">
+                                                    {selected && (
                                                         <div
-                                                            onClick={() => {
-                                                                var temp = { ...sheetpayload };
-                                                                var exist = false;
-                                                                var chosenindex = null;
-                                                                temp.orders.map((i, ii) => {
-                                                                    if (i.id == item.id) {
-                                                                        exist = true;
-                                                                        chosenindex = ii;
-                                                                    }
-                                                                });
-                                                                if (!exist) {
-                                                                    temp.orders.push(item);
-                                                                    temp.orderIds.push(item.id);
-                                                                } else {
-                                                                    temp.orders.splice(chosenindex, 1);
-                                                                    temp.orderIds.splice(chosenindex, 1);
-                                                                }
-                                                                setsheetpayload({ ...temp });
-                                                            }}
                                                             style={{
                                                                 width: '35px',
                                                                 height: '35px',
+                                                                position: 'absolute',
+                                                                bottom: 20,
+                                                                right: 10,
                                                             }}
-                                                            className="iconhover allcentered"
+                                                            className=" allcentered"
                                                         >
                                                             <FiCheckCircle style={{ transition: 'all 0.4s' }} color={selected ? 'var(--success)' : ''} size={20} />
                                                         </div>
-                                                    </div>
+                                                    )}
                                                 </div>
                                             </div>
                                         </>
@@ -213,7 +220,7 @@ const AddSheet = (props) => {
                                                     return (
                                                         <div class={' col-lg-12 p-0'}>
                                                             <div class={generalstyles.filter_container + ' p-2 row m-0 mb-2 w-100 allcentered'}>
-                                                                <div style={{ fontWeight: 700, fontSize: '16px' }} class="col-lg-10 p-0 mb-2">
+                                                                <div style={{ fontWeight: 700 }} class="col-lg-10 p-0 mb-2">
                                                                     # {item?.id}
                                                                 </div>
                                                                 <div class="col-lg-2 p-0 allcentered">
@@ -233,10 +240,11 @@ const AddSheet = (props) => {
                                                                 </div>
                                                                 <div class="col-lg-12 p-0 wordbreak">
                                                                     <div class="row m-0 w-100">
-                                                                        <div className="col-lg-12 p-0 mb-1">
-                                                                            Address:{' '}
-                                                                            <span style={{ fontWeight: 600 }}>
-                                                                                {item?.address?.country}, {item?.address?.city}
+                                                                        <div className="col-lg-12 p-0 mb-1 d-flex align-items-center">
+                                                                            <MdOutlineLocationOn class="mr-1" />
+
+                                                                            <span style={{}}>
+                                                                                {item?.address?.city}, {item?.address?.country}
                                                                             </span>
                                                                         </div>
                                                                         <div className="col-lg-12 p-0 ">

@@ -126,7 +126,7 @@ const BookVisit = (props) => {
                                                     <div className="col-lg-12 p-0 mb-1">
                                                         Address:{' '}
                                                         <span style={{ fontWeight: 600 }}>
-                                                            {item?.address?.country}, {item?.address?.city}
+                                                            {item?.address?.city}, {item?.address?.country}
                                                         </span>
                                                     </div>
                                                     <div className="col-lg-12 p-0 ">
@@ -206,7 +206,7 @@ const BookVisit = (props) => {
                                                                         <div className="col-lg-12 p-0 mb-1">
                                                                             Address:{' '}
                                                                             <span style={{ fontWeight: 600 }}>
-                                                                                {item?.address?.country}, {item?.address?.city}
+                                                                                {item?.address?.city}, {item?.address?.country}
                                                                             </span>
                                                                         </div>
                                                                         <div className="col-lg-12 p-0 ">

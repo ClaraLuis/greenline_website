@@ -12,6 +12,7 @@ import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
 import API from '../../../API/API.js';
 import ImportNewItem from '../InventoryItems/ImportNewItem.js';
+import { FiCheckCircle } from 'react-icons/fi';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -41,7 +42,7 @@ const ItemsTable = (props) => {
                     <CircularProgress color="var(--primary)" width="60px" height="60px" duration="1s" />
                 </div>
             )}
-            {!props?.fetchMerchantItemVariantsQuery?.loading && props?.fetchMerchantItemVariantsQuery?.data != undefined && (
+            {!props?.items != undefined && (
                 <>
                     {props?.items?.length == 0 && (
                         <div style={{ height: '70vh' }} class="col-lg-12 p-0 w-100 allcentered align-items-center m-0 text-lightprimary">
@@ -58,9 +59,36 @@ const ItemsTable = (props) => {
             {props?.items?.length != 0 && (
                 <div class="row m-0 w-100">
                     {props?.items?.map((item, index) => {
+                        var selected = false;
+                        props?.selectedItems?.map((i) => {
+                            if (i?.orderItem?.info?.sku == item?.orderItem?.info?.sku) {
+                                selected = true;
+                            }
+                        });
                         return (
                             <div class={props?.card}>
-                                <div class={generalstyles.card + ' p-3 row m-0 w-100'}>
+                                <div
+                                    style={{
+                                        cursor: props?.clickable ? 'pointer' : '',
+                                    }}
+                                    onClick={() => {
+                                        props?.actiononclick(item);
+                                    }}
+                                    class={generalstyles.card + ' p-3 row m-0 w-100'}
+                                >
+                                    {selected && (
+                                        <div
+                                            style={{
+                                                position: 'absolute',
+                                                top: 10,
+                                                right: 20,
+                                                zIndex: 100,
+                                            }}
+                                            class={generalstyles.cart_button}
+                                        >
+                                            <FaCheck color="white" />
+                                        </div>
+                                    )}
                                     <div class="col-lg-12 p-0">
                                         <div style={{ width: '100%', height: '200px' }}>
                                             <img
@@ -77,18 +105,6 @@ const ItemsTable = (props) => {
                                         {item?.orderItem?.info?.name}
                                     </div>
 
-                                    {props?.clickable && (
-                                        <div class="col-lg-4 d-flex justify-content-end mt-2 p-0">
-                                            <div
-                                                onClick={() => {
-                                                    props?.actiononclick(item);
-                                                }}
-                                                class={generalstyles.cart_button}
-                                            >
-                                                <FaCheck color="white" />
-                                            </div>
-                                        </div>
-                                    )}
                                     <div class="col-lg-12 p-0" style={{ fontWeight: 600, fontSize: '13px', color: 'lightgray' }}>
                                         {item?.orderItem?.info?.sku}
                                     </div>

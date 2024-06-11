@@ -19,39 +19,21 @@ import API from '../../../API/API.js';
 import OrdersTable from '../Orders/OrdersTable.js';
 import Pagination from '../../Pagination.js';
 import SelectComponent from '../../SelectComponent.js';
+import Cookies from 'universal-cookie';
 
 const { ValueContainer, Placeholder } = components;
 
 const MerchantOrders = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
+    const cookies = new Cookies();
+
     const { setpageactive_context, setpagetitle_context, dateformatter, UserInfoContext, isAuth } = useContext(Contexthandlerscontext);
     const { fetchMerchants, useQueryGQL, fetchOrders } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
 
     const [merchantModal, setmerchantModal] = useState(false);
-    const [selectedinventory, setselectedinventory] = useState('');
-    const [chosenracks, setchosenracks] = useState([]);
-    const [itemsarray, setitemsarray] = useState([
-        { sku: '123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1' },
-        { sku: '123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1' },
-        { sku: '123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1' },
-    ]);
-
-    const [payload, setpayload] = useState({
-        functype: 'add',
-        id: 'add',
-        name: '',
-        type: '',
-        phone: '',
-        email: '',
-        birthdate: '',
-    });
-    const [filterobj, setfilterobj] = useState({
-        page: 1,
-        search: '',
-    });
 
     const [filterorders, setfilterorders] = useState({
         statuses: [],
@@ -66,7 +48,6 @@ const MerchantOrders = (props) => {
     });
     const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filterMerchants);
 
-    // const fetchusers = [];
     useEffect(() => {
         setpageactive_context('/merchantorders');
     }, []);
@@ -87,7 +68,9 @@ const MerchantOrders = (props) => {
                             if (isAuth([1])) {
                                 setmerchantModal(true);
                             } else {
-                                history.push('/addorder');
+                                var merchantId = cookies.get('userInfo')?.merchantId ?? cookies.get('merchantId');
+
+                                history.push('/addorder?merchantId=' + merchantId);
                             }
                         }}
                     >
@@ -171,7 +154,7 @@ const MerchantOrders = (props) => {
                             beforeCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.beforeCursor}
                             afterCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.afterCursor}
                             filter={filterorders}
-                            setfiter={setfilterorders}
+                            setfilter={setfilterorders}
                         />
                     </div>
                     <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
@@ -182,7 +165,7 @@ const MerchantOrders = (props) => {
                             beforeCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.beforeCursor}
                             afterCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.afterCursor}
                             filter={filterorders}
-                            setfiter={setfilterorders}
+                            setfilter={setfilterorders}
                         />
                     </div>
                 </div>

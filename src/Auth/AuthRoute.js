@@ -27,11 +27,16 @@ const AuthRoute = (props) => {
     //TODO
     // auth.currentUser.accessToken
     const handleRequestLoginResponse = async (tokenpayload) => {
+        if (cookies.get('accessToken')) {
+            setloggedincontext(true);
+            return;
+        }
         try {
+            const firebaseToken = await auth.currentUser.getIdToken();
             const requestLoginData = await requestLogin({
                 variables: {
                     input: {
-                        firebaseToken: tokenpayload?.token,
+                        firebaseToken,
                         // id: tokenpayload?.id,
                     },
                 },
@@ -49,7 +54,7 @@ const AuthRoute = (props) => {
             const cookies = new Cookies();
             cookies.set('accessToken', null);
             cookies.set('merchantId', null);
-            window.open('/login', '_self');
+            // window.open('/login', '_self');
         }
     };
 

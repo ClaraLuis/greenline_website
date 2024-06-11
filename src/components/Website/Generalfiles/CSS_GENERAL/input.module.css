@@ -280,6 +280,8 @@ textarea {
     padding: 2px 8px;
     background: transparent;
     z-index: 10;
+    padding: 0.3125rem 1.25rem;
+    font-size: 13px;
 }
 .formfield::placeholder {
     color: transparent;
@@ -316,10 +318,10 @@ textarea {
     /* padding-inline-start: 8px; */
     display: block;
     transition: 0.2s;
-    font-size: 1.8vh;
-    font-weight: 500;
-    margin-bottom: 5px;
-    color: rgb(1, 1, 1) !important;
+    font-size: 14px;
+    /* font-weight: 500; */
+    margin-bottom: 0.5rem;
+    /* color: rgb(1, 1, 1) !important; */
 }
 
 /*  */

@@ -116,6 +116,7 @@ const InventoryItems = (props) => {
         limit: 100,
         afterCursor: null,
         beforeCursor: null,
+        inventoryIds: [1],
     });
 
     const fetchItemsInBoxQuery = useQueryGQL('', fetchItemsInBox(), filterItemInBox);
@@ -282,7 +283,7 @@ const InventoryItems = (props) => {
                                     beforeCursor={fetchItemsInBoxQuery?.data?.paginateItemInBox?.cursor?.beforeCursor}
                                     afterCursor={fetchItemsInBoxQuery?.data?.paginateItemInBox?.cursor?.afterCursor}
                                     filter={filterItemInBox}
-                                    setfiter={setfilterItemInBox}
+                                    setfilter={setfilterItemInBox}
                                 />
                             </div>
                             {fetchItemsInBoxQuery?.data?.paginateItemInBox?.data?.map((element, arrayindex) => {

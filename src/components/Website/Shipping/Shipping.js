@@ -112,7 +112,7 @@ const Shipping = (props) => {
                             beforeCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.beforeCursor}
                             afterCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.afterCursor}
                             filter={filterorders}
-                            setfiter={setfilterorders}
+                            setfilter={setfilterorders}
                         />
                     </div> */}
                     <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
@@ -206,7 +206,7 @@ const Shipping = (props) => {
                             beforeCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.beforeCursor}
                             afterCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.afterCursor}
                             filter={filterorders}
-                            setfiter={setfilterorders}
+                            setfilter={setfilterorders}
                         />
                     </div> */}
                 </div>

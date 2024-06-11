@@ -119,7 +119,7 @@ const FinancialAccounts = (props) => {
                                 beforeCursor={fetchFinancialAccountsQuery?.data?.paginateFinancialAccounts?.cursor?.beforeCursor}
                                 afterCursor={fetchFinancialAccountsQuery?.data?.paginateFinancialAccounts?.cursor?.afterCursor}
                                 filter={filterobj}
-                                setfiter={setfilterobj}
+                                setfilter={setfilterobj}
                             />
                         </div>
                         <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>

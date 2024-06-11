@@ -278,7 +278,7 @@ const CourierCollection = (props) => {
                                             beforeCursor={fetchCourierCollectionTransactionsQuery?.data?.paginateCourierCollectionTransactions?.cursor?.beforeCursor}
                                             afterCursor={fetchCourierCollectionTransactionsQuery?.data?.paginateCourierCollectionTransactions?.cursor?.afterCursor}
                                             filter={filterobj}
-                                            setfiter={setfilterobj}
+                                            setfilter={setfilterobj}
                                         />
                                     </div>
                                     <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>

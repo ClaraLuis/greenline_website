@@ -28,7 +28,7 @@ const CourierSheets = (props) => {
     const { lang, langdetect } = useContext(LanguageContext);
 
     const [openModal, setopenModal] = useState(false);
-    const [filter, setfiter] = useState({
+    const [filter, setfilter] = useState({
         limit: 20,
         isAsc: true,
         afterCursor: '',

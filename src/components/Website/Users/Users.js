@@ -104,7 +104,7 @@ const Users = (props) => {
                             beforeCursor={fetchusers?.data?.paginateUsers?.cursor?.beforeCursor}
                             afterCursor={fetchusers?.data?.paginateUsers?.cursor?.afterCursor}
                             filter={filterUsers}
-                            setfiter={setfilterUsers}
+                            setfilter={setfilterUsers}
                         />
                     </div>
                     <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>

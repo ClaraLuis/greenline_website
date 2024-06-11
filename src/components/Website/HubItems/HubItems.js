@@ -15,7 +15,7 @@ import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import API from '../../../API/API.js';
-import ItemsTable from './ItemsTable.js';
+import ItemsTable from '../MerchantItems/ItemsTable.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -23,7 +23,7 @@ const HubItems = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, dateformatter } = useContext(Contexthandlerscontext);
-    const { fetchUsers, useQueryGQL } = API();
+    const { fetchMerchantItemVariants, useQueryGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
 
@@ -50,8 +50,16 @@ const HubItems = (props) => {
         search: '',
     });
 
-    const fetchusers = useQueryGQL('', fetchUsers());
-    // const fetchusers = [];
+    const [filter, setfilter] = useState({
+        limit: 20,
+        isAsc: true,
+        afterCursor: '',
+        beforeCursor: '',
+        name: undefined,
+        merchantId: 1,
+    });
+    const fetchMerchantItemVariantsQuery = useQueryGQL('', fetchMerchantItemVariants(), filter);
+
     useEffect(() => {
         setpageactive_context('/hubitems');
     }, []);
@@ -171,7 +179,7 @@ const HubItems = (props) => {
 
                 <div class={generalstyles.card + ' row m-0 w-100'}>
                     <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
-                        <ItemsTable />
+                        <ItemsTable card="col-lg-4 px-1" items={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.data} />
                     </div>
                 </div>
             </div>
