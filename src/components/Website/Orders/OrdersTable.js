@@ -328,19 +328,17 @@ const OrdersTable = (props) => {
                                         <hr class="p-0 m-0" />
                                     </div>
                                     <div class="col-lg-12 p-0 mt-1">
-                                        <div class="row m-0 w-100">
+                                        <div class="row m-0 w-100 p-1">
                                             {Object.entries(rackData.ballots).map(([level, ballots]) => {
                                                 return (
-                                                    <div class="col-lg-12 p-0">
-                                                        <div class="row m-0 w-100 d-flex align-items-center">
+                                                    <div class="col-lg-12 p-0 mb-2">
+                                                        <div class="row m-0 w-100 d-flex align-items-center p-2" style={{ border: '1px solid #eee', borderRadius: '15px', fontSize: '12px' }}>
                                                             Level {level}:
                                                             {Object.values(ballots).map((ballotData) => {
                                                                 return (
                                                                     <div class="col-lg-12">
                                                                         <div key={ballotData.ballot.id}>
-                                                                            <p class="p-0 m-0">
-                                                                                Ballot: {ballotData.ballot.name} (ID {ballotData.ballot.id})
-                                                                            </p>
+                                                                            <p class="p-0 m-0">Ballot: {ballotData.ballot.name}</p>
                                                                             <div class="row m-0 w-100">
                                                                                 {ballotData.boxes.map((box) => (
                                                                                     <div class={'searchpill'}>
