@@ -59,7 +59,13 @@ const AddEditSecuritylayers = (props) => {
         id: props?.payload?.id,
     });
 
-    const { refetch: refetchUsers } = useQueryGQL('', fetchUsers());
+    const [filterUsers, setfilterUsers] = useState({
+        isAsc: true,
+        limit: 100,
+        afterCursor: undefined,
+        beforeCursor: undefined,
+    });
+    const { refetch: refetchUsers } = useQueryGQL('', fetchUsers(), filterUsers);
 
     useEffect(() => {
         const roleIds = props?.payload?.userRoles?.map((role) => role.roleId) || [];

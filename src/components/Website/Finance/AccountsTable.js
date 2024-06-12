@@ -25,7 +25,6 @@ const AccountsTable = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, dateformatter, financialAccountTypesContext } = useContext(Contexthandlerscontext);
-    const { fetchUsers, useQueryGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
 
@@ -146,19 +145,6 @@ const AccountsTable = (props) => {
                         );
                     })}
                 </div>
-                //     )}
-                //     {/* <Pagespaginatecomponent
-                //     totaldatacount={FetchUsers?.data?.data?.total}
-                //     numofitemsperpage={FetchUsers?.data?.data?.per_page}
-                //     pagenumbparams={FetchUsers?.data?.data?.current_page}
-                //     nextpagefunction={(nextpage) => {
-                //         history.push({
-                //             pathname: '/users',
-                //             search: '&page=' + nextpage,
-                //         });
-                //     }}
-                // /> */}
-                // </>
             )}
         </>
     );

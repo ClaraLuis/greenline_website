@@ -24,13 +24,9 @@ const Finance = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, dateformatter, isAuth } = useContext(Contexthandlerscontext);
-    const { fetchUsers, useQueryGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
 
-    const [openModal, setopenModal] = useState(false);
-    const [selectedinventory, setselectedinventory] = useState('');
-    const [chosenracks, setchosenracks] = useState([]);
     const [statistics, seetstatistics] = useState([
         {
             title: 'Total Transactions',
@@ -46,22 +42,6 @@ const Finance = (props) => {
         },
     ]);
 
-    const [payload, setpayload] = useState({
-        functype: 'add',
-        id: 'add',
-        name: '',
-        type: '',
-        phone: '',
-        email: '',
-        birthdate: '',
-    });
-    const [filterobj, setfilterobj] = useState({
-        page: 1,
-        search: '',
-    });
-
-    const fetchusers = useQueryGQL('', fetchUsers());
-    // const fetchusers = [];
     useEffect(() => {
         setpageactive_context('/merchantfinance');
     }, []);

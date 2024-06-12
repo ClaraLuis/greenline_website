@@ -158,7 +158,7 @@ const MerchantOrders = (props) => {
                         />
                     </div>
                     <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
-                        <OrdersTable fetchOrdersQuery={fetchOrdersQuery} />
+                        <OrdersTable fetchOrdersQuery={fetchOrdersQuery} attr={'paginateOrders'} />
                     </div>
                     <div class="col-lg-12 p-0">
                         <Pagination

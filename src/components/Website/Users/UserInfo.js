@@ -58,8 +58,10 @@ const UserInfo = (props) => {
                       salary: props?.payload?.salary,
                       commission: props?.payload?.commission,
                   }
-                : null,
+                : undefined,
         hubId: parseInt(props?.payload?.hubID),
+        inventoryId: props?.payload?.inventoryId,
+
         merchantId: parseInt(props?.payload?.merchant),
     });
 
@@ -71,8 +73,14 @@ const UserInfo = (props) => {
         // birthdate: props?.payload?.birthdate,
         id: props?.payload?.id,
     });
+    const [filterUsers, setfilterUsers] = useState({
+        isAsc: true,
+        limit: 100,
+        afterCursor: undefined,
+        beforeCursor: undefined,
+    });
 
-    const { refetch: refetchUsers } = useQueryGQL('', fetchUsers());
+    const { refetch: refetchUsers } = useQueryGQL('', fetchUsers(), filterUsers);
 
     const handleAddUser = async () => {
         try {
@@ -81,8 +89,12 @@ const UserInfo = (props) => {
             } else {
                 var { data } = await addUser1();
             }
-            props?.setopenModal(false);
-            refetchUsers();
+            if (data?.createUser?.success) {
+                props?.setopenModal(false);
+                refetchUsers();
+            } else {
+                NotificationManager.warning(data?.createUser?.message, 'Warning!');
+            }
         } catch (error) {
             console.error('Error adding user:', error);
         }

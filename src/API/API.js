@@ -349,6 +349,80 @@ const API = () => {
         `;
     };
 
+    const fetchOrdersInInventory = () => {
+        return gql`
+            query paginateOrdersInInventory($input: PaginateOrdersInInventoryInput!) {
+                paginateOrdersInInventory(input: $input) {
+                    data {
+                        id
+                        otherId
+                        currency
+                        previousOrderId
+                        type
+                        paymentType
+                        status
+                        customerId
+                        addressId
+                        merchantId
+                        isDomestic
+                        originalPrice
+                        canBeEdited
+                        shippingPrice
+                        weight
+                        price
+                        canOpen
+                        fragile
+                        deliveryPart
+                        orderDate
+                        createdAt
+                        lastModified
+                        address {
+                            country
+                            city
+                            streetAddress
+                            buildingNumber
+                            apartmentFloor
+                        }
+                        merchant {
+                            id
+                            name
+                        }
+                        orderItems {
+                            id
+                            orderId
+                            count
+                            unitPrice
+                            unitDiscount
+                            partial
+                            partialCount
+                            info {
+                                name
+                                imageUrl
+                            }
+                            inventory {
+                                count
+                                box {
+                                    id
+                                    name
+                                    ballot {
+                                        id
+                                        level
+                                        name
+                                        rack {
+                                            name
+                                            id
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    cursor
+                }
+            }
+        `;
+    };
+
     const fetchCourierOrders = () => {
         return gql`
             query findOrders($input: PaginateOrdersInput!) {
@@ -956,6 +1030,7 @@ const API = () => {
         fetchPackages,
         fetchInventoryItemReturns,
         assignPackageToCourier,
+        fetchOrdersInInventory,
     };
 };
 export default API;

@@ -18,7 +18,7 @@ const Shipping = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, dateformatter, inventoryTypesContext } = useContext(Contexthandlerscontext);
-    const { fetchUsers, useQueryGQL, fetchOrders } = API();
+    const { useQueryGQL, fetchOrders } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [governoratesItems, setgovernoratesItems] = useState([
@@ -39,7 +39,6 @@ const Shipping = (props) => {
         limit: 100,
     });
     const fetchOrdersQuery = useQueryGQL('', fetchOrders(), filterorders);
-    // const fetchusers = [];
     useEffect(() => {
         setpageactive_context('/governorates');
     }, []);

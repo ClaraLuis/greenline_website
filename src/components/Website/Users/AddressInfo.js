@@ -39,7 +39,13 @@ const AddressInfo = (props) => {
     `;
 
     const [addUser1] = useMutationGQL(addUser(props?.addresspayload));
-    const { refetch: refetchUsers } = useQueryGQL('', fetchUsers());
+    const [filterUsers, setfilterUsers] = useState({
+        isAsc: true,
+        limit: 100,
+        afterCursor: undefined,
+        beforeCursor: undefined,
+    });
+    const { refetch: refetchUsers } = useQueryGQL('', fetchUsers(), filterUsers);
 
     const handleAddUser = async () => {
         try {

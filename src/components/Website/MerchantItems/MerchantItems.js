@@ -115,8 +115,6 @@ const MerchantItems = (props) => {
         }
     };
 
-    // const fetchusers = useQueryGQL('', fetchUsers());
-    // const fetchusers = [];
     useEffect(() => {
         setpageactive_context('/merchantitems');
     }, []);

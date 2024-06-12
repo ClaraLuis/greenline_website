@@ -28,7 +28,7 @@ const BookVisit = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, dateformatter, orderStatusesContext, merchantVisitTypesContext } = useContext(Contexthandlerscontext);
-    const { fetchUsers, useQueryGQL, fetchOrders } = API();
+    const { useQueryGQL, fetchOrders } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [submit, setsubmit] = useState(false);

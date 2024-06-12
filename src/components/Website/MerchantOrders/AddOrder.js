@@ -242,7 +242,7 @@ const AddOrder = (props) => {
     }, [orderpayload?.customerId]);
 
     useEffect(() => {
-        alert(queryParameters.get('merchantId'));
+        // alert(queryParameters.get('merchantId'));
         const merchantIdtemp = parseInt(queryParameters.get('merchantId'));
         setmerchantId(merchantIdtemp);
         setfilter({

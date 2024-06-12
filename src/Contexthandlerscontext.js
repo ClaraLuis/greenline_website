@@ -504,7 +504,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/orders',
                         permissionpage: [1],
-                        show: isAuth([1]),
+                        show: isAuth([1, 54]),
                     },
                     {
                         name: 'Packages',
@@ -516,7 +516,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/inventorypackages',
                         permissionpage: [1],
-                        show: isAuth([1]),
+                        show: isAuth([1, 54]),
                     },
                 ],
             },

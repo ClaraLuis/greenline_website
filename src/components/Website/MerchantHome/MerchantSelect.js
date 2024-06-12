@@ -23,7 +23,7 @@ const MerchantSelect = (props) => {
     const cookies = new Cookies();
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, dateformatter, isAuth, setchosenMerchantContext, chosenMerchantContext } = useContext(Contexthandlerscontext);
-    const { fetchUsers, useQueryGQL, fetchMerchants } = API();
+    const { useQueryGQL, fetchMerchants } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [filterMerchants, setfilterMerchants] = useState({
@@ -35,7 +35,6 @@ const MerchantSelect = (props) => {
 
     const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filterMerchants);
 
-    // const fetchusers = [];
     useEffect(() => {
         setpageactive_context('/merchantfinance');
     }, []);

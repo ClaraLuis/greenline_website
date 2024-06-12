@@ -9,43 +9,44 @@ import { FaLayerGroup } from 'react-icons/fa';
 import Select, { components } from 'react-select';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
-
+import { IoMdClose } from 'react-icons/io';
+import { Modal } from 'react-bootstrap';
 import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import API from '../../../API/API.js';
 import OrdersTable from './OrdersTable.js';
+import Pagination from '../../Pagination.js';
+import SelectComponent from '../../SelectComponent.js';
+import Cookies from 'universal-cookie';
 
 const { ValueContainer, Placeholder } = components;
 
 const Orders = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, dateformatter } = useContext(Contexthandlerscontext);
-    const { fetchOrders, useQueryGQL } = API();
+    const cookies = new Cookies();
+
+    const { setpageactive_context, setpagetitle_context, dateformatter, UserInfoContext, isAuth } = useContext(Contexthandlerscontext);
+    const { fetchMerchants, useQueryGQL, fetchOrdersInInventory } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
 
-    const [openModal, setopenModal] = useState(false);
-    const [selectedinventory, setselectedinventory] = useState('');
-    const [chosenracks, setchosenracks] = useState([]);
-    const [itemsarray, setitemsarray] = useState([
-        { sku: '123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1' },
-        { sku: '123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1' },
-        { sku: '123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1' },
-    ]);
+    const [merchantModal, setmerchantModal] = useState(false);
 
-    const [filterobj, setfilterobj] = useState({
-        page: 1,
-        search: '',
-    });
     const [filterorders, setfilterorders] = useState({
-        statuses: ['idle'],
         limit: 100,
     });
-    const fetchOrdersQuery = useQueryGQL('', fetchOrders(), filterorders);
-    // const fetchusers = [];
+    const fetchOrdersInInventoryQuery = useQueryGQL('', fetchOrdersInInventory(), filterorders);
+    const [filterMerchants, setfilterMerchants] = useState({
+        isAsc: true,
+        limit: 100,
+        afterCursor: undefined,
+        beforeCursor: undefined,
+    });
+    const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filterMerchants);
+
     useEffect(() => {
         setpageactive_context('/orders');
     }, []);
@@ -58,7 +59,8 @@ const Orders = (props) => {
                         Orders
                     </p>
                 </div>
-                {/* <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>
+
+                <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>
                     <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
                         <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
                             <AccordionItemHeading>
@@ -93,54 +95,20 @@ const Orders = (props) => {
                                 <hr className="mt-2 mb-3" />
                                 <div class="row m-0 w-100">
                                     <div class={'col-lg-2'} style={{ marginBottom: '15px' }}>
-                                        <label for="name" class={formstyles.form__label}>
-                                            Inventories
-                                        </label>
-                                        <Select
-                                            options={[
-                                                { label: 'Inv 1', value: '1' },
-                                                { label: 'Inv 2', value: '2' },
-                                            ]}
-                                            styles={defaultstyles}
-                                            value={
-                                                [
-                                                    { label: 'Inv 1', value: '1' },
-                                                    { label: 'Inv 2', value: '2' },
-                                                ]
-                                                // .filter((option) => option.value == props?.payload[item?.attr])
-                                            }
-                                            onChange={(option) => {
-                                                // props?.setsubmit(false);
-                                                // var temp = { ...props?.payload };
-                                                // temp[item?.attr] = option.value;
-                                                // props?.setpayload({ ...temp });
-                                            }}
-                                        />
+                                        <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
+                                            <label for="name" class={formstyles.form__label}>
+                                                From date
+                                            </label>
+                                            <input type={'date'} class={formstyles.form__field} placeholder={''} />
+                                        </div>
                                     </div>
                                     <div class={'col-lg-2'} style={{ marginBottom: '15px' }}>
-                                        <label for="name" class={formstyles.form__label}>
-                                            Merchant
-                                        </label>
-                                        <Select
-                                            options={[
-                                                { label: 'Merch 1', value: '1' },
-                                                { label: 'Merch 2', value: '2' },
-                                            ]}
-                                            styles={defaultstyles}
-                                            value={
-                                                [
-                                                    { label: 'Merch 1', value: '1' },
-                                                    { label: 'Merch 2', value: '2' },
-                                                ]
-                                                // .filter((option) => option.value == props?.payload[item?.attr])
-                                            }
-                                            onChange={(option) => {
-                                                // props?.setsubmit(false);
-                                                // var temp = { ...props?.payload };
-                                                // temp[item?.attr] = option.value;
-                                                // props?.setpayload({ ...temp });
-                                            }}
-                                        />
+                                        <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
+                                            <label for="name" class={formstyles.form__label}>
+                                                To date
+                                            </label>
+                                            <input type={'date'} class={formstyles.form__field} placeholder={''} />
+                                        </div>
                                     </div>
                                 </div>
                             </AccordionItemPanel>
@@ -161,14 +129,74 @@ const Orders = (props) => {
                             />
                         </div>
                     </div>
-                </div> */}
+                </div>
 
                 <div class={generalstyles.card + ' row m-0 w-100'}>
+                    <div class="col-lg-12 p-0">
+                        <Pagination
+                            beforeCursor={fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.cursor?.beforeCursor}
+                            afterCursor={fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.cursor?.afterCursor}
+                            filter={filterorders}
+                            setfilter={setfilterorders}
+                        />
+                    </div>
                     <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
-                        <OrdersTable fetchOrdersQuery={fetchOrdersQuery} />
+                        <OrdersTable fetchOrdersQuery={fetchOrdersInInventoryQuery} attr={'paginateOrdersInInventory'} srcFrom="inventory" />
+                    </div>
+                    <div class="col-lg-12 p-0">
+                        <Pagination
+                            beforeCursor={fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.cursor?.beforeCursor}
+                            afterCursor={fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.cursor?.afterCursor}
+                            filter={filterorders}
+                            setfilter={setfilterorders}
+                        />
                     </div>
                 </div>
             </div>
+            <Modal
+                show={merchantModal}
+                onHide={() => {
+                    setmerchantModal(false);
+                }}
+                centered
+                size={'md'}
+            >
+                <Modal.Header>
+                    <div className="row w-100 m-0 p-0">
+                        <div class="col-lg-6 pt-3 ">
+                            <div className="row w-100 m-0 p-0">Choose Merchant</div>
+                        </div>
+                        <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
+                            <div
+                                class={'close-modal-container'}
+                                onClick={() => {
+                                    setmerchantModal(false);
+                                }}
+                            >
+                                <IoMdClose />
+                            </div>
+                        </div>{' '}
+                    </div>
+                </Modal.Header>
+                <Modal.Body>
+                    <div class="row m-0 w-100 py-2">
+                        <div class={'col-lg-12'} style={{ marginBottom: '15px' }}>
+                            <SelectComponent
+                                title={'Merchant'}
+                                filter={filterMerchants}
+                                setfilter={setfilterMerchants}
+                                options={fetchMerchantsQuery}
+                                attr={'paginateMerchants'}
+                                label={'name'}
+                                value={'id'}
+                                onClick={(option) => {
+                                    history.push('/addorder?merchantId=' + option.id);
+                                }}
+                            />
+                        </div>
+                    </div>
+                </Modal.Body>
+            </Modal>
         </div>
     );
 };

@@ -23,7 +23,7 @@ const AddCustomer = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, dateformatter } = useContext(Contexthandlerscontext);
-    const { UserMutation_API, DeleteUserMutation_API, useQueryGQL, fetchUsers, useMutationGQL, addUser, addCustomer } = API();
+    const { useQueryGQL, useMutationGQL, addUser, addCustomer } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [submit, setsubmit] = useState(false);

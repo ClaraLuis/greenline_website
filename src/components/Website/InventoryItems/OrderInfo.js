@@ -38,21 +38,7 @@ const OrderInfo = (props) => {
         { type: 'export', count: 30, inventory: 'inv 3' },
         { type: 'export', count: 30, inventory: 'inv 3' },
     ]);
-    const [addUser1] = useMutationGQL(addUser(props?.payload));
-    const { refetch: refetchUsers } = useQueryGQL('', fetchUsers());
-    const fetchusers = useQueryGQL('', fetchUsers());
 
-    const handleAddUser = async () => {
-        try {
-            const { data } = await addUser1();
-            props?.setopenModal(false);
-            refetchUsers();
-
-            console.log(data); // Handle response
-        } catch (error) {
-            console.error('Error adding user:', error);
-        }
-    };
     return (
         <>
             <Modal

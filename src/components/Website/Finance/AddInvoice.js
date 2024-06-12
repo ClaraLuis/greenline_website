@@ -27,7 +27,6 @@ const AddInvoice = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, dateformatter } = useContext(Contexthandlerscontext);
-    const { fetchUsers, useQueryGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [submit, setsubmit] = useState(false);
@@ -41,12 +40,7 @@ const AddInvoice = (props) => {
         { name: 'Invoice orders', isChecked: true },
         { name: 'Invoice Info', isChecked: false },
     ]);
-    const [userAddresses, setuserAddresses] = useState([
-        { id: '1', country_id: 'Egypt', city_id: 'city 1', details: '28 kk street' },
-        { id: '2', country_id: 'Egypt', city_id: 'city 1', details: '28 kk street' },
-        { id: '3', country_id: 'Egypt', city_id: 'city 1', details: '28 kk street' },
-        { id: '4', country_id: 'Egypt', city_id: 'city 1', details: '28 kk street' },
-    ]);
+
     const [search, setsearch] = useState('');
     const [openModal, setopenModal] = useState(false);
     const [addresspayload, setaddresspayload] = useState({

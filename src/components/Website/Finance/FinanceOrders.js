@@ -26,35 +26,9 @@ const FinanceOrders = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, dateformatter, orderTypeContext, orderStatusesContext } = useContext(Contexthandlerscontext);
-    const { fetchUsers, useQueryGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
 
-    const [openModal, setopenModal] = useState(false);
-    const [selectedinventory, setselectedinventory] = useState('');
-    const [chosenracks, setchosenracks] = useState([]);
-    const [itemsarray, setitemsarray] = useState([
-        { sku: '123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1' },
-        { sku: '123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1' },
-        { sku: '123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1' },
-    ]);
-
-    const [payload, setpayload] = useState({
-        functype: 'add',
-        id: 'add',
-        name: '',
-        type: '',
-        phone: '',
-        email: '',
-        birthdate: '',
-    });
-    const [filterobj, setfilterobj] = useState({
-        page: 1,
-        search: '',
-    });
-
-    const fetchusers = useQueryGQL('', fetchUsers());
-    // const fetchusers = [];
     useEffect(() => {
         setpageactive_context('/financeorders');
     }, []);

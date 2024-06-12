@@ -18,7 +18,6 @@ import Select, { components } from 'react-select';
 
 // Icons
 import API from '../../../API/API.js';
-import UserInfo from './UserInfo.js';
 import { FiPlus } from 'react-icons/fi';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
 
@@ -221,17 +220,6 @@ const InventoryDetails = (props) => {
                                     </div>
                                 );
                             })}
-                            {/* <Pagespaginatecomponent
-                                totaldatacount={fetcOneInventoryQuery?.data?.data?.total}
-                                numofitemsperpage={fetcOneInventoryQuery?.data?.data?.per_page}
-                                pagenumbparams={fetcOneInventoryQuery?.data?.data?.current_page}
-                                nextpagefunction={(nextpage) => {
-                                    history.push({
-                                        pathname: '/users',
-                                        search: '&page=' + nextpage,
-                                    });
-                                }}
-                            /> */}
                         </>
                     )}
                 </div>
