@@ -181,7 +181,7 @@ const CourierSheet = (props) => {
                         </AccordionItem>
                     </Accordion>
                 </div> */}
-                <div class="col-lg-12 p-0">
+                <div class={type == 'admin' ? 'col-lg-12 p-0' : 'col-lg-6 p-0'}>
                     <Accordion allowMultipleExpanded expanded={expandedItems} preExpanded={expandedItems}>
                         {fetchCourierSheetQuery?.data?.CourierSheet?.sheetOrders?.map((item, index) => {
                             var tempsheetpayload = {};
@@ -425,16 +425,18 @@ const CourierSheet = (props) => {
                                                                     return (
                                                                         <div class="col-lg-12 p-0 mb-2">
                                                                             <div style={{ border: '1px solid #eee', borderRadius: '18px' }} class="row m-0 w-100 p-2">
-                                                                                <div style={{ width: '50px', height: '50px', borderRadius: '7px', marginInlineEnd: '10px' }}>
-                                                                                    <img
-                                                                                        src={
-                                                                                            subitem?.info?.imageUrl
-                                                                                                ? subitem?.info?.imageUrl
-                                                                                                : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'
-                                                                                        }
-                                                                                        style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
-                                                                                    />
-                                                                                </div>
+                                                                                {type == 'admin' && (
+                                                                                    <div style={{ width: '50px', height: '50px', borderRadius: '7px', marginInlineEnd: '10px' }}>
+                                                                                        <img
+                                                                                            src={
+                                                                                                subitem?.info?.imageUrl
+                                                                                                    ? subitem?.info?.imageUrl
+                                                                                                    : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'
+                                                                                            }
+                                                                                            style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
+                                                                                        />
+                                                                                    </div>
+                                                                                )}
                                                                                 <div class="col-lg-6 d-flex align-items-center">
                                                                                     <div className="row m-0 w-100">
                                                                                         <div style={{ fontSize: '16px' }} className={' col-lg-12 p-0'}>
@@ -445,10 +447,10 @@ const CourierSheet = (props) => {
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
-                                                                                <div class="col-lg-5 ">
+                                                                                <div class={type == 'admin' ? 'col-lg-5 ' : 'col-lg-6 '}>
                                                                                     <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
                                                                                         <div>
-                                                                                            {subitem?.partial && (
+                                                                                            {subitem?.partialCount && (
                                                                                                 <div
                                                                                                     style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }}
                                                                                                     class="row m-0 w-100 p-1 px-4"
@@ -456,7 +458,7 @@ const CourierSheet = (props) => {
                                                                                                     {subitem.partialCount}/{subitem.count}
                                                                                                 </div>
                                                                                             )}
-                                                                                            {!subitem?.partial && (
+                                                                                            {!subitem?.partialCount && (
                                                                                                 <div
                                                                                                     style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }}
                                                                                                     class="row m-0 w-100 p-1 px-4"
@@ -466,7 +468,7 @@ const CourierSheet = (props) => {
                                                                                             )}
                                                                                         </div>
                                                                                         <div style={{ fontWeight: 700 }} class="mx-2">
-                                                                                            {subitem?.partial
+                                                                                            {subitem?.partialCount
                                                                                                 ? parseInt(subitem.partialCount) * parseFloat(subitem?.unitPrice)
                                                                                                 : parseInt(subitem.count) * parseFloat(subitem?.unitPrice)}{' '}
                                                                                             {item?.info?.currency}

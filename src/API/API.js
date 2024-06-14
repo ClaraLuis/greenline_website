@@ -393,7 +393,6 @@ const API = () => {
                             count
                             unitPrice
                             unitDiscount
-                            partial
                             partialCount
                             info {
                                 name
@@ -745,7 +744,7 @@ const API = () => {
                                     name
                                 }
                                 orderItems {
-                                    partial
+                                    
                                     partialCount
                                     count
                                     unitPrice

@@ -122,14 +122,14 @@ const InventoryItems = (props) => {
     const fetchItemsInBoxQuery = useQueryGQL('', fetchItemsInBox(), filterItemInBox);
     const { refetch: reetchfetchItemsInBox } = useQueryGQL('', fetchItemsInBox(), filterItemInBox);
 
-    let fetchItemHistoryQuery;
-    let refetchItemHistory;
+    // let fetchItemHistoryQuery;
+    // let refetchItemHistory;
 
-    if (chosenitem?.id && chosenitem.id.length > 0) {
-        fetchItemHistoryQuery = useQueryGQL('', fetchItemHistory({ itemInBoxId: parseInt(chosenitem.id), limit: 10 }));
-        const { refetch } = useQueryGQL('', fetchItemHistory({ itemInBoxId: parseInt(chosenitem.id), limit: 10 }));
-        refetchItemHistory = refetch;
-    }
+    // if (chosenitem?.id) {
+    const fetchItemHistoryQuery = useQueryGQL('', fetchItemHistory({ itemInBoxId: parseInt(chosenitem.id), limit: 10 }));
+    const { refetch } = useQueryGQL('', fetchItemHistory({ itemInBoxId: parseInt(chosenitem.id), limit: 10 }));
+    const refetchItemHistory = refetch;
+    // }
     // const fetchusers = [];
     useEffect(() => {
         setpageactive_context('/inventoryitems');
