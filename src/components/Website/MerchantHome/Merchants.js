@@ -20,23 +20,32 @@ import { defaultstyles } from '../Generalfiles/selectstyles.js';
 import user from '../user.png';
 import Cookies from 'universal-cookie';
 import Pagination from '../../Pagination.js';
+import Form from '../../Form.js';
 
 const { ValueContainer, Placeholder } = components;
 
 const Merchants = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setchosenMerchantContext, chosenMerchantContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, inventoryTypesContext, chosenMerchantContext } = useContext(Contexthandlerscontext);
     const { useQueryGQL, useMutationGQL, addMerchant, fetchMerchants, fetchItemHistory, exportItem, importItem } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
 
     const [openMerchantModel, setopenMerchantModel] = useState(false);
+    const [inventoryModal, setinventoryModal] = useState(false);
+    const [submit, setsubmit] = useState(false);
     const [merchantPayload, setmerchantPayload] = useState({
         functype: 'add',
         name: '',
         includesVat: false,
     });
+    const [inventorySettings, setinventorySettings] = useState({
+        inInventory: '',
+        type: '',
+        price: '',
+    });
+
     const [addMerchantMutation] = useMutationGQL(addMerchant(), {
         name: merchantPayload?.name,
         includesVat: merchantPayload?.includesVat,
@@ -55,7 +64,7 @@ const Merchants = (props) => {
             const { data } = await addMerchantMutation();
             refetchMerchants();
             setopenMerchantModel(false);
-            history.push('/governorates?merchantId=' + data?.createMerchant);
+            history.push('/governorates?merchantId=' + data?.createMerchant + '&type=add');
         } catch (error) {
             console.error('Error adding Merchant:', error);
         }
@@ -67,12 +76,6 @@ const Merchants = (props) => {
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
-                {/* <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
-                    <p class=" p-0 m-0" style={{ fontSize: '27px' }}>
-                        Merchants
-                    </p>
-                </div> */}
-
                 <div class={' row m-0 w-100 mb-2 p-2 px-3'}>
                     <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start mb-3'}>
                         <p class=" p-0 m-0" style={{ fontSize: '23px' }}>
@@ -115,9 +118,9 @@ const Merchants = (props) => {
                                             style={{ backgroundColor: 'white', border: chosenMerchantContext?.id == item?.id ? '1px solid var(--success)' : '' }}
                                             class="row m-0 w-100 p-3 card d-flex align-items-center"
                                         >
-                                            <div class="col-lg-6 p-0 mb-1 " style={{ fontSize: '15px' }}>
+                                            <div class="col-lg-6 p-0 mb-1 ">
                                                 <div class="row m-0 w-100 d-flex align-items-center">
-                                                    <div style={{ width: '40px', height: '40px', marginInlineEnd: '10px' }}>
+                                                    <div style={{ width: '30px', height: '30px', marginInlineEnd: '10px' }}>
                                                         <img src={user} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                                                     </div>
                                                     <span style={{ fontWeight: 600 }} class="text-capitalize">
@@ -140,21 +143,21 @@ const Merchants = (props) => {
                                                         </div>
                                                     </Dropdown.Toggle>
                                                     <Dropdown.Menu>
-                                                        {/* <Dropdown.Item class="py-2">
-                                                            <p
-                                                                class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}
-                                                                onClick={() => {
-                                                                    setchosenMerchantContext(item);
-                                                                }}
-                                                            >
-                                                                Show Dashboard
-                                                            </p>
-                                                        </Dropdown.Item> */}
                                                         <Dropdown.Item class="py-2">
                                                             <p
                                                                 class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}
                                                                 onClick={() => {
-                                                                    history.push('/governorates?merchanId=' + item.id);
+                                                                    setinventoryModal(true);
+                                                                }}
+                                                            >
+                                                                Inventory Settings
+                                                            </p>
+                                                        </Dropdown.Item>
+                                                        <Dropdown.Item class="py-2">
+                                                            <p
+                                                                class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}
+                                                                onClick={() => {
+                                                                    history.push('/governorates?merchantId=' + item.id + '&type=edit');
                                                                 }}
                                                             >
                                                                 Shipping Prices
@@ -164,7 +167,7 @@ const Merchants = (props) => {
                                                             <p
                                                                 class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}
                                                                 onClick={() => {
-                                                                    // history.push('/governorates?merchanId=' + item.id);
+                                                                    // history.push('/governorates?merchantId=' + item.id);
                                                                 }}
                                                             >
                                                                 Terminate Merchant
@@ -184,15 +187,6 @@ const Merchants = (props) => {
                                                     </Dropdown.Menu>
                                                 </Dropdown>
                                             </div>
-                                            {/* <div class="col-lg-12 p-0">
-                                            <hr class="p-0 m-0 my-3" />
-                                        </div> */}
-                                            {/* <div class="col-lg-12 p-0 mt-2">
-                                            <span>Name: </span>
-                                        </div>
-                                        <div class="col-lg-12 p-0">
-                                            <hr class="p-0 m-0" />
-                                        </div> */}
                                             <div class="col-lg-12 p-0 mt-3">
                                                 <div class="row m-0 w-100 allcentered">
                                                     <button
@@ -200,7 +194,7 @@ const Merchants = (props) => {
                                                             // setchosenMerchantContext(item);
                                                             const cookies = new Cookies();
                                                             cookies.set('merchantId', item?.id);
-                                                            // window.location.reload();
+                                                            window.location.reload();
                                                         }}
                                                         style={{ minWidth: '200px', maxWidth: '200px', height: '35px' }}
                                                         class={generalstyles.roundbutton + ' p-1 px-3 allcentered'}
@@ -288,6 +282,77 @@ const Merchants = (props) => {
                                 Add Merchant
                             </button>
                         </div>
+                    </div>
+                </Modal.Body>
+            </Modal>
+            <Modal
+                show={inventoryModal}
+                onHide={() => {
+                    setinventoryModal(false);
+                }}
+                centered
+                size={'md'}
+            >
+                <Modal.Header>
+                    <div className="row w-100 m-0 p-0">
+                        <div class="col-lg-6 pt-3 "></div>
+                        <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
+                            <div
+                                class={'close-modal-container'}
+                                onClick={() => {
+                                    setinventoryModal(false);
+                                }}
+                            >
+                                <IoMdClose />
+                            </div>
+                        </div>{' '}
+                    </div>
+                </Modal.Header>
+                <Modal.Body>
+                    <div class="row m-0 w-100 py-2">
+                        <div class="col-lg-12 p-0 mb-2">
+                            <div class="row m-0 w-100">
+                                <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
+                                    <p class=" p-0 m-0" style={{ fontSize: '20px' }}>
+                                        Inventory Settings
+                                    </p>
+                                </div>
+                                <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-end pb-2 '}>
+                                    <div className="row m-0  d-flex justify-content-start">
+                                        <label className={`${formstyles.switch} mx-2 my-0`}>
+                                            <input
+                                                type="checkbox"
+                                                checked={inventorySettings?.inInventory}
+                                                onChange={() => {
+                                                    setinventorySettings({ ...inventorySettings, inInventory: !inventorySettings.inInventory });
+                                                }}
+                                            />
+                                            <span className={`${formstyles.slider} ${formstyles.round}`}></span>
+                                        </label>
+                                        <p className={`${generalstyles.checkbox_label} mb-0 text-focus text-capitalize cursor-pointer font_14 ml-1 mr-1 wordbreak`}>In Inventory</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {inventorySettings?.inInventory && (
+                            <Form
+                                size={'lg'}
+                                submit={submit}
+                                setsubmit={setsubmit}
+                                attr={[
+                                    { name: 'Inventory Type', attr: 'type', type: 'select', options: inventoryTypesContext, size: '12' },
+                                    { name: 'Price', attr: 'price', type: 'number', size: '12' },
+                                ]}
+                                payload={inventorySettings}
+                                setpayload={setinventorySettings}
+                                // button1disabled={UserMutation.isLoading}
+                                button1class={generalstyles.roundbutton + '  mr-2 '}
+                                button1placeholder={'Save'}
+                                button1onClick={() => {
+                                    // handleAddCourierSheet();
+                                }}
+                            />
+                        )}
                     </div>
                 </Modal.Body>
             </Modal>

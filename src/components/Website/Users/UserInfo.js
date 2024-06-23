@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Modal } from 'react-bootstrap';
 import { IoMdClose } from 'react-icons/io';
 import { useHistory } from 'react-router-dom';
@@ -99,6 +99,13 @@ const UserInfo = (props) => {
             console.error('Error adding user:', error);
         }
     };
+    useEffect(() => {
+        if (props?.payload.functype == 'edit') {
+            props?.setopenModal(false);
+            setchangerolesmodal(true);
+        }
+    }, [props?.payload.functype]);
+
     return (
         <>
             {!changerolesmodal && (

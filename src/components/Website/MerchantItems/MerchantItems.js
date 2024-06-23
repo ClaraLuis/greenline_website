@@ -313,26 +313,7 @@ const MerchantItems = (props) => {
                             style={{ height: '35px' }}
                             class={generalstyles.roundbutton + '  mb-1 mx-2'}
                             onClick={() => {
-                                setitempayload({
-                                    functype: 'add',
-                                    merchansku: '',
-                                    name: '',
-                                    color: '',
-                                    colorHEX: '',
-                                    description: '',
-                                    size: '',
-                                    itemPrices: [],
-                                    colorsarray: [],
-                                    colorHEXarray: [],
-                                });
-                                setitemprice({
-                                    currency: '',
-                                    price: '',
-                                    discount: null,
-                                    startDiscount: null,
-                                    endDiscount: null,
-                                });
-                                setopenModal(true);
+                                history.push('/additem');
                             }}
                         >
                             Add Single Item
@@ -406,7 +387,7 @@ const MerchantItems = (props) => {
                                 <Pagination
                                     beforeCursor={fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.beforeCursor}
                                     afterCursor={fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.afterCursor}
-                                    payload={payload}
+                                    filter={payload}
                                     setfilter={setfilter}
                                 />
                             </div>
@@ -417,7 +398,7 @@ const MerchantItems = (props) => {
                                 <Pagination
                                     beforeCursor={fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.beforeCursor}
                                     afterCursor={fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.afterCursor}
-                                    payload={payload}
+                                    filter={payload}
                                     setfilter={setfilter}
                                 />
                             </div>
@@ -860,12 +841,6 @@ const MerchantItems = (props) => {
                         </div>
 
                         <div style={{ border: '1px solid #eee', borderRadius: '18px' }} class="col-lg-12 p-3">
-                            <div>
-                                <input type="text" class={formstyles.form__field} value={optionName} onChange={(event) => handleOptionChange(optionName, event)} placeholder="Enter option name" />
-                                <button style={{ height: '30px' }} class={generalstyles.roundbutton + '  my-2 p-0'} onClick={addOption}>
-                                    Add Option
-                                </button>
-                            </div>
                             {options.map((option, index) => (
                                 <div style={{ border: '1px solid #eee', borderRadius: '18px' }} class="p-2 mb-2 row m-0 w-100 d-flex align-items-center" key={index}>
                                     <input type="text" class={formstyles.form__field + ' col-lg-10'} value={option.name} onChange={(event) => editOptionName(option.name, event.target.value)} />
@@ -882,70 +857,91 @@ const MerchantItems = (props) => {
                                         </div>
                                     ))}
                                     <div class="col-lg-12 p-0">
-                                        <input
-                                            type="text"
-                                            class={formstyles.form__field + ' mt-2'}
-                                            value={valueInputs[option.name] || ''}
-                                            onChange={(event) => handleValueChange(option.name, event)}
-                                            placeholder="Enter value"
-                                        />
-                                        <button style={{ height: '30px' }} class={generalstyles.roundbutton + '  my-2 p-0'} onClick={() => addValue(option.name)}>
-                                            Add Value
-                                        </button>
+                                        <div class="row m-0 w-100 d-flex align-items-center">
+                                            <input
+                                                type="text"
+                                                class={formstyles.form__field + ' mt-2'}
+                                                value={valueInputs[option.name] || ''}
+                                                style={{ width: '50%', marginInlineEnd: '15px' }}
+                                                onChange={(event) => handleValueChange(option.name, event)}
+                                                placeholder="Enter value"
+                                            />
+                                            <button style={{ height: '30px' }} class={generalstyles.roundbutton + '  my-2 p-0'} onClick={() => addValue(option.name)}>
+                                                Add Value
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             ))}
+
+                            <div class="row m-0 w-100 d-flex align-items-center">
+                                <input
+                                    type="text"
+                                    class={formstyles.form__field}
+                                    style={{ width: '50%', marginInlineEnd: '15px' }}
+                                    value={optionName}
+                                    onChange={(event) => handleOptionChange(optionName, event)}
+                                    placeholder="Enter option name"
+                                />
+                                <button style={{ height: '30px' }} class={generalstyles.roundbutton + ' p-0'} onClick={addOption}>
+                                    Add Option
+                                </button>
+                            </div>
                             {/* <div class="col-lg-12 p-0 allcentered">
                                 <button style={{ height: '35px' }} class={generalstyles.roundbutton + '  my-2 p-0 px-4'} onClick={generateVariants}>
                                     Generate Variants
                                 </button>
                             </div> */}
-                            {Object.entries(groupedVariants).map(([color, variants], colorIndex) => (
-                                <div key={colorIndex} style={{ border: '1px solid #eee', borderRadius: '18px', fontSize: '13px', cursor: 'pointer' }} className="p-3 mb-2">
-                                    <div className="col-lg-12 p-0" onClick={() => handleColorClick(color)}>
-                                        {color}
-                                    </div>
-                                    <div className="col-lg-12 p-0 mb-2" style={{ color: 'grey', fontSize: '12px' }} onClick={() => handleColorClick(color)}>
-                                        {variants?.length} variants <FaChevronDown className="mx-2" />
-                                    </div>
-                                    {activeColor === color && (
-                                        <div style={{ borderTop: '1px solid #eee' }} className="p-3">
-                                            {variants.map((variant, variantIdx) => (
-                                                <div key={variantIdx} className="mb-2">
-                                                    {variant.options.map((option, optionIdx) => (
-                                                        <span key={optionIdx}>
-                                                            {Object.values(option)[0] == color ? '' : Object.values(option)[0]}
-                                                            {Object.values(option)[0] == color ? '' : optionIdx !== variant.options.length - 1 && '-'}
-                                                        </span>
-                                                    ))}
-                                                    <input
-                                                        className={formstyles.form__field + ' col-lg-3 mx-1 ml-4'}
-                                                        type="text"
-                                                        value={variant.price}
-                                                        onChange={(event) => handlePriceChange(color, variantIdx, event)}
-                                                        placeholder="Enter price"
-                                                    />
-                                                    <input
-                                                        className={formstyles.form__field + ' col-lg-3 mx-1'}
-                                                        type="text"
-                                                        value={variant.imageUrl}
-                                                        onChange={(event) => handleImageChange(color, variantIdx, event)}
-                                                        placeholder="Enter ImageUrl"
-                                                    />
-                                                    <input
-                                                        className={formstyles.form__field + ' col-lg-3 mx-1'}
-                                                        type="text"
-                                                        value={variant.merchantSku}
-                                                        onChange={(event) => handleMerchantSkuChange(color, variantIdx, event)}
-                                                        placeholder="Enter SKU"
-                                                    />
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
                         </div>
+                        {groupedVariants?.length != 0 && (
+                            <div style={{ border: '1px solid #eee', borderRadius: '18px' }} class="col-lg-12 p-3 mt-3">
+                                {Object.entries(groupedVariants).map(([color, variants], colorIndex) => (
+                                    <div key={colorIndex} style={{ border: '1px solid #eee', borderRadius: '18px', fontSize: '13px', cursor: 'pointer' }} className="p-3 mb-2">
+                                        <div className="col-lg-12 p-0" onClick={() => handleColorClick(color)}>
+                                            {color}
+                                        </div>
+                                        <div className="col-lg-12 p-0 mb-2" style={{ color: 'grey', fontSize: '12px' }} onClick={() => handleColorClick(color)}>
+                                            {variants?.length} variants <FaChevronDown className="mx-2" />
+                                        </div>
+                                        {activeColor === color && (
+                                            <div style={{ borderTop: '1px solid #eee' }} className="p-3">
+                                                {variants.map((variant, variantIdx) => (
+                                                    <div key={variantIdx} className="mb-2">
+                                                        {variant.options.map((option, optionIdx) => (
+                                                            <span key={optionIdx}>
+                                                                {Object.values(option)[0] == color ? '' : Object.values(option)[0]}
+                                                                {Object.values(option)[0] == color ? '' : optionIdx !== variant.options.length - 1 && '-'}
+                                                            </span>
+                                                        ))}
+                                                        <input
+                                                            className={formstyles.form__field + ' col-lg-3 mx-1 ml-4'}
+                                                            type="text"
+                                                            value={variant.price}
+                                                            onChange={(event) => handlePriceChange(color, variantIdx, event)}
+                                                            placeholder="Enter price"
+                                                        />
+                                                        <input
+                                                            className={formstyles.form__field + ' col-lg-3 mx-1'}
+                                                            type="text"
+                                                            value={variant.imageUrl}
+                                                            onChange={(event) => handleImageChange(color, variantIdx, event)}
+                                                            placeholder="Enter ImageUrl"
+                                                        />
+                                                        <input
+                                                            className={formstyles.form__field + ' col-lg-3 mx-1'}
+                                                            type="text"
+                                                            value={variant.merchantSku}
+                                                            onChange={(event) => handleMerchantSkuChange(color, variantIdx, event)}
+                                                            placeholder="Enter SKU"
+                                                        />
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
 
                         <div class="col-lg-12 p-0 allcentered mt-3">
                             <button

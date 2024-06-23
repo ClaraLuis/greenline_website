@@ -963,7 +963,7 @@
 .react-tel-input .form-control {
     transition: border-color 0.2s;
     position: relative;
-    font-size: 14px;
+    font-size: 12px;
     letter-spacing: 0.01rem;
     margin-top: 0 !important;
     margin-bottom: 0 !important;

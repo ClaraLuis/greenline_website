@@ -288,7 +288,7 @@ button:focus {
     height: 100%;
     padding: 0 10px;
     background: white;
-    font-size: 14px;
+    font-size: 12px;
     border-radius: 10px;
     transition: all 0.4s ease;
 }
@@ -490,7 +490,7 @@ button:focus {
     box-shadow: 0 0 #0000, 0 0 #0000, 0px 2px 6px rgba(0, 0, 0, 0.06);
     cursor: pointer;
     transition: all 0.4s;
-    font-size: 14px;
+    font-size: 12px;
     position: relative;
     min-height: 100px;
 }
@@ -517,7 +517,7 @@ button:focus {
     box-shadow: 0 0 #0000, 0 0 #0000, 0px 2px 6px rgba(0, 0, 0, 0.06);
     cursor: pointer;
     transition: all 0.4s;
-    font-size: 14px;
+    font-size: 12px;
     position: relative;
     min-height: 100px;
 }
@@ -631,7 +631,7 @@ button:focus {
     /* color: var(--cardheader); */
 }
 .checkbox_label {
-    font-size: 14px;
+    font-size: 12px;
     text-transform: capitalize;
     font-weight: 500;
     cursor: pointer;
@@ -735,7 +735,7 @@ button:focus {
 .orrow span {
     background: #fff;
     padding: 0 0.5rem;
-    font-size: 14px;
+    font-size: 12px;
     text-transform: lowercase !important;
 }
 .sidenav__logo {

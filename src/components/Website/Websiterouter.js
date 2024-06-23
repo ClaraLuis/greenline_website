@@ -47,6 +47,7 @@ import Packages from './MerchantHome/Packages.js';
 import InventoryReturns from './InventoryItems/InventoryReturns.js';
 import InventoryPackages from './InventoryItems/InventoryPackages.js';
 import MerchantPackages from './MerchantHome/MerchantPackages.js';
+import AddItem from './MerchantItems/AddItem.js';
 const App = (props) => {
     const history = useHistory();
     const location = useLocation();
@@ -80,7 +81,7 @@ const App = (props) => {
                 <div class="row m-0 w-100">
                     <div class="col-lg-6 p-0 px-2  ">
                         <div class="row m-0 w-100">
-                            <div
+                            {/* <div
                                 onClick={() => {
                                     sethidesidenav_context(!hidesidenav_context);
                                 }}
@@ -92,7 +93,6 @@ const App = (props) => {
                                     style={{
                                         backgroundColor: 'var(--secondary)',
                                         borderRadius: '5px',
-                                        // transform: !hidesidenav_context ? 'translate(60%, 10%)' : 'translate(30%,0%)',
                                         zIndex: 100000,
                                         transition: 'all 0.4s',
                                         width: '23px',
@@ -101,9 +101,8 @@ const App = (props) => {
                                     }}
                                 >
                                     <FiMenu size={15} color={'var(--primary)'} />
-                                    {/* {hidesidenav_context && <IoIosArrowForward size={25} class="pl-1" />} */}
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                     <div class="col-lg-6 d-flex justify-content-end align-items-center ">
@@ -189,8 +188,8 @@ const App = (props) => {
                                 <Dropdown.Item>
                                     <p
                                         class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}
-                                        onClick={() => {
-                                            signOut(getAuth());
+                                        onClick={async () => {
+                                            await signOut(getAuth());
                                             const cookies = new Cookies();
                                             cookies.remove('accessToken');
                                             cookies.remove('merchantId');
@@ -275,7 +274,7 @@ const App = (props) => {
                                                                 <Route exact path="/couriersheet" component={CourierSheet} />
                                                                 <Route exact path="/addsheet" component={AddSheet} />
                                                                 <Route exact path="/financehome" component={FinanceHome} />
-                                                                <Route exact path="/financesheets" component={FinanceSheets} />
+                                                                <Route exact path="/additem" component={AddItem} />
 
                                                                 <Route exact path="/couriercollections" component={CourierCollection} />
                                                                 <Route exact path="/merchantpayments" component={MerchantPayments} />

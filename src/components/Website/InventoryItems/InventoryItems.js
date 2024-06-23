@@ -8,7 +8,7 @@ import Select, { components } from 'react-select';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
-import { FaLayerGroup } from 'react-icons/fa';
+import { FaLayerGroup, FaRegClock } from 'react-icons/fa';
 import { Modal } from 'react-bootstrap';
 
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
@@ -43,7 +43,7 @@ const InventoryItems = (props) => {
     const [chosenitem, setchosenitem] = useState('');
     const [importItemModel, setimportItemModel] = useState(false);
     const [importItemPayload, setimportItemPayload] = useState({
-        itemSku: 'item.e',
+        itemVariantId: 'item.e',
         ownedByOneMerchant: true,
         ballotId: '',
         inventoryId: '',
@@ -138,32 +138,29 @@ const InventoryItems = (props) => {
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
-                <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
-                    <p class=" p-0 m-0" style={{ fontSize: '27px' }}>
-                        Inventories
-                    </p>
-                </div>
-
                 <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
-                    <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start '}>
-                        <p class=" p-0 m-0" style={{ fontSize: '15px' }}>
-                            <span style={{ color: 'var(--info)' }}>Inventories </span>
-                        </p>
-                    </div>
-                    {isAuth([1, 54, 4]) && (
-                        <div class={' col-lg-6 col-md-6 col-sm-12 p-0 d-flex align-items-center justify-content-end mb-2 px-2 '}>
-                            <button
-                                style={{ height: '35px' }}
-                                class={generalstyles.roundbutton + '  mb-1'}
-                                onClick={() => {
-                                    setopenInventoryModal(true);
-                                }}
-                            >
-                                Add Inventory
-                            </button>
+                    <div class="col-lg-12 p-0">
+                        <div class="row m-0 w-100 d-flex align-items-center">
+                            <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start '}>
+                                <p class=" p-0 m-0" style={{ fontSize: '15px' }}>
+                                    <span style={{ color: 'var(--info)' }}>Inventories </span>
+                                </p>
+                            </div>
+                            {isAuth([1, 54, 4]) && (
+                                <div class={' col-lg-6 col-md-6 col-sm-12 p-0 d-flex align-items-center justify-content-end mb-2 px-2 '}>
+                                    <button
+                                        style={{ height: '35px' }}
+                                        class={generalstyles.roundbutton + ''}
+                                        onClick={() => {
+                                            setopenInventoryModal(true);
+                                        }}
+                                    >
+                                        Add Inventory
+                                    </button>
+                                </div>
+                            )}
                         </div>
-                    )}
-
+                    </div>
                     <div class="col-lg-12 p-0 ">
                         {fetchinventories?.loading && (
                             <div style={{ height: '70vh' }} class="row w-100 allcentered m-0">
@@ -251,7 +248,7 @@ const InventoryItems = (props) => {
                                 <span
                                     onClick={() => {
                                         setimportItemPayload({
-                                            itemSku: 'item.e',
+                                            itemVariantId: '',
                                             ownedByOneMerchant: true,
                                             ballotId: '',
                                             inventoryId: '',
@@ -290,87 +287,70 @@ const InventoryItems = (props) => {
                                 return (
                                     <div style={{ fontSize: '13px' }} class=" col-lg-4 p-2 mb-1">
                                         <div class="row m-0 w-100 card">
-                                            <div class=" mr-2" style={{ width: '50px', height: '50px', borderRadius: '5px' }}>
-                                                <img
-                                                    src={
-                                                        element?.item?.imageUrl?.length != 0 && element?.item?.imageUrl != null
-                                                            ? element?.item?.imageUrl
-                                                            : 'https://www.shutterstock.com/image-vector/new-label-shopping-icon-vector-260nw-1894227709.jpg'
-                                                    }
-                                                    style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '5px' }}
-                                                />
-                                            </div>
-                                            <div class="col-lg-9 p-0 mb-1 mt-0 " style={{ fontSize: '15px' }}>
-                                                <div class="row m-0 w-100">
-                                                    <div style={{ fontSize: '11px' }} class="col-lg-12 p-0 mt-1 d-flex justify-content-end">
-                                                        <span
-                                                            onClick={() => {
-                                                                setchosenitem(element);
-                                                                // setopenModal(true);
-                                                                setimportpayload({
-                                                                    id: '',
-                                                                    count: '',
-                                                                    type: '',
-                                                                });
-                                                                setimportmodal({ open: true, type: 'import' });
-                                                            }}
-                                                            class="text-primary text-secondaryhover mr-2"
-                                                            style={{ textDecoration: 'underline' }}
-                                                        >
-                                                            import
-                                                        </span>
-                                                        <span
-                                                            onClick={() => {
-                                                                setchosenitem(element);
-                                                                setimportpayload({
-                                                                    id: '',
-                                                                    count: '',
-                                                                    type: '',
-                                                                });
-                                                                setimportmodal({ open: true, type: 'export' });
-                                                            }}
-                                                            class="text-danger text-dangerhover"
-                                                            style={{ textDecoration: 'underline' }}
-                                                        >
-                                                            export
-                                                        </span>
+                                            <div class="col-lg-12 p-0">
+                                                <div class="row m-0 w-100 d-flex align-items-center">
+                                                    <div class=" mr-2" style={{ width: '50px', height: '50px', borderRadius: '5px' }}>
+                                                        <img
+                                                            src={
+                                                                element?.item?.imageUrl?.length != 0 && element?.item?.imageUrl != null
+                                                                    ? element?.item?.imageUrl
+                                                                    : 'https://www.shutterstock.com/image-vector/new-label-shopping-icon-vector-260nw-1894227709.jpg'
+                                                            }
+                                                            style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '5px' }}
+                                                        />
                                                     </div>
-                                                    <div class="col-lg-12 p-0">
-                                                        {element?.item?.name} <span style={{ fontSize: '12px', color: 'var(--primary)' }}>({element.itemSku})</span>
+                                                    <div class="col-lg-6 p-0 " style={{ fontSize: '14px', fontWeight: 600 }}>
+                                                        {element?.item?.name}
                                                     </div>
+                                                    <div class="col-lg-3 p-0 d-flex justify-content-end">{element?.count}</div>
                                                 </div>
                                             </div>
 
-                                            <div class="col-lg-12 mt-2 p-0">
-                                                <hr class="p-0 m-0" />
-                                            </div>
-                                            <div class="col-lg-12 p-0 mt-2">
-                                                <span>Inventory: </span>
-                                                <span style={{ fontWeight: 600 }}> {element.inventoryId}</span>
-                                            </div>
-                                            <div class="col-lg-12 p-0 mt-1">
-                                                <span>Count: </span>
-                                                <span style={{ fontWeight: 600 }}> {element.count}</span>
-                                            </div>
-                                            <div class="col-lg-12 p-0 mt-1">
-                                                <span>Total Count: </span>
-                                                <span style={{ fontWeight: 600 }}> {element.totalCount}</span>
-                                            </div>
-                                            <div class="col-lg-12 p-0 mt-1">
-                                                <span>Merchant: </span>
-                                                <span style={{ fontWeight: 600 }}> {element?.item?.merchantId}</span>
-                                            </div>
-                                            <div class="col-lg-12 p-0 mt-1">
-                                                <span
-                                                    onClick={() => {
-                                                        setchosenitem(element);
-                                                        setopenModal(true);
-                                                    }}
-                                                    class="text-primary text-secondaryhover"
-                                                    style={{ textDecoration: 'underline' }}
-                                                >
-                                                    Show item history
-                                                </span>
+                                            <div class="col-lg-12 p-0 mt-3">
+                                                <div class="row m-0 w-100 d-flex align-items-center justify-content-center">
+                                                    <button
+                                                        onClick={() => {
+                                                            setchosenitem(element);
+                                                            setopenModal(true);
+                                                        }}
+                                                        style={{ height: '25px', minWidth: 'fit-content', marginInlineEnd: '5px' }}
+                                                        class={generalstyles.roundbutton + '  allcentered'}
+                                                    >
+                                                        <FaRegClock />
+                                                    </button>
+
+                                                    <button
+                                                        onClick={() => {
+                                                            setchosenitem(element);
+                                                            // setopenModal(true);
+                                                            setimportpayload({
+                                                                id: '',
+                                                                count: '',
+                                                                type: '',
+                                                            });
+                                                            setimportmodal({ open: true, type: 'import' });
+                                                        }}
+                                                        style={{ height: '25px', minWidth: 'fit-content', marginInlineEnd: '5px' }}
+                                                        class={generalstyles.roundbutton + '  allcentered'}
+                                                    >
+                                                        import
+                                                    </button>
+                                                    <button
+                                                        onClick={() => {
+                                                            setchosenitem(element);
+                                                            setimportpayload({
+                                                                id: '',
+                                                                count: '',
+                                                                type: '',
+                                                            });
+                                                            setimportmodal({ open: true, type: 'export' });
+                                                        }}
+                                                        style={{ height: '25px', minWidth: 'fit-content' }}
+                                                        class={generalstyles.roundbutton + '  allcentered'}
+                                                    >
+                                                        export
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

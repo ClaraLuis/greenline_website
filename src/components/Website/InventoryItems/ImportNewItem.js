@@ -14,21 +14,28 @@ import { IoMdClose } from 'react-icons/io';
 import API from '../../../API/API.js';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
 import SelectComponent from '../../SelectComponent.js';
+import Pagination from '../../Pagination.js';
+import ItemsTable from '../MerchantItems/ItemsTable.js';
+import Cookies from 'universal-cookie';
+import { BiPlus } from 'react-icons/bi';
 
 const { ValueContainer, Placeholder } = components;
 
 const ImportNewItem = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
+    const cookies = new Cookies();
+
     const { setpageactive_context, dateformatter } = useContext(Contexthandlerscontext);
-    const { fetchUsers, useQueryGQL, fetchInventories, useMutationGQL, addInventory, fetchItemsInBox, fetchRacks, importNew, fetchItemHistory } = API();
+    const { fetchUsers, useQueryGQL, fetchInventories, useMutationGQL, useLazyQueryGQL, fetchMerchantItems, fetchRacks, importNew, fetchItemHistory } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
-
+    const [fetchRacksQuery, setfetchRacksQuery] = useState(null);
     const [filter, setfilter] = useState({
         limit: 50,
         invetoryIds: [],
     });
+    const [step, setstep] = useState(0);
 
     const [filterInventories, setfilterInventories] = useState({
         limit: 10,
@@ -37,7 +44,7 @@ const ImportNewItem = (props) => {
     });
 
     const [importNewMutation] = useMutationGQL(importNew(), {
-        itemSku: props?.importItemPayload?.itemSku,
+        itemVariantId: props?.importItemPayload?.itemVariantId,
         ownedByOneMerchant: props?.importItemPayload?.ownedByOneMerchant,
         ballotId: props?.importItemPayload?.ballotId,
         inventoryId: props?.importItemPayload?.inventoryId,
@@ -58,10 +65,23 @@ const ImportNewItem = (props) => {
         }
     };
     const fetchinventories = useQueryGQL('', fetchInventories(), filterInventories);
-    const fetchRacksQuery = useQueryGQL('', fetchRacks(filter));
+    // const fetchRacksQuery = useQueryGQL('', fetchRacks(filter));
+
+    const [merchantFilter, setmerchantFilter] = useState({
+        limit: 20,
+        isAsc: true,
+        afterCursor: '',
+        beforeCursor: '',
+        name: '',
+        sku: '',
+        merchantId: parseInt(cookies.get('merchantId')),
+    });
+    const fetchMerchantItemsQuery = useQueryGQL('', fetchMerchantItems(), merchantFilter);
+
+    const [fetchRacksLazyQuery] = useLazyQueryGQL(fetchRacks());
 
     // const fetchusers = [];
-    useEffect(() => {
+    useEffect(async () => {
         setpageactive_context('/inventoryitems');
     }, []);
 
@@ -92,116 +112,281 @@ const ImportNewItem = (props) => {
                 </div>
             </Modal.Header>
             <Modal.Body>
-                <div class="row m-0 w-100 py-2">
-                    <div class="col-lg-6">
-                        <div class="row m-0 w-100  ">
-                            <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                <label class={formstyles.form__label}>Box Name</label>
-                                <input
-                                    type={'text'}
-                                    class={formstyles.form__field}
-                                    value={props?.importItemPayload.boxName}
-                                    onChange={(event) => {
-                                        props?.setimportItemPayload({ ...props?.importItemPayload, boxName: event.target.value });
-                                    }}
-                                />
-                            </div>
+                {step == 0 && (
+                    <div class="row m-0 w-100 py-2 pb-3">
+                        <div class="col-lg-12 p-0">
+                            <Pagination
+                                beforeCursor={fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.beforeCursor}
+                                afterCursor={fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.afterCursor}
+                                filter={merchantFilter}
+                                setfilter={setmerchantFilter}
+                            />
                         </div>
-                    </div>{' '}
-                    <div class="col-lg-6">
-                        <div class="row m-0 w-100  ">
-                            <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                <label class={formstyles.form__label}>Count</label>
-                                <input
-                                    type={'number'}
-                                    class={formstyles.form__field}
-                                    value={props?.importItemPayload.count}
-                                    onChange={(event) => {
-                                        props?.setimportItemPayload({ ...props?.importItemPayload, count: event.target.value });
-                                    }}
-                                />
-                            </div>
+                        <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                            <ItemsTable
+                                card="col-lg-3"
+                                items={fetchMerchantItemsQuery?.data?.paginateItems?.data}
+                                actiononclick={(item) => {
+                                    props?.setimportItemPayload({ ...props?.importItemPayload, itemVariantId: item?.id });
+                                    setstep(step + 1);
+                                }}
+                            />
+                        </div>
+                        <div class="col-lg-12 p-0">
+                            <Pagination
+                                beforeCursor={fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.beforeCursor}
+                                afterCursor={fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.afterCursor}
+                                filter={merchantFilter}
+                                setfilter={setmerchantFilter}
+                            />
                         </div>
                     </div>
-                    <div class="col-lg-6">
-                        <div class="row m-0 w-100  ">
-                            <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                <label class={formstyles.form__label}>Min Count</label>
-                                <input
-                                    type={'number'}
-                                    class={formstyles.form__field}
-                                    value={props?.importItemPayload.minCount}
-                                    onChange={(event) => {
-                                        props?.setimportItemPayload({ ...props?.importItemPayload, minCount: event.target.value });
-                                    }}
-                                />
-                            </div>
+                )}
+                {step == 1 && (
+                    <div class="row m-0 w-100">
+                        <div class={'col-lg-6'} style={{ marginBottom: '15px' }}>
+                            <SelectComponent
+                                title={'Inventory'}
+                                filter={filterInventories}
+                                setfilter={setfilterInventories}
+                                options={fetchinventories}
+                                attr={'paginateInventories'}
+                                label={'name'}
+                                value={'id'}
+                                payload={props?.importItemPayload}
+                                payloadAttr={'inventoryId'}
+                                onClick={async (option) => {
+                                    var { data } = await fetchRacksLazyQuery({
+                                        variables: {
+                                            input: {
+                                                limit: 50,
+                                                invetoryIds: [option.id],
+                                            },
+                                        },
+                                    });
+                                    setfetchRacksQuery(data);
+                                    // alert(JSON.stringify(fetchRacksQuery));
+                                    props?.setimportItemPayload({ ...props?.importItemPayload, inventoryId: option.id });
+                                    setfilter({ ...filter, invetoryIds: [option.id] });
+                                }}
+                            />
                         </div>
-                    </div>
-                    <div class={'col-lg-6'} style={{ marginBottom: '15px' }}>
-                        <SelectComponent
-                            title={'Inventory'}
-                            filter={filterInventories}
-                            setfilter={setfilterInventories}
-                            options={fetchinventories}
-                            attr={'paginateInventories'}
-                            label={'name'}
-                            value={'id'}
-                            payload={props?.importItemPayload}
-                            payloadAttr={'inventoryId'}
-                            onClick={(option) => {
-                                props?.setimportItemPayload({ ...props?.importItemPayload, inventoryId: option.id });
-                                setfilter({ ...filter, invetoryIds: [option.id] });
-                            }}
-                        />
-                    </div>
-                    {props?.importItemPayload?.inventoryId?.length != 0 && (
-                        <>
-                            {fetchRacksQuery?.data?.paginateRacks?.data?.map((item, index) => {
-                                return (
-                                    <div class="col-lg-6 mb-2">
-                                        <div class="row m-0 w-100 p-2" style={{ border: '1px solid #eee', borderRadius: '15px', fontSize: '12px' }}>
-                                            <div class="col-lg-12 p-0" style={{ fontWeight: 700 }}>
-                                                Rack {item.name}
-                                            </div>
-                                            <div class="col-lg-12 p-0">
-                                                <hr class="p-0 m-0" />
-                                            </div>
-                                            <div class="col-lg-12 p-0 mt-1">
-                                                <div class="row m-0 w-100">
-                                                    {item?.ballots?.map((ballot, ballotindex) => {
-                                                        return (
-                                                            <div
-                                                                onClick={() => {
-                                                                    props?.setimportItemPayload({ ...props?.importItemPayload, ballotId: ballot.id });
-                                                                }}
-                                                                class={props?.importItemPayload.ballotId == ballot.id ? 'searchpillselected' : 'searchpill'}
-                                                            >
-                                                                {' '}
-                                                                {ballot?.name}
-                                                            </div>
-                                                        );
-                                                    })}
+                        <div class="col-lg-12 p-0">
+                            {fetchRacksQuery?.loading && (
+                                <div style={{ height: '70vh' }} class="row w-100 allcentered m-0">
+                                    <CircularProgress color="var(--primary)" width="60px" height="60px" duration="1s" />
+                                </div>
+                            )}
+                            {fetchRacksQuery?.paginateRacks != undefined && (
+                                <>
+                                    {fetchRacksQuery?.paginateRacks?.data?.length == 0 && (
+                                        <div style={{ height: '70vh' }} class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
+                                            <div class="row m-0 w-100">
+                                                <FaLayerGroup size={40} class=" col-lg-12" />
+                                                <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
+                                                    No Racks
                                                 </div>
                                             </div>
                                         </div>
+                                    )}
+                                    <div class="row w-100 allcentered m-0">
+                                        {fetchRacksQuery?.paginateRacks?.data?.map((item, index) => {
+                                            // var levels = [];
+                                            // var exist = false;
+                                            // var chosenballot = {};
+                                            // var chosenlevelindex = null;
+                                            const levels1 = _.groupBy(item?.ballots, 'level');
+                                            var levels = _.map(levels1, (ballots, level) => {
+                                                return { level: level, ballots: ballots };
+                                            });
+                                            // item?.ballots?.map((ballot, ballotindex) => {
+                                            //     chosenballot = ballot;
+                                            //     levels?.map((level, levelindex) => {
+                                            //         if (level?.level == ballot?.level) {
+                                            //             exist = true;
+                                            //             chosenlevelindex = levelindex;
+                                            //         }
+                                            //     });
+                                            //     if (exist) {
+                                            //         levels[chosenlevelindex].boxes.push(chosenballot);
+                                            //     } else {
+                                            //         levels.push({ level: chosenballot?.level, ballots: [chosenballot] });
+                                            //     }
+                                            // });
+
+                                            return (
+                                                <div class="col-lg-6 mb-2">
+                                                    <div class="row m-0 w-100 p-2" style={{ border: '1px solid #eee', borderRadius: '15px', fontSize: '12px' }}>
+                                                        <div class="col-lg-12 p-0">
+                                                            <div class="row m-0 w-100 d-flex align-items-center">
+                                                                <div class="col-lg-6 p-0" style={{ fontWeight: 700 }}>
+                                                                    Rack {item.name}
+                                                                </div>
+                                                                <div class="col-lg-6 p-0 d-flex justify-content-end">
+                                                                    <div
+                                                                        onClick={() => {
+                                                                            props?.setimportItemPayload({ ...props?.importItemPayload, rackId: item.id });
+                                                                            setstep(step + 1);
+                                                                        }}
+                                                                        class={'searchpill allcentered'}
+                                                                        style={{ width: '25px', height: '25px' }}
+                                                                    >
+                                                                        <BiPlus />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-12 p-0">
+                                                            <hr class="p-0 m-0" />
+                                                        </div>
+                                                        <div class="col-lg-12 p-0 mt-1">
+                                                            <div class="row m-0 w-100">
+                                                                {levels?.map((level, levelindex) => {
+                                                                    return (
+                                                                        <div class="col-lg-12 p-0">
+                                                                            <div class="row m-0 w-100 d-flex align-items-center">
+                                                                                Level {level?.level}:
+                                                                                {level?.ballots?.map((ballot, ballotindex) => {
+                                                                                    return (
+                                                                                        <div
+                                                                                            onClick={() => {
+                                                                                                props?.setimportItemPayload({ ...props?.importItemPayload, ballotId: ballot.id });
+                                                                                                setstep(step + 1);
+                                                                                            }}
+                                                                                            class={'searchpill'}
+                                                                                        >
+                                                                                            {ballot?.name} <BiPlus class="ml-2" />
+                                                                                        </div>
+                                                                                    );
+                                                                                })}
+                                                                            </div>
+                                                                        </div>
+                                                                    );
+                                                                })}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
                                     </div>
-                                );
-                            })}
-                        </>
-                    )}
-                    <div class="col-lg-12 p-0 mt-2 allcentered">
-                        <button
-                            style={{ height: '35px' }}
-                            class={generalstyles.roundbutton + '  mb-1'}
-                            onClick={() => {
-                                handleIMportNewItem();
-                            }}
-                        >
-                            Import
-                        </button>
+                                </>
+                            )}
+                        </div>
                     </div>
-                </div>
+                )}
+                {step == 2 && (
+                    <div class="row m-0 w-100 py-2">
+                        <div class="col-lg-6">
+                            <div class="row m-0 w-100  ">
+                                <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                    <label class={formstyles.form__label}>Box Name</label>
+                                    <input
+                                        type={'text'}
+                                        class={formstyles.form__field}
+                                        value={props?.importItemPayload.boxName}
+                                        onChange={(event) => {
+                                            props?.setimportItemPayload({ ...props?.importItemPayload, boxName: event.target.value });
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                        </div>{' '}
+                        <div class="col-lg-6">
+                            <div class="row m-0 w-100  ">
+                                <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                    <label class={formstyles.form__label}>Count</label>
+                                    <input
+                                        type={'number'}
+                                        class={formstyles.form__field}
+                                        value={props?.importItemPayload.count}
+                                        onChange={(event) => {
+                                            props?.setimportItemPayload({ ...props?.importItemPayload, count: event.target.value });
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="row m-0 w-100  ">
+                                <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                    <label class={formstyles.form__label}>Min Count</label>
+                                    <input
+                                        type={'number'}
+                                        class={formstyles.form__field}
+                                        value={props?.importItemPayload.minCount}
+                                        onChange={(event) => {
+                                            props?.setimportItemPayload({ ...props?.importItemPayload, minCount: event.target.value });
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <div class={'col-lg-6'} style={{ marginBottom: '15px' }}>
+                            <SelectComponent
+                                title={'Inventory'}
+                                filter={filterInventories}
+                                setfilter={setfilterInventories}
+                                options={fetchinventories}
+                                attr={'paginateInventories'}
+                                label={'name'}
+                                value={'id'}
+                                payload={props?.importItemPayload}
+                                payloadAttr={'inventoryId'}
+                                onClick={(option) => {
+                                    props?.setimportItemPayload({ ...props?.importItemPayload, inventoryId: option.id });
+                                    setfilter({ ...filter, invetoryIds: [option.id] });
+                                }}
+                            />
+                        </div>
+                        {props?.importItemPayload?.inventoryId?.length != 0 && (
+                            <>
+                                {fetchRacksQuery?.data?.paginateRacks?.data?.map((item, index) => {
+                                    return (
+                                        <div class="col-lg-6 mb-2">
+                                            <div class="row m-0 w-100 p-2" style={{ border: '1px solid #eee', borderRadius: '15px', fontSize: '12px' }}>
+                                                <div class="col-lg-12 p-0" style={{ fontWeight: 700 }}>
+                                                    Rack {item.name}
+                                                </div>
+                                                <div class="col-lg-12 p-0">
+                                                    <hr class="p-0 m-0" />
+                                                </div>
+                                                <div class="col-lg-12 p-0 mt-1">
+                                                    <div class="row m-0 w-100">
+                                                        {item?.ballots?.map((ballot, ballotindex) => {
+                                                            return (
+                                                                <div
+                                                                    onClick={() => {
+                                                                        props?.setimportItemPayload({ ...props?.importItemPayload, ballotId: ballot.id });
+                                                                    }}
+                                                                    class={props?.importItemPayload.ballotId == ballot.id ? 'searchpillselected' : 'searchpill'}
+                                                                >
+                                                                    {' '}
+                                                                    {ballot?.name}
+                                                                </div>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </>
+                        )}
+                        <div class="col-lg-12 p-0 mt-2 allcentered">
+                            <button
+                                style={{ height: '35px' }}
+                                class={generalstyles.roundbutton + '  mb-1'}
+                                onClick={() => {
+                                    handleIMportNewItem();
+                                }}
+                            >
+                                Import
+                            </button>
+                        </div>
+                    </div>
+                )}
             </Modal.Body>
         </Modal>
     );

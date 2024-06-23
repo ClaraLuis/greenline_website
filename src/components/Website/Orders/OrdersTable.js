@@ -101,9 +101,21 @@ const OrdersTable = (props) => {
                     {props?.fetchOrdersQuery?.data[props?.attr]?.data?.length != 0 && (
                         <div class="row m-0 w-100">
                             {props?.fetchOrdersQuery?.data[props?.attr]?.data?.map((item, index) => {
-                                const timestamp = item?.orderDate; // Convert milliseconds to seconds
-                                const date = new Date(timestamp);
+                                const timestamp = item?.orderDate;
+                                const orderDate = new Date(timestamp);
 
+                                // Create a Date object for the current date
+                                const now = new Date();
+
+                                // Set the hours, minutes, seconds, and milliseconds to 0 for both dates
+                                orderDate.setHours(0, 0, 0, 0);
+                                now.setHours(0, 0, 0, 0);
+
+                                // Calculate the difference in milliseconds
+                                const diffInMs = now.getTime() - orderDate.getTime();
+
+                                // Convert milliseconds to days
+                                const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
                                 return (
                                     <div
                                         onClick={() => {
@@ -119,50 +131,51 @@ const OrdersTable = (props) => {
                                                 <span style={{ fontWeight: 700, fontSize: '16px' }}># {item?.id}</span>
                                             </div>
                                             <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
-                                                <div
-                                                    onClick={() => {
-                                                        setchangestatusmodal(true);
-                                                    }}
-                                                    style={{ cursor: 'pointer' }}
-                                                    className={
-                                                        item.status == 'delivered'
-                                                            ? ' wordbreak text-success bg-light-success rounded-pill  '
-                                                            : item?.status == 'postponed' || item?.status == 'failedDeliveryAttempt'
-                                                            ? ' wordbreak text-danger bg-light-danger rounded-pill  '
-                                                            : ' wordbreak text-warning bg-light-warning rounded-pill  '
-                                                    }
-                                                >
-                                                    {orderStatusesContext?.map((i, ii) => {
-                                                        if (i.value == item?.status) {
-                                                            return <span>{i.label}</span>;
+                                                <div class="row m-0 w-100  d-flex justify-content-end align-items-center">
+                                                    {props?.srcFrom == 'inventory' && <div className={' wordbreak text-danger bg-light-danger rounded-pill mr-1 '}>{diffInDays} late days</div>}
+                                                    <div
+                                                        onClick={() => {
+                                                            setchangestatusmodal(true);
+                                                        }}
+                                                        style={{ cursor: 'pointer' }}
+                                                        className={
+                                                            item.status == 'delivered'
+                                                                ? ' wordbreak text-success bg-light-success rounded-pill  '
+                                                                : item?.status == 'postponed' || item?.status == 'failedDeliveryAttempt'
+                                                                ? ' wordbreak text-danger bg-light-danger rounded-pill  '
+                                                                : ' wordbreak text-warning bg-light-warning rounded-pill  '
                                                         }
-                                                    })}
+                                                    >
+                                                        {orderStatusesContext?.map((i, ii) => {
+                                                            if (i.value == item?.status) {
+                                                                return <span>{i.label}</span>;
+                                                            }
+                                                        })}
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div className="col-lg-12 p-0 my-2">
                                                 <hr className="m-0" />
                                             </div>
                                             {props?.srcFrom != 'inventory' && (
-                                                <div className="col-lg-12 p-0 mb-2">
-                                                    Merchant Name:{' '}
-                                                    <span style={{ fontWeight: 600 }} class="text-capitalize">
-                                                        {item?.merchant?.name}
-                                                    </span>
-                                                </div>
+                                                <>
+                                                    <div className="col-lg-12 p-0 mb-2">
+                                                        Merchant Name:{' '}
+                                                        <span style={{ fontWeight: 600 }} class="text-capitalize">
+                                                            {item?.merchant?.name}
+                                                        </span>
+                                                    </div>
+                                                    <div className="col-lg-12 p-0 mb-2">
+                                                        Price: <span style={{ fontWeight: 600 }}>{item?.price}</span>
+                                                    </div>
+                                                    <div className="col-lg-12 p-0 mb-2">
+                                                        Shipping: <span style={{ fontWeight: 600 }}>{item?.shippingPrice}</span>
+                                                    </div>
+                                                    <div className="col-lg-12 p-0 mb-2">
+                                                        Payment type: <span style={{ fontWeight: 600 }}>{item?.paymentType}</span>
+                                                    </div>
+                                                </>
                                             )}
-
-                                            <div className="col-lg-12 p-0 mb-2">
-                                                Price: <span style={{ fontWeight: 600 }}>{item?.price}</span>
-                                            </div>
-                                            <div className="col-lg-12 p-0 mb-2">
-                                                Shipping: <span style={{ fontWeight: 600 }}>{item?.shippingPrice}</span>
-                                            </div>
-                                            <div className="col-lg-12 p-0 mb-2">
-                                                Payment type: <span style={{ fontWeight: 600 }}>{item?.paymentType}</span>
-                                            </div>
-                                            <div class="col-lg-12 p-0 d-flex justify-content-end ">
-                                                <p className={' m-0 p-0 wordbreak  '}>{date.toUTCString()}</p>
-                                            </div>
                                             {props?.srcFrom == 'inventory' && (
                                                 <div className="col-lg-12 p-0 mt-2">
                                                     <div style={{ maxHeight: '40vh', overflow: 'scroll' }} class="row m-0 w-100 scrollmenuclasssubscrollbar">
@@ -183,7 +196,10 @@ const OrdersTable = (props) => {
                                                                         </div>
                                                                         <div class="col-lg-5 d-flex align-items-center">
                                                                             <div className="row m-0 w-100">
-                                                                                <div style={{ fontSize: '16px' }} className={' col-lg-12 p-0'}>
+                                                                                <div style={{ fontSize: '14px', fontWeight: 600 }} className={' col-lg-12 p-0'}>
+                                                                                    {orderITem?.info?.item?.name}
+                                                                                </div>
+                                                                                <div style={{ fontSize: '13px' }} className={' col-lg-12 p-0'}>
                                                                                     {orderITem?.info?.name}
                                                                                 </div>
                                                                                 <div style={{ color: 'lightgray', fontSize: '13px' }} className="col-lg-12 p-0">
@@ -205,12 +221,12 @@ const OrdersTable = (props) => {
                                                                                         </div>
                                                                                     )}
                                                                                 </div>
-                                                                                <div style={{ fontWeight: 700 }} class="mx-2">
+                                                                                {/* <div style={{ fontWeight: 700 }} class="mx-2">
                                                                                     {orderITem?.partial
                                                                                         ? parseInt(orderITem.partialCount) * parseFloat(orderITem?.unitPrice)
                                                                                         : parseInt(orderITem.count) * parseFloat(orderITem?.unitPrice)}{' '}
                                                                                     {item?.info?.currency}
-                                                                                </div>
+                                                                                </div> */}
                                                                                 <div
                                                                                     onClick={() => {
                                                                                         setinventoryModal({ open: true, items: organizedData });
@@ -229,6 +245,10 @@ const OrdersTable = (props) => {
                                                     </div>
                                                 </div>
                                             )}
+
+                                            <div class="col-lg-12 p-0 d-flex justify-content-end ">
+                                                <p className={' m-0 p-0 wordbreak  '}>{orderDate.toUTCString()}</p>
+                                            </div>
                                         </div>
                                     </div>
                                 );

@@ -24,6 +24,20 @@ const API = () => {
             }
         `;
     };
+    const createMerchantDomesticShipping = () => {
+        return gql`
+            mutation createMerchantDomesticShipping($input: CreateMerchantShippingListInput!) {
+                createMerchantDomesticShipping(input: $input)
+            }
+        `;
+    };
+    const updateMerchantDomesticShipping = () => {
+        return gql`
+            mutation updateMerchantDomesticShipping($input: CreateMerchantShippingListInput!) {
+                updateMerchantDomesticShipping(input: $input)
+            }
+        `;
+    };
 
     const editUserType = () => {
         return gql`
@@ -314,6 +328,7 @@ const API = () => {
                             name
                             merchantId
                             imageUrl
+                            id
                         }
                     }
                     cursor
@@ -397,6 +412,9 @@ const API = () => {
                             info {
                                 name
                                 imageUrl
+                                item {
+                                    name
+                                }
                             }
                             inventory {
                                 count
@@ -625,26 +643,23 @@ const API = () => {
             }
         `;
     };
-    const fetchRacks = (payload) => {
+    const fetchRacks = () => {
         return gql`
-        query paginateRacks{
-            paginateRacks(input: {
-              limit: ${JSON.stringify(payload?.limit)},
-              invetoryIds: ${JSON.stringify(payload?.invetoryIds)},
-              
-            }){
-              data{
-                name,
-                ballots{
-                  id
-                  name
-                  level
+            query paginateRacks($input: PaginateRacksInput!) {
+                paginateRacks(input: $input) {
+                    data {
+                        name
+                        id
+                        ballots {
+                            id
+                            name
+                            level
+                        }
+                    }
+
+                    cursor
                 }
-              },
-              
-              cursor
             }
-          }
         `;
     };
     const fetchItemHistory = (payload) => {
@@ -700,6 +715,17 @@ const API = () => {
             }
         `;
     };
+
+    const fetchGovernorates = (payload) => {
+        return gql`
+            query findAllDomesticGovernorates {
+                findAllDomesticGovernorates {
+                    id
+                    name
+                }
+            }
+        `;
+    };
     const fetchCourierSheets = (payload) => {
         return gql`
             query paginateCourierSheets($input: PaginateCourierSheetInput!) {
@@ -751,6 +777,9 @@ const API = () => {
                                     itemVariantId
                                     info {
                                         name
+                                        item{
+                                        name
+                                        }
                                    
                                     }
                                 }
@@ -1030,6 +1059,9 @@ const API = () => {
         fetchInventoryItemReturns,
         assignPackageToCourier,
         fetchOrdersInInventory,
+        fetchGovernorates,
+        createMerchantDomesticShipping,
+        updateMerchantDomesticShipping,
     };
 };
 export default API;

@@ -72,7 +72,9 @@ const ItemsTable = (props) => {
                                         cursor: props?.clickable ? 'pointer' : '',
                                     }}
                                     onClick={() => {
-                                        props?.actiononclick(item);
+                                        if (props?.actiononclick) {
+                                            props?.actiononclick(item);
+                                        }
                                     }}
                                     class={generalstyles.card + ' p-3 row m-0 w-100'}
                                 >

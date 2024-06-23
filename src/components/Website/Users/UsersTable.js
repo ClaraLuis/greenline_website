@@ -22,6 +22,7 @@ import UserInfo from './UserInfo.js';
 import { FiPlus } from 'react-icons/fi';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
 import { MdEmail, MdOutlinePhone } from 'react-icons/md';
+import { CiUnlock } from 'react-icons/ci';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -97,7 +98,7 @@ const UsersTable = (props) => {
                                                         }}
                                                         className="iconhover allcentered"
                                                     >
-                                                        <BiShowAlt style={{ transition: 'all 0.4s' }} size={20} />
+                                                        <CiUnlock style={{ transition: 'all 0.4s' }} size={20} />
                                                     </div>
                                                 )}
                                                 {item?.id?.length == 7 && (
