@@ -26,7 +26,7 @@ const AddEditSecuritylayers = (props) => {
     const [rolesarray, setrolesarray] = useState([
         {
             title: 'Inventory',
-            included: 'invent',
+            type: 'inventory',
         },
         {
             title: 'Merchant',
@@ -38,19 +38,23 @@ const AddEditSecuritylayers = (props) => {
         },
         {
             title: 'Courier',
-            included: 'courier',
+            type: 'courier',
         },
         {
             title: 'Order',
-            included: 'order',
+            type: 'order',
         },
         {
             title: 'Request',
-            included: 'request',
+            type: 'requests',
         },
         {
-            title: 'User',
-            included: 'user',
+            title: 'Management',
+            type: 'management',
+        },
+        {
+            title: 'Super',
+            type: 'super',
         },
     ]);
 
@@ -113,57 +117,76 @@ const AddEditSecuritylayers = (props) => {
                                             <hr className="mt-2 mb-3" />
                                             <div className={' row p-0 w-100  mb-3 m-auto '}>
                                                 {userRolesContext?.map((userRoleItem, userRoleIndex) => {
-                                                    if (userRoleItem?.label?.toLowerCase().includes(mainitem?.included?.toLowerCase())) {
+                                                    if (userRoleItem?.type == mainitem?.type) {
                                                         var selected = false;
                                                         selectedroles.map((role, roleindex) => {
                                                             if (userRoleItem.value == role) {
                                                                 selected = true;
                                                             }
                                                         });
-                                                        return (
-                                                            <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 m-0 mb-1 p-sm-0">
-                                                                <div class={' m-0 pt-1 pb-1 pl-2 pr-2 '} style={{ borderRadius: '5px' }}>
-                                                                    <label
-                                                                        class={
-                                                                            langdetect == 'en'
-                                                                                ? `${formstyles.checkbox} ${formstyles.checkbox_sub} ${formstyles.path}` + ' d-flex mb-0 '
-                                                                                : `${formstyles.checkbox} ${formstyles.checkboxtranslated} ${formstyles.path}` + ' d-flex mb-0 '
-                                                                        }
-                                                                    >
-                                                                        <input
-                                                                            type="checkbox"
-                                                                            class="mt-auto mb-auto"
-                                                                            checked={selected}
-                                                                            onChange={() => {
-                                                                                var array = [...selectedroles];
-                                                                                var index = 0;
-                                                                                selectedroles.map((role, roleindex) => {
-                                                                                    if (userRoleItem.value == role) {
-                                                                                        index = roleindex;
-                                                                                    }
-                                                                                });
-                                                                                if (selected) {
-                                                                                    array.splice(index, 1);
-                                                                                } else {
-                                                                                    array.push(parseInt(userRoleItem.value));
+                                                        var show = true;
+                                                        if (!props?.edit && !selected) {
+                                                            show = false;
+                                                        }
+                                                        if (show) {
+                                                            return (
+                                                                <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 m-0 mb-1 p-sm-0">
+                                                                    <div class={' m-0 pt-1 pb-1 pl-2 pr-2 '} style={{ borderRadius: '5px' }}>
+                                                                        {!props?.edit && (
+                                                                            <p
+                                                                                class={
+                                                                                    `${generalstyles.checkbox_label} ` +
+                                                                                    ' ml-2 mb-0 text-focus text-capitalize cursor-pointer font_14 ml-2 mr-2 wordbreak '
                                                                                 }
-                                                                                setselectedroles([...array]);
-                                                                            }}
-                                                                        />
-                                                                        <svg viewBox="0 0 21 21" class="h-100">
-                                                                            <path d="M5,10.75 L8.5,14.25 L19.4,2.3 C18.8333333,1.43333333 18.0333333,1 17,1 L4,1 C2.35,1 1,2.35 1,4 L1,17 C1,18.65 2.35,20 4,20 L17,20 C18.65,20 20,18.65 20,17 L20,7.99769186"></path>
-                                                                        </svg>
-                                                                        <p
-                                                                            class={
-                                                                                `${generalstyles.checkbox_label} ` + ' ml-2 mb-0 text-focus text-capitalize cursor-pointer font_14 ml-2 mr-2 wordbreak '
-                                                                            }
-                                                                        >
-                                                                            {userRoleItem?.label}
-                                                                        </p>
-                                                                    </label>
+                                                                            >
+                                                                                {userRoleItem?.label}
+                                                                            </p>
+                                                                        )}
+                                                                        {props?.edit && (
+                                                                            <label
+                                                                                class={
+                                                                                    langdetect == 'en'
+                                                                                        ? `${formstyles.checkbox} ${formstyles.checkbox_sub} ${formstyles.path}` + ' d-flex mb-0 '
+                                                                                        : `${formstyles.checkbox} ${formstyles.checkboxtranslated} ${formstyles.path}` + ' d-flex mb-0 '
+                                                                                }
+                                                                            >
+                                                                                <input
+                                                                                    type="checkbox"
+                                                                                    class="mt-auto mb-auto"
+                                                                                    checked={selected}
+                                                                                    onChange={() => {
+                                                                                        var array = [...selectedroles];
+                                                                                        var index = 0;
+                                                                                        selectedroles.map((role, roleindex) => {
+                                                                                            if (userRoleItem.value == role) {
+                                                                                                index = roleindex;
+                                                                                            }
+                                                                                        });
+                                                                                        if (selected) {
+                                                                                            array.splice(index, 1);
+                                                                                        } else {
+                                                                                            array.push(parseInt(userRoleItem.value));
+                                                                                        }
+                                                                                        setselectedroles([...array]);
+                                                                                    }}
+                                                                                />
+                                                                                <svg viewBox="0 0 21 21" class="h-100">
+                                                                                    <path d="M5,10.75 L8.5,14.25 L19.4,2.3 C18.8333333,1.43333333 18.0333333,1 17,1 L4,1 C2.35,1 1,2.35 1,4 L1,17 C1,18.65 2.35,20 4,20 L17,20 C18.65,20 20,18.65 20,17 L20,7.99769186"></path>
+                                                                                </svg>
+                                                                                <p
+                                                                                    class={
+                                                                                        `${generalstyles.checkbox_label} ` +
+                                                                                        ' ml-2 mb-0 text-focus text-capitalize cursor-pointer font_14 ml-2 mr-2 wordbreak '
+                                                                                    }
+                                                                                >
+                                                                                    {userRoleItem?.label}
+                                                                                </p>
+                                                                            </label>
+                                                                        )}
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                        );
+                                                            );
+                                                        }
                                                     }
                                                 })}
                                             </div>

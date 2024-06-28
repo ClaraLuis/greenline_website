@@ -479,6 +479,11 @@ const API = () => {
                         phone
                         userRoles {
                             roleId
+                            role {
+                                type
+                                name
+                                id
+                            }
                         }
                     }
                     cursor

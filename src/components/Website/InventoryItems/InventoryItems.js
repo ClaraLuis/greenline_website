@@ -266,6 +266,24 @@ const InventoryItems = (props) => {
                             </p>
                         </div>
                     </div>
+                    <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-2'}>
+                        <div class="col-lg-10 p-0 ">
+                            <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
+                                <input
+                                    // disabled={props?.disabled}
+                                    // type={props?.type}
+                                    class={formstyles.form__field}
+                                    // value={}
+                                    placeholder={'Search by name or SKU'}
+
+                                    // onChange={}
+                                />
+                            </div>
+                            <button onClick={() => {}} style={{ height: '25px', minWidth: 'fit-content', marginInlineStart: '5px' }} class={generalstyles.roundbutton + '  allcentered'}>
+                                search
+                            </button>
+                        </div>
+                    </div>
                     <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
                         {fetchItemsInBoxQuery?.loading && (
                             <div style={{ height: '70vh' }} class="row w-100 allcentered m-0">

@@ -3747,10 +3747,10 @@ hr {
     transition: 0.3s;
 }
 .text-success {
-    color: #13deb9 !important;
+    color: #00ae8e !important;
 }
 .text-warning {
-    color: #ffae1f !important;
+    color: #fa9e00 !important;
 }
 .text-successhover:hover {
     color: #007050 !important;
@@ -3762,7 +3762,7 @@ hr {
 }
 
 .text-danger {
-    color: #fa896b !important;
+    color: #e15d39 !important;
 }
 .bg-danger {
     border-color: var(--danger) !important ;

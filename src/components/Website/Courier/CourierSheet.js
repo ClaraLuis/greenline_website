@@ -100,6 +100,7 @@ const CourierSheet = (props) => {
         });
         temp.orderTotal = total;
         temp.orderCurrency = currency;
+        temp.status = fetchCourierSheetQuery?.data?.CourierSheet?.status;
         setsubmitSheetPayload({ ...temp });
     }, [fetchCourierSheetQuery?.data]);
 
@@ -227,7 +228,9 @@ const CourierSheet = (props) => {
                                                                                 item?.order?.status == 'delivered' ||
                                                                                 item?.order?.status == 'partiallyDelivered' ||
                                                                                 item?.order?.status == 'cancelled' ||
-                                                                                item?.order?.status == 'cancelled'
+                                                                                submitSheetPayload?.status == 'inProgress' ||
+                                                                                (type == 'admin' && submitSheetPayload?.status == 'waitingForAdminApproval') ||
+                                                                                (type != 'admin' && submitSheetPayload?.status == 'waitingForFinanceApproval')
                                                                             ) {
                                                                                 handleAccordionChange(index);
                                                                                 var temp = { ...submitSheetPayload };
@@ -353,7 +356,9 @@ const CourierSheet = (props) => {
                                                                                         item?.order?.status == 'delivered' ||
                                                                                         item?.order?.status == 'partiallyDelivered' ||
                                                                                         item?.order?.status == 'cancelled' ||
-                                                                                        item?.order?.status == 'cancelled'
+                                                                                        submitSheetPayload?.status == 'inProgress' ||
+                                                                                        (type == 'admin' && submitSheetPayload?.status == 'waitingForAdminApproval') ||
+                                                                                        (type != 'admin' && submitSheetPayload?.status == 'waitingForFinanceApproval')
                                                                                     ) {
                                                                                         handleAccordionChange(index);
                                                                                         var temp = { ...submitSheetPayload };

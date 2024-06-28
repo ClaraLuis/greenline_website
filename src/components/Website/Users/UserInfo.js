@@ -22,13 +22,20 @@ const { ValueContainer, Placeholder } = components;
 const UserInfo = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, userTypesContext, empTypesContext } = useContext(Contexthandlerscontext);
+    const { userRolesContext, userTypesContext, empTypesContext } = useContext(Contexthandlerscontext);
     const { useQueryGQL, fetchUsers, useMutationGQL, addUser, editUserType, fetchMerchants, fetchInventories } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [submit, setsubmit] = useState(false);
     const [changerolesmodal, setchangerolesmodal] = useState(false);
     const [newpassword, setnewpassword] = useState('');
+    const groupedRoles = _.groupBy(props?.payload?.userRoles, (role) => role.role.type);
+
+    // Transform into desired format
+    const userRoles = Object.keys(groupedRoles).map((type) => ({
+        type,
+        roles: groupedRoles[type],
+    }));
     const [filterMerchants, setfilterMerchants] = useState({
         isAsc: true,
         limit: 100,
@@ -99,16 +106,10 @@ const UserInfo = (props) => {
             console.error('Error adding user:', error);
         }
     };
-    useEffect(() => {
-        if (props?.payload.functype == 'edit') {
-            props?.setopenModal(false);
-            setchangerolesmodal(true);
-        }
-    }, [props?.payload.functype]);
 
     return (
         <>
-            {/* {!changerolesmodal && (
+            {!changerolesmodal && (
                 <Modal
                     show={props?.openModal}
                     onHide={() => {
@@ -322,45 +323,40 @@ const UserInfo = (props) => {
                                 />
                             )}
                             {props?.payload?.functype == 'edit' && (
-                                <Form
-                                    size={'lg'}
-                                    submit={submit}
-                                    setsubmit={setsubmit}
-                                    attr={[
-                                        {
-                                            name: 'Type',
-                                            attr: 'type',
-                                            type: 'select',
-                                            options: userTypesContext,
-                                            size: '6',
-                                        },
-                                    ]}
-                                    payload={props?.payload}
-                                    setpayload={props?.setpayload}
-                                    // button1disabled={UserMutation.isLoading}
-                                    button1class={generalstyles.roundbutton + '  mr-2 '}
-                                    button1placeholder={props?.payload?.functype == 'add' ? lang.add : lang.edit}
-                                    button1onClick={() => {
-                                        handleAddUser();
-                                    }}
-                                    // button2={props?.payload?.functype == 'add' ? false : true}
-                                    // // button2disabled={DeleteUserMutation.isLoading}
-                                    // button2class={generalstyles.roundbutton + '  bg-danger bg-dangerhover mr-2 '}
-                                    // button2placeholder={lang.delete}
-                                    // button2onClick={() => {
-                                    //     // DeleteUserMutation.mutate(props?.payload);
-                                    // }}
-                                />
+                                <div class="row m-0 w-100">
+                                    {userRoles?.map((item, index) => {
+                                        return (
+                                            <div class="col-lg-12 p-0 mb-2">
+                                                <div class="row m-0 w-100">
+                                                    <div class="col-lg-12 p-0 mb-2 text-capitaize" style={{ fontWeight: 500 }}>
+                                                        {item?.type}
+                                                    </div>
+                                                    {item?.roles?.map((role, roleIndex) => {
+                                                        return (
+                                                            <div class={' wordbreak text-warning bg-light-warning rounded-pill mr-2 '}>
+                                                                {userRolesContext?.map((i, ii) => {
+                                                                    if (i.value == role?.role?.id) {
+                                                                        return <>{i.label}</>;
+                                                                    }
+                                                                })}
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
                             )}
                         </div>
                     </Modal.Body>
                 </Modal>
-            )} */}
+            )}
 
             <Modal
-                show={props?.openModal}
+                show={changerolesmodal}
                 onHide={() => {
-                    props?.setopenModal(false);
+                    setchangerolesmodal(false);
                 }}
                 centered
                 size={'xl'}
@@ -374,7 +370,7 @@ const UserInfo = (props) => {
                             <div
                                 class={'close-modal-container'}
                                 onClick={() => {
-                                    props?.setopenModal(false);
+                                    setchangerolesmodal(false);
                                 }}
                             >
                                 <IoMdClose />
@@ -384,7 +380,7 @@ const UserInfo = (props) => {
                 </Modal.Header>
                 <Modal.Body>
                     <div class="row m-0 w-100 py-2">
-                        <AddEditSecuritylayers payload={props?.payload} setopenModal={props?.setopenModal} setchangerolesmodal={setchangerolesmodal} />
+                        <AddEditSecuritylayers payload={props?.payload} setopenModal={props?.setopenModal} setchangerolesmodal={setchangerolesmodal} edit={true} />
                     </div>
                 </Modal.Body>
             </Modal>
