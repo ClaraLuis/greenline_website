@@ -102,10 +102,15 @@ const TransactionsTable = (props) => {
                     {props?.query?.data[props?.paginationAttr]?.data?.length != 0 && (
                         <div class="row m-0 w-100">
                             {props?.query?.data[props?.paginationAttr]?.data?.map((item, index) => {
-                                const selected = selectedArray.includes(item.id);
+                                var selected = false;
+                                selectedArray?.map((i, ii) => {
+                                    if (i == item.id) {
+                                        selected = true;
+                                    }
+                                });
                                 return (
                                     <div
-                                        style={{ fontSize: '13px', cursor: props?.allowSelect ? 'pointer' : '', width: props?.width }}
+                                        style={{ fontSize: '13px', cursor: props?.allowSelect ? 'pointer' : '', width: props?.width, position: 'relative' }}
                                         onClick={() => {
                                             if (props?.allowSelect) {
                                                 handleSelect(item);
