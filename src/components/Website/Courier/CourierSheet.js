@@ -298,7 +298,7 @@ const CourierSheet = (props) => {
                                                                                 ? 'Finance Accepted'
                                                                                 : 'Finance Rejected'
                                                                             : item?.adminPass
-                                                                            ? 'Admin pass'
+                                                                            ? 'Admin Accepted'
                                                                             : 'Admin Rejected'}
                                                                     </div>
                                                                     <div
@@ -397,7 +397,11 @@ const CourierSheet = (props) => {
                                                                                     }
                                                                                 }}
                                                                             >
-                                                                                Finish Order
+                                                                                {type == 'admin' && tempsheetpayload?.status == 'adminAccepted'
+                                                                                    ? 'Order Accepted'
+                                                                                    : type != 'admin' && tempsheetpayload?.status == 'financeAccepted'
+                                                                                    ? 'Order Accepted'
+                                                                                    : 'Accept Order'}
                                                                             </button>
                                                                         </div>
                                                                     </div>
