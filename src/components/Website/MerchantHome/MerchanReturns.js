@@ -124,6 +124,7 @@ const MerchanReturns = (props) => {
                                                     payloadAttr={'merchantId'}
                                                     onClick={(option) => {
                                                         setfilter({ ...filter, merchantId: option.id });
+                                                        setpackagepayload({ ...packagepayload, toMerchantId: option.id });
                                                     }}
                                                 />
                                             </div>
