@@ -193,24 +193,19 @@ const CourierSheet = (props) => {
                                 });
                                 return (
                                     <div
-                                        onClick={() => {
-                                            if (
-                                                item?.order?.status == 'delivered' ||
-                                                item?.order?.status == 'partiallyDelivered' ||
-                                                item?.order?.status == 'cancelled' ||
-                                                item?.order?.status == 'cancelled'
-                                            ) {
-                                                handleAccordionChange(index);
-                                                var temp = { ...submitSheetPayload };
+                                        onClick={(e) => {
+                                            e.stopPropagation();
 
-                                                temp.updateSheetOrders.map((i, ii) => {
-                                                    if (i.sheetOrderId == item.id) {
-                                                        // temp.updateSheetOrders[ii].expanded = !tempsheetpayload?.expanded;
-                                                        temp.updateSheetOrderstemp[ii].expanded = !tempsheetpayload?.expanded;
-                                                    }
-                                                });
-                                                setsubmitSheetPayload({ ...temp });
-                                            }
+                                            handleAccordionChange(index);
+                                            var temp = { ...submitSheetPayload };
+
+                                            temp.updateSheetOrders.map((i, ii) => {
+                                                if (i.sheetOrderId == item.id) {
+                                                    // temp.updateSheetOrders[ii].expanded = !tempsheetpayload?.expanded;
+                                                    temp.updateSheetOrderstemp[ii].expanded = !tempsheetpayload?.expanded;
+                                                }
+                                            });
+                                            setsubmitSheetPayload({ ...temp });
                                         }}
                                         className={type == 'admin' ? 'col-lg-12 ' : 'col-lg-6 '}
                                         key={index}
@@ -374,7 +369,8 @@ const CourierSheet = (props) => {
                                                                                     item?.order?.status != 'cancelled' &&
                                                                                     item?.order?.status != 'cancelled'
                                                                                 }
-                                                                                onClick={() => {
+                                                                                onClick={(e) => {
+                                                                                    e.stopPropagation();
                                                                                     if (
                                                                                         item?.order?.status == 'delivered' ||
                                                                                         item?.order?.status == 'partiallyDelivered' ||
@@ -401,7 +397,7 @@ const CourierSheet = (props) => {
                                                                                     }
                                                                                 }}
                                                                             >
-                                                                                Order finished
+                                                                                Finish Order
                                                                             </button>
                                                                         </div>
                                                                     </div>
