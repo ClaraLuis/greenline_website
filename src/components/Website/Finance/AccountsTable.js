@@ -66,7 +66,7 @@ const AccountsTable = (props) => {
                                     </div>
                                     <div className="col-lg-6 p-0 d-flex justify-content-end align-items-center">
                                         <div class="row m-0 w-100 d-flrx justify-content-end align-items-center">
-                                            <div className={' wordbreak text-success bg-light-success rounded-pill allcentered  '}>
+                                            <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600allcentered  '}>
                                                 {financialAccountTypesContext?.map((i, ii) => {
                                                     if (i.value == item?.type) {
                                                         return <span>{i.label}</span>;

@@ -3752,6 +3752,7 @@ hr {
 .text-warning {
     color: #fa9e00 !important;
 }
+
 .text-successhover:hover {
     color: #007050 !important;
     cursor: pointer !important;

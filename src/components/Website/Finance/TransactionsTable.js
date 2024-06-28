@@ -130,7 +130,7 @@ const TransactionsTable = (props) => {
                                                                         style={{ cursor: props?.srctype == 'recieved' ? 'pointer' : '' }}
                                                                         className={
                                                                             item.status == 'completed'
-                                                                                ? ' wordbreak text-success bg-light-success rounded-pill  '
+                                                                                ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 '
                                                                                 : item?.status == 'cancelled' ||
                                                                                   item?.status == 'failed' ||
                                                                                   item?.status == 'rejectedByReceiver' ||
@@ -138,8 +138,8 @@ const TransactionsTable = (props) => {
                                                                                   item?.status == 'cancelledByReceiver' ||
                                                                                   item?.status == 'rejectedBySender' ||
                                                                                   item?.status == 'rejected'
-                                                                                ? ' wordbreak text-danger bg-light-danger rounded-pill '
-                                                                                : ' wordbreak text-warning bg-light-warning rounded-pill  '
+                                                                                ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600'
+                                                                                : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 '
                                                                         }
                                                                     >
                                                                         <p className={' m-0 p-0 wordbreak '}>{i.label}</p>
@@ -149,7 +149,7 @@ const TransactionsTable = (props) => {
                                                         })}
                                                     </div>
                                                     <div class="col-lg-12 p-0 d-flex justify-content-end align-items-center ">
-                                                        <div className={' wordbreak text-success bg-light-success rounded-pill allcentered  '}>
+                                                        <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600allcentered  '}>
                                                             {transactionTypesContext?.map((i, ii) => {
                                                                 if (i.value == item?.type) {
                                                                     return <span>{i.label}</span>;
@@ -168,7 +168,7 @@ const TransactionsTable = (props) => {
                                                                     style={{ cursor: props?.srctype == 'recieved' ? 'pointer' : '' }}
                                                                     className={
                                                                         item.status == 'completed'
-                                                                            ? ' wordbreak text-success bg-light-success rounded-pill  '
+                                                                            ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 '
                                                                             : item?.status == 'cancelled' ||
                                                                               item?.status == 'failed' ||
                                                                               item?.status == 'rejectedByReceiver' ||
@@ -176,8 +176,8 @@ const TransactionsTable = (props) => {
                                                                               item?.status == 'cancelledByReceiver' ||
                                                                               item?.status == 'rejectedBySender' ||
                                                                               item?.status == 'rejected'
-                                                                            ? ' wordbreak text-danger bg-light-danger rounded-pill '
-                                                                            : ' wordbreak text-warning bg-light-warning rounded-pill  '
+                                                                            ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600'
+                                                                            : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 '
                                                                     }
                                                                 >
                                                                     <p className={' m-0 p-0 wordbreak '}>{i.label}</p>
@@ -185,7 +185,7 @@ const TransactionsTable = (props) => {
                                                             );
                                                         }
                                                     })}
-                                                    <div className={' wordbreak text-success bg-light-success rounded-pill allcentered mx-1'}>
+                                                    <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600allcentered mx-1'}>
                                                         {transactionTypesContext?.map((i, ii) => {
                                                             if (i.value == item?.type) {
                                                                 return <span>{i.label}</span>;
@@ -414,8 +414,8 @@ const TransactionsTable = (props) => {
                                                             <div
                                                                 className={
                                                                     item.status == 'completed'
-                                                                        ? ' wordbreak text-success bg-light-success rounded-pill  '
-                                                                        : ' wordbreak text-warning bg-light-warning rounded-pill  '
+                                                                        ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 '
+                                                                        : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 '
                                                                 }
                                                             >
                                                                 <p className={' m-0 p-0 wordbreak '}>{i.label}</p>

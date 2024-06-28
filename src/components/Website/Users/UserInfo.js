@@ -333,7 +333,7 @@ const UserInfo = (props) => {
                                                     </div>
                                                     {item?.roles?.map((role, roleIndex) => {
                                                         return (
-                                                            <div class={' wordbreak text-warning bg-light-warning rounded-pill mr-2 '}>
+                                                            <div class={' wordbreak text-warning bg-light-warning rounded-pill font-weight-600mr-2 '}>
                                                                 {userRolesContext?.map((i, ii) => {
                                                                     if (i.value == role?.role?.id) {
                                                                         return <>{i.label}</>;

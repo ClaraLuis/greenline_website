@@ -84,8 +84,8 @@ const SheetsTable = (props) => {
                                         <div
                                             className={
                                                 item.status == 'completed'
-                                                    ? ' wordbreak text-success bg-light-success rounded-pill allcentered  '
-                                                    : ' wordbreak text-warning bg-light-warning rounded-pill allcentered '
+                                                    ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600allcentered  '
+                                                    : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600allcentered '
                                             }
                                         >
                                             {sheetStatusesContext?.map((i, ii) => {

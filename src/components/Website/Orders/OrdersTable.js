@@ -132,7 +132,9 @@ const OrdersTable = (props) => {
                                             </div>
                                             <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
                                                 <div class="row m-0 w-100  d-flex justify-content-end align-items-center">
-                                                    {props?.srcFrom == 'inventory' && <div className={' wordbreak text-danger bg-light-danger rounded-pill mr-1 '}>{diffInDays} late days</div>}
+                                                    {props?.srcFrom == 'inventory' && (
+                                                        <div className={' wordbreak text-danger bg-light-danger rounded-pill font-weight-600mr-1 '}>{diffInDays} late days</div>
+                                                    )}
                                                     <div
                                                         // onClick={() => {
                                                         //     setchangestatusmodal(true);
@@ -140,10 +142,10 @@ const OrdersTable = (props) => {
                                                         // style={{ cursor: 'pointer' }}
                                                         className={
                                                             item.status == 'delivered'
-                                                                ? ' wordbreak text-success bg-light-success rounded-pill  '
+                                                                ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 '
                                                                 : item?.status == 'postponed' || item?.status == 'failedDeliveryAttempt'
-                                                                ? ' wordbreak text-danger bg-light-danger rounded-pill  '
-                                                                : ' wordbreak text-warning bg-light-warning rounded-pill  '
+                                                                ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 '
+                                                                : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 '
                                                         }
                                                     >
                                                         {orderStatusesContext?.map((i, ii) => {

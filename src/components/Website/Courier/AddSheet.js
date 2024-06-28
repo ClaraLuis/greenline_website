@@ -167,10 +167,10 @@ const AddSheet = (props) => {
                                                         <div
                                                             className={
                                                                 item.status == 'delivered'
-                                                                    ? ' wordbreak text-success bg-light-success rounded-pill allcentered  '
+                                                                    ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600allcentered  '
                                                                     : item?.status == 'postponed' || item?.status == 'failedDeliveryAttempt'
-                                                                    ? ' wordbreak text-danger bg-light-danger rounded-pill allcentered '
-                                                                    : ' wordbreak text-warning bg-light-warning rounded-pill allcentered '
+                                                                    ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600allcentered '
+                                                                    : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600allcentered '
                                                             }
                                                         >
                                                             {orderStatusesContext?.map((i, ii) => {
