@@ -10,6 +10,7 @@ import { Accordion, AccordionItem, AccordionItemPanel } from 'react-accessible-a
 import API from '../../../API/API.js';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 import { NotificationManager } from 'react-notifications';
+import { FaCheck } from 'react-icons/fa';
 
 const CourierSheet = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -210,36 +211,13 @@ const CourierSheet = (props) => {
                                         className={type == 'admin' ? 'col-lg-12 ' : 'col-lg-6 '}
                                         key={index}
                                     >
-                                        <AccordionItem
-                                            uuid={index}
-                                            style={{
-                                                background:
-                                                    item?.order?.status == 'delivered' ||
-                                                    item?.order?.status == 'partiallyDelivered' ||
-                                                    item?.order?.status == 'cancelled' ||
-                                                    item?.order?.status == 'cancelled'
-                                                        ? ''
-                                                        : '#eee',
-                                            }}
-                                            className={generalstyles.filter_container + ' col-lg-12 p-2 mb-3'}
-                                        >
+                                        <AccordionItem uuid={index} style={{}} className={generalstyles.filter_container + ' col-lg-12 p-2 mb-3'}>
                                             <div className={' col-lg-12 p-0'}>
                                                 <div className="row m-0 w-100">
                                                     <div className="col-lg-7 p-0">
                                                         <div className="row m-0 w-100">
                                                             <div className="col-lg-12 p-0">
-                                                                <label
-                                                                    style={{
-                                                                        background:
-                                                                            item?.order?.status == 'delivered' ||
-                                                                            item?.order?.status == 'partiallyDelivered' ||
-                                                                            item?.order?.status == 'cancelled' ||
-                                                                            item?.order?.status == 'cancelled'
-                                                                                ? ''
-                                                                                : '#eee',
-                                                                    }}
-                                                                    className={`${formstyles.checkbox} ${formstyles.checkbox_sub} ${formstyles.path}` + ' d-flex my-0 '}
-                                                                >
+                                                                <label style={{}} className={`${formstyles.checkbox} ${formstyles.checkbox_sub} ${formstyles.path}` + ' d-flex my-0 '}>
                                                                     <input
                                                                         type="checkbox"
                                                                         className="mt-auto mb-auto"
@@ -363,12 +341,12 @@ const CourierSheet = (props) => {
                                                                                     height: '30px',
                                                                                 }}
                                                                                 class={generalstyles.roundbutton + '  allcentered'}
-                                                                                disabled={
-                                                                                    item?.order?.status != 'delivered' &&
-                                                                                    item?.order?.status != 'partiallyDelivered' &&
-                                                                                    item?.order?.status != 'cancelled' &&
-                                                                                    item?.order?.status != 'cancelled'
-                                                                                }
+                                                                                // disabled={
+                                                                                //     item?.order?.status != 'delivered' &&
+                                                                                //     item?.order?.status != 'partiallyDelivered' &&
+                                                                                //     item?.order?.status != 'cancelled' &&
+                                                                                //     item?.order?.status != 'cancelled'
+                                                                                // }
                                                                                 onClick={(e) => {
                                                                                     e.stopPropagation();
                                                                                     if (
@@ -393,7 +371,7 @@ const CourierSheet = (props) => {
                                                                                         });
                                                                                         setsubmitSheetPayload({ ...temp });
                                                                                     } else {
-                                                                                        NotificationManager.warning('Can not update order with status' + item?.order?.status, 'Warning!');
+                                                                                        NotificationManager.warning('Can not update order with status ' + item?.order?.status, 'Warning!');
                                                                                     }
                                                                                 }}
                                                                             >
@@ -402,6 +380,12 @@ const CourierSheet = (props) => {
                                                                                     : type != 'admin' && tempsheetpayload?.status == 'financeAccepted'
                                                                                     ? 'Order Accepted'
                                                                                     : 'Accept Order'}
+                                                                                {((type == 'admin' && tempsheetpayload?.status == 'adminAccepted') ||
+                                                                                    (type != 'admin' && tempsheetpayload?.status == 'financeAccepted')) && (
+                                                                                    <>
+                                                                                        <FaCheck className="m-1 mt-1" size={12} />
+                                                                                    </>
+                                                                                )}
                                                                             </button>
                                                                         </div>
                                                                     </div>
@@ -427,7 +411,7 @@ const CourierSheet = (props) => {
                                                                     )}
                                                                     {item?.order?.orderItems?.map((subitem, subindex) => {
                                                                         return (
-                                                                            <div class={type == 'admin' ? 'col-lg-6 p-0 mb-2' : 'col-lg-12 p-0 mb-2'}>
+                                                                            <div class={type == 'admin' ? 'col-lg-6 mb-2' : 'col-lg-12 p-0 mb-2'}>
                                                                                 <div style={{ border: '1px solid #eee', borderRadius: '18px' }} class="row m-0 w-100 p-2">
                                                                                     {type == 'admin' && (
                                                                                         <div style={{ width: '40px', height: '40px', borderRadius: '7px', marginInlineEnd: '5px' }}>
@@ -443,10 +427,10 @@ const CourierSheet = (props) => {
                                                                                     )}
                                                                                     <div class="col-lg-6 d-flex align-items-center">
                                                                                         <div className="row m-0 w-100">
-                                                                                            <div style={{ fontSize: '14px', fontWeight: 500 }} className={' col-lg-12 p-0'}>
+                                                                                            <div style={{ fontSize: '14px', fontWeight: 500 }} className={' col-lg-12 p-0 wordbreak wordbreak1'}>
                                                                                                 {subitem?.info?.item?.name ?? '-'}
                                                                                             </div>
-                                                                                            <div style={{ fontSize: '12px' }} className={' col-lg-12 p-0'}>
+                                                                                            <div style={{ fontSize: '12px' }} className={' col-lg-12 p-0 wordbreak wordbreak1'}>
                                                                                                 {subitem?.info?.name ?? '-'}
                                                                                             </div>
                                                                                         </div>
