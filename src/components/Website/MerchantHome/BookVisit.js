@@ -59,7 +59,7 @@ const BookVisit = (props) => {
 
     const [filterorders, setfilterorders] = useState({
         statuses: [],
-        limit: 100,
+        limit: 20,
     });
     const fetchOrdersQuery = useQueryGQL('', fetchOrders(), filterorders);
     useEffect(() => {

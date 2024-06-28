@@ -28,7 +28,7 @@ const MerchantSelect = (props) => {
     const { lang, langdetect } = useContext(LanguageContext);
     const [filterMerchants, setfilterMerchants] = useState({
         isAsc: true,
-        limit: 100,
+        limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
     });

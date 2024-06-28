@@ -36,7 +36,7 @@ const InventoryReturns = (props) => {
     });
 
     const [filterInventories, setfilterInventories] = useState({
-        limit: 100,
+        limit: 20,
         afterCursor: null,
         beforeCursor: null,
     });

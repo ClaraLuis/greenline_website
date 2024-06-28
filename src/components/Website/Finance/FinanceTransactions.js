@@ -60,7 +60,7 @@ const FinanceTransactions = (props) => {
 
     const [filterTransactionsObj, setfilterTransactionsObj] = useState({
         isAsc: true,
-        limit: 100,
+        limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
         toAccountId: undefined,
@@ -72,7 +72,7 @@ const FinanceTransactions = (props) => {
 
     const [filterAllFinancialAccountsObj, setfilterAllFinancialAccountsObj] = useState({
         isAsc: true,
-        limit: 100,
+        limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
     });

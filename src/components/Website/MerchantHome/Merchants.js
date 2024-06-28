@@ -52,7 +52,7 @@ const Merchants = (props) => {
     });
     const [filterMerchants, setfilterMerchants] = useState({
         isAsc: true,
-        limit: 100,
+        limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
     });

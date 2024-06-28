@@ -50,14 +50,14 @@ const FinancialAccountInfo = (props) => {
 
     const [filterobj, setfilterobj] = useState({
         isAsc: true,
-        limit: 100,
+        limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
         name: queryParameters.get('accountName'),
     });
     const [filterSentTransactionsObj, setfilterSentTransactionsObj] = useState({
         isAsc: true,
-        limit: 100,
+        limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
         fromAccountId: parseInt(queryParameters.get('accountId')),
@@ -65,7 +65,7 @@ const FinancialAccountInfo = (props) => {
 
     const [filterRecievedTransactionsObj, setfilterRecievedTransactionsObj] = useState({
         isAsc: true,
-        limit: 100,
+        limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
         toAccountId: parseInt(queryParameters.get('accountId')),
@@ -77,7 +77,7 @@ const FinancialAccountInfo = (props) => {
 
     const [filterAllFinancialAccountsObj, setfilterAllFinancialAccountsObj] = useState({
         isAsc: true,
-        limit: 100,
+        limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
     });

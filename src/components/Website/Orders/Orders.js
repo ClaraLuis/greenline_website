@@ -36,12 +36,12 @@ const Orders = (props) => {
     const [merchantModal, setmerchantModal] = useState(false);
 
     const [filterorders, setfilterorders] = useState({
-        limit: 100,
+        limit: 20,
     });
     const fetchOrdersInInventoryQuery = useQueryGQL('', fetchOrdersInInventory(), filterorders);
     const [filterMerchants, setfilterMerchants] = useState({
         isAsc: true,
-        limit: 100,
+        limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
     });

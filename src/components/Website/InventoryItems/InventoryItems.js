@@ -113,7 +113,7 @@ const InventoryItems = (props) => {
     };
     const fetchinventories = useQueryGQL('', fetchInventories(), filterInventories);
     const [filterItemInBox, setfilterItemInBox] = useState({
-        limit: 100,
+        limit: 20,
         afterCursor: null,
         beforeCursor: null,
         inventoryIds: [1],

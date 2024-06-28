@@ -51,7 +51,7 @@ const MerchantPayments = (props) => {
     });
     const [filterobj, setfilterobj] = useState({
         isAsc: true,
-        limit: 100,
+        limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
         merchantIds: undefined,
@@ -61,7 +61,7 @@ const MerchantPayments = (props) => {
     const fetchMerchantPaymentTransactionsQuery = useQueryGQL('', fetchMerchantPaymentTransactions(), filterobj);
     const [filterAllFinancialAccountsObj, setfilterAllFinancialAccountsObj] = useState({
         isAsc: true,
-        limit: 100,
+        limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
     });
@@ -72,7 +72,7 @@ const MerchantPayments = (props) => {
         setpageactive_context('/merchantpayments');
         setfilterobj({
             isAsc: true,
-            limit: 100,
+            limit: 20,
             afterCursor: undefined,
             beforeCursor: undefined,
             merchantIds: undefined,

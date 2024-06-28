@@ -62,7 +62,7 @@ const AddSheet = (props) => {
 
     const [filterorders, setfilterorders] = useState({
         statuses: [], //arrivedToHub
-        limit: 100,
+        limit: 20,
         orderIds: undefined,
     });
     const fetchOrdersQuery = useQueryGQL('', fetchOrders(), filterorders); //network only

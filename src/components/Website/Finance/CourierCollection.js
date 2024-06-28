@@ -61,7 +61,7 @@ const CourierCollection = (props) => {
     });
     const [filterobj, setfilterobj] = useState({
         isAsc: true,
-        limit: 100,
+        limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
         merchantIds: undefined,
@@ -70,7 +70,7 @@ const CourierCollection = (props) => {
     const fetchCourierCollectionTransactionsQuery = useQueryGQL('', fetchCourierCollectionTransactions(), filterobj);
     const [filterAllFinancialAccountsObj, setfilterAllFinancialAccountsObj] = useState({
         isAsc: true,
-        limit: 100,
+        limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
     });
@@ -81,7 +81,7 @@ const CourierCollection = (props) => {
         setpageactive_context('/couriercollections');
         setfilterobj({
             isAsc: true,
-            limit: 100,
+            limit: 20,
             afterCursor: undefined,
             beforeCursor: undefined,
             merchantIds: undefined,
