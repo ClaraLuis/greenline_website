@@ -151,6 +151,7 @@ const InventoryReturns = (props) => {
                                     if (i?.orderItem?.info?.sku == item?.orderItem?.info?.sku) {
                                         exist = true;
                                         chosenindex = ii;
+                                        temp.ids.splice(ii, 1);
                                     }
                                 });
                                 if (!exist) {
@@ -254,6 +255,7 @@ const InventoryReturns = (props) => {
                                                 await setcartItems([...temp]);
                                                 await createReturnPackageMutation();
                                                 refetchInventoryItemReturnsQuery();
+                                                history.push('/packages');
                                             } catch (error) {
                                                 NotificationManager.warning(error.message || error, 'Warning!');
                                             }

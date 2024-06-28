@@ -176,7 +176,27 @@ const Packages = (props) => {
                                 }
                             });
                             return (
-                                <div className="col-lg-6 p-1">
+                                <div
+                                    onClick={() => {
+                                        var temp = { ...packagepayload };
+                                        var exist = false;
+                                        var chosenindex = null;
+                                        temp.ids.map((i, ii) => {
+                                            if (i == item.id) {
+                                                exist = true;
+                                                chosenindex = ii;
+                                            }
+                                        });
+                                        if (!exist) {
+                                            temp.ids.push(item.id);
+                                        } else {
+                                            temp.ids.splice(chosenindex, 1);
+                                        }
+                                        setpackagepayload({ ...temp });
+                                    }}
+                                    style={{ cursor: 'pointer' }}
+                                    className="col-lg-6 p-1"
+                                >
                                     <div style={{ background: 'white' }} class={' p-3 row m-0 w-100 card  d-flex align-items-center'}>
                                         <div className="col-lg-4 p-0">
                                             <span style={{ fontSize: '12px', color: 'grey' }}># {item?.id}</span>
@@ -203,32 +223,6 @@ const Packages = (props) => {
                                                         }
                                                     })}
                                                 </div>
-                                                <div
-                                                    onClick={() => {
-                                                        var temp = { ...packagepayload };
-                                                        var exist = false;
-                                                        var chosenindex = null;
-                                                        temp.ids.map((i, ii) => {
-                                                            if (i == item.id) {
-                                                                exist = true;
-                                                                chosenindex = ii;
-                                                            }
-                                                        });
-                                                        if (!exist) {
-                                                            temp.ids.push(item.id);
-                                                        } else {
-                                                            temp.ids.splice(chosenindex, 1);
-                                                        }
-                                                        setpackagepayload({ ...temp });
-                                                    }}
-                                                    style={{
-                                                        width: '35px',
-                                                        height: '35px',
-                                                    }}
-                                                    className="iconhover allcentered"
-                                                >
-                                                    <FiCheckCircle style={{ transition: 'all 0.4s' }} color={selected ? 'var(--success)' : ''} size={20} />
-                                                </div>
                                             </div>
                                         </div>
                                         <div className="col-lg-12 p-0 my-2">
@@ -243,6 +237,19 @@ const Packages = (props) => {
 
                                         <div class="col-lg-12 p-0 d-flex justify-content-end" style={{ fontSize: '12px', color: 'grey' }}>
                                             {item?.createdAt}
+                                        </div>
+
+                                        <div
+                                            style={{
+                                                width: '30px',
+                                                height: '30px',
+                                                position: 'absolute',
+                                                right: 15,
+                                                bottom: 30,
+                                            }}
+                                            className=" allcentered"
+                                        >
+                                            <FiCheckCircle style={{ transition: 'all 0.4s' }} color={selected ? 'var(--success)' : ''} size={18} />
                                         </div>
                                     </div>
                                 </div>
