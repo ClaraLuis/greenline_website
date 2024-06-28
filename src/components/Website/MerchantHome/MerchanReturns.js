@@ -235,13 +235,17 @@ const MerchanReturns = (props) => {
                                 onClick={async () => {
                                     try {
                                         if (packagepayload?.ids?.length != 0 && packagepayload?.toMerchantId != undefined) {
-                                            var temp = [];
-                                            await packagepayload?.ids?.map((item, index) => {
-                                                temp.push(item.id);
-                                            });
-                                            await setcartItems([...temp]);
-                                            await createReturnPackageMutation();
-                                            refetchMerchantItemReturnsQuery();
+                                            try {
+                                                var temp = [];
+                                                await packagepayload?.ids?.map((item, index) => {
+                                                    temp.push(item.id);
+                                                });
+                                                await setcartItems([...temp]);
+                                                await createReturnPackageMutation();
+                                                refetchMerchantItemReturnsQuery();
+                                            } catch (error) {
+                                                NotificationManager.warning(error.message || error, 'Warning!');
+                                            }
                                         } else {
                                             NotificationManager.warning('Please Complete all fields', 'Warning!');
                                         }
