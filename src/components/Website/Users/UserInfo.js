@@ -108,7 +108,7 @@ const UserInfo = (props) => {
 
     return (
         <>
-            {!changerolesmodal && (
+            {/* {!changerolesmodal && (
                 <Modal
                     show={props?.openModal}
                     onHide={() => {
@@ -355,12 +355,12 @@ const UserInfo = (props) => {
                         </div>
                     </Modal.Body>
                 </Modal>
-            )}
+            )} */}
 
             <Modal
-                show={changerolesmodal}
+                show={props?.openModal}
                 onHide={() => {
-                    setchangerolesmodal(false);
+                    props?.setopenModal(false);
                 }}
                 centered
                 size={'xl'}
@@ -374,7 +374,7 @@ const UserInfo = (props) => {
                             <div
                                 class={'close-modal-container'}
                                 onClick={() => {
-                                    setchangerolesmodal(false);
+                                    props?.setopenModal(false);
                                 }}
                             >
                                 <IoMdClose />

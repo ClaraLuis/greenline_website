@@ -233,12 +233,7 @@ const MerchanReturns = (props) => {
                             <button
                                 onClick={async () => {
                                     try {
-                                        if (
-                                            packagepayload?.ids?.length != 0 &&
-                                            packagepayload?.type?.length != 0 &&
-                                            ((packagepayload?.type == 'inventory' && packagepayload?.toInventoryId != undefined) ||
-                                                (packagepayload?.type == 'merchat' && packagepayload?.toMerchantId != undefined))
-                                        ) {
+                                        if (packagepayload?.ids?.length != 0 && packagepayload?.toMerchantId != undefined) {
                                             var temp = [];
                                             await packagepayload?.ids?.map((item, index) => {
                                                 temp.push(item.id);
