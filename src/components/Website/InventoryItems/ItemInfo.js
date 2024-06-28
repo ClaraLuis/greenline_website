@@ -110,7 +110,7 @@ const ItemInfo = (props) => {
                         <div class="col-lg-12 p-0 my-2">
                             <span style={{ fontWeight: 600 }}> Item History:</span>
                         </div>
-                        <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
+                        <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
                             {props?.fetchItemHistoryQuery?.loading && (
                                 <div style={{ height: '70vh' }} class="row w-100 allcentered m-0">
                                     <CircularProgress color="var(--primary)" width="60px" height="60px" duration="1s" />

@@ -38,7 +38,7 @@ const CourierSheet = (props) => {
     const [updateCourierSheetMutation] = useMutationGQL(updateCourierSheet(), {
         id: submitSheetPayload?.id,
         // ordersCount: submitSheetPayload?.orderCount,
-        updateSheetOrders: submitSheetPayload?.updateSheetOrders,
+        updateSheetOrders: submitSheetPayload?.updateSheetOrders?.filter((item) => item.status == 'adminAccepted' || item.status == 'financeAccepted'),
     });
 
     const handleupdateCourierSheet = async () => {
@@ -60,6 +60,7 @@ const CourierSheet = (props) => {
 
     // Initialize the expanded state for each accordion item
     const [expandedItems, setExpandedItems] = useState([]);
+    const [totalExpected, settotalExpected] = useState(0);
     useEffect(() => {
         setExpandedItems(Array.from(Array(fetchCourierSheetQuery?.data?.CourierSheet?.sheetOrders?.length).keys()));
     }, [fetchCourierSheetQuery?.data]);
@@ -89,13 +90,16 @@ const CourierSheet = (props) => {
                 sheetOrderId: item?.id,
                 expanded: type == 'admin' ? (item?.adminPass ? false : true) : false,
                 status: type == 'admin' ? (item?.adminPass ? 'adminAccepted' : 'adminRejected') : item?.financePass ? 'financeAccepted' : 'financeRejected',
-                shippingCollected: item?.shippingCollected,
+                shippingCollected: item?.shippingCollected == 'collected' ? true : false,
                 description: '',
+                price: item?.order?.price,
+                shippingPrice: item?.order?.shippingPrice,
             });
             temp.updateSheetOrders.push({
                 sheetOrderId: item?.id,
                 status: type == 'admin' ? (item?.adminPass ? 'adminAccepted' : 'adminRejected') : item?.financePass ? 'financeAccepted' : 'financeRejected',
-                shippingCollected: item?.shippingCollected,
+                shippingCollected: item?.shippingCollected == 'collected' ? true : false,
+
                 description: '',
             });
         });
@@ -110,8 +114,18 @@ const CourierSheet = (props) => {
         setsubmitSheetPayload({ ...temp });
     }, [fetchCourierSheetQuery?.data]);
 
+    // useEffect(() => {
+    //     var temp = 0;
+    //     submitSheetPayload?.updateSheetOrderstemp
+    //         ?.filter((item) => item.status == 'adminAccepted' || item.status == 'financeAccepted')
+    //         ?.map((sheetItem, sheetIndex) => {
+    //             // alert(JSON.stringify(sheetItem));
+    //         });
+    //     settotalExpected(temp);
+    // }, [submitSheetPayload]);
+
     return (
-        <div class="row m-0 w-100 p-md-2 pt-2">
+        <div class="row m-0 w-100 p-md-2 pt-2 pb-5">
             <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
                 <div
                     className="col-lg-12 pr-3 pl-2 m-0 mb-3"
@@ -119,10 +133,17 @@ const CourierSheet = (props) => {
                 >
                     <div style={{ background: 'white', margin: '0px' }} class={' p-3 row m-0 w-100 card'}>
                         <div className="col-lg-4 p-0">
-                            <span style={{ fontWeight: 600 }} class="text-capitalize">
-                                {submitSheetPayload?.userInfo?.name}{' '}
-                            </span>
-                            <span style={{ fontWeight: 700, fontSize: '16px' }}># {submitSheetPayload?.id}</span>
+                            <div class="row m-0 w-100 d-flex align-items-center">
+                                <span style={{ fontWeight: 600 }} class="text-capitalize">
+                                    {submitSheetPayload?.userInfo?.name}{' '}
+                                </span>
+                                <div style={{ background: '#eee', color: 'black' }} className={' wordbreak rounded-pill font-weight-600 allcentered mx-1 '}>
+                                    # {submitSheetPayload?.id}
+                                </div>
+                                <div style={{ background: 'black', color: 'white' }} className={' wordbreak rounded-pill font-weight-600 allcentered mx-1 '}>
+                                    <span>{submitSheetPayload?.orderCount}</span> Orders
+                                </div>
+                            </div>
                         </div>
                         <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
                             <div
@@ -143,9 +164,7 @@ const CourierSheet = (props) => {
                             <hr className="m-0" />
                         </div>
 
-                        <div className="col-lg-6 p-0 mb-2">
-                            <span style={{ fontWeight: 600 }}>{submitSheetPayload?.orderCount}</span> Orders
-                        </div>
+                        <div className="col-lg-6 p-0 mb-2"></div>
                         {type == 'finance' && (
                             <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-end pb-2 '}>
                                 <p class=" p-0 m-0" style={{ fontSize: '18px', fontWeight: 600 }}>
@@ -235,6 +254,7 @@ const CourierSheet = (props) => {
                                         tempsheetpayload = i;
                                     }
                                 });
+                                // alert(JSON.stringify(tempsheetpayload));
                                 return (
                                     <div
                                         onClick={(e) => {
@@ -347,33 +367,36 @@ const CourierSheet = (props) => {
 
                                                     <div className="col-lg-5 p-0">
                                                         <div className="row m-0 w-100">
-                                                            <div className="col-lg-12 p-0 d-flex justify-content-end">
-                                                                <div className="row m-0 w-100 d-flex justify-content-end">
-                                                                    <label className={`${formstyles.switch} mx-2 my-0`}>
-                                                                        <input
-                                                                            type="checkbox"
-                                                                            checked={!tempsheetpayload?.shippingCollected}
-                                                                            onChange={(e) => {
-                                                                                e.stopPropagation();
-                                                                                var temp = { ...submitSheetPayload };
+                                                            {type == 'finance' && (
+                                                                <div className="col-lg-12 p-0 d-flex justify-content-end">
+                                                                    <div className="row m-0 w-100 d-flex justify-content-end">
+                                                                        <label className={`${formstyles.switch} mx-2 my-0`}>
+                                                                            <input
+                                                                                type="checkbox"
+                                                                                checked={!tempsheetpayload?.shippingCollected}
+                                                                                onChange={(e) => {
+                                                                                    e.stopPropagation();
+                                                                                    var temp = { ...submitSheetPayload };
 
-                                                                                temp.updateSheetOrders.map((i, ii) => {
-                                                                                    if (i.sheetOrderId == item.id) {
-                                                                                        temp.updateSheetOrders[ii].shippingCollected = !temp.updateSheetOrders[ii].shippingCollected;
-                                                                                        temp.updateSheetOrderstemp[ii].shippingCollected = !temp.updateSheetOrders[ii].shippingCollected;
-                                                                                    }
-                                                                                });
+                                                                                    temp.updateSheetOrders.map((i, ii) => {
+                                                                                        if (i.sheetOrderId == item.id) {
+                                                                                            temp.updateSheetOrders[ii].shippingCollected = !temp.updateSheetOrders[ii].shippingCollected;
+                                                                                            temp.updateSheetOrderstemp[ii].shippingCollected = !temp.updateSheetOrders[ii].shippingCollected;
+                                                                                        }
+                                                                                    });
 
-                                                                                setsubmitSheetPayload({ ...temp });
-                                                                            }}
-                                                                        />
-                                                                        <span className={`${formstyles.slider} ${formstyles.round}`}></span>
-                                                                    </label>
-                                                                    <p className={`${generalstyles.checkbox_label} mb-0 text-focus text-capitalize cursor-pointer font_14 ml-1 mr-1 wordbreak`}>
-                                                                        Shipping on merchant
-                                                                    </p>
+                                                                                    setsubmitSheetPayload({ ...temp });
+                                                                                }}
+                                                                            />
+                                                                            <span className={`${formstyles.slider} ${formstyles.round}`}></span>
+                                                                        </label>
+                                                                        <p className={`${generalstyles.checkbox_label} mb-0 text-focus text-capitalize cursor-pointer font_14 ml-1 mr-1 wordbreak`}>
+                                                                            Shipping on merchant
+                                                                        </p>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
+                                                            )}
+
                                                             <div className="col-lg-12 p-0 d-flex justify-content-end">
                                                                 <div>
                                                                     <div className="row w-100 d-flex align-items-center m-0">
@@ -455,7 +478,7 @@ const CourierSheet = (props) => {
                                                                 </div>
                                                                 <div class="col-lg-12 p-0 allcentered text-center">
                                                                     <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                        {parseInt(item?.order?.price)} {item?.order?.currency}
+                                                                        {parseFloat(item?.order?.price)} {item?.order?.currency}
                                                                     </span>
                                                                 </div>
                                                             </div>
@@ -467,7 +490,7 @@ const CourierSheet = (props) => {
                                                                 </div>
                                                                 <div class="col-lg-12 p-0 allcentered text-center">
                                                                     <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                        {parseInt(item?.order?.shippingPrice)} {item?.order?.currency}
+                                                                        {parseFloat(item?.order?.shippingPrice)} {item?.order?.currency}
                                                                     </span>
                                                                 </div>
                                                             </div>
@@ -479,7 +502,7 @@ const CourierSheet = (props) => {
                                                                 </div>
                                                                 <div class="col-lg-12 p-0 allcentered text-center">
                                                                     <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                        {parseInt(item?.order?.price) + parseInt(item?.order?.shippingPrice)} {item?.order?.currency}
+                                                                        {parseFloat(item?.order?.price) + parseFloat(item?.order?.shippingPrice)} {item?.order?.currency}
                                                                     </span>
                                                                 </div>
                                                             </div>
@@ -535,7 +558,7 @@ const CourierSheet = (props) => {
                                                                                                         style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }}
                                                                                                         class="row m-0 w-100 p-1 px-2"
                                                                                                     >
-                                                                                                        {parseInt(subitem.count) - parseInt(subitem.partialCount)}/{subitem.count}
+                                                                                                        {parseFloat(subitem.count) - parseFloat(subitem.partialCount)}/{subitem.count}
                                                                                                     </div>
                                                                                                 )}
                                                                                                 {!subitem?.partialCount && (
@@ -549,8 +572,8 @@ const CourierSheet = (props) => {
                                                                                             </div>
                                                                                             <div style={{ fontWeight: 700 }} class="mx-2">
                                                                                                 {subitem?.partialCount
-                                                                                                    ? parseInt(subitem.partialCount) * parseFloat(subitem?.unitPrice)
-                                                                                                    : parseInt(subitem.count) * parseFloat(subitem?.unitPrice)}{' '}
+                                                                                                    ? parseFloat(subitem.partialCount) * parseFloat(subitem?.unitPrice)
+                                                                                                    : parseFloat(subitem.count) * parseFloat(subitem?.unitPrice)}{' '}
                                                                                                 {item?.info?.currency}
                                                                                             </div>
                                                                                         </div>
@@ -596,7 +619,7 @@ const CourierSheet = (props) => {
                                                         </div>
                                                         {type == 'admin' && (
                                                             <div className="col-lg-12 p-0 d-flex justify-content-end mb-2 px-3" style={{ fontWeight: 600, fontSize: '15px' }}>
-                                                                Total: {parseInt(item?.order?.price) + parseInt(item?.order?.shippingPrice)} {item?.order?.currency}
+                                                                Total: {parseFloat(item?.order?.price) + parseFloat(item?.order?.shippingPrice)} {item?.order?.currency}
                                                             </div>
                                                         )}
                                                     </div>
@@ -612,19 +635,39 @@ const CourierSheet = (props) => {
                 </div>
             </div>
 
-            <div style={{ position: 'fixed', bottom: '2%', right: '4%', width: '75.5%' }}>
+            <div style={{ position: 'fixed', bottom: '3%', right: '4%', width: '75.5%' }}>
                 <div class="col-lg-12 p-0">
-                    <div style={{ background: 'white' }} class="row m-0 w-100 card d-flex justify-content-end p-3">
-                        <button
-                            style={{ height: '35px' }}
-                            class={generalstyles.roundbutton}
-                            onClick={() => {
-                                // history.push('/addorder');
-                                handleupdateCourierSheet();
-                            }}
-                        >
-                            Close Sheet
-                        </button>
+                    <div style={{ background: 'white', boxShadow: 'rgba(37, 83, 185, 0.1) -2px -5px 6px' }} class="row m-0 w-100 card d-flex align-items-center p-3">
+                        <div class="col-lg-6 p-0 ">
+                            <div style={{ fontWeight: 600 }}>
+                                <div style={{ background: 'var(--primary)', color: 'white' }} className={' wordbreak rounded-pill font-weight-600 allcentered mx-1 px-3 py-2 '}>
+                                    <span class="px-2">
+                                        {submitSheetPayload?.updateSheetOrders?.filter((item) => item.status == 'adminAccepted' || item.status == 'financeAccepted')?.length} Orders Accepted
+                                    </span>
+                                    {type == 'finance' && (
+                                        <span class="px-2" style={{ borderInlineStart: '1px solid rgba(238, 238, 238, 0.6)' }}>
+                                            {submitSheetPayload?.updateSheetOrderstemp
+                                                ?.filter((item) => item.status == 'adminAccepted' || item.status == 'financeAccepted')
+                                                .map((e) => parseFloat(e?.price ?? '0') + (e?.shippingCollected ? parseFloat(e?.shippingPrice ?? '0') : 0))
+                                                .reduce((sum, current) => sum + current, 0)}{' '}
+                                            {submitSheetPayload?.orderCurrency}
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 p-0 d-flex justify-content-end">
+                            <button
+                                style={{ height: '35px' }}
+                                class={generalstyles.roundbutton}
+                                onClick={() => {
+                                    // history.push('/addorder');
+                                    handleupdateCourierSheet();
+                                }}
+                            >
+                                Close Sheet
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

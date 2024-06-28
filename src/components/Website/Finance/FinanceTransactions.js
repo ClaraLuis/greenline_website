@@ -211,7 +211,7 @@ const FinanceTransactions = (props) => {
                             setfilter={setfilterAllFinancialAccountsObj}
                         />
                     </div>
-                    <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                    <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
                         <TransactionsTable
                             width={'50%'}
                             query={fetchAllTransactionsQuery}
@@ -289,7 +289,7 @@ const FinanceTransactions = (props) => {
                             <span style={{ color: 'var(--info)' }}>Expenses</span>
                         </p>
                     </div>
-                    <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                    <div   className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
                         <ExpensesTable />
                     </div>
                 </div> */}

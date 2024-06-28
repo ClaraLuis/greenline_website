@@ -97,7 +97,7 @@ const Finance = (props) => {
                             <span style={{ color: 'var(--info)' }}>Past Transactions</span>
                         </p>
                     </div>
-                    <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                    <div   className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
                         <TransactionsTable />
                     </div>
                 </div>
@@ -108,7 +108,7 @@ const Finance = (props) => {
                             <span style={{ color: 'var(--info)' }}>Awaiting Transactions</span>
                         </p>
                     </div>
-                    <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                    <div   className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
                         <TransactionsTable />
                     </div>
                 </div>
@@ -119,7 +119,7 @@ const Finance = (props) => {
                             <span style={{ color: 'var(--info)' }}>Invoices</span>
                         </p>
                     </div>
-                    <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                    <div   className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
                         <TransactionsTable />
                     </div>
                 </div> */}

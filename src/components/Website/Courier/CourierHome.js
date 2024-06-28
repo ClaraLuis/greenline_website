@@ -128,7 +128,7 @@ const CourierHome = (props) => {
                 </div>
 
                 <div class={generalstyles.card + ' row m-0 w-100'}>
-                    <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                    <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
                         <SheetsTable />
                     </div>
                 </div>

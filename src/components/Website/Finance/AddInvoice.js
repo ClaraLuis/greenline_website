@@ -100,7 +100,7 @@ const AddInvoice = (props) => {
                                     </div>
                                 </div>
                                 {search?.length != 0 && (
-                                    <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                                    <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
                                         <OrdersTable
                                             clickable={true}
                                             actiononclick={(item) => {
@@ -127,7 +127,7 @@ const AddInvoice = (props) => {
                                         <div class="col-lg-12 pt-4 px-3" style={{ fontSize: '17px', fontWeight: 700 }}>
                                             Orders
                                         </div>
-                                        <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-3 '}>
+                                        <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-3 '}>
                                             <table className={'table'}>
                                                 <thead>
                                                     <th>#</th>

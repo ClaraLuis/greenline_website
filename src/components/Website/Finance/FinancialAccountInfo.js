@@ -214,7 +214,7 @@ const FinancialAccountInfo = (props) => {
                                         setfilter={setfilterSentTransactionsObj}
                                     />
                                 </div>
-                                <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                                <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
                                     <TransactionsTable
                                         width={'100%'}
                                         query={fetchSenttTransactionsQuery}
@@ -242,7 +242,7 @@ const FinancialAccountInfo = (props) => {
                                         setfilter={setfilterRecievedTransactionsObj}
                                     />
                                 </div>
-                                <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                                <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
                                     <TransactionsTable
                                         width={'100%'}
                                         query={fetchRecievedTransactionsQuery}

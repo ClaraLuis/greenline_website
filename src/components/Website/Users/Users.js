@@ -107,7 +107,7 @@ const Users = (props) => {
                             setfilter={setfilterUsers}
                         />
                     </div>
-                    <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                    <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
                         <UsersTable fetchusers={fetchusers} />
                     </div>
                 </div>

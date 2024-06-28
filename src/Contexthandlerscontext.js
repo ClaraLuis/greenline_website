@@ -12,7 +12,7 @@ import { NotificationManager } from 'react-notifications';
 import Cookies from 'universal-cookie';
 import { MdOutlineHub, MdOutlineInventory2, MdSwitchAccount } from 'react-icons/md';
 import { BiSolidCoinStack, BiSolidSpreadsheet, BiTransfer } from 'react-icons/bi';
-import { CiBoxes } from 'react-icons/ci';
+import { CiBoxes, CiShop } from 'react-icons/ci';
 import { IoMdHome } from 'react-icons/io';
 import { FaMap } from 'react-icons/fa';
 import { TbArrowsExchange, TbPackages } from 'react-icons/tb';
@@ -532,22 +532,22 @@ export const Contexthandlerscontext_provider = (props) => {
                                 <IoMdHome size={18} />
                             </i>
                         ),
+                        path: '/merchanthome',
+                        permissionpage: [1],
+                        show: isAuth([1]),
+                    },
+                    {
+                        name: 'Merchants',
+                        isselected: false,
+                        icon: (
+                            <i class={'allcentered'}>
+                                <CiShop size={18} />
+                            </i>
+                        ),
                         path: '/merchants',
                         permissionpage: [1],
                         show: isAuth([1]),
                     },
-                    // {
-                    //     name: 'Merchants',
-                    //     isselected: false,
-                    //     icon: (
-                    //         <i class={'allcentered'}>
-                    //             <IoMdHome size={18} />
-                    //         </i>
-                    //     ),
-                    //     path: '/merchants',
-                    //     permissionpage: [1],
-                    //     show: isAuth([1]),
-                    // },
                     {
                         name: 'Finance',
                         isselected: false,

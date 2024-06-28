@@ -301,7 +301,7 @@ const MerchantPayments = (props) => {
                                             setfilter={setfilterobj}
                                         />
                                     </div>
-                                    <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                                    <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
                                         <TransactionsTable
                                             width={'50%'}
                                             query={fetchMerchantPaymentTransactionsQuery}
@@ -348,7 +348,7 @@ const MerchantPayments = (props) => {
                             <span style={{ color: 'var(--info)' }}>Transactions</span>
                         </p>
                     </div>
-                    <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                    <div   className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
                         <TransactionsTable />
                     </div>
                 </div> */}

@@ -138,7 +138,7 @@ const FinanceOrders = (props) => {
                             <span style={{ color: 'var(--info)' }}>Financial Accounts</span>
                         </p>
                     </div> */}
-                    <div style={{ maxHeight: '630px' }} className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                    <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
                         <OrdersTable />
                     </div>
                 </div>
