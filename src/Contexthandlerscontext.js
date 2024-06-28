@@ -482,18 +482,18 @@ export const Contexthandlerscontext_provider = (props) => {
                         permissionpage: [1],
                         show: isAuth([1, 54, 2, 4, 6, 7, 8]),
                     },
-                    {
-                        name: 'Hub Items',
-                        isselected: false,
-                        icon: (
-                            <i class={'allcentered'}>
-                                <MdOutlineHub size={18} />
-                            </i>
-                        ),
-                        path: '/hubitems',
-                        permissionpage: [1],
-                        show: isAuth([1, 54]),
-                    },
+                    // {
+                    //     name: 'Hub Items',
+                    //     isselected: false,
+                    //     icon: (
+                    //         <i class={'allcentered'}>
+                    //             <MdOutlineHub size={18} />
+                    //         </i>
+                    //     ),
+                    //     path: '/hubitems',
+                    //     permissionpage: [1],
+                    //     show: isAuth([1, 54]),
+                    // },
                     {
                         name: 'Orders',
                         isselected: false,

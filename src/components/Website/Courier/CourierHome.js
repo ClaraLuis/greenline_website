@@ -83,7 +83,7 @@ const CourierHome = (props) => {
                                                     } else {
                                                         return (
                                                             <i class="h-100 d-flex align-items-center justify-content-center">
-                                                                <BsChevronUp />
+                                                                <BsChevronDown />
                                                             </i>
                                                         );
                                                     }

@@ -273,7 +273,7 @@ const TransactionsTable = (props) => {
 
                                             {props?.srctype != 'all' && props?.srctype != 'courierCollection' && (
                                                 <div className="col-lg-12 p-0 mb-1">
-                                                    <span class="d-flex align-items-center" style={{ fontWeight: 600 }}>
+                                                    <span class="d-flex align-items-center" style={{ fontWeight: 600, color: props?.srctype == 'recieved' ? '#4C8CF5' : '#1EC000' }}>
                                                         <MdOutlineAccountCircle class="mr-1" />
                                                         {props?.srctype == 'recieved' ? item?.fromAccount?.name ?? '-' : item?.toAccount?.name ?? '-'}
                                                     </span>

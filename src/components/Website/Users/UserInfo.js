@@ -142,7 +142,7 @@ const UserInfo = (props) => {
                                         class="text-primary text-primaryhover"
                                         style={{ textDecoration: 'underline', fontSize: '12px' }}
                                     >
-                                        Update rules
+                                        Update roles
                                     </div>
                                 </div>
                             )}

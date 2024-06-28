@@ -330,7 +330,7 @@ const InventoryItems = (props) => {
                                                             });
                                                             setimportmodal({ open: true, type: 'import' });
                                                         }}
-                                                        style={{ height: '25px', minWidth: 'fit-content', marginInlineEnd: '5px' }}
+                                                        style={{ height: '25px', width: '40%', marginInlineEnd: '5px' }}
                                                         class={generalstyles.roundbutton + '  allcentered'}
                                                     >
                                                         import
@@ -345,8 +345,8 @@ const InventoryItems = (props) => {
                                                             });
                                                             setimportmodal({ open: true, type: 'export' });
                                                         }}
-                                                        style={{ height: '25px', minWidth: 'fit-content' }}
-                                                        class={generalstyles.roundbutton + '  allcentered'}
+                                                        style={{ height: '25px', width: '40%' }}
+                                                        class={generalstyles.roundbutton + '  allcentered bg-danger bg-dangerhover'}
                                                     >
                                                         export
                                                     </button>

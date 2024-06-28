@@ -63,6 +63,7 @@ const AddSheet = (props) => {
     const [filterorders, setfilterorders] = useState({
         statuses: [], //arrivedToHub
         limit: 100,
+        orderIds: undefined,
     });
     const fetchOrdersQuery = useQueryGQL('', fetchOrders(), filterorders); //network only
     const [filterCouriers, setfilterCouriers] = useState({
@@ -100,7 +101,7 @@ const AddSheet = (props) => {
                 <div class={' row m-0 p-0 w-100'}>
                     <div className={' col-lg-8 p-1 py-0 '}>
                         <div class="row m-0 w-100">
-                            <div class="col-lg-12 p-0 ">
+                            <div class="col-lg-10 p-0 ">
                                 <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
                                     <input
                                         class={formstyles.form__field}
@@ -111,6 +112,18 @@ const AddSheet = (props) => {
                                         }}
                                     />
                                 </div>
+                            </div>
+                            <div class="col-lg-2 p-0 allcentered">
+                                <button
+                                    style={{ height: '30px', minWidth: '80%' }}
+                                    class={generalstyles.roundbutton + ' allcentered p-0'}
+                                    onClick={() => {
+                                        var temp = [parseInt(search)];
+                                        setfilterorders({ ...filterorders, orderIds: temp });
+                                    }}
+                                >
+                                    search
+                                </button>
                             </div>
 
                             <div className="row m-0 w-100 mt-2">

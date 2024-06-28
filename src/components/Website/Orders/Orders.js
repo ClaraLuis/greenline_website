@@ -60,7 +60,7 @@ const Orders = (props) => {
                     </p>
                 </div>
 
-                <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>
+                {/* <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>
                     <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
                         <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
                             <AccordionItemHeading>
@@ -75,13 +75,13 @@ const Orders = (props) => {
                                                     if (state.expanded == true) {
                                                         return (
                                                             <i class="h-100 d-flex align-items-center justify-content-center">
-                                                                <BsChevronDown />
+                                                                <BsChevronUp />
                                                             </i>
                                                         );
                                                     } else {
                                                         return (
                                                             <i class="h-100 d-flex align-items-center justify-content-center">
-                                                                <BsChevronUp />
+                                                                <BsChevronDown />
                                                             </i>
                                                         );
                                                     }
@@ -114,7 +114,7 @@ const Orders = (props) => {
                             </AccordionItemPanel>
                         </AccordionItem>
                     </Accordion>
-                </div>
+                </div> */}
                 <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-2'}>
                     <div class="col-lg-12 p-0 ">
                         <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>

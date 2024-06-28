@@ -134,10 +134,10 @@ const OrdersTable = (props) => {
                                                 <div class="row m-0 w-100  d-flex justify-content-end align-items-center">
                                                     {props?.srcFrom == 'inventory' && <div className={' wordbreak text-danger bg-light-danger rounded-pill mr-1 '}>{diffInDays} late days</div>}
                                                     <div
-                                                        onClick={() => {
-                                                            setchangestatusmodal(true);
-                                                        }}
-                                                        style={{ cursor: 'pointer' }}
+                                                        // onClick={() => {
+                                                        //     setchangestatusmodal(true);
+                                                        // }}
+                                                        // style={{ cursor: 'pointer' }}
                                                         className={
                                                             item.status == 'delivered'
                                                                 ? ' wordbreak text-success bg-light-success rounded-pill  '

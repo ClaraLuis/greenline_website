@@ -60,7 +60,6 @@ const FinanceSheets = (props) => {
         beforeCursor: '',
     });
     const fetchSheetsQuery = useQueryGQL('', fetchCourierSheets(), filter);
-    const fetchusers = useQueryGQL('', fetchUsers());
     // const fetchusers = [];
     useEffect(() => {
         setpageactive_context('/financesheets');
@@ -89,13 +88,13 @@ const FinanceSheets = (props) => {
                                                     if (state.expanded == true) {
                                                         return (
                                                             <i class="h-100 d-flex align-items-center justify-content-center">
-                                                                <BsChevronDown />
+                                                                <BsChevronUp />
                                                             </i>
                                                         );
                                                     } else {
                                                         return (
                                                             <i class="h-100 d-flex align-items-center justify-content-center">
-                                                                <BsChevronUp />
+                                                                 <BsChevronDown />
                                                             </i>
                                                         );
                                                     }

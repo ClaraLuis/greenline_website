@@ -69,13 +69,13 @@ const InventoryPackages = (props) => {
                                                             if (state.expanded == true) {
                                                                 return (
                                                                     <i class="h-100 d-flex align-items-center justify-content-center">
-                                                                        <BsChevronDown />
+                                                                        <BsChevronUp />
                                                                     </i>
                                                                 );
                                                             } else {
                                                                 return (
                                                                     <i class="h-100 d-flex align-items-center justify-content-center">
-                                                                        <BsChevronUp />
+                                                                        <BsChevronDown />
                                                                     </i>
                                                                 );
                                                             }
