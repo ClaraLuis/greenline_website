@@ -98,7 +98,7 @@ const BookVisit = (props) => {
                                             <div className="col-lg-6 p-1">
                                                 <div class={generalstyles.card + ' p-3 row m-0 w-100 allcentered'}>
                                                     <div className="col-lg-6 p-0">
-                                                        <span style={{ fontWeight: 700, fontSize: '16px' }}># {item?.id}</span>
+                                                        <span style={{ fontSize: '12px', color: 'grey' }}># {item?.id}</span>
                                                     </div>
                                                     <div className="col-lg-6 p-0 d-flex justify-content-end align-items-center">
                                                         <div

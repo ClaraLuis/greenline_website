@@ -62,7 +62,7 @@ const AccountsTable = (props) => {
                             <div className="col-lg-4 p-1">
                                 <div class={generalstyles.card + ' p-3 row m-0 w-100 allcentered'}>
                                     <div className="col-lg-6 p-0">
-                                        <span style={{ fontWeight: 700, fontSize: '16px' }}># {item?.id}</span>
+                                        <span style={{ fontSize: '12px', color: 'grey' }}># {item?.id}</span>
                                     </div>
                                     <div className="col-lg-6 p-0 d-flex justify-content-end align-items-center">
                                         <div class="row m-0 w-100 d-flrx justify-content-end align-items-center">
@@ -88,30 +88,17 @@ const AccountsTable = (props) => {
                                                         <FaEllipsisV />
                                                     </div>
                                                 </Dropdown.Toggle>
-                                                <Dropdown.Menu style={{ minWidth: '100px' }}>
+                                                <Dropdown.Menu style={{ minWidth: '170px', fontSize: '12px' }}>
                                                     <div class="row m-0 w-100 p-1">
                                                         <div class="col-lg-12 p-0 mb-2 ">
                                                             <p
-                                                                style={{ borderBottom: '1px solid #eee' }}
-                                                                class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center pb-1  '}
+                                                                // style={{ borderBottom: '1px solid #eee' }}
+                                                                class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center pb-0  '}
                                                                 onClick={() => {
                                                                     props?.editFunc(item);
                                                                 }}
                                                             >
-                                                                Edit
-                                                            </p>
-                                                        </div>
-                                                        <div class="col-lg-12 p-0">
-                                                            <p
-                                                                // style={{ borderBottom: '1px solid #eee' }}
-                                                                class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center  '}
-                                                                onClick={() => {
-                                                                    if (props?.clickable) {
-                                                                        history.push('/financialaccountinfo?accountId=' + item?.id + '&accountName=' + item?.name);
-                                                                    }
-                                                                }}
-                                                            >
-                                                                Show
+                                                                Change account name
                                                             </p>
                                                         </div>
                                                     </div>
@@ -128,17 +115,29 @@ const AccountsTable = (props) => {
                                             {item?.name}
                                         </span>
                                     </div>
-                                    <div className="col-lg-12 p-0 mb-2">
+                                    <div className="col-lg-7 p-0 mb-2">
                                         <span class="d-flex align-items-center" style={{ fontWeight: 600 }}>
                                             <FaMoneyBill class="mr-1" />
                                             {item?.balance}
                                         </span>
                                     </div>
-                                    <div className="col-lg-12 p-0 mb-2 d-flex justify-content-end">
+                                    <div className="col-lg-5 p-0 mb-2 d-flex justify-content-end">
                                         <span class="d-flex align-items-center" style={{ fontWeight: 500, color: 'grey', fontSize: '12px' }}>
                                             <IoMdTime class="mr-1" />
-                                            {item?.createdAt}
+                                            {dateformatter(item?.createdAt)}
                                         </span>
+                                    </div>
+                                    <div class="col-lg-12 p-0 allcentered">
+                                        <button
+                                            onClick={() => {
+                                                if (props?.clickable) {
+                                                    history.push('/financialaccountinfo?accountId=' + item?.id + '&accountName=' + item?.name);
+                                                }
+                                            }}
+                                            class={generalstyles.roundbutton}
+                                        >
+                                            View Transactions
+                                        </button>
                                     </div>
                                 </div>
                             </div>
