@@ -361,18 +361,18 @@ const CourierSheet = (props) => {
                                                                                 style={{
                                                                                     backgroundColor:
                                                                                         type == 'admin' && tempsheetpayload?.status == 'adminAccepted'
-                                                                                            ? 'red'
+                                                                                            ? 'var(--success)'
                                                                                             : type != 'admin' && tempsheetpayload?.status == 'financeAccepted'
-                                                                                            ? 'red'
+                                                                                            ? 'var(--success)'
                                                                                             : '',
                                                                                     height: '30px',
                                                                                 }}
                                                                                 class={generalstyles.roundbutton + '  allcentered'}
                                                                                 disabled={
-                                                                                    item?.order?.status == 'delivered' ||
-                                                                                    item?.order?.status == 'partiallyDelivered' ||
-                                                                                    item?.order?.status == 'cancelled' ||
-                                                                                    item?.order?.status == 'cancelled'
+                                                                                    item?.order?.status != 'delivered' &&
+                                                                                    item?.order?.status != 'partiallyDelivered' &&
+                                                                                    item?.order?.status != 'cancelled' &&
+                                                                                    item?.order?.status != 'cancelled'
                                                                                 }
                                                                                 onClick={() => {
                                                                                     if (
@@ -397,7 +397,7 @@ const CourierSheet = (props) => {
                                                                                         });
                                                                                         setsubmitSheetPayload({ ...temp });
                                                                                     } else {
-                                                                                        NotificationManager.warning('Can not finish order', 'Warning!');
+                                                                                        NotificationManager.warning('Can not update order with status' + item?.order?.status, 'Warning!');
                                                                                     }
                                                                                 }}
                                                                             >
