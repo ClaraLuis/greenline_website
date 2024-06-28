@@ -233,8 +233,8 @@ const API = () => {
 
     const transferMyCourierCollectionFunds = () => {
         return gql`
-            mutation transferMyCourierCollectionFunds($input: TransferCourierCollectionInput!) {
-                transferMyCourierCollectionFunds(input: $input)
+            mutation transferCourierCollectionFunds($input: TransferCourierCollectionInput!) {
+                transferCourierCollectionFunds(input: $input)
             }
         `;
     };
