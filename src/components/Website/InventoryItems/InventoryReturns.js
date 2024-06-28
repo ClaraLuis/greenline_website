@@ -158,6 +158,7 @@ const InventoryReturns = (props) => {
                                 }
                                 setpackagepayload({ ...temp });
                             }}
+                            selectedItems={packagepayload.ids}
                             card="col-lg-4 px-1"
                             items={fetchInventoryItemReturnsQuery?.data?.paginateInventoryReturns?.data}
                         />
