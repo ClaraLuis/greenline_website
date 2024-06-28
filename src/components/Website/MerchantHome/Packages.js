@@ -238,19 +238,20 @@ const Packages = (props) => {
                                         <div class="col-lg-12 p-0 d-flex justify-content-end" style={{ fontSize: '12px', color: 'grey' }}>
                                             {item?.createdAt}
                                         </div>
-
-                                        <div
-                                            style={{
-                                                width: '30px',
-                                                height: '30px',
-                                                position: 'absolute',
-                                                right: 15,
-                                                bottom: 30,
-                                            }}
-                                            className=" allcentered"
-                                        >
-                                            <FiCheckCircle style={{ transition: 'all 0.4s' }} color={selected ? 'var(--success)' : ''} size={18} />
-                                        </div>
+                                        {selected && (
+                                            <div
+                                                style={{
+                                                    width: '30px',
+                                                    height: '30px',
+                                                    position: 'absolute',
+                                                    right: 15,
+                                                    bottom: 30,
+                                                }}
+                                                className=" allcentered"
+                                            >
+                                                <FiCheckCircle style={{ transition: 'all 0.4s' }} color={selected ? 'var(--success)' : ''} size={18} />
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             );
