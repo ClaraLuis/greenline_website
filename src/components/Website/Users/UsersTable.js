@@ -108,7 +108,7 @@ const UsersTable = (props) => {
                                                         }}
                                                         className=" allcentered"
                                                     >
-                                                        <div class=" wordbreak text-danger bg-light-danger rounded-pill font-weight-600allcentered ">inactive</div>
+                                                        <div class=" wordbreak text-danger bg-light-danger rounded-pill font-weight-600 allcentered ">inactive</div>
                                                     </div>
                                                 )}
                                             </div>

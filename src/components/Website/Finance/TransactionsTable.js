@@ -149,7 +149,7 @@ const TransactionsTable = (props) => {
                                                         })}
                                                     </div>
                                                     <div class="col-lg-12 p-0 d-flex justify-content-end align-items-center ">
-                                                        <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600allcentered  '}>
+                                                        <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered  '}>
                                                             {transactionTypesContext?.map((i, ii) => {
                                                                 if (i.value == item?.type) {
                                                                     return <span>{i.label}</span>;
@@ -185,7 +185,7 @@ const TransactionsTable = (props) => {
                                                             );
                                                         }
                                                     })}
-                                                    <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600allcentered mx-1'}>
+                                                    <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered mx-1'}>
                                                         {transactionTypesContext?.map((i, ii) => {
                                                             if (i.value == item?.type) {
                                                                 return <span>{i.label}</span>;

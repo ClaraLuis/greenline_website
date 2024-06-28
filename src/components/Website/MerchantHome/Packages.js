@@ -186,8 +186,8 @@ const Packages = (props) => {
                                                 <div
                                                     className={
                                                         item.status == 'delivered'
-                                                            ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600allcentered  '
-                                                            : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600allcentered '
+                                                            ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered  '
+                                                            : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered '
                                                     }
                                                 >
                                                     {returnPackageStatusContext?.map((i, ii) => {
@@ -196,7 +196,7 @@ const Packages = (props) => {
                                                         }
                                                     })}
                                                 </div>
-                                                <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600allcentered mx-1 '}>
+                                                <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered mx-1 '}>
                                                     {returnPackageTypesContext?.map((i, ii) => {
                                                         if (i.value == item?.type) {
                                                             return <span>{i.label}</span>;

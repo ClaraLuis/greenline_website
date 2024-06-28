@@ -136,7 +136,7 @@ const FinancialAccountInfo = (props) => {
                             <span style={{ fontWeight: 700, fontSize: '16px' }}># {accountItem?.id}</span>
                         </div>
                         <div className="col-lg-6 p-0 d-flex justify-content-end align-items-center">
-                            <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600allcentered  '}>
+                            <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered  '}>
                                 {financialAccountTypesContext?.map((i, ii) => {
                                     if (i.value == accountItem?.type) {
                                         return <span>{i.label}</span>;
