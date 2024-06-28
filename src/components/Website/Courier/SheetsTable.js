@@ -9,7 +9,7 @@ import { FaLayerGroup } from 'react-icons/fa';
 import Select, { components } from 'react-select';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
-import { IoMdClose } from 'react-icons/io';
+import { IoMdClose, IoMdTime } from 'react-icons/io';
 import { Modal } from 'react-bootstrap';
 
 import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
@@ -24,7 +24,7 @@ const { ValueContainer, Placeholder } = components;
 const SheetsTable = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { sheetStatusesContext } = useContext(Contexthandlerscontext);
+    const { sheetStatusesContext, dateformatter } = useContext(Contexthandlerscontext);
 
     const { lang, langdetect } = useContext(LanguageContext);
 
@@ -68,45 +68,64 @@ const SheetsTable = (props) => {
                     {props?.fetchSheetsQuery?.data?.paginateCourierSheets?.data?.map((item, index) => {
                         return (
                             <div
-                                onClick={() => {
-                                    if (props?.clickable) {
-                                        props?.onClick(item);
-                                    }
-                                }}
                                 className="col-lg-4 p-1"
-                                style={{ cursor: props?.clickable ? 'pointer' : '' }}
+                                // style={{ cursor: props?.clickable ? 'pointer' : '' }}
                             >
                                 <div style={{ background: 'white' }} class={' p-3 row m-0 w-100 card'}>
-                                    <div className="col-lg-4 p-0">
-                                        <span style={{ fontWeight: 700, fontSize: '16px' }}># {item?.id}</span>
-                                    </div>
-                                    <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
-                                        <div
-                                            className={
-                                                item.status == 'completed'
-                                                    ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered  '
-                                                    : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered '
-                                            }
-                                        >
-                                            {sheetStatusesContext?.map((i, ii) => {
-                                                if (i.value == item?.status) {
-                                                    return <span>{i.label}</span>;
-                                                }
-                                            })}
+                                    <div class="col-lg-12 p-0">
+                                        <div class="row m-0 w-100 d-flex align-items-end">
+                                            <div className="col-lg-4 p-0">
+                                                <span style={{ fontSize: '12px', color: 'grey' }}># {item?.id}</span>
+                                                <br />
+                                                <span style={{ fontWeight: 600 }} class="text-capitalize">
+                                                    {item?.userInfo?.name}{' '}
+                                                </span>
+                                            </div>
+                                            <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
+                                                <div
+                                                    className={
+                                                        item.status == 'completed'
+                                                            ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered  '
+                                                            : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered '
+                                                    }
+                                                >
+                                                    {sheetStatusesContext?.map((i, ii) => {
+                                                        if (i.value == item?.status) {
+                                                            return <span>{i.label}</span>;
+                                                        }
+                                                    })}
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="col-lg-12 p-0 my-2">
                                         <hr className="m-0" />
                                     </div>
-                                    <div className="col-lg-12 p-0 mb-2">
-                                        Courier Name:{' '}
-                                        <span style={{ fontWeight: 600 }} class="text-capitalize">
-                                            {item?.userInfo?.name}
+
+                                    <div className="col-lg-6 p-0 mb-2">
+                                        <span style={{ fontWeight: 600 }}>{item?.orderCount}</span> Orders
+                                    </div>
+                                    <div class="col-lg-6 p-0 mb-2 d-flex justify-content-end">
+                                        <span class="d-flex align-items-center" style={{ fontWeight: 400, color: 'grey', fontSize: '10px' }}>
+                                            <IoMdTime class="mr-1" />
+                                            {dateformatter(item?.createdAt)}
                                         </span>
                                     </div>
-                                    <div className="col-lg-12 p-0 mb-2">
-                                        Orders Count: <span style={{ fontWeight: 600 }}>{item?.orderCount}</span>
-                                    </div>
+                                    {props?.clickable && (
+                                        <div class="col-lg-12 allcentered">
+                                            <button
+                                                style={{ height: '30px' }}
+                                                class={generalstyles.roundbutton + ' p-0 allcentered'}
+                                                onClick={() => {
+                                                    if (props?.clickable) {
+                                                        props?.onClick(item);
+                                                    }
+                                                }}
+                                            >
+                                                View Sheet
+                                            </button>
+                                        </div>
+                                    )}
 
                                     {/* <div className="col-lg-12 p-0 d-flex justify-content-end ">
                                         <div

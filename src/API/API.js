@@ -742,6 +742,7 @@ const API = () => {
                         userInfo {
                             name
                         }
+                        createdAt
                     }
                     cursor
                 }
@@ -759,6 +760,7 @@ const API = () => {
                         userInfo {
                             name
                         }
+                        createdAt
                         sheetOrders{
                             id
                             adminPass

@@ -11,11 +11,12 @@ import API from '../../../API/API.js';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 import { NotificationManager } from 'react-notifications';
 import { FaCheck } from 'react-icons/fa';
+import { IoMdTime } from 'react-icons/io';
 
 const CourierSheet = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, dateformatter, orderStatusesContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, sheetStatusesContext, dateformatter, orderStatusesContext } = useContext(Contexthandlerscontext);
     const { fetchUsers, useQueryGQL, fetchCourierSheet, updateCourierSheet, useMutationGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -101,24 +102,65 @@ const CourierSheet = (props) => {
         temp.orderTotal = total;
         temp.orderCurrency = currency;
         temp.status = fetchCourierSheetQuery?.data?.CourierSheet?.status;
+        temp.orderCount = fetchCourierSheetQuery?.data?.CourierSheet?.orderCount;
+        temp.id = fetchCourierSheetQuery?.data?.CourierSheet?.id;
+        temp.createdAt = fetchCourierSheetQuery?.data?.CourierSheet?.createdAt;
+        temp.userInfo = fetchCourierSheetQuery?.data?.CourierSheet?.userInfo;
+
         setsubmitSheetPayload({ ...temp });
     }, [fetchCourierSheetQuery?.data]);
 
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
-                <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
-                    <p class=" p-0 m-0" style={{ fontSize: '27px' }}>
-                        Sheet
-                    </p>
-                </div>
-                {type == 'finance' && (
-                    <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-end pb-2 '}>
-                        <p class=" p-0 m-0" style={{ fontSize: '20px', fontWeight: 600 }}>
-                            {submitSheetPayload?.orderTotal} {submitSheetPayload?.orderCurrency}
-                        </p>
+                <div
+                    className="col-lg-12 pr-3 pl-2 m-0 mb-3"
+                    // style={{ cursor: props?.clickable ? 'pointer' : '' }}
+                >
+                    <div style={{ background: 'white', margin: '0px' }} class={' p-3 row m-0 w-100 card'}>
+                        <div className="col-lg-4 p-0">
+                            <span style={{ fontWeight: 600 }} class="text-capitalize">
+                                {submitSheetPayload?.userInfo?.name}{' '}
+                            </span>
+                            <span style={{ fontWeight: 700, fontSize: '16px' }}># {submitSheetPayload?.id}</span>
+                        </div>
+                        <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
+                            <div
+                                className={
+                                    submitSheetPayload.status == 'completed'
+                                        ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered  '
+                                        : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered '
+                                }
+                            >
+                                {sheetStatusesContext?.map((i, ii) => {
+                                    if (i.value == submitSheetPayload?.status) {
+                                        return <span>{i.label}</span>;
+                                    }
+                                })}
+                            </div>
+                        </div>
+                        <div className="col-lg-12 p-0 my-2">
+                            <hr className="m-0" />
+                        </div>
+
+                        <div className="col-lg-6 p-0 mb-2">
+                            <span style={{ fontWeight: 600 }}>{submitSheetPayload?.orderCount}</span> Orders
+                        </div>
+                        {type == 'finance' && (
+                            <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-end pb-2 '}>
+                                <p class=" p-0 m-0" style={{ fontSize: '18px', fontWeight: 600 }}>
+                                    {submitSheetPayload?.orderTotal} {submitSheetPayload?.orderCurrency}
+                                </p>
+                            </div>
+                        )}
+                        <div class="col-lg-12 p-0 mb-2 d-flex justify-content-end">
+                            <span class="d-flex align-items-center" style={{ fontWeight: 400, color: 'grey', fontSize: '10px' }}>
+                                <IoMdTime class="mr-1" />
+                                {dateformatter(submitSheetPayload?.createdAt)}
+                            </span>
+                        </div>
                     </div>
-                )}
+                </div>
                 {/* <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>
                     <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
                         <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
@@ -223,7 +265,8 @@ const CourierSheet = (props) => {
                                                                         type="checkbox"
                                                                         className="mt-auto mb-auto"
                                                                         checked={tempsheetpayload.expanded}
-                                                                        onChange={() => {
+                                                                        onChange={(e) => {
+                                                                            e.stopPropagation();
                                                                             if (
                                                                                 item?.order?.status == 'delivered' ||
                                                                                 item?.order?.status == 'partiallyDelivered' ||
@@ -277,10 +320,10 @@ const CourierSheet = (props) => {
                                                                         {type == 'admin'
                                                                             ? item?.financePass
                                                                                 ? 'Finance Accepted'
-                                                                                : 'Finance Rejected'
+                                                                                : 'Pending Finance'
                                                                             : item?.adminPass
                                                                             ? 'Admin Accepted'
-                                                                            : 'Admin Rejected'}
+                                                                            : 'Pending Admin'}
                                                                     </div>
                                                                     <div
                                                                         className={
@@ -301,6 +344,7 @@ const CourierSheet = (props) => {
                                                             </div>
                                                         </div>{' '}
                                                     </div>
+
                                                     <div className="col-lg-5 p-0">
                                                         <div className="row m-0 w-100">
                                                             <div className="col-lg-12 p-0 d-flex justify-content-end">
@@ -309,7 +353,8 @@ const CourierSheet = (props) => {
                                                                         <input
                                                                             type="checkbox"
                                                                             checked={!tempsheetpayload?.shippingCollected}
-                                                                            onChange={() => {
+                                                                            onChange={(e) => {
+                                                                                e.stopPropagation();
                                                                                 var temp = { ...submitSheetPayload };
 
                                                                                 temp.updateSheetOrders.map((i, ii) => {
@@ -400,6 +445,48 @@ const CourierSheet = (props) => {
                                                     </div>
                                                 </div>
                                             </div>
+                                            {type == 'finance' && (
+                                                <div class="col-lg-12 p-0 mt-2">
+                                                    <div class="row m-0 w-100 d-flex">
+                                                        <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4">
+                                                            <div class="row m-0 w-100">
+                                                                <div class="col-lg-12 p-0 allcentered text-center">
+                                                                    <span style={{ fontWeight: 400, fontSize: '11px' }}>Price</span>
+                                                                </div>
+                                                                <div class="col-lg-12 p-0 allcentered text-center">
+                                                                    <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                        {parseInt(item?.order?.price)} {item?.order?.currency}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4">
+                                                            <div class="row m-0 w-100">
+                                                                <div class="col-lg-12 p-0 allcentered text-center">
+                                                                    <span style={{ fontWeight: 400, fontSize: '11px' }}>Shipping</span>
+                                                                </div>
+                                                                <div class="col-lg-12 p-0 allcentered text-center">
+                                                                    <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                        {parseInt(item?.order?.shippingPrice)} {item?.order?.currency}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div style={{ fontWeight: 600, fontSize: '15px' }} className=" p-0 mb-2 allcentered col-lg-4">
+                                                            <div class="row m-0 w-100">
+                                                                <div class="col-lg-12 p-0 allcentered text-center">
+                                                                    <span style={{ fontWeight: 400, fontSize: '11px' }}>Total</span>
+                                                                </div>
+                                                                <div class="col-lg-12 p-0 allcentered text-center">
+                                                                    <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                        {parseInt(item?.order?.price) + parseInt(item?.order?.shippingPrice)} {item?.order?.currency}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
 
                                             {tempsheetpayload?.expanded && (
                                                 // <AccordionItemPanel expanded={expandedItems.includes(index)}>
@@ -481,12 +568,17 @@ const CourierSheet = (props) => {
                                                                     {'Notes'}
                                                                 </label> */}
                                                                         <TextareaAutosize
+                                                                            style={{ zIndex: 1000 }}
                                                                             class={formstyles.form__field}
                                                                             value={tempsheetpayload?.description}
                                                                             placeholder={'Notes'}
                                                                             minRows={5}
                                                                             maxRows={5}
+                                                                            onClick={(e) => {
+                                                                                e.stopPropagation();
+                                                                            }}
                                                                             onChange={(event) => {
+                                                                                event.stopPropagation();
                                                                                 var temp = { ...submitSheetPayload };
 
                                                                                 temp.updateSheetOrders.map((i, ii) => {
@@ -507,21 +599,6 @@ const CourierSheet = (props) => {
                                                                 Total: {parseInt(item?.order?.price) + parseInt(item?.order?.shippingPrice)} {item?.order?.currency}
                                                             </div>
                                                         )}
-                                                        {type == 'finance' && (
-                                                            <div class="col-lg-12 p-0">
-                                                                <div class="row m-0 w-100 d-flex" style={{ justifyContent: 'space-around' }}>
-                                                                    <div className="p-0 mb-2">
-                                                                        Price: {parseInt(item?.order?.price)} {item?.order?.currency}
-                                                                    </div>
-                                                                    <div className=" p-0 mb-2">
-                                                                        Shiping: {parseInt(item?.order?.shippingPrice)} {item?.order?.currency}
-                                                                    </div>
-                                                                    <div style={{ fontWeight: 600, fontSize: '15px' }} className=" p-0 mb-2">
-                                                                        Total: {parseInt(item?.order?.price) + parseInt(item?.order?.shippingPrice)} {item?.order?.currency}
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        )}
                                                     </div>
                                                 </>
                                                 // </AccordionItemPanel>
@@ -534,17 +611,22 @@ const CourierSheet = (props) => {
                     </Accordion>
                 </div>
             </div>
-            <div style={{ position: 'fixed', bottom: '2%', right: '2%' }}>
-                <button
-                    style={{ height: '35px' }}
-                    class={generalstyles.roundbutton + '  mb-1 mx-2'}
-                    onClick={() => {
-                        // history.push('/addorder');
-                        handleupdateCourierSheet();
-                    }}
-                >
-                    Close Sheet
-                </button>
+
+            <div style={{ position: 'fixed', bottom: '2%', right: '4%', width: '75.5%' }}>
+                <div class="col-lg-12 p-0">
+                    <div style={{ background: 'white' }} class="row m-0 w-100 card d-flex justify-content-end p-3">
+                        <button
+                            style={{ height: '35px' }}
+                            class={generalstyles.roundbutton}
+                            onClick={() => {
+                                // history.push('/addorder');
+                                handleupdateCourierSheet();
+                            }}
+                        >
+                            Close Sheet
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     );
