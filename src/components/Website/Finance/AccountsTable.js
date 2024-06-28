@@ -90,10 +90,10 @@ const AccountsTable = (props) => {
                                                 </Dropdown.Toggle>
                                                 <Dropdown.Menu style={{ minWidth: '170px', fontSize: '12px' }}>
                                                     <div class="row m-0 w-100 p-1">
-                                                        <div class="col-lg-12 p-0 mb-2 ">
+                                                        <div class="col-lg-12 p-0  allcentered ">
                                                             <p
                                                                 // style={{ borderBottom: '1px solid #eee' }}
-                                                                class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center pb-0  '}
+                                                                class={' mb-0 pb-0 avenirmedium text-secondaryhover text-center d-flex align-items-center pb-0  '}
                                                                 onClick={() => {
                                                                     props?.editFunc(item);
                                                                 }}
@@ -127,7 +127,7 @@ const AccountsTable = (props) => {
                                             {dateformatter(item?.createdAt)}
                                         </span>
                                     </div>
-                                    <div class="col-lg-12 p-0 allcentered">
+                                    <div class="col-lg-12 p-0 allcentered mt-2">
                                         <button
                                             onClick={() => {
                                                 if (props?.clickable) {
