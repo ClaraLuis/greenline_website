@@ -1,6 +1,6 @@
 import React, { Suspense, useContext, useEffect, useState } from 'react';
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
-import { NotificationContainer } from 'react-notifications';
+import { NotificationContainer, NotificationManager } from 'react-notifications';
 import 'react-notifications/lib/notifications.css';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { BrowserRouter as Router, useHistory, Route, Redirect } from 'react-router-dom';
@@ -39,6 +39,13 @@ const resolvePendingRequests = (newToken) => {
 const errorLink = onError(({ graphQLErrors, networkError, operation, forward }) => {
     if (graphQLErrors) {
         for (let err of graphQLErrors) {
+            if (err.message === 'jwt malformed') {
+                signOut(getAuth());
+                cookies.remove('accessToken');
+                cookies.remove('userInfo');
+                window.location.reload();
+                // NotificationManager.warning('','')
+            }
             if (err.message === 'expired jwt token.') {
                 if (!isRefreshing) {
                     isRefreshing = true;
