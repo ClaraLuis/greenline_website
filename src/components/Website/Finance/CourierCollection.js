@@ -435,13 +435,17 @@ const CourierCollection = (props) => {
                                         NotificationManager.warning(error.message || error, 'Warning!');
                                     }
                                 } else {
-                                    try {
-                                        const { data } = await processMerchantPaymentsMutation();
-                                        refetchCourierCollectionTransactionsQuery();
-                                        setselectedArray([]);
-                                        setopenModal(false);
-                                    } catch (error) {
-                                        NotificationManager.warning(error.message || error, 'Warning!');
+                                    if (filterobj?.merchantIds?.length != 0) {
+                                        try {
+                                            const { data } = await processMerchantPaymentsMutation();
+                                            refetchCourierCollectionTransactionsQuery();
+                                            setselectedArray([]);
+                                            setopenModal(false);
+                                        } catch (error) {
+                                            NotificationManager.warning(error.message || error, 'Warning!');
+                                        }
+                                    } else {
+                                        NotificationManager.warning('Choose merchant first', 'Warning!');
                                     }
                                 }
                             }}
