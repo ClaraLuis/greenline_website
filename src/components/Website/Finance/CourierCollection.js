@@ -352,7 +352,7 @@ const CourierCollection = (props) => {
                                     <button
                                         class={generalstyles.roundbutton + ' allcentered w-100'}
                                         onClick={async () => {
-                                            if (filterobj?.merchantIds?.length != 0) {
+                                            if (filterobj?.merchantIds?.length != 0 || filterobj?.merchantIds != undefined) {
                                                 if (selectedArray?.length != 0) {
                                                     setpayload({ ...payload, type: 'process' });
                                                     setopenModal(true);
@@ -450,7 +450,7 @@ const CourierCollection = (props) => {
                                             NotificationManager.warning(error.message || error, 'Warning!');
                                         }
                                     } else {
-                                        if (filterobj?.merchantIds?.length != 0) {
+                                        if (filterobj?.merchantIds?.length != 0 || filterobj?.merchantIds != undefined) {
                                             try {
                                                 const { data } = await processMerchantPaymentsMutation();
                                                 refetchCourierCollectionTransactionsQuery();
