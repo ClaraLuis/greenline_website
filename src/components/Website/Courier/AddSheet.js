@@ -10,8 +10,6 @@ import { LanguageContext } from '../../../LanguageContext.js';
 import Form from '../../Form.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 
-const { ValueContainer, Placeholder } = components;
-
 const AddSheet = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
