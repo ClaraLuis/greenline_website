@@ -14,6 +14,7 @@ import { Accordion, AccordionItem, AccordionItemHeading, AccordionItemButton, Ac
 // Icons
 import { NotificationManager } from 'react-notifications';
 import API from '../../../API/API.js';
+import { RiErrorWarningFill } from 'react-icons/ri';
 import Form from '../../Form.js';
 import Inputfield from '../../Inputfield.js';
 import Pagination from '../../Pagination.js';
@@ -69,7 +70,12 @@ const AddOrder = (props) => {
         canbeoppened: 1,
         fragile: 0,
         partialdelivery: 1,
+        original: 1,
+        returnoriginal: 1,
+        price: undefined,
+        returnAmount: undefined,
         includevat: 0,
+        previousOrderId: undefined,
         // currency: 'EGP',
     });
     const [tabs, settabs] = useState([
@@ -138,6 +144,9 @@ const AddOrder = (props) => {
         canOpen: orderpayload?.canbeoppened == 1 ? true : false,
         fragile: orderpayload?.fragile == 1 ? true : false,
         deliveryPart: orderpayload?.partialdelivery == 1 ? true : false,
+        original: orderpayload?.original == 1 ? true : false,
+        price: orderpayload?.price,
+        returnAmount: orderpayload?.returnAmount,
         returnOrderItems: orderpayload?.returnOrderItems?.length == 0 ? undefined : orderpayload?.returnOrderItems,
         // currency: 'EGP',
         orderItems: cartItems,
@@ -303,9 +312,20 @@ const AddOrder = (props) => {
                                             });
                                             settabs([...tabstemp]);
                                         }}
-                                        class={!item.isChecked ? generalstyles.tab : `${generalstyles.tab} ${generalstyles.tab_active}`}
+                                        class={!item.isChecked ? generalstyles.tab + ' allcentered' : `${generalstyles.tab} ${generalstyles.tab_active}` + ' allcentered'}
                                     >
                                         {item.name}
+                                        {((index == 0 && orderpayload?.items?.length == 0) ||
+                                            (index == 1 &&
+                                                (orderpayload?.customerId?.length == 0 ||
+                                                    orderpayload?.customerId == undefined ||
+                                                    orderpayload?.address?.length == 0 ||
+                                                    orderpayload?.address == undefined)) ||
+                                            (index == 2 &&
+                                                ((orderpayload?.returnOrderItems?.length == 0 && externalOrder) ||
+                                                    (!externalOrder && (orderpayload?.previousOrderId?.length == 0 || orderpayload?.previousOrderId == undefined))))) && (
+                                            <RiErrorWarningFill color="var(--danger)" size={20} class="ml-2" />
+                                        )}
                                     </div>
                                 );
                             })}
@@ -868,6 +888,7 @@ const AddOrder = (props) => {
                                             type="checkbox"
                                             checked={externalOrder}
                                             onChange={() => {
+                                                setorderpayload({ ...orderpayload, previousOrderId: undefined, returnOrderItems: [] });
                                                 setexternalOrder(!externalOrder);
                                             }}
                                         />
@@ -997,6 +1018,9 @@ const AddOrder = (props) => {
                                     </div>
                                     {fetchOrdersQuery?.data?.paginateOrders?.data?.map((item, index) => {
                                         var selected = false;
+                                        if (item.id == orderpayload?.previousOrderId) {
+                                            selected = true;
+                                        }
                                         // sheetpayload?.orders?.map((orderitem, orderindex) => {
                                         //     if (orderitem?.id == item?.id) {
                                         //         selected = true;
@@ -1007,23 +1031,7 @@ const AddOrder = (props) => {
                                                 <div className="col-lg-6 p-1">
                                                     <div
                                                         onClick={() => {
-                                                            var temp = { ...sheetpayload };
-                                                            var exist = false;
-                                                            var chosenindex = null;
-                                                            temp.orders.map((i, ii) => {
-                                                                if (i.id == item.id) {
-                                                                    exist = true;
-                                                                    chosenindex = ii;
-                                                                }
-                                                            });
-                                                            if (!exist) {
-                                                                temp.orders.push(item);
-                                                                temp.orderIds.push(item.id);
-                                                            } else {
-                                                                temp.orders.splice(chosenindex, 1);
-                                                                temp.orderIds.splice(chosenindex, 1);
-                                                            }
-                                                            setsheetpayload({ ...temp });
+                                                            setorderpayload({ ...orderpayload, previousOrderId: item.id });
                                                         }}
                                                         style={{ cursor: 'pointer' }}
                                                         class={generalstyles.card + ' p-3 row m-0 w-100 allcentered '}
@@ -1099,137 +1107,45 @@ const AddOrder = (props) => {
                 )}
                 <div class="col-lg-4 mb-3 px-1">
                     <div class={generalstyles.card + ' row m-0 w-100 p-2 py-3'}>
-                        <div class="col-lg-12">
-                            {orderpayload?.items?.length != 0 && (
-                                <>
-                                    <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>
-                                        <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
-                                            <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
-                                                <AccordionItemHeading>
-                                                    <AccordionItemButton>
-                                                        <div class="row m-0 w-100">
-                                                            <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
-                                                                <p class={generalstyles.cardTitle + '  m-0 p-0 '}>Cart ({orderpayload?.items?.length})</p>
-                                                            </div>
-                                                            <div class="col-lg-4 col-md-4 col-sm-4 p-0 d-flex align-items-center justify-content-end">
-                                                                <AccordionItemState>
-                                                                    {(state) => {
-                                                                        if (state.expanded == true) {
-                                                                            return (
-                                                                                <i class="h-100 d-flex align-items-center justify-content-center">
-                                                                                    <BsChevronUp />
-                                                                                </i>
-                                                                            );
-                                                                        } else {
-                                                                            return (
-                                                                                <i class="h-100 d-flex align-items-center justify-content-center">
-                                                                                    <BsChevronDown />
-                                                                                </i>
-                                                                            );
-                                                                        }
-                                                                    }}
-                                                                </AccordionItemState>
-                                                            </div>
-                                                        </div>
-                                                    </AccordionItemButton>
-                                                </AccordionItemHeading>
-                                                <AccordionItemPanel>
-                                                    <hr className="mt-2 mb-3" />
-                                                    {orderpayload?.items?.map((item, index) => {
-                                                        return (
-                                                            <div class={' col-lg-12 p-0'}>
-                                                                <div class={generalstyles.filter_container + ' p-1 row m-0 mb-2 w-100 allcentered'}>
-                                                                    <div class="col-lg-2 mr-2 p-0">
-                                                                        <div style={{ width: '100%', height: '35px' }}>
-                                                                            <img
-                                                                                src={
-                                                                                    item?.item?.imageUrl
-                                                                                        ? item?.item?.imageUrl
-                                                                                        : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'
-                                                                                }
-                                                                                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px' }}
-                                                                            />
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-lg-4 p-0 wordbreak" style={{ fontWeight: 700, fontSize: '12px' }}>
-                                                                        {item?.item?.name}
-                                                                    </div>
+                        <p class={generalstyles.cardTitle + '  m-0 p-2 pt-0 '} style={{ fontWeight: 600 }}>
+                            Order Details
+                        </p>
 
-                                                                    <div class="col-lg-5 d-flex justify-content-end  p-0">
-                                                                        <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
-                                                                            <FaWindowMinimize
-                                                                                onClick={() => {
-                                                                                    if (orderpayload.items[index].count > 0) {
-                                                                                        var temp = { ...orderpayload };
-                                                                                        temp.items[index].count = parseInt(temp.items[index].count) - 1;
-                                                                                        setorderpayload({ ...temp });
-                                                                                    } else {
-                                                                                        var temp = { ...orderpayload };
-                                                                                        temp.items.splice(index, 1);
-                                                                                        setorderpayload({ ...temp });
-                                                                                    }
-                                                                                }}
-                                                                                class=" mb-2 text-danger text-dangerhover"
-                                                                            />
-
-                                                                            <input
-                                                                                // disabled={props?.disabled}
-                                                                                type={'number'}
-                                                                                class={formstyles.form__field + ' mx-2'}
-                                                                                style={{ height: '25px', width: '52%', paddingInlineStart: '10px' }}
-                                                                                value={item?.count}
-                                                                                placeholder={'Search by name or SKU'}
-                                                                                onChange={(event) => {
-                                                                                    var temp = { ...orderpayload };
-                                                                                    temp.items[index].count = event.target.value;
-                                                                                    setorderpayload({ ...temp });
-                                                                                }}
-                                                                            />
-                                                                            <FaPlus
-                                                                                onClick={() => {
-                                                                                    var temp = { ...orderpayload };
-                                                                                    temp.items[index].count = parseInt(temp.items[index].count) + 1;
-                                                                                    setorderpayload({ ...temp });
-                                                                                }}
-                                                                                class=" text-secondaryhover"
-                                                                            />
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        );
-                                                    })}
-                                                </AccordionItemPanel>
-                                            </AccordionItem>
-                                        </Accordion>
-                                    </div>
-                                </>
-                            )}
-                        </div>
-                        <Form
-                            size={'lg'}
-                            submit={submit}
-                            setsubmit={setsubmit}
-                            attr={[
-                                { name: 'Order type', attr: 'ordertype', type: 'select', options: orderTypeContext, size: '12' },
-                                { name: 'Payment type', attr: 'paymenttype', type: 'select', options: paymentTypeContext, size: '12' },
-                                { name: 'Can be oppened', attr: 'canbeoppened', type: 'checkbox', size: '12' },
-                                { name: 'Fragile', attr: 'fragile', type: 'checkbox', size: '12' },
-                                { name: 'Partial delivery', attr: 'partialdelivery', type: 'checkbox', size: '12' },
-                            ]}
-                            payload={orderpayload}
-                            setpayload={setorderpayload}
-                            // button1disabled={UserMutation.isLoading}
-                        />
                         <div class="col-lg-12">
-                            {orderpayload?.returnOrderItems?.length != 0 && (
-                                <>
-                                    <div class="col-lg-12 pb-2 px-0" style={{ fontSize: '15px', fontWeight: 700 }}>
-                                        Returnn Items ({orderpayload?.returnOrderItems?.length})
-                                    </div>
-                                    <div class="col-lg-12 p-0">
-                                        <div style={{ maxHeight: '20vh', overflow: 'scroll' }} class="row m-0 w-100 scrollmenuclasssubscrollbar">
-                                            {orderpayload?.returnOrderItems?.map((item, index) => {
+                            <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-1'}>
+                                <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
+                                    <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
+                                        <AccordionItemHeading>
+                                            <AccordionItemButton>
+                                                <div class="row m-0 w-100">
+                                                    <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
+                                                        <p class={generalstyles.cardTitle + '  m-0 p-0 '}>Items ({orderpayload?.items?.length})</p>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-4 col-sm-4 p-0 d-flex align-items-center justify-content-end">
+                                                        <AccordionItemState>
+                                                            {(state) => {
+                                                                if (state.expanded == true) {
+                                                                    return (
+                                                                        <i class="h-100 d-flex align-items-center justify-content-center">
+                                                                            <BsChevronUp />
+                                                                        </i>
+                                                                    );
+                                                                } else {
+                                                                    return (
+                                                                        <i class="h-100 d-flex align-items-center justify-content-center">
+                                                                            <BsChevronDown />
+                                                                        </i>
+                                                                    );
+                                                                }
+                                                            }}
+                                                        </AccordionItemState>
+                                                    </div>
+                                                </div>
+                                            </AccordionItemButton>
+                                        </AccordionItemHeading>
+                                        <AccordionItemPanel>
+                                            <hr className="mt-2 mb-3" />
+                                            {orderpayload?.items?.map((item, index) => {
                                                 return (
                                                     <div class={' col-lg-12 p-0'}>
                                                         <div class={generalstyles.filter_container + ' p-1 row m-0 mb-2 w-100 allcentered'}>
@@ -1253,13 +1169,13 @@ const AddOrder = (props) => {
                                                                 <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
                                                                     <FaWindowMinimize
                                                                         onClick={() => {
-                                                                            if (orderpayload.returnOrderItems[index].count > 0) {
+                                                                            if (orderpayload.items[index].count > 0) {
                                                                                 var temp = { ...orderpayload };
-                                                                                temp.returnOrderItems[index].count = parseInt(temp.returnOrderItems[index].count) - 1;
+                                                                                temp.items[index].count = parseInt(temp.items[index].count) - 1;
                                                                                 setorderpayload({ ...temp });
                                                                             } else {
                                                                                 var temp = { ...orderpayload };
-                                                                                temp.returnOrderItems.splice(index, 1);
+                                                                                temp.items.splice(index, 1);
                                                                                 setorderpayload({ ...temp });
                                                                             }
                                                                         }}
@@ -1275,14 +1191,14 @@ const AddOrder = (props) => {
                                                                         placeholder={'Search by name or SKU'}
                                                                         onChange={(event) => {
                                                                             var temp = { ...orderpayload };
-                                                                            temp.returnOrderItems[index].count = event.target.value;
+                                                                            temp.items[index].count = event.target.value;
                                                                             setorderpayload({ ...temp });
                                                                         }}
                                                                     />
                                                                     <FaPlus
                                                                         onClick={() => {
                                                                             var temp = { ...orderpayload };
-                                                                            temp.returnOrderItems[index].count = parseInt(temp.returnOrderItems[index].count) + 1;
+                                                                            temp.items[index].count = parseInt(temp.items[index].count) + 1;
                                                                             setorderpayload({ ...temp });
                                                                         }}
                                                                         class=" text-secondaryhover"
@@ -1293,11 +1209,183 @@ const AddOrder = (props) => {
                                                     </div>
                                                 );
                                             })}
+                                        </AccordionItemPanel>
+                                    </AccordionItem>
+                                </Accordion>
+                            </div>
+                        </div>
+                        <Form
+                            size={'lg'}
+                            submit={submit}
+                            setsubmit={setsubmit}
+                            attr={
+                                orderpayload?.original == 1
+                                    ? [
+                                          { name: 'Order type', attr: 'ordertype', type: 'select', options: orderTypeContext, size: '12' },
+                                          { name: 'Payment type', attr: 'paymenttype', type: 'select', options: paymentTypeContext, size: '12' },
+                                          { name: 'Can be oppened', attr: 'canbeoppened', type: 'checkbox', size: '12' },
+                                          { name: 'Fragile', attr: 'fragile', type: 'checkbox', size: '12' },
+                                          { name: 'Partial delivery', attr: 'partialdelivery', type: 'checkbox', size: '12' },
+                                          { name: 'Original Price', attr: 'original', type: 'checkbox', size: '12' },
+                                      ]
+                                    : [
+                                          { name: 'Order type', attr: 'ordertype', type: 'select', options: orderTypeContext, size: '12' },
+                                          { name: 'Payment type', attr: 'paymenttype', type: 'select', options: paymentTypeContext, size: '12' },
+                                          { name: 'Can be oppened', attr: 'canbeoppened', type: 'checkbox', size: '12' },
+                                          { name: 'Fragile', attr: 'fragile', type: 'checkbox', size: '12' },
+                                          { name: 'Partial delivery', attr: 'partialdelivery', type: 'checkbox', size: '12' },
+                                          { name: 'Original Price', attr: 'original', type: 'checkbox', size: '12' },
+                                          { name: 'Price', attr: 'price', type: 'number', size: '12' },
+                                      ]
+                            }
+                            payload={orderpayload}
+                            setpayload={setorderpayload}
+                            // button1disabled={UserMutation.isLoading}
+                        />
+                        {orderpayload?.ordertype == 'exchange' && externalOrder && (
+                            <div class="col-lg-12 mt-2">
+                                <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-1'}>
+                                    <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
+                                        <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
+                                            <AccordionItemHeading>
+                                                <AccordionItemButton>
+                                                    <div class="row m-0 w-100">
+                                                        <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
+                                                            <p class={generalstyles.cardTitle + '  m-0 p-0 '}>Returned Items ({orderpayload?.returnOrderItems?.length})</p>
+                                                        </div>
+                                                        <div class="col-lg-4 col-md-4 col-sm-4 p-0 d-flex align-items-center justify-content-end">
+                                                            <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
+                                                                {/* <AccordionItemState>
+                                                                    {(state) => {
+                                                                        if (state.expanded == true) {
+                                                                            return (
+                                                                                <i class="h-100 d-flex align-items-center justify-content-center">
+                                                                                    <BsChevronUp />
+                                                                                </i>
+                                                                            );
+                                                                        } else {
+                                                                            return (
+                                                                                <i class="h-100 d-flex align-items-center justify-content-center">
+                                                                                    <BsChevronDown />
+                                                                                </i>
+                                                                            );
+                                                                        }
+                                                                    }}
+                                                                </AccordionItemState> */}
+                                                                <div class="wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered">External</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </AccordionItemButton>
+                                            </AccordionItemHeading>
+                                            <AccordionItemPanel>
+                                                <hr className="mt-2 mb-3" />
+                                                {orderpayload?.returnOrderItems?.map((item, index) => {
+                                                    return (
+                                                        <div class={' col-lg-12 p-0'}>
+                                                            <div class={generalstyles.filter_container + ' p-1 row m-0 mb-2 w-100 allcentered'}>
+                                                                <div class="col-lg-2 mr-2 p-0">
+                                                                    <div style={{ width: '100%', height: '35px' }}>
+                                                                        <img
+                                                                            src={
+                                                                                item?.item?.imageUrl
+                                                                                    ? item?.item?.imageUrl
+                                                                                    : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'
+                                                                            }
+                                                                            style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px' }}
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-4 p-0 wordbreak" style={{ fontWeight: 700, fontSize: '12px' }}>
+                                                                    {item?.item?.name}
+                                                                </div>
+
+                                                                <div class="col-lg-5 d-flex justify-content-end  p-0">
+                                                                    <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
+                                                                        <FaWindowMinimize
+                                                                            onClick={() => {
+                                                                                if (orderpayload.returnOrderItems[index].count > 0) {
+                                                                                    var temp = { ...orderpayload };
+                                                                                    temp.returnOrderItems[index].count = parseInt(temp.returnOrderItems[index].count) - 1;
+                                                                                    setorderpayload({ ...temp });
+                                                                                } else {
+                                                                                    var temp = { ...orderpayload };
+                                                                                    temp.returnOrderItems.splice(index, 1);
+                                                                                    setorderpayload({ ...temp });
+                                                                                }
+                                                                            }}
+                                                                            class=" mb-2 text-danger text-dangerhover"
+                                                                        />
+
+                                                                        <input
+                                                                            // disabled={props?.disabled}
+                                                                            type={'number'}
+                                                                            class={formstyles.form__field + ' mx-2'}
+                                                                            style={{ height: '25px', width: '52%', paddingInlineStart: '10px' }}
+                                                                            value={item?.count}
+                                                                            placeholder={'Search by name or SKU'}
+                                                                            onChange={(event) => {
+                                                                                var temp = { ...orderpayload };
+                                                                                temp.returnOrderItems[index].count = event.target.value;
+                                                                                setorderpayload({ ...temp });
+                                                                            }}
+                                                                        />
+                                                                        <FaPlus
+                                                                            onClick={() => {
+                                                                                var temp = { ...orderpayload };
+                                                                                temp.returnOrderItems[index].count = parseInt(temp.returnOrderItems[index].count) + 1;
+                                                                                setorderpayload({ ...temp });
+                                                                            }}
+                                                                            class=" text-secondaryhover"
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </AccordionItemPanel>
+                                        </AccordionItem>
+                                    </Accordion>
+                                </div>
+                            </div>
+                        )}
+                        {orderpayload?.ordertype == 'exchange' && !externalOrder && (
+                            <div class="col-lg-12 mt-2">
+                                <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>
+                                    <div class="row m-0 w-100">
+                                        <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
+                                            <p class={generalstyles.cardTitle + '  m-0 p-0 '}>
+                                                {orderpayload?.previousOrderId?.length != 0 && orderpayload?.previousOrderId != undefined
+                                                    ? 'Chosen order ID: #' + orderpayload?.previousOrderId
+                                                    : 'No order chosen yet'}
+                                            </p>
+                                        </div>
+                                        <div class="col-lg-4 col-md-4 col-sm-4 p-0 d-flex align-items-center justify-content-end">
+                                            <div class="wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered">Internal</div>
                                         </div>
                                     </div>
-                                </>
-                            )}
-                        </div>
+                                </div>
+                            </div>
+                        )}
+                        {orderpayload?.ordertype == 'exchange' && (
+                            <Form
+                                size={'lg'}
+                                submit={submit}
+                                setsubmit={setsubmit}
+                                attr={
+                                    orderpayload?.returnoriginal == 1
+                                        ? [{ name: 'Return Original Price', attr: 'returnoriginal', type: 'checkbox', size: '12' }]
+                                        : [
+                                              { name: 'Original Price', attr: 'returnoriginal', type: 'checkbox', size: '12' },
+                                              { name: 'Return Price', attr: 'returnAmount', type: 'number', size: '12' },
+                                          ]
+                                }
+                                payload={orderpayload}
+                                setpayload={setorderpayload}
+                                // button1disabled={UserMutation.isLoading}
+                            />
+                        )}
                     </div>
                 </div>
             </div>
