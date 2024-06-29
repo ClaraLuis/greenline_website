@@ -24,7 +24,7 @@ const { ValueContainer, Placeholder } = components;
 const AccountsTable = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, dateformatter, financialAccountTypesContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, isAuth, dateformatter, financialAccountTypesContext } = useContext(Contexthandlerscontext);
 
     const { lang, langdetect } = useContext(LanguageContext);
 
@@ -73,37 +73,39 @@ const AccountsTable = (props) => {
                                                     }
                                                 })}
                                             </div>
-                                            <Dropdown>
-                                                <Dropdown.Toggle>
-                                                    <div
-                                                        class="iconhover allcentered"
-                                                        style={{
-                                                            color: 'var(--primary)',
-                                                            // borderRadius: '10px',
-                                                            width: '28px',
-                                                            height: '28px',
-                                                            transition: 'all 0.4s',
-                                                        }}
-                                                    >
-                                                        <FaEllipsisV />
-                                                    </div>
-                                                </Dropdown.Toggle>
-                                                <Dropdown.Menu style={{ minWidth: '170px', fontSize: '12px' }}>
-                                                    <div class="row m-0 w-100 p-1">
-                                                        <div class="col-lg-12 p-0  allcentered ">
-                                                            <p
-                                                                // style={{ borderBottom: '1px solid #eee' }}
-                                                                class={' mb-0 pb-0 avenirmedium text-secondaryhover text-center d-flex align-items-center pb-0  '}
-                                                                onClick={() => {
-                                                                    props?.editFunc(item);
-                                                                }}
-                                                            >
-                                                                Change account name
-                                                            </p>
+                                            {isAuth([1, 51, 21]) && (
+                                                <Dropdown>
+                                                    <Dropdown.Toggle>
+                                                        <div
+                                                            class="iconhover allcentered"
+                                                            style={{
+                                                                color: 'var(--primary)',
+                                                                // borderRadius: '10px',
+                                                                width: '28px',
+                                                                height: '28px',
+                                                                transition: 'all 0.4s',
+                                                            }}
+                                                        >
+                                                            <FaEllipsisV />
                                                         </div>
-                                                    </div>
-                                                </Dropdown.Menu>
-                                            </Dropdown>
+                                                    </Dropdown.Toggle>
+                                                    <Dropdown.Menu style={{ minWidth: '170px', fontSize: '12px' }}>
+                                                        <div class="row m-0 w-100 p-1">
+                                                            <div class="col-lg-12 p-0  allcentered ">
+                                                                <p
+                                                                    // style={{ borderBottom: '1px solid #eee' }}
+                                                                    class={' mb-0 pb-0 avenirmedium text-secondaryhover text-center d-flex align-items-center pb-0  '}
+                                                                    onClick={() => {
+                                                                        props?.editFunc(item);
+                                                                    }}
+                                                                >
+                                                                    Change account name
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </Dropdown.Menu>
+                                                </Dropdown>
+                                            )}
                                         </div>
                                     </div>
                                     <div className="col-lg-12 p-0 my-2">
@@ -127,18 +129,20 @@ const AccountsTable = (props) => {
                                             {dateformatter(item?.createdAt)}
                                         </span>
                                     </div>
-                                    <div class="col-lg-12 p-0 allcentered mt-2">
-                                        <button
-                                            onClick={() => {
-                                                if (props?.clickable) {
-                                                    history.push('/financialaccountinfo?accountId=' + item?.id + '&accountName=' + item?.name);
-                                                }
-                                            }}
-                                            class={generalstyles.roundbutton}
-                                        >
-                                            View Transactions
-                                        </button>
-                                    </div>
+                                    {isAuth([1, 51, 27]) && (
+                                        <div class="col-lg-12 p-0 allcentered mt-2">
+                                            <button
+                                                onClick={() => {
+                                                    if (props?.clickable) {
+                                                        history.push('/financialaccountinfo?accountId=' + item?.id + '&accountName=' + item?.name);
+                                                    }
+                                                }}
+                                                class={generalstyles.roundbutton}
+                                            >
+                                                View Transactions
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         );

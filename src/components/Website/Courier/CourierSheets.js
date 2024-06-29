@@ -16,13 +16,14 @@ import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import API from '../../../API/API.js';
 import SheetsTable from './SheetsTable.js';
+import Pagination from '../../Pagination.js';
 
 const { ValueContainer, Placeholder } = components;
 
 const CourierSheets = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, dateformatter } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, dateformatter, isAuth } = useContext(Contexthandlerscontext);
     const { useQueryGQL, fetchCourierSheets } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -62,7 +63,7 @@ const CourierSheets = (props) => {
                         Add Sheet
                     </button>
                 </div> */}
-                <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>
+                {/* <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>
                     <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
                         <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
                             <AccordionItemHeading>
@@ -150,17 +151,28 @@ const CourierSheets = (props) => {
                             </AccordionItemPanel>
                         </AccordionItem>
                     </Accordion>
-                </div>
-
-                <div class={' row m-0 w-100'}>
-                    <SheetsTable
-                        clickable={true}
-                        fetchSheetsQuery={fetchSheetsQuery}
-                        onClick={(item) => {
-                            history.push('/couriersheet?id=' + item?.id + '&type=admin');
-                        }}
-                    />
-                </div>
+                </div> */}
+                {isAuth([1, 34, 53]) && (
+                    <>
+                        <div class="col-lg-12 p-0">
+                            <Pagination
+                                beforeCursor={fetchSheetsQuery?.data?.paginateCourierSheets?.cursor?.beforeCursor}
+                                afterCursor={fetchSheetsQuery?.data?.paginateCourierSheets?.cursor?.afterCursor}
+                                filter={filter}
+                                setfilter={setfilter}
+                            />
+                        </div>
+                        <div class={' row m-0 w-100'}>
+                            <SheetsTable
+                                clickable={true}
+                                fetchSheetsQuery={fetchSheetsQuery}
+                                onClick={(item) => {
+                                    history.push('/couriersheet?id=' + item?.id + '&type=admin');
+                                }}
+                            />
+                        </div>
+                    </>
+                )}
             </div>
         </div>
     );

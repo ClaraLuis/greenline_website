@@ -29,7 +29,7 @@ const { ValueContainer, Placeholder } = components;
 const UsersTable = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, dateformatter } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, dateformatter, isAuth } = useContext(Contexthandlerscontext);
 
     const { lang, langdetect } = useContext(LanguageContext);
 
@@ -84,7 +84,7 @@ const UsersTable = (props) => {
                                             </div>
 
                                             <div className="col-lg-6 p-0 mb-2 d-flex justify-content-end">
-                                                {item?.id?.length != 7 && (
+                                                {item?.id?.length != 7 && isAuth([1, 46]) && (
                                                     <div
                                                         onClick={() => {
                                                             var temp = { ...item };

@@ -30,7 +30,7 @@ const { ValueContainer, Placeholder } = components;
 const FinancialAccountInfo = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, financialAccountTypesContext, transactionTypesContext, isAuth } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, financialAccountTypesContext, transactionTypesContext, isAuth, expensesTypeContext } = useContext(Contexthandlerscontext);
     const { fetchUsers, useQueryGQL, fetchFinancialAccounts, fetchTransactions, sendAnyFinancialTransaction, useMutationGQL, sendMyFinancialTransaction } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -46,7 +46,9 @@ const FinancialAccountInfo = (props) => {
         amount: '',
         receipt: undefined,
     });
+
     const [submit, setsubmit] = useState(false);
+    const [expensepayload, setexpensepayload] = useState({});
 
     const [filterobj, setfilterobj] = useState({
         isAsc: true,
@@ -174,16 +176,20 @@ const FinancialAccountInfo = (props) => {
                                 Transactions
                             </p>
                         </div>
+
                         <div class={' col-lg-6 col-md-6 col-sm-6 p-0 pr-3 pr-md-1 pr-sm-0 d-flex align-items-center justify-content-end pb-1 '}>
-                            <button
-                                style={{ height: '35px' }}
-                                class={generalstyles.roundbutton + '  mb-1 mx-1'}
-                                onClick={() => {
-                                    setopenModal({ open: true, type: 'transaction' });
-                                }}
-                            >
-                                Add Transaction
-                            </button>
+                            {isAuth([1, 51, 28]) && (
+                                <button
+                                    style={{ height: '35px' }}
+                                    class={generalstyles.roundbutton + '  mb-1 mx-1'}
+                                    onClick={() => {
+                                        setopenModal({ open: true, type: 'transaction' });
+                                    }}
+                                >
+                                    Add Transaction
+                                </button>
+                            )}
+
                             {/* <button
                                 style={{ height: '35px' }}
                                 class={generalstyles.roundbutton + '  mb-1 mx-1'}
@@ -206,25 +212,29 @@ const FinancialAccountInfo = (props) => {
                                         <span style={{ color: 'var(--info)' }}>sent transactions</span>
                                     </p>
                                 </div>
-                                <div class="col-lg-12 p-0">
-                                    <Pagination
-                                        beforeCursor={fetchSenttTransactionsQuery?.data?.paginateFinancialTransaction?.cursor?.beforeCursor}
-                                        afterCursor={fetchSenttTransactionsQuery?.data?.paginateFinancialTransaction?.cursor?.afterCursor}
-                                        filter={filterSentTransactionsObj}
-                                        setfilter={setfilterSentTransactionsObj}
-                                    />
-                                </div>
-                                <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
-                                    <TransactionsTable
-                                        width={'100%'}
-                                        query={fetchSenttTransactionsQuery}
-                                        paginationAttr="paginateFinancialTransaction"
-                                        srctype="sent"
-                                        refetchFunc={() => {
-                                            Refetch();
-                                        }}
-                                    />
-                                </div>
+                                {isAuth([1, 51, 27]) && (
+                                    <>
+                                        <div class="col-lg-12 p-0">
+                                            <Pagination
+                                                beforeCursor={fetchSenttTransactionsQuery?.data?.paginateFinancialTransaction?.cursor?.beforeCursor}
+                                                afterCursor={fetchSenttTransactionsQuery?.data?.paginateFinancialTransaction?.cursor?.afterCursor}
+                                                filter={filterSentTransactionsObj}
+                                                setfilter={setfilterSentTransactionsObj}
+                                            />
+                                        </div>
+                                        <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                                            <TransactionsTable
+                                                width={'100%'}
+                                                query={fetchSenttTransactionsQuery}
+                                                paginationAttr="paginateFinancialTransaction"
+                                                srctype="sent"
+                                                refetchFunc={() => {
+                                                    Refetch();
+                                                }}
+                                            />
+                                        </div>
+                                    </>
+                                )}
                             </div>
                         </div>
                         <div class="col-lg-6">
@@ -234,25 +244,29 @@ const FinancialAccountInfo = (props) => {
                                         <span style={{ color: 'var(--info)' }}>recieved transactions</span>
                                     </p>
                                 </div>
-                                <div class="col-lg-12 p-0">
-                                    <Pagination
-                                        beforeCursor={fetchRecievedTransactionsQuery?.data?.paginateFinancialTransaction?.cursor?.beforeCursor}
-                                        afterCursor={fetchRecievedTransactionsQuery?.data?.paginateFinancialTransaction?.cursor?.afterCursor}
-                                        filter={filterRecievedTransactionsObj}
-                                        setfilter={setfilterRecievedTransactionsObj}
-                                    />
-                                </div>
-                                <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
-                                    <TransactionsTable
-                                        width={'100%'}
-                                        query={fetchRecievedTransactionsQuery}
-                                        paginationAttr="paginateFinancialTransaction"
-                                        srctype="recieved"
-                                        refetchFunc={() => {
-                                            Refetch();
-                                        }}
-                                    />
-                                </div>
+                                {isAuth([1, 51, 27]) && (
+                                    <>
+                                        <div class="col-lg-12 p-0">
+                                            <Pagination
+                                                beforeCursor={fetchRecievedTransactionsQuery?.data?.paginateFinancialTransaction?.cursor?.beforeCursor}
+                                                afterCursor={fetchRecievedTransactionsQuery?.data?.paginateFinancialTransaction?.cursor?.afterCursor}
+                                                filter={filterRecievedTransactionsObj}
+                                                setfilter={setfilterRecievedTransactionsObj}
+                                            />
+                                        </div>
+                                        <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                                            <TransactionsTable
+                                                width={'100%'}
+                                                query={fetchRecievedTransactionsQuery}
+                                                paginationAttr="paginateFinancialTransaction"
+                                                srctype="recieved"
+                                                refetchFunc={() => {
+                                                    Refetch();
+                                                }}
+                                            />
+                                        </div>
+                                    </>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -361,6 +375,7 @@ const FinancialAccountInfo = (props) => {
                                     button1class={generalstyles.roundbutton + '  mr-2 my-2 '}
                                     button1placeholder={'Add transaction'}
                                     button1onClick={async () => {
+                                        // if(isAuth([]))
                                         if (
                                             transactionpayload?.type?.length != 0 &&
                                             transactionpayload?.amount?.length != 0 &&

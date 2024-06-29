@@ -31,7 +31,7 @@ const { ValueContainer, Placeholder } = components;
 const FinanceTransactions = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, expensesTypeContext, dateformatter, orderTypeContext, transactionStatusesContext, transactionTypesContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, isAuth, dateformatter, orderTypeContext, transactionStatusesContext, transactionTypesContext } = useContext(Contexthandlerscontext);
     const { fetchUsers, useQueryGQL, sendAnyFinancialTransaction, useMutationGQL, fetchTransactions, fetchFinancialAccounts } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -203,25 +203,29 @@ const FinanceTransactions = (props) => {
                             <span style={{ color: 'var(--info)' }}>Transactions</span>
                         </p>
                     </div>
-                    <div class="col-lg-12 p-0">
-                        <Pagination
-                            beforeCursor={fetchAllTransactionsQuery?.data?.paginateFinancialTransaction?.cursor?.beforeCursor}
-                            afterCursor={fetchAllTransactionsQuery?.data?.paginateFinancialTransaction?.cursor?.afterCursor}
-                            filter={filterAllFinancialAccountsObj}
-                            setfilter={setfilterAllFinancialAccountsObj}
-                        />
-                    </div>
-                    <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
-                        <TransactionsTable
-                            width={'50%'}
-                            query={fetchAllTransactionsQuery}
-                            paginationAttr="paginateFinancialTransaction"
-                            srctype="all"
-                            refetchFunc={() => {
-                                // Refetch();
-                            }}
-                        />
-                    </div>
+                    {isAuth([1, 27, 51]) && (
+                        <>
+                            <div class="col-lg-12 p-0">
+                                <Pagination
+                                    beforeCursor={fetchAllTransactionsQuery?.data?.paginateFinancialTransaction?.cursor?.beforeCursor}
+                                    afterCursor={fetchAllTransactionsQuery?.data?.paginateFinancialTransaction?.cursor?.afterCursor}
+                                    filter={filterAllFinancialAccountsObj}
+                                    setfilter={setfilterAllFinancialAccountsObj}
+                                />
+                            </div>
+                            <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                                <TransactionsTable
+                                    width={'50%'}
+                                    query={fetchAllTransactionsQuery}
+                                    paginationAttr="paginateFinancialTransaction"
+                                    srctype="all"
+                                    refetchFunc={() => {
+                                        // Refetch();
+                                    }}
+                                />
+                            </div>
+                        </>
+                    )}
                 </div>
 
                 {/* <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>

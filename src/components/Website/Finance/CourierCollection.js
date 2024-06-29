@@ -101,6 +101,7 @@ const CourierCollection = (props) => {
         transactionIds: selectedArray,
         toAccountId: payload?.toAccountId,
         description: payload?.description,
+        allTransactions: payload?.allTransactions,
     });
     const [processMerchantPaymentsMutation] = useMutationGQL(processMerchantPayments(), {
         transactionIds: selectedArray,
@@ -321,6 +322,19 @@ const CourierCollection = (props) => {
                                     <button
                                         class={generalstyles.roundbutton + ' allcentered w-100'}
                                         onClick={async () => {
+                                            setpayload({ ...payload, type: 'transfer', allTransactions: true });
+
+                                            setopenModal(true);
+                                        }}
+                                    >
+                                        {' '}
+                                        Transfer all transactions
+                                    </button>
+                                </div>
+                                <div class="col-lg-12 mb-3">
+                                    <button
+                                        class={generalstyles.roundbutton + ' allcentered w-100'}
+                                        onClick={async () => {
                                             if (selectedArray?.length != 0) {
                                                 setpayload({ ...payload, type: 'transfer' });
 
@@ -331,7 +345,7 @@ const CourierCollection = (props) => {
                                         }}
                                     >
                                         {' '}
-                                        Transfer to financial account
+                                        Transfer selected
                                     </button>
                                 </div>
                                 <div class="col-lg-12 mb-3">
@@ -425,19 +439,10 @@ const CourierCollection = (props) => {
                             button1class={generalstyles.roundbutton + ' mr-2 '}
                             button1placeholder={payload?.type == 'transfer' ? 'Transfer' : 'Process'}
                             button1onClick={async () => {
-                                if (payload?.type == 'transfer') {
-                                    try {
-                                        const { data } = await transferMyCourierCollectionFundsutation();
-                                        refetchCourierCollectionTransactionsQuery();
-                                        setselectedArray([]);
-                                        setopenModal(false);
-                                    } catch (error) {
-                                        NotificationManager.warning(error.message || error, 'Warning!');
-                                    }
-                                } else {
-                                    if (filterobj?.merchantIds?.length != 0) {
+                                if (isAuth(1, 28, 51)) {
+                                    if (payload?.type == 'transfer') {
                                         try {
-                                            const { data } = await processMerchantPaymentsMutation();
+                                            const { data } = await transferMyCourierCollectionFundsutation();
                                             refetchCourierCollectionTransactionsQuery();
                                             setselectedArray([]);
                                             setopenModal(false);
@@ -445,8 +450,21 @@ const CourierCollection = (props) => {
                                             NotificationManager.warning(error.message || error, 'Warning!');
                                         }
                                     } else {
-                                        NotificationManager.warning('Choose merchant first', 'Warning!');
+                                        if (filterobj?.merchantIds?.length != 0) {
+                                            try {
+                                                const { data } = await processMerchantPaymentsMutation();
+                                                refetchCourierCollectionTransactionsQuery();
+                                                setselectedArray([]);
+                                                setopenModal(false);
+                                            } catch (error) {
+                                                NotificationManager.warning(error.message || error, 'Warning!');
+                                            }
+                                        } else {
+                                            NotificationManager.warning('Choose merchant first', 'Warning!');
+                                        }
                                     }
+                                } else {
+                                    NotificationManager.warning('Not Authorized', 'Warning!');
                                 }
                             }}
                         />

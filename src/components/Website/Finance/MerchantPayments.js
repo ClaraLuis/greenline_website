@@ -328,6 +328,7 @@ const MerchantPayments = (props) => {
                                     <button
                                         class={generalstyles.roundbutton + ' allcentered w-100'}
                                         onClick={async () => {
+                                            // if(isAuth([1,]))
                                             if (selectedArray?.length != 0) {
                                                 setopenModal(true);
                                             } else {

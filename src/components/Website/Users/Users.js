@@ -29,7 +29,7 @@ const { ValueContainer, Placeholder } = components;
 const Users = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, dateformatter } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, dateformatter, isAuth } = useContext(Contexthandlerscontext);
     const { fetchUsers, useQueryGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -76,40 +76,47 @@ const Users = (props) => {
                             <span style={{ color: 'var(--info)' }}> {fetchusers?.data?.paginateUsers?.data?.length} </span>
                         </p>
                     </div>
-                    <div class={' col-lg-6 col-md-6 col-sm-6 p-0 pr-3 pr-md-1 pr-sm-0 d-flex align-items-center justify-content-end pb-1 '}>
-                        <button
-                            style={{ height: '35px' }}
-                            class={generalstyles.roundbutton + '  mb-1'}
-                            onClick={() => {
-                                setpayload({
-                                    functype: 'add',
-                                    id: 'add',
-                                    name: '',
-                                    type: '',
-                                    phone: '',
-                                    email: '',
-                                    birthdate: '',
-                                });
-                                setopenModal(true);
-                            }}
-                        >
-                            Add User
-                        </button>
-                    </div>
+                    {isAuth([1, 44]) && (
+                        <div class={' col-lg-6 col-md-6 col-sm-6 p-0 pr-3 pr-md-1 pr-sm-0 d-flex align-items-center justify-content-end pb-1 '}>
+                            <button
+                                style={{ height: '35px' }}
+                                class={generalstyles.roundbutton + '  mb-1'}
+                                onClick={() => {
+                                    setpayload({
+                                        functype: 'add',
+                                        id: 'add',
+                                        name: '',
+                                        type: '',
+                                        phone: '',
+                                        email: '',
+                                        birthdate: '',
+                                    });
+                                    setopenModal(true);
+                                }}
+                            >
+                                Add User
+                            </button>
+                        </div>
+                    )}
+
                     <div class="col-lg-12 p-0">
                         <hr class="mt-1" />
                     </div>
-                    <div class="col-lg-12 p-0">
-                        <Pagination
-                            beforeCursor={fetchusers?.data?.paginateUsers?.cursor?.beforeCursor}
-                            afterCursor={fetchusers?.data?.paginateUsers?.cursor?.afterCursor}
-                            filter={filterUsers}
-                            setfilter={setfilterUsers}
-                        />
-                    </div>
-                    <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
-                        <UsersTable fetchusers={fetchusers} />
-                    </div>
+                    {isAuth([1, 43]) && (
+                        <>
+                            <div class="col-lg-12 p-0">
+                                <Pagination
+                                    beforeCursor={fetchusers?.data?.paginateUsers?.cursor?.beforeCursor}
+                                    afterCursor={fetchusers?.data?.paginateUsers?.cursor?.afterCursor}
+                                    filter={filterUsers}
+                                    setfilter={setfilterUsers}
+                                />
+                            </div>
+                            <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                                <UsersTable fetchusers={fetchusers} />
+                            </div>
+                        </>
+                    )}
                 </div>
             </div>
 

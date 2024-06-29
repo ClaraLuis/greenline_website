@@ -18,13 +18,14 @@ import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import API from '../../../API/API.js';
 import Form from '../../Form.js';
+import { NotificationManager } from 'react-notifications';
 
 const { ValueContainer, Placeholder } = components;
 
 const SheetsTable = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { sheetStatusesContext, dateformatter } = useContext(Contexthandlerscontext);
+    const { sheetStatusesContext, dateformatter, isAuth } = useContext(Contexthandlerscontext);
 
     const { lang, langdetect } = useContext(LanguageContext);
 
@@ -117,8 +118,12 @@ const SheetsTable = (props) => {
                                                 style={{ height: '30px' }}
                                                 class={generalstyles.roundbutton + ' p-0 allcentered'}
                                                 onClick={() => {
-                                                    if (props?.clickable) {
-                                                        props?.onClick(item);
+                                                    if (isAuth([1, 34, 35, 53])) {
+                                                        if (props?.clickable) {
+                                                            props?.onClick(item);
+                                                        }
+                                                    } else {
+                                                        NotificationManager.warning('Not Authorized', 'Warning!');
                                                     }
                                                 }}
                                             >
