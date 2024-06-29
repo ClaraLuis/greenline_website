@@ -439,7 +439,7 @@ const CourierCollection = (props) => {
                             button1class={generalstyles.roundbutton + ' mr-2 '}
                             button1placeholder={payload?.type == 'transfer' ? 'Transfer' : 'Process'}
                             button1onClick={async () => {
-                                if (isAuth(1, 28, 51)) {
+                                if (isAuth([1, 28, 51])) {
                                     if (payload?.type == 'transfer') {
                                         try {
                                             const { data } = await transferMyCourierCollectionFundsutation();
