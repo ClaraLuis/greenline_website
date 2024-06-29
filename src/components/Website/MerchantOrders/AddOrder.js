@@ -286,38 +286,35 @@ const AddOrder = (props) => {
                     <div className={' col-lg-8 p-0 '}>
                         <div class="row m-0 w-100">
                             <div class="col-lg-12 p-0 my-3 ">
-                                <div class="row m-0 w-100">
-                                    <div class="col-lg-6 p-0">
+                                <div class="row m-0 w-100 d-flex align-items-center">
+                                    <div class="col-lg-10 p-0">
                                         <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
                                             <input
                                                 // disabled={props?.disabled}
                                                 // type={props?.type}
                                                 class={formstyles.form__field}
-                                                value={filter?.name}
-                                                placeholder={'Search by name '}
+                                                value={search}
+                                                placeholder={'Search by name, SKU '}
                                                 onChange={() => {
-                                                    if (event.target.value?.length == 0) {
-                                                        setfilter({ ...filter, name: undefined });
-                                                    } else {
-                                                        setfilter({ ...filter, name: event.target.value });
-                                                    }
+                                                    setsearch(event.target.value);
                                                 }}
                                             />
                                         </div>
                                     </div>
-                                    <div class="col-lg-6 p-0 px-1">
-                                        <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
-                                            <input
-                                                // disabled={props?.disabled}
-                                                // type={props?.type}
-                                                class={formstyles.form__field}
-                                                value={filter?.sku}
-                                                placeholder={'Search by SKU'}
-                                                onChange={() => {
-                                                    setfilter({ ...filter, sku: event.target.value });
-                                                }}
-                                            />
-                                        </div>
+                                    <div class="col-lg-2 p-1">
+                                        <button
+                                            style={{ height: '30px' }}
+                                            class={generalstyles.roundbutton + ' p-0 allcentered'}
+                                            onClick={() => {
+                                                if (search.length == 0) {
+                                                    setfilter({ ...filter, name: undefined });
+                                                } else {
+                                                    setfilter({ ...filter, name: search });
+                                                }
+                                            }}
+                                        >
+                                            search
+                                        </button>
                                     </div>
                                 </div>
                             </div>

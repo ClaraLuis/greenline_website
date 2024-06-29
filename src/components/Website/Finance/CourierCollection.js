@@ -50,6 +50,7 @@ const CourierCollection = (props) => {
     const [total, setTotal] = useState(0);
     const [submit, setsubmit] = useState(false);
     const [selectedArray, setselectedArray] = useState([]);
+    const [hasTransactions, sethasTransactions] = useState(false);
 
     const [payload, setpayload] = useState({
         functype: 'add',
@@ -67,7 +68,16 @@ const CourierCollection = (props) => {
         merchantIds: undefined,
     });
 
+    const [filterobj1, setfilterobj1] = useState({
+        isAsc: true,
+        limit: 20,
+        afterCursor: undefined,
+        beforeCursor: undefined,
+        merchantIds: undefined,
+    });
+
     const fetchCourierCollectionTransactionsQuery = useQueryGQL('', fetchCourierCollectionTransactions(), filterobj);
+    const fetchCourierCollectionTransactionsQuery1 = useQueryGQL('', fetchCourierCollectionTransactions(), filterobj1);
     const [filterAllFinancialAccountsObj, setfilterAllFinancialAccountsObj] = useState({
         isAsc: true,
         limit: 20,
@@ -125,6 +135,11 @@ const CourierCollection = (props) => {
 
         setTotal(totalTemp);
     }, [fetchCourierCollectionTransactionsQuery?.data?.paginateCourierCollectionTransactions?.data, selectedArray]);
+    useEffect(() => {
+        if (fetchCourierCollectionTransactionsQuery1?.data?.paginateCourierCollectionTransactions?.data?.length > 0) {
+            sethasTransactions(true);
+        }
+    }, [fetchCourierCollectionTransactionsQuery1?.data?.paginateCourierCollectionTransactions?.data]);
 
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
@@ -322,9 +337,13 @@ const CourierCollection = (props) => {
                                     <button
                                         class={generalstyles.roundbutton + ' allcentered w-100'}
                                         onClick={async () => {
-                                            setpayload({ ...payload, type: 'transfer', allTransactions: true });
+                                            if (hasTransactions) {
+                                                setpayload({ ...payload, type: 'transfer', allTransactions: true });
 
-                                            setopenModal(true);
+                                                setopenModal(true);
+                                            } else {
+                                                NotificationManager.warning('You have no transactions', 'Warning!');
+                                            }
                                         }}
                                     >
                                         {' '}

@@ -29,7 +29,7 @@ const { ValueContainer, Placeholder } = components;
 const AddSheet = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, dateformatter, orderStatusesContext, user } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, dateformatter, orderStatusesContext, user, isAuth } = useContext(Contexthandlerscontext);
     const { useQueryGQL, fetchOrders, addCourierSheet, useMutationGQL, fetchCouriers } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -41,16 +41,7 @@ const AddSheet = (props) => {
         orders: [],
         orderIds: [],
     });
-    const [tabs, settabs] = useState([
-        { name: 'Sheet orders', isChecked: true },
-        { name: 'Sheet Info', isChecked: false },
-    ]);
-    const [userAddresses, setuserAddresses] = useState([
-        { id: '1', country_id: 'Egypt', city_id: 'city 1', details: '28 kk street' },
-        { id: '2', country_id: 'Egypt', city_id: 'city 1', details: '28 kk street' },
-        { id: '3', country_id: 'Egypt', city_id: 'city 1', details: '28 kk street' },
-        { id: '4', country_id: 'Egypt', city_id: 'city 1', details: '28 kk street' },
-    ]);
+
     const [search, setsearch] = useState('');
     const [openModal, setopenModal] = useState(false);
     const [addresspayload, setaddresspayload] = useState({
@@ -125,7 +116,8 @@ const AddSheet = (props) => {
                                     search
                                 </button>
                             </div>
-
+                            {/* TODO */}
+                            {/* {isAuth([1,53,  ])} */}
                             <div className="row m-0 w-100 mt-2">
                                 {fetchOrdersQuery?.data?.paginateOrders?.data?.map((item, index) => {
                                     var selected = false;

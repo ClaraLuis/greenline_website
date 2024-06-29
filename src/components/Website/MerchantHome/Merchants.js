@@ -64,7 +64,6 @@ const Merchants = (props) => {
             const { data } = await addMerchantMutation();
             refetchMerchants();
             setopenMerchantModel(false);
-            history.push('/governorates?merchantId=' + data?.createMerchant + '&type=add');
         } catch (error) {
             console.error('Error adding Merchant:', error);
         }
@@ -87,7 +86,8 @@ const Merchants = (props) => {
                             <span
                                 onClick={() => {
                                     // history.push('/hubitems');
-                                    setopenMerchantModel(true);
+                                    // setopenMerchantModel(true);
+                                    history.push('/addmerchant' + '?type=add' + '&step=0');
                                 }}
                                 class={generalstyles.roundbutton}
                                 // style={{ textDecoration: 'underline' }}
@@ -157,7 +157,7 @@ const Merchants = (props) => {
                                                             <p
                                                                 class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}
                                                                 onClick={() => {
-                                                                    history.push('/governorates?merchantId=' + item.id + '&type=edit');
+                                                                    history.push('/addmerchant?merchantId=' + item.id + '&type=edit&step=0');
                                                                 }}
                                                             >
                                                                 Shipping Prices

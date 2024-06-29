@@ -31,6 +31,14 @@ const API = () => {
             }
         `;
     };
+    const createInventoryRent = () => {
+        return gql`
+            mutation createInventoryRent($input: CreateInventoryRentInput!) {
+                createInventoryRent(input: $input)
+            }
+        `;
+    };
+
     const updateMerchantDomesticShipping = () => {
         return gql`
             mutation updateMerchantDomesticShipping($input: CreateMerchantShippingListInput!) {
@@ -1069,6 +1077,7 @@ const API = () => {
         fetchGovernorates,
         createMerchantDomesticShipping,
         updateMerchantDomesticShipping,
+        createInventoryRent,
     };
 };
 export default API;

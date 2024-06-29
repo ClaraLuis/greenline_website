@@ -38,7 +38,7 @@ import sidenavstyles from './Sidenavfiles/sidenav.module.css';
 import Users from './Users/Users';
 import userImage from './user.png';
 import BookVisit from './MerchantHome/BookVisit.js';
-import Shipping from './Shipping/Shipping.js';
+import AddMerchant from './AddMerchant/AddMerchant.js';
 import Merchants from './MerchantHome/Merchants.js';
 import CourierCollection from './Finance/CourierCollection.js';
 import MerchantPayments from './Finance/MerchantPayments.js';
@@ -286,7 +286,7 @@ const App = (props) => {
                                                                 <Route exact path="/financetransactions" component={FinanceTransactions} />
                                                                 <Route exact path="/addinvoice" component={AddInvoice} />
                                                                 <Route exact path="/bookvisit" component={BookVisit} />
-                                                                <Route exact path="/governorates" component={Shipping} />
+                                                                <Route exact path="/addmerchant" component={AddMerchant} />
                                                                 <Route exact path="/merchants" component={Merchants} />
                                                                 <Route exact path="/merchantreturns" component={MerchanReturns} />
                                                                 <Route exact path="/packages" component={Packages} />

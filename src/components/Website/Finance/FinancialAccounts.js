@@ -246,15 +246,34 @@ const FinancialAccounts = (props) => {
                             button1onClick={async () => {
                                 try {
                                     if (payload?.functype == 'add') {
-                                        const { data } = await createFinancialAccountMutation();
+                                        if (payload?.name?.length != 0 && payload?.type?.length != 0) {
+                                            const { data } = await createFinancialAccountMutation();
+                                            setopenModal(false);
+                                            refetchFinancialAccountsQuery();
+                                        } else {
+                                            NotificationManager.warning('Complete Missing Fields', 'Warning!');
+                                        }
                                     } else {
                                         const { data } = await updateFinancialAccountMutation();
+                                        setopenModal(false);
+                                        refetchFinancialAccountsQuery();
                                     }
-
-                                    setopenModal(false);
-                                    refetchFinancialAccountsQuery();
                                 } catch (error) {
-                                    NotificationManager.warning(error, 'Warning!');
+                                    // alert(JSON.stringify(error));
+                                    let errorMessage = 'An unexpected error occurred';
+                                    // // Check for GraphQL errors
+                                    if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                        errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                    } else if (error.networkError) {
+                                        errorMessage = error.networkError.message || errorMessage;
+                                    } else if (error.message) {
+                                        errorMessage = error.message;
+                                    }
+                                    // // Log the entire error object for debugging purposes
+                                    // console.error('GraphQL Error:', JSON.stringify(error, null, 2));
+                                    // // Show the user-friendly error message
+                                    // alert();
+                                    NotificationManager.warning(JSON.stringify(errorMessage), 'Warning!');
                                 }
                             }}
                         />
