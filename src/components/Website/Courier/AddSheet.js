@@ -285,7 +285,7 @@ const AddSheet = (props) => {
                                         title: 'Courier',
                                         filter: filterCouriers,
                                         setfilter: setfilterCouriers,
-                                        options: [{ name: '', id: undefined }, ...fetchCouriersQuery],
+                                        options: fetchCouriersQuery,
 
                                         optionsAttr: 'paginateCouriers',
                                         label: 'name',
