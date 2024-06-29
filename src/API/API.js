@@ -332,11 +332,14 @@ const API = () => {
                         inventoryId
                         count
                         totalCount
-                        item {
+                        itemVariant {
                             name
                             merchantId
                             imageUrl
                             id
+                            item {
+                                name
+                            }
                         }
                     }
                     cursor
@@ -544,6 +547,10 @@ const API = () => {
                   id,
                   name,
                   level
+                   boxes{
+                                            name
+                                            id
+                                            }
                 }
               }
             }
@@ -677,18 +684,15 @@ const API = () => {
     };
     const fetchItemHistory = (payload) => {
         return gql`
-        query paginateItemHistory{
-            paginateItemHistory(input: {
-              itemInBoxId: ${JSON.stringify(payload?.itemInBoxId)},
-              limit: ${JSON.stringify(payload?.limit)}
-            }){
-                data{
-                amount,
-                description,
-              },
-              cursor
+            query paginateItemHistory($input: PaginateItemHistoryInput!) {
+                paginateItemHistory(input: $input) {
+                    data {
+                        amount
+                        description
+                    }
+                    cursor
+                }
             }
-          }
         `;
     };
     const fetchCustomerAddresses = (payload) => {

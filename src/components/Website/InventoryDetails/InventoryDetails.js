@@ -32,27 +32,9 @@ const InventoryDetails = (props) => {
     const { lang, langdetect } = useContext(LanguageContext);
 
     const [openModal, setopenModal] = useState(false);
-    const [chosenracks, setchosenracks] = useState([]);
     const [inventoryId, setinventoryId] = useState('');
-    const [itemsarray, setitemsarray] = useState([
-        { name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1' },
-        { name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1' },
-        { name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1' },
-    ]);
 
-    const [payload, setpayload] = useState({
-        functype: 'add',
-        id: 'add',
-        name: '',
-        type: '',
-        phone: '',
-        email: '',
-        birthdate: '',
-    });
-    const [filterobj, setfilterobj] = useState({
-        page: 1,
-        search: '',
-    });
+    const [chosenBallotBoxes, setchosenBallotBoxes] = useState([]);
     const fetcOneInventoryQuery = useQueryGQL('', fetcOneInventory(parseInt(inventoryId)));
     // const fetchusers = [];
     useEffect(() => {
@@ -77,78 +59,6 @@ const InventoryDetails = (props) => {
                         Inventory Details
                     </p>
                 </div>
-                {/* <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
-                    <div class={' col-lg-12 col-md-12 col-sm-12 p-0 d-flex align-items-center justify-content-start '}>
-                        <p class=" p-0 m-0" style={{ fontSize: '15px' }}>
-                            <span style={{ color: 'var(--info)' }}>Racks </span>
-                        </p>
-                    </div>
-                    <div class="col-lg-12 p-0">
-                        <div style={{ width: '100px', overflowY: 'scroll', flexDirection: 'row', flexWrap: 'nowrap' }} class=" scrollmenuclasssubscrollbar row m-0 w-100">
-                            {[...Array(20)].map((element, arrayindex) => {
-                                var selected = false;
-                                chosenracks.map((item, index) => {
-                                    if (item == arrayindex) {
-                                        selected = true;
-                                    }
-                                });
-                                return (
-                                    <div
-                                        onClick={() => {
-                                            var exist = false;
-                                            var chosenindex = 0;
-                                            var array = [...chosenracks];
-                                            chosenracks.map((item, index) => {
-                                                if (item == arrayindex) {
-                                                    exist = true;
-                                                    chosenindex = index;
-                                                }
-                                            });
-                                            if (exist) {
-                                                array.splice(chosenindex, 1);
-                                            } else {
-                                                array.push(arrayindex);
-                                            }
-                                            setchosenracks([...array]);
-                                        }}
-                                        class={selected ? 'searchpillselected' : 'searchpill'}
-                                    >
-                                        Rack {arrayindex}
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    </div>
-                </div>
-                <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
-                    <div class={' col-lg-12 col-md-12 col-sm-12 p-0 d-flex align-items-center justify-content-start '}>
-                        <p class=" p-0 m-0" style={{ fontSize: '15px' }}>
-                            <span style={{ color: 'var(--info)' }}> Ballots </span>
-                        </p>
-                    </div>
-                    <div class="col-lg-12 p-0">
-                        <div style={{ width: '100px', overflowY: 'scroll', flexDirection: 'row', flexWrap: 'nowrap' }} class=" scrollmenuclasssubscrollbar row m-0 w-100">
-                            {[...Array(20)].map((element, arrayindex) => {
-                                return <div class="searchpill">Ballot {arrayindex}</div>;
-                            })}
-                        </div>
-                    </div>
-                </div>
-                <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
-                    <div class={' col-lg-12 col-md-12 col-sm-12 p-0 d-flex align-items-center justify-content-start '}>
-                        <p class=" p-0 m-0" style={{ fontSize: '15px' }}>
-                            <span style={{ color: 'var(--info)' }}>Boxes </span>
-                        </p>
-                    </div>
-                    <div class="col-lg-12 p-0">
-                        <div style={{ width: '100px', overflowY: 'scroll', flexDirection: 'row', flexWrap: 'nowrap' }} class=" scrollmenuclasssubscrollbar row m-0 w-100">
-                            {[...Array(20)].map((element, arrayindex) => {
-                                return <div class="searchpill">Box {arrayindex}</div>;
-                            })}
-                        </div>
-                    </div>
-                </div> */}
-
                 <div class={generalstyles.card + ' row m-0 w-100 p-2'}>
                     {fetcOneInventoryQuery?.loading && (
                         <div style={{ height: '70vh' }} class="row w-100 allcentered m-0">
@@ -168,28 +78,10 @@ const InventoryDetails = (props) => {
                                 </div>
                             )}
                             {fetcOneInventoryQuery?.data?.findOneInventory?.racks?.map((item, index) => {
-                                // var levels = [];
-                                // var exist = false;
-                                // var chosenballot = {};
-                                // var chosenlevelindex = null;
                                 const levels1 = _.groupBy(item?.ballots, 'level');
                                 var levels = _.map(levels1, (ballots, level) => {
                                     return { level: level, ballots: ballots };
                                 });
-                                // item?.ballots?.map((ballot, ballotindex) => {
-                                //     chosenballot = ballot;
-                                //     levels?.map((level, levelindex) => {
-                                //         if (level?.level == ballot?.level) {
-                                //             exist = true;
-                                //             chosenlevelindex = levelindex;
-                                //         }
-                                //     });
-                                //     if (exist) {
-                                //         levels[chosenlevelindex].boxes.push(chosenballot);
-                                //     } else {
-                                //         levels.push({ level: chosenballot?.level, ballots: [chosenballot] });
-                                //     }
-                                // });
 
                                 return (
                                     <div class="col-lg-6 mb-2">
@@ -208,7 +100,18 @@ const InventoryDetails = (props) => {
                                                                 <div class="row m-0 w-100 d-flex align-items-center">
                                                                     Level {level?.level}:
                                                                     {level?.ballots?.map((ballot, ballotindex) => {
-                                                                        return <div class={'searchpill'}> {ballot?.name}</div>;
+                                                                        return (
+                                                                            <div
+                                                                                class={'searchpill'}
+                                                                                onClick={() => {
+                                                                                    setchosenBallotBoxes(ballot.boxes);
+                                                                                    setopenModal(true);
+                                                                                }}
+                                                                            >
+                                                                                {' '}
+                                                                                {ballot?.name}
+                                                                            </div>
+                                                                        );
                                                                     })}
                                                                 </div>
                                                             </div>
@@ -223,6 +126,40 @@ const InventoryDetails = (props) => {
                         </>
                     )}
                 </div>
+
+                <Modal
+                    show={openModal}
+                    onHide={() => {
+                        setopenModal(false);
+                    }}
+                    centered
+                    size={'md'}
+                >
+                    <Modal.Header>
+                        <div className="row w-100 m-0 p-0">
+                            <div class="col-lg-6 pt-3 ">
+                                <div className="row w-100 m-0 p-0">Boxes</div>
+                            </div>
+                            <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
+                                <div
+                                    class={'close-modal-container'}
+                                    onClick={() => {
+                                        setopenModal(false);
+                                    }}
+                                >
+                                    <IoMdClose />
+                                </div>
+                            </div>{' '}
+                        </div>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div class="row m-0 w-100 pb-3">
+                            {chosenBallotBoxes?.map((ballotBoxItem, ballotBoxIndex) => {
+                                return <div class={'searchpill'}> {ballotBoxItem?.name}</div>;
+                            })}
+                        </div>
+                    </Modal.Body>
+                </Modal>
             </div>
         </div>
     );

@@ -28,7 +28,7 @@ const InventoryItems = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, dateformatter, isAuth } = useContext(Contexthandlerscontext);
-    const { fetchUsers, useQueryGQL, fetchInventories, useMutationGQL, addInventory, fetchItemsInBox, fetchRacks, importNew, fetchItemHistory, exportItem, importItem } = API();
+    const { fetchUsers, useQueryGQL, fetchInventories, useMutationGQL, addInventory, fetchItemsInBox, fetchRacks, importNew, fetchItemHistory, exportItem, importItem, useLazyQueryGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
 
@@ -68,10 +68,7 @@ const InventoryItems = (props) => {
         discount: null,
     });
 
-    const [filter, setfilter] = useState({
-        limit: 50,
-        invetoryIds: [],
-    });
+    const [fetchItemHistoryQuery, setfetchItemHistoryQuery] = useState({});
 
     const [filterInventories, setfilterInventories] = useState({
         limit: 5,
@@ -125,12 +122,8 @@ const InventoryItems = (props) => {
     // let fetchItemHistoryQuery;
     // let refetchItemHistory;
 
-    // if (chosenitem?.id) {
-    const fetchItemHistoryQuery = useQueryGQL('', fetchItemHistory({ itemInBoxId: parseInt(chosenitem.id), limit: 10 }));
-    const { refetch } = useQueryGQL('', fetchItemHistory({ itemInBoxId: parseInt(chosenitem.id), limit: 10 }));
-    const refetchItemHistory = refetch;
-    // }
-    // const fetchusers = [];
+    const [fetchItemHistorLazyQuery] = useLazyQueryGQL(fetchItemHistory());
+
     useEffect(() => {
         setpageactive_context('/inventoryitems');
     }, []);
@@ -310,24 +303,38 @@ const InventoryItems = (props) => {
                                                     <div class=" mr-2" style={{ width: '50px', height: '50px', borderRadius: '5px' }}>
                                                         <img
                                                             src={
-                                                                element?.item?.imageUrl?.length != 0 && element?.item?.imageUrl != null
-                                                                    ? element?.item?.imageUrl
+                                                                element?.itemVariant?.imageUrl?.length != 0 && element?.itemVariant?.imageUrl != null
+                                                                    ? element?.itemVariant?.imageUrl
                                                                     : 'https://www.shutterstock.com/image-vector/new-label-shopping-icon-vector-260nw-1894227709.jpg'
                                                             }
                                                             style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '5px' }}
                                                         />
                                                     </div>
-                                                    <div class="col-lg-6 p-0 " style={{ fontSize: '14px', fontWeight: 600 }}>
-                                                        {element?.item?.name}
+                                                    <div class="col-lg-9 p-0 ">
+                                                        <div class="col-lg-12 p-0 " style={{ fontSize: '14px', fontWeight: 600 }}>
+                                                            {element?.itemVariant?.item?.name}
+                                                        </div>
+                                                        <div className="row m-0 w-100">
+                                                            <div class="col-lg-8 p-0 " style={{ fontSize: '13px', fontWeight: 500 }}>
+                                                                {element?.itemVariant?.name}
+                                                            </div>
+                                                            <div class="col-lg-4 p-0 d-flex justify-content-end">{element?.count}</div>
+                                                        </div>
                                                     </div>
-                                                    <div class="col-lg-3 p-0 d-flex justify-content-end">{element?.count}</div>
                                                 </div>
                                             </div>
 
                                             <div class="col-lg-12 p-0 mt-3">
                                                 <div class="row m-0 w-100 d-flex align-items-center justify-content-center">
                                                     <button
-                                                        onClick={() => {
+                                                        onClick={async () => {
+                                                            var { data } = await fetchItemHistorLazyQuery({
+                                                                variables: {
+                                                                    input: { itemInBoxId: parseInt(element.id), limit: 20 },
+                                                                },
+                                                            });
+                                                            alert(JSON.stringify(data));
+                                                            setfetchItemHistoryQuery(data);
                                                             setchosenitem(element);
                                                             setopenModal(true);
                                                         }}

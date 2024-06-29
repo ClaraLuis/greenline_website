@@ -27,7 +27,7 @@ const ImportNewItem = (props) => {
     const cookies = new Cookies();
 
     const { setpageactive_context, dateformatter } = useContext(Contexthandlerscontext);
-    const { fetchUsers, useQueryGQL, fetchInventories, useMutationGQL, useLazyQueryGQL, fetchMerchantItems, fetchRacks, importNew, fetchItemHistory } = API();
+    const { fetchUsers, useQueryGQL, fetchInventories, useMutationGQL, useLazyQueryGQL, fetchMerchantItemVariants, fetchRacks, importNew, fetchItemHistory } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [fetchRacksQuery, setfetchRacksQuery] = useState(null);
@@ -72,11 +72,11 @@ const ImportNewItem = (props) => {
         isAsc: true,
         afterCursor: '',
         beforeCursor: '',
-        name: '',
-        sku: '',
-        merchantId: parseInt(cookies.get('merchantId')),
+        name: undefined,
+        // merchantId: parseInt(cookies.get('merchantId')),
     });
-    const fetchMerchantItemsQuery = useQueryGQL('', fetchMerchantItems(), merchantFilter);
+
+    const fetchMerchantItemVariantsQuery = useQueryGQL('', fetchMerchantItemVariants(), merchantFilter);
 
     const [fetchRacksLazyQuery] = useLazyQueryGQL(fetchRacks());
 
@@ -116,8 +116,8 @@ const ImportNewItem = (props) => {
                     <div class="row m-0 w-100 py-2 pb-3">
                         <div class="col-lg-12 p-0">
                             <Pagination
-                                beforeCursor={fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.beforeCursor}
-                                afterCursor={fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.afterCursor}
+                                beforeCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.beforeCursor}
+                                afterCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.afterCursor}
                                 filter={merchantFilter}
                                 setfilter={setmerchantFilter}
                             />
@@ -125,7 +125,7 @@ const ImportNewItem = (props) => {
                         <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
                             <ItemsTable
                                 card="col-lg-3"
-                                items={fetchMerchantItemsQuery?.data?.paginateItems?.data}
+                                items={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.data}
                                 actiononclick={(item) => {
                                     props?.setimportItemPayload({ ...props?.importItemPayload, itemVariantId: item?.id });
                                     setstep(step + 1);
@@ -134,8 +134,8 @@ const ImportNewItem = (props) => {
                         </div>
                         <div class="col-lg-12 p-0">
                             <Pagination
-                                beforeCursor={fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.beforeCursor}
-                                afterCursor={fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.afterCursor}
+                                beforeCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.beforeCursor}
+                                afterCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.afterCursor}
                                 filter={merchantFilter}
                                 setfilter={setmerchantFilter}
                             />
