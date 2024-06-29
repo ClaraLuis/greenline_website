@@ -201,7 +201,7 @@ const CourierSheet = (props) => {
                                         className={type == 'admin' ? 'col-lg-12 ' : 'col-lg-6 '}
                                         key={index}
                                     >
-                                        <AccordionItem uuid={index} style={{}} className={generalstyles.filter_container + ' col-lg-12 p-2 mb-3'}>
+                                        <AccordionItem uuid={index} style={{}} className={generalstyles.filter_container + ' col-lg-12 p-4 mb-3'}>
                                             <div className={' col-lg-12 p-0'}>
                                                 <div className="row m-0 w-100">
                                                     <div className="col-lg-7 p-0">
@@ -243,10 +243,10 @@ const CourierSheet = (props) => {
                                                                     </p>
                                                                 </label>
                                                             </div>
-                                                            <div className="col-lg-12 mb-2" style={{ fontWeight: 600 }}>
+                                                            <div className="col-lg-12 mb-2 mt-2" style={{ fontWeight: 600 }}>
                                                                 #{item?.id}
                                                             </div>
-                                                            <div class="col-lg-12 p-0 d-flex justify-content-start mb-1">
+                                                            <div class="col-lg-12 p-0 d-flex justify-content-start mb-1 mt-2">
                                                                 <div className="row m-0 w-100 d-flex align-items-center justify-content-start">
                                                                     <div
                                                                         style={{
@@ -295,7 +295,7 @@ const CourierSheet = (props) => {
                                                     <div className="col-lg-5 p-0">
                                                         <div className="row m-0 w-100">
                                                             {type == 'finance' && (
-                                                                <div className="col-lg-12 p-0 d-flex justify-content-end">
+                                                                <div className="col-lg-12 p-0 mb-2 d-flex justify-content-end">
                                                                     <div className="row m-0 w-100 d-flex justify-content-end">
                                                                         <label className={`${formstyles.switch} mx-2 my-0`}>
                                                                             <input
@@ -390,7 +390,7 @@ const CourierSheet = (props) => {
                                                 </div>
                                             </div>
                                             {type == 'finance' && (
-                                                <div class="col-lg-12 p-0 mt-2">
+                                                <div class="col-lg-12 p-3 mt-2">
                                                     <div class="row m-0 w-100 d-flex">
                                                         <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4">
                                                             <div class="row m-0 w-100">

@@ -368,6 +368,7 @@ const API = () => {
                         paymentType
                         status
                         orderDate
+                        currency
                     }
                     cursor
                 }

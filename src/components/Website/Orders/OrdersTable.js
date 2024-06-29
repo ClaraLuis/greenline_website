@@ -26,7 +26,7 @@ const { ValueContainer, Placeholder } = components;
 const OrdersTable = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { orderStatusesContext } = useContext(Contexthandlerscontext);
+    const { orderStatusesContext, dateformatter } = useContext(Contexthandlerscontext);
 
     const { lang, langdetect } = useContext(LanguageContext);
 
@@ -167,14 +167,45 @@ const OrdersTable = (props) => {
                                                             {item?.merchant?.name}
                                                         </span>
                                                     </div>
-                                                    <div className="col-lg-12 p-0 mb-2">
-                                                        Price: <span style={{ fontWeight: 600 }}>{item?.price}</span>
-                                                    </div>
-                                                    <div className="col-lg-12 p-0 mb-2">
-                                                        Shipping: <span style={{ fontWeight: 600 }}>{item?.shippingPrice}</span>
-                                                    </div>
-                                                    <div className="col-lg-12 p-0 mb-2">
-                                                        Payment type: <span style={{ fontWeight: 600 }}>{item?.paymentType}</span>
+                                                    <div class="col-lg-12 p-0 mt-2">
+                                                        <div class="row m-0 w-100 d-flex">
+                                                            <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4">
+                                                                <div class="row m-0 w-100">
+                                                                    <div class="col-lg-12 p-0 allcentered text-center">
+                                                                        <span style={{ fontWeight: 400, fontSize: '11px' }}>Price</span>
+                                                                    </div>
+                                                                    <div class="col-lg-12 p-0 allcentered text-center">
+                                                                        <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                            {parseFloat(item?.price)} {item?.currency}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4">
+                                                                <div class="row m-0 w-100">
+                                                                    <div class="col-lg-12 p-0 allcentered text-center">
+                                                                        <span style={{ fontWeight: 400, fontSize: '11px' }}>Shipping</span>
+                                                                    </div>
+                                                                    <div class="col-lg-12 p-0 allcentered text-center">
+                                                                        <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                            {parseFloat(item?.shippingPrice)} {item?.currency}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div style={{ fontWeight: 600, fontSize: '15px' }} className=" p-0 mb-2 allcentered col-lg-4">
+                                                                <div class="row m-0 w-100">
+                                                                    <div class="col-lg-12 p-0 allcentered text-center">
+                                                                        <span style={{ fontWeight: 400, fontSize: '11px' }}>Total</span>
+                                                                    </div>
+                                                                    <div class="col-lg-12 p-0 allcentered text-center">
+                                                                        <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                            {parseFloat(item?.price) + parseFloat(item?.shippingPrice)} {item?.currency}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </>
                                             )}
@@ -248,8 +279,8 @@ const OrdersTable = (props) => {
                                                 </div>
                                             )}
 
-                                            <div class="col-lg-12 p-0 d-flex justify-content-end ">
-                                                <p className={' m-0 p-0 wordbreak  '}>{orderDate.toUTCString()}</p>
+                                            <div style={{ fontSize: '12px' }} class="col-lg-12 p-0 mt-2 d-flex justify-content-end ">
+                                                <p className={' m-0 p-0 wordbreak  '}>{dateformatter(orderDate.toUTCString())}</p>
                                             </div>
                                         </div>
                                     </div>
