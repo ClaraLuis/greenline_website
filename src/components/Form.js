@@ -484,11 +484,11 @@ const Form = (props) => {
                 } else if (item?.type == 'checkbox') {
                     return (
                         <div class={item.size == '6' ? 'col-lg-6' : 'col-lg-12'}>
-                            <div class={' m-0 mb-3'}>
-                                <label class={`${formstyles.checkbox} ${formstyles.checkbox_sub} ${formstyles.path}` + ' d-flex mb-0 '}>
+                            <div class={' m-0'}>
+                                <label class={`${formstyles.checkbox} ${formstyles.checkbox_sub} ${formstyles.path}` + ' d-flex mb-0 p-1 '}>
                                     <input
                                         type="checkbox"
-                                        class="mt-auto mb-auto"
+                                        class="mt-1 mb-1"
                                         checked={props?.payload[item.attr] == 0 ? false : true}
                                         onChange={() => {
                                             var temp = { ...props?.payload };

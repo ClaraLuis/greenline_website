@@ -222,7 +222,7 @@ textarea {
     border: 0.0625rem solid #eee;
     padding: 0.3125rem 1.25rem;
     font-size: 13px;
-    height: 38px !important;
+    height: 38px;
     border-radius: 18px;
     transition: border-color 0.2s;
 }
@@ -379,7 +379,7 @@ textarea {
     overflow: hidden;
     text-overflow: ellipsis;
     max-height: 38px !important;
-    height: 38px !important;
+    height: 28px !important;
     font-size: 10px !important;
 
     padding: 10px !important;

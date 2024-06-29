@@ -10,6 +10,7 @@ import { components } from 'react-select';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
+import { Accordion, AccordionItem, AccordionItemHeading, AccordionItemButton, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 // Icons
 import { NotificationManager } from 'react-notifications';
 import API from '../../../API/API.js';
@@ -19,13 +20,16 @@ import Pagination from '../../Pagination.js';
 import DynamicInputfield from '../DynamicInputfield/DynamicInputfield.js';
 import ItemsTable from '../MerchantItems/ItemsTable.js';
 import AddCustomer from './AddCustomer.js';
+import { MdOutlineLocationOn } from 'react-icons/md';
+import { FiCheckCircle } from 'react-icons/fi';
+import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 
 const { ValueContainer, Placeholder } = components;
 
 const AddOrder = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, paymentTypeContext, orderTypeContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, paymentTypeContext, orderTypeContext, orderStatusesContext } = useContext(Contexthandlerscontext);
     const {
         useMutationGQL,
         fetchCustomerNameSuggestions,
@@ -40,6 +44,7 @@ const AddOrder = (props) => {
         fetchMerchantItemVariants,
         useQueryGQL,
         addOrder,
+        fetchOrders,
     } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -55,14 +60,15 @@ const AddOrder = (props) => {
     const [orderpayload, setorderpayload] = useState({
         functype: 'add',
         items: [],
+        returnOrderItems: [],
         user: '',
         address: '',
         ordertype: '',
         paymenttype: '',
         shippingprice: '',
-        canbeoppened: 0,
+        canbeoppened: 1,
         fragile: 0,
-        partialdelivery: 0,
+        partialdelivery: 1,
         includevat: 0,
         // currency: 'EGP',
     });
@@ -77,6 +83,7 @@ const AddOrder = (props) => {
     const [loading, setloading] = useState(false);
     const [customerFound, setcustomerFound] = useState(false);
     const [customerData, setcustomerData] = useState({});
+    const [externalOrder, setexternalOrder] = useState(false);
 
     const [customerDataSuggestions, setcustomerDataSuggestions] = useState({});
     const [addresspayload, setaddresspayload] = useState({
@@ -84,6 +91,12 @@ const AddOrder = (props) => {
         country: '',
         streetAddress: '',
     });
+    const [filterorders, setfilterorders] = useState({
+        statuses: [], //arrivedToHub
+        limit: 20,
+        orderIds: undefined,
+    });
+    const fetchOrdersQuery = useQueryGQL('', fetchOrders(), filterorders); //network only
 
     const [filterCustomerPayload, setfilterCustomerPayload] = useState({
         phone: '',
@@ -125,6 +138,7 @@ const AddOrder = (props) => {
         canOpen: orderpayload?.canbeoppened == 1 ? true : false,
         fragile: orderpayload?.fragile == 1 ? true : false,
         deliveryPart: orderpayload?.partialdelivery == 1 ? true : false,
+        returnOrderItems: orderpayload?.returnOrderItems?.length == 0 ? undefined : orderpayload?.returnOrderItems,
         // currency: 'EGP',
         orderItems: cartItems,
         // shippingPrice: '0.0',
@@ -166,6 +180,20 @@ const AddOrder = (props) => {
     useEffect(() => {
         setpageactive_context('/merchantorders');
     }, []);
+    useEffect(() => {
+        settabs(
+            orderpayload?.ordertype == 'exchange'
+                ? [
+                      { name: 'Order Items', isChecked: true },
+                      { name: 'User Info', isChecked: false },
+                      { name: 'Previous Order', isChecked: false },
+                  ]
+                : [
+                      { name: 'Order Items', isChecked: true },
+                      { name: 'User Info', isChecked: false },
+                  ],
+        );
+    }, [orderpayload?.ordertype]);
 
     useEffect(async () => {
         setnewCustomer(false);
@@ -259,27 +287,60 @@ const AddOrder = (props) => {
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div class="row m-0 w-100 d-flex  justify-content-start mt-sm-2 pb-5 pb-md-0">
                 <div class="col-lg-12 p-0">
-                    <div class={generalstyles.card + ' row m-0 w-100 p-2'}>
-                        {tabs?.map((item, index) => {
-                            return (
-                                <div
-                                    onClick={() => {
-                                        var tabstemp = [...tabs];
-                                        tabstemp.map((i, ii) => {
-                                            if (i.name == item.name) {
-                                                tabstemp[ii].isChecked = true;
-                                            } else {
-                                                tabstemp[ii].isChecked = false;
-                                            }
+                    <div class={generalstyles.card + ' row m-0 w-100  d-flex align-items-center p-2'} style={{ justifyContent: 'space-between' }}>
+                        <div class="row m-0 d-flex align-items-center">
+                            {tabs?.map((item, index) => {
+                                return (
+                                    <div
+                                        onClick={() => {
+                                            var tabstemp = [...tabs];
+                                            tabstemp.map((i, ii) => {
+                                                if (i.name == item.name) {
+                                                    tabstemp[ii].isChecked = true;
+                                                } else {
+                                                    tabstemp[ii].isChecked = false;
+                                                }
+                                            });
+                                            settabs([...tabstemp]);
+                                        }}
+                                        class={!item.isChecked ? generalstyles.tab : `${generalstyles.tab} ${generalstyles.tab_active}`}
+                                    >
+                                        {item.name}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                        <button
+                            class={generalstyles.roundbutton}
+                            onClick={async () => {
+                                try {
+                                    if (
+                                        orderpayload?.customerId?.length != 0 &&
+                                        orderpayload?.address?.length != 0 &&
+                                        orderpayload?.ordertype?.length != 0 &&
+                                        orderpayload?.canbeoppened?.length != 0 &&
+                                        orderpayload?.fragile?.length != 0 &&
+                                        orderpayload?.partialdelivery?.length != 0 &&
+                                        orderpayload?.items?.length != 0
+                                    ) {
+                                        var temp = [];
+                                        var temp1 = [];
+                                        await orderpayload?.items?.map((item, index) => {
+                                            temp.push({ itemVariantId: item?.item?.id, count: item?.count });
                                         });
-                                        settabs([...tabstemp]);
-                                    }}
-                                    class={!item.isChecked ? generalstyles.tab : `${generalstyles.tab} ${generalstyles.tab_active}`}
-                                >
-                                    {item.name}
-                                </div>
-                            );
-                        })}
+                                        await orderpayload?.returnOrderItems?.map((returnOrderItem, index) => {
+                                            temp1.push({ itemVariantId: returnOrderItem?.item?.id, count: returnOrderItem?.count });
+                                        });
+                                        await setorderpayload({ ...orderpayload, returnOrderItems: temp1 });
+                                        await setcartItems([...temp]);
+                                        await addOrderMutation();
+                                        history.push('/merchantorders');
+                                    }
+                                } catch {}
+                            }}
+                        >
+                            Create Order
+                        </button>
                     </div>
                 </div>
                 {tabs[0]?.isChecked && (
@@ -797,81 +858,350 @@ const AddOrder = (props) => {
                         </div>
                     </div>
                 )}
+                {tabs[2]?.isChecked && (
+                    <div className={' col-lg-8 p-0 '}>
+                        <div class="row m-0 w-100">
+                            <div className="col-lg-12 p-0 d-flex justify-content-start my-2">
+                                <div className="row m-0 w-100 d-flex justify-content-start">
+                                    <label className={`${formstyles.switch} mx-2 my-0`}>
+                                        <input
+                                            type="checkbox"
+                                            checked={externalOrder}
+                                            onChange={() => {
+                                                setexternalOrder(!externalOrder);
+                                            }}
+                                        />
+                                        <span className={`${formstyles.slider} ${formstyles.round}`}></span>
+                                    </label>
+                                    <p className={`${generalstyles.checkbox_label} mb-0 text-focus text-capitalize cursor-pointer font_14 ml-1 mr-1 wordbreak`}>External Order</p>
+                                </div>
+                            </div>
+                            {externalOrder && (
+                                <>
+                                    <div class="col-lg-12 p-0 my-3 ">
+                                        <div class="row m-0 w-100 d-flex align-items-center">
+                                            <div class="col-lg-10 p-0">
+                                                <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
+                                                    <input
+                                                        // disabled={props?.disabled}
+                                                        // type={props?.type}
+                                                        class={formstyles.form__field}
+                                                        value={search}
+                                                        placeholder={'Search by name, SKU '}
+                                                        onChange={() => {
+                                                            setsearch(event.target.value);
+                                                        }}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2 p-1">
+                                                <button
+                                                    style={{ height: '30px' }}
+                                                    class={generalstyles.roundbutton + ' p-0 allcentered'}
+                                                    onClick={() => {
+                                                        if (search.length == 0) {
+                                                            setfilter({ ...filter, name: undefined });
+                                                        } else {
+                                                            setfilter({ ...filter, name: search });
+                                                        }
+                                                    }}
+                                                >
+                                                    search
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 p-0 mb-3">
+                                        <Pagination
+                                            beforeCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.beforeCursor}
+                                            afterCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.afterCursor}
+                                            filter={filter}
+                                            setfilter={setfilter}
+                                        />
+                                    </div>
+                                    <ItemsTable
+                                        clickable={true}
+                                        selectedItems={orderpayload?.returnOrderItems}
+                                        actiononclick={(item) => {
+                                            var temp = { ...orderpayload };
+                                            var exist = false;
+                                            var chosenindex = null;
+                                            temp.returnOrderItems.map((i, ii) => {
+                                                if (i.item.sku == item.sku) {
+                                                    exist = true;
+                                                    chosenindex = ii;
+                                                }
+                                            });
+                                            if (!exist) {
+                                                temp.returnOrderItems.push({ item: item, count: 1 });
+                                            } else {
+                                                temp.returnOrderItems[chosenindex].count = parseInt(temp.returnOrderItems[chosenindex].count) + 1;
+                                            }
+                                            setorderpayload({ ...temp });
+                                        }}
+                                        card="col-lg-4 px-1"
+                                        items={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.data}
+                                    />
+                                    <div class="col-lg-12 p-0">
+                                        <Pagination
+                                            beforeCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.beforeCursor}
+                                            afterCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.afterCursor}
+                                            filter={filter}
+                                            setfilter={setfilter}
+                                        />
+                                    </div>
+                                </>
+                            )}
+                            {!externalOrder && (
+                                <>
+                                    <div class="col-lg-12 p-0 my-3 ">
+                                        <div class="row m-0 w-100 d-flex align-items-center">
+                                            <div class="col-lg-10 p-0">
+                                                <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
+                                                    <input
+                                                        // disabled={props?.disabled}
+                                                        // type={props?.type}
+                                                        class={formstyles.form__field}
+                                                        value={search}
+                                                        placeholder={'Search by name, SKU '}
+                                                        onChange={() => {
+                                                            setsearch(event.target.value);
+                                                        }}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2 p-1">
+                                                <button
+                                                    style={{ height: '30px' }}
+                                                    class={generalstyles.roundbutton + ' p-0 allcentered'}
+                                                    onClick={() => {
+                                                        if (search.length == 0) {
+                                                            setfilter({ ...filter, name: undefined });
+                                                        } else {
+                                                            setfilter({ ...filter, name: search });
+                                                        }
+                                                    }}
+                                                >
+                                                    search
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 p-0 mb-3">
+                                        <Pagination
+                                            beforeCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.beforeCursor}
+                                            afterCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.afterCursor}
+                                            filter={filterorders}
+                                            setfilter={setfilterorders}
+                                        />
+                                    </div>
+                                    {fetchOrdersQuery?.data?.paginateOrders?.data?.map((item, index) => {
+                                        var selected = false;
+                                        // sheetpayload?.orders?.map((orderitem, orderindex) => {
+                                        //     if (orderitem?.id == item?.id) {
+                                        //         selected = true;
+                                        //     }
+                                        // });
+                                        return (
+                                            <>
+                                                <div className="col-lg-6 p-1">
+                                                    <div
+                                                        onClick={() => {
+                                                            var temp = { ...sheetpayload };
+                                                            var exist = false;
+                                                            var chosenindex = null;
+                                                            temp.orders.map((i, ii) => {
+                                                                if (i.id == item.id) {
+                                                                    exist = true;
+                                                                    chosenindex = ii;
+                                                                }
+                                                            });
+                                                            if (!exist) {
+                                                                temp.orders.push(item);
+                                                                temp.orderIds.push(item.id);
+                                                            } else {
+                                                                temp.orders.splice(chosenindex, 1);
+                                                                temp.orderIds.splice(chosenindex, 1);
+                                                            }
+                                                            setsheetpayload({ ...temp });
+                                                        }}
+                                                        style={{ cursor: 'pointer' }}
+                                                        class={generalstyles.card + ' p-3 row m-0 w-100 allcentered '}
+                                                    >
+                                                        <div className="col-lg-6 p-0">
+                                                            <span style={{ fontWeight: 700 }}># {item?.id}</span>
+                                                        </div>
+                                                        <div className="col-lg-6 p-0 d-flex justify-content-end align-items-center">
+                                                            <div
+                                                                className={
+                                                                    item.status == 'delivered'
+                                                                        ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered  '
+                                                                        : item?.status == 'postponed' || item?.status == 'failedDeliveryAttempt'
+                                                                        ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 allcentered '
+                                                                        : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered '
+                                                                }
+                                                            >
+                                                                {orderStatusesContext?.map((i, ii) => {
+                                                                    if (i.value == item?.status) {
+                                                                        return <span>{i.label}</span>;
+                                                                    }
+                                                                })}
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-lg-12 p-0 my-2">
+                                                            <hr className="m-0" />
+                                                        </div>
+                                                        <div className="col-lg-12 p-0 mb-2">
+                                                            <span style={{ fontWeight: 600, fontSize: '16px' }}>{item?.merchant?.name}</span>
+                                                        </div>
+                                                        <div className="col-lg-12 p-0 mb-1 d-flex align-items-center">
+                                                            <MdOutlineLocationOn class="mr-1" />
+                                                            <span style={{ fontWeight: 400 }}>
+                                                                {item?.address?.city}, {item?.address?.country}
+                                                            </span>
+                                                        </div>
+                                                        <div className="col-lg-12 p-0 ">
+                                                            <span style={{ fontWeight: 600 }}>
+                                                                {item?.address?.streetAddress}, {item?.address?.buildingNumber}, {item?.address?.apartmentFloor}
+                                                            </span>
+                                                        </div>
+                                                        {selected && (
+                                                            <div
+                                                                style={{
+                                                                    width: '35px',
+                                                                    height: '35px',
+                                                                    position: 'absolute',
+                                                                    bottom: 20,
+                                                                    right: 10,
+                                                                }}
+                                                                className=" allcentered"
+                                                            >
+                                                                <FiCheckCircle style={{ transition: 'all 0.4s' }} color={selected ? 'var(--success)' : ''} size={20} />
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </>
+                                        );
+                                    })}
+                                    <div class="col-lg-12 p-0">
+                                        <Pagination
+                                            beforeCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.beforeCursor}
+                                            afterCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.afterCursor}
+                                            filter={filterorders}
+                                            setfilter={setfilterorders}
+                                        />
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                    </div>
+                )}
                 <div class="col-lg-4 mb-3 px-1">
                     <div class={generalstyles.card + ' row m-0 w-100 p-2 py-3'}>
                         <div class="col-lg-12">
                             {orderpayload?.items?.length != 0 && (
                                 <>
-                                    <div class="col-lg-12 pb-2 px-3" style={{ fontSize: '17px', fontWeight: 700 }}>
-                                        Cart ({orderpayload?.items?.length})
-                                    </div>
-                                    <div class="col-lg-12 p-0">
-                                        <div style={{ maxHeight: '40vh', overflow: 'scroll' }} class="row m-0 w-100 scrollmenuclasssubscrollbar">
-                                            {orderpayload?.items?.map((item, index) => {
-                                                return (
-                                                    <div class={' col-lg-12 p-0'}>
-                                                        <div class={generalstyles.filter_container + ' py-2 row m-0 mb-2 w-100 allcentered'}>
-                                                            <div class="col-lg-2 mr-2 p-0">
-                                                                <div style={{ width: '100%', height: '40px' }}>
-                                                                    <img
-                                                                        src={
-                                                                            item?.item?.imageUrl
-                                                                                ? item?.item?.imageUrl
-                                                                                : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'
+                                    <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>
+                                        <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
+                                            <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
+                                                <AccordionItemHeading>
+                                                    <AccordionItemButton>
+                                                        <div class="row m-0 w-100">
+                                                            <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
+                                                                <p class={generalstyles.cardTitle + '  m-0 p-0 '}>Cart ({orderpayload?.items?.length})</p>
+                                                            </div>
+                                                            <div class="col-lg-4 col-md-4 col-sm-4 p-0 d-flex align-items-center justify-content-end">
+                                                                <AccordionItemState>
+                                                                    {(state) => {
+                                                                        if (state.expanded == true) {
+                                                                            return (
+                                                                                <i class="h-100 d-flex align-items-center justify-content-center">
+                                                                                    <BsChevronUp />
+                                                                                </i>
+                                                                            );
+                                                                        } else {
+                                                                            return (
+                                                                                <i class="h-100 d-flex align-items-center justify-content-center">
+                                                                                    <BsChevronDown />
+                                                                                </i>
+                                                                            );
                                                                         }
-                                                                        style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
-                                                                    />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-lg-4 p-0 wordbreak" style={{ fontWeight: 700, fontSize: '16px' }}>
-                                                                {item?.item?.name}
-                                                            </div>
-
-                                                            <div class="col-lg-5 d-flex justify-content-end  p-0">
-                                                                <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
-                                                                    <FaWindowMinimize
-                                                                        onClick={() => {
-                                                                            if (orderpayload.items[index].count > 0) {
-                                                                                var temp = { ...orderpayload };
-                                                                                temp.items[index].count -= 1;
-                                                                                setorderpayload({ ...temp });
-                                                                            } else {
-                                                                                var temp = { ...orderpayload };
-                                                                                temp.items.splice(index, 1);
-                                                                                setorderpayload({ ...temp });
-                                                                            }
-                                                                        }}
-                                                                        class=" mb-2 text-danger text-dangerhover"
-                                                                    />
-
-                                                                    <input
-                                                                        // disabled={props?.disabled}
-                                                                        type={'number'}
-                                                                        class={formstyles.form__field + ' mx-2 p-1'}
-                                                                        style={{ height: '25px', width: '52%' }}
-                                                                        value={item?.count}
-                                                                        placeholder={'Search by name or SKU'}
-                                                                        onChange={(event) => {
-                                                                            var temp = { ...orderpayload };
-                                                                            temp.items[index].count = event.target.value;
-                                                                            setorderpayload({ ...temp });
-                                                                        }}
-                                                                    />
-                                                                    <FaPlus
-                                                                        onClick={() => {
-                                                                            var temp = { ...orderpayload };
-                                                                            temp.items[index].count += 1;
-                                                                            setorderpayload({ ...temp });
-                                                                        }}
-                                                                        class=" text-secondaryhover"
-                                                                    />
-                                                                </div>
+                                                                    }}
+                                                                </AccordionItemState>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                );
-                                            })}
-                                        </div>
+                                                    </AccordionItemButton>
+                                                </AccordionItemHeading>
+                                                <AccordionItemPanel>
+                                                    <hr className="mt-2 mb-3" />
+                                                    {orderpayload?.items?.map((item, index) => {
+                                                        return (
+                                                            <div class={' col-lg-12 p-0'}>
+                                                                <div class={generalstyles.filter_container + ' p-1 row m-0 mb-2 w-100 allcentered'}>
+                                                                    <div class="col-lg-2 mr-2 p-0">
+                                                                        <div style={{ width: '100%', height: '35px' }}>
+                                                                            <img
+                                                                                src={
+                                                                                    item?.item?.imageUrl
+                                                                                        ? item?.item?.imageUrl
+                                                                                        : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'
+                                                                                }
+                                                                                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px' }}
+                                                                            />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-lg-4 p-0 wordbreak" style={{ fontWeight: 700, fontSize: '12px' }}>
+                                                                        {item?.item?.name}
+                                                                    </div>
+
+                                                                    <div class="col-lg-5 d-flex justify-content-end  p-0">
+                                                                        <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
+                                                                            <FaWindowMinimize
+                                                                                onClick={() => {
+                                                                                    if (orderpayload.items[index].count > 0) {
+                                                                                        var temp = { ...orderpayload };
+                                                                                        temp.items[index].count = parseInt(temp.items[index].count) - 1;
+                                                                                        setorderpayload({ ...temp });
+                                                                                    } else {
+                                                                                        var temp = { ...orderpayload };
+                                                                                        temp.items.splice(index, 1);
+                                                                                        setorderpayload({ ...temp });
+                                                                                    }
+                                                                                }}
+                                                                                class=" mb-2 text-danger text-dangerhover"
+                                                                            />
+
+                                                                            <input
+                                                                                // disabled={props?.disabled}
+                                                                                type={'number'}
+                                                                                class={formstyles.form__field + ' mx-2'}
+                                                                                style={{ height: '25px', width: '52%', paddingInlineStart: '10px' }}
+                                                                                value={item?.count}
+                                                                                placeholder={'Search by name or SKU'}
+                                                                                onChange={(event) => {
+                                                                                    var temp = { ...orderpayload };
+                                                                                    temp.items[index].count = event.target.value;
+                                                                                    setorderpayload({ ...temp });
+                                                                                }}
+                                                                            />
+                                                                            <FaPlus
+                                                                                onClick={() => {
+                                                                                    var temp = { ...orderpayload };
+                                                                                    temp.items[index].count = parseInt(temp.items[index].count) + 1;
+                                                                                    setorderpayload({ ...temp });
+                                                                                }}
+                                                                                class=" text-secondaryhover"
+                                                                            />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </AccordionItemPanel>
+                                            </AccordionItem>
+                                        </Accordion>
                                     </div>
                                 </>
                             )}
@@ -890,30 +1220,84 @@ const AddOrder = (props) => {
                             payload={orderpayload}
                             setpayload={setorderpayload}
                             // button1disabled={UserMutation.isLoading}
-                            button1class={generalstyles.roundbutton + '  mr-2 '}
-                            button1placeholder={orderpayload?.functype == 'add' ? 'Add Order' : lang.edit}
-                            button1onClick={async () => {
-                                try {
-                                    if (
-                                        orderpayload?.customerId?.length != 0 &&
-                                        orderpayload?.address?.length != 0 &&
-                                        orderpayload?.ordertype?.length != 0 &&
-                                        orderpayload?.canbeoppened?.length != 0 &&
-                                        orderpayload?.fragile?.length != 0 &&
-                                        orderpayload?.partialdelivery?.length != 0 &&
-                                        orderpayload?.items?.length != 0
-                                    ) {
-                                        var temp = [];
-                                        await orderpayload?.items?.map((item, index) => {
-                                            temp.push({ itemVariantId: item?.item?.id, count: item?.count });
-                                        });
-                                        await setcartItems([...temp]);
-                                        await addOrderMutation();
-                                        history.push('/merchantorders');
-                                    }
-                                } catch {}
-                            }}
                         />
+                        <div class="col-lg-12">
+                            {orderpayload?.returnOrderItems?.length != 0 && (
+                                <>
+                                    <div class="col-lg-12 pb-2 px-0" style={{ fontSize: '15px', fontWeight: 700 }}>
+                                        Returnn Items ({orderpayload?.returnOrderItems?.length})
+                                    </div>
+                                    <div class="col-lg-12 p-0">
+                                        <div style={{ maxHeight: '20vh', overflow: 'scroll' }} class="row m-0 w-100 scrollmenuclasssubscrollbar">
+                                            {orderpayload?.returnOrderItems?.map((item, index) => {
+                                                return (
+                                                    <div class={' col-lg-12 p-0'}>
+                                                        <div class={generalstyles.filter_container + ' p-1 row m-0 mb-2 w-100 allcentered'}>
+                                                            <div class="col-lg-2 mr-2 p-0">
+                                                                <div style={{ width: '100%', height: '35px' }}>
+                                                                    <img
+                                                                        src={
+                                                                            item?.item?.imageUrl
+                                                                                ? item?.item?.imageUrl
+                                                                                : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'
+                                                                        }
+                                                                        style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px' }}
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-4 p-0 wordbreak" style={{ fontWeight: 700, fontSize: '12px' }}>
+                                                                {item?.item?.name}
+                                                            </div>
+
+                                                            <div class="col-lg-5 d-flex justify-content-end  p-0">
+                                                                <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
+                                                                    <FaWindowMinimize
+                                                                        onClick={() => {
+                                                                            if (orderpayload.returnOrderItems[index].count > 0) {
+                                                                                var temp = { ...orderpayload };
+                                                                                temp.returnOrderItems[index].count = parseInt(temp.returnOrderItems[index].count) - 1;
+                                                                                setorderpayload({ ...temp });
+                                                                            } else {
+                                                                                var temp = { ...orderpayload };
+                                                                                temp.returnOrderItems.splice(index, 1);
+                                                                                setorderpayload({ ...temp });
+                                                                            }
+                                                                        }}
+                                                                        class=" mb-2 text-danger text-dangerhover"
+                                                                    />
+
+                                                                    <input
+                                                                        // disabled={props?.disabled}
+                                                                        type={'number'}
+                                                                        class={formstyles.form__field + ' mx-2'}
+                                                                        style={{ height: '25px', width: '52%', paddingInlineStart: '10px' }}
+                                                                        value={item?.count}
+                                                                        placeholder={'Search by name or SKU'}
+                                                                        onChange={(event) => {
+                                                                            var temp = { ...orderpayload };
+                                                                            temp.returnOrderItems[index].count = event.target.value;
+                                                                            setorderpayload({ ...temp });
+                                                                        }}
+                                                                    />
+                                                                    <FaPlus
+                                                                        onClick={() => {
+                                                                            var temp = { ...orderpayload };
+                                                                            temp.returnOrderItems[index].count = parseInt(temp.returnOrderItems[index].count) + 1;
+                                                                            setorderpayload({ ...temp });
+                                                                        }}
+                                                                        class=" text-secondaryhover"
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
