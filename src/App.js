@@ -117,7 +117,7 @@ async function refreshAuthToken() {
         if (!firebaseToken) throw new Error('No Firebase token available');
 
         try {
-            const { data } = await client.mutate({
+            const { data, errors } = await client.mutate({
                 mutation: gql`
                     mutation signIn($input: TokenRequestInput!) {
                         signIn(input: $input) {
@@ -148,6 +148,7 @@ async function refreshAuthToken() {
                     },
                 },
             });
+            alert(JSON.stringify(errors));
 
             const newAccessToken = data?.signIn?.accessToken;
             const userInfo = data?.signIn?.user;
