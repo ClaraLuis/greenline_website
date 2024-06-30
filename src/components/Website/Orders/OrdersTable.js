@@ -149,7 +149,7 @@ const OrdersTable = (props) => {
                                             <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
                                                 <div class="row m-0 w-100  d-flex justify-content-end align-items-center">
                                                     {props?.srcFrom == 'inventory' && (
-                                                        <div className={' wordbreak text-danger bg-light-danger rounded-pill font-weight-600mr-1 '}>{diffInDays} late days</div>
+                                                        <div className={' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 mr-1 '}>{diffInDays} late days</div>
                                                     )}
                                                     <div
                                                         // onClick={() => {
@@ -174,8 +174,8 @@ const OrdersTable = (props) => {
                                                         // onClick={() => {
                                                         //     setchangestatusmodal(true);
                                                         // }}
-                                                        // style={{ cursor: 'pointer' }}
-                                                        className={'ml-1 wordbreak text-success bg-light-success rounded-pill font-weight-600 '}
+                                                        style={{ color: 'white' }}
+                                                        className={'ml-1 wordbreak bg-primary rounded-pill font-weight-600 '}
                                                     >
                                                         {orderTypesContext?.map((i, ii) => {
                                                             if (i.value == item?.type) {

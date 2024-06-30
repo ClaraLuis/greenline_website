@@ -93,7 +93,7 @@ const AddSheet = (props) => {
             } else if (error.message) {
                 errorMessage = error.message;
             }
-
+            NotificationManager.warning(errorMessage, 'Warning!');
             if (errorMessage == 'Courier has an open sheet') {
                 setassignOpenModal(true);
             }

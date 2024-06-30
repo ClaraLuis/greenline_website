@@ -748,13 +748,13 @@ const API = () => {
 
     const fetchCustomer = (payload) => {
         return gql`
-            query customers($input: FindCustomerInput!) {
+            query customers($input: FindCustomerInput!, $merchantId: Int) {
                 findCustomer(input: $input) {
                     data {
                         id
                         phone
                         email
-                        details {
+                        details(merchantId: $merchantId) {
                             customerName
                         }
                     }

@@ -239,6 +239,7 @@ const AddOrder = (props) => {
                             limit: filterCustomerPayload?.limit,
                             merchantId: merchantId,
                         },
+                        merchantId: merchantId,
                     },
                 });
                 setloading(loading);
@@ -279,6 +280,7 @@ const AddOrder = (props) => {
                         merchantId: merchantId,
                         limit: 20,
                     },
+                    merchantId: merchantId,
                 },
             });
             setuserAddresses([...data?.paginateAddresses?.data]);
@@ -512,6 +514,7 @@ const AddOrder = (props) => {
                                                                     limit: filterCustomerPayload?.limit,
                                                                     merchantId: merchantId,
                                                                 },
+                                                                merchantId: merchantId,
                                                             },
                                                         });
                                                         setcustomerData({ ...data });
@@ -704,6 +707,7 @@ const AddOrder = (props) => {
                                                                                 merchantId: merchantId,
                                                                                 limit: 20,
                                                                             },
+                                                                            merchantId: merchantId,
                                                                         },
                                                                     });
 
@@ -760,6 +764,7 @@ const AddOrder = (props) => {
                                                                                                     merchantId: merchantId,
                                                                                                     limit: 20,
                                                                                                 },
+                                                                                                merchantId: merchantId,
                                                                                             },
                                                                                         });
                                                                                         setuserAddresses([...data?.paginateAddresses?.data]);
@@ -829,6 +834,7 @@ const AddOrder = (props) => {
                                                                                                     merchantId: merchantId,
                                                                                                     limit: 20,
                                                                                                 },
+                                                                                                merchantId: merchantId,
                                                                                             },
                                                                                         });
                                                                                         setuserAddresses([...data?.paginateAddresses?.data]);
