@@ -1,24 +1,20 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { Dropdown } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
-import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
-import { FaLayerGroup } from 'react-icons/fa';
-import Select, { components } from 'react-select';
-import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
-import { defaultstyles } from '../Generalfiles/selectstyles.js';
-import { IoMdClose, IoMdTime } from 'react-icons/io';
 import { Modal } from 'react-bootstrap';
+import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
+import { FaEllipsisV } from 'react-icons/fa';
+import { IoMdClose, IoMdTime } from 'react-icons/io';
+import { components } from 'react-select';
 
-import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
-import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
-import API from '../../../API/API.js';
-import Form from '../../Form.js';
 import { NotificationManager } from 'react-notifications';
+import Form from '../../Form.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -83,18 +79,62 @@ const SheetsTable = (props) => {
                                                 </span>
                                             </div>
                                             <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
-                                                <div
-                                                    className={
-                                                        item.status == 'completed'
-                                                            ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered  '
-                                                            : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered '
-                                                    }
-                                                >
-                                                    {sheetStatusesContext?.map((i, ii) => {
-                                                        if (i.value == item?.status) {
-                                                            return <span>{i.label}</span>;
+                                                <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
+                                                    <div
+                                                        className={
+                                                            item.status == 'completed'
+                                                                ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered  '
+                                                                : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered '
                                                         }
-                                                    })}
+                                                    >
+                                                        {sheetStatusesContext?.map((i, ii) => {
+                                                            if (i.value == item?.status) {
+                                                                return <span>{i.label}</span>;
+                                                            }
+                                                        })}
+                                                    </div>
+                                                    <Dropdown>
+                                                        <Dropdown.Toggle>
+                                                            <div
+                                                                class="iconhover allcentered ml-1"
+                                                                style={{
+                                                                    color: 'var(--primary)',
+                                                                    // borderRadius: '10px',
+                                                                    width: '28px',
+                                                                    height: '28px',
+                                                                    transition: 'all 0.4s',
+                                                                }}
+                                                            >
+                                                                <FaEllipsisV />
+                                                            </div>
+                                                        </Dropdown.Toggle>
+                                                        <Dropdown.Menu style={{ minWidth: '170px', fontSize: '12px' }}>
+                                                            <div class="row m-0 w-100">
+                                                                <div class="col-lg-12 p-1  allcentered mb-2 ">
+                                                                    <p
+                                                                        style={{ borderBottom: '1px solid #eee' }}
+                                                                        class={' mb-0 pb-0 avenirmedium text-secondaryhover text-center d-flex align-items-center pb-0  '}
+                                                                        onClick={() => {
+                                                                            // props?.editFunc(item);
+                                                                        }}
+                                                                    >
+                                                                        Delete Sheet
+                                                                    </p>
+                                                                </div>
+                                                                <div class="col-lg-12 p-1  allcentered ">
+                                                                    <p
+                                                                        // style={{ borderBottom: '1px solid #eee' }}
+                                                                        class={' mb-0 pb-0 avenirmedium text-secondaryhover text-center d-flex align-items-center pb-0  '}
+                                                                        onClick={() => {
+                                                                            history.push('/addsheet?sheetId=' + item?.id);
+                                                                        }}
+                                                                    >
+                                                                        Edit Sheet
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </Dropdown.Menu>
+                                                    </Dropdown>
                                                 </div>
                                             </div>
                                         </div>

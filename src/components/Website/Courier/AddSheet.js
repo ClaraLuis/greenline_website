@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
+import { Modal } from 'react-bootstrap';
 // import { fetch_collection_data } from '../../../API/API';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
 import { FaLayerGroup } from 'react-icons/fa';
@@ -23,6 +24,7 @@ import OrdersTable from '../Orders/OrdersTable.js';
 import { FiCheckCircle } from 'react-icons/fi';
 import { NotificationManager } from 'react-notifications';
 import { MdOutlineLocationOn } from 'react-icons/md';
+import { IoMdClose } from 'react-icons/io';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -30,7 +32,7 @@ const AddSheet = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, dateformatter, orderStatusesContext, user, isAuth } = useContext(Contexthandlerscontext);
-    const { useQueryGQL, fetchOrders, addCourierSheet, useMutationGQL, fetchCouriers } = API();
+    const { useQueryGQL, fetchOrders, addCourierSheet, useMutationGQL, fetchCouriers, fetchCourierSheet } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [submit, setsubmit] = useState(false);
@@ -44,6 +46,7 @@ const AddSheet = (props) => {
 
     const [search, setsearch] = useState('');
     const [openModal, setopenModal] = useState(false);
+    const [assignOpenModal, setassignOpenModal] = useState(false);
     const [addresspayload, setaddresspayload] = useState({
         functype: 'add',
         country: '',
@@ -64,6 +67,7 @@ const AddSheet = (props) => {
         beforeCursor: undefined,
     });
     const fetchCouriersQuery = useQueryGQL('', fetchCouriers(), filterCouriers);
+    const fetchCourierSheetQuery = useQueryGQL('', fetchCourierSheet(queryParameters.get('sheetId')));
 
     const [addCourierSheetMutation] = useMutationGQL(addCourierSheet(), {
         userId: sheetpayload?.courier,
@@ -79,7 +83,20 @@ const AddSheet = (props) => {
                 NotificationManager.warning(data?.createCourierSheet?.message, 'Warning!');
             }
         } catch (error) {
-            // console.error('Error adding user:', error);
+            // alert(JSON.stringify(error));
+            let errorMessage = 'An unexpected error occurred';
+            // // Check for GraphQL errors
+            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                errorMessage = error.graphQLErrors[0].message || errorMessage;
+            } else if (error.networkError) {
+                errorMessage = error.networkError.message || errorMessage;
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+
+            if (errorMessage == 'Courier has an open sheet') {
+                setassignOpenModal(true);
+            }
         }
     };
     useEffect(() => {
@@ -213,6 +230,14 @@ const AddSheet = (props) => {
                     </div>
                     <div class="col-lg-4 mb-3 px-1">
                         <div class={generalstyles.card + ' row m-0 w-100 p-2 py-3 scrollmenuclasssubscrollbar'} style={{ overflow: 'scroll' }}>
+                            {queryParameters.get('sheetId') != undefined && (
+                                <>
+                                    <div class="col-lg-12 mb-2" style={{ fontWeight: 600 }}>
+                                        Sheet # {queryParameters.get('sheetId')}
+                                    </div>
+                                    <div class="col-lg-12 mb-4">{fetchCourierSheetQuery?.data?.CourierSheet?.userInfo?.name}</div>
+                                </>
+                            )}
                             <div class="col-lg-12">
                                 {sheetpayload?.orders?.length != 0 && (
                                     <>
@@ -268,39 +293,101 @@ const AddSheet = (props) => {
                                     </>
                                 )}
                             </div>
-                            <Form
-                                size={'lg'}
-                                submit={submit}
-                                setsubmit={setsubmit}
-                                attr={[
-                                    {
-                                        title: 'Courier',
-                                        filter: filterCouriers,
-                                        setfilter: setfilterCouriers,
-                                        options: fetchCouriersQuery,
+                            {queryParameters.get('sheetId') == undefined && (
+                                <Form
+                                    size={'lg'}
+                                    submit={submit}
+                                    setsubmit={setsubmit}
+                                    attr={[
+                                        {
+                                            title: 'Courier',
+                                            filter: filterCouriers,
+                                            setfilter: setfilterCouriers,
+                                            options: fetchCouriersQuery,
 
-                                        optionsAttr: 'paginateCouriers',
-                                        label: 'name',
-                                        value: 'id',
-                                        size: '12',
-                                        attr: 'courier',
-                                        type: 'fetchSelect',
-                                    },
-                                ]}
-                                payload={sheetpayload}
-                                setpayload={setsheetpayload}
-                                // button1disabled={UserMutation.isLoading}
-                                button1class={generalstyles.roundbutton + '  mr-2 '}
-                                button1placeholder={sheetpayload?.functype == 'add' ? 'Add sheet' : lang.edit}
-                                button1onClick={() => {
-                                    handleAddCourierSheet();
-                                }}
-                            />
+                                            optionsAttr: 'paginateCouriers',
+                                            label: 'name',
+                                            value: 'id',
+                                            size: '12',
+                                            attr: 'courier',
+                                            type: 'fetchSelect',
+                                        },
+                                    ]}
+                                    payload={sheetpayload}
+                                    setpayload={setsheetpayload}
+                                    // button1disabled={UserMutation.isLoading}
+                                    button1class={generalstyles.roundbutton + '  mr-2 '}
+                                    button1placeholder={sheetpayload?.functype == 'add' ? 'Add sheet' : lang.edit}
+                                    button1onClick={() => {
+                                        handleAddCourierSheet();
+                                    }}
+                                />
+                            )}
+                            {queryParameters.get('sheetId') != undefined && (
+                                <div class="col-lg-12 p-0">
+                                    <div class="row m-0 w-100">
+                                        <div class="col-lg-12 mb-2 allcentered">
+                                            <button class={generalstyles.roundbutton}>Upddate sheet</button>
+                                        </div>
+                                    </div>{' '}
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
             </div>
             <AddressInfo openModal={openModal} setopenModal={setopenModal} addresspayload={addresspayload} setaddresspayload={setaddresspayload} />
+            <Modal
+                show={assignOpenModal}
+                onHide={() => {
+                    setassignOpenModal(false);
+                }}
+                centered
+                size={'md'}
+            >
+                <Modal.Header>
+                    <div className="row w-100 m-0 p-0">
+                        <div class="col-lg-6 pt-3 ">{/* <div className="row w-100 m-0 p-0">Update Sheet Status</div> */}</div>
+                        <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
+                            <div
+                                class={'close-modal-container'}
+                                onClick={() => {
+                                    setassignOpenModal(false);
+                                }}
+                            >
+                                <IoMdClose />
+                            </div>
+                        </div>{' '}
+                    </div>
+                </Modal.Header>
+                <Modal.Body>
+                    <div class="row m-0 w-100 allcentered py-2">
+                        <div class="col-lg-7 text-center mb-5" style={{ fontWeight: 600 }}>
+                            The Courier has an open sheet do you want to add the selected orders to the existing sheet
+                        </div>
+                        <div class="col-lg-12 p-0 mb-3">
+                            <div class="row m-0 w-100 allcentered">
+                                <button
+                                    class={generalstyles.roundbutton + ' bg-danger bg-dangerhover mr-2'}
+                                    onClick={() => {
+                                        setassignOpenModal(false);
+                                    }}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    class={generalstyles.roundbutton}
+                                    onClick={() => {
+                                        // setassignOpenModal(false)
+                                    }}
+                                >
+                                    Add to sheet
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </Modal.Body>
+            </Modal>
         </div>
     );
 };
