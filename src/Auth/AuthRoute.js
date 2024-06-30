@@ -54,7 +54,17 @@ const AuthRoute = (props) => {
             const cookies = new Cookies();
             cookies.remove('accessToken');
             cookies.remove('userInfo');
-            // window.open('/login', '_self');
+            let errorMessage = 'An unexpected error occurred';
+            // // Check for GraphQL errors
+            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                errorMessage = error.graphQLErrors[0].message || errorMessage;
+            } else if (error.networkError) {
+                errorMessage = error.networkError.message || errorMessage;
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+
+            NotificationManager.warning(JSON.stringify(errorMessage), 'Warning!');
         }
     };
 
