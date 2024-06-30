@@ -273,7 +273,7 @@ const FinancialAccounts = (props) => {
                                     // console.error('GraphQL Error:', JSON.stringify(error, null, 2));
                                     // // Show the user-friendly error message
                                     // alert();
-                                    NotificationManager.warning(JSON.stringify(errorMessage), 'Warning!');
+                                    NotificationManager.warning(errorMessage, 'Warning!');
                                 }
                             }}
                         />
