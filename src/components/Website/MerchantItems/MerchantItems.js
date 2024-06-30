@@ -66,9 +66,9 @@ const MerchantItems = (props) => {
     const [itemprice, setitemprice] = useState({
         currency: '',
         price: '',
-        discount: null,
-        startDiscount: null,
-        endDiscount: null,
+        discount: undefined,
+        startDiscount: undefined,
+        endDiscount: undefined,
     });
     const [colorpayload, setcolorpayload] = useState({
         color: '',
@@ -127,7 +127,7 @@ const MerchantItems = (props) => {
             beforeCursor: '',
             name: '',
             sku: '',
-            merchantId: parseInt(cookies.get('merchantId')),
+            merchantId: parseInt(cookies.get('merchantId')) ?? undefined,
         });
     }, [chosenMerchantContext]);
 
@@ -337,9 +337,9 @@ const MerchantItems = (props) => {
                                 setitemprice({
                                     currency: '',
                                     price: '',
-                                    discount: null,
-                                    startDiscount: null,
-                                    endDiscount: null,
+                                    discount: undefined,
+                                    startDiscount: undefined,
+                                    endDiscount: undefined,
                                 });
                                 setopenCompounditemsModal(true);
                             }}
@@ -688,9 +688,9 @@ const MerchantItems = (props) => {
                                             setitemprice({
                                                 currency: '',
                                                 price: '',
-                                                discount: null,
-                                                startDiscount: null,
-                                                endDiscount: null,
+                                                discount: undefined,
+                                                startDiscount: undefined,
+                                                endDiscount: undefined,
                                             });
                                         }}
                                     >
@@ -965,7 +965,7 @@ const MerchantItems = (props) => {
                                         });
                                         variants?.map((variant, varianIndex) => {
                                             var temp = {
-                                                price: variant.price?.length == 0 ? null : variant.price,
+                                                price: variant.price?.length == 0 ? undefined : variant.price,
                                                 imageUrl: variant.imageUrl,
                                                 merchantSku: variant.merchantSku,
                                             };
