@@ -163,13 +163,13 @@ const InventoryPackages = (props) => {
                                                         }
                                                     })}
                                                 </div>
-                                                <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered mx-1 '}>
+                                                {/* <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered mx-1 '}>
                                                     {returnPackageTypesContext?.map((i, ii) => {
                                                         if (i.value == item?.type) {
                                                             return <span>{i.label}</span>;
                                                         }
                                                     })}
-                                                </div>
+                                                </div> */}
                                             </div>
                                         </div>
                                         <div className="col-lg-12 p-0 my-2">

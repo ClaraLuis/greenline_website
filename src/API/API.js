@@ -956,6 +956,19 @@ const API = () => {
         `;
     };
 
+    const findRoles = (payload) => {
+        return gql`
+            query findRoles {
+                findRoles {
+                    id
+                    name
+                    type
+                    description
+                }
+            }
+        `;
+    };
+
     const fetchPackages = (payload) => {
         return gql`
             query PaginateReturnPackages($input: PaginateReturnPackageInput!) {
@@ -1025,6 +1038,7 @@ const API = () => {
         useQueryGQL,
         fetchUsers,
         isValidEmailMutation,
+        findRoles,
         useLazyQueryGQL,
         requestLoginResponse,
         fetchMerchantItems,
