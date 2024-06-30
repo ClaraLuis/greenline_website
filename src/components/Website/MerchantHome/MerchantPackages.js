@@ -88,7 +88,7 @@ const MerchantPackages = (props) => {
                                     <AccordionItemPanel>
                                         <hr className="mt-2 mb-3" />
                                         <div class="row m-0 w-100">
-                                            <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                            {/* <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
                                                 <label for="name" class={formstyles.form__label}>
                                                     Assigned
                                                 </label>
@@ -104,7 +104,7 @@ const MerchantPackages = (props) => {
                                                         setfilter({ ...filter, assigned: option.value });
                                                     }}
                                                 />
-                                            </div>
+                                            </div> */}
                                             <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
                                                 <label for="name" class={formstyles.form__label}>
                                                     Status

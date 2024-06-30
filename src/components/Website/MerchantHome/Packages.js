@@ -49,7 +49,7 @@ const Packages = (props) => {
         isAsc: true,
         afterCursor: '',
         beforeCursor: '',
-        assigned: false,
+        assigned: undefined,
     });
 
     const fetchPackagesQuery = useQueryGQL('', fetchPackages(), filter);
@@ -142,6 +142,27 @@ const Packages = (props) => {
                                                     value={returnPackageStatusContext.filter((option) => option.value == filter?.status)}
                                                     onChange={(option) => {
                                                         setfilter({ ...filter, status: option.value });
+                                                    }}
+                                                />
+                                            </div>
+                                            <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                                <label for="name" class={formstyles.form__label}>
+                                                    Assigned
+                                                </label>
+                                                <Select
+                                                    options={[
+                                                        { label: 'All', value: undefined },
+                                                        { label: 'Assigned', value: true },
+                                                        { label: 'Not Assigned', value: false },
+                                                    ]}
+                                                    styles={defaultstyles}
+                                                    value={[
+                                                        { label: 'All', value: undefined },
+                                                        { label: 'Assigned', value: true },
+                                                        { label: 'Not Assigned', value: false },
+                                                    ].filter((option) => option.value == filter?.assigned)}
+                                                    onChange={(option) => {
+                                                        setfilter({ ...filter, assigned: option.value });
                                                     }}
                                                 />
                                             </div>

@@ -507,7 +507,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         show: isAuth([1, 54]),
                     },
                     {
-                        name: 'Packages',
+                        name: 'Return Packages',
                         isselected: false,
                         icon: (
                             <i class={'allcentered'}>
@@ -585,7 +585,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         show: isAuth([1, 52]),
                     },
                     {
-                        name: 'Packages',
+                        name: 'Return Packages',
                         isselected: false,
                         icon: (
                             <i class={'allcentered'}>
@@ -627,7 +627,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         show: isAuth([1]),
                     },
                     {
-                        name: 'Packages',
+                        name: 'Return Packages',
                         isselected: false,
                         icon: (
                             <i class={'allcentered'}>
@@ -679,6 +679,18 @@ export const Contexthandlerscontext_provider = (props) => {
                         permissionpage: [1],
                         show: isAuth([1, 53, 36]),
                     },
+                    // {
+                    //     name: 'Return Packages',
+                    //     isselected: false,
+                    //     icon: (
+                    //         <i class={'allcentered'}>
+                    //             <TbPackages size={18} />
+                    //         </i>
+                    //     ),
+                    //     path: '/courierpackages',
+                    //     permissionpage: [1],
+                    //     show: isAuth([1, 53]),
+                    // },
                 ],
             },
             {
