@@ -333,7 +333,6 @@ const InventoryItems = (props) => {
                                                                     input: { itemInBoxId: parseInt(element.id), limit: 20 },
                                                                 },
                                                             });
-                                                            alert(JSON.stringify(data));
                                                             setfetchItemHistoryQuery(data);
                                                             setchosenitem(element);
                                                             setopenModal(true);
