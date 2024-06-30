@@ -994,6 +994,7 @@ const API = () => {
     };
 
     const useLazyQueryGQL = (query, fetchPolicy) => {
+        // alert(JSON.stringify(fetchPolicy) + ' ' + JSON.stringify(query));
         const mutation = useLazyQuery(query, {
             fetchPolicy: fetchPolicy ?? 'network-only',
             // context: {

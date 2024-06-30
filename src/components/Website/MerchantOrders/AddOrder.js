@@ -123,10 +123,7 @@ const AddOrder = (props) => {
 
     const [fetchSimilarAddressesQuery] = useLazyQueryGQL(fetchSimilarAddresses());
     const [checkCustomer] = useLazyQueryGQL(fetchCustomer());
-    const [fetchCustomerAddressesQuery] = useLazyQueryGQL(fetchCustomerAddresses(), {
-        customerId: orderpayload?.customerId,
-        merchantId: merchantId,
-    });
+    const [fetchCustomerAddressesQuery] = useLazyQueryGQL(fetchCustomerAddresses(), 'network-only');
 
     const [checkCustomerNameSuggestions] = useLazyQueryGQL(fetchCustomerNameSuggestions());
     const fetchMerchantItemVariantsQuery = useQueryGQL('', fetchMerchantItemVariants(), filter);
@@ -271,12 +268,13 @@ const AddOrder = (props) => {
                     input: {
                         customerId: orderpayload?.customerId,
                         merchantId: merchantId,
+                        limit: 20,
                     },
                 },
             });
             setuserAddresses([...data?.paginateAddresses?.data]);
         }
-    }, [orderpayload?.customerId, orderpayload?.address]);
+    }, [orderpayload?.customerId]);
 
     useEffect(() => {
         // alert(queryParameters.get('merchantId'));
@@ -685,12 +683,16 @@ const AddOrder = (props) => {
                                                                             input: {
                                                                                 customerId: orderpayload?.customerId,
                                                                                 merchantId: merchantId,
+                                                                                limit: 20,
                                                                             },
                                                                         },
                                                                     });
+
                                                                     setuserAddresses([...data?.paginateAddresses?.data]);
                                                                 }
-                                                            } catch {}
+                                                            } catch (e) {
+                                                                // alert(JSON.stringify(e));
+                                                            }
                                                         }
                                                         setopenModal(false);
                                                         // alert(JSON.stringify(data));
@@ -727,6 +729,7 @@ const AddOrder = (props) => {
                                                                                                 input: {
                                                                                                     customerId: orderpayload?.customerId,
                                                                                                     merchantId: merchantId,
+                                                                                                    limit: 20,
                                                                                                 },
                                                                                             },
                                                                                         });
@@ -795,6 +798,7 @@ const AddOrder = (props) => {
                                                                                                 input: {
                                                                                                     customerId: orderpayload?.customerId,
                                                                                                     merchantId: merchantId,
+                                                                                                    limit: 20,
                                                                                                 },
                                                                                             },
                                                                                         });
