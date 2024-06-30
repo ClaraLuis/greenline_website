@@ -1,0 +1,37 @@
+.dropdown {
+    position: relative;
+    cursor: pointer;
+}
+.dropdown .dropdownlist {
+    position: absolute;
+    top: 115%;
+    visibility: hidden;
+    opacity: 0;
+    transition: all 0.4s;
+    background-color: white;
+    border-radius: 0.625rem;
+    box-shadow: 0 0 3.125rem 0 rgba(82, 63, 105, 0.15);
+    min-width: 120px;
+    padding: 5px 0px;
+    z-index: 100;
+}
+.dropdown:hover .dropdownlist {
+    visibility: visible;
+    opacity: 1;
+}
+.dropdown .dropdownlist .listitem {
+    padding: 5px 10px;
+    transition: all 0.4s;
+    text-transform: capitalize;
+    color: #717579;
+    font-size: 13px;
+    cursor: pointer;
+}
+.dropdown .dropdownlist .listitem:hover {
+    background-color: #7175792d;
+}
+.icon:hover {
+    color: var(--primary);
+    transition: all 0.4s;
+    cursor: pointer;
+}

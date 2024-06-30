@@ -1,0 +1,30 @@
+.app_header {
+    align-items: center;
+    background-color: transparent;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    left: 0;
+    padding: 0.5rem 2rem;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 99;
+    transition: all 0.4s;
+}
+.app_headerscroll {
+    align-items: center;
+
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    left: 0;
+    padding: 0.5rem 2rem;
+
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 99;
+    transition: all 0.4s;
+    box-shadow: 0 0 0.3125rem 0 rgba(0, 0, 0, 0.03);
+}
