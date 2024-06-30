@@ -134,15 +134,17 @@ const OrdersTable = (props) => {
                                     >
                                         <div style={{ background: 'white' }} class={' p-3 row m-0 w-100 card'}>
                                             <div className="col-lg-4 p-0">
-                                                <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
-                                                    # {item?.id}
-                                                </span>{' '}
-                                                {outOfStock && props?.srcFrom == 'inventory' && (
-                                                    <div className={'ml-1 wordbreak text-danger bg-light-danger rounded-pill font-weight-600 '}>Out Of Stock</div>
-                                                )}
-                                                <span style={{ fontWeight: 600 }} class="text-capitalize">
-                                                    {item?.merchant?.name}
-                                                </span>
+                                                <div class="row m-0 w-100 d-flex align-items-center">
+                                                    <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
+                                                        # {item?.id}
+                                                    </span>{' '}
+                                                    {outOfStock && props?.srcFrom == 'inventory' && (
+                                                        <div className={'ml-1 wordbreak text-danger bg-light-danger rounded-pill font-weight-600 '}>Out Of Stock</div>
+                                                    )}
+                                                    <span style={{ fontWeight: 600 }} class="text-capitalize">
+                                                        {item?.merchant?.name}
+                                                    </span>
+                                                </div>
                                             </div>
                                             <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
                                                 <div class="row m-0 w-100  d-flex justify-content-end align-items-center">
