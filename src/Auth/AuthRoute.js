@@ -49,7 +49,6 @@ const AuthRoute = (props) => {
                 history.push('/users');
             }
         } catch (error) {
-            alert(JSON.stringify(error));
             signOut(getAuth());
             const cookies = new Cookies();
             cookies.remove('accessToken');
