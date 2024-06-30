@@ -116,46 +116,49 @@ async function refreshAuthToken() {
         const firebaseToken = await getAuth()?.currentUser?.getIdToken(true); // force refresh token from Firebase
         if (!firebaseToken) throw new Error('No Firebase token available');
 
-        const { data } = await client.mutate({
-            mutation: gql`
-                mutation signIn($input: TokenRequestInput!) {
-                    signIn(input: $input) {
-                        user {
-                            id
-                            email
-                            phone
-                            hubId
-                            merchantId
-                            inventoryId
-                            name
-                            type
-                            birthdate
-                            createdAt
-                            lastModified
-                            deletedAt
-                            roles {
-                                roleId
+        try {
+            const { data } = await client.mutate({
+                mutation: gql`
+                    mutation signIn($input: TokenRequestInput!) {
+                        signIn(input: $input) {
+                            user {
+                                id
+                                email
+                                phone
+                                hubId
+                                merchantId
+                                inventoryId
+                                name
+                                type
+                                birthdate
+                                createdAt
+                                lastModified
+                                deletedAt
+                                roles {
+                                    roleId
+                                }
                             }
+                            accessToken
                         }
-                        accessToken
                     }
-                }
-            `,
-            variables: {
-                input: {
-                    firebaseToken,
+                `,
+                variables: {
+                    input: {
+                        firebaseToken,
+                    },
                 },
-            },
-        });
+            });
 
-        const newAccessToken = data?.signIn?.accessToken;
-        const userInfo = data?.signIn?.user;
-        cookies.set('accessToken', newAccessToken);
-        cookies.set('userInfo', JSON.stringify(userInfo));
+            const newAccessToken = data?.signIn?.accessToken;
+            const userInfo = data?.signIn?.user;
+            cookies.set('accessToken', newAccessToken);
+            cookies.set('userInfo', JSON.stringify(userInfo));
+            if (!newAccessToken) throw new Error('Failed to refresh access token');
 
-        if (!newAccessToken) throw new Error('Failed to refresh access token');
-
-        return newAccessToken;
+            return newAccessToken;
+        } catch (e) {
+            alert(JSON.stringify(e));
+        }
     } catch (error) {
         signOut(getAuth());
         cookies.remove('accessToken');
