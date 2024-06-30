@@ -18,6 +18,7 @@ import Pagination from '../../Pagination.js';
 import ItemsTable from '../MerchantItems/ItemsTable.js';
 import Cookies from 'universal-cookie';
 import { BiPlus } from 'react-icons/bi';
+import { NotificationManager } from 'react-notifications';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -61,6 +62,16 @@ const ImportNewItem = (props) => {
             props?.openModals(false);
             // console.log(data); // Handle response
         } catch (error) {
+            let errorMessage = 'An unexpected error occurred';
+            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                errorMessage = error.graphQLErrors[0].message || errorMessage;
+            } else if (error.networkError) {
+                errorMessage = error.networkError.message || errorMessage;
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+
+            NotificationManager.warning(errorMessage, 'Warning!');
             console.error('Error adding user:', error);
         }
     };

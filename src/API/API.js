@@ -353,6 +353,7 @@ const API = () => {
                 paginateOrders(input: $input) {
                     data {
                         id
+                        type
                         shippingPrice
                         merchant {
                             name
@@ -369,6 +370,34 @@ const API = () => {
                         status
                         orderDate
                         currency
+                        customer {
+                            email
+                        }
+                        customerInfo {
+                            customerName
+                        }
+                        address {
+                            country
+                            city
+                            streetAddress
+                            buildingNumber
+                            apartmentFloor
+                        }
+                        orderItems {
+                            id
+                            orderId
+                            count
+                            unitPrice
+                            unitDiscount
+                            partialCount
+                            info {
+                                name
+                                imageUrl
+                                item {
+                                    name
+                                }
+                            }
+                        }
                     }
                     cursor
                 }

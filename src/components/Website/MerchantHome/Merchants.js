@@ -21,6 +21,7 @@ import user from '../user.png';
 import Cookies from 'universal-cookie';
 import Pagination from '../../Pagination.js';
 import Form from '../../Form.js';
+import { NotificationManager } from 'react-notifications';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -65,6 +66,16 @@ const Merchants = (props) => {
             refetchMerchants();
             setopenMerchantModel(false);
         } catch (error) {
+            let errorMessage = 'An unexpected error occurred';
+            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                errorMessage = error.graphQLErrors[0].message || errorMessage;
+            } else if (error.networkError) {
+                errorMessage = error.networkError.message || errorMessage;
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+
+            NotificationManager.warning(errorMessage, 'Warning!');
             console.error('Error adding Merchant:', error);
         }
     };

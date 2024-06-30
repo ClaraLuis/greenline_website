@@ -159,6 +159,16 @@ const AddMerchant = (props) => {
                     refetchMerchants();
                     setActiveStep((prevActiveStep) => prevActiveStep + 1);
                 } catch (error) {
+                    let errorMessage = 'An unexpected error occurred';
+                    if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                        errorMessage = error.graphQLErrors[0].message || errorMessage;
+                    } else if (error.networkError) {
+                        errorMessage = error.networkError.message || errorMessage;
+                    } else if (error.message) {
+                        errorMessage = error.message;
+                    }
+
+                    NotificationManager.warning(errorMessage, 'Warning!');
                     console.error('Error adding Merchant:', error);
                 }
             }
@@ -167,6 +177,16 @@ const AddMerchant = (props) => {
                 const { data } = await createInventoryRentMutation();
                 history.push('/merchants');
             } catch (error) {
+                let errorMessage = 'An unexpected error occurred';
+                if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                    errorMessage = error.graphQLErrors[0].message || errorMessage;
+                } else if (error.networkError) {
+                    errorMessage = error.networkError.message || errorMessage;
+                } else if (error.message) {
+                    errorMessage = error.message;
+                }
+
+                NotificationManager.warning(errorMessage, 'Warning!');
                 console.error('Error adding Inventory Rent:', error);
             }
         }

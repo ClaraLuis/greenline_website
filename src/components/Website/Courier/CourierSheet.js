@@ -42,19 +42,36 @@ const CourierSheet = (props) => {
     });
 
     const handleupdateCourierSheet = async () => {
-        try {
-            const { data } = await updateCourierSheetMutation();
-            if (data?.updateCourierSheet?.success == true) {
-                if (type == 'admin') {
-                    history.push('/couriersheets');
+        if (
+            submitSheetPayload?.status == 'inProgress' ||
+            (type == 'admin' && submitSheetPayload?.status == 'waitingForAdminApproval') ||
+            (type != 'admin' && submitSheetPayload?.status == 'waitingForFinanceApproval')
+        ) {
+            try {
+                const { data } = await updateCourierSheetMutation();
+                if (data?.updateCourierSheet?.success == true) {
+                    if (type == 'admin') {
+                        history.push('/couriersheets');
+                    } else {
+                        history.push('/financesheets');
+                    }
                 } else {
-                    history.push('/financesheets');
+                    NotificationManager.warning(data?.updateCourierSheet?.message, 'Warning!');
                 }
-            } else {
-                NotificationManager.warning(data?.updateCourierSheet?.message, 'Warning!');
+            } catch (error) {
+                let errorMessage = 'An unexpected error occurred';
+                if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                    errorMessage = error.graphQLErrors[0].message || errorMessage;
+                } else if (error.networkError) {
+                    errorMessage = error.networkError.message || errorMessage;
+                } else if (error.message) {
+                    errorMessage = error.message;
+                }
+
+                NotificationManager.warning(errorMessage, 'Warning!');
             }
-        } catch (error) {
-            // console.error('Error adding user:', error);
+        } else {
+            NotificationManager.warning('Sheet already closed.', 'Warning!');
         }
     };
 
@@ -586,7 +603,7 @@ const CourierSheet = (props) => {
                                     handleupdateCourierSheet();
                                 }}
                             >
-                                Close Sheet
+                                Update Sheet
                             </button>
                         </div>
                     </div>

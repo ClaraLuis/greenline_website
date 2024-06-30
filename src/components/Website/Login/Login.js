@@ -60,6 +60,16 @@ const Login = () => {
             } else {
             }
         } catch (e) {
+            let errorMessage = 'An unexpected error occurred';
+            if (e.graphQLErrors && e.graphQLErrors.length > 0) {
+                errorMessage = e.graphQLErrors[0].message || errorMessage;
+            } else if (e.networkError) {
+                errorMessage = e.networkError.message || errorMessage;
+            } else if (e.message) {
+                errorMessage = e.message;
+            }
+
+            NotificationManager.warning(errorMessage, 'Warning!');
             // alert(JSON.stringify(e));
         }
         try {
@@ -69,6 +79,16 @@ const Login = () => {
                 },
             });
         } catch (error) {
+            let errorMessage = 'An unexpected error occurred';
+            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                errorMessage = error.graphQLErrors[0].message || errorMessage;
+            } else if (error.networkError) {
+                errorMessage = error.networkError.message || errorMessage;
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+
+            NotificationManager.warning(errorMessage, 'Warning!');
             console.error('Error adding user:', error);
         }
     };

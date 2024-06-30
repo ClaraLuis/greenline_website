@@ -21,6 +21,7 @@ import { defaultstyles } from '../Generalfiles/selectstyles.js';
 import { MdArrowBackIos, MdArrowForwardIos, MdOutlineArrowBack, MdOutlineArrowForward } from 'react-icons/md';
 import ImportNewItem from './ImportNewItem.js';
 import Pagination from '../../Pagination.js';
+import { NotificationManager } from 'react-notifications';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -105,6 +106,16 @@ const InventoryItems = (props) => {
             setopenInventoryModal(false);
             // console.log(data); // Handle response
         } catch (error) {
+            let errorMessage = 'An unexpected error occurred';
+            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                errorMessage = error.graphQLErrors[0].message || errorMessage;
+            } else if (error.networkError) {
+                errorMessage = error.networkError.message || errorMessage;
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+
+            NotificationManager.warning(errorMessage, 'Warning!');
             console.error('Error adding Inventory:', error);
         }
     };
@@ -620,6 +631,16 @@ const InventoryItems = (props) => {
                                             reetchfetchItemsInBox();
                                             refetchItemHistory();
                                         } catch (error) {
+                                            let errorMessage = 'An unexpected error occurred';
+                                            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                                errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                            } else if (error.networkError) {
+                                                errorMessage = error.networkError.message || errorMessage;
+                                            } else if (error.message) {
+                                                errorMessage = error.message;
+                                            }
+
+                                            NotificationManager.warning(errorMessage, 'Warning!');
                                             console.error('Error importing item:', error);
                                         }
                                     } else {
@@ -629,6 +650,16 @@ const InventoryItems = (props) => {
                                             reetchfetchItemsInBox();
                                             refetchItemHistory();
                                         } catch (error) {
+                                            let errorMessage = 'An unexpected error occurred';
+                                            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                                errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                            } else if (error.networkError) {
+                                                errorMessage = error.networkError.message || errorMessage;
+                                            } else if (error.message) {
+                                                errorMessage = error.message;
+                                            }
+
+                                            NotificationManager.warning(errorMessage, 'Warning!');
                                             console.error('Error exporting item:', error);
                                         }
                                     }

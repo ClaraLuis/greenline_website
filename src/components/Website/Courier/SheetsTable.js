@@ -129,7 +129,7 @@ const SheetsTable = (props) => {
                                                                             history.push('/addsheet?sheetId=' + item?.id);
                                                                         }}
                                                                     >
-                                                                        Edit Sheet
+                                                                        Add orders
                                                                     </p>
                                                                 </div>
                                                             </div>
