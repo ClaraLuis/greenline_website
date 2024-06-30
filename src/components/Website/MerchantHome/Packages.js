@@ -317,7 +317,7 @@ const Packages = (props) => {
                                             errorMessage = error.message;
                                         }
 
-                                        NotificationManager.warning(JSON.stringify(errorMessage), 'Warning!');
+                                        NotificationManager.warning(errorMessage, 'Warning!');
                                     }
                                 }}
                                 class={generalstyles.roundbutton}
