@@ -557,21 +557,32 @@ const AddOrder = (props) => {
                             {customerFound && (
                                 <div class="col-lg-12 col-md-12 p-0 col-sm-12 mt-4">
                                     <div class="col-lg-12">
-                                        <div class="col-lg-6">
-                                            <div class={generalstyles.card + ' row m-0 p-2 w-100'}>
-                                                <div class="col-lg-12 mb-1">
-                                                    <span style={{ fontWeight: 600 }}> User: </span>
-                                                </div>
-                                                <div class="col-lg-12">
-                                                    Name: <span style={{ fontWeight: 600 }}>{orderpayload?.user}</span>
-                                                </div>
-                                                <div class="col-lg-12">
-                                                    Email: <span style={{ fontWeight: 600 }}>{orderpayload?.email}</span>
-                                                </div>
-                                                <div class="col-lg-12">
-                                                    Phone Number: <span style={{ fontWeight: 600 }}>{orderpayload?.phone}</span>
-                                                </div>
-                                            </div>
+                                        <div class="row m-0 w-100">
+                                            {customerData?.findCustomer?.data?.map((item, index) => {
+                                                return (
+                                                    <div class="col-lg-6">
+                                                        <div
+                                                            onClick={() => {
+                                                                setorderpayload({ ...orderpayload, customerId: item.id, email: item.email, user: item?.details?.customerName });
+                                                            }}
+                                                            style={{
+                                                                border: orderpayload?.customerId == item?.id ? '1px solid var(--primary)' : '',
+                                                            }}
+                                                            class={generalstyles.card + ' row m-0 p-2 w-100'}
+                                                        >
+                                                            <div class="col-lg-12">
+                                                                Name: <span style={{ fontWeight: 600 }}>{item?.details?.customerName}</span>
+                                                            </div>
+                                                            <div class="col-lg-12">
+                                                                Email: <span style={{ fontWeight: 600 }}>{item?.email}</span>
+                                                            </div>
+                                                            <div class="col-lg-12">
+                                                                Phone Number: <span style={{ fontWeight: 600 }}>{item?.phone}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
                                         </div>
                                     </div>
                                 </div>
