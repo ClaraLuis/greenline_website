@@ -276,7 +276,7 @@ const AddOrder = (props) => {
             });
             setuserAddresses([...data?.paginateAddresses?.data]);
         }
-    }, [orderpayload?.customerId]);
+    }, [orderpayload?.customerId, orderpayload?.address]);
 
     useEffect(() => {
         // alert(queryParameters.get('merchantId'));
