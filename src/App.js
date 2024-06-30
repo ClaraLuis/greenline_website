@@ -148,7 +148,6 @@ async function refreshAuthToken() {
                     },
                 },
             });
-            alert(JSON.stringify(errors));
 
             const newAccessToken = data?.signIn?.accessToken;
             const userInfo = data?.signIn?.user;

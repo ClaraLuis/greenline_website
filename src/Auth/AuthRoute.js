@@ -41,8 +41,6 @@ const AuthRoute = (props) => {
                     },
                 },
             });
-            alert(JSON.stringify(requestLoginData));
-            // alert(requestLoginData?.data?.requestToken)
             setUserInfoContext(requestLoginData?.data?.signIn);
             cookies.set('accessToken', requestLoginData?.data?.signIn?.accessToken);
             cookies.set('userInfo', requestLoginData?.data?.signIn?.user);
@@ -53,8 +51,8 @@ const AuthRoute = (props) => {
         } catch (error) {
             signOut(getAuth());
             const cookies = new Cookies();
-            cookies.set('accessToken', null);
-            cookies.set('merchantId', null);
+            cookies.remove('accessToken');
+            cookies.remove('userInfo');
             // window.open('/login', '_self');
         }
     };
