@@ -30,7 +30,7 @@ const { ValueContainer, Placeholder } = components;
 const AddOrder = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, paymentTypeContext, orderTypeContext, orderStatusesContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, paymentTypeContext, orderTypesContext, orderStatusesContext } = useContext(Contexthandlerscontext);
     const {
         useMutationGQL,
         fetchCustomerNameSuggestions,
@@ -1265,7 +1265,7 @@ const AddOrder = (props) => {
                             attr={
                                 orderpayload?.original == 1
                                     ? [
-                                          { name: 'Order type', attr: 'ordertype', type: 'select', options: orderTypeContext, size: '12' },
+                                          { name: 'Order type', attr: 'ordertype', type: 'select', options: orderTypesContext, size: '12' },
                                           { name: 'Payment type', attr: 'paymenttype', type: 'select', options: paymentTypeContext, size: '12' },
                                           { name: 'Can be oppened', attr: 'canbeoppened', type: 'checkbox', size: '12' },
                                           { name: 'Fragile', attr: 'fragile', type: 'checkbox', size: '12' },
@@ -1273,7 +1273,7 @@ const AddOrder = (props) => {
                                           { name: 'Original Price', attr: 'original', type: 'checkbox', size: '12' },
                                       ]
                                     : [
-                                          { name: 'Order type', attr: 'ordertype', type: 'select', options: orderTypeContext, size: '12' },
+                                          { name: 'Order type', attr: 'ordertype', type: 'select', options: orderTypesContext, size: '12' },
                                           { name: 'Payment type', attr: 'paymenttype', type: 'select', options: paymentTypeContext, size: '12' },
                                           { name: 'Can be oppened', attr: 'canbeoppened', type: 'checkbox', size: '12' },
                                           { name: 'Fragile', attr: 'fragile', type: 'checkbox', size: '12' },

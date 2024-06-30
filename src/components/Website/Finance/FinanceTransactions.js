@@ -31,7 +31,7 @@ const { ValueContainer, Placeholder } = components;
 const FinanceTransactions = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, isAuth, dateformatter, orderTypeContext, transactionStatusesContext, transactionTypesContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, isAuth, dateformatter, orderTypesContext, transactionStatusesContext, transactionTypesContext } = useContext(Contexthandlerscontext);
     const { fetchUsers, useQueryGQL, sendAnyFinancialTransaction, useMutationGQL, fetchTransactions, fetchFinancialAccounts } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);

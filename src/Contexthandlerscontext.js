@@ -179,7 +179,6 @@ export const Contexthandlerscontext_provider = (props) => {
         { label: 'Free Delivery', value: 'freeDelivery' },
         { label: 'Gift', value: 'gift' },
         { label: 'Free Of Charge', value: 'freeOfCharge' },
-        // Add other order types...
     ];
 
     const expenseTypesContext = [
@@ -337,14 +336,6 @@ export const Contexthandlerscontext_provider = (props) => {
         { label: 'Advertising', value: 'advertising' },
         { label: 'Delivery Expenses', value: 'deliveryExpenses' },
         { label: 'Miscellaneous', value: 'miscellaneous' },
-    ]);
-    const [orderTypeContext, setorderTypeContext] = useState([
-        { label: 'Delivery', value: 'delivery' },
-        { label: 'Exchange', value: 'exchange' },
-        { label: 'Refund', value: 'refund' },
-        { label: 'Free Delivery', value: 'freeDelivery' },
-        { label: 'Gift', value: 'gift' },
-        { label: 'Free Of Charge', value: 'freeOfCharge' },
     ]);
 
     const [empTypesContext, setempTypesContext] = useState([
@@ -831,8 +822,7 @@ export const Contexthandlerscontext_provider = (props) => {
                 orderStatusesContext,
                 transactionStatusesContext,
                 transactionTypesContext,
-                orderTypeContext,
-                setorderTypeContext,
+                orderTypesContext,
                 expensesTypeContext,
                 setexpensesTypeContext,
                 userTypesContext,

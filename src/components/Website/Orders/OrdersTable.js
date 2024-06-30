@@ -26,7 +26,7 @@ const { ValueContainer, Placeholder } = components;
 const OrdersTable = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { orderStatusesContext, dateformatter } = useContext(Contexthandlerscontext);
+    const { orderStatusesContext, dateformatter, orderTypesContext } = useContext(Contexthandlerscontext);
 
     const { lang, langdetect } = useContext(LanguageContext);
 
@@ -155,6 +155,19 @@ const OrdersTable = (props) => {
                                                     >
                                                         {orderStatusesContext?.map((i, ii) => {
                                                             if (i.value == item?.status) {
+                                                                return <span>{i.label}</span>;
+                                                            }
+                                                        })}
+                                                    </div>
+                                                    <div
+                                                        // onClick={() => {
+                                                        //     setchangestatusmodal(true);
+                                                        // }}
+                                                        // style={{ cursor: 'pointer' }}
+                                                        className={'ml-1 wordbreak text-success bg-light-success rounded-pill font-weight-600 '}
+                                                    >
+                                                        {orderTypesContext?.map((i, ii) => {
+                                                            if (i.value == item?.type) {
                                                                 return <span>{i.label}</span>;
                                                             }
                                                         })}
