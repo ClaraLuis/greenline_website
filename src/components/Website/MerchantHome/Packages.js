@@ -220,7 +220,12 @@ const Packages = (props) => {
                                 >
                                     <div style={{ background: 'white' }} class={' p-3 row m-0 w-100 card  d-flex align-items-center'}>
                                         <div className="col-lg-4 p-0">
-                                            <span style={{ fontSize: '12px', color: 'grey' }}># {item?.id}</span>
+                                            <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
+                                                # {item?.id}
+                                            </span>
+                                            <span style={{ fontWeight: 600 }} class="text-capitalize">
+                                                {item?.sku}
+                                            </span>
                                         </div>
                                         <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
                                             <div class="row m-0 w-100 d-fex justify-content-end align-items-center">
@@ -249,12 +254,10 @@ const Packages = (props) => {
                                         <div className="col-lg-12 p-0 my-2">
                                             <hr className="m-0" />
                                         </div>
-                                        <div className="col-lg-12 p-0 mb-2">
+                                        {/* <div className="col-lg-12 p-0 mb-2">
                                             SKU:{' '}
-                                            <span style={{ fontWeight: 600 }} class="text-capitalize">
-                                                {item?.sku}
-                                            </span>
-                                        </div>
+                                           
+                                        </div> */}
 
                                         <div class="col-lg-12 p-0 d-flex justify-content-end" style={{ fontSize: '12px', color: 'grey' }}>
                                             {item?.createdAt}
