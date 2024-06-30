@@ -101,6 +101,12 @@ const OrdersTable = (props) => {
                     {props?.fetchOrdersQuery?.data[props?.attr]?.data?.length != 0 && (
                         <div class="row m-0 w-100">
                             {props?.fetchOrdersQuery?.data[props?.attr]?.data?.map((item, index) => {
+                                var outOfStock = false;
+                                item?.orderItems?.map((orderitem, orderindex) => {
+                                    if (orderitem?.countInInventory == 0) {
+                                        outOfStock = true;
+                                    }
+                                });
                                 const timestamp = item?.orderDate;
                                 const orderDate = new Date(timestamp);
 
@@ -131,6 +137,9 @@ const OrdersTable = (props) => {
                                                 <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
                                                     # {item?.id}
                                                 </span>{' '}
+                                                {outOfStock && props?.srcFrom == 'inventory' && (
+                                                    <div className={'ml-1 wordbreak text-danger bg-light-danger rounded-pill font-weight-600 '}>Out Of Stock</div>
+                                                )}
                                                 <span style={{ fontWeight: 600 }} class="text-capitalize">
                                                     {item?.merchant?.name}
                                                 </span>
