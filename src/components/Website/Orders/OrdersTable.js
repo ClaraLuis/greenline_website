@@ -323,10 +323,16 @@ const OrdersTable = (props) => {
                                                                                 {props?.srcFrom == 'inventory' && (
                                                                                     <div
                                                                                         onClick={() => {
-                                                                                            setinventoryModal({ open: true, items: organizedData });
+                                                                                            if (orderITem?.countInInventory != 0) {
+                                                                                                setinventoryModal({ open: true, items: organizedData });
+                                                                                            }
                                                                                         }}
                                                                                         style={{ width: '30px', height: '30px' }}
-                                                                                        class="allcentered iconhover text-success"
+                                                                                        class={
+                                                                                            orderITem?.countInInventory == 0
+                                                                                                ? 'allcentered iconhover text-danger'
+                                                                                                : 'allcentered iconhover text-success'
+                                                                                        }
                                                                                     >
                                                                                         <MdOutlineInventory2 size={20} />
                                                                                     </div>

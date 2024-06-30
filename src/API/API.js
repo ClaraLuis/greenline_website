@@ -450,6 +450,7 @@ const API = () => {
                             unitPrice
                             unitDiscount
                             partialCount
+                            countInInventory
                             info {
                                 name
                                 imageUrl
