@@ -41,7 +41,7 @@ const AuthRoute = (props) => {
                     },
                 },
             });
-            // alert('12');
+            alert(JSON.stringify(requestLoginData));
             // alert(requestLoginData?.data?.requestToken)
             setUserInfoContext(requestLoginData?.data?.signIn);
             cookies.set('accessToken', requestLoginData?.data?.signIn?.accessToken);
