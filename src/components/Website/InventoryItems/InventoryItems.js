@@ -34,6 +34,7 @@ const InventoryItems = (props) => {
     const { lang, langdetect } = useContext(LanguageContext);
 
     const [openModal, setopenModal] = useState(false);
+    const [search, setSearch] = useState('');
     const [openInventoryModal, setopenInventoryModal] = useState(false);
     const [importpayload, setimportpayload] = useState({
         id: '',
@@ -270,22 +271,35 @@ const InventoryItems = (props) => {
                             </p>
                         </div>
                     </div>
-                    <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-2'}>
-                        <div class="col-lg-10 p-0 ">
-                            <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
-                                <input
-                                    // disabled={props?.disabled}
-                                    // type={props?.type}
-                                    class={formstyles.form__field}
-                                    // value={}
-                                    placeholder={'Search by name or SKU'}
-
-                                    // onChange={}
-                                />
+                    <div class={generalstyles.card + ' row m-0 w-100 my-2 p-2 px-2'}>
+                        <div class="col-lg-12 p-0 ">
+                            <div class="row m-0 w-100 d-flex align-items-center">
+                                <div class="col-lg-10">
+                                    <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
+                                        <input
+                                            // disabled={props?.disabled}
+                                            // type={props?.type}
+                                            class={formstyles.form__field}
+                                            value={search}
+                                            placeholder={'Search by name or SKU'}
+                                            onChange={(event) => {
+                                                setSearch(event.target.value);
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 allcenered">
+                                    <button
+                                        onClick={() => {
+                                            setfilterItemInBox({ ...filterItemInBox, name: search?.length == 0 ? undefined : search });
+                                        }}
+                                        style={{ height: '25px', minWidth: 'fit-content', marginInlineStart: '5px' }}
+                                        class={generalstyles.roundbutton + '  allcentered'}
+                                    >
+                                        search
+                                    </button>
+                                </div>
                             </div>
-                            <button onClick={() => {}} style={{ height: '25px', minWidth: 'fit-content', marginInlineStart: '5px' }} class={generalstyles.roundbutton + '  allcentered'}>
-                                search
-                            </button>
                         </div>
                     </div>
                     <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>

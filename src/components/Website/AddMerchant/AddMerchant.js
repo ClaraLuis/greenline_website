@@ -109,6 +109,7 @@ const AddMerchant = (props) => {
     }, [fetchGovernoratesQuery?.data]);
 
     const [activeStep, setActiveStep] = React.useState(0);
+    const [skippedarray, setskippedarray] = React.useState([]);
     const [skipped, setSkipped] = React.useState(new Set());
 
     const isStepOptional = (step) => {
@@ -127,36 +128,52 @@ const AddMerchant = (props) => {
                 setActiveStep((prevActiveStep) => prevActiveStep + 1);
             }
         } else if (activeStep == 1) {
+            setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        } else if (activeStep == 2) {
             if (merchantPayload?.name?.length == 0) {
                 NotificationManager.warning('Name Can not be empty', 'Warning');
             } else {
                 try {
                     const { data } = await addMerchantMutation();
+                    var temp = [];
 
                     await setmerchantId(data?.createMerchant);
-                    var temp = [];
-                    await governoratesItems?.map((item, index) => {
-                        temp.push({
-                            govId: item.id,
-                            total: item.shipping,
-                            vatDecimal: item.vat,
-                            base: item.base,
-                            extra: parseFloat(item.shipping) - (parseFloat(item.base) + parseFloat(item.shipping) * 0.14),
+                    if (!skippedarray.includes(1)) {
+                        await governoratesItems?.map((item, index) => {
+                            temp.push({
+                                govId: item.id,
+                                total: item.shipping,
+                                vatDecimal: item.vat,
+                                base: item.base,
+                                extra: parseFloat(item.shipping) - (parseFloat(item.base) + parseFloat(item.shipping) * 0.14),
+                            });
                         });
-                    });
-                    await setgovernoratesItemsList([...temp]);
-                    // if (queryParameters?.get('type') == 'add') {
-                    await createMerchantDomesticShippingMutation();
+                        await setgovernoratesItemsList([...temp]);
+                        // if (queryParameters?.get('type') == 'add') {
+                        await createMerchantDomesticShippingMutation();
+                    }
 
-                    // } else {
-                    //     var { data } = await updateMerchantDomesticShippingMutation();
-                    //     if (data?.updateMerchantDomesticShipping?.success) {
-                    //         NotificationManager.success('', 'Success!');
-                    //     } else {
-                    //         NotificationManager.warning(data?.updateMerchantDomesticShipping?.message, 'Warning!');
-                    //     }
-                    // }
+                    if (!skippedarray.includes(2)) {
+                        try {
+                            const { data } = await createInventoryRentMutation();
+                            history.push('/merchants');
+                        } catch (error) {
+                            let errorMessage = 'An unexpected error occurred';
+                            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                errorMessage = error.graphQLErrors[0].message || errorMessage;
+                            } else if (error.networkError) {
+                                errorMessage = error.networkError.message || errorMessage;
+                            } else if (error.message) {
+                                errorMessage = error.message;
+                            }
+
+                            NotificationManager.warning(errorMessage, 'Warning!');
+                            console.error('Error adding Inventory Rent:', error);
+                        }
+                    }
                     refetchMerchants();
+                    history.push('/merchants');
+
                     setActiveStep((prevActiveStep) => prevActiveStep + 1);
                 } catch (error) {
                     let errorMessage = 'An unexpected error occurred';
@@ -172,23 +189,6 @@ const AddMerchant = (props) => {
                     console.error('Error adding Merchant:', error);
                 }
             }
-        } else if (activeStep == 2) {
-            try {
-                const { data } = await createInventoryRentMutation();
-                history.push('/merchants');
-            } catch (error) {
-                let errorMessage = 'An unexpected error occurred';
-                if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-                    errorMessage = error.graphQLErrors[0].message || errorMessage;
-                } else if (error.networkError) {
-                    errorMessage = error.networkError.message || errorMessage;
-                } else if (error.message) {
-                    errorMessage = error.message;
-                }
-
-                NotificationManager.warning(errorMessage, 'Warning!');
-                console.error('Error adding Inventory Rent:', error);
-            }
         }
     };
 
@@ -198,10 +198,49 @@ const AddMerchant = (props) => {
 
     const handleSkip = async () => {
         if (activeStep == 1) {
-            const { data } = await addMerchantMutation();
-            await setmerchantId(data?.createMerchant);
+            // const { data } = await addMerchantMutation();
+            // await setmerchantId(data?.createMerchant);
         } else if (activeStep == 2) {
-            history.push('/merchants');
+            if (merchantPayload?.name?.length == 0) {
+                NotificationManager.warning('Name Can not be empty', 'Warning');
+            } else {
+                try {
+                    const { data } = await addMerchantMutation();
+                    var temp = [];
+
+                    await setmerchantId(data?.createMerchant);
+                    if (!skippedarray.includes(1)) {
+                        await governoratesItems?.map((item, index) => {
+                            temp.push({
+                                govId: item.id,
+                                total: item.shipping,
+                                vatDecimal: item.vat,
+                                base: item.base,
+                                extra: parseFloat(item.shipping) - (parseFloat(item.base) + parseFloat(item.shipping) * 0.14),
+                            });
+                        });
+                        await setgovernoratesItemsList([...temp]);
+                        // if (queryParameters?.get('type') == 'add') {
+                        await createMerchantDomesticShippingMutation();
+                    }
+
+                    history.push('/merchants');
+
+                    refetchMerchants();
+                } catch (error) {
+                    let errorMessage = 'An unexpected error occurred';
+                    if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                        errorMessage = error.graphQLErrors[0].message || errorMessage;
+                    } else if (error.networkError) {
+                        errorMessage = error.networkError.message || errorMessage;
+                    } else if (error.message) {
+                        errorMessage = error.message;
+                    }
+
+                    NotificationManager.warning(errorMessage, 'Warning!');
+                    console.error('Error adding Merchant:', error);
+                }
+            }
         }
 
         if (!isStepOptional(activeStep)) {
@@ -211,6 +250,11 @@ const AddMerchant = (props) => {
         }
 
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        // setSkipped((prevActiveStep) => prevActiveStep);
+        var skippedTemp = [...skippedarray];
+        skippedTemp.push(activeStep);
+        setskippedarray([...skippedTemp]);
+
         setSkipped((prevSkipped) => {
             const newSkipped = new Set(prevSkipped.values());
             newSkipped.add(activeStep);

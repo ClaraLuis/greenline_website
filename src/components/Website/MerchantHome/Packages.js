@@ -223,9 +223,6 @@ const Packages = (props) => {
                                             <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
                                                 # {item?.id}
                                             </span>
-                                            <span style={{ fontWeight: 600 }} class="text-capitalize">
-                                                {item?.sku}
-                                            </span>
                                         </div>
                                         <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
                                             <div class="row m-0 w-100 d-fex justify-content-end align-items-center">
@@ -258,7 +255,16 @@ const Packages = (props) => {
                                             SKU:{' '}
                                            
                                         </div> */}
-
+                                        <div class="col-lg-6 p-0">
+                                            <span style={{ fontWeight: 600 }} class="text-capitalize">
+                                                {item?.sku}
+                                            </span>
+                                        </div>
+                                        <div class="col-lg-6 p-0 d-flex justify-content-end">
+                                            <span style={{ fontWeight: 600 }} class="text-capitalize">
+                                                {item?.count} items
+                                            </span>
+                                        </div>
                                         <div class="col-lg-12 p-0 d-flex justify-content-end" style={{ fontSize: '12px', color: 'grey' }}>
                                             {item?.createdAt}
                                         </div>

@@ -103,28 +103,6 @@ const AddItem = (props) => {
 
     const { refetch: refetchItems } = useQueryGQL('', fetchMerchantItems(), payload);
 
-    const handleAddItem = async () => {
-        try {
-            const { data } = await addItemMutation();
-            // setop(false);
-            refetchItems();
-
-            // console.log(data); // Handle response
-        } catch (error) {
-            let errorMessage = 'An unexpected error occurred';
-            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-                errorMessage = error.graphQLErrors[0].message || errorMessage;
-            } else if (error.networkError) {
-                errorMessage = error.networkError.message || errorMessage;
-            } else if (error.message) {
-                errorMessage = error.message;
-            }
-
-            NotificationManager.warning(errorMessage, 'Warning!');
-            console.error('Error adding user:', error);
-        }
-    };
-
     useEffect(() => {
         setpageactive_context('/merchantitems');
     }, []);
@@ -368,7 +346,7 @@ const AddItem = (props) => {
                                     <div class={`${formstyles.form__group} ${formstyles.field}`}>
                                         <label class={formstyles.form__label}>Price</label>
                                         <input
-                                            type={'text'}
+                                            type={'number'}
                                             class={formstyles.form__field}
                                             value={itempayload.price}
                                             onChange={(event) => {
@@ -540,10 +518,17 @@ const AddItem = (props) => {
                                         };
                                         variantsTemp.push(temp);
                                     });
-                                    await setitempayload({ ...itempayload, variantNames: tempOptions, variantOptions: tempValues, variantOptionAttributes: variantsTemp });
+                                    await setitempayload({
+                                        ...itempayload,
+                                        variantNames: tempOptions?.length == 0 ? undefined : tempOptions,
+                                        variantOptions: tempValues?.length == 0 ? undefined : tempValues,
+                                        variantOptionAttributes: variantsTemp?.length == 0 ? undefined : variantsTemp,
+                                    });
+                                    // await setitempayload({ ...itempayload, variantNames: tempOptions, variantOptions: tempValues, variantOptionAttributes: variantsTemp });
                                     try {
                                         const { data } = await addItemMutation();
-
+                                        NotificationManager.success('Item added successfuly!', 'Success!');
+                                        history.push('/merchantitems');
                                         // Handle `data` here
                                         console.log('Mutation response:', data);
                                     } catch (error) {

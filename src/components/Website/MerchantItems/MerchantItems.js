@@ -94,9 +94,9 @@ const MerchantItems = (props) => {
                 description: itempayload?.description,
                 imageUrl: itempayload?.imageUrl,
                 price: itempayload?.price,
-                variantNames: itempayload?.variantNames,
-                variantOptions: itempayload?.variantOptions,
-                variantOptionAttributes: itempayload?.variantOptionAttributes,
+                variantNames: itempayload?.variantNames?.length == 0 ? undefined : itempayload?.variantNames,
+                variantOptions: itempayload?.variantOptions?.length == 0 ? undefined : itempayload?.variantOptions,
+                variantOptionAttributes: itempayload?.variantOptionAttributes?.length == 0 ? undefined : itempayload?.variantOptionAttributes,
             },
         ],
     });
@@ -327,34 +327,6 @@ const MerchantItems = (props) => {
                             }}
                         >
                             Add Single Item
-                        </button>
-                        <button
-                            style={{ height: '35px' }}
-                            class={generalstyles.roundbutton + '  mb-1'}
-                            onClick={() => {
-                                setitempayload({
-                                    functype: 'add',
-                                    merchansku: '',
-                                    name: '',
-                                    color: '',
-                                    colorHEX: '',
-                                    description: '',
-                                    size: '',
-                                    itemPrices: [],
-                                    colorsarray: [],
-                                    colorHEXarray: [],
-                                });
-                                setitemprice({
-                                    currency: '',
-                                    price: '',
-                                    discount: undefined,
-                                    startDiscount: undefined,
-                                    endDiscount: undefined,
-                                });
-                                setopenCompounditemsModal(true);
-                            }}
-                        >
-                            Add Compound Item
                         </button>
                     </div>
                 )}
@@ -981,7 +953,12 @@ const MerchantItems = (props) => {
                                             };
                                             variantsTemp.push(temp);
                                         });
-                                        await setitempayload({ ...itempayload, variantNames: tempOptions, variantOptions: tempValues, variantOptionAttributes: variantsTemp });
+                                        await setitempayload({
+                                            ...itempayload,
+                                            variantNames: tempOptions?.length == 0 ? undefined : tempOptions,
+                                            variantOptions: tempValues?.length == 0 ? undefined : tempValues,
+                                            variantOptionAttributes: variantsTemp?.length == 0 ? undefined : variantsTemp,
+                                        });
                                         try {
                                             const { data } = await addItemMutation();
 

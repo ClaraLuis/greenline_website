@@ -1012,6 +1012,7 @@ const API = () => {
                         toInventoryId
                         toMerchantId
                         status
+                        count
                         createdAt
                         updatedAt
                     }
