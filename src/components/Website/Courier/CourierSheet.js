@@ -12,6 +12,7 @@ import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 import { NotificationManager } from 'react-notifications';
 import { FaCheck } from 'react-icons/fa';
 import { IoMdTime } from 'react-icons/io';
+import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
 
 const CourierSheet = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -24,7 +25,7 @@ const CourierSheet = (props) => {
     const [sheetID, setsheetID] = useState(null);
     const [submitSheetPayload, setsubmitSheetPayload] = useState({});
     const [type, settype] = useState('');
-
+    const [buttonLoading, setbuttonLoading] = useState(false);
     const fetchCourierSheetQuery = useQueryGQL('', fetchCourierSheet(sheetID));
     useEffect(() => {
         setpageactive_context('/CourierSheet');
@@ -42,6 +43,7 @@ const CourierSheet = (props) => {
     });
 
     const handleupdateCourierSheet = async () => {
+        setbuttonLoading(true);
         if (
             submitSheetPayload?.status == 'inProgress' ||
             (type == 'admin' && submitSheetPayload?.status == 'waitingForAdminApproval') ||
@@ -73,6 +75,7 @@ const CourierSheet = (props) => {
         } else {
             NotificationManager.warning('Sheet already closed.', 'Warning!');
         }
+        setbuttonLoading(false);
     };
 
     // Initialize the expanded state for each accordion item
@@ -598,12 +601,14 @@ const CourierSheet = (props) => {
                             <button
                                 style={{ height: '35px' }}
                                 class={generalstyles.roundbutton}
+                                disabled={buttonLoading}
                                 onClick={() => {
                                     // history.push('/addorder');
                                     handleupdateCourierSheet();
                                 }}
                             >
-                                Update Sheet
+                                {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                {!buttonLoading && <span>Update Sheet</span>}
                             </button>
                         </div>
                     </div>

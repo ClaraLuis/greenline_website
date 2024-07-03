@@ -35,7 +35,7 @@ const FinancialAccountInfo = (props) => {
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [openModal, setopenModal] = useState({ open: false, type: '' });
-
+    const [buttonLoading, setbuttonLoading] = useState(false);
     const [accountItem, setaccountItem] = useState({ id: '1', name: 'Account 1', type: 'hub', user: 'User 1', merchant: 'Merchant 1', balance: '1000' });
     const [transactionpayload, settransactionpayload] = useState({
         functype: 'add',
@@ -371,11 +371,12 @@ const FinancialAccountInfo = (props) => {
                                     }
                                     payload={transactionpayload}
                                     setpayload={settransactionpayload}
-                                    // button1disabled={UserMutation.isLoading}
+                                    button1disabled={buttonLoading}
                                     button1class={generalstyles.roundbutton + '  mr-2 my-2 '}
                                     button1placeholder={'Add transaction'}
                                     button1onClick={async () => {
                                         // if(isAuth([]))
+                                        setbuttonLoading(true);
                                         if (
                                             transactionpayload?.type?.length != 0 &&
                                             transactionpayload?.amount?.length != 0 &&
@@ -406,6 +407,7 @@ const FinancialAccountInfo = (props) => {
                                         } else {
                                             NotificationManager.warning('complete all missing fields', 'Warning!');
                                         }
+                                        setbuttonLoading(false);
                                     }}
                                 />
                             )}

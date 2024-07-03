@@ -65,7 +65,7 @@ const TransactionsTable = (props) => {
     const [submit, setsubmit] = useState(false);
 
     const [transactionhistorymodal, settransactionhistorymodal] = useState(false);
-
+    const [buttonLoading, setbuttonLoading] = useState(false);
     const [updateAnyFinancialTransactionMutation] = useMutationGQL(updateAnyFinancialTransaction(), {
         id: statuspayload?.id,
         description: statuspayload?.description,
@@ -217,6 +217,7 @@ const TransactionsTable = (props) => {
                                                             onClick={async () => {
                                                                 await setstatuspayload({ ...statuspayload, id: item?.id, status: 'cancel' });
                                                                 if (window.confirm('Are you sure you want to cancel this transaction')) {
+                                                                    setbuttonLoading(true);
                                                                     if (isAuth([1, 51])) {
                                                                         var { data } = await updateAnyFinancialTransactionMutation();
                                                                     } else {
@@ -227,6 +228,7 @@ const TransactionsTable = (props) => {
                                                                     } else {
                                                                         NotificationManager.warning(data?.updateAnyFinancialTransaction?.message, 'Warning!');
                                                                     }
+                                                                    setbuttonLoading(false);
                                                                 }
                                                             }}
                                                             style={{
@@ -234,6 +236,7 @@ const TransactionsTable = (props) => {
                                                                 width: '30px',
                                                             }}
                                                             class={' iconhover allcentered '}
+                                                            disabled={buttonLoading}
                                                         >
                                                             <FcCancel size={25} />
                                                         </button>
@@ -488,12 +491,14 @@ const TransactionsTable = (props) => {
                             ]}
                             payload={statuspayload}
                             setpayload={setstatuspayload}
-                            // button1disabled={UserMutation.isLoading}
+                            button1disabled={buttonLoading}
                             button1class={generalstyles.roundbutton + '  mr-2 my-3 '}
                             button1placeholder={'Update status'}
                             button1onClick={async () => {
                                 try {
                                     if (statuspayload?.status?.length != 0) {
+                                        setbuttonLoading(true);
+
                                         if (isAuth([1, 51])) {
                                             var { data } = await updateAnyFinancialTransactionMutation();
                                         } else {
@@ -505,6 +510,7 @@ const TransactionsTable = (props) => {
                                         } else {
                                             NotificationManager.warning(data?.updateAnyFinancialTransaction?.message, 'Warning!');
                                         }
+                                        setbuttonLoading(false);
                                     } else {
                                         NotificationManager.warning('Choose Status First', 'Warning!');
                                     }

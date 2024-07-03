@@ -28,7 +28,7 @@ const UserInfo = (props) => {
     const { lang, langdetect } = useContext(LanguageContext);
     const [submit, setsubmit] = useState(false);
     const [changerolesmodal, setchangerolesmodal] = useState(false);
-    const [newpassword, setnewpassword] = useState('');
+    const [buttonLoading, setbuttonLoading] = useState(false);
     const groupedRoles = _.groupBy(props?.payload?.userRoles, (role) => role.role.type);
 
     // Transform into desired format
@@ -90,6 +90,8 @@ const UserInfo = (props) => {
     const { refetch: refetchUsers } = useQueryGQL('', fetchUsers(), filterUsers);
 
     const handleAddUser = async () => {
+        setbuttonLoading(true);
+
         try {
             if (props?.payload.functype == 'edit') {
                 var { data } = await editUserTypeMutation();
@@ -115,6 +117,7 @@ const UserInfo = (props) => {
             NotificationManager.warning(errorMessage, 'Warning!');
             console.error('Error adding user:', error);
         }
+        setbuttonLoading(false);
     };
 
     return (
@@ -317,19 +320,19 @@ const UserInfo = (props) => {
                                     }
                                     payload={props?.payload}
                                     setpayload={props?.setpayload}
-                                    // button1disabled={UserMutation.isLoading}
+                                    button1disabled={buttonLoading}
                                     button1class={generalstyles.roundbutton + '  mr-2 '}
                                     button1placeholder={props?.payload?.functype == 'add' ? lang.add : lang.edit}
                                     button1onClick={() => {
                                         handleAddUser();
                                     }}
-                                    button2={props?.payload?.functype == 'add' ? false : true}
-                                    // button2disabled={DeleteUserMutation.isLoading}
-                                    button2class={generalstyles.roundbutton + '  bg-danger bg-dangerhover mr-2 '}
-                                    button2placeholder={lang.delete}
-                                    button2onClick={() => {
-                                        // DeleteUserMutation.mutate(props?.payload);
-                                    }}
+                                    // button2={props?.payload?.functype == 'add' ? false : true}
+                                    // // button2disabled={DeleteUserMutation.isLoading}
+                                    // button2class={generalstyles.roundbutton + '  bg-danger bg-dangerhover mr-2 '}
+                                    // button2placeholder={lang.delete}
+                                    // button2onClick={() => {
+                                    //     // DeleteUserMutation.mutate(props?.payload);
+                                    // }}
                                 />
                             )}
                             {props?.payload?.functype == 'edit' && (

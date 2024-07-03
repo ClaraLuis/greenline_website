@@ -34,7 +34,7 @@ const MerchantPayments = (props) => {
     const cookies = new Cookies();
 
     const { lang, langdetect } = useContext(LanguageContext);
-
+    const [buttonLoading, setbuttonLoading] = useState(false);
     const [openModal, setopenModal] = useState(false);
     const [chosenMerchantsArray, setchosenMerchantsArray] = useState([]);
     const [total, setTotal] = useState(0);
@@ -388,10 +388,11 @@ const MerchantPayments = (props) => {
                             attr={[{ name: 'Description', attr: 'description', type: 'textarea', size: '12' }]}
                             payload={payload}
                             setpayload={setpayload}
-                            // button1disabled={UserMutation.isLoading}
+                            button1disabled={buttonLoading}
                             button1class={generalstyles.roundbutton + ' mr-2 '}
                             button1placeholder={'Complete'}
                             button1onClick={async () => {
+                                setbuttonLoading(true);
                                 try {
                                     const { data } = await completeMerchantPaymentsMutation();
                                     refetchMerchantPaymentTransactionsQuery();
@@ -400,6 +401,7 @@ const MerchantPayments = (props) => {
                                 } catch (error) {
                                     NotificationManager.warning(error.message || error, 'Warning!');
                                 }
+                                setbuttonLoading(false);
                             }}
                         />
                     </div>

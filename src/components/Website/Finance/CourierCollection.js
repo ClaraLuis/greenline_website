@@ -44,7 +44,7 @@ const CourierCollection = (props) => {
     const cookies = new Cookies();
 
     const { lang, langdetect } = useContext(LanguageContext);
-
+    const [buttonLoading, setbuttonLoading] = useState(false);
     const [openModal, setopenModal] = useState(false);
     const [chosenMerchantsArray, setchosenMerchantsArray] = useState([]);
     const [total, setTotal] = useState(0);
@@ -454,10 +454,11 @@ const CourierCollection = (props) => {
                             }
                             payload={payload}
                             setpayload={setpayload}
-                            // button1disabled={UserMutation.isLoading}
+                            button1disabled={buttonLoading}
                             button1class={generalstyles.roundbutton + ' mr-2 '}
                             button1placeholder={payload?.type == 'transfer' ? 'Transfer' : 'Process'}
                             button1onClick={async () => {
+                                setbuttonLoading(true);
                                 if (isAuth([1, 28, 51])) {
                                     if (payload?.type == 'transfer') {
                                         try {
@@ -485,6 +486,7 @@ const CourierCollection = (props) => {
                                 } else {
                                     NotificationManager.warning('Not Authorized', 'Warning!');
                                 }
+                                setbuttonLoading(false);
                             }}
                         />
                     </div>

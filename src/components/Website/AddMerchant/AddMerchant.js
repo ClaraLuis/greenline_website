@@ -19,6 +19,7 @@ import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
 import Typography from '@mui/material/Typography';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
+import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
 
 const AddMerchant = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -26,7 +27,7 @@ const AddMerchant = (props) => {
     const { setpageactive_context, setpagetitle_context, dateformatter, inventoryRentTypesContext } = useContext(Contexthandlerscontext);
     const { useQueryGQL, useMutationGQL, fetchGovernorates, createMerchantDomesticShipping, updateMerchantDomesticShipping, fetchMerchants, addMerchant, createInventoryRent } = API();
     const steps = ['Merchant Info', 'Shipping', 'Inventory Settings'];
-
+    const [buttonLoading, setbuttonLoading] = useState(false);
     const { lang, langdetect } = useContext(LanguageContext);
     const [governoratesItems, setgovernoratesItems] = useState([
         {
@@ -133,6 +134,7 @@ const AddMerchant = (props) => {
             if (merchantPayload?.name?.length == 0) {
                 NotificationManager.warning('Name Can not be empty', 'Warning');
             } else {
+                setbuttonLoading(true);
                 try {
                     const { data } = await addMerchantMutation();
                     var temp = [];
@@ -188,6 +190,7 @@ const AddMerchant = (props) => {
                     NotificationManager.warning(errorMessage, 'Warning!');
                     console.error('Error adding Merchant:', error);
                 }
+                setbuttonLoading(false);
             }
         }
     };
@@ -204,6 +207,8 @@ const AddMerchant = (props) => {
             if (merchantPayload?.name?.length == 0) {
                 NotificationManager.warning('Name Can not be empty', 'Warning');
             } else {
+                setbuttonLoading(true);
+
                 try {
                     const { data } = await addMerchantMutation();
                     var temp = [];
@@ -240,6 +245,7 @@ const AddMerchant = (props) => {
                     NotificationManager.warning(errorMessage, 'Warning!');
                     console.error('Error adding Merchant:', error);
                 }
+                setbuttonLoading(false);
             }
         }
 
@@ -292,12 +298,16 @@ const AddMerchant = (props) => {
                             </Button>
                             <Box sx={{ flex: '1 1 auto' }} />
                             {isStepOptional(activeStep) && (
-                                <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
-                                    Skip
+                                <Button disabled={buttonLoading} color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
+                                    {buttonLoading && <CircularProgress color="var(--primary)" width="15px" height="15px" duration="1s" />}
+                                    {!buttonLoading && <span>Skip</span>}
                                 </Button>
                             )}
 
-                            <Button onClick={handleNext}>{activeStep === steps.length - 1 ? 'Finish' : 'Next'}</Button>
+                            <Button disabled={buttonLoading} onClick={handleNext}>
+                                {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                {!buttonLoading && <span>{activeStep === steps.length - 1 ? 'Finish' : 'Next'}</span>}
+                            </Button>
                         </Box>
                         <Typography sx={{ mt: 2, mb: 1 }}>
                             <div className="col-lg-12 p-0" style={{ minHeight: '100vh' }}>
@@ -355,8 +365,9 @@ const AddMerchant = (props) => {
                                                     />
                                                 </div>
                                                 <div class={'col-lg-12 d-flex justify-content-end mt-5'}>
-                                                    <button class={generalstyles.roundbutton + ' allcentered'} onClick={handleNext} style={{ padding: '0px' }}>
-                                                        continue
+                                                    <button disabled={buttonLoading} class={generalstyles.roundbutton + ' allcentered'} onClick={handleNext} style={{ padding: '0px' }}>
+                                                        {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                                        {!buttonLoading && <span>continue</span>}
                                                     </button>
                                                 </div>
                                             </div>
@@ -607,12 +618,14 @@ const AddMerchant = (props) => {
                                                 </div>
                                                 <div class={'col-lg-12 d-flex justify-content-end mt-5'}>
                                                     {isStepOptional(activeStep) && (
-                                                        <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
-                                                            Skip
+                                                        <Button disabled={buttonLoading} color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
+                                                            {buttonLoading && <CircularProgress color="var(--primary)" width="15px" height="15px" duration="1s" />}
+                                                            {!buttonLoading && <span>Skip</span>}
                                                         </Button>
                                                     )}
-                                                    <button class={generalstyles.roundbutton + ' allcentered'} onClick={handleNext} style={{ padding: '0px' }}>
-                                                        continue
+                                                    <button disabled={buttonLoading} class={generalstyles.roundbutton + ' allcentered'} onClick={handleNext} style={{ padding: '0px' }}>
+                                                        {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                                        {!buttonLoading && <span>continue</span>}
                                                     </button>
                                                 </div>
                                             </div>

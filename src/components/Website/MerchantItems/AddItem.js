@@ -36,15 +36,7 @@ const AddItem = (props) => {
 
     const { lang, langdetect } = useContext(LanguageContext);
     const cookies = new Cookies();
-
-    const [openModal, setopenModal] = useState(false);
-    const [openCompounditemsModal, setopenCompounditemsModal] = useState(false);
-    const [variantModel, setvariantModel] = useState(true);
-    const [itemsarray, setitemsarray] = useState([
-        { sku: '123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1' },
-        { sku: '123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1' },
-        { sku: '123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1' },
-    ]);
+    const [buttonLoading, setbuttonLoading] = useState(false);
 
     const [itempayload, setitempayload] = useState({
         functype: 'add',
@@ -495,6 +487,7 @@ const AddItem = (props) => {
                             style={{ height: '35px' }}
                             class={generalstyles.roundbutton + '  mb-1'}
                             onClick={async () => {
+                                setbuttonLoading(true);
                                 if (itempayload?.name?.length == 0) {
                                     NotificationManager.warning('Name Can not be empty', 'Warning');
                                 } else {
@@ -546,9 +539,11 @@ const AddItem = (props) => {
                                         console.error('Mutation error:', error);
                                     }
                                 }
+                                setbuttonLoading(false);
                             }}
                         >
-                            Add item
+                            {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                            {!buttonLoading && <span>Add item</span>}
                         </button>
                     </div>
                 </div>

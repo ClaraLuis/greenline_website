@@ -29,7 +29,7 @@ const AddCustomer = (props) => {
     const [submit, setsubmit] = useState(false);
     const [changerolesmodal, setchangerolesmodal] = useState(false);
     const [newpassword, setnewpassword] = useState('');
-
+    const [buttonLoading, setbuttonLoading] = useState(false);
     const [addCustomerMutation] = useMutationGQL(addCustomer(), {
         name: props?.payload?.name,
         phone: props?.payload?.phone,
@@ -37,6 +37,7 @@ const AddCustomer = (props) => {
     });
 
     const handleAddCustomer = async () => {
+        setbuttonLoading(true);
         try {
             const { data } = await addCustomerMutation();
             props?.setopenModal(false);
@@ -54,6 +55,7 @@ const AddCustomer = (props) => {
             NotificationManager.warning(errorMessage, 'Warning!');
             console.error('Error adding user:', error);
         }
+        setbuttonLoading(false);
     };
     return (
         <>
@@ -95,7 +97,7 @@ const AddCustomer = (props) => {
                             ]}
                             payload={props?.payload}
                             setpayload={props?.setpayload}
-                            // button1disabled={UserMutation.isLoading}
+                            button1disabled={buttonLoading}
                             button1class={generalstyles.roundbutton + '  mr-2 '}
                             button1placeholder={lang.add}
                             button1onClick={() => {

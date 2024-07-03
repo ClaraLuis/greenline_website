@@ -82,6 +82,7 @@ const AddOrder = (props) => {
         { name: 'Order Items', isChecked: true },
         { name: 'User Info', isChecked: false },
     ]);
+    const [buttonLoading, setbuttonLoading] = useState(false);
     const [userAddresses, setuserAddresses] = useState();
     const [search, setsearch] = useState('');
     const [openModal, setopenModal] = useState(false);
@@ -342,6 +343,7 @@ const AddOrder = (props) => {
                         <button
                             class={generalstyles.roundbutton}
                             onClick={async () => {
+                                setbuttonLoading(true);
                                 try {
                                     if (
                                         orderpayload?.customerId?.length != 0 &&
@@ -366,9 +368,11 @@ const AddOrder = (props) => {
                                         history.push('/merchantorders');
                                     }
                                 } catch {}
+                                setbuttonLoading(false);
                             }}
                         >
-                            Create Order
+                            {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                            {!buttonLoading && <span>Create Order</span>}
                         </button>
                     </div>
                 </div>
@@ -624,17 +628,21 @@ const AddOrder = (props) => {
                                     </div>
                                     <button
                                         onClick={async () => {
+                                            setbuttonLoading(true);
                                             try {
                                                 await linkCustomerMutation();
                                                 setcustomerFound(true);
                                             } catch {
                                                 alert('error');
                                             }
+                                            setbuttonLoading(false);
                                         }}
                                         style={{ height: '35px' }}
                                         class={generalstyles.roundbutton + '  mb-1 mt-2'}
+                                        disabled={buttonLoading}
                                     >
-                                        Create customer
+                                        {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                        {!buttonLoading && <span>Create customer</span>}
                                     </button>
                                 </div>
                             )}
@@ -675,10 +683,11 @@ const AddOrder = (props) => {
                                                 ]}
                                                 payload={addresspayload}
                                                 setpayload={setaddresspayload}
-                                                // button1disabled={UserMutation.isLoading}
+                                                button1disabled={buttonLoading}
                                                 button1class={generalstyles.roundbutton + '  mr-2 '}
                                                 button1placeholder={'Add address'}
                                                 button1onClick={async () => {
+                                                    setbuttonLoading(true);
                                                     if (addresspayload?.city?.length != 0 && addresspayload?.country?.length != 0 && addresspayload?.streetAddress?.length != 0) {
                                                         var { data } = await fetchSimilarAddressesQuery({
                                                             variables: {
@@ -732,6 +741,7 @@ const AddOrder = (props) => {
                                                     } else {
                                                         NotificationManager.warning('', 'Please complete the missing fields');
                                                     }
+                                                    setbuttonLoading(false);
                                                 }}
                                             />
                                         </div>

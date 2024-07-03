@@ -23,7 +23,7 @@ const MerchantHome = (props) => {
     const { createInventory, useMutationGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
-
+    const [buttonLoading, setbuttonLoading] = useState(false);
     const [inventoryRentPayload, setinventoryRentPayload] = useState({
         merchantId: 1,
         type: '',
@@ -33,40 +33,6 @@ const MerchantHome = (props) => {
     });
     const [openModal, setopenModal] = useState(false);
     const [submit, setsubmit] = useState(false);
-
-    const [merchants, setmerchants] = useState([
-        {
-            id: '1',
-            name: 'Merchant 1',
-        },
-        {
-            id: '2',
-            name: 'Merchant 2',
-        },
-        {
-            id: '3',
-            name: 'Merchant 3',
-        },
-    ]);
-    const [merchantDropown, setmerchantDropown] = useState([
-        { item: 'Edit Details', path: '' },
-        { item: 'Shipping Prices', path: '' },
-        { item: 'Inventory Rent', path: '' },
-    ]);
-
-    const [payload, setpayload] = useState({
-        functype: 'add',
-        id: 'add',
-        name: '',
-        type: '',
-        phone: '',
-        email: '',
-        birthdate: '',
-    });
-    const [filterobj, setfilterobj] = useState({
-        page: 1,
-        search: '',
-    });
 
     const [addInventoryRent] = useMutationGQL(createInventory(), {
         merchantId: parseInt(inventoryRentPayload?.merchantId),
@@ -159,14 +125,16 @@ const MerchantHome = (props) => {
                             ]}
                             payload={inventoryRentPayload}
                             setpayload={setinventoryRentPayload}
-                            // button1disabled={UserMutation.isLoading}
+                            button1disabled={buttonLoading}
                             button1class={generalstyles.roundbutton + '  mr-2 '}
                             button1placeholder={'Update'}
                             button1onClick={async () => {
+                                setbuttonLoading(true);
                                 try {
                                     await addInventoryRent();
                                     setchangestatusmodal(false);
                                 } catch {}
+                                setbuttonLoading(false);
                             }}
                         />
                     </div>

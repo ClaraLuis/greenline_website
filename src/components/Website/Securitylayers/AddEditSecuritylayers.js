@@ -11,6 +11,7 @@ import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import API from '../../../API/API';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext';
+import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
 
 const AddEditSecuritylayers = (props) => {
     const { lang, langdetect } = React.useContext(LanguageContext);
@@ -21,7 +22,7 @@ const AddEditSecuritylayers = (props) => {
     const [selectedroles, setselectedroles] = useState([]);
 
     const [rolesarray, setrolesarray] = useState([]);
-
+    const [buttonLoading, setbuttonLoading] = useState(false);
     const [updateUserRolesMutation] = useMutationGQL(updateUserRoles(), {
         roles: selectedroles,
         id: props?.payload?.id,
@@ -165,6 +166,7 @@ const AddEditSecuritylayers = (props) => {
                             class={generalstyles.roundbutton + '  mb-1'}
                             // disabled={CRUDSecurityGroupMutation?.isLoading}
                             onClick={async () => {
+                                setbuttonLoading(true);
                                 try {
                                     var { data } = await updateUserRolesMutation();
                                     props?.setopenModal(false);
@@ -175,16 +177,11 @@ const AddEditSecuritylayers = (props) => {
                                     // console.error('Error in:', error);
                                     NotificationManager.warning(error, 'Warning');
                                 }
+                                setbuttonLoading(false);
                             }}
                         >
-                            {/* {!CRUDSecurityGroupMutation?.isLoading && <> */}
-                            Update
-                            {/* </>} */}
-                            {/* {CRUDSecurityGroupMutation?.isLoading && (
-                                        <>
-                                            <CircularProgress color="#fff" width="20px" height="20px" duration="1s" />
-                                        </>
-                                    )} */}
+                            {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                            {!buttonLoading && <span>Update</span>}
                         </button>
                     </div>
                 </div>

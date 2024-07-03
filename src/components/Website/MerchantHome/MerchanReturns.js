@@ -19,6 +19,7 @@ import { defaultstyles } from '../Generalfiles/selectstyles.js';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import ItemsTable from './ItemsTable.js';
 import { NotificationManager } from 'react-notifications';
+import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
 
 const MerchanReturns = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -34,13 +35,6 @@ const MerchanReturns = (props) => {
         toInventoryId: undefined,
         toMerchantId: undefined,
     });
-
-    const [filterInventories, setfilterInventories] = useState({
-        limit: 20,
-        afterCursor: null,
-        beforeCursor: null,
-    });
-    const fetchinventories = useQueryGQL('', fetchInventories(), filterInventories);
 
     const [filterMerchants, setfilterMerchants] = useState({
         isAsc: true,
@@ -58,7 +52,7 @@ const MerchanReturns = (props) => {
         assignedToPackage: false,
         merchantId: undefined,
     });
-
+    const [buttonLoading, setbuttonLoading] = useState(false);
     const fetchMerchantItemReturnsQuery = useQueryGQL('', fetchMerchantItemReturns(), filter);
     const { refetch: refetchMerchantItemReturnsQuery } = useQueryGQL('', fetchMerchantItemReturns(), filter);
 
@@ -234,6 +228,7 @@ const MerchanReturns = (props) => {
                             <button
                                 onClick={async () => {
                                     try {
+                                        setbuttonLoading(true);
                                         if (packagepayload?.ids?.length != 0 && packagepayload?.toMerchantId != undefined) {
                                             try {
                                                 var temp = [];
@@ -249,11 +244,14 @@ const MerchanReturns = (props) => {
                                         } else {
                                             NotificationManager.warning('Please Complete all fields', 'Warning!');
                                         }
+                                        setbuttonLoading(false);
                                     } catch {}
                                 }}
+                                disabled={buttonLoading}
                                 class={generalstyles.roundbutton}
                             >
-                                Add Package
+                                {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                {!buttonLoading && <span>Add Package</span>}
                             </button>
                         </div>
                     </div>

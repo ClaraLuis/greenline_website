@@ -36,6 +36,7 @@ const AddSheet = (props) => {
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [submit, setsubmit] = useState(false);
+    const [buttonLoading, setbuttonLoading] = useState(false);
     const [sheetpayload, setsheetpayload] = useState({
         functype: 'add',
         name: '',
@@ -75,6 +76,7 @@ const AddSheet = (props) => {
     });
 
     const handleAddCourierSheet = async () => {
+        setbuttonLoading(true);
         try {
             const { data } = await addCourierSheetMutation();
             if (data?.createCourierSheet?.success == true) {
@@ -98,6 +100,7 @@ const AddSheet = (props) => {
                 setassignOpenModal(true);
             }
         }
+        setbuttonLoading(false);
     };
     useEffect(() => {
         setpageactive_context('/addsheet');
@@ -315,7 +318,7 @@ const AddSheet = (props) => {
                                     ]}
                                     payload={sheetpayload}
                                     setpayload={setsheetpayload}
-                                    // button1disabled={UserMutation.isLoading}
+                                    button1disabled={buttonLoading}
                                     button1class={generalstyles.roundbutton + '  mr-2 '}
                                     button1placeholder={sheetpayload?.functype == 'add' ? 'Add sheet' : lang.edit}
                                     button1onClick={() => {

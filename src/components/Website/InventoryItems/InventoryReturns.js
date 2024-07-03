@@ -19,6 +19,7 @@ import SelectComponent from '../../SelectComponent.js';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
 import { NotificationManager } from 'react-notifications';
 import ItemsTable from '../MerchantHome/ItemsTable.js';
+import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
 
 const InventoryReturns = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -42,14 +43,7 @@ const InventoryReturns = (props) => {
     });
     const fetchinventories = useQueryGQL('', fetchInventories(), filterInventories);
 
-    const [filterMerchants, setfilterMerchants] = useState({
-        isAsc: true,
-        limit: 10,
-        afterCursor: undefined,
-        beforeCursor: undefined,
-    });
-    const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filterMerchants);
-
+    const [buttonLoading, setbuttonLoading] = useState(false);
     const [filter, setfilter] = useState({
         limit: 20,
         isAsc: true,
@@ -244,7 +238,9 @@ const InventoryReturns = (props) => {
 
                         <div class="col-lg-12 p-0 allcentered">
                             <button
+                                disabled={buttonLoading}
                                 onClick={async () => {
+                                    setbuttonLoading(true);
                                     try {
                                         if (packagepayload?.ids?.length != 0 && packagepayload?.type?.length != 0 && packagepayload?.toInventoryId?.length != 0) {
                                             try {
@@ -263,10 +259,12 @@ const InventoryReturns = (props) => {
                                             NotificationManager.warning('Please Complete all fields', 'Warning!');
                                         }
                                     } catch {}
+                                    setbuttonLoading(false);
                                 }}
                                 class={generalstyles.roundbutton}
                             >
-                                Add Package
+                                {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                {!buttonLoading && <span>Add Package</span>}
                             </button>
                         </div>
                     </div>

@@ -19,6 +19,7 @@ import ItemsTable from '../MerchantItems/ItemsTable.js';
 import Cookies from 'universal-cookie';
 import { BiPlus } from 'react-icons/bi';
 import { NotificationManager } from 'react-notifications';
+import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -37,7 +38,7 @@ const ImportNewItem = (props) => {
         invetoryIds: [],
     });
     const [step, setstep] = useState(0);
-
+    const [buttonLoading, setbuttonLoading] = useState(false);
     const [filterInventories, setfilterInventories] = useState({
         limit: 10,
         afterCursor: null,
@@ -55,6 +56,7 @@ const ImportNewItem = (props) => {
     });
 
     const handleIMportNewItem = async () => {
+        setbuttonLoading(true);
         try {
             const { data } = await importNewMutation();
             // setop(false);
@@ -74,6 +76,7 @@ const ImportNewItem = (props) => {
             NotificationManager.warning(errorMessage, 'Warning!');
             console.error('Error adding user:', error);
         }
+        setbuttonLoading(false);
     };
     const fetchinventories = useQueryGQL('', fetchInventories(), filterInventories);
     // const fetchRacksQuery = useQueryGQL('', fetchRacks(filter));
@@ -392,8 +395,10 @@ const ImportNewItem = (props) => {
                                 onClick={() => {
                                     handleIMportNewItem();
                                 }}
+                                disabled={buttonLoading}
                             >
-                                Import
+                                {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                {!buttonLoading && <span>Import</span>}
                             </button>
                         </div>
                     </div>

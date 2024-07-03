@@ -1,44 +1,18 @@
-import React, { useContext, useState } from 'react';
+import React from 'react';
 import { Modal } from 'react-bootstrap';
+import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
 import { IoMdClose } from 'react-icons/io';
 import { useHistory } from 'react-router-dom';
-import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
-import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
-import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
-import { NotificationManager } from 'react-notifications';
 // import { useMutation } from 'react-query';
-import { components } from 'react-select';
 import { FaLayerGroup } from 'react-icons/fa';
-
-import API from '../../../API/API.js';
-import Inputfield from '../../Inputfield.js';
-import SubmitButton from '../../Form.js';
-import Form from '../../Form.js';
-import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
-import { gql, useMutation, useQuery } from '@apollo/client';
-import AddEditSecuritylayers from '../Securitylayers/AddEditSecuritylayers.js';
+import { components } from 'react-select';
 
 const { ValueContainer, Placeholder } = components;
 
 const ItemInfo = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, dateformatter } = useContext(Contexthandlerscontext);
-    const { UserMutation_API, DeleteUserMutation_API, useQueryGQL, useMutationGQL, addUser } = API();
-
-    const { lang, langdetect } = useContext(LanguageContext);
-    const [submit, setsubmit] = useState(false);
-    const [changerolesmodal, setchangerolesmodal] = useState(false);
-    const [newpassword, setnewpassword] = useState('');
-
-    const [itemsarray, setitemsarray] = useState([
-        { type: 'import', count: 15, inventory: 'inv 1' },
-        { type: 'export', count: 30, inventory: 'inv 1' },
-        { type: 'import', count: 15, inventory: 'inv 3' },
-        { type: 'export', count: 30, inventory: 'inv 3' },
-        { type: 'export', count: 30, inventory: 'inv 3' },
-    ]);
 
     return (
         <>

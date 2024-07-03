@@ -22,13 +22,14 @@ import { FiCheckCircle } from 'react-icons/fi';
 import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
+import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
 
 const Packages = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, returnPackageStatusContext, returnPackageTypesContext } = useContext(Contexthandlerscontext);
     const { useMutationGQL, fetchMerchants, assignPackageToCourier, fetchCouriers, fetchPackages, useQueryGQL, createReturnPackage } = API();
-
+    const [buttonLoading, setbuttonLoading] = useState(false);
     const { lang, langdetect } = useContext(LanguageContext);
     const [cartItems, setcartItems] = useState([]);
     const [packagepayload, setpackagepayload] = useState({
@@ -328,6 +329,7 @@ const Packages = (props) => {
                         <div class="col-lg-12 p-0 allcentered">
                             <button
                                 onClick={async () => {
+                                    setbuttonLoading(true);
                                     try {
                                         if (packagepayload?.ids?.length != 0 && packagepayload?.userId?.length != 0) {
                                             await assignPackageToCourierMutation();
@@ -349,10 +351,13 @@ const Packages = (props) => {
 
                                         NotificationManager.warning(errorMessage, 'Warning!');
                                     }
+                                    setbuttonLoading(false);
                                 }}
+                                disabled={buttonLoading}
                                 class={generalstyles.roundbutton}
                             >
-                                Assign to courier
+                                {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                {!buttonLoading && <span>Assign to courier</span>}
                             </button>
                         </div>
                     </div>

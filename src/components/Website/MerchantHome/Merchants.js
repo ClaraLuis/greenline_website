@@ -59,8 +59,10 @@ const Merchants = (props) => {
     });
     const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filterMerchants);
     const { refetch: refetchMerchants } = useQueryGQL('', fetchMerchants(), filterMerchants);
+    const [buttonLoading, setbuttonLoading] = useState(false);
 
     const handleAddMerchant = async () => {
+        setbuttonLoading(true);
         try {
             const { data } = await addMerchantMutation();
             refetchMerchants();
@@ -78,6 +80,7 @@ const Merchants = (props) => {
             NotificationManager.warning(errorMessage, 'Warning!');
             console.error('Error adding Merchant:', error);
         }
+        setbuttonLoading(false);
     };
     useEffect(() => {
         setpageactive_context('/merchants');
@@ -282,6 +285,7 @@ const Merchants = (props) => {
                             <button
                                 style={{ height: '35px' }}
                                 class={generalstyles.roundbutton + '  mb-1'}
+                                disabled={buttonLoading}
                                 onClick={() => {
                                     if (merchantPayload?.name?.length == 0) {
                                         NotificationManager.warning('Name Can not be empty', 'Warning');
@@ -290,7 +294,8 @@ const Merchants = (props) => {
                                     }
                                 }}
                             >
-                                Add Merchant
+                                {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                {!buttonLoading && <span>Add Merchant</span>}
                             </button>
                         </div>
                     </div>

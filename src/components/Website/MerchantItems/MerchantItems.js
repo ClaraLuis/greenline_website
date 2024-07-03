@@ -25,6 +25,7 @@ import { Arrow90degDown, ArrowDown, Trash2 } from 'react-bootstrap-icons';
 import { BiDownArrow } from 'react-icons/bi';
 import { FaChevronDown } from 'react-icons/fa';
 import Cookies from 'universal-cookie';
+import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -36,6 +37,7 @@ const MerchantItems = (props) => {
 
     const { lang, langdetect } = useContext(LanguageContext);
     const cookies = new Cookies();
+    const [buttonLoading, setbuttonLoading] = useState(false);
 
     const [openModal, setopenModal] = useState(false);
     const [openCompounditemsModal, setopenCompounditemsModal] = useState(false);
@@ -84,7 +86,6 @@ const MerchantItems = (props) => {
         merchantId: parseInt(cookies.get('merchantId')),
     });
     const fetchMerchantItemsQuery = useQueryGQL('', fetchMerchantItems(), payload);
-
     const [addItemMutation] = useMutationGQL(addCompoundItem(), {
         merchantId: 1,
         items: [
@@ -102,28 +103,6 @@ const MerchantItems = (props) => {
     });
 
     const { refetch: refetchItems } = useQueryGQL('', fetchMerchantItems(), payload);
-
-    const handleAddItem = async () => {
-        try {
-            const { data } = await addItemMutation();
-            // setop(false);
-            refetchItems();
-
-            // console.log(data); // Handle response
-        } catch (error) {
-            let errorMessage = 'An unexpected error occurred';
-            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-                errorMessage = error.graphQLErrors[0].message || errorMessage;
-            } else if (error.networkError) {
-                errorMessage = error.networkError.message || errorMessage;
-            } else if (error.message) {
-                errorMessage = error.message;
-            }
-
-            NotificationManager.warning(errorMessage, 'Warning!');
-            console.error('Error adding user:', error);
-        }
-    };
 
     useEffect(() => {
         setpageactive_context('/merchantitems');
@@ -929,7 +908,9 @@ const MerchantItems = (props) => {
                             <button
                                 style={{ height: '35px' }}
                                 class={generalstyles.roundbutton + '  mb-1'}
+                                disabled={buttonLoading}
                                 onClick={async () => {
+                                    setbuttonLoading(true);
                                     if (itempayload?.name?.length == 0) {
                                         NotificationManager.warning('Name Can not be empty', 'Warning');
                                     } else {
@@ -979,9 +960,11 @@ const MerchantItems = (props) => {
                                             console.error('Mutation error:', error);
                                         }
                                     }
+                                    setbuttonLoading(false);
                                 }}
                             >
-                                Add item
+                                {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                {!buttonLoading && <span>Add item</span>}
                             </button>
                         </div>
                     </div>

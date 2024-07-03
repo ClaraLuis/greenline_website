@@ -26,7 +26,7 @@ const FinancialAccounts = (props) => {
     const { fetchFinancialAccounts, useQueryGQL, fetchUsers, fetchMerchants, useMutationGQL, createFinancialAccount, updateFinancialAccount } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
-
+    const [buttonLoading, setbuttonLoading] = useState(false);
     const [openModal, setopenModal] = useState(false);
     const [selectedinventory, setselectedinventory] = useState('');
     const [chosenracks, setchosenracks] = useState([]);
@@ -240,10 +240,11 @@ const FinancialAccounts = (props) => {
                             }
                             payload={payload}
                             setpayload={setpayload}
-                            // button1disabled={UserMutation.isLoading}
+                            button1disabled={buttonLoading}
                             button1class={generalstyles.roundbutton + '  mr-2 '}
                             button1placeholder={payload?.functype == 'add' ? 'Create Account' : 'Update Account'}
                             button1onClick={async () => {
+                                setbuttonLoading(true);
                                 try {
                                     if (payload?.functype == 'add') {
                                         if (payload?.name?.length != 0 && payload?.type?.length != 0) {
@@ -275,6 +276,7 @@ const FinancialAccounts = (props) => {
                                     // alert();
                                     NotificationManager.warning(errorMessage, 'Warning!');
                                 }
+                                setbuttonLoading(false);
                             }}
                         />
                     </div>
