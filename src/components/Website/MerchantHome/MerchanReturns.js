@@ -227,8 +227,8 @@ const MerchanReturns = (props) => {
                         <div class="col-lg-12 p-0 allcentered">
                             <button
                                 onClick={async () => {
+                                    setbuttonLoading(true);
                                     try {
-                                        setbuttonLoading(true);
                                         if (packagepayload?.ids?.length != 0 && packagepayload?.toMerchantId != undefined) {
                                             try {
                                                 var temp = [];
@@ -239,13 +239,34 @@ const MerchanReturns = (props) => {
                                                 await createReturnPackageMutation();
                                                 refetchMerchantItemReturnsQuery();
                                             } catch (error) {
-                                                NotificationManager.warning(error.message || error, 'Warning!');
+                                                let errorMessage = 'An unexpected error occurred';
+                                                if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                                    errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                                } else if (error.networkError) {
+                                                    errorMessage = error.networkError.message || errorMessage;
+                                                } else if (error.message) {
+                                                    errorMessage = error.message;
+                                                }
+
+                                                NotificationManager.warning(errorMessage, 'Warning!');
                                             }
                                         } else {
                                             NotificationManager.warning('Please Complete all fields', 'Warning!');
                                         }
-                                        setbuttonLoading(false);
-                                    } catch {}
+                                    } catch (error) {
+                                        let errorMessage = 'An unexpected error occurred';
+                                        if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                            errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                        } else if (error.networkError) {
+                                            errorMessage = error.networkError.message || errorMessage;
+                                        } else if (error.message) {
+                                            errorMessage = error.message;
+                                        }
+
+                                        NotificationManager.warning(errorMessage, 'Warning!');
+                                        console.error('Error adding Merchant:', error);
+                                    }
+                                    setbuttonLoading(false);
                                 }}
                                 disabled={buttonLoading}
                                 class={generalstyles.roundbutton}

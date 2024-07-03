@@ -399,7 +399,16 @@ const MerchantPayments = (props) => {
                                     setselectedArray([]);
                                     setopenModal(false);
                                 } catch (error) {
-                                    NotificationManager.warning(error.message || error, 'Warning!');
+                                    let errorMessage = 'An unexpected error occurred';
+                                    if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                        errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                    } else if (error.networkError) {
+                                        errorMessage = error.networkError.message || errorMessage;
+                                    } else if (error.message) {
+                                        errorMessage = error.message;
+                                    }
+
+                                    NotificationManager.warning(errorMessage, 'Warning!');
                                 }
                                 setbuttonLoading(false);
                             }}
