@@ -77,7 +77,7 @@ const FinanceSheets = (props) => {
 
                 <div class={' col-lg-12 col-md-12 col-sm-12 p-0 d-flex align-items-center justify-content-start '}>
                     <p class=" p-0 m-0" style={{ fontSize: '15px' }}>
-                        <span style={{ color: 'var(--info)' }}>Sheets</span>
+                        <span style={{ color: 'var(--info)' }}>Manifests</span>
                     </p>
                 </div>
                 {isAuth([1, 34, 53, 51]) && (

@@ -341,7 +341,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         show: isAuth([1, 51, 18]),
                     },
                     {
-                        name: 'Sheets',
+                        name: 'Manifest',
                         isselected: false,
                         icon: (
                             <i class={'allcentered'}>

@@ -167,7 +167,7 @@ const SheetsTable = (props) => {
                                                     }
                                                 }}
                                             >
-                                                View Sheet
+                                                View Manifest
                                             </button>
                                         </div>
                                     )}
