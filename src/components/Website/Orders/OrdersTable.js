@@ -200,6 +200,9 @@ const OrdersTable = (props) => {
                                             {props?.srcFrom != 'inventory' && (
                                                 <>
                                                     <div class="col-lg-12 p-0 mb-2 text-capitalize">
+                                                        Courier: <span style={{ fontWeight: 600 }}>{item?.courier?.name}</span>
+                                                    </div>
+                                                    <div class="col-lg-12 p-0 mb-2 text-capitalize">
                                                         <span style={{ fontWeight: 600 }}>{item?.customerInfo?.customerName}</span>
                                                     </div>
                                                     <div className="col-lg-12 p-0 mb-1 d-flex align-items-center">

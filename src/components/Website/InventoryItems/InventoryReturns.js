@@ -20,6 +20,7 @@ import { defaultstyles } from '../Generalfiles/selectstyles.js';
 import { NotificationManager } from 'react-notifications';
 import ItemsTable from '../MerchantHome/ItemsTable.js';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
+import ReturnsTable from '../MerchantHome/ReturnsTable.js';
 
 const InventoryReturns = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -136,14 +137,14 @@ const InventoryReturns = (props) => {
                                 setfilter={setfilter}
                             />
                         </div>
-                        <ItemsTable
+                        <ReturnsTable
                             clickable={true}
                             actiononclick={(item) => {
                                 var temp = { ...packagepayload };
                                 var exist = false;
                                 var chosenindex = null;
                                 temp.ids.map((i, ii) => {
-                                    if (i?.orderItem?.info?.sku == item?.orderItem?.info?.sku) {
+                                    if (i?.id == item?.id) {
                                         exist = true;
                                         chosenindex = ii;
                                         temp.ids.splice(ii, 1);

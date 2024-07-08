@@ -275,8 +275,8 @@ const Packages = (props) => {
                                                     width: '30px',
                                                     height: '30px',
                                                     position: 'absolute',
-                                                    right: 15,
-                                                    bottom: 30,
+                                                    left: 15,
+                                                    bottom: 0,
                                                 }}
                                                 className=" allcentered"
                                             >

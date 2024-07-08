@@ -60,7 +60,7 @@ const InventoryPackages = (props) => {
             }
 
             if (e.key === 'Enter') {
-                setfilter({ ...filter, name: barcode.length === 0 ? undefined : barcode });
+                setfilter({ ...filter, sku: barcode.length === 0 ? undefined : barcode });
                 setSearch(barcode); // Update the search state with the scanned barcode
                 // setBarcode(''); // Clear the barcode state
             } else {
@@ -170,7 +170,7 @@ const InventoryPackages = (props) => {
                                     <div class="col-lg-2 allcenered">
                                         <button
                                             onClick={() => {
-                                                setfilter({ ...filter, name: search?.length == 0 ? undefined : search });
+                                                setfilter({ ...filter, sku: search?.length == 0 ? undefined : search });
                                             }}
                                             style={{ height: '25px', minWidth: 'fit-content', marginInlineStart: '5px' }}
                                             class={generalstyles.roundbutton + '  allcentered'}

@@ -20,6 +20,7 @@ import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import ItemsTable from './ItemsTable.js';
 import { NotificationManager } from 'react-notifications';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
+import ReturnsTable from './ReturnsTable.js';
 
 const MerchanReturns = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -135,7 +136,8 @@ const MerchanReturns = (props) => {
                                 setfilter={setfilter}
                             />
                         </div>
-                        <ItemsTable
+
+                        <ReturnsTable
                             clickable={true}
                             selectedItems={packagepayload?.ids}
                             actiononclick={(item) => {
@@ -146,7 +148,7 @@ const MerchanReturns = (props) => {
                                     var exist = false;
                                     var chosenindex = null;
                                     temp.ids.map((i, ii) => {
-                                        if (i?.orderItem?.info?.sku == item?.orderItem?.info?.sku) {
+                                        if (i?.id == item?.id) {
                                             exist = true;
                                             chosenindex = ii;
                                         }
@@ -159,7 +161,7 @@ const MerchanReturns = (props) => {
                                     setpackagepayload({ ...temp });
                                 }
                             }}
-                            card="col-lg-4 px-1"
+                            card="col-lg-6 px-1"
                             items={fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.data}
                         />
                         <div class="col-lg-12 p-0">
@@ -174,7 +176,7 @@ const MerchanReturns = (props) => {
                 </div>
                 <div class="col-lg-4 mb-3 px-1">
                     <div class={generalstyles.card + ' row m-0 w-100 p-2 py-3'}>
-                        <div class="col-lg-12">
+                        {/* <div class="col-lg-12">
                             {packagepayload?.ids?.length != 0 && (
                                 <>
                                     <div class="col-lg-12 pb-2 px-3" style={{ fontSize: '17px', fontWeight: 700 }}>
@@ -222,7 +224,7 @@ const MerchanReturns = (props) => {
                                     </div>
                                 </>
                             )}
-                        </div>
+                        </div> */}
 
                         <div class="col-lg-12 p-0 allcentered">
                             <button

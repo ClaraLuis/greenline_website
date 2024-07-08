@@ -366,6 +366,27 @@ const API = () => {
             }
         `;
     };
+    const fetchOrderHistory = () => {
+        return gql`
+            query paginateOrderHistory($input: PaginateOrderHistoryInput!) {
+                paginateOrderHistory(input: $input) {
+                    data {
+                        id
+                        orderId
+                        userId
+                        status
+                        fromHubId
+                        toHubId
+                        inventoryId
+                        description
+                        createdAt
+                        lastModified
+                    }
+                    cursor
+                }
+            }
+        `;
+    };
 
     const fetchOrders = () => {
         return gql`
@@ -384,6 +405,10 @@ const API = () => {
                             streetAddress
                             buildingNumber
                             apartmentFloor
+                        }
+                        courier {
+                            id
+                            name
                         }
                         price
                         paymentType
@@ -466,6 +491,10 @@ const API = () => {
                             id
                             name
                         }
+                        courier {
+                            id
+                            name
+                        }
                         orderItems {
                             id
                             orderId
@@ -481,6 +510,7 @@ const API = () => {
                                     name
                                 }
                             }
+
                             inventory {
                                 count
                                 box {
@@ -657,11 +687,8 @@ const API = () => {
                 paginateItemReturns(input: $input) {
                     data {
                         id
-                        orderItemId
-                        hubId
                         merchantId
-                        packageId
-                        orderItem {
+                        orderItems {
                             info {
                                 id
                                 sku
@@ -676,6 +703,9 @@ const API = () => {
                                 lastModified
                             }
                         }
+                        parentOrder {
+                            id
+                        }
                         createdAt
                     }
                     cursor
@@ -689,13 +719,8 @@ const API = () => {
                 paginateInventoryReturns(input: $input) {
                     data {
                         id
-                        inventoryId
-                        hubId
-                        restockedToId
-                        packageId
-                        orderItemId
-                        status
-                        orderItem {
+                        merchantId
+                        orderItems {
                             info {
                                 id
                                 sku
@@ -709,6 +734,9 @@ const API = () => {
                                 createdAt
                                 lastModified
                             }
+                        }
+                        parentOrder {
+                            id
                         }
                         createdAt
                     }
@@ -1153,6 +1181,7 @@ const API = () => {
         updateMerchantDomesticShipping,
         createInventoryRent,
         fetchHubs,
+        fetchOrderHistory,
     };
 };
 export default API;

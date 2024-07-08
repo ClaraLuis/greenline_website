@@ -4102,7 +4102,7 @@ hr {
 .container {
     background: #fff;
     border-radius: 0.25rem;
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    /* box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1); */
     flex: 1 1;
     margin: 1rem;
     max-width: 100%;
@@ -4915,8 +4915,7 @@ hr {
 ul {
     list-style-type: none;
 }
-
-.container {
+.container1 {
     width: 100%;
     position: relative;
     z-index: 1;
@@ -4926,6 +4925,7 @@ ul {
     counter-reset: step;
     margin: 0 auto; /* Center the progress bar */
     position: relative;
+    list-style-type: none; /* Remove default list styling */
 }
 
 .progressbar li {
@@ -4938,16 +4938,17 @@ ul {
 }
 
 .progressbar li:before {
-    content: '';
-    /* counter-increment: step; */
-    width: 15px;
-    height: 15px;
+    content: counter(step);
+    counter-increment: step;
+    width: 30px;
+    height: 30px;
     border: 2px solid #bebebe;
     border-radius: 50%;
-    line-height: 30px;
     background: #bebebe; /* Change the default color */
     color: white;
     font-weight: bold;
+    line-height: 30px;
+    display: inline-block;
     margin-right: 10px; /* Adjust spacing between circle and text */
 }
 
@@ -4955,25 +4956,25 @@ ul {
     content: '';
     position: absolute;
     width: 3px; /* Width of the progress line */
-    height: 30px;
+    height: 100%; /* Full height of the progress line */
     background: #979797;
-    top: -50%;
-    left: 2.6%;
-    transform: translateX(-50%) translateY(-50%);
+    top: -70%;
+    left: 3.5%;
+    transform: translateX(-50%); /* Center the progress line horizontally */
     z-index: -1;
 }
 
 .progressbar li:first-child:after {
-    content: none;
+    display: none; /* Hide the progress line before the first step */
+}
+
+.progressbar li.active:before {
+    border-color: #3aac5d; /* Change the active step border color */
+    background: #3aac5d; /* Change the active step background color */
 }
 
 .progressbar li.active + li:after {
-    background: #3aac5d;
-}
-
-.progressbar li.active + li:before {
-    border-color: #3aac5d; /* Change the active step border color */
-    background: #3aac5d; /* Change the active step background color */
+    background: #3aac5d; /* Change the progress line color after the active step */
 }
 
 .cardhover:hover {

@@ -28,14 +28,21 @@ const OrderInfo = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, dateformatter, orderStatusEnumContext, orderTypeContext } = useContext(Contexthandlerscontext);
-    const { useQueryGQL, useMutationGQL, fetchGovernorates, createMerchantDomesticShipping, updateMerchantDomesticShipping, fetchOrdersInInventory, addMerchant, createInventoryRent } = API();
+    const { useQueryGQL, useMutationGQL, fetchGovernorates, createMerchantDomesticShipping, updateMerchantDomesticShipping, fetchOrdersInInventory, fetchOrderHistory, createInventoryRent } = API();
     const steps = ['Merchant Info', 'Shipping', 'Inventory Settings'];
     const [inventoryModal, setinventoryModal] = useState({ open: false, items: [] });
     const [item, setItem] = useState(undefined);
     const [filterorders, setfilterorders] = useState({
         limit: 20,
     });
+
+    const [filterordershistory, setfilterordershistory] = useState({
+        limit: 20,
+        orderId: parseInt(queryParameters?.get('orderId')),
+    });
+
     const fetchOrdersInInventoryQuery = useQueryGQL('', fetchOrdersInInventory(), filterorders);
+    const fetchOrderHistoryQuery = useQueryGQL('', fetchOrderHistory(), filterordershistory);
 
     const organizeInventory = (inventory) => {
         const racks = {};
@@ -80,29 +87,33 @@ const OrderInfo = (props) => {
     var diffInDays = 0;
     var orderDate = null;
     useEffect(() => {
-        setItem(fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data[0]);
-        outOfStock = false;
-        fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data[0]?.orderItems?.map((orderItem, orderindex) => {
-            if (orderItem?.countInInventory == 0) {
-                outOfStock = true;
+        fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.map((item, index) => {
+            if (item.id == queryParameters?.get('orderId')) {
+                setItem(item);
+                outOfStock = false;
+                item?.orderItems?.map((orderItem, orderindex) => {
+                    if (orderItem?.countInInventory == 0) {
+                        outOfStock = true;
+                    }
+                });
+                const timestamp = item?.orderDate;
+                orderDate = new Date(timestamp);
+
+                // Create a Date object for the current date
+                const now = new Date();
+
+                // Set the hours, minutes, seconds, and milliseconds to 0 for both dates
+                orderDate.setHours(0, 0, 0, 0);
+                now.setHours(0, 0, 0, 0);
+
+                // Calculate the difference in milliseconds
+                const diffInMs = now.getTime() - orderDate.getTime();
+
+                // Convert milliseconds to days
+                diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
             }
         });
-        const timestamp = item?.orderDate;
-        orderDate = new Date(timestamp);
-
-        // Create a Date object for the current date
-        const now = new Date();
-
-        // Set the hours, minutes, seconds, and milliseconds to 0 for both dates
-        orderDate.setHours(0, 0, 0, 0);
-        now.setHours(0, 0, 0, 0);
-
-        // Calculate the difference in milliseconds
-        const diffInMs = now.getTime() - orderDate.getTime();
-
-        // Convert milliseconds to days
-        diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
-    }, [fetchOrdersInInventoryQuery?.data]);
+    }, [fetchOrdersInInventoryQuery?.data, queryParameters]);
 
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
@@ -110,87 +121,177 @@ const OrderInfo = (props) => {
                 <div class={' row m-0 w-100 allcentered'}>
                     <div class="col-lg-6">
                         {item != undefined && (
-                            <div class={generalstyles.card + ' row m-0 w-100 p-4'}>
-                                <div style={{ cursor: props?.clickable ? 'pointer' : '' }} className="col-lg-12 p-0">
-                                    <div class={' row m-0 w-100 '}>
-                                        <div className="col-lg-4 p-0">
-                                            <div class="row m-0 w-100 d-flex align-items-center">
-                                                <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
-                                                    # {item?.id}
-                                                </span>{' '}
-                                                {outOfStock && queryParameters?.get('type') == 'inventory' && (
-                                                    <div className={'ml-1 wordbreak text-danger bg-light-danger rounded-pill font-weight-600 '}>Out Of Stock</div>
-                                                )}
-                                                <span style={{ fontWeight: 600 }} class="text-capitalize">
-                                                    {item?.merchant?.name}
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
-                                            <div class="row m-0 w-100  d-flex justify-content-end align-items-center">
-                                                {queryParameters?.get('type') == 'inventory' && (
-                                                    <div className={' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 mr-1 '}>{diffInDays} late days</div>
-                                                )}
-                                                <div
-                                                    // onClick={() => {
-                                                    //     setchangestatusmodal(true);
-                                                    // }}
-                                                    // style={{ cursor: 'pointer' }}
-                                                    className={
-                                                        item?.status == 'delivered'
-                                                            ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 '
-                                                            : item?.status == 'postponed' || item?.status == 'failedDeliveryAttempt'
-                                                            ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 '
-                                                            : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 '
-                                                    }
-                                                >
-                                                    {orderStatusEnumContext?.map((i, ii) => {
-                                                        if (i.value == item?.status) {
-                                                            return <span>{i.label}</span>;
-                                                        }
-                                                    })}
-                                                </div>
-                                                <div
-                                                    // onClick={() => {
-                                                    //     setchangestatusmodal(true);
-                                                    // }}
-                                                    style={{ color: 'white' }}
-                                                    className={'ml-1 wordbreak bg-primary rounded-pill font-weight-600 '}
-                                                >
-                                                    {orderTypeContext?.map((i, ii) => {
-                                                        if (i.value == item?.type) {
-                                                            return <span>{i.label}</span>;
-                                                        }
-                                                    })}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="col-lg-12 p-0 my-2">
-                                            <hr className="m-0" />
-                                        </div>
-                                        {queryParameters?.get('type') != 'inventory' && (
-                                            <>
-                                                <div class="col-lg-12 p-0 mb-2 text-capitalize">
-                                                    <span style={{ fontWeight: 600 }}>{item?.customerInfo?.customerName}</span>
-                                                </div>
-                                                <div className="col-lg-12 p-0 mb-1 d-flex align-items-center">
-                                                    <MdOutlineLocationOn class="mr-1" />
-                                                    <span style={{ fontWeight: 400, fontSize: '13px' }}>
-                                                        {item?.address?.city}, {item?.address?.country}
+                            <>
+                                <div class={generalstyles.card + ' row m-0 w-100 p-4'}>
+                                    <div style={{ cursor: props?.clickable ? 'pointer' : '' }} className="col-lg-12 p-0">
+                                        <div class={' row m-0 w-100 '}>
+                                            <div className="col-lg-4 p-0">
+                                                <div class="row m-0 w-100 d-flex align-items-center">
+                                                    <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
+                                                        # {item?.id}
+                                                    </span>{' '}
+                                                    {outOfStock && queryParameters?.get('type') == 'inventory' && (
+                                                        <div className={'ml-1 wordbreak text-danger bg-light-danger rounded-pill font-weight-600 '}>Out Of Stock</div>
+                                                    )}
+                                                    <span style={{ fontWeight: 600 }} class="text-capitalize">
+                                                        {item?.merchant?.name}
                                                     </span>
                                                 </div>
-                                                <div className="col-lg-12 p-0 ">
-                                                    <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                        {item?.address?.streetAddress}, {item?.address?.buildingNumber}, {item?.address?.apartmentFloor}
-                                                    </span>
+                                            </div>
+                                            <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
+                                                <div class="row m-0 w-100  d-flex justify-content-end align-items-center">
+                                                    {queryParameters?.get('type') == 'inventory' && (
+                                                        <div className={' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 mr-1 '}>{diffInDays} late days</div>
+                                                    )}
+                                                    <div
+                                                        // onClick={() => {
+                                                        //     setchangestatusmodal(true);
+                                                        // }}
+                                                        // style={{ cursor: 'pointer' }}
+                                                        className={
+                                                            item?.status == 'delivered'
+                                                                ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 '
+                                                                : item?.status == 'postponed' || item?.status == 'failedDeliveryAttempt'
+                                                                ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 '
+                                                                : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 '
+                                                        }
+                                                    >
+                                                        {orderStatusEnumContext?.map((i, ii) => {
+                                                            if (i.value == item?.status) {
+                                                                return <span>{i.label}</span>;
+                                                            }
+                                                        })}
+                                                    </div>
+                                                    <div
+                                                        // onClick={() => {
+                                                        //     setchangestatusmodal(true);
+                                                        // }}
+                                                        style={{ color: 'white' }}
+                                                        className={'ml-1 wordbreak bg-primary rounded-pill font-weight-600 '}
+                                                    >
+                                                        {orderTypeContext?.map((i, ii) => {
+                                                            if (i.value == item?.type) {
+                                                                return <span>{i.label}</span>;
+                                                            }
+                                                        })}
+                                                    </div>
                                                 </div>
-                                                <div className="col-lg-12 p-0 mt-3 mb-2">
-                                                    <div style={{ maxWidth: '100%', flexDirection: 'row', flexWrap: 'nowrap', overflow: 'scroll' }} class="row m-0 w-100 scrollmenuclasssubscrollbar">
+                                            </div>
+                                            <div className="col-lg-12 p-0 my-2">
+                                                <hr className="m-0" />
+                                            </div>
+                                            {queryParameters?.get('type') != 'inventory' && (
+                                                <>
+                                                    <div class="col-lg-12 p-0 mb-2 text-capitalize">
+                                                        <span style={{ fontWeight: 600 }}>{item?.customerInfo?.customerName}</span>
+                                                    </div>
+                                                    <div className="col-lg-12 p-0 mb-1 d-flex align-items-center">
+                                                        <MdOutlineLocationOn class="mr-1" />
+                                                        <span style={{ fontWeight: 400, fontSize: '13px' }}>
+                                                            {item?.address?.city}, {item?.address?.country}
+                                                        </span>
+                                                    </div>
+                                                    <div className="col-lg-12 p-0 ">
+                                                        <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                            {item?.address?.streetAddress}, {item?.address?.buildingNumber}, {item?.address?.apartmentFloor}
+                                                        </span>
+                                                    </div>
+                                                    <div className="col-lg-12 p-0 mt-3 mb-2">
+                                                        <div
+                                                            style={{ maxWidth: '100%', flexDirection: 'row', flexWrap: 'nowrap', overflow: 'scroll' }}
+                                                            class="row m-0 w-100 scrollmenuclasssubscrollbar"
+                                                        >
+                                                            {item?.orderItems?.map((orderItem, orderIndex) => {
+                                                                return (
+                                                                    <div class="p-0 mb-1 mr-2">
+                                                                        <div style={{ border: '1px solid #eee', borderRadius: '10px' }} class="row m-0 w-100 p-2 align-items-center">
+                                                                            <div style={{ width: '35px', height: '35px', borderRadius: '7px', marginInlineEnd: '15px' }}>
+                                                                                <img
+                                                                                    src={
+                                                                                        orderItem?.info?.imageUrl
+                                                                                            ? orderItem?.info?.imageUrl
+                                                                                            : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'
+                                                                                    }
+                                                                                    style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
+                                                                                />
+                                                                            </div>
+
+                                                                            <div class="">
+                                                                                <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
+                                                                                    <div>
+                                                                                        {orderItem?.partial && (
+                                                                                            <div style={{ fontWeight: 700 }} class="row m-0 w-100 p-1 px-3">
+                                                                                                {orderItem?.partialCount}/{orderItem?.count}
+                                                                                            </div>
+                                                                                        )}
+                                                                                        {!orderItem?.partial && (
+                                                                                            <div style={{ fontWeight: 700 }} class="row m-0 w-100 p-1 px-3">
+                                                                                                {orderItem?.count}
+                                                                                            </div>
+                                                                                        )}
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                );
+                                                            })}
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-12 p-0 mt-2">
+                                                        <div class="row m-0 w-100 d-flex">
+                                                            <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4">
+                                                                <div class="row m-0 w-100">
+                                                                    <div class="col-lg-12 p-0 allcentered text-center">
+                                                                        <span style={{ fontWeight: 400, fontSize: '11px' }}>Price</span>
+                                                                    </div>
+                                                                    <div class="col-lg-12 p-0 allcentered text-center">
+                                                                        <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                            {parseFloat(item?.price)} {item?.currency}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4">
+                                                                <div class="row m-0 w-100">
+                                                                    <div class="col-lg-12 p-0 allcentered text-center">
+                                                                        <span style={{ fontWeight: 400, fontSize: '11px' }}>Shipping</span>
+                                                                    </div>
+                                                                    <div class="col-lg-12 p-0 allcentered text-center">
+                                                                        <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                            {parseFloat(item?.shippingPrice)} {item?.currency}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div style={{ fontWeight: 600, fontSize: '15px' }} className=" p-0 mb-2 allcentered col-lg-4">
+                                                                <div class="row m-0 w-100">
+                                                                    <div class="col-lg-12 p-0 allcentered text-center">
+                                                                        <span style={{ fontWeight: 400, fontSize: '11px' }}>Total</span>
+                                                                    </div>
+                                                                    <div class="col-lg-12 p-0 allcentered text-center">
+                                                                        <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                            {parseFloat(item?.price) + parseFloat(item?.shippingPrice)} {item?.currency}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </>
+                                            )}
+                                            {queryParameters?.get('type') == 'inventory' && (
+                                                <div className="col-lg-12 p-0 mt-2">
+                                                    <div style={{ maxHeight: '40vh', overflow: 'scroll' }} class="row m-0 w-100 scrollmenuclasssubscrollbar">
                                                         {item?.orderItems?.map((orderItem, orderIndex) => {
+                                                            var organizedData = [];
+                                                            if (queryParameters?.get('type') == 'inventory') {
+                                                                organizedData = organizeInventory(orderItem?.inventory);
+                                                            }
                                                             return (
-                                                                <div class="p-0 mb-1 mr-2">
-                                                                    <div style={{ border: '1px solid #eee', borderRadius: '10px' }} class="row m-0 w-100 p-2 align-items-center">
-                                                                        <div style={{ width: '35px', height: '35px', borderRadius: '7px', marginInlineEnd: '15px' }}>
+                                                                <div class="col-lg-12 p-0 mb-1">
+                                                                    <div style={{ border: '1px solid #eee', borderRadius: '18px' }} class="row m-0 w-100 p-1 align-items-center">
+                                                                        <div style={{ width: '50px', height: '50px', borderRadius: '7px', marginInlineEnd: '10px' }}>
                                                                             <img
                                                                                 src={
                                                                                     orderItem?.info?.imageUrl
@@ -200,21 +301,58 @@ const OrderInfo = (props) => {
                                                                                 style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
                                                                             />
                                                                         </div>
-
-                                                                        <div class="">
+                                                                        <div class="col-lg-5 d-flex align-items-center">
+                                                                            {queryParameters?.get('type') == 'inventory' && (
+                                                                                <div className="row m-0 w-100">
+                                                                                    <div style={{ fontSize: '14px', fontWeight: 600 }} className={' col-lg-12 p-0'}>
+                                                                                        {orderItem?.info?.item?.name}
+                                                                                    </div>
+                                                                                    <div style={{ fontSize: '13px' }} className={' col-lg-12 p-0'}>
+                                                                                        {orderItem?.info?.name}
+                                                                                    </div>
+                                                                                    <div style={{ color: 'lightgray', fontSize: '13px' }} className="col-lg-12 p-0">
+                                                                                        {orderItem?.info?.sku}
+                                                                                    </div>
+                                                                                </div>
+                                                                            )}
+                                                                        </div>
+                                                                        <div class="col-lg-5 ">
                                                                             <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
                                                                                 <div>
                                                                                     {orderItem?.partial && (
-                                                                                        <div style={{ fontWeight: 700 }} class="row m-0 w-100 p-1 px-3">
+                                                                                        <div style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }} class="row m-0 w-100 p-1 px-4">
                                                                                             {orderItem?.partialCount}/{orderItem?.count}
                                                                                         </div>
                                                                                     )}
                                                                                     {!orderItem?.partial && (
-                                                                                        <div style={{ fontWeight: 700 }} class="row m-0 w-100 p-1 px-3">
+                                                                                        <div style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }} class="row m-0 w-100 p-1 px-4">
                                                                                             {orderItem?.count}
                                                                                         </div>
                                                                                     )}
                                                                                 </div>
+                                                                                {/* <div style={{ fontWeight: 700 }} class="mx-2">
+                                                                                    {orderItem?.partial
+                                                                                        ? parseInt(orderItem?.partialCount) * parseFloat(orderItem?.unitPrice)
+                                                                                        : parseInt(orderItem?.count) * parseFloat(orderItem?.unitPrice)}{' '}
+                                                                                    {item?.info?.currency}
+                                                                                </div> */}
+                                                                                {queryParameters?.get('type') == 'inventory' && (
+                                                                                    <div
+                                                                                        onClick={() => {
+                                                                                            if (orderItem?.countInInventory != 0) {
+                                                                                                setinventoryModal({ open: true, items: organizedData });
+                                                                                            }
+                                                                                        }}
+                                                                                        style={{ width: '30px', height: '30px' }}
+                                                                                        class={
+                                                                                            orderItem?.countInInventory == 0
+                                                                                                ? 'allcentered iconhover text-danger'
+                                                                                                : 'allcentered iconhover text-success'
+                                                                                        }
+                                                                                    >
+                                                                                        <MdOutlineInventory2 size={20} />
+                                                                                    </div>
+                                                                                )}
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -223,135 +361,28 @@ const OrderInfo = (props) => {
                                                         })}
                                                     </div>
                                                 </div>
-                                                <div class="col-lg-12 p-0 mt-2">
-                                                    <div class="row m-0 w-100 d-flex">
-                                                        <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4">
-                                                            <div class="row m-0 w-100">
-                                                                <div class="col-lg-12 p-0 allcentered text-center">
-                                                                    <span style={{ fontWeight: 400, fontSize: '11px' }}>Price</span>
-                                                                </div>
-                                                                <div class="col-lg-12 p-0 allcentered text-center">
-                                                                    <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                        {parseFloat(item?.price)} {item?.currency}
-                                                                    </span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4">
-                                                            <div class="row m-0 w-100">
-                                                                <div class="col-lg-12 p-0 allcentered text-center">
-                                                                    <span style={{ fontWeight: 400, fontSize: '11px' }}>Shipping</span>
-                                                                </div>
-                                                                <div class="col-lg-12 p-0 allcentered text-center">
-                                                                    <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                        {parseFloat(item?.shippingPrice)} {item?.currency}
-                                                                    </span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div style={{ fontWeight: 600, fontSize: '15px' }} className=" p-0 mb-2 allcentered col-lg-4">
-                                                            <div class="row m-0 w-100">
-                                                                <div class="col-lg-12 p-0 allcentered text-center">
-                                                                    <span style={{ fontWeight: 400, fontSize: '11px' }}>Total</span>
-                                                                </div>
-                                                                <div class="col-lg-12 p-0 allcentered text-center">
-                                                                    <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                        {parseFloat(item?.price) + parseFloat(item?.shippingPrice)} {item?.currency}
-                                                                    </span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </>
-                                        )}
-                                        {queryParameters?.get('type') == 'inventory' && (
-                                            <div className="col-lg-12 p-0 mt-2">
-                                                <div style={{ maxHeight: '40vh', overflow: 'scroll' }} class="row m-0 w-100 scrollmenuclasssubscrollbar">
-                                                    {item?.orderItems?.map((orderItem, orderIndex) => {
-                                                        var organizedData = [];
-                                                        if (queryParameters?.get('type') == 'inventory') {
-                                                            organizedData = organizeInventory(orderItem?.inventory);
-                                                        }
-                                                        return (
-                                                            <div class="col-lg-12 p-0 mb-1">
-                                                                <div style={{ border: '1px solid #eee', borderRadius: '18px' }} class="row m-0 w-100 p-1 align-items-center">
-                                                                    <div style={{ width: '50px', height: '50px', borderRadius: '7px', marginInlineEnd: '10px' }}>
-                                                                        <img
-                                                                            src={
-                                                                                orderItem?.info?.imageUrl
-                                                                                    ? orderItem?.info?.imageUrl
-                                                                                    : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'
-                                                                            }
-                                                                            style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
-                                                                        />
-                                                                    </div>
-                                                                    <div class="col-lg-5 d-flex align-items-center">
-                                                                        {queryParameters?.get('type') == 'inventory' && (
-                                                                            <div className="row m-0 w-100">
-                                                                                <div style={{ fontSize: '14px', fontWeight: 600 }} className={' col-lg-12 p-0'}>
-                                                                                    {orderItem?.info?.item?.name}
-                                                                                </div>
-                                                                                <div style={{ fontSize: '13px' }} className={' col-lg-12 p-0'}>
-                                                                                    {orderItem?.info?.name}
-                                                                                </div>
-                                                                                <div style={{ color: 'lightgray', fontSize: '13px' }} className="col-lg-12 p-0">
-                                                                                    {orderItem?.info?.sku}
-                                                                                </div>
-                                                                            </div>
-                                                                        )}
-                                                                    </div>
-                                                                    <div class="col-lg-5 ">
-                                                                        <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
-                                                                            <div>
-                                                                                {orderItem?.partial && (
-                                                                                    <div style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }} class="row m-0 w-100 p-1 px-4">
-                                                                                        {orderItem?.partialCount}/{orderItem?.count}
-                                                                                    </div>
-                                                                                )}
-                                                                                {!orderItem?.partial && (
-                                                                                    <div style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }} class="row m-0 w-100 p-1 px-4">
-                                                                                        {orderItem?.count}
-                                                                                    </div>
-                                                                                )}
-                                                                            </div>
-                                                                            {/* <div style={{ fontWeight: 700 }} class="mx-2">
-                                                                                    {orderItem?.partial
-                                                                                        ? parseInt(orderItem?.partialCount) * parseFloat(orderItem?.unitPrice)
-                                                                                        : parseInt(orderItem?.count) * parseFloat(orderItem?.unitPrice)}{' '}
-                                                                                    {item?.info?.currency}
-                                                                                </div> */}
-                                                                            {queryParameters?.get('type') == 'inventory' && (
-                                                                                <div
-                                                                                    onClick={() => {
-                                                                                        if (orderItem?.countInInventory != 0) {
-                                                                                            setinventoryModal({ open: true, items: organizedData });
-                                                                                        }
-                                                                                    }}
-                                                                                    style={{ width: '30px', height: '30px' }}
-                                                                                    class={
-                                                                                        orderItem?.countInInventory == 0 ? 'allcentered iconhover text-danger' : 'allcentered iconhover text-success'
-                                                                                    }
-                                                                                >
-                                                                                    <MdOutlineInventory2 size={20} />
-                                                                                </div>
-                                                                            )}
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        );
-                                                    })}
-                                                </div>
-                                            </div>
-                                        )}
+                                            )}
 
-                                        <div style={{ fontSize: '12px' }} class="col-lg-12 p-0 mt-2 d-flex justify-content-end ">
-                                            <p className={' m-0 p-0 wordbreak  '}>{dateformatter(orderDate?.toUTCString())}</p>
+                                            <div style={{ fontSize: '12px' }} class="col-lg-12 p-0 mt-2 d-flex justify-content-end ">
+                                                <p className={' m-0 p-0 wordbreak  '}>{dateformatter(orderDate?.toUTCString())}</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                                <div class={generalstyles.card + ' row m-0 w-100 p-4'}>
+                                    <div style={{ overflowY: 'scroll' }} class={generalstyles.card + ' row m-0 w-100 p-2 pb-4 py-3 scrollmenuclasssubscrollbar'}>
+                                        <div class="container1">
+                                            <ul class="progressbar">
+                                                {fetchOrderHistoryQuery?.data?.paginateOrderHistory?.data?.map((historyItem, historyIndex) => {
+                                                    return <li class="active text-capitalize">{historyItem?.status.split(/(?=[A-Z])/).join(' ')}</li>;
+                                                })}
+
+                                                {/* <li>Step 5</li> */}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </>
                         )}
                     </div>
                 </div>

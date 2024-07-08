@@ -182,7 +182,15 @@ const Orders = (props) => {
                         />
                     </div>
                     <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
-                        <OrdersTable fetchOrdersQuery={fetchOrdersInInventoryQuery} attr={'paginateOrdersInInventory'} srcFrom="inventory" />
+                        <OrdersTable
+                            clickable={true}
+                            actiononclick={(order) => {
+                                history.push('/orderinfo?type=inventory&orderId=' + order.id);
+                            }}
+                            fetchOrdersQuery={fetchOrdersInInventoryQuery}
+                            attr={'paginateOrdersInInventory'}
+                            srcFrom="inventory"
+                        />
                     </div>
                     <div class="col-lg-12 p-0">
                         <Pagination
