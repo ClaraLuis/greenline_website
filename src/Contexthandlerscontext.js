@@ -54,365 +54,6 @@ export const Contexthandlerscontext_provider = (props) => {
         return show;
     };
 
-    const sheetStatusesContext = [
-        { label: 'In Progress', value: 'inProgress' },
-        { label: 'Waiting For Admin Approval', value: 'waitingForAdminApproval' },
-        { label: 'Waiting For Finance Approval', value: 'waitingForFinanceApproval' },
-        { label: 'Completed', value: 'completed' },
-    ];
-
-    const sheetOrderStatusesContext = [
-        { label: 'Admin Accepted', value: 'adminAccepted' },
-        { label: 'Admin Rejected', value: 'adminRejected' },
-        { label: 'Finance Accepted', value: 'financeAccepted' },
-        { label: 'Finance Rejected', value: 'financeRejected' },
-    ];
-
-    const orderStatusesContext = [
-        { label: 'Idle', value: 'idle' },
-        { label: 'Shipped From Courier', value: 'shippedFromCourier' },
-        { label: 'Transferring', value: 'transferring' },
-        { label: 'Assigned To Courier', value: 'assignedToCourier' },
-        { label: 'Out For Delivery', value: 'outForDelivery' },
-        { label: 'Delivered', value: 'delivered' },
-        { label: 'Partially Delivered', value: 'partiallyDelivered' },
-        { label: 'Cancelled', value: 'cancelled' },
-        { label: 'Failed Delivery Attempt', value: 'failedDeliveryAttempt' },
-        { label: 'Postponed', value: 'postponed' },
-    ];
-
-    const transactionStatusesContext = [
-        { label: 'Pending Sender', value: 'pendingSender' },
-        { label: 'Pending Receiver', value: 'pendingReceiver' },
-        { label: 'Processing', value: 'processing' },
-        { label: 'Processing By Sender', value: 'processingBySender' },
-        { label: 'Processing By Receiver', value: 'processingByReceiver' },
-        { label: 'Rejected', value: 'rejected' },
-        { label: 'Rejected By Sender', value: 'rejectedBySender' },
-        { label: 'Rejected By Receiver', value: 'rejectedByReceiver' },
-        { label: 'Completed', value: 'completed' },
-        { label: 'Cancelled', value: 'cancelled' },
-        { label: 'Cancelled By Sender', value: 'cancelledBySender' },
-        { label: 'Cancelled By Receiver', value: 'cancelledByReceiver' },
-        { label: 'Failed', value: 'failed' },
-        { label: 'Pending Internal', value: 'pendingInternal' },
-        { label: 'Transferred', value: 'transferred' },
-    ];
-
-    const transactionStatusesSelectContext = [
-        { label: 'Process', value: 'process' },
-        { label: 'Complete', value: 'complete' },
-        { label: 'Reject', value: 'reject' },
-        // { label: 'Cancel', value: 'cancel' },
-        // { label: 'Fail', value: 'fail' },
-    ];
-    const transactionTypesContext = [
-        { label: 'Deposit', value: 'deposit' },
-        { label: 'Withdrawal', value: 'withdrawal' },
-        { label: 'Order Collection', value: 'orderCollection' },
-        { label: 'Shipping Collection', value: 'shippinCollection' },
-        { label: 'Courier Collection', value: 'courierCollection' },
-        { label: 'Courier Collection Transfer', value: 'courierCollectionTransfer' },
-        { label: 'Merchant Order Payment', value: 'merchantOrderPayment' },
-        { label: 'Transfer', value: 'transfer' },
-        { label: 'Refund', value: 'refund' },
-        { label: 'Adjustment', value: 'adjustment' },
-        { label: 'Interest', value: 'interest' },
-        { label: 'Donation', value: 'donation' },
-        { label: 'Conversion', value: 'conversion' },
-        { label: 'Reward', value: 'reward' },
-        { label: 'Subscription', value: 'subscription' },
-        { label: 'Inventory Rent', value: 'inventoryRent' },
-        { label: 'Payment', value: 'payment' },
-        { label: 'Taxes', value: 'taxes' },
-        { label: 'Other', value: 'other' },
-    ];
-
-    const requestPrioritiesContext = [
-        { label: 'Low', value: 'low' },
-        { label: 'Medium', value: 'medium' },
-        { label: 'High', value: 'high' },
-    ];
-
-    const requestStatusesContext = [
-        { label: 'Sent', value: 'sent' },
-        { label: 'Pending', value: 'pending' },
-        { label: 'Read', value: 'read' },
-        { label: 'Rejected', value: 'rejected' },
-        { label: 'Accepted', value: 'accepted' },
-        { label: 'Expired', value: 'expired' },
-        // Add other request statuses...
-    ];
-
-    const requestTypesContext = [
-        { label: 'Notification', value: 'notification' },
-        { label: 'Confirmation', value: 'confirmation' },
-        { label: 'Authorization', value: 'authorization' },
-        { label: 'Subscription', value: 'subscription' },
-        { label: 'Verification', value: 'verification' },
-        { label: 'Reminder', value: 'reminder' },
-        { label: 'Invitation', value: 'invitation' },
-        { label: 'Password Reset', value: 'passwordReset' },
-        { label: 'Account Update', value: 'accountUpdate' },
-        { label: 'Transaction Update', value: 'transactionUpdate' },
-        { label: 'Policy Update', value: 'policyUpdate' },
-        { label: 'Announcement', value: 'announcement' },
-        { label: 'Feedback', value: 'feedback' },
-        { label: 'Support', value: 'support' },
-        { label: 'Marketing', value: 'marketing' },
-        { label: 'Survey', value: 'survey' },
-        { label: 'Report', value: 'report' },
-        { label: 'Inquiry', value: 'inquiry' },
-        { label: 'Appointment', value: 'appointment' },
-        { label: 'Request', value: 'request' },
-        { label: 'Order Problem', value: 'orderProblem' },
-        { label: 'Payment Reminder', value: 'paymentReminder' },
-        { label: 'Invoice', value: 'invoice' },
-        { label: 'Other', value: 'other' },
-        // Add other request types...
-    ];
-
-    const orderTypesContext = [
-        { label: 'Delivery', value: 'delivery' },
-        { label: 'Exchange', value: 'exchange' },
-        { label: 'Refund', value: 'refund' },
-        { label: 'Free Delivery', value: 'freeDelivery' },
-        { label: 'Gift', value: 'gift' },
-        { label: 'Free Of Charge', value: 'freeOfCharge' },
-    ];
-
-    const expenseTypesContext = [
-        { label: 'Salary', value: 'salary' },
-        { label: 'Rent', value: 'rent' },
-        { label: 'Utilities', value: 'utilities' },
-        { label: 'Office Supplies', value: 'officeSupplies' },
-        { label: 'Vehicle Maintenance', value: 'vehicleMaintenance' },
-        { label: 'Fuel', value: 'fuel' },
-        { label: 'Insurance', value: 'insurance' },
-        { label: 'Equipment Purchase', value: 'equipmentPurchase' },
-        { label: 'Marketing', value: 'marketing' },
-        { label: 'Software Subscriptions', value: 'softwareSubscriptions' },
-        { label: 'Legal Fees', value: 'legalFees' },
-        { label: 'Training', value: 'training' },
-        { label: 'Taxes', value: 'taxes' },
-        { label: 'Loan Repayments', value: 'loanRepayments' },
-        { label: 'Interest', value: 'interest' },
-        { label: 'Office Rent', value: 'officeRent' },
-        { label: 'Warehouse Rent', value: 'warehouseRent' },
-        { label: 'Travel Expenses', value: 'travelExpenses' },
-        { label: 'Professional Services', value: 'professionalServices' },
-        { label: 'Maintenance', value: 'maintenance' },
-        { label: 'Security Services', value: 'securityServices' },
-        { label: 'Packaging Materials', value: 'packagingMaterials' },
-        { label: 'Cleaning Services', value: 'cleaningServices' },
-        { label: 'Waste Disposal', value: 'wasteDisposal' },
-        { label: 'Office Equipment', value: 'officeEquipment' },
-        { label: 'Internet Services', value: 'internetServices' },
-        { label: 'Telecommunication', value: 'telecommunication' },
-        { label: 'Office Furniture', value: 'officeFurniture' },
-        { label: 'Membership Fees', value: 'membershipFees' },
-        { label: 'Professional Development', value: 'professionalDevelopment' },
-        { label: 'Vehicle Lease', value: 'vehicleLease' },
-        { label: 'Advertising', value: 'advertising' },
-        { label: 'Delivery Expenses', value: 'deliveryExpenses' },
-        { label: 'Miscellaneous', value: 'miscellaneous' },
-        // Add other expense types...
-    ];
-
-    const employeeTypesContext = [
-        { label: 'Admin', value: 'admin' },
-        { label: 'Finance', value: 'finance' },
-        { label: 'Inventory', value: 'inventory' },
-        { label: 'Courier', value: 'courier' }, // Add other employee types...
-    ];
-
-    const financialAccountTypesContext = [
-        { label: 'Hub', value: 'hub' },
-        { label: 'User', value: 'user' },
-        { label: 'Merchant', value: 'merchant' },
-        { label: 'Bank', value: 'bank' }, // Add other financial account types...
-        { label: 'Department', value: 'department' }, // Add other financial account types...
-    ];
-
-    const itemHistoryEnumContext = [
-        { label: 'Import', value: 'import' },
-        { label: 'New Import', value: 'newImport' },
-        { label: 'Order Return', value: 'orderReturn' },
-        { label: 'Export', value: 'export' }, // Add other item history enums...
-        { label: 'Order Export', value: 'orderExport' }, // Add other item history enums...
-    ];
-
-    const inventoryRentTypesContext = [
-        { label: 'Item', value: 'item' },
-        { label: 'Order', value: 'order' },
-        { label: 'Box', value: 'box' },
-        { label: 'Ballot', value: 'ballot' }, // Add other inventory rent types...
-        { label: 'Rack', value: 'rack' }, // Add other inventory rent types...
-        { label: 'Inventory', value: 'inventory' }, // Add other inventory rent types...
-        { label: 'Meter', value: 'meter' }, // Add other inventory rent types...
-    ];
-
-    const merchantVisitTypesContext = [
-        { label: 'Order Pickup', value: 'orderPickup' },
-        { label: 'Order Returns', value: 'orderReturns' },
-        { label: 'Supply Pickup', value: 'supplyPickup' },
-        { label: 'Supply Delivery', value: 'supplyDelivery' }, // Add other merchant visit types...
-    ];
-
-    const merchantVisitStatusesContext = [
-        { label: 'Scheduled', value: 'scheduled' },
-        { label: 'Assigned to Courier', value: 'assignedToCourier' },
-        { label: 'On The Way', value: 'onTheWay' },
-        { label: 'Completed', value: 'completed' }, // Add other merchant visit statuses...
-        { label: 'Canceled', value: 'canceled' }, // Add other merchant visit statuses...
-        { label: 'Rescheduled', value: 'rescheduled' }, // Add other merchant visit statuses...
-        { label: 'Returned', value: 'returned' }, // Add other merchant visit statuses...
-        { label: 'Supplies Delivered', value: 'suppliesDelivered' }, // Add other merchant visit statuses...
-    ];
-
-    const userTypesContext = [
-        { label: 'Employee', value: 'employee' },
-        { label: 'Merchant', value: 'merchant' },
-        { label: 'Customer', value: 'customer' },
-    ];
-
-    const paymentTypesContext = [
-        { label: 'Cash', value: 'cash' },
-        { label: 'Card', value: 'card' },
-        { label: 'Free', value: 'free' },
-    ];
-
-    const returnPackageStatusContext = [
-        { label: 'Idle', value: 'idle' },
-        { label: 'Assigned to Courier', value: 'assignedToCourier' },
-        { label: 'Transferring', value: 'transferring' },
-        { label: 'Delivered', value: 'delivered' },
-    ];
-    const returnPackageTypesContext = [
-        { label: 'Inventory', value: 'inventory' },
-        { label: 'Merchant', value: 'merchant' },
-    ];
-
-    const [paymentTypeContext, setpaymentTypeContext] = useState([
-        { label: 'Cash', value: 'cash' },
-        { label: 'Card', value: 'card' },
-        { label: 'Free', value: 'free' },
-    ]);
-
-    const [expensesTypeContext, setexpensesTypeContext] = useState([
-        { label: 'Salary', value: 'salary' },
-        { label: 'Rent', value: 'rent' },
-        { label: 'Utilities', value: 'utilities' },
-        { label: 'Office Supplies', value: 'officeSupplies' },
-        { label: 'Vehicle Maintenance', value: 'vehicleMaintenance' },
-        { label: 'Fuel', value: 'fuel' },
-
-        { label: 'Insurance', value: 'insurance' },
-        { label: 'Equipment Purchase', value: 'equipmentPurchase' },
-        { label: 'Marketing', value: 'marketing' },
-        { label: 'Software Subscriptions', value: 'softwareSubscriptions' },
-        { label: 'Legal Fees', value: 'legalFees' },
-        { label: 'Training', value: 'training' },
-        { label: 'Taxes', value: 'taxes' },
-        { label: 'Loan Repayments', value: 'loanRepayments' },
-        { label: 'Interest', value: 'interest' },
-
-        { label: 'Office Rent', value: 'officeRent' },
-        { label: 'Warehouse Rent', value: 'warehouseRent' },
-        { label: 'Travel Expenses', value: 'travelExpenses' },
-        { label: 'Professional Services', value: 'professionalServices' },
-        { label: 'Security Services', value: 'securityServices' },
-        { label: 'Packaging Materials', value: 'packagingMaterials' },
-        { label: 'Cleaning Services', value: 'cleaningServices' },
-        { label: 'Waste Disposal', value: 'wasteDisposal' },
-        { label: 'Office Equipment', value: 'officeEquipment' },
-
-        { label: 'Internet Services', value: 'internetServices' },
-        { label: 'Telecommunication', value: 'telecommunication' },
-        { label: 'Office Furniture', value: 'officeFurniture' },
-        { label: 'Membership Fees', value: 'membershipFees' },
-        { label: 'Professional Development', value: 'professionalDevelopment' },
-        { label: 'Vehicle Lease', value: 'vehicleLease' },
-        { label: 'Advertising', value: 'advertising' },
-        { label: 'Delivery Expenses', value: 'deliveryExpenses' },
-        { label: 'Miscellaneous', value: 'miscellaneous' },
-    ]);
-
-    const [empTypesContext, setempTypesContext] = useState([
-        { label: 'Admin', value: 'admin' },
-        { label: 'Finance', value: 'finance' },
-        { label: 'Inventory', value: 'inventory' },
-        { label: 'Courier', value: 'courier' },
-        { label: 'Customer Service', value: 'customerService' },
-    ]);
-
-    const [inventoryTypesContext, setinventoryTypesContext] = useState([
-        { label: 'Item', value: 'item' },
-        { label: 'Box', value: 'box' },
-        { label: 'Ballot', value: 'ballot' },
-        { label: 'Refund', value: 'refund' },
-        { label: 'Rack', value: 'rack' },
-        { label: 'Inventory', value: 'inventory' },
-        { label: 'Meter', value: 'meter' },
-    ]);
-
-    const userRolesContext = [
-        { label: 'Admin', value: '1', type: 'super', description: 'Super admin with full access' },
-        { label: 'Access Inventory', value: '2', type: 'inventory', description: 'Can access the inventory module' },
-        { label: 'View Inventories', value: '3', type: 'inventory', description: 'Can view inventories' },
-        { label: 'Add Inventories', value: '4', type: 'inventory', description: 'Can add new inventories' },
-        { label: 'Edit Inventories', value: '5', type: 'inventory', description: 'Can edit existing inventories' },
-        { label: 'View Inventory Items', value: '6', type: 'inventory', description: 'Can view items' },
-        { label: 'Add Inventory Items', value: '7', type: 'inventory', description: 'Can add new items' },
-        { label: 'Remove Inventory Items', value: '8', type: 'inventory', description: 'Can remove items' },
-        { label: 'Access Merchant', value: '9', type: 'merchant', description: 'Can access the merchant module' },
-        { label: 'View Merchant Dashboard', value: '10', type: 'merchant', description: 'Can view the merchant dashboard' },
-        { label: 'View Merchant Account', value: '11', type: 'merchant', description: 'Can view merchant account details' },
-        { label: 'View Merchant Items', value: '12', type: 'merchant', description: 'Can view merchant items' },
-        { label: 'Edit Merchant Items', value: '13', type: 'merchant', description: 'Can edit merchant items' },
-        { label: 'View Merchant Orders', value: '14', type: 'merchant', description: 'Can view merchant orders' },
-        { label: 'Add Merchant Orders', value: '15', type: 'merchant', description: 'Can add new merchant orders' },
-        { label: 'Edit Merchant Orders', value: '16', type: 'merchant', description: 'Can edit merchant orders' },
-        { label: 'Access Finance', value: '17', type: 'finance', description: 'Can access the finance module' },
-        { label: 'View Finance Dashboard', value: '18', type: 'finance', description: 'Can view the finance dashboard' },
-        { label: 'View Finance Accounts', value: '19', type: 'finance', description: 'Can view finance accounts' },
-        { label: 'Add Finance Accounts', value: '20', type: 'finance', description: 'Can add new finance accounts' },
-        { label: 'Edit Finance Accounts', value: '21', type: 'finance', description: 'Can edit finance accounts' },
-        { label: 'View Finance Expenses', value: '22', type: 'finance', description: 'Can view finance expenses' },
-        { label: 'Add Finance Expenses', value: '23', type: 'finance', description: 'Can add new finance expenses' },
-        { label: 'Edit Finance Expenses', value: '24', type: 'finance', description: 'Can edit finance expenses' },
-        { label: 'View Finance Orders', value: '25', type: 'finance', description: 'Can view finance orders' },
-        { label: 'Edit Finance Orders', value: '26', type: 'finance', description: 'Can edit finance orders' },
-        { label: 'View Finance Transactions', value: '27', type: 'finance', description: 'Can view finance transactions' },
-        { label: 'Edit Finance Transactions', value: '28', type: 'finance', description: 'Can edit finance transactions' },
-        { label: 'Access Courier', value: '29', type: 'courier', description: 'Can access the courier module' },
-        { label: 'View Courier Dashboard', value: '30', type: 'courier', description: 'Can view the courier dashboard' },
-        { label: 'View Couriers', value: '31', type: 'courier', description: 'Can view couriers' },
-        { label: 'Add Couriers', value: '32', type: 'courier', description: 'Can add new couriers' },
-        { label: 'Edit Couriers', value: '33', type: 'courier', description: 'Can edit couriers' },
-        { label: 'View Courier Sheet', value: '34', type: 'courier', description: 'Can view courier sheets' },
-        { label: 'Edit Courier Sheet', value: '35', type: 'courier', description: 'Can edit courier sheets' },
-        { label: 'Add Courier Sheet', value: '36', type: 'courier', description: 'Can add new courier sheets' },
-        { label: 'Add Request', value: '37', type: 'requests', description: 'Can add new requests' },
-        { label: 'Edit Request', value: '38', type: 'requests', description: 'Can edit requests' },
-        { label: 'Edit Request Status', value: '39', type: 'requests', description: 'Can edit request statuses' },
-        { label: 'Add Order', value: '40', type: 'order', description: 'Can add new orders' },
-        { label: 'Edit Order', value: '41', type: 'order', description: 'Can edit orders' },
-        { label: 'Edit Order Status', value: '42', type: 'order', description: 'Can edit order statuses' },
-        { label: 'Access User Management', value: '43', type: 'management', description: 'Can access user management' },
-        { label: 'Add User', value: '44', type: 'management', description: 'Can add new user' },
-        { label: 'Edit User', value: '45', type: 'management', description: 'Can edit users' },
-        { label: 'Edit User Roles', value: '46', type: 'management', description: 'Can edit user roles' },
-        { label: 'View Merchant Finance', value: '47', type: 'merchant', description: 'Can view merchant financial account details' },
-        { label: 'Add Merchant User', value: '48', type: 'merchant', description: 'Can add new merchant user' },
-        { label: 'Edit Merchant User', value: '49', type: 'merchant', description: 'Can edit merchant users' },
-        { label: 'Edit Merchant User Roles', value: '50', type: 'merchant', description: 'Can edit merchant user roles' },
-        { label: 'Finance Admin', value: '51', type: 'finance', description: 'Finance full access' },
-        { label: 'Merchant Admin', value: '52', type: 'merchant', description: 'Merchant full access' },
-        { label: 'Courier Admin', value: '53', type: 'courier', description: 'Courier full access' },
-        { label: 'Inventory Admin', value: '54', type: 'inventory', description: 'Inventory full access' },
-    ];
-
     const [chosenMerchantContext, setchosenMerchantContext] = useState({});
 
     useEffect(() => {
@@ -447,7 +88,7 @@ export const Contexthandlerscontext_provider = (props) => {
                 ],
             },
             {
-                maintitle: 'Inventory',
+                maintitle: 'Warehouses',
                 subitems: [
                     // {
                     //     name: 'Inventory details',
@@ -462,7 +103,7 @@ export const Contexthandlerscontext_provider = (props) => {
                     //     show: isAuth([1]),
                     // },
                     {
-                        name: 'Inventories',
+                        name: 'Warehouses',
                         isselected: false,
                         icon: (
                             <i class={'allcentered'}>
@@ -647,7 +288,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         show: isAuth([1, 53, 30]),
                     },
                     {
-                        name: 'Sheets',
+                        name: 'Manifest',
                         isselected: false,
                         icon: (
                             <i class={'allcentered'}>
@@ -799,6 +440,373 @@ export const Contexthandlerscontext_provider = (props) => {
         // alert(JSON.stringify(UserInfoContext?.user?.merchantId));
     }, [UserInfoContext]);
 
+    const courierSheetStatusesContext = [
+        { label: 'In Progress', value: 'inProgress' },
+        { label: 'Waiting For Admin Approval', value: 'waitingForAdminApproval' },
+        { label: 'Waiting For Finance Approval', value: 'waitingForFinanceApproval' },
+        { label: 'Completed', value: 'completed' },
+    ];
+
+    const sheetOrderStatusesContext = [
+        { label: 'Admin Accepted', value: 'adminAccepted' },
+        { label: 'Admin Rejected', value: 'adminRejected' },
+        { label: 'Finance Accepted', value: 'financeAccepted' },
+        { label: 'Finance Rejected', value: 'financeRejected' },
+    ];
+
+    const orderStatusEnumContext = [
+        { label: 'Idle', value: 'idle' },
+        { label: 'Assembled', value: 'assembled' },
+        { label: 'Dispatched', value: 'dispatched' },
+        { label: 'Picked Up', value: 'pickedUp' },
+        { label: 'Arrived At Sort Facilities', value: 'arrivedAtSortFacilities' },
+        { label: 'Arrived At Hub', value: 'arrivedAtHub' },
+        { label: 'Transferred', value: 'transferred' },
+        { label: 'Assigned To Courier', value: 'assignedToCourier' },
+        { label: 'Delivered', value: 'delivered' },
+        { label: 'Partially Delivered', value: 'partiallyDelivered' },
+        { label: 'Cancelled', value: 'cancelled' },
+        { label: 'Failed Delivery Attempt', value: 'failedDeliveryAttempt' },
+        { label: 'Postponed', value: 'postponed' },
+        { label: 'Return Requested', value: 'returnRequested' },
+        { label: 'Returned', value: 'returned' },
+        { label: 'Partially Returned', value: 'partiallyReturned' },
+    ];
+
+    const transactionUpdateTypeContext = [
+        { label: 'Process', value: 'process' },
+        { label: 'Complete', value: 'complete' },
+        { label: 'Reject', value: 'reject' },
+        { label: 'Cancel', value: 'cancel' },
+        { label: 'Fail', value: 'fail' },
+    ];
+
+    const shippingStatusContext = [
+        { label: 'Collected', value: 'collected' },
+        { label: 'Not Collected', value: 'notCollected' },
+        { label: 'Dismissed', value: 'dismissed' },
+    ];
+
+    const transactionStatusTypeContext = [
+        { label: 'Pending Sender', value: 'pendingSender' },
+        { label: 'Pending Receiver', value: 'pendingReceiver' },
+        { label: 'Processing', value: 'processing' },
+        { label: 'Processing By Sender', value: 'processingBySender' },
+        { label: 'Processing By Receiver', value: 'processingByReceiver' },
+        { label: 'Rejected', value: 'rejected' },
+        { label: 'Rejected By Sender', value: 'rejectedBySender' },
+        { label: 'Rejected By Receiver', value: 'rejectedByReceiver' },
+        { label: 'Completed', value: 'completed' },
+        { label: 'Cancelled By Sender', value: 'cancelledBySender' },
+        { label: 'Cancelled By Receiver', value: 'cancelledByReceiver' },
+        { label: 'Cancelled', value: 'cancelled' },
+        { label: 'Failed', value: 'failed' },
+        { label: 'Pending Internal', value: 'pendingInternal' },
+        { label: 'Transferred', value: 'transferred' },
+    ];
+
+    const closingTransactionStatuses = [
+        { label: 'Completed', value: 'completed' },
+        { label: 'Rejected By Receiver', value: 'rejectedByReceiver' },
+        { label: 'Rejected By Sender', value: 'rejectedBySender' },
+        { label: 'Cancelled By Receiver', value: 'cancelledByReceiver' },
+        { label: 'Cancelled By Sender', value: 'cancelledBySender' },
+    ];
+
+    const transactionTypeContext = [
+        { label: 'Deposit', value: 'deposit' },
+        { label: 'Withdrawal', value: 'withdrawal' },
+        { label: 'Order Collection', value: 'orderCollection' },
+        { label: 'Shipping Collection', value: 'shippingCollection' },
+        { label: 'Courier Collection', value: 'courierCollection' },
+        { label: 'Courier Collection Transfer', value: 'courierCollectionTransfer' },
+        { label: 'Merchant Order Payment', value: 'merchantOrderPayment' },
+        { label: 'Transfer', value: 'transfer' },
+        { label: 'Refund', value: 'refund' },
+        { label: 'Adjustment', value: 'adjustment' },
+        { label: 'Interest', value: 'interest' },
+        { label: 'Donation', value: 'donation' },
+        { label: 'Conversion', value: 'conversion' },
+        { label: 'Reward', value: 'reward' },
+        { label: 'Subscription', value: 'subscription' },
+        { label: 'Inventory Rent', value: 'inventoryRent' },
+        { label: 'Payment', value: 'payment' },
+        { label: 'Taxes', value: 'taxes' },
+        { label: 'Other', value: 'other' },
+    ];
+
+    const expenseTypeContext = [
+        { label: 'Salary', value: 'salary' },
+        { label: 'Rent', value: 'rent' },
+        { label: 'Utilities', value: 'utilities' },
+        { label: 'Office Supplies', value: 'officeSupplies' },
+        { label: 'Vehicle Maintenance', value: 'vehicleMaintenance' },
+        { label: 'Fuel', value: 'fuel' },
+        { label: 'Insurance', value: 'insurance' },
+        { label: 'Equipment Purchase', value: 'equipmentPurchase' },
+        { label: 'Marketing', value: 'marketing' },
+        { label: 'Software Subscriptions', value: 'softwareSubscriptions' },
+        { label: 'Legal Fees', value: 'legalFees' },
+        { label: 'Training', value: 'training' },
+        { label: 'Taxes', value: 'taxes' },
+        { label: 'Loan Repayments', value: 'loanRepayments' },
+        { label: 'Interest', value: 'interest' },
+        { label: 'Office Rent', value: 'officeRent' },
+        { label: 'Warehouse Rent', value: 'warehouseRent' },
+        { label: 'Travel Expenses', value: 'travelExpenses' },
+        { label: 'Professional Services', value: 'professionalServices' },
+        { label: 'Maintenance', value: 'maintenance' },
+        { label: 'Security Services', value: 'securityServices' },
+        { label: 'Packaging Materials', value: 'packagingMaterials' },
+        { label: 'Cleaning Services', value: 'cleaningServices' },
+        { label: 'Waste Disposal', value: 'wasteDisposal' },
+        { label: 'Office Equipment', value: 'officeEquipment' },
+        { label: 'Internet Services', value: 'internetServices' },
+        { label: 'Telecommunication', value: 'telecommunication' },
+        { label: 'Office Furniture', value: 'officeFurniture' },
+        { label: 'Membership Fees', value: 'membershipFees' },
+        { label: 'Professional Development', value: 'professionalDevelopment' },
+        { label: 'Vehicle Lease', value: 'vehicleLease' },
+        { label: 'Advertising', value: 'advertising' },
+        { label: 'Delivery Expenses', value: 'deliveryExpenses' },
+        { label: 'Miscellaneous', value: 'miscellaneous' },
+    ];
+
+    const requestPriorityContext = [
+        { label: 'Low', value: 'low' },
+        { label: 'Medium', value: 'medium' },
+        { label: 'High', value: 'high' },
+    ];
+
+    const requestTypeContext = [
+        { label: 'Notification', value: 'notification' },
+        { label: 'Confirmation', value: 'confirmation' },
+        { label: 'Authorization', value: 'authorization' },
+        { label: 'Subscription', value: 'subscription' },
+        { label: 'Verification', value: 'verification' },
+        { label: 'Reminder', value: 'reminder' },
+        { label: 'Invitation', value: 'invitation' },
+        { label: 'Password Reset', value: 'passwordReset' },
+        { label: 'Account Update', value: 'accountUpdate' },
+        { label: 'Transaction Update', value: 'transactionUpdate' },
+        { label: 'Policy Update', value: 'policyUpdate' },
+        { label: 'Announcement', value: 'announcement' },
+        { label: 'Feedback', value: 'feedback' },
+        { label: 'Support', value: 'support' },
+        { label: 'Marketing', value: 'marketing' },
+        { label: 'Survey', value: 'survey' },
+        { label: 'Report', value: 'report' },
+        { label: 'Inquiry', value: 'inquiry' },
+        { label: 'Appointment', value: 'appointment' },
+        { label: 'Request', value: 'request' },
+        { label: 'Order Problem', value: 'orderProblem' },
+        { label: 'Payment Reminder', value: 'paymentReminder' },
+        { label: 'Invoice', value: 'invoice' },
+        { label: 'Other', value: 'other' },
+    ];
+
+    const orderTypeContext = [
+        { label: 'Delivery', value: 'delivery' },
+        { label: 'Exchange', value: 'exchange' },
+        { label: 'Return', value: 'return' },
+        { label: 'Free Shipping', value: 'freeShipping' },
+        { label: 'Free Of Charge', value: 'freeOfCharge' },
+    ];
+
+    const paymentTypeContext = [
+        { label: 'Cash', value: 'cash' },
+        { label: 'Card', value: 'card' },
+        { label: 'Free', value: 'free' },
+    ];
+
+    const requestStatusContext = [
+        { label: 'Sent', value: 'sent' },
+        { label: 'Pending', value: 'pending' },
+        { label: 'Read', value: 'read' },
+        { label: 'Rejected', value: 'rejected' },
+        { label: 'Accepted', value: 'accepted' },
+        { label: 'Expired', value: 'expired' },
+    ];
+
+    const userTypeContext = [
+        { label: 'Employee', value: 'employee' },
+        { label: 'Merchant', value: 'merchant' },
+        { label: 'Customer', value: 'customer' },
+    ];
+
+    const employeeTypeContext = [
+        { label: 'Admin', value: 'admin' },
+        { label: 'Finance', value: 'finance' },
+        { label: 'Inventory', value: 'inventory' },
+        { label: 'Courier', value: 'courier' },
+        { label: 'Customer Service', value: 'customerService' },
+    ];
+
+    const financialAccountTypeContext = [
+        { label: 'Hub', value: 'hub' },
+        { label: 'User', value: 'user' },
+        { label: 'Merchant', value: 'merchant' },
+        { label: 'Bank', value: 'bank' },
+        { label: 'Department', value: 'department' },
+    ];
+
+    const itemHistoryEnumContext = [
+        { label: 'Import', value: 'import' },
+        { label: 'Return', value: 'return' },
+        { label: 'Order Return', value: 'orderReturn' },
+        { label: 'Export', value: 'export' },
+        { label: 'Order Assembly', value: 'orderAssembly' },
+    ];
+
+    const inventoryRentTypeContext = [
+        { label: 'Item', value: 'item' },
+        { label: 'Order', value: 'order' },
+        { label: 'Box', value: 'box' },
+        { label: 'Pallet', value: 'ballot' },
+        { label: 'Rack', value: 'rack' },
+        { label: 'Inventory', value: 'inventory' },
+        { label: 'Meter', value: 'meter' },
+    ];
+
+    const merchantVisitTypeContext = [
+        { label: 'Order Pickup', value: 'orderPickup' },
+        { label: 'Order Returns', value: 'orderReturns' },
+        { label: 'Supply Pickup', value: 'supplyPickup' },
+    ];
+
+    const merchantVisitStatusContext = [
+        { label: 'Scheduled', value: 'scheduled' },
+        { label: 'Assigned to Courier', value: 'assignedToCourier' },
+        { label: 'On The Way', value: 'onTheWay' },
+        { label: 'Completed', value: 'completed' },
+        { label: 'Canceled', value: 'canceled' },
+        { label: 'Rescheduled', value: 'rescheduled' },
+        { label: 'Returned', value: 'returned' },
+        { label: 'Supplies Delivered', value: 'suppliesDelivered' },
+    ];
+
+    const discountTypeContext = [
+        { label: 'Fixed', value: 'fixed' },
+        { label: 'Percentage', value: 'percentage' },
+        { label: 'Free Shipping', value: 'freeShipping' },
+    ];
+
+    const inventoryReturnStatusContext = [
+        { label: 'Idle', value: 'idle' },
+        { label: 'Returned To Box', value: 'returnedToBox' },
+    ];
+
+    const returnPackageTypeContext = [
+        { label: 'Inventory', value: 'inventory' },
+        { label: 'Merchant', value: 'merchant' },
+    ];
+
+    const returnPackageStatusContext = [
+        { label: 'Idle', value: 'idle' },
+        { label: 'Assigned To Courier', value: 'assignedToCourier' },
+        { label: 'Transferring', value: 'transferring' },
+        { label: 'Delivered', value: 'delivered' },
+    ];
+
+    const roleTypeContext = [
+        { label: 'Super Admin', value: 'super' },
+        { label: 'Inventory', value: 'inventory' },
+        { label: 'Merchant', value: 'merchant' },
+        { label: 'Finance', value: 'finance' },
+        { label: 'Courier', value: 'courier' },
+        { label: 'Customer', value: 'customer' },
+        { label: 'Requests', value: 'requests' },
+        { label: 'Order', value: 'order' },
+        { label: 'Management', value: 'management' },
+        { label: 'Return Package', value: 'returnPackage' },
+    ];
+    const userRolesContext = [
+        { label: 'Admin', value: 'admin' },
+        { label: 'Access Inventory', value: 'accessInventory' },
+        { label: 'View Inventories', value: 'viewInventories' },
+        { label: 'Create Inventories', value: 'createInventories' },
+        { label: 'Edit Inventories', value: 'editInventories' },
+        { label: 'View Inventory Items', value: 'viewInventoryItems' },
+        { label: 'Create Inventory Items', value: 'createInventoryItems' },
+        { label: 'Delete Inventory Items', value: 'deleteInventoryItems' },
+        { label: 'Access Merchant', value: 'accessMerchant' },
+        { label: 'View Merchant Dashboard', value: 'viewMerchantDashboard' },
+        { label: 'View Merchant Account', value: 'viewMerchantAccount' },
+        { label: 'View Merchant Items', value: 'viewMerchantItems' },
+        { label: 'Edit Merchant Items', value: 'editMerchantItems' },
+        { label: 'View Merchant Orders', value: 'viewMerchantOrders' },
+        { label: 'Create Merchant Orders', value: 'createMerchantOrders' },
+        { label: 'Edit Merchant Orders', value: 'editMerchantOrders' },
+        { label: 'Access Finance', value: 'accessFinance' },
+        { label: 'View Finance Dashboard', value: 'viewFinanceDashboard' },
+        { label: 'View Finance Accounts', value: 'viewFinanceAccounts' },
+        { label: 'Create Finance Accounts', value: 'createFinanceAccounts' },
+        { label: 'Edit Finance Accounts', value: 'editFinanceAccounts' },
+        { label: 'View Finance Expenses', value: 'viewFinanceExpenses' },
+        { label: 'Create Finance Expenses', value: 'createFinanceExpenses' },
+        { label: 'Edit Finance Expenses', value: 'editFinanceExpenses' },
+        { label: 'View Finance Orders', value: 'viewFinanceOrders' },
+        { label: 'Edit Finance Orders', value: 'editFinanceOrders' },
+        { label: 'View Finance Transactions', value: 'viewFinanceTransactions' },
+        { label: 'Edit Finance Transactions', value: 'editFinanceTransactions' },
+        { label: 'Access Courier', value: 'accessCourier' },
+        { label: 'View Courier Dashboard', value: 'viewCourierDashboard' },
+        { label: 'View Couriers', value: 'viewCouriers' },
+        { label: 'Create Couriers', value: 'createCouriers' },
+        { label: 'Edit Couriers', value: 'editCouriers' },
+        { label: 'View Courier Sheet', value: 'viewCourierSheet' },
+        { label: 'Edit Courier Sheet', value: 'editCourierSheet' },
+        { label: 'Create Courier Sheet', value: 'createCourierSheet' },
+        { label: 'Create Request', value: 'createRequest' },
+        { label: 'Edit Request', value: 'editRequest' },
+        { label: 'Edit Request Status', value: 'editRequestStatus' },
+        { label: 'Create Order', value: 'createOrder' },
+        { label: 'Edit Order', value: 'editOrder' },
+        { label: 'Edit Order Status', value: 'editOrderStatus' },
+        { label: 'Access User Management', value: 'accessUserManagement' },
+        { label: 'Create User', value: 'createUser' },
+        { label: 'Edit User', value: 'editUser' },
+        { label: 'Edit User Roles', value: 'editUserRoles' },
+        { label: 'View Merchant Finance', value: 'viewMerchantFinance' },
+        { label: 'Create Merchant User', value: 'createMerchantUser' },
+        { label: 'Edit Merchant User', value: 'editMerchantUser' },
+        { label: 'Edit Merchant User Roles', value: 'editMerchantUserRoles' },
+        { label: 'Finance Admin', value: 'financeAdmin' },
+        { label: 'Merchant Admin', value: 'merchantAdmin' },
+        { label: 'Courier Admin', value: 'courierAdmin' },
+        { label: 'Inventory Admin', value: 'inventoryAdmin' },
+        { label: 'View All Customers', value: 'viewAllCustomers' },
+        { label: 'Delete Any Customer', value: 'deleteAnyCustomer' },
+        { label: 'Edit All Customers', value: 'editAllCustomers' },
+        { label: 'Send Finance Transaction', value: 'sendFinanceTransaction' },
+        { label: 'Edit Hub Finance Transactions', value: 'editHubFinanceTransactions' },
+        { label: 'Process Merchant Payments', value: 'processMerchantPayments' },
+        { label: 'View Inventory Returns', value: 'viewInventoryReturns' },
+        { label: 'View Item Returns', value: 'viewItemReturns' },
+        { label: 'View All Orders', value: 'viewAllOrders' },
+        { label: 'View Return Packages', value: 'viewReturnPackages' },
+        { label: 'Create Return Packages', value: 'createReturnPackages' },
+        { label: 'Edit Return Packages', value: 'editReturnPackages' },
+        { label: 'Delete Return Package', value: 'deleteReturnPackage' },
+        { label: 'Create Any Orders', value: 'createAnyOrders' },
+        { label: 'Delete User', value: 'deleteUser' },
+        { label: 'Create Merchant Visit', value: 'createMerchantVisit' },
+        { label: 'Edit Merchant Visit', value: 'editMerchantVisit' },
+        { label: 'Delete Merchant Visit', value: 'deleteMerchantVisit' },
+        { label: 'Delete Merchant User', value: 'deleteMerchantUser' },
+        { label: 'Create Merchant Item', value: 'createMerchantItem' },
+        { label: 'Import Merchant Items', value: 'importMerchantItems' },
+        { label: 'Delete Merchant Items', value: 'deleteMerchantItems' },
+        { label: 'Edit Inventory Item', value: 'editInventoryItem' },
+    ];
+
+    const transactionStatusesSelectContext = [
+        { label: 'Process', value: 'process' },
+        { label: 'Complete', value: 'complete' },
+        { label: 'Reject', value: 'reject' },
+        // { label: 'Cancel', value: 'cancel' },
+        // { label: 'Fail', value: 'fail' },
+    ];
     return (
         <Contexthandlerscontext.Provider
             value={{
@@ -818,32 +826,29 @@ export const Contexthandlerscontext_provider = (props) => {
                 dateformatter,
                 value,
                 setValue,
-                sheetStatusesContext,
-                orderStatusesContext,
-                transactionStatusesContext,
-                transactionTypesContext,
-                orderTypesContext,
-                expensesTypeContext,
-                setexpensesTypeContext,
-                userTypesContext,
-                UserInfoContext,
-                setUserInfoContext,
-                inventoryTypesContext,
-                setinventoryTypesContext,
+                courierSheetStatusesContext,
+                orderStatusEnumContext,
+                transactionStatusTypeContext,
+                transactionTypeContext,
+                orderTypeContext,
+                expenseTypeContext,
+                userTypeContext,
+                sheetOrderStatusesContext,
+                inventoryRentTypeContext,
                 paymentTypeContext,
-                setpaymentTypeContext,
-                empTypesContext,
-                setempTypesContext,
-                inventoryRentTypesContext,
-                merchantVisitTypesContext,
+                employeeTypeContext,
+                merchantVisitTypeContext,
+
+                financialAccountTypeContext,
+                userRolesContext,
+                transactionStatusesSelectContext,
+                returnPackageTypeContext,
+                returnPackageStatusContext,
                 isAuth,
                 chosenMerchantContext,
                 setchosenMerchantContext,
-                financialAccountTypesContext,
-                userRolesContext,
-                transactionStatusesSelectContext,
-                returnPackageTypesContext,
-                returnPackageStatusContext,
+                UserInfoContext,
+                setUserInfoContext,
             }}
         >
             {props.children}

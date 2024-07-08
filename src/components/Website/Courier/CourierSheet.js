@@ -17,7 +17,7 @@ import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js'
 const CourierSheet = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, sheetStatusesContext, dateformatter, orderStatusesContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, courierSheetStatusesContext, dateformatter, orderStatusEnumContext } = useContext(Contexthandlerscontext);
     const { fetchUsers, useQueryGQL, fetchCourierSheet, updateCourierSheet, useMutationGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -163,7 +163,7 @@ const CourierSheet = (props) => {
                                         : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered '
                                 }
                             >
-                                {sheetStatusesContext?.map((i, ii) => {
+                                {courierSheetStatusesContext?.map((i, ii) => {
                                     if (i.value == submitSheetPayload?.status) {
                                         return <span>{i.label}</span>;
                                     }
@@ -301,7 +301,7 @@ const CourierSheet = (props) => {
                                                                                 : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered '
                                                                         }
                                                                     >
-                                                                        {orderStatusesContext?.map((i, ii) => {
+                                                                        {orderStatusEnumContext?.map((i, ii) => {
                                                                             if (i.value == item?.order?.status) {
                                                                                 return <span>{i.label}</span>;
                                                                             }

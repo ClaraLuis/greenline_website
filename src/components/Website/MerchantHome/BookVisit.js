@@ -27,7 +27,7 @@ const { ValueContainer, Placeholder } = components;
 const BookVisit = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, dateformatter, orderStatusesContext, merchantVisitTypesContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, dateformatter, orderStatusEnumContext, merchantVisitTypeContext } = useContext(Contexthandlerscontext);
     const { useQueryGQL, fetchOrders } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -110,7 +110,7 @@ const BookVisit = (props) => {
                                                                     : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered '
                                                             }
                                                         >
-                                                            {orderStatusesContext?.map((i, ii) => {
+                                                            {orderStatusEnumContext?.map((i, ii) => {
                                                                 if (i.value == item?.status) {
                                                                     return <span>{i.label}</span>;
                                                                 }
@@ -237,7 +237,7 @@ const BookVisit = (props) => {
                                         name: 'Visit Type',
                                         attr: 'type',
                                         type: 'select',
-                                        options: merchantVisitTypesContext,
+                                        options: merchantVisitTypeContext,
                                         size: '12',
                                     },
                                 ]}

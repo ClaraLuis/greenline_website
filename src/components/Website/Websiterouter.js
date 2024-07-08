@@ -48,6 +48,9 @@ import InventoryReturns from './InventoryItems/InventoryReturns.js';
 import InventoryPackages from './InventoryItems/InventoryPackages.js';
 import MerchantPackages from './MerchantHome/MerchantPackages.js';
 import AddItem from './MerchantItems/AddItem.js';
+import Hubs from './Hubs/Hubs.js';
+import OrderInfo from './Orders/OrderInfo.js';
+import AddSheetNew from './Courier/AddSheetNew.js';
 const App = (props) => {
     const history = useHistory();
     const location = useLocation();
@@ -260,6 +263,7 @@ const App = (props) => {
                                                                 />
 
                                                                 <Route exact path="/users" component={Users} />
+                                                                <Route exact path="/hubs" component={Hubs} />
                                                                 <Route exact path="/inventorydetails" component={InventoryDetails} />
                                                                 <Route exact path="/inventoryitems" component={InventoryItems} />
                                                                 <Route exact path="/hubitems" component={HubItems} />
@@ -272,7 +276,8 @@ const App = (props) => {
                                                                 <Route exact path="/courierhome" component={CourierHome} />
                                                                 <Route exact path="/couriersheets" component={CourierSheets} />
                                                                 <Route exact path="/couriersheet" component={CourierSheet} />
-                                                                <Route exact path="/addsheet" component={AddSheet} />
+                                                                <Route exact path="/orderinfo" component={OrderInfo} />
+                                                                <Route exact path="/addsheet" component={AddSheetNew} />
                                                                 <Route exact path="/financehome" component={FinanceHome} />
                                                                 <Route exact path="/additem" component={AddItem} />
                                                                 <Route exact path="/financesheets" component={FinanceSheets} />

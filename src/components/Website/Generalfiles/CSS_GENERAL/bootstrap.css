@@ -4988,3 +4988,64 @@ ul {
 .css-1u4zpwo-MuiSvgIcon-root-MuiStepIcon-root.Mui-completed {
     color: var(--primary) !important;
 }
+
+.waybill {
+    /* Container for the entire waybill */
+    border: 1px solid #ddd;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.waybill-header {
+    /* Header section */
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.company-info {
+    /* Company information section */
+}
+
+.company-name {
+    /* Company name */
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.waybill-body {
+    /* Body section with shipment details */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.shipper-info,
+.consignee-info,
+.shipment-details {
+    /* Individual sections for shipper, consignee, and shipment details */
+    flex: 1;
+    /* Adjust flex value for desired width distribution */
+    padding: 10px;
+    border: 1px solid #eee;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.shipper-info h2,
+.consignee-info h2,
+.shipment-details p:first-child {
+    /* Headings and first paragraph in each section */
+    font-weight: bold;
+}
+
+.waybill-footer {
+    /* Footer section */
+    text-align: center;
+    margin-top: 20px;
+}
+
+.company-address p {
+    /* Company address details */
+    margin-bottom: 5px;
+}

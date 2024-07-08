@@ -347,6 +347,26 @@ const API = () => {
             }
         `;
     };
+
+    const fetchHubs = () => {
+        return gql`
+            query paginateHubs($input: PaginateHubsInput!) {
+                paginateHubs(input: $input) {
+                    data {
+                        id
+                        name
+                        governorateId
+
+                        location
+                        createdAt
+                        lastModified
+                    }
+                    cursor
+                }
+            }
+        `;
+    };
+
     const fetchOrders = () => {
         return gql`
             query findOrders($input: PaginateOrdersInput!) {
@@ -398,6 +418,9 @@ const API = () => {
                                 }
                             }
                         }
+                        canOpen
+                        fragile
+                        deliveryPart
                     }
                     cursor
                 }
@@ -1129,6 +1152,7 @@ const API = () => {
         createMerchantDomesticShipping,
         updateMerchantDomesticShipping,
         createInventoryRent,
+        fetchHubs,
     };
 };
 export default API;

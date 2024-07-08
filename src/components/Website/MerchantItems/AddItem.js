@@ -9,7 +9,7 @@ import Select, { components } from 'react-select';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
-
+import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
 import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
@@ -541,6 +541,7 @@ const AddItem = (props) => {
                                 }
                                 setbuttonLoading(false);
                             }}
+                            disabled={buttonLoading}
                         >
                             {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
                             {!buttonLoading && <span>Add item</span>}

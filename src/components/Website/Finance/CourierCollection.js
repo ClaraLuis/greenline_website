@@ -29,7 +29,7 @@ import SelectComponent from '../../SelectComponent.js';
 const CourierCollection = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, isAuth, financialAccountTypesContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, isAuth, financialAccountTypeContext } = useContext(Contexthandlerscontext);
     const {
         useQueryGQL,
 
@@ -486,7 +486,16 @@ const CourierCollection = (props) => {
                                                 setselectedArray([]);
                                                 setopenModal(false);
                                             } catch (error) {
-                                                NotificationManager.warning(error.message || error, 'Warning!');
+                                                let errorMessage = 'An unexpected error occurred';
+                                                if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                                    errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                                } else if (error.networkError) {
+                                                    errorMessage = error.networkError.message || errorMessage;
+                                                } else if (error.message) {
+                                                    errorMessage = error.message;
+                                                }
+
+                                                NotificationManager.warning(errorMessage, 'Warning!');
                                             }
                                         } else {
                                             NotificationManager.warning('Choose merchant first', 'Warning!');

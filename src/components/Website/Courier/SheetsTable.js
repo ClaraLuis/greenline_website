@@ -21,7 +21,7 @@ const { ValueContainer, Placeholder } = components;
 const SheetsTable = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { sheetStatusesContext, dateformatter, isAuth } = useContext(Contexthandlerscontext);
+    const { courierSheetStatusesContext, dateformatter, isAuth } = useContext(Contexthandlerscontext);
 
     const { lang, langdetect } = useContext(LanguageContext);
 
@@ -87,7 +87,7 @@ const SheetsTable = (props) => {
                                                                 : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered '
                                                         }
                                                     >
-                                                        {sheetStatusesContext?.map((i, ii) => {
+                                                        {courierSheetStatusesContext?.map((i, ii) => {
                                                             if (i.value == item?.status) {
                                                                 return <span>{i.label}</span>;
                                                             }
@@ -243,7 +243,7 @@ const SheetsTable = (props) => {
                                     name: 'Status',
                                     attr: 'status',
                                     type: 'select',
-                                    options: sheetStatusesContext,
+                                    options: courierSheetStatusesContext,
                                     size: '12',
                                 },
                             ]}

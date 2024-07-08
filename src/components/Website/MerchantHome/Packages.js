@@ -27,7 +27,7 @@ import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js'
 const Packages = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, returnPackageStatusContext, returnPackageTypesContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, returnPackageStatusContext, returnPackageTypeContext } = useContext(Contexthandlerscontext);
     const { useMutationGQL, fetchMerchants, assignPackageToCourier, fetchCouriers, fetchPackages, useQueryGQL, createReturnPackage } = API();
     const [buttonLoading, setbuttonLoading] = useState(false);
     const { lang, langdetect } = useContext(LanguageContext);
@@ -125,9 +125,9 @@ const Packages = (props) => {
                                                     Type
                                                 </label>
                                                 <Select
-                                                    options={returnPackageTypesContext}
+                                                    options={returnPackageTypeContext}
                                                     styles={defaultstyles}
-                                                    value={returnPackageTypesContext.filter((option) => option.value == filter?.type)}
+                                                    value={returnPackageTypeContext.filter((option) => option.value == filter?.type)}
                                                     onChange={(option) => {
                                                         setfilter({ ...filter, type: option.value });
                                                     }}
@@ -241,7 +241,7 @@ const Packages = (props) => {
                                                     })}
                                                 </div>
                                                 <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered mx-1 '}>
-                                                    {returnPackageTypesContext?.map((i, ii) => {
+                                                    {returnPackageTypeContext?.map((i, ii) => {
                                                         if (i.value == item?.type) {
                                                             return <span>{i.label}</span>;
                                                         }

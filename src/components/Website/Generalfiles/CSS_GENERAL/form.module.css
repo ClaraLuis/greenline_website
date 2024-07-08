@@ -383,7 +383,7 @@ textarea {
     font-size: 10px !important;
 
     padding: 10px !important;
-    background-color: #fff;
+    /* background-color: #fff; */
     /* border: 0.0625rem solid #eee; */
 }
 

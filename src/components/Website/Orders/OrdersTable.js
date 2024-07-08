@@ -20,13 +20,14 @@ import API from '../../../API/API.js';
 import { IoMdClose } from 'react-icons/io';
 import Form from '../../Form.js';
 import { MdOutlineInventory2, MdOutlineLocationOn } from 'react-icons/md';
+import { FiCheckCircle } from 'react-icons/fi';
 
 const { ValueContainer, Placeholder } = components;
 
 const OrdersTable = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { orderStatusesContext, dateformatter, orderTypesContext } = useContext(Contexthandlerscontext);
+    const { orderStatusEnumContext, dateformatter, orderTypeContext } = useContext(Contexthandlerscontext);
 
     const { lang, langdetect } = useContext(LanguageContext);
 
@@ -101,6 +102,14 @@ const OrdersTable = (props) => {
                     {props?.fetchOrdersQuery?.data[props?.attr]?.data?.length != 0 && (
                         <div class="row m-0 w-100">
                             {props?.fetchOrdersQuery?.data[props?.attr]?.data?.map((item, index) => {
+                                var selected = false;
+                                if (props?.selectedOrders) {
+                                    props?.selectedOrders?.map((i, ii) => {
+                                        if (i == item.id) {
+                                            selected = true;
+                                        }
+                                    });
+                                }
                                 var outOfStock = false;
                                 item?.orderItems?.map((orderitem, orderindex) => {
                                     if (orderitem?.countInInventory == 0) {
@@ -164,7 +173,7 @@ const OrdersTable = (props) => {
                                                                 : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 '
                                                         }
                                                     >
-                                                        {orderStatusesContext?.map((i, ii) => {
+                                                        {orderStatusEnumContext?.map((i, ii) => {
                                                             if (i.value == item?.status) {
                                                                 return <span>{i.label}</span>;
                                                             }
@@ -177,7 +186,7 @@ const OrdersTable = (props) => {
                                                         style={{ color: 'white' }}
                                                         className={'ml-1 wordbreak bg-primary rounded-pill font-weight-600 '}
                                                     >
-                                                        {orderTypesContext?.map((i, ii) => {
+                                                        {orderTypeContext?.map((i, ii) => {
                                                             if (i.value == item?.type) {
                                                                 return <span>{i.label}</span>;
                                                             }
@@ -371,6 +380,20 @@ const OrdersTable = (props) => {
                                                 </div>
                                             )}
 
+                                            {selected && (
+                                                <div
+                                                    style={{
+                                                        width: '35px',
+                                                        height: '35px',
+                                                        position: 'absolute',
+                                                        bottom: 10,
+                                                        left: 10,
+                                                    }}
+                                                    className=" allcentered"
+                                                >
+                                                    <FiCheckCircle style={{ transition: 'all 0.4s' }} color={selected ? 'var(--success)' : ''} size={20} />
+                                                </div>
+                                            )}
                                             <div style={{ fontSize: '12px' }} class="col-lg-12 p-0 mt-2 d-flex justify-content-end ">
                                                 <p className={' m-0 p-0 wordbreak  '}>{dateformatter(orderDate.toUTCString())}</p>
                                             </div>
@@ -419,7 +442,7 @@ const OrdersTable = (props) => {
                                     name: 'Status',
                                     attr: 'status',
                                     type: 'select',
-                                    options: orderStatusesContext,
+                                    options: orderStatusEnumContext,
                                     size: '12',
                                 },
                             ]}
@@ -447,7 +470,7 @@ const OrdersTable = (props) => {
                 <Modal.Header>
                     <div className="row w-100 m-0 p-0">
                         <div class="col-lg-6 pt-3 ">
-                            <div className="row w-100 m-0 p-0">Place in inventory</div>
+                            <div className="row w-100 m-0 p-0">Place in warehouse</div>
                         </div>
                         <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
                             <div
@@ -483,7 +506,7 @@ const OrdersTable = (props) => {
                                                                 return (
                                                                     <div class="col-lg-12">
                                                                         <div key={ballotData.ballot.id}>
-                                                                            <p class="p-0 m-0">Ballot: {ballotData.ballot.name}</p>
+                                                                            <p class="p-0 m-0">Pallet: {ballotData.ballot.name}</p>
                                                                             <div class="row m-0 w-100">
                                                                                 {ballotData.boxes.map((box) => (
                                                                                     <div class={'searchpill'}>

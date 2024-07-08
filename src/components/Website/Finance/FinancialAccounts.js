@@ -22,7 +22,7 @@ const { ValueContainer, Placeholder } = components;
 const FinancialAccounts = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, isAuth, financialAccountTypesContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, isAuth, financialAccountTypeContext } = useContext(Contexthandlerscontext);
     const { fetchFinancialAccounts, useQueryGQL, fetchUsers, fetchMerchants, useMutationGQL, createFinancialAccount, updateFinancialAccount } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -198,7 +198,7 @@ const FinancialAccounts = (props) => {
                                               name: 'Type',
                                               attr: 'type',
                                               type: 'select',
-                                              options: financialAccountTypesContext,
+                                              options: financialAccountTypeContext,
                                               size: '12',
                                           },
 

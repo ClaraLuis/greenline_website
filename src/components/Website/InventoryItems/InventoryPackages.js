@@ -24,7 +24,7 @@ import { FaLayerGroup } from 'react-icons/fa';
 const InventoryPackages = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, returnPackageStatusContext, returnPackageTypesContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, returnPackageStatusContext, returnPackageTypeContext } = useContext(Contexthandlerscontext);
     const { fetchPackages, useQueryGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -48,6 +48,32 @@ const InventoryPackages = (props) => {
     useEffect(() => {
         setpageactive_context('/inventorypackages');
     }, []);
+
+    const [barcode, setBarcode] = useState('');
+    const [search, setSearch] = useState('');
+
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            // Ignore control keys and functional keys
+            if (e.ctrlKey || e.altKey || e.metaKey || e.key === 'CapsLock' || e.key === 'Shift' || e.key === 'Tab' || e.key === 'Backspace' || e.key === 'Control' || e.key === 'Alt') {
+                return;
+            }
+
+            if (e.key === 'Enter') {
+                setfilter({ ...filter, name: barcode.length === 0 ? undefined : barcode });
+                setSearch(barcode); // Update the search state with the scanned barcode
+                // setBarcode(''); // Clear the barcode state
+            } else {
+                setBarcode((prevBarcode) => prevBarcode + e.key);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [barcode, filter]);
 
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
@@ -99,7 +125,7 @@ const InventoryPackages = (props) => {
                                                         { label: 'Not Assigned', value: false },
                                                     ]}
                                                     styles={defaultstyles}
-                                                    value={returnPackageTypesContext.filter((option) => option.value == filter?.assigned)}
+                                                    value={returnPackageTypeContext.filter((option) => option.value == filter?.assigned)}
                                                     onChange={(option) => {
                                                         setfilter({ ...filter, assigned: option.value });
                                                     }}
@@ -122,6 +148,38 @@ const InventoryPackages = (props) => {
                                     </AccordionItemPanel>
                                 </AccordionItem>
                             </Accordion>
+                        </div>
+                        <div class={generalstyles.card + ' row m-0 w-100 my-2 p-2 px-2'}>
+                            <div class="col-lg-12 p-0 ">
+                                <div class="row m-0 w-100 d-flex align-items-center">
+                                    <div class="col-lg-10">
+                                        <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
+                                            <input
+                                                // disabled={props?.disabled}
+                                                // type={props?.type}
+                                                class={formstyles.form__field}
+                                                value={search}
+                                                placeholder={'Search by name or SKU'}
+                                                onChange={(event) => {
+                                                    setBarcode(event.target.value);
+                                                    setSearch(event.target.value);
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 allcenered">
+                                        <button
+                                            onClick={() => {
+                                                setfilter({ ...filter, name: search?.length == 0 ? undefined : search });
+                                            }}
+                                            style={{ height: '25px', minWidth: 'fit-content', marginInlineStart: '5px' }}
+                                            class={generalstyles.roundbutton + '  allcentered'}
+                                        >
+                                            search
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-lg-12 p-0 mb-3">
                             <Pagination
@@ -164,7 +222,7 @@ const InventoryPackages = (props) => {
                                                     })}
                                                 </div>
                                                 {/* <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered mx-1 '}>
-                                                    {returnPackageTypesContext?.map((i, ii) => {
+                                                    {returnPackageTypeContext?.map((i, ii) => {
                                                         if (i.value == item?.type) {
                                                             return <span>{i.label}</span>;
                                                         }

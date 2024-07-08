@@ -29,7 +29,7 @@ import SelectComponent from '../../SelectComponent.js';
 const MerchantPayments = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, isAuth, financialAccountTypesContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, isAuth, financialAccountTypeContext } = useContext(Contexthandlerscontext);
     const { useQueryGQL, fetchMerchants, useMutationGQL, createFinancialAccount, updateFinancialAccount, fetchMerchantPaymentTransactions, completeMerchantPayments, fetchFinancialAccounts } = API();
     const cookies = new Cookies();
 

@@ -24,7 +24,7 @@ import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js'
 const MerchanReturns = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, paymentTypeContext, returnPackageTypesContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, paymentTypeContext, returnPackageTypeContext } = useContext(Contexthandlerscontext);
     const { useMutationGQL, fetchMerchants, fetchInventories, fetchCustomerAddresses, fetchMerchantItemReturns, useQueryGQL, createReturnPackage } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);

@@ -24,7 +24,7 @@ import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js'
 const InventoryReturns = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, paymentTypeContext, returnPackageTypesContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, paymentTypeContext, returnPackageTypeContext } = useContext(Contexthandlerscontext);
     const { useMutationGQL, fetchMerchants, fetchInventories, fetchCustomerAddresses, fetchInventoryItemReturns, useQueryGQL, createReturnPackage } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -127,6 +127,7 @@ const InventoryReturns = (props) => {
                                 </AccordionItem>
                             </Accordion>
                         </div>
+
                         <div class="col-lg-12 p-0 mb-3">
                             <Pagination
                                 beforeCursor={fetchInventoryItemReturnsQuery?.data?.paginateInventoryReturns?.cursor?.beforeCursor}

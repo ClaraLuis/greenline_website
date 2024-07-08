@@ -19,7 +19,7 @@ const { ValueContainer, Placeholder } = components;
 const MerchantHome = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, inventoryRentTypesContext, dateformatter } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, inventoryRentTypeContext, dateformatter } = useContext(Contexthandlerscontext);
     const { createInventory, useMutationGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -100,7 +100,7 @@ const MerchantHome = (props) => {
                                     name: 'Type',
                                     attr: 'type',
                                     type: 'select',
-                                    options: inventoryRentTypesContext,
+                                    options: inventoryRentTypeContext,
                                     size: '12',
                                 },
                                 {

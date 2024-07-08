@@ -34,6 +34,7 @@ const Orders = (props) => {
     const { lang, langdetect } = useContext(LanguageContext);
 
     const [merchantModal, setmerchantModal] = useState(false);
+    const [search, setSearch] = useState('');
 
     const [filterorders, setfilterorders] = useState({
         limit: 20,
@@ -50,6 +51,29 @@ const Orders = (props) => {
     useEffect(() => {
         setpageactive_context('/orders');
     }, []);
+    const [barcode, setBarcode] = useState('');
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            // Ignore control keys and functional keys
+            if (e.ctrlKey || e.altKey || e.metaKey || e.key === 'CapsLock' || e.key === 'Shift' || e.key === 'Tab' || e.key === 'Backspace' || e.key === 'Control' || e.key === 'Alt') {
+                return;
+            }
+
+            if (e.key === 'Enter') {
+                setfilterorders({ ...filterorders, name: barcode.length === 0 ? undefined : barcode });
+                setSearch(barcode); // Update the search state with the scanned barcode
+                // setBarcode(''); // Clear the barcode state
+            } else {
+                setBarcode((prevBarcode) => prevBarcode + e.key);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [barcode, filterorders]);
 
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
@@ -115,22 +139,39 @@ const Orders = (props) => {
                         </AccordionItem>
                     </Accordion>
                 </div> */}
-                <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-2'}>
-                    <div class="col-lg-12 p-0 ">
-                        <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
-                            <input
-                                // disabled={props?.disabled}
-                                // type={props?.type}
-                                class={formstyles.form__field}
-                                // value={}
-                                placeholder={'Search by order# '}
 
-                                // onChange={}
-                            />
+                <div class={generalstyles.card + ' row m-0 w-100 my-2 p-2 px-2'}>
+                    <div class="col-lg-12 p-0 ">
+                        <div class="row m-0 w-100 d-flex align-items-center">
+                            <div class="col-lg-10">
+                                <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
+                                    <input
+                                        // disabled={props?.disabled}
+                                        // type={props?.type}
+                                        class={formstyles.form__field}
+                                        value={search}
+                                        placeholder={'Search by name or SKU'}
+                                        onChange={(event) => {
+                                            setBarcode(event.target.value);
+                                            setSearch(event.target.value);
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                            <div class="col-lg-2 allcenered">
+                                <button
+                                    onClick={() => {
+                                        setfilterorders({ ...filterorders, name: search?.length == 0 ? undefined : search });
+                                    }}
+                                    style={{ height: '25px', minWidth: 'fit-content', marginInlineStart: '5px' }}
+                                    class={generalstyles.roundbutton + '  allcentered'}
+                                >
+                                    search
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-
                 <div class={generalstyles.card + ' row m-0 w-100'}>
                     <div class="col-lg-12 p-0">
                         <Pagination

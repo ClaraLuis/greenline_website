@@ -28,7 +28,7 @@ const { ValueContainer, Placeholder } = components;
 const Merchants = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, inventoryTypesContext, chosenMerchantContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, inventoryRentTypeContext, chosenMerchantContext } = useContext(Contexthandlerscontext);
     const { useQueryGQL, useMutationGQL, addMerchant, fetchMerchants, fetchItemHistory, exportItem, importItem } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -356,7 +356,7 @@ const Merchants = (props) => {
                                 submit={submit}
                                 setsubmit={setsubmit}
                                 attr={[
-                                    { name: 'Inventory Type', attr: 'type', type: 'select', options: inventoryTypesContext, size: '12' },
+                                    { name: 'Inventory Type', attr: 'type', type: 'select', options: inventoryRentTypeContext, size: '12' },
                                     { name: 'Price', attr: 'price', type: 'number', size: '12' },
                                 ]}
                                 payload={inventorySettings}

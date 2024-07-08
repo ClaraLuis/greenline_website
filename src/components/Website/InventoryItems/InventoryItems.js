@@ -22,6 +22,7 @@ import { MdArrowBackIos, MdArrowForwardIos, MdOutlineArrowBack, MdOutlineArrowFo
 import ImportNewItem from './ImportNewItem.js';
 import Pagination from '../../Pagination.js';
 import { NotificationManager } from 'react-notifications';
+import { Search } from 'react-bootstrap-icons';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -138,10 +139,36 @@ const InventoryItems = (props) => {
     // let refetchItemHistory;
 
     const [fetchItemHistorLazyQuery] = useLazyQueryGQL(fetchItemHistory());
-
+    const { refetch } = useQueryGQL('', fetchItemHistory({ itemInBoxId: parseInt(chosenitem.id), limit: 10 }));
+    const refetchItemHistory = refetch;
     useEffect(() => {
         setpageactive_context('/inventoryitems');
     }, []);
+    const [barcode, setBarcode] = useState('');
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            // Ignore control keys and functional keys
+            if (e.ctrlKey || e.altKey || e.metaKey || e.key === 'CapsLock' || e.key === 'Shift' || e.key === 'Tab' || e.key === 'Backspace' || e.key === 'Control' || e.key === 'Alt') {
+                return;
+            }
+
+            if (e.key === 'Enter') {
+                setfilterItemInBox({ ...filterItemInBox, name: barcode.length === 0 ? undefined : barcode });
+                setSearch(barcode); // Update the search state with the scanned barcode
+                // setBarcode(''); // Clear the barcode state
+            } else {
+                setBarcode((prevBarcode) => prevBarcode + e.key);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [barcode, filterItemInBox]);
+
+    // Update the search state whenever the barcode state changes
 
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
@@ -151,7 +178,7 @@ const InventoryItems = (props) => {
                         <div class="row m-0 w-100 d-flex align-items-center">
                             <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start '}>
                                 <p class=" p-0 m-0" style={{ fontSize: '15px' }}>
-                                    <span style={{ color: 'var(--info)' }}>Inventories </span>
+                                    <span style={{ color: 'var(--info)' }}>Warehouses </span>
                                 </p>
                             </div>
                             {isAuth([1, 54, 4]) && (
@@ -163,7 +190,7 @@ const InventoryItems = (props) => {
                                             setopenInventoryModal(true);
                                         }}
                                     >
-                                        Add Inventory
+                                        Add Warehouse
                                     </button>
                                 </div>
                             )}
@@ -286,6 +313,7 @@ const InventoryItems = (props) => {
                                             value={search}
                                             placeholder={'Search by name or SKU'}
                                             onChange={(event) => {
+                                                setBarcode(event.target.value);
                                                 setSearch(event.target.value);
                                             }}
                                         />
@@ -424,7 +452,7 @@ const InventoryItems = (props) => {
                     <div className="row w-100 m-0 p-0">
                         <div class="col-lg-6 pt-3 ">
                             {inventoryPayload.functype == 'edit' && <div className="row w-100 m-0 p-0">Item : {inventoryPayload.name}</div>}
-                            {inventoryPayload.functype == 'add' && <div className="row w-100 m-0 p-0">Add Inventory</div>}
+                            {inventoryPayload.functype == 'add' && <div className="row w-100 m-0 p-0">Add Warehouse</div>}
                         </div>
                         <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
                             <div
@@ -522,7 +550,7 @@ const InventoryItems = (props) => {
                         <div class="col-lg-6">
                             <div class="row m-0 w-100  ">
                                 <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                    <label class={formstyles.form__label}>Ballot Per Rack</label>
+                                    <label class={formstyles.form__label}>Pallet Per Rack</label>
                                     <input
                                         type={'number'}
                                         class={formstyles.form__field}
@@ -538,7 +566,7 @@ const InventoryItems = (props) => {
                         <div class="col-lg-6">
                             <div class="row m-0 w-100  ">
                                 <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                    <label class={formstyles.form__label}>Box Per Ballot</label>
+                                    <label class={formstyles.form__label}>Box Per Pallet</label>
                                     <input
                                         type={'number'}
                                         class={formstyles.form__field}

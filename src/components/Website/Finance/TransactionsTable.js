@@ -24,7 +24,7 @@ const { ValueContainer, Placeholder } = components;
 const TransactionsTable = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { transactionStatusesContext, transactionTypesContext, isAuth, transactionStatusesSelectContext } = useContext(Contexthandlerscontext);
+    const { transactionStatusTypeContext, transactionTypeContext, isAuth, transactionStatusesSelectContext } = useContext(Contexthandlerscontext);
     const { fetchUsers, useQueryGQL, updateAnyFinancialTransaction, updateMyFinancialTransaction, useMutationGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -128,7 +128,7 @@ const TransactionsTable = (props) => {
                                             {/* <div className="col-lg-6 p-0 d-flex justify-content-end align-items-center">
                                                 <div class="row m-0 w-100 d-flex justify-content-end align-items-center">
                                                     <div class="col-lg-12 p-0 d-flex justify-content-end align-items-center mb-1 ">
-                                                        {transactionStatusesContext?.map((i, ii) => {
+                                                        {transactionStatusTypeContext?.map((i, ii) => {
                                                             if (i.value == item.status) {
                                                                 return (
                                                                     <div
@@ -155,7 +155,7 @@ const TransactionsTable = (props) => {
                                                     </div>
                                                     <div class="col-lg-12 p-0 d-flex justify-content-end align-items-center ">
                                                         <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered  '}>
-                                                            {transactionTypesContext?.map((i, ii) => {
+                                                            {transactionTypeContext?.map((i, ii) => {
                                                                 if (i.value == item?.type) {
                                                                     return <span>{i.label}</span>;
                                                                 }
@@ -166,7 +166,7 @@ const TransactionsTable = (props) => {
                                             </div> */}
                                             <div className="col-lg-9 p-0 d-flex justify-content-end align-items-center">
                                                 <div class="row m-0 w-100 d-flex justify-content-end align-items-center">
-                                                    {transactionStatusesContext?.map((i, ii) => {
+                                                    {transactionStatusTypeContext?.map((i, ii) => {
                                                         if (i.value == item.status) {
                                                             return (
                                                                 <div
@@ -191,7 +191,7 @@ const TransactionsTable = (props) => {
                                                         }
                                                     })}
                                                     <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered mx-1'}>
-                                                        {transactionTypesContext?.map((i, ii) => {
+                                                        {transactionTypeContext?.map((i, ii) => {
                                                             if (i.value == item?.type) {
                                                                 return <span>{i.label}</span>;
                                                             }
@@ -416,7 +416,7 @@ const TransactionsTable = (props) => {
                                     return (
                                         <tr>
                                             <td>
-                                                {transactionStatusesContext?.map((i, ii) => {
+                                                {transactionStatusTypeContext?.map((i, ii) => {
                                                     if (i.value == item.status) {
                                                         return (
                                                             <div

@@ -31,7 +31,7 @@ const { ValueContainer, Placeholder } = components;
 const FinanceTransactions = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, isAuth, dateformatter, orderTypesContext, transactionStatusesContext, transactionTypesContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, isAuth, dateformatter, orderTypeContext, transactionStatusTypeContext, transactionTypeContext } = useContext(Contexthandlerscontext);
     const { fetchUsers, useQueryGQL, sendAnyFinancialTransaction, useMutationGQL, fetchTransactions, fetchFinancialAccounts, sendMyFinancialTransaction } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -175,9 +175,9 @@ const FinanceTransactions = (props) => {
                                             Type
                                         </label>
                                         <Select
-                                            options={[{ label: 'All', value: undefined }, ...transactionTypesContext]}
+                                            options={[{ label: 'All', value: undefined }, ...transactionTypeContext]}
                                             styles={defaultstyles}
-                                            value={[{ label: 'All', value: undefined }, ...transactionTypesContext].filter((option) => option.value == filterTransactionsObj?.type)}
+                                            value={[{ label: 'All', value: undefined }, ...transactionTypeContext].filter((option) => option.value == filterTransactionsObj?.type)}
                                             onChange={(option) => {
                                                 setfilterTransactionsObj({ ...filterTransactionsObj, type: option.value });
                                             }}
@@ -188,9 +188,9 @@ const FinanceTransactions = (props) => {
                                             Status
                                         </label>
                                         <Select
-                                            options={[{ label: 'All', value: undefined }, ...transactionStatusesContext]}
+                                            options={[{ label: 'All', value: undefined }, ...transactionStatusTypeContext]}
                                             styles={defaultstyles}
-                                            value={[{ label: 'All', value: undefined }, ...transactionStatusesContext].filter((option) => option.value == filterTransactionsObj?.status)}
+                                            value={[{ label: 'All', value: undefined }, ...transactionStatusTypeContext].filter((option) => option.value == filterTransactionsObj?.status)}
                                             onChange={(option) => {
                                                 setfilterTransactionsObj({ ...filterTransactionsObj, status: option.value });
                                             }}
@@ -310,10 +310,10 @@ const FinanceTransactions = (props) => {
                                             Type
                                         </label>
                                         <Select
-                                            options={[{ label: 'All', value: 'all' }, ...expensesTypeContext]}
+                                            options={[{ label: 'All', value: 'all' }, ...expenseTypeContext]}
                                             styles={defaultstyles}
                                             value={
-                                                [{ label: 'All', value: 'all' }, ...expensesTypeContext]
+                                                [{ label: 'All', value: 'all' }, ...expenseTypeContext]
                                                 // .filter((option) => option.value == props?.payload[item?.attr])
                                             }
                                             onChange={(option) => {
@@ -379,7 +379,7 @@ const FinanceTransactions = (props) => {
                                                       name: 'Type',
                                                       attr: 'type',
                                                       type: 'select',
-                                                      options: transactionTypesContext,
+                                                      options: transactionTypeContext,
                                                       size: '12',
                                                   },
                                                   { name: 'Description', attr: 'description', type: 'textarea', size: '12' },
@@ -417,7 +417,7 @@ const FinanceTransactions = (props) => {
                                                       name: 'Type',
                                                       attr: 'type',
                                                       type: 'select',
-                                                      options: transactionTypesContext,
+                                                      options: transactionTypeContext,
                                                       size: '12',
                                                   },
                                                   { name: 'Description', attr: 'description', type: 'textarea', size: '12' },
@@ -490,7 +490,7 @@ const FinanceTransactions = (props) => {
                                             name: 'Type',
                                             attr: 'type',
                                             type: 'select',
-                                            options: expensesTypeContext,
+                                            options: expenseTypeContext,
                                             size: '12',
                                         },
 

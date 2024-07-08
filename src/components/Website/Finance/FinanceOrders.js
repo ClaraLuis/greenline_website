@@ -25,7 +25,7 @@ const { ValueContainer, Placeholder } = components;
 const FinanceOrders = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, dateformatter, orderTypesContext, orderStatusesContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, dateformatter, orderTypeContext, orderStatusEnumContext } = useContext(Contexthandlerscontext);
 
     const { lang, langdetect } = useContext(LanguageContext);
 

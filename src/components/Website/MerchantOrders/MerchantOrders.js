@@ -20,6 +20,7 @@ import OrdersTable from '../Orders/OrdersTable.js';
 import Pagination from '../../Pagination.js';
 import SelectComponent from '../../SelectComponent.js';
 import Cookies from 'universal-cookie';
+import WaybillPrint from '../Orders/WaybillPrint.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -51,6 +52,17 @@ const MerchantOrders = (props) => {
     useEffect(() => {
         setpageactive_context('/merchantorders');
     }, []);
+    const [selectedOrders, setSelectedOrders] = useState([]);
+
+    const handleSelectOrder = (orderId) => {
+        setSelectedOrders((prevSelected) => (prevSelected.includes(orderId) ? prevSelected.filter((id) => id !== orderId) : [...prevSelected, orderId]));
+    };
+    const [waybills, setWaybills] = useState([]);
+    useEffect(() => {
+        const selectedOrdersDetails = fetchOrdersQuery?.data?.paginateOrders?.data.filter((order) => selectedOrders.includes(order.id));
+
+        setWaybills(selectedOrdersDetails);
+    }, [selectedOrders]);
 
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
@@ -61,22 +73,30 @@ const MerchantOrders = (props) => {
                     </p>
                 </div>
                 <div class={' col-lg-6 col-md-6 col-sm-6 p-0 pr-3 pr-md-1 pr-sm-0 d-flex align-items-center justify-content-end pb-1 '}>
-                    <button
-                        style={{ height: '35px' }}
-                        class={generalstyles.roundbutton + '  mb-1 mx-2'}
-                        onClick={() => {
-                            if (isAuth([1])) {
-                                setmerchantModal(true);
-                            } else {
-                                var merchantId = cookies.get('userInfo')?.merchantId ?? cookies.get('merchantId');
+                    <div class="row m-0 w-100 d-flex align-items-center justify-content-end ">
+                        <button
+                            style={{ height: '35px' }}
+                            class={generalstyles.roundbutton + '  mb-1 mx-2'}
+                            onClick={() => {
+                                if (isAuth([1])) {
+                                    setmerchantModal(true);
+                                } else {
+                                    var merchantId = cookies.get('userInfo')?.merchantId ?? cookies.get('merchantId');
 
-                                history.push('/addorder?merchantId=' + merchantId);
-                            }
-                        }}
-                    >
-                        Add Order
-                    </button>
+                                    history.push('/addorder?merchantId=' + merchantId);
+                                }
+                            }}
+                        >
+                            Add Order
+                        </button>
+                        {waybills?.length > 0 && <WaybillPrint waybills={waybills} />}
+
+                        {/* <button style={{ height: '35px' }} class={generalstyles.roundbutton + '  mb-1 '} onClick={() => {}}>
+                            Print Waybills
+                        </button> */}
+                    </div>
                 </div>
+                {/* {waybills?.length > 0 && <WaybillPrint waybills={waybills} />} */}
                 <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>
                     <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
                         <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
@@ -158,7 +178,13 @@ const MerchantOrders = (props) => {
                         />
                     </div>
                     <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
-                        <OrdersTable fetchOrdersQuery={fetchOrdersQuery} attr={'paginateOrders'} />
+                        <OrdersTable
+                            selectedOrders={selectedOrders}
+                            clickable={true}
+                            actiononclick={(order) => handleSelectOrder(order.id)}
+                            fetchOrdersQuery={fetchOrdersQuery}
+                            attr={'paginateOrders'}
+                        />
                     </div>
                     <div class="col-lg-12 p-0">
                         <Pagination

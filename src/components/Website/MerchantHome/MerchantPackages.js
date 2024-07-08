@@ -24,7 +24,7 @@ import { FaLayerGroup } from 'react-icons/fa';
 const MerchantPackages = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, returnPackageStatusContext, returnPackageTypesContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, returnPackageStatusContext, returnPackageTypeContext } = useContext(Contexthandlerscontext);
     const { fetchPackages, useQueryGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -99,7 +99,7 @@ const MerchantPackages = (props) => {
                                                         { label: 'Not Assigned', value: false },
                                                     ]}
                                                     styles={defaultstyles}
-                                                    value={returnPackageTypesContext.filter((option) => option.value == filter?.assigned)}
+                                                    value={returnPackageTypeContext.filter((option) => option.value == filter?.assigned)}
                                                     onChange={(option) => {
                                                         setfilter({ ...filter, assigned: option.value });
                                                     }}
@@ -164,7 +164,7 @@ const MerchantPackages = (props) => {
                                                     })}
                                                 </div>
                                                 {/* <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered mx-1 '}>
-                                                    {returnPackageTypesContext?.map((i, ii) => {
+                                                    {returnPackageTypeContext?.map((i, ii) => {
                                                         if (i.value == item?.type) {
                                                             return <span>{i.label}</span>;
                                                         }

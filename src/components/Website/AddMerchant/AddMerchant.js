@@ -24,7 +24,7 @@ import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js'
 const AddMerchant = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, dateformatter, inventoryRentTypesContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, dateformatter, inventoryRentTypeContext } = useContext(Contexthandlerscontext);
     const { useQueryGQL, useMutationGQL, fetchGovernorates, createMerchantDomesticShipping, updateMerchantDomesticShipping, fetchMerchants, addMerchant, createInventoryRent } = API();
     const steps = ['Merchant Info', 'Shipping', 'Inventory Settings'];
     const [buttonLoading, setbuttonLoading] = useState(false);
@@ -538,9 +538,9 @@ const AddMerchant = (props) => {
                                                         Rent Type
                                                     </label>
                                                     <Select
-                                                        options={inventoryRentTypesContext}
+                                                        options={inventoryRentTypeContext}
                                                         styles={defaultstyles}
-                                                        value={inventoryRentTypesContext.filter((option) => option.value == inventorySettings?.type)}
+                                                        value={inventoryRentTypeContext.filter((option) => option.value == inventorySettings?.type)}
                                                         onChange={(option) => {
                                                             setinventorySettings({ ...inventorySettings, type: option.value });
                                                         }}
@@ -602,7 +602,7 @@ const AddMerchant = (props) => {
                                                                     ? 'Price Per Order'
                                                                     : inventorySettings?.type == 'meter'
                                                                     ? 'Price Per Meter'
-                                                                    : 'Price Per Unit Per Day'}
+                                                                    : 'Price Per Unit Per Month'}
                                                             </label>
                                                             <input
                                                                 type={'number'}

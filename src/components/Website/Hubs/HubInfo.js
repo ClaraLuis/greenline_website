@@ -19,11 +19,11 @@ import AddEditSecuritylayers from '../Securitylayers/AddEditSecuritylayers.js';
 
 const { ValueContainer, Placeholder } = components;
 
-const UserInfo = (props) => {
+const HubInfo = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { userRolesContext, userTypeContext, employeeTypeContext } = useContext(Contexthandlerscontext);
-    const { useQueryGQL, fetchUsers, useMutationGQL, addUser, editUserType, fetchMerchants, fetchInventories, fetchHubs } = API();
+    const { useQueryGQL, fetchUsers, useMutationGQL, addUser, editUserType, fetchMerchants, fetchInventories } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [submit, setsubmit] = useState(false);
@@ -88,14 +88,6 @@ const UserInfo = (props) => {
     });
 
     const { refetch: refetchUsers } = useQueryGQL('', fetchUsers(), filterUsers);
-    const [filterHubs, setfilterHubs] = useState({
-        isAsc: true,
-        limit: 20,
-        afterCursor: undefined,
-        beforeCursor: undefined,
-    });
-
-    const fetchHubsQuery = useQueryGQL('', fetchHubs(), filterHubs);
 
     const handleAddUser = async () => {
         setbuttonLoading(true);
@@ -227,19 +219,18 @@ const UserInfo = (props) => {
                                                       options: employeeTypeContext,
                                                       size: '6',
                                                   },
-                                                  {
-                                                      title: 'Hub',
-                                                      filter: filterHubs,
-                                                      setfilter: setfilterHubs,
-                                                      options: fetchHubsQuery,
-                                                      optionsAttr: 'paginateHubs',
-                                                      label: 'name',
-                                                      value: 'id',
-                                                      size: '6',
-                                                      attr: 'hubID',
-                                                      type: 'fetchSelect',
-                                                  },
 
+                                                  {
+                                                      name: 'Hub',
+                                                      attr: 'hubID',
+                                                      size: '6',
+                                                      type: 'select',
+                                                      options: [
+                                                          { label: 'Hub 1', value: '1' },
+                                                          { label: 'Hub 2', value: '2' },
+                                                      ],
+                                                      size: '6',
+                                                  },
                                                   { name: 'Commission', attr: 'commission', size: '6', type: 'number' },
                                                   { name: 'Salary', attr: 'salary', size: '6', type: 'number' },
                                                   {
@@ -288,16 +279,15 @@ const UserInfo = (props) => {
                                                       type: 'fetchSelect',
                                                   },
                                                   {
-                                                      title: 'Hub',
-                                                      filter: filterHubs,
-                                                      setfilter: setfilterHubs,
-                                                      options: fetchHubsQuery,
-                                                      optionsAttr: 'paginateHubs',
-                                                      label: 'name',
-                                                      value: 'id',
-                                                      size: '6',
+                                                      name: 'Hub',
                                                       attr: 'hubID',
-                                                      type: 'fetchSelect',
+                                                      size: '6',
+                                                      type: 'select',
+                                                      options: [
+                                                          { label: 'Hub 1', value: '1' },
+                                                          { label: 'Hub 2', value: '2' },
+                                                      ],
+                                                      size: '6',
                                                   },
                                                   { name: 'Commission', attr: 'commission', size: '6', type: 'number' },
                                                   { name: 'Salary', attr: 'salary', size: '6', type: 'number' },
@@ -410,4 +400,4 @@ const UserInfo = (props) => {
         </>
     );
 };
-export default UserInfo;
+export default HubInfo;

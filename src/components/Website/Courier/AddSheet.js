@@ -31,7 +31,7 @@ const { ValueContainer, Placeholder } = components;
 const AddSheet = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, dateformatter, orderStatusesContext, user, isAuth } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, dateformatter, orderStatusEnumContext, user, isAuth } = useContext(Contexthandlerscontext);
     const { useQueryGQL, fetchOrders, addCourierSheet, useMutationGQL, fetchCouriers, fetchCourierSheet } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -185,7 +185,7 @@ const AddSheet = (props) => {
                                                                     : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered '
                                                             }
                                                         >
-                                                            {orderStatusesContext?.map((i, ii) => {
+                                                            {orderStatusEnumContext?.map((i, ii) => {
                                                                 if (i.value == item?.status) {
                                                                     return <span>{i.label}</span>;
                                                                 }
@@ -330,7 +330,7 @@ const AddSheet = (props) => {
                                 <div class="col-lg-12 p-0">
                                     <div class="row m-0 w-100">
                                         <div class="col-lg-12 mb-2 allcentered">
-                                            <button class={generalstyles.roundbutton}>Upddate sheet</button>
+                                            <button class={generalstyles.roundbutton}>Update sheet</button>
                                         </div>
                                     </div>{' '}
                                 </div>

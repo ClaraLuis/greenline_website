@@ -30,7 +30,7 @@ const { ValueContainer, Placeholder } = components;
 const FinancialAccountInfo = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, financialAccountTypesContext, transactionTypesContext, isAuth, expensesTypeContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, financialAccountTypeContext, transactionTypeContext, isAuth, expenseTypeContext } = useContext(Contexthandlerscontext);
     const { fetchUsers, useQueryGQL, fetchFinancialAccounts, fetchTransactions, sendAnyFinancialTransaction, useMutationGQL, sendMyFinancialTransaction } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -139,7 +139,7 @@ const FinancialAccountInfo = (props) => {
                         </div>
                         <div className="col-lg-6 p-0 d-flex justify-content-end align-items-center">
                             <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered  '}>
-                                {financialAccountTypesContext?.map((i, ii) => {
+                                {financialAccountTypeContext?.map((i, ii) => {
                                     if (i.value == accountItem?.type) {
                                         return <span>{i.label}</span>;
                                     }
@@ -310,7 +310,7 @@ const FinancialAccountInfo = (props) => {
                                                       name: 'Type',
                                                       attr: 'type',
                                                       type: 'select',
-                                                      options: transactionTypesContext,
+                                                      options: transactionTypeContext,
                                                       size: '12',
                                                   },
                                                   { name: 'Description', attr: 'description', type: 'textarea', size: '12' },
@@ -348,7 +348,7 @@ const FinancialAccountInfo = (props) => {
                                                       name: 'Type',
                                                       attr: 'type',
                                                       type: 'select',
-                                                      options: transactionTypesContext,
+                                                      options: transactionTypeContext,
                                                       size: '12',
                                                   },
                                                   { name: 'Description', attr: 'description', type: 'textarea', size: '12' },
@@ -422,7 +422,7 @@ const FinancialAccountInfo = (props) => {
                                             name: 'Type',
                                             attr: 'type',
                                             type: 'select',
-                                            options: expensesTypeContext,
+                                            options: expenseTypeContext,
                                             size: '12',
                                         },
 
