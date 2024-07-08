@@ -843,51 +843,46 @@ const API = () => {
             }
         `;
     };
-    const fetchCourierSheet = (id) => {
+    const fetchCourierSheet = () => {
         return gql`
-            query CourierSheet{
-                CourierSheet(id:${id}) {
-                    
+            query CourierSheet($id: Int!) {
+                CourierSheet(id: $id) {
+                    id
+                    status
+                    orderCount
+                    userInfo {
+                        name
+                    }
+                    createdAt
+                    sheetOrders {
                         id
-                        status
-                        orderCount
-                        userInfo {
-                            name
-                        }
-                        createdAt
-                        sheetOrders{
-                            id
-                            adminPass
-                            financePass
-                            shippingCollected
-                           
-                            order{
-                                status
-                                currency
-                                shippingPrice
-                                price
-                                merchant {
-                                    id
+                        adminPass
+                        financePass
+                        shippingCollected
+
+                        order {
+                            status
+                            currency
+                            shippingPrice
+                            price
+                            merchant {
+                                id
+                                name
+                            }
+                            orderItems {
+                                partialCount
+                                count
+                                unitPrice
+                                itemVariantId
+                                info {
                                     name
-                                }
-                                orderItems {
-                                    
-                                    partialCount
-                                    count
-                                    unitPrice
-                                    itemVariantId
-                                    info {
+                                    item {
                                         name
-                                        item{
-                                        name
-                                        }
-                                   
                                     }
                                 }
                             }
                         }
-                    
-                    
+                    }
                 }
             }
         `;

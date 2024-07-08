@@ -18,7 +18,7 @@ const CourierSheet = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, courierSheetStatusesContext, dateformatter, orderStatusEnumContext } = useContext(Contexthandlerscontext);
-    const { fetchUsers, useQueryGQL, fetchCourierSheet, updateCourierSheet, useMutationGQL } = API();
+    const { useLazyQueryGQL, useQueryGQL, fetchCourierSheet, updateCourierSheet, useMutationGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
 
@@ -26,7 +26,9 @@ const CourierSheet = (props) => {
     const [submitSheetPayload, setsubmitSheetPayload] = useState({});
     const [type, settype] = useState('');
     const [buttonLoading, setbuttonLoading] = useState(false);
-    const fetchCourierSheetQuery = useQueryGQL('', fetchCourierSheet(sheetID));
+    const [fetchCourierSheetLazyQuery] = useLazyQueryGQL(fetchCourierSheet());
+    const [fetchCourierSheetQuery, setfetchCourierSheetQuery] = useState({});
+    // const fetchCourierSheetQuery = useQueryGQL('', fetchCourierSheet(sheetID));
     useEffect(() => {
         setpageactive_context('/CourierSheet');
         if (queryParameters.get('id')) {
@@ -133,7 +135,17 @@ const CourierSheet = (props) => {
 
         setsubmitSheetPayload({ ...temp });
     }, [fetchCourierSheetQuery?.data]);
-
+    useEffect(async () => {
+        if (sheetID) {
+            var { data } = await fetchCourierSheetLazyQuery({
+                variables: {
+                    id: parseInt(sheetID),
+                },
+            });
+            // alert(JSON.stringify(data));
+            setfetchCourierSheetQuery({ data: data });
+        }
+    }, [sheetID]);
     return (
         <div class="row m-0 w-100 p-md-2 pt-2 pb-5">
             <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">

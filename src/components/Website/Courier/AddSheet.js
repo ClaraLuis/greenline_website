@@ -32,10 +32,11 @@ const AddSheet = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, dateformatter, orderStatusEnumContext, user, isAuth } = useContext(Contexthandlerscontext);
-    const { useQueryGQL, fetchOrders, addCourierSheet, useMutationGQL, fetchCouriers, fetchCourierSheet } = API();
+    const { useQueryGQL, fetchOrders, addCourierSheet, useMutationGQL, fetchCouriers, fetchCourierSheet, useLazyQueryGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [submit, setsubmit] = useState(false);
+    const [fetchCourierSheetQuery, setfetchCourierSheetQuery] = useState({});
     const [buttonLoading, setbuttonLoading] = useState(false);
     const [sheetpayload, setsheetpayload] = useState({
         functype: 'add',
@@ -68,7 +69,8 @@ const AddSheet = (props) => {
         beforeCursor: undefined,
     });
     const fetchCouriersQuery = useQueryGQL('', fetchCouriers(), filterCouriers);
-    const fetchCourierSheetQuery = useQueryGQL('', fetchCourierSheet(queryParameters.get('sheetId')));
+
+    const [fetchCourierSheetLazyQuery] = useLazyQueryGQL(fetchCourierSheet());
 
     const [addCourierSheetMutation] = useMutationGQL(addCourierSheet(), {
         userId: sheetpayload?.courier,
@@ -105,6 +107,16 @@ const AddSheet = (props) => {
     useEffect(() => {
         setpageactive_context('/addsheet');
     }, []);
+    useEffect(async () => {
+        if (queryParameters.get('sheetId')) {
+            var { data } = await fetchCourierSheetLazyQuery({
+                variables: {
+                    id: parseInt(queryParameters.get('sheetId')),
+                },
+            });
+            setfetchCourierSheetQuery({ data: data });
+        }
+    }, [queryParameters.get('sheetId')]);
 
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">

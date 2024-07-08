@@ -277,7 +277,7 @@ const App = (props) => {
                                                                 <Route exact path="/couriersheets" component={CourierSheets} />
                                                                 <Route exact path="/couriersheet" component={CourierSheet} />
                                                                 <Route exact path="/orderinfo" component={OrderInfo} />
-                                                                <Route exact path="/addsheet" component={AddSheetNew} />
+                                                                <Route exact path="/addsheet" component={AddSheet} />
                                                                 <Route exact path="/financehome" component={FinanceHome} />
                                                                 <Route exact path="/additem" component={AddItem} />
                                                                 <Route exact path="/financesheets" component={FinanceSheets} />
