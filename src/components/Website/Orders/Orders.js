@@ -28,7 +28,7 @@ const Orders = (props) => {
     let history = useHistory();
     const cookies = new Cookies();
 
-    const { setpageactive_context, setpagetitle_context, dateformatter, UserInfoContext, isAuth } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, dateformatter, chosenOrderContext, isAuth, setchosenOrderContext } = useContext(Contexthandlerscontext);
     const { fetchMerchants, useQueryGQL, fetchOrdersInInventory } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -184,7 +184,8 @@ const Orders = (props) => {
                     <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
                         <OrdersTable
                             clickable={true}
-                            actiononclick={(order) => {
+                            actiononclick={async (order) => {
+                                await setchosenOrderContext(order);
                                 history.push('/orderinfo?type=inventory&orderId=' + order.id);
                             }}
                             fetchOrdersQuery={fetchOrdersInInventoryQuery}

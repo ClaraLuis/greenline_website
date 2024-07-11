@@ -27,6 +27,7 @@ export const Contexthandlerscontext_provider = (props) => {
     const [pagetitle_context, setpagetitle_context] = useState('');
     const [value, setValue] = useState(0);
     const [UserInfoContext, setUserInfoContext] = useState({});
+    const [chosenOrderContext, setchosenOrderContext] = useState({});
 
     const setpageactive_context = (route) => {
         var temparr = [...pagesarray_context];
@@ -616,7 +617,6 @@ export const Contexthandlerscontext_provider = (props) => {
     const paymentTypeContext = [
         { label: 'Cash', value: 'cash' },
         { label: 'Card', value: 'card' },
-        { label: 'Free', value: 'free' },
     ];
 
     const requestStatusContext = [
@@ -849,6 +849,8 @@ export const Contexthandlerscontext_provider = (props) => {
                 setchosenMerchantContext,
                 UserInfoContext,
                 setUserInfoContext,
+                setchosenOrderContext,
+                chosenOrderContext,
             }}
         >
             {props.children}

@@ -21,6 +21,7 @@ import Pagination from '../../Pagination.js';
 import SelectComponent from '../../SelectComponent.js';
 import Cookies from 'universal-cookie';
 import WaybillPrint from '../Orders/WaybillPrint.js';
+import { FiCheckCircle, FiCircle } from 'react-icons/fi';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -169,6 +170,49 @@ const MerchantOrders = (props) => {
                 </div>
 
                 <div class={generalstyles.card + ' row m-0 w-100'}>
+                    <div className="col-lg-6 p-0 d-flex justify-content-end ">
+                        <div
+                            onClick={() => {
+                                var temp = [];
+                                if (selectedOrders?.length != fetchOrdersQuery?.data?.paginateOrders?.data?.length) {
+                                    fetchOrdersQuery?.data?.paginateOrders?.data?.map((i, ii) => {
+                                        temp.push(i.id);
+                                    });
+                                }
+                                setSelectedOrders(temp);
+                            }}
+                            class="row m-0 w-100 d-flex align-items-center"
+                            style={{
+                                cursor: 'pointer',
+                                // color:
+                                //     selectedOrders?.length == fetchOrdersQuery?.data?.paginateOrders?.data?.length ? 'var(--success)' : '',
+                            }}
+                        >
+                            <div
+                                style={{
+                                    width: '30px',
+                                    height: '30px',
+                                }}
+                                className="iconhover allcentered mr-1"
+                            >
+                                {selectedOrders?.length != fetchOrdersQuery?.data?.paginateOrders?.data?.length && (
+                                    <FiCircle
+                                        style={{ transition: 'all 0.4s' }}
+                                        color={selectedOrders?.length == fetchOrdersQuery?.data?.paginateOrders?.data?.length ? 'var(--success)' : ''}
+                                        size={18}
+                                    />
+                                )}
+                                {selectedOrders?.length == fetchOrdersQuery?.data?.paginateOrders?.data?.length && (
+                                    <FiCheckCircle
+                                        style={{ transition: 'all 0.4s' }}
+                                        color={selectedOrders?.length == fetchOrdersQuery?.data?.paginateOrders?.data?.length ? 'var(--success)' : ''}
+                                        size={18}
+                                    />
+                                )}
+                            </div>
+                            {selectedOrders?.length != fetchOrdersQuery?.data?.paginateOrders?.data?.length ? 'Select All' : 'Deselect All'}
+                        </div>
+                    </div>
                     <div class="col-lg-12 p-0">
                         <Pagination
                             beforeCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.beforeCursor}

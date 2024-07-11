@@ -17,7 +17,7 @@ const Login = () => {
     const { isValidEmailMutation, useMutationGQL, useQueryGQL, useLazyQueryGQL } = API();
     let history = useHistory();
     const [otp, setOtp] = useState('');
-    const [value, setValue] = useState('');
+    const [buttonLoading, setbuttonLoading] = useState(false);
     const queryParameters = new URLSearchParams(window.location.search);
     const { loggedincontext, setloggedincontext } = useContext(Loggedincontext);
     const { setpageactive_context, setpagetitle_context, setUserInfoContext } = useContext(Contexthandlerscontext);
@@ -52,6 +52,7 @@ const Login = () => {
     // 2 = login
 
     const handleSubmit = async () => {
+        setbuttonLoading(true);
         try {
             const result = await fetchSignInMethodsForEmail(auth, email);
             if (result.length > 0) {
@@ -91,6 +92,7 @@ const Login = () => {
             NotificationManager.warning(errorMessage, 'Warning!');
             console.error('Error adding user:', error);
         }
+        setbuttonLoading(false);
     };
 
     useEffect(() => {
@@ -192,6 +194,8 @@ const Login = () => {
                                                         if (!isValid) {
                                                             handleSubmit();
                                                         } else {
+                                                            setbuttonLoading(true);
+
                                                             if (!inFirebase) {
                                                                 if (password === confirmpassword) {
                                                                     createUserWithEmailAndPassword(auth, email, password)
@@ -226,6 +230,7 @@ const Login = () => {
                                                                         }
                                                                     });
                                                             }
+                                                            setbuttonLoading(false);
                                                         }
                                                     } else {
                                                         NotificationManager.warning('Please enter a valid email', 'Warning');
@@ -236,10 +241,12 @@ const Login = () => {
                                                     width: '100%',
                                                     height: 48,
                                                 }}
-                                                disabled={loading}
+                                                disabled={buttonLoading}
                                             >
-                                                {loading && <CircularProgress color="white" width="20px" height="20px" duration="1s" />}
-                                                {!loading && <span>{isNew ? 'Signup' : 'Login'} </span>}
+                                                {buttonLoading && <CircularProgress color="white" width="20px" height="20px" duration="1s" />}
+                                                {!isValid && <>{!buttonLoading && <span>{isNew ? 'Signup' : 'Login'} </span>}</>}
+                                                {!inFirebase && isValid && <>{!buttonLoading && <span>{'Signup'} </span>}</>}
+                                                {inFirebase && isValid && <>{!buttonLoading && <span>{'Login'} </span>}</>}
                                             </button>
                                         </div>
                                     </div>

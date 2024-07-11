@@ -123,14 +123,19 @@ const AddSheetNew = (props) => {
                     }
                 });
                 if (!exist) {
-                    temp.orderIds.push(parseInt(barcode));
+                    if (barcode?.length != 0 && !isNaN(parseInt(barcode))) {
+                        temp.orderIds.push(parseInt(barcode));
+                    } else {
+                        NotificationManager.warning('Order has to be numbers', 'Warning!');
+                    }
                 } else {
                     NotificationManager.warning('Order already added', 'Warning!');
                 }
                 setsheetpayload({ ...temp });
 
                 // setsearch(barcode); // Update the search state with the scanned barcode
-                setBarcode(''); // Clear the barcode state
+                setBarcode('');
+                setsearch(''); // Clear the barcode state
             } else {
                 setBarcode((prevBarcode) => prevBarcode + e.key);
             }
@@ -170,6 +175,7 @@ const AddSheetNew = (props) => {
                     <div class="col-lg-10 p-0 ">
                         <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
                             <input
+                                type="number"
                                 class={formstyles.form__field}
                                 value={search}
                                 placeholder={'Search by order ID'}
@@ -192,7 +198,11 @@ const AddSheetNew = (props) => {
                                     }
                                 });
                                 if (!exist) {
-                                    temp.orderIds.push(parseInt(search));
+                                    if (search?.length != 0 && !isNaN(parseInt(search))) {
+                                        temp.orderIds.push(parseInt(search));
+                                    } else {
+                                        NotificationManager.warning('Order has to be numbers', 'Warning!');
+                                    }
                                 } else {
                                     NotificationManager.warning('Order already added', 'Warning!');
                                 }

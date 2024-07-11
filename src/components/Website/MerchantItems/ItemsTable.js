@@ -60,9 +60,11 @@ const ItemsTable = (props) => {
                 <div class="row m-0 w-100">
                     {props?.items?.map((item, index) => {
                         var selected = false;
+                        var count = 0;
                         props?.selectedItems?.map((i) => {
                             if (i.item.sku == item.sku) {
                                 selected = true;
+                                count = i?.count;
                             }
                         });
                         return (
@@ -86,10 +88,12 @@ const ItemsTable = (props) => {
                                                 top: 10,
                                                 right: 20,
                                                 zIndex: 100,
+                                                color: 'white',
                                             }}
                                             class={generalstyles.cart_button}
                                         >
-                                            <FaCheck color="white" />
+                                            {/* <FaCheck color="white" /> */}
+                                            {count}
                                         </div>
                                     )}
                                     <div class="col-lg-12 p-0">

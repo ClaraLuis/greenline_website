@@ -23,32 +23,30 @@ import { defaultstyles } from '../Generalfiles/selectstyles.js';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
 import { MdOutlineInventory2, MdOutlineLocationOn } from 'react-icons/md';
 import { IoMdClose } from 'react-icons/io';
+import { FaLayerGroup } from 'react-icons/fa';
 
 const OrderInfo = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, dateformatter, orderStatusEnumContext, orderTypeContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, chosenOrderContext, dateformatter, orderStatusEnumContext, orderTypeContext } = useContext(Contexthandlerscontext);
     const { useQueryGQL, useMutationGQL, fetchGovernorates, createMerchantDomesticShipping, updateMerchantDomesticShipping, fetchOrdersInInventory, fetchOrderHistory, createInventoryRent } = API();
     const steps = ['Merchant Info', 'Shipping', 'Inventory Settings'];
     const [inventoryModal, setinventoryModal] = useState({ open: false, items: [] });
-    const [item, setItem] = useState(undefined);
-    const [filterorders, setfilterorders] = useState({
-        limit: 20,
-    });
+    const [outOfStock, setoutOfStock] = useState(false);
+    const [diffInDays, setdiffInDays] = useState(0);
 
     const [filterordershistory, setfilterordershistory] = useState({
         limit: 20,
         orderId: parseInt(queryParameters?.get('orderId')),
     });
 
-    const fetchOrdersInInventoryQuery = useQueryGQL('', fetchOrdersInInventory(), filterorders);
     const fetchOrderHistoryQuery = useQueryGQL('', fetchOrderHistory(), filterordershistory);
 
     const organizeInventory = (inventory) => {
         const racks = {};
 
         inventory.forEach((item) => {
-            const box = item?.box;
+            const box = item.box;
             const ballot = box.ballot;
             const rack = ballot.rack;
 
@@ -73,7 +71,7 @@ const OrderInfo = (props) => {
                 };
             }
 
-            racks[rackId].ballots[ballotLevel][ballotId].boxes.push({ box: box, count: item?.count });
+            racks[rackId].ballots[ballotLevel][ballotId].boxes.push({ box: box, count: item.count });
         });
 
         // Sort ballots within each rack by level
@@ -83,44 +81,40 @@ const OrderInfo = (props) => {
 
         return racks;
     };
-    var outOfStock = false;
-    var diffInDays = 0;
-    var orderDate = null;
+
     useEffect(() => {
-        fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.map((item, index) => {
-            if (item.id == queryParameters?.get('orderId')) {
-                setItem(item);
-                outOfStock = false;
-                item?.orderItems?.map((orderItem, orderindex) => {
-                    if (orderItem?.countInInventory == 0) {
-                        outOfStock = true;
-                    }
-                });
-                const timestamp = item?.orderDate;
-                orderDate = new Date(timestamp);
+        if (JSON.stringify(chosenOrderContext) == '{}') {
+            history.push('/orders');
+        }
 
-                // Create a Date object for the current date
-                const now = new Date();
-
-                // Set the hours, minutes, seconds, and milliseconds to 0 for both dates
-                orderDate.setHours(0, 0, 0, 0);
-                now.setHours(0, 0, 0, 0);
-
-                // Calculate the difference in milliseconds
-                const diffInMs = now.getTime() - orderDate.getTime();
-
-                // Convert milliseconds to days
-                diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+        chosenOrderContext?.orderItems?.map((orderitem, orderindex) => {
+            if (orderitem?.countInInventory == 0) {
+                setoutOfStock(true);
             }
         });
-    }, [fetchOrdersInInventoryQuery?.data, queryParameters]);
+        const timestamp = chosenOrderContext?.orderDate;
+        const orderDate = new Date(timestamp);
+
+        // Create a Date object for the current date
+        const now = new Date();
+
+        // Set the hours, minutes, seconds, and milliseconds to 0 for both dates
+        orderDate.setHours(0, 0, 0, 0);
+        now.setHours(0, 0, 0, 0);
+
+        // Calculate the difference in milliseconds
+        const diffInMs = now.getTime() - orderDate.getTime();
+
+        // Convert milliseconds to days
+        setdiffInDays(Math.floor(diffInMs / (1000 * 60 * 60 * 24)));
+    }, [chosenOrderContext]);
 
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div className="col-lg-12 p-0" style={{ minHeight: '100vh' }}>
                 <div class={' row m-0 w-100 allcentered'}>
                     <div class="col-lg-6">
-                        {item != undefined && (
+                        {chosenOrderContext != undefined && (
                             <>
                                 <div class={generalstyles.card + ' row m-0 w-100 p-4'}>
                                     <div style={{ cursor: props?.clickable ? 'pointer' : '' }} className="col-lg-12 p-0">
@@ -128,20 +122,20 @@ const OrderInfo = (props) => {
                                             <div className="col-lg-4 p-0">
                                                 <div class="row m-0 w-100 d-flex align-items-center">
                                                     <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
-                                                        # {item?.id}
+                                                        # {chosenOrderContext?.id}
                                                     </span>{' '}
                                                     {outOfStock && queryParameters?.get('type') == 'inventory' && (
                                                         <div className={'ml-1 wordbreak text-danger bg-light-danger rounded-pill font-weight-600 '}>Out Of Stock</div>
                                                     )}
                                                     <span style={{ fontWeight: 600 }} class="text-capitalize">
-                                                        {item?.merchant?.name}
+                                                        {chosenOrderContext?.merchant?.name}
                                                     </span>
                                                 </div>
                                             </div>
                                             <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
                                                 <div class="row m-0 w-100  d-flex justify-content-end align-items-center">
                                                     {queryParameters?.get('type') == 'inventory' && (
-                                                        <div className={' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 mr-1 '}>{diffInDays} late days</div>
+                                                        <div className={' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 mr-1 '}>{diffInDays} days late</div>
                                                     )}
                                                     <div
                                                         // onClick={() => {
@@ -149,15 +143,15 @@ const OrderInfo = (props) => {
                                                         // }}
                                                         // style={{ cursor: 'pointer' }}
                                                         className={
-                                                            item?.status == 'delivered'
+                                                            chosenOrderContext?.status == 'delivered'
                                                                 ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 '
-                                                                : item?.status == 'postponed' || item?.status == 'failedDeliveryAttempt'
+                                                                : chosenOrderContext?.status == 'postponed' || chosenOrderContext?.status == 'failedDeliveryAttempt'
                                                                 ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 '
                                                                 : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 '
                                                         }
                                                     >
                                                         {orderStatusEnumContext?.map((i, ii) => {
-                                                            if (i.value == item?.status) {
+                                                            if (i.value == chosenOrderContext?.status) {
                                                                 return <span>{i.label}</span>;
                                                             }
                                                         })}
@@ -170,7 +164,7 @@ const OrderInfo = (props) => {
                                                         className={'ml-1 wordbreak bg-primary rounded-pill font-weight-600 '}
                                                     >
                                                         {orderTypeContext?.map((i, ii) => {
-                                                            if (i.value == item?.type) {
+                                                            if (i.value == chosenOrderContext?.type) {
                                                                 return <span>{i.label}</span>;
                                                             }
                                                         })}
@@ -183,17 +177,17 @@ const OrderInfo = (props) => {
                                             {queryParameters?.get('type') != 'inventory' && (
                                                 <>
                                                     <div class="col-lg-12 p-0 mb-2 text-capitalize">
-                                                        <span style={{ fontWeight: 600 }}>{item?.customerInfo?.customerName}</span>
+                                                        <span style={{ fontWeight: 600 }}>{chosenOrderContext?.customerInfo?.customerName}</span>
                                                     </div>
                                                     <div className="col-lg-12 p-0 mb-1 d-flex align-items-center">
                                                         <MdOutlineLocationOn class="mr-1" />
                                                         <span style={{ fontWeight: 400, fontSize: '13px' }}>
-                                                            {item?.address?.city}, {item?.address?.country}
+                                                            {chosenOrderContext?.address?.city}, {chosenOrderContext?.address?.country}
                                                         </span>
                                                     </div>
                                                     <div className="col-lg-12 p-0 ">
                                                         <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                            {item?.address?.streetAddress}, {item?.address?.buildingNumber}, {item?.address?.apartmentFloor}
+                                                            {chosenOrderContext?.address?.streetAddress}, {chosenOrderContext?.address?.buildingNumber}, {chosenOrderContext?.address?.apartmentFloor}
                                                         </span>
                                                     </div>
                                                     <div className="col-lg-12 p-0 mt-3 mb-2">
@@ -201,7 +195,7 @@ const OrderInfo = (props) => {
                                                             style={{ maxWidth: '100%', flexDirection: 'row', flexWrap: 'nowrap', overflow: 'scroll' }}
                                                             class="row m-0 w-100 scrollmenuclasssubscrollbar"
                                                         >
-                                                            {item?.orderItems?.map((orderItem, orderIndex) => {
+                                                            {chosenOrderContext?.orderItems?.map((orderItem, orderIndex) => {
                                                                 return (
                                                                     <div class="p-0 mb-1 mr-2">
                                                                         <div style={{ border: '1px solid #eee', borderRadius: '10px' }} class="row m-0 w-100 p-2 align-items-center">
@@ -247,7 +241,7 @@ const OrderInfo = (props) => {
                                                                     </div>
                                                                     <div class="col-lg-12 p-0 allcentered text-center">
                                                                         <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                            {parseFloat(item?.price)} {item?.currency}
+                                                                            {parseFloat(chosenOrderContext?.price)} {chosenOrderContext?.currency}
                                                                         </span>
                                                                     </div>
                                                                 </div>
@@ -259,7 +253,7 @@ const OrderInfo = (props) => {
                                                                     </div>
                                                                     <div class="col-lg-12 p-0 allcentered text-center">
                                                                         <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                            {parseFloat(item?.shippingPrice)} {item?.currency}
+                                                                            {parseFloat(chosenOrderContext?.shippingPrice)} {chosenOrderContext?.currency}
                                                                         </span>
                                                                     </div>
                                                                 </div>
@@ -271,7 +265,7 @@ const OrderInfo = (props) => {
                                                                     </div>
                                                                     <div class="col-lg-12 p-0 allcentered text-center">
                                                                         <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                            {parseFloat(item?.price) + parseFloat(item?.shippingPrice)} {item?.currency}
+                                                                            {parseFloat(chosenOrderContext?.price) + parseFloat(chosenOrderContext?.shippingPrice)} {chosenOrderContext?.currency}
                                                                         </span>
                                                                     </div>
                                                                 </div>
@@ -283,7 +277,7 @@ const OrderInfo = (props) => {
                                             {queryParameters?.get('type') == 'inventory' && (
                                                 <div className="col-lg-12 p-0 mt-2">
                                                     <div style={{ maxHeight: '40vh', overflow: 'scroll' }} class="row m-0 w-100 scrollmenuclasssubscrollbar">
-                                                        {item?.orderItems?.map((orderItem, orderIndex) => {
+                                                        {chosenOrderContext?.orderItems?.map((orderItem, orderIndex) => {
                                                             var organizedData = [];
                                                             if (queryParameters?.get('type') == 'inventory') {
                                                                 organizedData = organizeInventory(orderItem?.inventory);
@@ -305,7 +299,7 @@ const OrderInfo = (props) => {
                                                                             {queryParameters?.get('type') == 'inventory' && (
                                                                                 <div className="row m-0 w-100">
                                                                                     <div style={{ fontSize: '14px', fontWeight: 600 }} className={' col-lg-12 p-0'}>
-                                                                                        {orderItem?.info?.item?.name}
+                                                                                        {orderItem?.info?.chosenOrderContext?.name}
                                                                                     </div>
                                                                                     <div style={{ fontSize: '13px' }} className={' col-lg-12 p-0'}>
                                                                                         {orderItem?.info?.name}
@@ -334,12 +328,14 @@ const OrderInfo = (props) => {
                                                                                     {orderItem?.partial
                                                                                         ? parseInt(orderItem?.partialCount) * parseFloat(orderItem?.unitPrice)
                                                                                         : parseInt(orderItem?.count) * parseFloat(orderItem?.unitPrice)}{' '}
-                                                                                    {item?.info?.currency}
+                                                                                    {chosenOrderContext?.info?.currency}
                                                                                 </div> */}
                                                                                 {queryParameters?.get('type') == 'inventory' && (
                                                                                     <div
                                                                                         onClick={() => {
                                                                                             if (orderItem?.countInInventory != 0) {
+                                                                                                // alert(JSON.stringify(orderItem?.inventory));
+
                                                                                                 setinventoryModal({ open: true, items: organizedData });
                                                                                             }
                                                                                         }}
@@ -364,23 +360,35 @@ const OrderInfo = (props) => {
                                             )}
 
                                             <div style={{ fontSize: '12px' }} class="col-lg-12 p-0 mt-2 d-flex justify-content-end ">
-                                                <p className={' m-0 p-0 wordbreak  '}>{dateformatter(orderDate?.toUTCString())}</p>
+                                                <p className={' m-0 p-0 wordbreak  '}>{dateformatter(chosenOrderContext?.orderDate)}</p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class={generalstyles.card + ' row m-0 w-100 p-4'}>
-                                    <div style={{ overflowY: 'scroll' }} class={generalstyles.card + ' row m-0 w-100 p-2 pb-4 py-3 scrollmenuclasssubscrollbar'}>
-                                        <div class="container1">
-                                            <ul class="progressbar">
-                                                {fetchOrderHistoryQuery?.data?.paginateOrderHistory?.data?.map((historyItem, historyIndex) => {
-                                                    return <li class="active text-capitalize">{historyItem?.status.split(/(?=[A-Z])/).join(' ')}</li>;
-                                                })}
-
-                                                {/* <li>Step 5</li> */}
-                                            </ul>
+                                    {fetchOrderHistoryQuery?.data?.paginateOrderHistory?.data?.lengt == 0 && (
+                                        <div class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
+                                            <div class="row m-0 w-100">
+                                                <FaLayerGroup size={35} class=" col-lg-12 mb-2" />
+                                                <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
+                                                    No History Yet
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
+                                    )}
+                                    {fetchOrderHistoryQuery?.data?.paginateOrderHistory?.data?.length != 0 && (
+                                        <div style={{ overflowY: 'scroll' }} class={' row m-0 w-100 p-2 pb-4 py-3 scrollmenuclasssubscrollbar'}>
+                                            <div class="container1">
+                                                <ul class="progressbar">
+                                                    {fetchOrderHistoryQuery?.data?.paginateOrderHistory?.data?.map((historyItem, historyIndex) => {
+                                                        return <li class="active text-capitalize">{historyItem?.status.split(/(?=[A-Z])/).join(' ')}</li>;
+                                                    })}
+
+                                                    {/* <li>Step 5</li> */}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             </>
                         )}

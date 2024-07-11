@@ -104,6 +104,17 @@ const ImportNewItem = (props) => {
             show={props?.openModal}
             onHide={() => {
                 props?.setopenModal(false);
+                props?.setimportItemPayload({
+                    itemVariantId: '',
+                    ownedByOneMerchant: true,
+                    ballotId: '',
+                    inventoryId: '',
+                    boxName: '',
+                    count: 0,
+                    minCount: 0,
+                });
+                setstep(0);
+                setfetchRacksQuery(null);
             }}
             centered
             size={'lg'}
@@ -118,6 +129,17 @@ const ImportNewItem = (props) => {
                             class={'close-modal-container'}
                             onClick={() => {
                                 props?.setopenModal(false);
+                                props?.setimportItemPayload({
+                                    itemVariantId: '',
+                                    ownedByOneMerchant: true,
+                                    ballotId: '',
+                                    inventoryId: '',
+                                    boxName: '',
+                                    count: 0,
+                                    minCount: 0,
+                                });
+                                setstep(0);
+                                setfetchRacksQuery(null);
                             }}
                         >
                             <IoMdClose />

@@ -158,7 +158,7 @@ const OrdersTable = (props) => {
                                             <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
                                                 <div class="row m-0 w-100  d-flex justify-content-end align-items-center">
                                                     {props?.srcFrom == 'inventory' && (
-                                                        <div className={' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 mr-1 '}>{diffInDays} late days</div>
+                                                        <div className={' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 mr-1 '}>{diffInDays} days late</div>
                                                     )}
                                                     <div
                                                         // onClick={() => {
@@ -221,15 +221,15 @@ const OrdersTable = (props) => {
                                                             style={{ maxWidth: '100%', flexDirection: 'row', flexWrap: 'nowrap', overflow: 'scroll' }}
                                                             class="row m-0 w-100 scrollmenuclasssubscrollbar"
                                                         >
-                                                            {item?.orderItems?.map((orderITem, orderIndex) => {
+                                                            {item?.orderItems?.map((orderItem, orderIndex) => {
                                                                 return (
                                                                     <div class="p-0 mb-1 mr-2">
                                                                         <div style={{ border: '1px solid #eee', borderRadius: '10px' }} class="row m-0 w-100 p-2 align-items-center">
                                                                             <div style={{ width: '35px', height: '35px', borderRadius: '7px', marginInlineEnd: '15px' }}>
                                                                                 <img
                                                                                     src={
-                                                                                        orderITem?.info?.imageUrl
-                                                                                            ? orderITem?.info?.imageUrl
+                                                                                        orderItem?.info?.imageUrl
+                                                                                            ? orderItem?.info?.imageUrl
                                                                                             : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'
                                                                                     }
                                                                                     style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
@@ -239,14 +239,14 @@ const OrdersTable = (props) => {
                                                                             <div class="">
                                                                                 <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
                                                                                     <div>
-                                                                                        {orderITem?.partial && (
+                                                                                        {orderItem?.partial && (
                                                                                             <div style={{ fontWeight: 700 }} class="row m-0 w-100 p-1 px-3">
-                                                                                                {orderITem.partialCount}/{orderITem.count}
+                                                                                                {orderItem.partialCount}/{orderItem.count}
                                                                                             </div>
                                                                                         )}
-                                                                                        {!orderITem?.partial && (
+                                                                                        {!orderItem?.partial && (
                                                                                             <div style={{ fontWeight: 700 }} class="row m-0 w-100 p-1 px-3">
-                                                                                                {orderITem.count}
+                                                                                                {orderItem.count}
                                                                                             </div>
                                                                                         )}
                                                                                     </div>
@@ -303,10 +303,10 @@ const OrdersTable = (props) => {
                                             {props?.srcFrom == 'inventory' && (
                                                 <div className="col-lg-12 p-0 mt-2">
                                                     <div style={{ maxHeight: '40vh', overflow: 'scroll' }} class="row m-0 w-100 scrollmenuclasssubscrollbar">
-                                                        {item?.orderItems?.map((orderITem, orderIndex) => {
+                                                        {item?.orderItems?.map((orderItem, orderIndex) => {
                                                             var organizedData = [];
                                                             if (props?.srcFrom == 'inventory') {
-                                                                organizedData = organizeInventory(orderITem?.inventory);
+                                                                organizedData = organizeInventory(orderItem?.inventory);
                                                             }
                                                             return (
                                                                 <div class="col-lg-12 p-0 mb-1">
@@ -314,8 +314,8 @@ const OrdersTable = (props) => {
                                                                         <div style={{ width: '50px', height: '50px', borderRadius: '7px', marginInlineEnd: '10px' }}>
                                                                             <img
                                                                                 src={
-                                                                                    orderITem?.info?.imageUrl
-                                                                                        ? orderITem?.info?.imageUrl
+                                                                                    orderItem?.info?.imageUrl
+                                                                                        ? orderItem?.info?.imageUrl
                                                                                         : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'
                                                                                 }
                                                                                 style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
@@ -325,13 +325,13 @@ const OrdersTable = (props) => {
                                                                             {props?.srcFrom == 'inventory' && (
                                                                                 <div className="row m-0 w-100">
                                                                                     <div style={{ fontSize: '14px', fontWeight: 600 }} className={' col-lg-12 p-0'}>
-                                                                                        {orderITem?.info?.item?.name}
+                                                                                        {orderItem?.info?.item?.name}
                                                                                     </div>
                                                                                     <div style={{ fontSize: '13px' }} className={' col-lg-12 p-0'}>
-                                                                                        {orderITem?.info?.name}
+                                                                                        {orderItem?.info?.name}
                                                                                     </div>
                                                                                     <div style={{ color: 'lightgray', fontSize: '13px' }} className="col-lg-12 p-0">
-                                                                                        {orderITem?.info?.sku}
+                                                                                        {orderItem?.info?.sku}
                                                                                     </div>
                                                                                 </div>
                                                                             )}
@@ -339,33 +339,34 @@ const OrdersTable = (props) => {
                                                                         <div class="col-lg-5 ">
                                                                             <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
                                                                                 <div>
-                                                                                    {orderITem?.partial && (
+                                                                                    {orderItem?.partial && (
                                                                                         <div style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }} class="row m-0 w-100 p-1 px-4">
-                                                                                            {orderITem.partialCount}/{orderITem.count}
+                                                                                            {orderItem.partialCount}/{orderItem.count}
                                                                                         </div>
                                                                                     )}
-                                                                                    {!orderITem?.partial && (
+                                                                                    {!orderItem?.partial && (
                                                                                         <div style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }} class="row m-0 w-100 p-1 px-4">
-                                                                                            {orderITem.count}
+                                                                                            {orderItem.count}
                                                                                         </div>
                                                                                     )}
                                                                                 </div>
                                                                                 {/* <div style={{ fontWeight: 700 }} class="mx-2">
-                                                                                    {orderITem?.partial
-                                                                                        ? parseInt(orderITem.partialCount) * parseFloat(orderITem?.unitPrice)
-                                                                                        : parseInt(orderITem.count) * parseFloat(orderITem?.unitPrice)}{' '}
+                                                                                    {orderItem?.partial
+                                                                                        ? parseInt(orderItem.partialCount) * parseFloat(orderItem?.unitPrice)
+                                                                                        : parseInt(orderItem.count) * parseFloat(orderItem?.unitPrice)}{' '}
                                                                                     {item?.info?.currency}
                                                                                 </div> */}
                                                                                 {props?.srcFrom == 'inventory' && (
                                                                                     <div
-                                                                                        onClick={() => {
-                                                                                            if (orderITem?.countInInventory != 0) {
+                                                                                        onClick={(e) => {
+                                                                                            e.stopPropagation();
+                                                                                            if (orderItem?.countInInventory != 0) {
                                                                                                 setinventoryModal({ open: true, items: organizedData });
                                                                                             }
                                                                                         }}
                                                                                         style={{ width: '30px', height: '30px' }}
                                                                                         class={
-                                                                                            orderITem?.countInInventory == 0
+                                                                                            orderItem?.countInInventory == 0
                                                                                                 ? 'allcentered iconhover text-danger'
                                                                                                 : 'allcentered iconhover text-success'
                                                                                         }
