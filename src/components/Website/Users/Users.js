@@ -35,6 +35,7 @@ const Users = (props) => {
     const { lang, langdetect } = useContext(LanguageContext);
 
     const [openModal, setopenModal] = useState(false);
+    const [search, setSearch] = useState('');
 
     const [payload, setpayload] = useState({
         functype: 'add',
@@ -101,6 +102,35 @@ const Users = (props) => {
 
                     <div class="col-lg-12 p-0">
                         <hr class="mt-1" />
+                    </div>
+                    <div class="col-lg-12 p-0 ">
+                        <div class="row m-0 w-100 d-flex align-items-center">
+                            <div class="col-lg-10">
+                                <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
+                                    <input
+                                        // disabled={props?.disabled}
+                                        // type={props?.type}
+                                        class={formstyles.form__field}
+                                        value={search}
+                                        placeholder={'Search by name, email, or phone'}
+                                        onChange={(event) => {
+                                            setSearch(event.target.value);
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                            <div class="col-lg-2 allcenered">
+                                <button
+                                    onClick={() => {
+                                        setfilterUsers({ ...filterUsers, name: search?.length == 0 ? undefined : search });
+                                    }}
+                                    style={{ height: '25px', minWidth: 'fit-content', marginInlineStart: '5px' }}
+                                    class={generalstyles.roundbutton + '  allcentered'}
+                                >
+                                    search
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     {isAuth([1, 43]) && (
                         <>

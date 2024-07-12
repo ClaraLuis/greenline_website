@@ -395,6 +395,7 @@ const API = () => {
                     data {
                         id
                         type
+                        createdAt
                         shippingPrice
                         merchant {
                             name
@@ -459,6 +460,7 @@ const API = () => {
                 paginateOrdersInInventory(input: $input) {
                     data {
                         id
+                        createdAt
                         otherId
                         currency
                         previousOrderId
