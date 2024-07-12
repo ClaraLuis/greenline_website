@@ -161,8 +161,8 @@ const UserInfo = (props) => {
                                         onClick={() => {
                                             setchangerolesmodal(true);
                                         }}
-                                        class="text-primary text-primaryhover"
-                                        style={{ textDecoration: 'underline', fontSize: '12px' }}
+                                        class={generalstyles.roundbutton + ' allcentered'}
+                                        // style={{ textDecoration: 'underline', fontSize: '12px' }}
                                     >
                                         Update roles
                                     </div>
@@ -351,17 +351,13 @@ const UserInfo = (props) => {
                                         return (
                                             <div class="col-lg-12 p-0 mb-2">
                                                 <div class="row m-0 w-100">
-                                                    <div class="col-lg-12 p-0 mb-2 text-capitaize" style={{ fontWeight: 500 }}>
+                                                    <div class="col-lg-12 p-0 mb-2 text-capitalize" style={{ fontWeight: 500 }}>
                                                         {item?.type}
                                                     </div>
                                                     {item?.roles?.map((role, roleIndex) => {
                                                         return (
-                                                            <div class={' wordbreak text-warning bg-light-warning rounded-pill font-weight-600mr-2 '}>
-                                                                {userRolesContext?.map((i, ii) => {
-                                                                    if (i.value == role?.role?.id) {
-                                                                        return <>{i.label}</>;
-                                                                    }
-                                                                })}
+                                                            <div class={' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 mr-2 text-capitalize '}>
+                                                                {role?.role?.name?.split(/(?=[A-Z])/).join(' ')}
                                                             </div>
                                                         );
                                                     })}

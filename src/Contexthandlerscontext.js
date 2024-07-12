@@ -215,7 +215,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/merchantorders',
                         permissionpage: [1],
-                        show: isAuth([1, 52]),
+                        show: isAuth([1, 52, 68]),
                     },
                     {
                         name: 'Return Packages',

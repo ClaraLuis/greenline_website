@@ -562,9 +562,9 @@ const API = () => {
         `;
     };
 
-    const fetchUsers = (payload) => {
+    const fetchUsers = () => {
         return gql`
-            query findUsers($input: PaginationInput!) {
+            query findUsers($input: PaginateUsersInput!) {
                 paginateUsers(paginateUsersInput: $input) {
                     data {
                         id
@@ -845,7 +845,7 @@ const API = () => {
     };
     const fetchCourierSheet = () => {
         return gql`
-            query CourierSheet($id: Int!) {
+            query CourierSheet($id: Int!, $merchantId: Int) {
                 CourierSheet(id: $id) {
                     id
                     status
@@ -861,10 +861,19 @@ const API = () => {
                         shippingCollected
 
                         order {
+                            type
                             status
                             currency
                             shippingPrice
                             price
+                            customer {
+                                email
+                                phone
+                                details(merchantId: $merchantId) {
+                                    customerName
+                                }
+                            }
+
                             merchant {
                                 id
                                 name

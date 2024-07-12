@@ -175,12 +175,28 @@ const AddOrder = (props) => {
 
     const handleAddCustomer = async () => {
         try {
-            const { data } = await addCustomerMutation();
+            setfetching(true);
+            const addCustomerMutationdata = await addCustomerMutation();
             setcustomerFound(true);
 
-            setorderpayload({ ...orderpayload, customerId: data?.createCustomer });
+            setorderpayload({ ...orderpayload, customerId: addCustomerMutationdata?.data?.createCustomer });
 
-            console.log(data); // Handle response
+            setfetchSuggestions(false);
+            setcustomerFound(false);
+            var { data } = await checkCustomer({
+                variables: {
+                    input: {
+                        phone: filterCustomerPayload?.phone,
+                        email: filterCustomerPayload?.email,
+                        myCustomers: true,
+                        limit: filterCustomerPayload?.limit,
+                        merchantId: merchantId,
+                    },
+                    merchantId: merchantId,
+                },
+            });
+            setcustomerData({ ...data });
+            setfetching(false);
         } catch (error) {
             let errorMessage = 'An unexpected error occurred';
             if (error.graphQLErrors && error.graphQLErrors.length > 0) {

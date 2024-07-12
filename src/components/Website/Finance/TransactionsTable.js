@@ -190,12 +190,8 @@ const TransactionsTable = (props) => {
                                                             );
                                                         }
                                                     })}
-                                                    <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered mx-1'}>
-                                                        {transactionTypeContext?.map((i, ii) => {
-                                                            if (i.value == item?.type) {
-                                                                return <span>{i.label}</span>;
-                                                            }
-                                                        })}
+                                                    <div style={{ color: 'white' }} className={' wordbreak bg-primary rounded-pill font-weight-600 allcentered mx-1 text-capitalize'}>
+                                                        {item?.type?.split(/(?=[A-Z])/).join(' ')}
                                                     </div>
                                                     {props?.srctype == 'recieved' && (
                                                         <button

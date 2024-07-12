@@ -79,7 +79,7 @@ const MerchantOrders = (props) => {
                             style={{ height: '35px' }}
                             class={generalstyles.roundbutton + '  mb-1 mx-2'}
                             onClick={() => {
-                                if (isAuth([1])) {
+                                if (isAuth([1, 68])) {
                                     setmerchantModal(true);
                                 } else {
                                     var merchantId = cookies.get('userInfo')?.merchantId ?? cookies.get('merchantId');
