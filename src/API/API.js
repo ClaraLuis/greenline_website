@@ -46,6 +46,13 @@ const API = () => {
             }
         `;
     };
+    const updateOrdersStatus = () => {
+        return gql`
+            mutation updateOrdersStatus($input: UpdateOrderStatusInput!) {
+                updateOrdersStatus(input: $input)
+            }
+        `;
+    };
 
     const editUserType = () => {
         return gql`
@@ -189,6 +196,16 @@ const API = () => {
         return gql`
             mutation importNew($input: ImportNewItemInput!) {
                 importNewItem(input: $input)
+            }
+        `;
+    };
+
+    const createExpense = () => {
+        return gql`
+            mutation createExpense($input: CreateExpenseInput!) {
+                createExpense(input: $input) {
+                    id
+                }
             }
         `;
     };
@@ -845,6 +862,25 @@ const API = () => {
             }
         `;
     };
+    const fetchExpenses = (payload) => {
+        return gql`
+            query paginateExpenses($input: PaginateExpensesInput!) {
+                paginateExpenses(input: $input) {
+                    data {
+                        id
+                        type
+                        fromAccountId
+                        approvedById
+                        amount
+                        receipt
+                        comment
+                        createdAt
+                    }
+                    cursor
+                }
+            }
+        `;
+    };
     const fetchCourierSheet = () => {
         return gql`
             query CourierSheet($id: Int!, $merchantId: Int) {
@@ -861,8 +897,9 @@ const API = () => {
                         adminPass
                         financePass
                         shippingCollected
-
+                        amountCollected
                         order {
+                            originalPrice
                             type
                             status
                             currency
@@ -1188,6 +1225,9 @@ const API = () => {
         createInventoryRent,
         fetchHubs,
         fetchOrderHistory,
+        updateOrdersStatus,
+        fetchExpenses,
+        createExpense,
     };
 };
 export default API;

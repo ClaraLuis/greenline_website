@@ -2,7 +2,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { components } from 'react-select';
 import cardstyles from '../components/Website/Generalfiles/CSS_GENERAL/input.module.css';
-
+import formstyles from '../components/Website/Generalfiles/CSS_GENERAL/form.module.css';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
 
 import { LanguageContext } from '../LanguageContext';
@@ -15,6 +15,7 @@ const SelectComponent = (props) => {
     const [isFocused, setIsFocused] = useState(false);
     const [showmenu, setshowmenu] = useState(false);
     const [placeholder, setplaceholder] = useState('');
+    const [search, setsearch] = useState('');
 
     const [data, setData] = useState([]);
     const [filteredData, setFilteredData] = useState([]); // Add filteredData state
@@ -58,7 +59,8 @@ const SelectComponent = (props) => {
 
     const handleInputChange = (event) => {
         const value = event.target.value;
-        setplaceholder(value);
+        setsearch(value);
+        // setplaceholder(value);
         if (value) {
             const filtered = data.filter((item) => item[props?.label].toLowerCase().includes(value.toLowerCase()));
 
@@ -83,19 +85,15 @@ const SelectComponent = (props) => {
                     <label htmlFor="departments" className={cardstyles.formlabel}>
                         {props?.title}
                     </label>
-                    <input
-                        onFocus={() => {
+                    <div
+                        onClick={() => {
                             setIsFocused(true);
                             setshowmenu(true);
                         }}
-                        onBlur={() => setIsFocused(false)}
-                        name="department"
-                        id="department"
-                        type="text"
                         className={cardstyles.formfield}
-                        value={placeholder}
-                        onChange={handleInputChange} // Update onChange handler
-                    />
+                    >
+                        {placeholder}
+                    </div>
 
                     <div
                         style={{
@@ -117,8 +115,23 @@ const SelectComponent = (props) => {
                         className="blocker"
                         onClick={(e) => {
                             setshowmenu(false);
+                            setIsFocused(false);
                         }}
                     ></div>
+                    <div class="col-lg-12 py-2 px-1">
+                        <input
+                            type="text"
+                            style={{
+                                border: '1px solid #eee',
+                                borderRadius: '8px',
+                                height: '25px',
+                            }}
+                            className={formstyles.form__field + ' p-2'}
+                            value={search}
+                            placeholder="search"
+                            onChange={handleInputChange} // Update onChange handler
+                        />
+                    </div>
                     {props?.options?.loading && (
                         <div className="col-lg-12 allcentered p-2">
                             <div>
@@ -139,8 +152,10 @@ const SelectComponent = (props) => {
                                     }}
                                     className="col-lg-12 p-0"
                                 >
-                                    <div style={{ cursor: 'pointer', zIndex: 1000 }} className={cardstyles.searchitem}>
-                                        <div className={cardstyles.companyname}>{item[props?.label]}</div>
+                                    <div style={{ cursor: 'pointer', zIndex: 1000, fontSize: '11px' }} className={cardstyles.searchitem}>
+                                        <div style={{ fontSize: '11px' }} className={cardstyles.companyname}>
+                                            {item[props?.label]}
+                                        </div>
                                     </div>
                                 </div>
                             ))}

@@ -4,7 +4,9 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
+import { IoMdClose } from 'react-icons/io';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
+import { Modal } from 'react-bootstrap';
 
 import { Accordion, AccordionItem, AccordionItemPanel } from 'react-accessible-accordion';
 import API from '../../../API/API.js';
@@ -13,14 +15,18 @@ import { NotificationManager } from 'react-notifications';
 import { FaCheck } from 'react-icons/fa';
 import { IoMdTime } from 'react-icons/io';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
+import Form from '../../Form.js';
+import Select from 'react-select';
+import { defaultstyles } from '../Generalfiles/selectstyles.js';
 
 const CourierSheet = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, courierSheetStatusesContext, dateformatter, orderStatusEnumContext } = useContext(Contexthandlerscontext);
-    const { useLazyQueryGQL, useQueryGQL, fetchCourierSheet, updateCourierSheet, useMutationGQL } = API();
+    const { useLazyQueryGQL, useQueryGQL, fetchCourierSheet, updateCourierSheet, useMutationGQL, updateOrdersStatus } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
+    const [changestatusmodal, setchangestatusmodal] = useState(false);
 
     const [sheetID, setsheetID] = useState(null);
     const [submitSheetPayload, setsubmitSheetPayload] = useState({});
@@ -28,7 +34,10 @@ const CourierSheet = (props) => {
     const [buttonLoading, setbuttonLoading] = useState(false);
     const [fetchCourierSheetLazyQuery] = useLazyQueryGQL(fetchCourierSheet());
     const [fetchCourierSheetQuery, setfetchCourierSheetQuery] = useState({});
-    // const fetchCourierSheetQuery = useQueryGQL('', fetchCourierSheet(sheetID));
+    const [statuspayload, setstatuspayload] = useState({
+        orderid: '',
+        status: '',
+    });
     useEffect(() => {
         setpageactive_context('/CourierSheet');
         if (queryParameters.get('id')) {
@@ -42,6 +51,10 @@ const CourierSheet = (props) => {
         id: submitSheetPayload?.id,
         // ordersCount: submitSheetPayload?.orderCount,
         updateSheetOrders: submitSheetPayload?.updateSheetOrders?.filter((item) => item.status == 'adminAccepted' || item.status == 'financeAccepted'),
+    });
+    const [updateOrdersStatusMutation] = useMutationGQL(updateOrdersStatus(), {
+        ids: [parseInt(statuspayload?.orderid)],
+        status: statuspayload?.status,
     });
 
     const handleupdateCourierSheet = async () => {
@@ -79,6 +92,7 @@ const CourierSheet = (props) => {
         }
         setbuttonLoading(false);
     };
+    const [submit, setsubmit] = useState(false);
 
     // Initialize the expanded state for each accordion item
     const [expandedItems, setExpandedItems] = useState([]);
@@ -116,6 +130,7 @@ const CourierSheet = (props) => {
                 description: '',
                 price: item?.order?.price,
                 shippingPrice: item?.order?.shippingPrice,
+                orderStatus: item?.order?.status,
             });
             temp.updateSheetOrders.push({
                 sheetOrderId: item?.id,
@@ -256,19 +271,21 @@ const CourierSheet = (props) => {
                                                                 {item?.order?.type?.split(/(?=[A-Z])/).join(' ')}
                                                             </div>
                                                             <div
+                                                                onClick={() => {
+                                                                    setstatuspayload({ ...statuspayload, orderid: item.id });
+
+                                                                    setchangestatusmodal(true);
+                                                                }}
+                                                                style={{ cursor: 'pointer' }}
                                                                 className={
-                                                                    item.status == 'delivered'
-                                                                        ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered  '
-                                                                        : item?.status == 'postponed' || item?.status == 'failedDeliveryAttempt'
-                                                                        ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 allcentered '
-                                                                        : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered '
+                                                                    item.status == 'delivered' || item.status == 'partiallyDelivered' || item.status == 'returned' || item.status == 'partiallyReturned'
+                                                                        ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 text-capitalize '
+                                                                        : item?.status == 'cancelled' || item?.status == 'failedDeliveryAttempt'
+                                                                        ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 text-capitalize '
+                                                                        : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 text-capitalize '
                                                                 }
                                                             >
-                                                                {orderStatusEnumContext?.map((i, ii) => {
-                                                                    if (i.value == item?.order?.status) {
-                                                                        return <span>{i.label}</span>;
-                                                                    }
-                                                                })}
+                                                                <span>{tempsheetpayload?.orderStatus?.split(/(?=[A-Z])/).join(' ')}</span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -403,7 +420,19 @@ const CourierSheet = (props) => {
                                     {type == 'finance' && (
                                         <div class="col-lg-12 p-3 mt-2">
                                             <div class="row m-0 w-100 d-flex">
-                                                <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4">
+                                                <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-3">
+                                                    <div class="row m-0 w-100">
+                                                        <div class="col-lg-12 p-0 allcentered text-center">
+                                                            <span style={{ fontWeight: 400, fontSize: '11px' }}>Collected</span>
+                                                        </div>
+                                                        <div class="col-lg-12 p-0 allcentered text-center">
+                                                            <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                {parseFloat(item?.amountCollected)} {item?.order?.currency}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-3">
                                                     <div class="row m-0 w-100">
                                                         <div class="col-lg-12 p-0 allcentered text-center">
                                                             <span style={{ fontWeight: 400, fontSize: '11px' }}>Price</span>
@@ -415,26 +444,27 @@ const CourierSheet = (props) => {
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4">
+                                                <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-3">
                                                     <div class="row m-0 w-100">
                                                         <div class="col-lg-12 p-0 allcentered text-center">
                                                             <span style={{ fontWeight: 400, fontSize: '11px' }}>Shipping</span>
                                                         </div>
                                                         <div class="col-lg-12 p-0 allcentered text-center">
                                                             <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                {parseFloat(item?.order?.shippingPrice)} {item?.order?.currency}
+                                                                {tempsheetpayload?.shippingCollected ? parseFloat(item?.order?.shippingPrice) : 0} {item?.order?.currency}
                                                             </span>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div style={{ fontWeight: 600, fontSize: '15px' }} className=" p-0 mb-2 allcentered col-lg-4">
+                                                <div style={{ fontWeight: 600, fontSize: '15px' }} className=" p-0 mb-2 allcentered col-lg-3">
                                                     <div class="row m-0 w-100">
                                                         <div class="col-lg-12 p-0 allcentered text-center">
                                                             <span style={{ fontWeight: 400, fontSize: '11px' }}>Total</span>
                                                         </div>
                                                         <div class="col-lg-12 p-0 allcentered text-center">
                                                             <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                {parseFloat(item?.order?.price) + parseFloat(item?.order?.shippingPrice)} {item?.order?.currency}
+                                                                {parseFloat(item?.order?.price) + (tempsheetpayload?.shippingCollected ? parseFloat(item?.order?.shippingPrice) : 0)}{' '}
+                                                                {item?.order?.currency}
                                                             </span>
                                                         </div>
                                                     </div>
@@ -485,14 +515,14 @@ const CourierSheet = (props) => {
                                                                             <div class={type == 'admin' ? 'col-lg-4 ' : 'col-lg-6 '}>
                                                                                 <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
                                                                                     <div>
-                                                                                        {subitem?.partialCount && (
+                                                                                        {/* {subitem?.partialCount && (
                                                                                             <div
                                                                                                 style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }}
                                                                                                 class="row m-0 w-100 p-1 px-2"
                                                                                             >
                                                                                                 {parseFloat(subitem.count) - parseFloat(subitem.partialCount)}/{subitem.count}
                                                                                             </div>
-                                                                                        )}
+                                                                                        )} */}
                                                                                         {!subitem?.partialCount && (
                                                                                             <div
                                                                                                 style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }}
@@ -672,6 +702,104 @@ const CourierSheet = (props) => {
                     </div>
                 </div>
             </div>
+            <Modal
+                show={changestatusmodal}
+                onHide={() => {
+                    setchangestatusmodal(false);
+                }}
+                centered
+                size={'md'}
+            >
+                <Modal.Header>
+                    <div className="row w-100 m-0 p-0">
+                        <div class="col-lg-6 pt-3 ">
+                            <div className="row w-100 m-0 p-0">Update Order Status</div>
+                        </div>
+                        <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
+                            <div
+                                class={'close-modal-container'}
+                                onClick={() => {
+                                    setchangestatusmodal(false);
+                                }}
+                            >
+                                <IoMdClose />
+                            </div>
+                        </div>{' '}
+                    </div>
+                </Modal.Header>
+                <Modal.Body>
+                    <div class="row m-0 w-100 py-2">
+                        <div class={'col-lg-12 mb-3'}>
+                            <label for="name" class={formstyles.form__label}>
+                                Status
+                            </label>
+                            <Select
+                                options={orderStatusEnumContext}
+                                styles={defaultstyles}
+                                value={orderStatusEnumContext.filter((option) => option.value == statuspayload?.status)}
+                                onChange={(option) => {
+                                    setstatuspayload({ ...statuspayload, status: option.value });
+                                }}
+                            />
+                        </div>
+                        <div class="col-lg-12 mb-3 allcentered">
+                            <button
+                                onClick={async () => {
+                                    try {
+                                        const { data } = await updateOrdersStatusMutation();
+                                        var temp = { ...submitSheetPayload };
+
+                                        temp.updateSheetOrders.map((i, ii) => {
+                                            if (i.sheetOrderId == statuspayload.orderid) {
+                                                temp.updateSheetOrderstemp[ii].orderStatus = statuspayload?.status;
+                                            }
+                                        });
+                                        setsubmitSheetPayload({ ...temp });
+
+                                        setstatuspayload({ status: '', orderid: '' });
+                                    } catch (error) {
+                                        let errorMessage = 'An unexpected error occurred';
+                                        if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                            errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                        } else if (error.networkError) {
+                                            errorMessage = error.networkError.message || errorMessage;
+                                        } else if (error.message) {
+                                            errorMessage = error.message;
+                                        }
+
+                                        NotificationManager.warning(errorMessage, 'Warning!');
+                                    }
+                                }}
+                                class={generalstyles.roundbutton}
+                            >
+                                Update Status
+                            </button>
+                        </div>
+                        {/* <Form
+                            size={'md'}
+                            submit={submit}
+                            setsubmit={setsubmit}
+                            attr={[
+                                {
+                                    name: 'Status',
+                                    attr: 'status',
+                                    type: 'select',
+                                    options: orderStatusEnumContext,
+                                    size: '12',
+                                },
+                            ]}
+                            payload={statuspayload}
+                            setpayload={setstatuspayload}
+                            // button1disabled={UserMutation.isLoading}
+                            button1class={generalstyles.roundbutton + '  mr-2 '}
+                            button1placeholder={'Update status'}
+                            button1onClick={() => {
+                                setchangestatusmodal(false);
+                            }}
+                        /> */}
+                    </div>
+                </Modal.Body>
+            </Modal>
         </div>
     );
 };

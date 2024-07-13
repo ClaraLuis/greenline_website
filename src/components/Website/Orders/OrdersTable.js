@@ -166,9 +166,9 @@ const OrdersTable = (props) => {
                                                         // }}
                                                         // style={{ cursor: 'pointer' }}
                                                         className={
-                                                            item.status == 'delivered'
+                                                            item.status == 'delivered' || item.status == 'partiallyDelivered' || item.status == 'returned' || item.status == 'partiallyReturned'
                                                                 ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 '
-                                                                : item?.status == 'postponed' || item?.status == 'failedDeliveryAttempt'
+                                                                : item?.status == 'cancelled' || item?.status == 'failedDeliveryAttempt'
                                                                 ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 '
                                                                 : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 '
                                                         }

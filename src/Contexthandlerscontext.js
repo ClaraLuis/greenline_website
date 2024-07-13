@@ -402,6 +402,18 @@ export const Contexthandlerscontext_provider = (props) => {
                         permissionpage: [1],
                         show: isAuth([1, 51]),
                     },
+                    {
+                        name: 'Expenses',
+                        isselected: false,
+                        icon: (
+                            <i class={'allcentered'}>
+                                <BiTransfer size={18} />
+                            </i>
+                        ),
+                        path: '/expenses',
+                        permissionpage: [1],
+                        show: isAuth([1, 51]),
+                    },
                 ],
             },
             // {
