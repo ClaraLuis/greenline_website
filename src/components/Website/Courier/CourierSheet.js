@@ -150,25 +150,34 @@ const CourierSheet = (props) => {
 
         setsubmitSheetPayload({ ...temp });
     }, [fetchCourierSheetQuery?.data]);
-    useEffect(async () => {
+    useEffect(() => {
         const fetchData = async () => {
             if (sheetID) {
                 try {
                     const { data } = await fetchCourierSheetLazyQuery({
                         variables: { id: parseInt(sheetID) },
                     });
-                    await setfetchCourierSheetQuery({ data: data });
+                    setfetchCourierSheetQuery({ data: data });
                 } catch (error) {
                     console.error('Error fetching data:', error);
                 }
             }
         };
 
-        await fetchData();
-        const element = document.getElementById('28');
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth' });
-        }
+        const executeScroll = async () => {
+            await fetchData();
+            // setTimeout(() => {
+            //     const element = document.querySelector('#id22');
+
+            //     if (element) {
+            //         element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            //     } else {
+            //         console.error('Element with ID "id28" not found');
+            //     }
+            // }, 1000);
+        };
+
+        executeScroll();
     }, [sheetID, fetchCourierSheetLazyQuery]);
 
     const fetchCourierSheets = (status) => {
@@ -211,7 +220,7 @@ const CourierSheet = (props) => {
                                 key={index}
                             >
                                 <AccordionItem uuid={index} style={{}} className={generalstyles.filter_container + ' col-lg-12 p-4 mb-3'}>
-                                    <div id={JSON.stringify(item.id)} className={' col-lg-12 p-0'}>
+                                    <div id={'id' + JSON.stringify(item.id)} className={' col-lg-12 p-0'}>
                                         <div className="row m-0 w-100">
                                             <div className="col-lg-7 p-0">
                                                 <div className="row m-0 w-100">
@@ -775,6 +784,7 @@ const CourierSheet = (props) => {
                                 Update Status
                             </button>
                         </div>
+
                         {/* <Form
                             size={'md'}
                             submit={submit}
@@ -800,6 +810,9 @@ const CourierSheet = (props) => {
                     </div>
                 </Modal.Body>
             </Modal>
+            <div class="col-lg-12" id={'id'}>
+                vnuirnve
+            </div>
         </div>
     );
 };
