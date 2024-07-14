@@ -94,7 +94,7 @@ const TransactionsTable = (props) => {
                             <div class="row m-0 w-100">
                                 <FaLayerGroup size={40} class=" col-lg-12" />
                                 <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
-                                    No Transactions
+                                    {props?.srctype == 'expenses' ? 'No Expenses' : 'No Transactions'}
                                 </div>
                             </div>
                         </div>
@@ -275,7 +275,7 @@ const TransactionsTable = (props) => {
                                                 </>
                                             )}
 
-                                            {props?.srctype != 'all' && props?.srctype != 'courierCollection' && (
+                                            {props?.srctype != 'all' && props?.srctype != 'courierCollection' && props?.srctype != 'expenses' && (
                                                 <div className="col-lg-12 p-0 mb-1">
                                                     <span class="d-flex align-items-center" style={{ fontWeight: 600, color: props?.srctype == 'recieved' ? '#4C8CF5' : '#1EC000' }}>
                                                         <MdOutlineAccountCircle class="mr-1" />
@@ -287,7 +287,7 @@ const TransactionsTable = (props) => {
                                             <div className="col-lg-12 p-0 mb-1">
                                                 <span class="d-flex align-items-center" style={{ fontWeight: 600 }}>
                                                     <TbFileDescription class="mr-1" />
-                                                    {item?.description}
+                                                    {props?.srctype == 'expenses' ? item?.comment : item?.description}
                                                 </span>
                                             </div>
                                             {props?.allowSelect && selected && (

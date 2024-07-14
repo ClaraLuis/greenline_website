@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
+import { DateRangePicker } from 'rsuite';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
@@ -22,6 +23,8 @@ import SelectComponent from '../../SelectComponent.js';
 import Cookies from 'universal-cookie';
 import WaybillPrint from '../Orders/WaybillPrint.js';
 import { FiCheckCircle, FiCircle } from 'react-icons/fi';
+import MultiSelect from '../../MultiSelect.js';
+import { NotificationManager } from 'react-notifications';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -30,18 +33,26 @@ const MerchantOrders = (props) => {
     let history = useHistory();
     const cookies = new Cookies();
 
-    const { setpageactive_context, setpagetitle_context, dateformatter, UserInfoContext, isAuth } = useContext(Contexthandlerscontext);
-    const { fetchMerchants, useQueryGQL, fetchOrders } = API();
+    const { setpageactive_context, orderStatusEnumContext, orderTypeContext, paymentTypeContext, isAuth, courierSheetStatusesContext } = useContext(Contexthandlerscontext);
+    const { fetchMerchants, useQueryGQL, fetchOrders, fetchCouriers, fetchGovernorates } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
+    const [search, setsearch] = useState('');
 
     const [merchantModal, setmerchantModal] = useState(false);
 
     const [filterorders, setfilterorders] = useState({
+        limit: 20,
+    });
+    const [filterordersLast, setfilterordersLast] = useState({
         statuses: [],
         limit: 20,
     });
+    const fetchGovernoratesQuery = useQueryGQL('', fetchGovernorates());
+
     const fetchOrdersQuery = useQueryGQL('', fetchOrders(), filterorders);
+    const { refetch: refetchOrdersQuery } = useQueryGQL('', fetchOrders(), filterorders);
+
     const [filterMerchants, setfilterMerchants] = useState({
         isAsc: true,
         limit: 20,
@@ -49,7 +60,13 @@ const MerchantOrders = (props) => {
         beforeCursor: undefined,
     });
     const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filterMerchants);
-
+    const [filterCouriers, setfilterCouriers] = useState({
+        isAsc: true,
+        limit: 10,
+        afterCursor: undefined,
+        beforeCursor: undefined,
+    });
+    const fetchCouriersQuery = useQueryGQL('', fetchCouriers(), filterCouriers);
     useEffect(() => {
         setpageactive_context('/merchantorders');
     }, []);
@@ -64,6 +81,10 @@ const MerchantOrders = (props) => {
 
         setWaybills(selectedOrdersDetails);
     }, [selectedOrders]);
+
+    useEffect(() => {
+        refetchOrdersQuery();
+    }, [filterorders]);
 
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
@@ -132,20 +153,174 @@ const MerchantOrders = (props) => {
                             <AccordionItemPanel>
                                 <hr className="mt-2 mb-3" />
                                 <div class="row m-0 w-100">
-                                    <div class={'col-lg-2'} style={{ marginBottom: '15px' }}>
-                                        <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
-                                            <label for="name" class={formstyles.form__label}>
-                                                From date
-                                            </label>
-                                            <input type={'date'} class={formstyles.form__field} placeholder={''} />
-                                        </div>
+                                    <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                        <MultiSelect
+                                            title={'Merchants'}
+                                            filter={filterMerchants}
+                                            setfilter={setfilterMerchants}
+                                            options={fetchMerchantsQuery}
+                                            attr={'paginateMerchants'}
+                                            label={'name'}
+                                            value={'id'}
+                                            selected={filterorders?.merchantIds}
+                                            onClick={(option) => {
+                                                var tempArray = filterorders?.merchantIds ?? [];
+
+                                                if (!tempArray?.includes(option.id)) {
+                                                    tempArray.push(option.id);
+                                                } else {
+                                                    tempArray.splice(tempArray?.indexOf(option?.id), 1);
+                                                }
+                                                setfilterorders({ ...filterorders, merchantIds: tempArray?.length != 0 ? tempArray : undefined });
+                                            }}
+                                        />
                                     </div>
-                                    <div class={'col-lg-2'} style={{ marginBottom: '15px' }}>
-                                        <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
-                                            <label for="name" class={formstyles.form__label}>
-                                                To date
-                                            </label>
-                                            <input type={'date'} class={formstyles.form__field} placeholder={''} />
+                                    <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                        <MultiSelect
+                                            title={'Status'}
+                                            options={orderStatusEnumContext}
+                                            label={'label'}
+                                            value={'value'}
+                                            selected={filterorders?.statuses}
+                                            onClick={(option) => {
+                                                var tempArray = filterorders?.statuses ?? [];
+
+                                                if (!tempArray?.includes(option.value)) {
+                                                    tempArray.push(option.value);
+                                                } else {
+                                                    tempArray.splice(tempArray?.indexOf(option?.value), 1);
+                                                }
+                                                setfilterorders({ ...filterorders, statuses: tempArray?.length != 0 ? tempArray : undefined });
+                                            }}
+                                        />
+                                    </div>
+                                    <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                        <MultiSelect
+                                            title={'Types'}
+                                            options={orderTypeContext}
+                                            label={'label'}
+                                            value={'value'}
+                                            selected={filterorders?.types}
+                                            onClick={(option) => {
+                                                var tempArray = filterorders?.types ?? [];
+                                                if (!tempArray?.includes(option.value)) {
+                                                    tempArray.push(option.value);
+                                                } else {
+                                                    tempArray.splice(tempArray?.indexOf(option?.value), 1);
+                                                }
+                                                setfilterorders({ ...filterorders, types: tempArray?.length != 0 ? tempArray : undefined });
+                                            }}
+                                        />
+                                    </div>
+                                    <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                        <MultiSelect
+                                            title={'Payment Types'}
+                                            options={paymentTypeContext}
+                                            label={'label'}
+                                            value={'value'}
+                                            selected={filterorders?.paymentTypeContext}
+                                            onClick={(option) => {
+                                                var tempArray = filterorders?.paymentTypeContext ?? [];
+                                                if (!tempArray?.includes(option.value)) {
+                                                    tempArray.push(option.value);
+                                                } else {
+                                                    tempArray.splice(tempArray?.indexOf(option?.value), 1);
+                                                }
+                                                setfilterorders({ ...filterorders, paymentTypeContext: tempArray?.length != 0 ? tempArray : undefined });
+                                            }}
+                                        />
+                                    </div>
+                                    <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                        <MultiSelect
+                                            title={'Couriers'}
+                                            filter={filterCouriers}
+                                            setfilter={setfilterCouriers}
+                                            options={fetchCouriersQuery}
+                                            attr={'paginateCouriers'}
+                                            label={'name'}
+                                            value={'id'}
+                                            selected={filterorders?.courierIds}
+                                            onClick={(option) => {
+                                                var tempArray = filterorders?.courierIds ?? [];
+
+                                                if (!tempArray?.includes(option.id)) {
+                                                    tempArray.push(option.id);
+                                                } else {
+                                                    tempArray.splice(tempArray?.indexOf(option?.id), 1);
+                                                }
+                                                setfilterorders({ ...filterorders, courierIds: tempArray?.length != 0 ? tempArray : undefined });
+                                            }}
+                                        />
+                                    </div>
+                                    <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                        <MultiSelect
+                                            title={'Governorates'}
+                                            options={fetchGovernoratesQuery}
+                                            attr={'findAllDomesticGovernorates'}
+                                            label={'name'}
+                                            value={'id'}
+                                            selected={filterorders?.governorateIds}
+                                            onClick={(option) => {
+                                                var tempArray = filterorders?.governorateIds ?? [];
+
+                                                if (!tempArray?.includes(option.id)) {
+                                                    tempArray.push(option.id);
+                                                } else {
+                                                    tempArray.splice(tempArray?.indexOf(option?.id), 1);
+                                                }
+                                                setfilterorders({ ...filterorders, governorateIds: tempArray?.length != 0 ? tempArray : undefined });
+                                            }}
+                                        />
+                                    </div>
+                                    <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                        <MultiSelect
+                                            title={'Manifest Status'}
+                                            options={courierSheetStatusesContext}
+                                            label={'label'}
+                                            value={'value'}
+                                            selected={filterorders?.manifestStatuses}
+                                            onClick={(option) => {
+                                                var tempArray = filterorders?.manifestStatuses ?? [];
+
+                                                if (!tempArray?.includes(option.value)) {
+                                                    tempArray.push(option.value);
+                                                } else {
+                                                    tempArray.splice(tempArray?.indexOf(option?.value), 1);
+                                                }
+                                                setfilterorders({ ...filterorders, manifestStatuses: tempArray?.length != 0 ? tempArray : undefined });
+                                            }}
+                                        />
+                                    </div>
+                                    <div class=" col-lg-3 mb-md-2">
+                                        <span>Date Range</span>
+                                        <div class="mt-1" style={{ width: '100%' }}>
+                                            <DateRangePicker
+                                                style={{ color: 'black' }}
+                                                // disabledDate={allowedMaxDays(30)}
+                                                value={[filterorders?.fromDate, filterorders?.toDate]}
+                                                onChange={(event) => {
+                                                    if (event != null) {
+                                                        const start = event[0];
+                                                        const startdate = new Date(start);
+                                                        const year1 = startdate.getFullYear();
+                                                        const month1 = startdate.getMonth() + 1; // Months are zero-indexed
+                                                        const day1 = startdate.getDate();
+
+                                                        const end = event[1];
+                                                        const enddate = new Date(end);
+                                                        const year2 = enddate.getFullYear();
+                                                        const month2 = enddate.getMonth() + 1; // Months are zero-indexed
+                                                        const day2 = enddate.getDate();
+                                                        setfilterorders({
+                                                            ...filterorders,
+                                                            fromDate: event[0],
+                                                            toDate: event[1],
+                                                            // from_date: year1 + '-' + month1 + '-' + day1,
+                                                            // to_date: year2 + '-' + month2 + '-' + day2,
+                                                        });
+                                                    }
+                                                }}
+                                            />
                                         </div>
                                     </div>
                                 </div>
@@ -154,18 +329,28 @@ const MerchantOrders = (props) => {
                     </Accordion>
                 </div>
                 <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-2'}>
-                    <div class="col-lg-12 p-0 ">
+                    <div class="col-lg-10 p-0 ">
                         <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
                             <input
-                                // disabled={props?.disabled}
-                                // type={props?.type}
                                 class={formstyles.form__field}
-                                // value={}
-                                placeholder={'Search by order# '}
-
-                                // onChange={}
+                                value={search}
+                                placeholder={'Search by phone, email, street address, country, city or zipcode'}
+                                onChange={(event) => {
+                                    setsearch(event.target.value);
+                                }}
                             />
                         </div>
+                    </div>
+                    <div class="col-lg-2 p-0 allcentered">
+                        <button
+                            style={{ height: '30px', minWidth: '80%' }}
+                            class={generalstyles.roundbutton + ' allcentered p-0'}
+                            onClick={() => {
+                                setfilterorders({ ...filterorders, name: search });
+                            }}
+                        >
+                            search
+                        </button>
                     </div>
                 </div>
 

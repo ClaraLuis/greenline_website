@@ -252,7 +252,7 @@ const Expenses = (props) => {
                                     width={'50%'}
                                     query={fetchExpensesQuery}
                                     paginationAttr="paginateExpenses"
-                                    srctype="all"
+                                    srctype="expenses"
                                     refetchFunc={() => {
                                         Refetch();
                                     }}

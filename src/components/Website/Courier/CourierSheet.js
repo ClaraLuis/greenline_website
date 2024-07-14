@@ -262,6 +262,19 @@ const CourierSheet = (props) => {
                                                         </label>
                                                     </div>
 
+                                                    <div className="col-lg-12 mt-1">
+                                                        <span>{item?.order?.customerInfo?.customerName}</span>
+                                                        {item?.order?.customer && (
+                                                            <>
+                                                                <br />
+                                                                <span>{item?.order?.customer?.email}</span>
+
+                                                                <br />
+                                                                <span>{item?.order?.customer?.phone}</span>
+                                                            </>
+                                                        )}
+                                                    </div>
+
                                                     <div class="col-lg-12 p-0 d-flex justify-content-start mb-1 mt-3">
                                                         <div className="row m-0 w-100 d-flex align-items-center justify-content-start">
                                                             <div style={{ background: '#eee', color: 'black' }} className={' wordbreak rounded-pill font-weight-600 allcentered '}>
@@ -280,7 +293,9 @@ const CourierSheet = (props) => {
                                                                 {item?.order?.type?.split(/(?=[A-Z])/).join(' ')}
                                                             </div>
                                                             <div
-                                                                onClick={() => {
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+
                                                                     setstatuspayload({ ...statuspayload, orderid: item.id });
 
                                                                     setchangestatusmodal(true);

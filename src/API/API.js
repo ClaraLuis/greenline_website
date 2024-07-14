@@ -883,7 +883,7 @@ const API = () => {
     };
     const fetchCourierSheet = () => {
         return gql`
-            query CourierSheet($id: Int!, $merchantId: Int) {
+            query CourierSheet($id: Int!) {
                 CourierSheet(id: $id) {
                     id
                     status
@@ -908,9 +908,9 @@ const API = () => {
                             customer {
                                 email
                                 phone
-                                details(merchantId: $merchantId) {
-                                    customerName
-                                }
+                            }
+                            customerInfo {
+                                customerName
                             }
 
                             merchant {
