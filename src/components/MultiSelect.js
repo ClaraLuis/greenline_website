@@ -159,7 +159,35 @@ const MultiSelect = (props) => {
                             </div>
                         </div>
                     )}
-
+                    <div
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            props?.onClick('All');
+                            // setshowmenu(false);
+                        }}
+                        className="col-lg-12 p-0"
+                    >
+                        <div style={{ cursor: 'pointer', zIndex: 1000, fontSize: '11px' }} className={cardstyles.searchitem}>
+                            <div style={{ justifyContent: 'space-between' }} className={formstyles.companyname + ' row m-0 w-100 d-flex align-items-center'}>
+                                {'All'}
+                                <div className={' m-0 pt-1 pb-1 pl-2 pr-2 '} style={{ borderRadius: '5px' }}>
+                                    <label className={`${generalstyles.checkbox} ${checkboxstyles.checkbox} ` + ' d-flex mb-0 '}>
+                                        <input
+                                            id={'all'}
+                                            type="checkbox"
+                                            onChange={(event) => {}}
+                                            checked={props?.selected == undefined || props?.selected?.length == 0}
+                                            className={checkboxstyles.checkboxinputstyles + ' mt-auto mb-auto '}
+                                            // checked={fetchcustomercartQueryContext?.data?.data?.customercart.paymentmethod === 'cod' ? true : false}
+                                        />
+                                        <svg viewBox="0 0 21 21" className={checkboxstyles.svgstyles + ' h-100 '}>
+                                            <path d="M5,10.75 L8.5,14.25 L19.4,2.3 C18.8333333,1.43333333 18.0333333,1 17,1 L4,1 C2.35,1 1,2.35 1,4 L1,17 C1,18.65 2.35,20 4,20 L17,20 C18.65,20 20,18.65 20,17 L20,7.99769186"></path>
+                                        </svg>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     {!props?.options?.loading && (
                         <>
                             {filteredData?.map((item, index) => {

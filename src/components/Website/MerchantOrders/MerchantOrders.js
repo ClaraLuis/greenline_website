@@ -166,11 +166,16 @@ const MerchantOrders = (props) => {
                                             onClick={(option) => {
                                                 var tempArray = filterorders?.merchantIds ?? [];
 
-                                                if (!tempArray?.includes(option.id)) {
-                                                    tempArray.push(option.id);
+                                                if (option == 'All') {
+                                                    tempArray = undefined;
                                                 } else {
-                                                    tempArray.splice(tempArray?.indexOf(option?.id), 1);
+                                                    if (!tempArray?.includes(option.id)) {
+                                                        tempArray.push(option.id);
+                                                    } else {
+                                                        tempArray.splice(tempArray?.indexOf(option?.id), 1);
+                                                    }
                                                 }
+
                                                 setfilterorders({ ...filterorders, merchantIds: tempArray?.length != 0 ? tempArray : undefined });
                                             }}
                                         />
@@ -184,11 +189,14 @@ const MerchantOrders = (props) => {
                                             selected={filterorders?.statuses}
                                             onClick={(option) => {
                                                 var tempArray = filterorders?.statuses ?? [];
-
-                                                if (!tempArray?.includes(option.value)) {
-                                                    tempArray.push(option.value);
+                                                if (option == 'All') {
+                                                    tempArray = undefined;
                                                 } else {
-                                                    tempArray.splice(tempArray?.indexOf(option?.value), 1);
+                                                    if (!tempArray?.includes(option.value)) {
+                                                        tempArray.push(option.value);
+                                                    } else {
+                                                        tempArray.splice(tempArray?.indexOf(option?.value), 1);
+                                                    }
                                                 }
                                                 setfilterorders({ ...filterorders, statuses: tempArray?.length != 0 ? tempArray : undefined });
                                             }}
@@ -203,10 +211,14 @@ const MerchantOrders = (props) => {
                                             selected={filterorders?.types}
                                             onClick={(option) => {
                                                 var tempArray = filterorders?.types ?? [];
-                                                if (!tempArray?.includes(option.value)) {
-                                                    tempArray.push(option.value);
+                                                if (option == 'All') {
+                                                    tempArray = undefined;
                                                 } else {
-                                                    tempArray.splice(tempArray?.indexOf(option?.value), 1);
+                                                    if (!tempArray?.includes(option.value)) {
+                                                        tempArray.push(option.value);
+                                                    } else {
+                                                        tempArray.splice(tempArray?.indexOf(option?.value), 1);
+                                                    }
                                                 }
                                                 setfilterorders({ ...filterorders, types: tempArray?.length != 0 ? tempArray : undefined });
                                             }}
@@ -221,10 +233,14 @@ const MerchantOrders = (props) => {
                                             selected={filterorders?.paymentTypeContext}
                                             onClick={(option) => {
                                                 var tempArray = filterorders?.paymentTypeContext ?? [];
-                                                if (!tempArray?.includes(option.value)) {
-                                                    tempArray.push(option.value);
+                                                if (option == 'All') {
+                                                    tempArray = undefined;
                                                 } else {
-                                                    tempArray.splice(tempArray?.indexOf(option?.value), 1);
+                                                    if (!tempArray?.includes(option.value)) {
+                                                        tempArray.push(option.value);
+                                                    } else {
+                                                        tempArray.splice(tempArray?.indexOf(option?.value), 1);
+                                                    }
                                                 }
                                                 setfilterorders({ ...filterorders, paymentTypeContext: tempArray?.length != 0 ? tempArray : undefined });
                                             }}
@@ -242,11 +258,14 @@ const MerchantOrders = (props) => {
                                             selected={filterorders?.courierIds}
                                             onClick={(option) => {
                                                 var tempArray = filterorders?.courierIds ?? [];
-
-                                                if (!tempArray?.includes(option.id)) {
-                                                    tempArray.push(option.id);
+                                                if (option == 'All') {
+                                                    tempArray = undefined;
                                                 } else {
-                                                    tempArray.splice(tempArray?.indexOf(option?.id), 1);
+                                                    if (!tempArray?.includes(option.id)) {
+                                                        tempArray.push(option.id);
+                                                    } else {
+                                                        tempArray.splice(tempArray?.indexOf(option?.id), 1);
+                                                    }
                                                 }
                                                 setfilterorders({ ...filterorders, courierIds: tempArray?.length != 0 ? tempArray : undefined });
                                             }}
@@ -262,11 +281,14 @@ const MerchantOrders = (props) => {
                                             selected={filterorders?.governorateIds}
                                             onClick={(option) => {
                                                 var tempArray = filterorders?.governorateIds ?? [];
-
-                                                if (!tempArray?.includes(option.id)) {
-                                                    tempArray.push(option.id);
+                                                if (option == 'All') {
+                                                    tempArray = undefined;
                                                 } else {
-                                                    tempArray.splice(tempArray?.indexOf(option?.id), 1);
+                                                    if (!tempArray?.includes(option.id)) {
+                                                        tempArray.push(option.id);
+                                                    } else {
+                                                        tempArray.splice(tempArray?.indexOf(option?.id), 1);
+                                                    }
                                                 }
                                                 setfilterorders({ ...filterorders, governorateIds: tempArray?.length != 0 ? tempArray : undefined });
                                             }}
@@ -281,11 +303,14 @@ const MerchantOrders = (props) => {
                                             selected={filterorders?.manifestStatuses}
                                             onClick={(option) => {
                                                 var tempArray = filterorders?.manifestStatuses ?? [];
-
-                                                if (!tempArray?.includes(option.value)) {
-                                                    tempArray.push(option.value);
+                                                if (option == 'All') {
+                                                    tempArray = undefined;
                                                 } else {
-                                                    tempArray.splice(tempArray?.indexOf(option?.value), 1);
+                                                    if (!tempArray?.includes(option.value)) {
+                                                        tempArray.push(option.value);
+                                                    } else {
+                                                        tempArray.splice(tempArray?.indexOf(option?.value), 1);
+                                                    }
                                                 }
                                                 setfilterorders({ ...filterorders, manifestStatuses: tempArray?.length != 0 ? tempArray : undefined });
                                             }}
