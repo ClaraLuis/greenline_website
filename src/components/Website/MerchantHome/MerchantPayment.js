@@ -21,12 +21,12 @@ import Form from '../../Form.js';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
-import TransactionsTable from './TransactionsTable.js';
+import TransactionsTable from '../Finance/TransactionsTable.js';
 import Pagination from '../../Pagination.js';
 import { FiCheckCircle, FiCircle } from 'react-icons/fi';
 import SelectComponent from '../../SelectComponent.js';
 
-const MerchantPayments = (props) => {
+const MerchantPayment = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, isAuth, financialAccountTypeContext } = useContext(Contexthandlerscontext);
@@ -61,7 +61,7 @@ const MerchantPayments = (props) => {
     const fetchMerchantPaymentTransactionsQuery = useQueryGQL('', fetchMerchantPaymentTransactions(), filterobj);
 
     useEffect(() => {
-        setpageactive_context('/merchantpayments');
+        setpageactive_context('/merchantpayment');
         setfilterobj({
             isAsc: true,
             limit: 20,
@@ -83,10 +83,6 @@ const MerchantPayments = (props) => {
     const [completeMerchantPaymentsMutation] = useMutationGQL(completeMerchantPayments(), {
         transactionIds: selectedArray,
         description: payload?.description,
-    });
-    const [updateFinancialAccountMutation] = useMutationGQL(updateFinancialAccount(), {
-        name: payload?.name,
-        id: payload?.id,
     });
 
     useEffect(() => {
@@ -231,61 +227,10 @@ const MerchantPayments = (props) => {
                 </div>
                 <div class="col-lg-12 p-0 ">
                     <div class="row m-0 w-100">
-                        <div class="col-lg-9 p-0">
+                        <div class="col-lg-12 p-0">
                             {isAuth([1, 51, 19]) && (
                                 <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
-                                    <div className="col-lg-6 p-0 d-flex justify-content-end ">
-                                        <div
-                                            onClick={() => {
-                                                var temp = [];
-                                                if (selectedArray?.length != fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data?.length) {
-                                                    fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data?.map((i, ii) => {
-                                                        temp.push(i.id);
-                                                    });
-                                                }
-                                                setselectedArray(temp);
-                                            }}
-                                            class="row m-0 w-100 d-flex align-items-center"
-                                            style={{
-                                                cursor: 'pointer',
-                                                // color:
-                                                //     selectedArray?.length == fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data?.length ? 'var(--success)' : '',
-                                            }}
-                                        >
-                                            <div
-                                                style={{
-                                                    width: '30px',
-                                                    height: '30px',
-                                                }}
-                                                className="iconhover allcentered mr-1"
-                                            >
-                                                {selectedArray?.length != fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data?.length && (
-                                                    <FiCircle
-                                                        style={{ transition: 'all 0.4s' }}
-                                                        color={
-                                                            selectedArray?.length == fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data?.length
-                                                                ? 'var(--success)'
-                                                                : ''
-                                                        }
-                                                        size={18}
-                                                    />
-                                                )}
-                                                {selectedArray?.length == fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data?.length && (
-                                                    <FiCheckCircle
-                                                        style={{ transition: 'all 0.4s' }}
-                                                        color={
-                                                            selectedArray?.length == fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data?.length
-                                                                ? 'var(--success)'
-                                                                : ''
-                                                        }
-                                                        size={18}
-                                                    />
-                                                )}
-                                            </div>
-                                            {selectedArray?.length != fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data?.length ? 'Select All' : 'Deselect All'}
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 p-0">
+                                    <div class="col-lg-12 p-0">
                                         <Pagination
                                             beforeCursor={fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.cursor?.beforeCursor}
                                             afterCursor={fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.cursor?.afterCursor}
@@ -295,120 +240,25 @@ const MerchantPayments = (props) => {
                                     </div>
                                     <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
                                         <TransactionsTable
-                                            width={'50%'}
+                                            width={'40%'}
                                             query={fetchMerchantPaymentTransactionsQuery}
                                             paginationAttr="paginateMerchantPaymentTransactions"
                                             srctype="all"
                                             refetchFunc={() => {
                                                 Refetch();
                                             }}
-                                            allowSelect={true}
-                                            selectedArray={selectedArray}
-                                            setselectedArray={setselectedArray}
+                                            // allowSelect={true}
+                                            // selectedArray={selectedArray}
+                                            // setselectedArray={setselectedArray}
                                         />
                                     </div>
                                 </div>
                             )}
                         </div>
-                        <div class="col-lg-3 ">
-                            <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
-                                <div class="col-lg-12 p-0 mb-3">
-                                    <span style={{ fontWeight: 600 }}>Total: </span>
-                                    {total}
-                                </div>
-                                <div class="col-lg-12">
-                                    <button
-                                        class={generalstyles.roundbutton + ' allcentered w-100'}
-                                        onClick={async () => {
-                                            // if(isAuth([1,]))
-                                            if (selectedArray?.length != 0) {
-                                                setopenModal(true);
-                                            } else {
-                                                NotificationManager.warning('Choose transactions first', 'Warning!');
-                                            }
-                                        }}
-                                    >
-                                        Complete
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
-                {/* <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
-                    <div class={' col-lg-12 col-md-12 col-sm-12 p-0 d-flex align-items-center justify-content-start '}>
-                        <p class=" p-0 m-0" style={{ fontSize: '15px' }}>
-                            <span style={{ color: 'var(--info)' }}>Transactions</span>
-                        </p>
-                    </div>
-                    <div   className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
-                        <TransactionsTable />
-                    </div>
-                </div> */}
             </div>
-            <Modal
-                show={openModal}
-                onHide={() => {
-                    setopenModal(false);
-                }}
-                centered
-                size={'md'}
-            >
-                <Modal.Header>
-                    <div className="row w-100 m-0 p-0">
-                        <div class="col-lg-6 pt-3 ">
-                            <div className="row w-100 m-0 p-0 text-capitalize">{'Account'}</div>
-                        </div>
-                        <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
-                            <div
-                                class={'close-modal-container'}
-                                onClick={() => {
-                                    setopenModal(false);
-                                }}
-                            >
-                                <IoMdClose />
-                            </div>
-                        </div>{' '}
-                    </div>
-                </Modal.Header>
-                <Modal.Body>
-                    <div class="row m-0 w-100 py-2">
-                        <Form
-                            size={'md'}
-                            submit={submit}
-                            setsubmit={setsubmit}
-                            attr={[{ name: 'Description', attr: 'description', type: 'textarea', size: '12' }]}
-                            payload={payload}
-                            setpayload={setpayload}
-                            button1disabled={buttonLoading}
-                            button1class={generalstyles.roundbutton + ' mr-2 '}
-                            button1placeholder={'Complete'}
-                            button1onClick={async () => {
-                                setbuttonLoading(true);
-                                try {
-                                    const { data } = await completeMerchantPaymentsMutation();
-                                    refetchMerchantPaymentTransactionsQuery();
-                                    setselectedArray([]);
-                                    setopenModal(false);
-                                } catch (error) {
-                                    let errorMessage = 'An unexpected error occurred';
-                                    if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-                                        errorMessage = error.graphQLErrors[0].message || errorMessage;
-                                    } else if (error.networkError) {
-                                        errorMessage = error.networkError.message || errorMessage;
-                                    } else if (error.message) {
-                                        errorMessage = error.message;
-                                    }
-
-                                    NotificationManager.warning(errorMessage, 'Warning!');
-                                }
-                                setbuttonLoading(false);
-                            }}
-                        />
-                    </div>
-                </Modal.Body>
-            </Modal>
         </div>
     );
 };
-export default MerchantPayments;
+export default MerchantPayment;

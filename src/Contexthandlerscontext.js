@@ -229,6 +229,18 @@ export const Contexthandlerscontext_provider = (props) => {
                         permissionpage: [1],
                         show: isAuth([1, 52]),
                     },
+                    {
+                        name: 'Merchant Payments',
+                        isselected: false,
+                        icon: (
+                            <i class={'allcentered'}>
+                                <MdSwitchAccount size={18} />
+                            </i>
+                        ),
+                        path: '/merchantpayment',
+                        permissionpage: [1],
+                        show: isAuth([1, 51, 19, 52]),
+                    },
                 ],
             },
             {
