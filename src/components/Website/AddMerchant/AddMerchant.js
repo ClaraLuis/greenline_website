@@ -20,12 +20,15 @@ import Stepper from '@mui/material/Stepper';
 import Typography from '@mui/material/Typography';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
+import { useQuery } from 'react-query';
+import Form from '../../Form.js';
 
 const AddMerchant = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, dateformatter, inventoryRentTypeContext } = useContext(Contexthandlerscontext);
-    const { useQueryGQL, useMutationGQL, fetchGovernorates, createMerchantDomesticShipping, updateMerchantDomesticShipping, fetchMerchants, addMerchant, createInventoryRent } = API();
+    const { useQueryGQL, useMutationGQL, fetchGovernorates, createMerchantDomesticShipping, updateMerchantDomesticShipping, fetchMerchants, addMerchant, createInventoryRent, fetchAllCountries } =
+        API();
     const steps = ['Merchant Info', 'Shipping', 'Inventory Settings'];
     const [buttonLoading, setbuttonLoading] = useState(false);
     const { lang, langdetect } = useContext(LanguageContext);
@@ -49,6 +52,11 @@ const AddMerchant = (props) => {
         startDate: undefined,
     });
 
+    const [addresspayload, setaddresspayload] = useState({
+        city: '',
+        country: 'Egypt',
+        streetAddress: '',
+    });
     const fetchGovernoratesQuery = useQueryGQL('', fetchGovernorates());
     const [createMerchantDomesticShippingMutation] = useMutationGQL(createMerchantDomesticShipping(), {
         merchantId: merchantId,
@@ -67,6 +75,10 @@ const AddMerchant = (props) => {
         overShipping: undefined,
         threshold: undefined,
     });
+    const fetchAllCountriesQuery = useQuery(['fetchAllCountries'], () => fetchAllCountries(), {
+        keepPreviousData: true,
+        staleTime: Infinity,
+    });
     const [filterMerchants, setfilterMerchants] = useState({
         isAsc: true,
         limit: 20,
@@ -82,6 +94,21 @@ const AddMerchant = (props) => {
         currency: merchantPayload?.currency,
         threshold: merchantPayload?.threshold,
         overShipping: merchantPayload?.overShipping,
+        address: {
+            country: addresspayload?.country,
+            city: addresspayload?.city,
+            buildingNumber: addresspayload?.buildingNumber,
+            apartmentFloor: addresspayload?.apartmentFloor,
+            streetAddress: addresspayload?.streetAddress,
+            governorateId: addresspayload?.country == 'Egypt' ? fetchGovernoratesQuery?.data?.findAllDomesticGovernorates?.filter((item) => item.name == addresspayload?.city)[0]?.id : undefined,
+        },
+        bankName: merchantPayload?.bankName,
+        bankNumber: merchantPayload?.bankNumber,
+        taxId: merchantPayload?.taxId,
+        ownerName: merchantPayload?.ownerName,
+        ownerEmail: merchantPayload?.ownerEmail,
+        ownerPhone: merchantPayload?.ownerPhone,
+        ownerBirthdate: merchantPayload?.ownerBirthdate,
     });
 
     const [createInventoryRentMutation] = useMutationGQL(createInventoryRent(), {
@@ -92,17 +119,25 @@ const AddMerchant = (props) => {
         sqaureMeter: inventorySettings?.sqaureMeter,
         merchantId: merchantId,
     });
-
+    const [orderTypes, setOrderTypes] = useState([
+        { label: 'Delivery', value: 'delivery' },
+        { label: 'Exchange', value: 'exchange' },
+        { label: 'Return', value: 'return' },
+    ]);
     useEffect(() => {
         if (fetchGovernoratesQuery?.data) {
             var temp = [];
             fetchGovernoratesQuery?.data?.findAllDomesticGovernorates?.map((item, index) => {
-                temp.push({
-                    name: item.name,
-                    id: item.id,
-                    shipping: 50,
-                    base: 20,
-                    vat: 0.14,
+                orderTypes?.map((orderType, orderTypeIndex) => {
+                    temp.push({
+                        name: item.name,
+                        id: item.id,
+                        shipping: 50,
+                        base: 20,
+                        vat: 0.14,
+                        post: 0.1,
+                        orderType: orderType?.value,
+                    });
                 });
             });
             setgovernoratesItems([...temp]);
@@ -112,6 +147,7 @@ const AddMerchant = (props) => {
     const [activeStep, setActiveStep] = React.useState(0);
     const [skippedarray, setskippedarray] = React.useState([]);
     const [skipped, setSkipped] = React.useState(new Set());
+    const [submit, setsubmit] = React.useState(false);
 
     const isStepOptional = (step) => {
         return step === 1 || step === 2;
@@ -121,13 +157,40 @@ const AddMerchant = (props) => {
         return skipped.has(step);
     };
 
+    const validateOwnerInfo = (payload) => {
+        const { ownerName, ownerBirthdate, ownerPhone, ownerEmail } = payload;
+        if (ownerName || ownerBirthdate || ownerPhone || ownerEmail) {
+            return ownerName && ownerBirthdate && ownerPhone && ownerEmail;
+        }
+        return true; // No owner info is fine, so we consider it valid
+    };
+
+    const validateBankInfo = (payload) => {
+        const { bankName, bankNumber, taxId } = payload;
+        if (bankName || bankNumber || taxId) {
+            return bankName && bankNumber && taxId;
+        }
+        return true; // No bank info is fine, so we consider it valid
+    };
+
     const handleNext = async () => {
         if (activeStep == 0) {
-            if (merchantPayload?.name?.length == 0) {
-                NotificationManager.warning('Name Can not be empty', 'Warning');
-            } else {
-                setActiveStep((prevActiveStep) => prevActiveStep + 1);
+            if (merchantPayload?.name?.length === 0) {
+                NotificationManager.warning('Name cannot be empty', 'Warning');
+                return;
             }
+
+            if (!validateOwnerInfo(merchantPayload)) {
+                NotificationManager.warning('Complete owner info', 'Warning');
+                return;
+            }
+
+            if (!validateBankInfo(merchantPayload)) {
+                NotificationManager.warning('Complete bank info', 'Warning');
+                return;
+            }
+
+            setActiveStep((prevActiveStep) => prevActiveStep + 1);
         } else if (activeStep == 1) {
             setActiveStep((prevActiveStep) => prevActiveStep + 1);
         } else if (activeStep == 2) {
@@ -146,8 +209,9 @@ const AddMerchant = (props) => {
                                 govId: item.id,
                                 total: item.shipping,
                                 vatDecimal: item.vat,
+                                postDecimal: item.post,
                                 base: item.base,
-                                extra: parseFloat(item.shipping) - (parseFloat(item.base) + parseFloat(item.shipping) * 0.14),
+                                orderType: item?.orderType,
                             });
                         });
                         await setgovernoratesItemsList([...temp]);
@@ -220,8 +284,9 @@ const AddMerchant = (props) => {
                                 govId: item.id,
                                 total: item.shipping,
                                 vatDecimal: item.vat,
+                                postDecimal: item.post,
                                 base: item.base,
-                                extra: parseFloat(item.shipping) - (parseFloat(item.base) + parseFloat(item.shipping) * 0.14),
+                                orderType: item?.orderType,
                             });
                         });
                         await setgovernoratesItemsList([...temp]);
@@ -303,75 +368,277 @@ const AddMerchant = (props) => {
                                     {!buttonLoading && <span>Skip</span>}
                                 </Button>
                             )}
+                            <button disabled={buttonLoading} class={generalstyles.roundbutton + ' allcentered'} onClick={handleNext} style={{ padding: '0px' }}>
+                                {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                {!buttonLoading && (
+                                    <span style={{ fontSize: '14px' }} className="text-uppercase">
+                                        {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                                    </span>
+                                )}
+                            </button>
 
-                            <Button disabled={buttonLoading} onClick={handleNext}>
+                            {/* <Button disabled={buttonLoading} onClick={handleNext}>
                                 {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
                                 {!buttonLoading && <span>{activeStep === steps.length - 1 ? 'Finish' : 'Next'}</span>}
-                            </Button>
+                            </Button> */}
                         </Box>
                         <Typography sx={{ mt: 2, mb: 1 }}>
                             <div className="col-lg-12 p-0" style={{ minHeight: '100vh' }}>
                                 {activeStep === 0 && (
                                     <div class={' row m-0 w-100 allcentered'}>
-                                        <div class="col-lg-6">
-                                            <div class={generalstyles.card + ' row m-0 w-100'} style={{ padding: '100px 100px' }}>
-                                                <div class="col-lg-12">
-                                                    <div class="row m-0 w-100  ">
-                                                        <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                                            <label class={formstyles.form__label}>Name</label>
-                                                            <input
-                                                                type={'text'}
-                                                                class={formstyles.form__field}
-                                                                value={merchantPayload.name}
-                                                                onChange={(event) => {
-                                                                    setmerchantPayload({ ...merchantPayload, name: event.target.value });
-                                                                }}
-                                                            />
+                                        <div class="col-lg-12 p-0 mb-2 allcentered">
+                                            <div class="col-lg-6">
+                                                <div class="col-lg-12 mb-1" style={{ color: 'grey', fontSize: '12px' }}>
+                                                    Main Info
+                                                </div>
+                                                <div class={generalstyles.card + ' row m-0 w-100'} style={{ padding: '40px 70px' }}>
+                                                    <div class="col-lg-12">
+                                                        <div class="row m-0 w-100  ">
+                                                            <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                                <label class={formstyles.form__label}>Name</label>
+                                                                <input
+                                                                    type={'text'}
+                                                                    class={formstyles.form__field}
+                                                                    value={merchantPayload.name}
+                                                                    onChange={(event) => {
+                                                                        setmerchantPayload({ ...merchantPayload, name: event.target.value });
+                                                                    }}
+                                                                />
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-lg-12">
-                                                    <div class="row m-0 w-100  ">
-                                                        <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                                            <label class={formstyles.form__label}>Currency</label>
-                                                            <input
-                                                                type={'text'}
-                                                                class={formstyles.form__field}
-                                                                value={merchantPayload.currency}
-                                                                onChange={(event) => {
-                                                                    setmerchantPayload({ ...merchantPayload, currency: event.target.value });
-                                                                }}
-                                                            />
+                                                    <div class="col-lg-12">
+                                                        <div class="row m-0 w-100  ">
+                                                            <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                                <label class={formstyles.form__label}>Currency</label>
+                                                                <input
+                                                                    type={'text'}
+                                                                    class={formstyles.form__field}
+                                                                    value={merchantPayload.currency}
+                                                                    onChange={(event) => {
+                                                                        setmerchantPayload({ ...merchantPayload, currency: event.target.value });
+                                                                    }}
+                                                                />
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class={'col-lg-12'}>
-                                                    <label for="name" class={formstyles.form__label}>
-                                                        Includes VAT
-                                                    </label>
-                                                    <Select
-                                                        options={[
-                                                            { label: 'Includes VAT', value: true },
-                                                            { label: 'Does not incluse VAT', value: false },
-                                                        ]}
-                                                        styles={defaultstyles}
-                                                        value={[
-                                                            { label: 'Includes VAT', value: true },
-                                                            { label: 'Does not incluse VAT', value: false },
-                                                        ].filter((option) => option.value == merchantPayload?.includesVat)}
-                                                        onChange={(option) => {
-                                                            setmerchantPayload({ ...merchantPayload, includesVat: option.value });
-                                                        }}
-                                                    />
-                                                </div>
-                                                <div class={'col-lg-12 d-flex justify-content-end mt-5'}>
-                                                    <button disabled={buttonLoading} class={generalstyles.roundbutton + ' allcentered'} onClick={handleNext} style={{ padding: '0px' }}>
-                                                        {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                                        {!buttonLoading && <span>continue</span>}
-                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="col-lg-12 p-0 mb-2 allcentered">
+                                            <div class="col-lg-6">
+                                                <div class="col-lg-12 mb-1" style={{ color: 'grey', fontSize: '12px' }}>
+                                                    Address <span style={{ fontSize: '11px' }}>(optional)</span>
+                                                </div>
+                                                <div class={generalstyles.card + ' row m-0 w-100'} style={{ padding: '40px 70px' }}>
+                                                    <div class="col-lg-12 p-0">
+                                                        <div class="row m-0 w-100 ">
+                                                            <Form
+                                                                size={'lg'}
+                                                                submit={submit}
+                                                                setsubmit={setsubmit}
+                                                                attr={
+                                                                    addresspayload?.country == 'Egypt'
+                                                                        ? [
+                                                                              {
+                                                                                  title: 'Country',
+                                                                                  options: fetchAllCountriesQuery,
+                                                                                  optionsAttr: 'data',
+                                                                                  label: 'country',
+                                                                                  value: 'country',
+                                                                                  size: '6',
+                                                                                  attr: 'country',
+                                                                                  type: 'fetchSelect',
+                                                                                  payload: addresspayload,
+                                                                              },
+                                                                              {
+                                                                                  name: 'City',
+                                                                                  attr: 'city',
+                                                                                  type: 'select',
+                                                                                  options: fetchGovernoratesQuery?.data?.findAllDomesticGovernorates,
+                                                                                  size: '6',
+                                                                                  optionValue: 'name',
+                                                                                  optionLabel: 'name',
+                                                                              },
+                                                                              { name: 'Building Number', attr: 'buildingNumber', size: '6' },
+                                                                              { name: 'Apartment Floor', attr: 'apartmentFloor', size: '6' },
+                                                                              { name: 'Street Address', attr: 'streetAddress', type: 'textarea', size: '12' },
+                                                                          ]
+                                                                        : [
+                                                                              {
+                                                                                  title: 'Country',
+                                                                                  options: fetchAllCountriesQuery,
+                                                                                  optionsAttr: 'data',
+                                                                                  label: 'country',
+                                                                                  value: 'country',
+                                                                                  size: '6',
+                                                                                  attr: 'country',
+                                                                                  type: 'fetchSelect',
+                                                                                  payload: addresspayload,
+                                                                              },
+                                                                              {
+                                                                                  name: 'City',
+                                                                                  attr: 'city',
+                                                                                  type: 'select',
+                                                                                  options: cities,
+                                                                                  size: '6',
+                                                                              },
+                                                                              { name: 'Building Number', attr: 'buildingNumber', size: '6' },
+                                                                              { name: 'Apartment Floor', attr: 'apartmentFloor', size: '6' },
+                                                                              { name: 'Street Address', attr: 'streetAddress', type: 'textarea', size: '12' },
+                                                                          ]
+                                                                }
+                                                                payload={addresspayload}
+                                                                setpayload={setaddresspayload}
+                                                                button1disabled={true}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12 p-0 mb-2 allcentered">
+                                            <div class="col-lg-6">
+                                                <div class="col-lg-12 mb-1" style={{ color: 'grey', fontSize: '12px' }}>
+                                                    Billing Info <span style={{ fontSize: '11px' }}>(optional)</span>
+                                                </div>
+                                                <div class={generalstyles.card + ' row m-0 w-100'} style={{ padding: '40px 70px' }}>
+                                                    <div class="col-lg-12">
+                                                        <div class="row m-0 w-100  ">
+                                                            <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                                <label class={formstyles.form__label}>Bank Name</label>
+                                                                <input
+                                                                    type={'text'}
+                                                                    class={formstyles.form__field}
+                                                                    value={merchantPayload.bankName}
+                                                                    onChange={(event) => {
+                                                                        setmerchantPayload({ ...merchantPayload, bankName: event.target.value });
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-12">
+                                                        <div class="row m-0 w-100  ">
+                                                            <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                                <label class={formstyles.form__label}>Bank Number</label>
+                                                                <input
+                                                                    type={'number'}
+                                                                    class={formstyles.form__field}
+                                                                    value={merchantPayload.bankNumber}
+                                                                    onChange={(event) => {
+                                                                        setmerchantPayload({ ...merchantPayload, bankNumber: event.target.value });
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 ">
+                                                        <div class="row m-0 w-100  ">
+                                                            <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                                <label class={formstyles.form__label}>Tax Id</label>
+                                                                <input
+                                                                    type={'number'}
+                                                                    class={formstyles.form__field}
+                                                                    value={merchantPayload.taxId}
+                                                                    onChange={(event) => {
+                                                                        setmerchantPayload({ ...merchantPayload, taxId: event.target.value });
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class={'col-lg-6 pl-0'}>
+                                                        <label for="name" class={formstyles.form__label}>
+                                                            Includes VAT
+                                                        </label>
+                                                        <Select
+                                                            options={[
+                                                                { label: 'Includes VAT', value: true },
+                                                                { label: 'Does not include VAT', value: false },
+                                                            ]}
+                                                            styles={defaultstyles}
+                                                            value={[
+                                                                { label: 'Includes VAT', value: true },
+                                                                { label: 'Does not include VAT', value: false },
+                                                            ].filter((option) => option.value == merchantPayload?.includesVat)}
+                                                            onChange={(option) => {
+                                                                setmerchantPayload({ ...merchantPayload, includesVat: option.value });
+                                                            }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12 p-0 mb-2 allcentered">
+                                            <div class="col-lg-6">
+                                                <div class="col-lg-12 mb-1" style={{ color: 'grey', fontSize: '12px' }}>
+                                                    Owner Info <span style={{ fontSize: '11px' }}>(optional)</span>
+                                                </div>
+                                                <div class={generalstyles.card + ' row m-0 w-100'} style={{ padding: '40px 70px' }}>
+                                                    <div class="col-lg-12">
+                                                        <div class="row m-0 w-100  ">
+                                                            <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                                <label class={formstyles.form__label}>Owner Name</label>
+                                                                <input
+                                                                    type={'text'}
+                                                                    class={formstyles.form__field}
+                                                                    value={merchantPayload.ownerName}
+                                                                    onChange={(event) => {
+                                                                        setmerchantPayload({ ...merchantPayload, ownerName: event.target.value?.length != 0 ? event.target.value : undefined });
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-12">
+                                                        <div class="row m-0 w-100  ">
+                                                            <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                                <label class={formstyles.form__label}>Owner Email</label>
+                                                                <input
+                                                                    type={'text'}
+                                                                    class={formstyles.form__field}
+                                                                    value={merchantPayload.ownerEmail}
+                                                                    onChange={(event) => {
+                                                                        setmerchantPayload({ ...merchantPayload, ownerEmail: event.target.value?.length != 0 ? event.target.value : undefined });
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-12">
+                                                        <div class="row m-0 w-100  ">
+                                                            <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                                <label class={formstyles.form__label}>Owner Phone</label>
+                                                                <input
+                                                                    type={'number'}
+                                                                    class={formstyles.form__field}
+                                                                    value={merchantPayload.ownerPhone}
+                                                                    onChange={(event) => {
+                                                                        setmerchantPayload({ ...merchantPayload, ownerPhone: event.target.value?.length != 0 ? event.target.value : undefined });
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-12">
+                                                        <div class="row m-0 w-100  ">
+                                                            <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                                <label class={formstyles.form__label}>Owner Birthdate</label>
+                                                                <input
+                                                                    type={'date'}
+                                                                    class={formstyles.form__field}
+                                                                    value={merchantPayload.ownerBirthdate}
+                                                                    onChange={(event) => {
+                                                                        setmerchantPayload({ ...merchantPayload, ownerBirthdate: event.target.value?.length != 0 ? event.target.value : undefined });
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>{' '}
                                     </div>
                                 )}
                                 {activeStep === 1 && (
@@ -415,76 +682,198 @@ const AddMerchant = (props) => {
                                                 <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
                                                     <table style={{}} className={'table'}>
                                                         <thead>
-                                                            <th>Governorate</th>
-                                                            <th>Shipping</th>
+                                                            <th style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}></th>
+                                                            <th style={{ maxWidth: '150px', minWidth: '150px', width: '150px' }}>Total</th>
                                                             <th>VAT (14%)</th>
-                                                            <th>Base</th>
-                                                            <th>Extra</th>
+                                                            <th>Post (10%)</th>
+                                                            <th style={{ maxWidth: '150px', minWidth: '150px', width: '150px' }}>Base</th>
+                                                            <th style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>Extra</th>
                                                         </thead>
                                                         <tbody>
                                                             {governoratesItems?.map((item, index) => {
-                                                                return (
-                                                                    <tr>
-                                                                        <td>
-                                                                            <p className={' m-0 p-0 wordbreak '}>{item.name}</p>
-                                                                        </td>
-                                                                        <td>
-                                                                            <input
-                                                                                type={'text'}
-                                                                                class={formstyles.form__field}
-                                                                                value={item.shipping}
-                                                                                onChange={(event) => {
-                                                                                    var governoratesItemsTemp = [...governoratesItems];
-                                                                                    governoratesItemsTemp[index].shipping = event.target.value;
-                                                                                    setgovernoratesItems([...governoratesItemsTemp]);
-                                                                                }}
-                                                                            />
-                                                                        </td>
+                                                                if (index % 3 == 0) {
+                                                                    return (
+                                                                        <>
+                                                                            <div style={{ border: '1px solid #eee', borderRadius: '5px', background: '#eee' }} class="col-lg-12 py-2">
+                                                                                {item?.name}
+                                                                            </div>
 
-                                                                        <td>
-                                                                            <div class="row m-0 w-100 d-flex align-items-center">
+                                                                            <tr>
+                                                                                <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
+                                                                                    <p className={' m-0 p-0 wordbreak '}>
+                                                                                        <span style={{ color: 'grey', fontSize: '14px' }} class="text-capitalize">
+                                                                                            {item?.orderType}
+                                                                                        </span>
+                                                                                    </p>
+                                                                                </td>
+                                                                                <td style={{ maxWidth: '150px', minWidth: '150px', width: '150px' }}>
+                                                                                    <input
+                                                                                        type={'text'}
+                                                                                        class={formstyles.form__field}
+                                                                                        value={item.shipping}
+                                                                                        onChange={(event) => {
+                                                                                            var governoratesItemsTemp = [...governoratesItems];
+                                                                                            governoratesItemsTemp[index].shipping = event.target.value;
+                                                                                            setgovernoratesItems([...governoratesItemsTemp]);
+                                                                                        }}
+                                                                                    />
+                                                                                </td>
+
+                                                                                <td>
+                                                                                    <div class="row m-0 w-100 d-flex align-items-center">
+                                                                                        <input
+                                                                                            style={{ width: '50%' }}
+                                                                                            type={'text'}
+                                                                                            disabled={true}
+                                                                                            class={formstyles.form__field}
+                                                                                            value={item.vat}
+                                                                                            onChange={(event) => {
+                                                                                                var governoratesItemsTemp = [...governoratesItems];
+
+                                                                                                governoratesItemsTemp[index].vat = event.target.value;
+
+                                                                                                setgovernoratesItems([...governoratesItemsTemp]);
+                                                                                            }}
+                                                                                        />
+                                                                                        <p style={{ width: '45%' }} className={' m-0 p-0 mx-1 h-100 d-flex align-items-center '}>
+                                                                                            {(parseFloat(item.shipping) * parseFloat(item.vat)).toFixed(2)}
+                                                                                        </p>
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <div class="row m-0 w-100 d-flex align-items-center">
+                                                                                        <input
+                                                                                            style={{ width: '50%' }}
+                                                                                            type={'text'}
+                                                                                            disabled={true}
+                                                                                            class={formstyles.form__field}
+                                                                                            value={item.post}
+                                                                                            onChange={(event) => {
+                                                                                                var governoratesItemsTemp = [...governoratesItems];
+
+                                                                                                governoratesItemsTemp[index].post = event.target.value;
+
+                                                                                                setgovernoratesItems([...governoratesItemsTemp]);
+                                                                                            }}
+                                                                                        />
+                                                                                        <p style={{ width: '45%' }} className={' m-0 p-0 mx-1 h-100 d-flex align-items-center '}>
+                                                                                            {(parseFloat(item.shipping) * parseFloat(item.post)).toFixed(2)}
+                                                                                        </p>
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td style={{ maxWidth: '150px', minWidth: '150px', width: '150px' }}>
+                                                                                    <input
+                                                                                        type={'text'}
+                                                                                        class={formstyles.form__field}
+                                                                                        value={item.base}
+                                                                                        onChange={(event) => {
+                                                                                            var governoratesItemsTemp = [...governoratesItems];
+                                                                                            if (event.target.value.length == 0) {
+                                                                                                governoratesItemsTemp[index].base = 0;
+                                                                                            } else {
+                                                                                                governoratesItemsTemp[index].base = event.target.value;
+                                                                                            }
+                                                                                            setgovernoratesItems([...governoratesItemsTemp]);
+                                                                                        }}
+                                                                                    />
+                                                                                </td>
+                                                                                <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
+                                                                                    <p className={' m-0 p-0  h-100 d-flex align-items-center '}>
+                                                                                        {parseFloat(item.shipping) - (parseFloat(item.base) + parseFloat(item.shipping) * 0.14)}
+                                                                                    </p>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </>
+                                                                    );
+                                                                } else {
+                                                                    return (
+                                                                        <tr>
+                                                                            <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
+                                                                                <p className={' m-0 p-0 wordbreak '}>
+                                                                                    <span style={{ color: 'grey', fontSize: '14px' }} class="text-capitalize">
+                                                                                        {item?.orderType}
+                                                                                    </span>
+                                                                                </p>
+                                                                            </td>
+                                                                            <td style={{ maxWidth: '150px', minWidth: '150px', width: '150px' }}>
                                                                                 <input
-                                                                                    style={{ width: '50%' }}
                                                                                     type={'text'}
-                                                                                    disabled={true}
                                                                                     class={formstyles.form__field}
-                                                                                    value={item.vat}
+                                                                                    value={item.shipping}
                                                                                     onChange={(event) => {
                                                                                         var governoratesItemsTemp = [...governoratesItems];
-
-                                                                                        governoratesItemsTemp[index].vat = event.target.value;
-
+                                                                                        governoratesItemsTemp[index].shipping = event.target.value;
                                                                                         setgovernoratesItems([...governoratesItemsTemp]);
                                                                                     }}
                                                                                 />
-                                                                                <p style={{ width: '45%' }} className={' m-0 p-0 mx-1 h-100 d-flex align-items-center '}>
-                                                                                    {(parseFloat(item.shipping) * parseFloat(item.vat)).toFixed(2)}
+                                                                            </td>
+
+                                                                            <td>
+                                                                                <div class="row m-0 w-100 d-flex align-items-center">
+                                                                                    <input
+                                                                                        style={{ width: '50%' }}
+                                                                                        type={'text'}
+                                                                                        disabled={true}
+                                                                                        class={formstyles.form__field}
+                                                                                        value={item.vat}
+                                                                                        onChange={(event) => {
+                                                                                            var governoratesItemsTemp = [...governoratesItems];
+
+                                                                                            governoratesItemsTemp[index].vat = event.target.value;
+
+                                                                                            setgovernoratesItems([...governoratesItemsTemp]);
+                                                                                        }}
+                                                                                    />
+                                                                                    <p style={{ width: '45%' }} className={' m-0 p-0 mx-1 h-100 d-flex align-items-center '}>
+                                                                                        {(parseFloat(item.shipping) * parseFloat(item.vat)).toFixed(2)}
+                                                                                    </p>
+                                                                                </div>
+                                                                            </td>
+                                                                            <td>
+                                                                                <div class="row m-0 w-100 d-flex align-items-center">
+                                                                                    <input
+                                                                                        style={{ width: '50%' }}
+                                                                                        type={'text'}
+                                                                                        disabled={true}
+                                                                                        class={formstyles.form__field}
+                                                                                        value={item.post}
+                                                                                        onChange={(event) => {
+                                                                                            var governoratesItemsTemp = [...governoratesItems];
+
+                                                                                            governoratesItemsTemp[index].post = event.target.value;
+
+                                                                                            setgovernoratesItems([...governoratesItemsTemp]);
+                                                                                        }}
+                                                                                    />
+                                                                                    <p style={{ width: '45%' }} className={' m-0 p-0 mx-1 h-100 d-flex align-items-center '}>
+                                                                                        {(parseFloat(item.shipping) * parseFloat(item.post)).toFixed(2)}
+                                                                                    </p>
+                                                                                </div>
+                                                                            </td>
+                                                                            <td style={{ maxWidth: '150px', minWidth: '150px', width: '150px' }}>
+                                                                                <input
+                                                                                    type={'text'}
+                                                                                    class={formstyles.form__field}
+                                                                                    value={item.base}
+                                                                                    onChange={(event) => {
+                                                                                        var governoratesItemsTemp = [...governoratesItems];
+                                                                                        if (event.target.value.length == 0) {
+                                                                                            governoratesItemsTemp[index].base = 0;
+                                                                                        } else {
+                                                                                            governoratesItemsTemp[index].base = event.target.value;
+                                                                                        }
+                                                                                        setgovernoratesItems([...governoratesItemsTemp]);
+                                                                                    }}
+                                                                                />
+                                                                            </td>
+                                                                            <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
+                                                                                <p className={' m-0 p-0  h-100 d-flex align-items-center '}>
+                                                                                    {parseFloat(item.shipping) - (parseFloat(item.base) + parseFloat(item.shipping) * 0.14)}
                                                                                 </p>
-                                                                            </div>
-                                                                        </td>
-                                                                        <td>
-                                                                            <input
-                                                                                type={'text'}
-                                                                                class={formstyles.form__field}
-                                                                                value={item.base}
-                                                                                onChange={(event) => {
-                                                                                    var governoratesItemsTemp = [...governoratesItems];
-                                                                                    if (event.target.value.length == 0) {
-                                                                                        governoratesItemsTemp[index].base = 0;
-                                                                                    } else {
-                                                                                        governoratesItemsTemp[index].base = event.target.value;
-                                                                                    }
-                                                                                    setgovernoratesItems([...governoratesItemsTemp]);
-                                                                                }}
-                                                                            />
-                                                                        </td>
-                                                                        <td>
-                                                                            <p className={' m-0 p-0  h-100 d-flex align-items-center '}>
-                                                                                {parseFloat(item.shipping) - (parseFloat(item.base) + parseFloat(item.shipping) * 0.14)}
-                                                                            </p>
-                                                                        </td>
-                                                                    </tr>
-                                                                );
+                                                                            </td>
+                                                                        </tr>
+                                                                    );
+                                                                }
                                                             })}
                                                         </tbody>
                                                     </table>
