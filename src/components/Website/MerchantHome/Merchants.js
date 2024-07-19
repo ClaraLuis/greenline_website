@@ -202,7 +202,7 @@ const Merchants = (props) => {
                                                             <p
                                                                 class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}
                                                                 onClick={() => {
-                                                                    history.push('/addmerchant?merchantId=' + item.id + '&type=edit&step=0');
+                                                                    history.push('/updateshipping?merchantId=' + item.id);
                                                                 }}
                                                             >
                                                                 Shipping Prices
@@ -216,17 +216,6 @@ const Merchants = (props) => {
                                                                 }}
                                                             >
                                                                 Terminate Merchant
-                                                            </p>
-                                                        </Dropdown.Item>
-                                                        <Dropdown.Item class="py-2">
-                                                            <p
-                                                                class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}
-                                                                onClick={() => {
-                                                                    setmerchantPayload({ ...item, functype: 'edit' });
-                                                                    setopenMerchantModel(true);
-                                                                }}
-                                                            >
-                                                                Edit Merchant
                                                             </p>
                                                         </Dropdown.Item>
                                                     </Dropdown.Menu>

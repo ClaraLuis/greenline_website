@@ -44,7 +44,7 @@ const API = () => {
 
     const updateMerchantDomesticShipping = () => {
         return gql`
-            mutation updateMerchantDomesticShipping($input: CreateMerchantShippingListInput!) {
+            mutation updateMerchantDomesticShipping($input: UpdateMerchantDomesticShippingInput!) {
                 updateMerchantDomesticShipping(input: $input)
             }
         `;
@@ -324,6 +324,25 @@ const API = () => {
                 findSingleMerchantDomesticShipping(input: $input) {
                     domesticShipping {
                         total
+                    }
+                }
+            }
+        `;
+    };
+
+    const findMerchantDomesticShippings = () => {
+        return gql`
+            query findMerchantDomesticShippings($merchantId: Int!) {
+                findMerchantDomesticShippings(merchantId: $merchantId) {
+                    orderType
+                    id
+                    domesticShipping {
+                        id
+                        total
+                        vat
+                        post
+                        base
+                        extra
                     }
                 }
             }
@@ -1306,6 +1325,7 @@ const API = () => {
         createExpense,
         fetchAllCountries,
         findSingleMerchantDomesticShipping,
+        findMerchantDomesticShippings,
     };
 };
 export default API;
