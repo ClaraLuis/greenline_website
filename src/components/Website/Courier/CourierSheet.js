@@ -278,7 +278,7 @@ const CourierSheet = (props) => {
                                                     <div class="col-lg-12 p-0 d-flex justify-content-start mb-1 mt-3">
                                                         <div className="row m-0 w-100 d-flex align-items-center justify-content-start">
                                                             <div style={{ background: '#eee', color: 'black' }} className={' wordbreak rounded-pill font-weight-600 allcentered '}>
-                                                                # {item?.id}
+                                                                # {item?.order?.id}
                                                             </div>
 
                                                             <div

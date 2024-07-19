@@ -144,7 +144,13 @@ const MerchantPackages = (props) => {
                         {fetchPackagesQuery?.data?.PaginateReturnPackages?.data?.map((item, index) => {
                             return (
                                 <div className="col-lg-4 p-1">
-                                    <div style={{ background: 'white' }} class={' p-3 row m-0 w-100 card  d-flex align-items-center'}>
+                                    <div
+                                        onClick={() => {
+                                            history.push('/merchantreturnpackageinfo?packageId=' + item.id);
+                                        }}
+                                        style={{ background: 'white', cursor: 'pointer' }}
+                                        class={' p-3 row m-0 w-100 card  d-flex align-items-center'}
+                                    >
                                         <div className="col-lg-4 p-0">
                                             <span style={{ fontSize: '12px', color: 'grey' }}># {item?.id}</span>
                                         </div>

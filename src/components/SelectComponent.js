@@ -90,6 +90,7 @@ const SelectComponent = (props) => {
                             setIsFocused(true);
                             setshowmenu(true);
                         }}
+                        style={{ cursor: 'pointer' }}
                         className={cardstyles.formfield}
                     >
                         {placeholder}

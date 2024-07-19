@@ -8,18 +8,15 @@ import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
-import { FiCheckCircle } from 'react-icons/fi';
-import { NotificationManager } from 'react-notifications';
 import Select from 'react-select';
 import API from '../../../API/API.js';
 import Pagination from '../../Pagination.js';
-import SelectComponent from '../../SelectComponent.js';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
 
 import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
-import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 import { FaLayerGroup } from 'react-icons/fa';
+import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 
 const InventoryPackages = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -202,7 +199,13 @@ const InventoryPackages = (props) => {
                         {fetchPackagesQuery?.data?.PaginateReturnPackages?.data?.map((item, index) => {
                             return (
                                 <div className="col-lg-4 p-1">
-                                    <div style={{ background: 'white' }} class={' p-3 row m-0 w-100 card  d-flex align-items-center'}>
+                                    <div
+                                        onClick={() => {
+                                            history.push('/returnpackageinfo?packageId=' + item?.id);
+                                        }}
+                                        style={{ background: 'white', cursor: 'pointer' }}
+                                        class={' p-3 row m-0 w-100 card  d-flex align-items-center'}
+                                    >
                                         <div className="col-lg-4 p-0">
                                             <span style={{ fontSize: '12px', color: 'grey' }}># {item?.id}</span>
                                         </div>

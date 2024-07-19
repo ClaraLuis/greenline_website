@@ -1,28 +1,25 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { TextareaAutosize } from '@mui/material';
+import Select, { components } from 'react-select';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
-import Select, { components } from 'react-select';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
-import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
-import { FaLayerGroup, FaRegClock } from 'react-icons/fa';
 import { Modal } from 'react-bootstrap';
+import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
+import { FaRegClock } from 'react-icons/fa';
 
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
-import API from '../../../API/API.js';
-import ItemInfo from './ItemInfo.js';
-import OrderInfo from './OrderInfo.js';
 import { IoMdClose } from 'react-icons/io';
-import { defaultstyles } from '../Generalfiles/selectstyles.js';
-import { MdArrowBackIos, MdArrowForwardIos, MdOutlineArrowBack, MdOutlineArrowForward } from 'react-icons/md';
-import ImportNewItem from './ImportNewItem.js';
-import Pagination from '../../Pagination.js';
+import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md';
 import { NotificationManager } from 'react-notifications';
-import { Search } from 'react-bootstrap-icons';
+import API from '../../../API/API.js';
+import Pagination from '../../Pagination.js';
+import { defaultstyles } from '../Generalfiles/selectstyles.js';
+import ImportNewItem from './ImportNewItem.js';
+import ItemInfo from './ItemInfo.js';
 
 const { ValueContainer, Placeholder } = components;
 

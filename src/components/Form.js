@@ -15,6 +15,7 @@ import API from '../API/API';
 import { useQuery } from 'react-query';
 import generalstyles from '../components/Website/Generalfiles/CSS_GENERAL/general.module.css';
 import SelectComponent from './SelectComponent';
+import MultiSelect from './MultiSelect';
 const Form = (props) => {
     var exist = false;
 

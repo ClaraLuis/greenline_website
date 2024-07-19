@@ -5050,3 +5050,13 @@ ul {
     /* Company address details */
     margin-bottom: 5px;
 }
+
+.rs-picker-popup.rs-picker-popup-daterange {
+    z-index: 1000;
+}
+
+[dir='rtl'] .rs-calendar-header-backward .rs-icon,
+[dir='rtl'] .rs-calendar-header-forward .rs-icon {
+    -webkit-transform: rotate(0deg) !important;
+    transform: rotate(0deg) !important;
+}

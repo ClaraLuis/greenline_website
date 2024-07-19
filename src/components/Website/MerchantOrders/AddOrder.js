@@ -24,6 +24,7 @@ import AddCustomer from './AddCustomer.js';
 import { MdOutlineLocationOn } from 'react-icons/md';
 import { FiCheckCircle } from 'react-icons/fi';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
+import { useQuery } from 'react-query';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -46,6 +47,7 @@ const AddOrder = (props) => {
         useQueryGQL,
         addOrder,
         fetchOrders,
+        fetchAllCountries,
     } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -122,7 +124,10 @@ const AddOrder = (props) => {
         name: undefined,
         merchantId: merchantId,
     });
-
+    const fetchAllCountriesQuery = useQuery(['fetchAllCountries'], () => fetchAllCountries(), {
+        keepPreviousData: true,
+        staleTime: Infinity,
+    });
     const [fetchSimilarAddressesQuery] = useLazyQueryGQL(fetchSimilarAddresses());
     const [checkCustomer] = useLazyQueryGQL(fetchCustomer());
     const [fetchCustomerAddressesQuery] = useLazyQueryGQL(fetchCustomerAddresses(), 'network-only');

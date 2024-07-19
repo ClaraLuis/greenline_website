@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import Select, { components } from 'react-select';
+import { components } from 'react-select';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
@@ -10,16 +10,15 @@ import { Modal } from 'react-bootstrap';
 
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
-import { IoMdClose } from 'react-icons/io';
-import API from '../../../API/API.js';
-import { defaultstyles } from '../Generalfiles/selectstyles.js';
-import SelectComponent from '../../SelectComponent.js';
-import Pagination from '../../Pagination.js';
-import ItemsTable from '../MerchantItems/ItemsTable.js';
-import Cookies from 'universal-cookie';
-import { BiPlus } from 'react-icons/bi';
-import { NotificationManager } from 'react-notifications';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
+import { BiPlus } from 'react-icons/bi';
+import { IoIosArrowBack, IoMdClose } from 'react-icons/io';
+import { NotificationManager } from 'react-notifications';
+import Cookies from 'universal-cookie';
+import API from '../../../API/API.js';
+import Pagination from '../../Pagination.js';
+import SelectComponent from '../../SelectComponent.js';
+import ItemsTable from '../MerchantItems/ItemsTable.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -51,6 +50,8 @@ const ImportNewItem = (props) => {
         ballotId: props?.importItemPayload?.ballotId,
         inventoryId: props?.importItemPayload?.inventoryId,
         boxName: props?.importItemPayload?.boxName,
+        ballotName: props?.importItemPayload?.ballotName,
+        rackId: props?.importItemPayload?.rackId,
         count: parseInt(props?.importItemPayload?.count),
         minCount: parseInt(props?.importItemPayload?.minCount),
     });
@@ -122,7 +123,26 @@ const ImportNewItem = (props) => {
             <Modal.Header>
                 <div className="row w-100 m-0 p-0">
                     <div class="col-lg-6 pt-3 ">
-                        <div className="row w-100 m-0 p-0">Import new item</div>
+                        <div className="row w-100 m-0 p-0 d-flex align-items-center">
+                            {step != 0 && (
+                                <IoIosArrowBack
+                                    class="mr-1 text-secondaryhover"
+                                    size={14}
+                                    onClick={() => {
+                                        setstep(step - 1);
+                                        props?.setimportItemPayload({
+                                            ...props?.importItemPayload,
+                                            ballotName: undefined,
+                                            ballotId: undefined,
+                                            boxId: undefined,
+                                            rackId: undefined,
+                                            boxName: undefined,
+                                        });
+                                    }}
+                                />
+                            )}
+                            Import new item
+                        </div>
                     </div>
                     <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
                         <div
@@ -161,6 +181,7 @@ const ImportNewItem = (props) => {
                         <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
                             <ItemsTable
                                 card="col-lg-3"
+                                clickable={true}
                                 items={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.data}
                                 actiononclick={(item) => {
                                     props?.setimportItemPayload({ ...props?.importItemPayload, itemVariantId: item?.id });
@@ -284,14 +305,40 @@ const ImportNewItem = (props) => {
                                                                                 Level {level?.level}:
                                                                                 {level?.ballots?.map((ballot, ballotindex) => {
                                                                                     return (
-                                                                                        <div
-                                                                                            onClick={() => {
-                                                                                                props?.setimportItemPayload({ ...props?.importItemPayload, ballotId: ballot.id });
-                                                                                                setstep(step + 1);
-                                                                                            }}
-                                                                                            class={'searchpill'}
-                                                                                        >
-                                                                                            {ballot?.name} <BiPlus class="ml-2" />
+                                                                                        <div class="col-lg-12 p-0 mt-1">
+                                                                                            <div
+                                                                                                style={{ border: '1px solid #eee', borderRadius: '8px' }}
+                                                                                                class="row m-0 p-1 w-100 d-flex align-items-center"
+                                                                                            >
+                                                                                                <div class="col-lg-6 p-0" style={{ fontWeight: 700 }}>
+                                                                                                    {ballot?.name}
+                                                                                                </div>
+                                                                                                <div class="col-lg-6 p-0 d-flex justify-content-end">
+                                                                                                    <div
+                                                                                                        onClick={() => {
+                                                                                                            props?.setimportItemPayload({ ...props?.importItemPayload, ballotId: ballot.id });
+                                                                                                            setstep(step + 1);
+                                                                                                        }}
+                                                                                                        class={'searchpill allcentered'}
+                                                                                                        style={{ width: '25px', height: '25px' }}
+                                                                                                    >
+                                                                                                        <BiPlus />
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                {ballot?.boxes?.map((box, boxIndex) => {
+                                                                                                    return (
+                                                                                                        <div
+                                                                                                            onClick={() => {
+                                                                                                                props?.setimportItemPayload({ ...props?.importItemPayload, boxId: box.id });
+                                                                                                                setstep(step + 1);
+                                                                                                            }}
+                                                                                                            class={'searchpill'}
+                                                                                                        >
+                                                                                                            {box?.name} <BiPlus class="ml-2" />
+                                                                                                        </div>
+                                                                                                    );
+                                                                                                })}
+                                                                                            </div>
                                                                                         </div>
                                                                                     );
                                                                                 })}
@@ -313,21 +360,41 @@ const ImportNewItem = (props) => {
                 )}
                 {step == 2 && (
                     <div class="row m-0 w-100 py-2">
-                        <div class="col-lg-6">
-                            <div class="row m-0 w-100  ">
-                                <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                    <label class={formstyles.form__label}>Box Name</label>
-                                    <input
-                                        type={'text'}
-                                        class={formstyles.form__field}
-                                        value={props?.importItemPayload.boxName}
-                                        onChange={(event) => {
-                                            props?.setimportItemPayload({ ...props?.importItemPayload, boxName: event.target.value });
-                                        }}
-                                    />
+                        {props?.importItemPayload?.rackId && (
+                            <div class="col-lg-6">
+                                <div class="row m-0 w-100  ">
+                                    <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                        <label class={formstyles.form__label}>Ballot Name</label>
+                                        <input
+                                            type={'text'}
+                                            class={formstyles.form__field}
+                                            value={props?.importItemPayload.ballotName}
+                                            onChange={(event) => {
+                                                props?.setimportItemPayload({ ...props?.importItemPayload, ballotName: event.target.value });
+                                            }}
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                        </div>{' '}
+                        )}
+                        {props?.importItemPayload?.ballotId && (
+                            <div class="col-lg-6">
+                                <div class="row m-0 w-100  ">
+                                    <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                        <label class={formstyles.form__label}>Box Name</label>
+                                        <input
+                                            type={'text'}
+                                            class={formstyles.form__field}
+                                            value={props?.importItemPayload.boxName}
+                                            onChange={(event) => {
+                                                props?.setimportItemPayload({ ...props?.importItemPayload, boxName: event.target.value });
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
                         <div class="col-lg-6">
                             <div class="row m-0 w-100  ">
                                 <div class={`${formstyles.form__group} ${formstyles.field}`}>

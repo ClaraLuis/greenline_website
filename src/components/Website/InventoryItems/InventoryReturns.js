@@ -4,22 +4,17 @@ import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
-import { FaPlus, FaWindowMinimize } from 'react-icons/fa';
-import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
-import { Accordion, AccordionItem, AccordionItemHeading, AccordionItemButton, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
+import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
+import { FaWindowMinimize } from 'react-icons/fa';
 
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
-import Select from 'react-select';
+import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
+import { NotificationManager } from 'react-notifications';
 import API from '../../../API/API.js';
-import Form from '../../Form.js';
 import Pagination from '../../Pagination.js';
 import SelectComponent from '../../SelectComponent.js';
-import { defaultstyles } from '../Generalfiles/selectstyles.js';
-import { NotificationManager } from 'react-notifications';
-import ItemsTable from '../MerchantHome/ItemsTable.js';
-import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
 import ReturnsTable from '../MerchantHome/ReturnsTable.js';
 
 const InventoryReturns = (props) => {

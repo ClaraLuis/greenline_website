@@ -320,9 +320,8 @@ const MerchantOrders = (props) => {
                                         <span>Date Range</span>
                                         <div class="mt-1" style={{ width: '100%' }}>
                                             <DateRangePicker
-                                                style={{ color: 'black' }}
                                                 // disabledDate={allowedMaxDays(30)}
-                                                value={[filterorders?.fromDate, filterorders?.toDate]}
+                                                // value={[filterorders?.fromDate, filterorders?.toDate]}
                                                 onChange={(event) => {
                                                     if (event != null) {
                                                         const start = event[0];

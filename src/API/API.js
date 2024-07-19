@@ -16,7 +16,10 @@ const API = () => {
     //     accessToken = UserInfoContext?.accessToken;
     //     accessToken = cookies.get('accessToken');
     // }, [UserInfoContext]);
-
+    const axiosheaders = {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+    };
     const addUser = () => {
         return gql`
             mutation cruser($input: CreateUserInput!) {
@@ -203,9 +206,7 @@ const API = () => {
     const createExpense = () => {
         return gql`
             mutation createExpense($input: CreateExpenseInput!) {
-                createExpense(input: $input) {
-                    id
-                }
+                createExpense(input: $input)
             }
         `;
     };
@@ -706,26 +707,59 @@ const API = () => {
                 paginateItemReturns(input: $input) {
                     data {
                         id
-                        merchantId
+                        type
+                        createdAt
+                        shippingPrice
+                        merchant {
+                            name
+                        }
+                        address {
+                            country
+                            city
+                            streetAddress
+                            buildingNumber
+                            apartmentFloor
+                        }
+                        courier {
+                            id
+                            name
+                        }
+                        price
+                        paymentType
+                        status
+                        orderDate
+                        currency
+                        customer {
+                            email
+                        }
+                        customerInfo {
+                            customerName
+                        }
+                        address {
+                            country
+                            city
+                            streetAddress
+                            buildingNumber
+                            apartmentFloor
+                        }
                         orderItems {
+                            id
+                            orderId
+                            count
+                            unitPrice
+                            unitDiscount
+                            partialCount
                             info {
-                                id
-                                sku
                                 name
-                                merchantSku
-                                itemId
-                                isEnabled
                                 imageUrl
-                                price
-                                weight
-                                createdAt
-                                lastModified
+                                item {
+                                    name
+                                }
                             }
                         }
-                        parentOrder {
-                            id
-                        }
-                        createdAt
+                        canOpen
+                        fragile
+                        deliveryPart
                     }
                     cursor
                 }
@@ -753,6 +787,22 @@ const API = () => {
                                 createdAt
                                 lastModified
                             }
+                            inventory {
+                                count
+                                box {
+                                    id
+                                    name
+                                    ballot {
+                                        id
+                                        level
+                                        name
+                                        rack {
+                                            name
+                                            id
+                                        }
+                                    }
+                                }
+                            }
                         }
                         parentOrder {
                             id
@@ -775,6 +825,10 @@ const API = () => {
                             id
                             name
                             level
+                            boxes {
+                                name
+                                id
+                            }
                         }
                     }
 
@@ -899,6 +953,7 @@ const API = () => {
                         shippingCollected
                         amountCollected
                         order {
+                            id
                             originalPrice
                             type
                             status
@@ -1156,7 +1211,16 @@ const API = () => {
             // },
         });
     };
-
+    const fetchAllCountries = (axiosdata) => {
+        var tempaxiosdata = { ...axiosdata };
+        const axiosfetch = axios({
+            method: 'get',
+            url: 'https://countriesnow.space/api/v0.1/countries',
+            headers: axiosheaders,
+            data: tempaxiosdata,
+        });
+        return axiosfetch;
+    };
     return {
         useMutationGQL,
         addUser,
@@ -1228,6 +1292,7 @@ const API = () => {
         updateOrdersStatus,
         fetchExpenses,
         createExpense,
+        fetchAllCountries,
     };
 };
 export default API;
