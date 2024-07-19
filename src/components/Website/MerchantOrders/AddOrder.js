@@ -25,6 +25,7 @@ import { MdOutlineLocationOn } from 'react-icons/md';
 import { FiCheckCircle } from 'react-icons/fi';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import { useQuery } from 'react-query';
+import { BiMinus } from 'react-icons/bi';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -48,6 +49,8 @@ const AddOrder = (props) => {
         addOrder,
         fetchOrders,
         fetchAllCountries,
+        fetchGovernorates,
+        findSingleMerchantDomesticShipping,
     } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -57,7 +60,7 @@ const AddOrder = (props) => {
     const [addCustomerModal, setaddCustomerModal] = useState(false);
     const [fetchSuggestions, setfetchSuggestions] = useState(false);
     const [similarAddresses, setsimilarAddresses] = useState([]);
-
+    const [cities, setCities] = useState([]);
     const [nameSuggestions, setnameSuggestions] = useState([]);
     const [cartItems, setcartItems] = useState([]);
     const [orderpayload, setorderpayload] = useState({
@@ -66,7 +69,7 @@ const AddOrder = (props) => {
         returnOrderItems: [],
         user: '',
         address: '',
-        ordertype: '',
+        ordertype: 'delivery',
         paymenttype: '',
         shippingprice: '',
         canbeoppened: 1,
@@ -98,15 +101,16 @@ const AddOrder = (props) => {
     const [customerDataSuggestions, setcustomerDataSuggestions] = useState({});
     const [addresspayload, setaddresspayload] = useState({
         city: '',
-        country: '',
+        country: 'Egypt',
         streetAddress: '',
     });
     const [filterorders, setfilterorders] = useState({
-        statuses: [], //arrivedToHub
+        statuses: ['delivered', 'partiallyDelivered'], //arrivedToHub
         limit: 20,
         orderIds: undefined,
     });
     const fetchOrdersQuery = useQueryGQL('', fetchOrders(), filterorders); //network only
+    const fetchGovernoratesQuery = useQueryGQL('', fetchGovernorates());
 
     const [filterCustomerPayload, setfilterCustomerPayload] = useState({
         phone: '',
@@ -133,7 +137,8 @@ const AddOrder = (props) => {
     const [fetchCustomerAddressesQuery] = useLazyQueryGQL(fetchCustomerAddresses(), 'network-only');
 
     const [checkCustomerNameSuggestions] = useLazyQueryGQL(fetchCustomerNameSuggestions());
-    const fetchMerchantItemVariantsQuery = useQueryGQL('', fetchMerchantItemVariants(), filter);
+    const [fetchMerchantItemVariantsQuery, setfetchMerchantItemVariantsQuery] = useState(null);
+    const [fetchMerchantItemVariantsLazyQuery] = useLazyQueryGQL(fetchMerchantItemVariants());
 
     const [linkCustomerMutation] = useMutationGQL(linkCustomerMerchant(), {
         customerId: orderpayload?.customerId,
@@ -161,6 +166,7 @@ const AddOrder = (props) => {
         customerId: orderpayload?.customerId,
         addressId: orderpayload?.address,
     });
+    const [findSingleMerchantDomesticShippingLazyQuery] = useLazyQueryGQL(findSingleMerchantDomesticShipping());
 
     const [addCustomerMutation] = useMutationGQL(addCustomer(), {
         name: orderpayload?.user,
@@ -176,6 +182,7 @@ const AddOrder = (props) => {
         buildingNumber: addresspayload?.buildingNumber,
         apartmentFloor: addresspayload?.apartmentFloor,
         merchantId: merchantId,
+        governorateId: addresspayload?.country == 'Egypt' ? fetchGovernoratesQuery?.data?.findAllDomesticGovernorates?.filter((item) => item.name == addresspayload?.city)[0]?.id : undefined,
     });
 
     const handleAddCustomer = async () => {
@@ -333,6 +340,38 @@ const AddOrder = (props) => {
             merchantId: merchantIdtemp,
         });
     }, [queryParameters.get('merchantId')]);
+    useEffect(() => {
+        const cities = fetchAllCountriesQuery?.data?.data?.data.filter((item) => item.country == addresspayload?.country)[0]?.cities.map((city) => ({ label: city, value: city }));
+        setCities(cities);
+    }, [addresspayload?.country]);
+    useEffect(async () => {
+        if (filter?.merchantId && filter?.merchantId != null && filter?.merchantId?.length != 0) {
+            {
+                var { data } = await fetchMerchantItemVariantsLazyQuery({
+                    variables: {
+                        input: filter,
+                    },
+                });
+                setfetchMerchantItemVariantsQuery({ data: data });
+            }
+        }
+    }, [filter]);
+    const [shipping, setShipping] = useState(0);
+    useEffect(async () => {
+        if (merchantId && addresspayload?.city && orderpayload?.ordertype) {
+            var { data } = await findSingleMerchantDomesticShippingLazyQuery({
+                variables: {
+                    input: {
+                        merchantId: merchantId,
+                        govId: fetchGovernoratesQuery?.data?.findAllDomesticGovernorates?.filter((item) => item.name == addresspayload?.city)[0]?.id,
+                        orderType: orderpayload?.ordertype,
+                    },
+                },
+            });
+            setShipping(data?.findSingleMerchantDomesticShipping?.domesticShipping?.total);
+            // alert(JSON.stringify());
+        }
+    }, [merchantId, addresspayload?.city, orderpayload?.address, orderpayload?.ordertype]);
 
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
@@ -420,6 +459,18 @@ const AddOrder = (props) => {
                             {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
                             {!buttonLoading && <span>Create Order</span>}
                         </button>
+                    </div>
+                    <div class="col-lg-12 text-danger">
+                        <div class="row m-0 w-100 mb-2">
+                            {' '}
+                            {orderpayload?.items?.length == 0 && <div class="col-lg-12">* Add order items</div>}
+                            {(orderpayload?.customerId?.length == 0 || orderpayload?.customerId == undefined) && <div class="col-lg-12">* Choose customer</div>}
+                            {(orderpayload?.address?.length == 0 || orderpayload?.address == undefined) && <div class="col-lg-12">* Choose customer address</div>}
+                            {orderpayload?.returnOrderItems?.length == 0 && externalOrder && orderpayload?.ordertype == 'exchange' && <div class="col-lg-12">* Add return items</div>}
+                            {!externalOrder && (orderpayload?.previousOrderId?.length == 0 || orderpayload?.previousOrderId == undefined) && orderpayload?.ordertype == 'exchange' && (
+                                <div class="col-lg-12">* Choose return order</div>
+                            )}
+                        </div>
                     </div>
                 </div>
                 {tabs[0]?.isChecked && (
@@ -724,7 +775,7 @@ const AddOrder = (props) => {
                                                     onClick={() => {
                                                         setaddresspayload({
                                                             city: '',
-                                                            country: '',
+                                                            country: 'Egypt',
                                                             streetAddress: '',
                                                         });
                                                         setopenModal(!openModal);
@@ -739,13 +790,57 @@ const AddOrder = (props) => {
                                                         size={'lg'}
                                                         submit={submit}
                                                         setsubmit={setsubmit}
-                                                        attr={[
-                                                            { name: 'Country', attr: 'country', size: '6' },
-                                                            { name: 'City', attr: 'city', size: '6' },
-                                                            { name: 'Building Number', attr: 'buildingNumber', size: '6' },
-                                                            { name: 'Apartment Floor', attr: 'apartmentFloor', size: '6' },
-                                                            { name: 'Street Address', attr: 'streetAddress', type: 'textarea', size: '12' },
-                                                        ]}
+                                                        attr={
+                                                            addresspayload?.country == 'Egypt'
+                                                                ? [
+                                                                      {
+                                                                          title: 'Country',
+                                                                          options: fetchAllCountriesQuery,
+                                                                          optionsAttr: 'data',
+                                                                          label: 'country',
+                                                                          value: 'country',
+                                                                          size: '6',
+                                                                          attr: 'country',
+                                                                          type: 'fetchSelect',
+                                                                          payload: addresspayload,
+                                                                      },
+                                                                      {
+                                                                          name: 'City',
+                                                                          attr: 'city',
+                                                                          type: 'select',
+                                                                          options: fetchGovernoratesQuery?.data?.findAllDomesticGovernorates,
+                                                                          size: '6',
+                                                                          optionValue: 'name',
+                                                                          optionLabel: 'name',
+                                                                      },
+                                                                      { name: 'Building Number', attr: 'buildingNumber', size: '6' },
+                                                                      { name: 'Apartment Floor', attr: 'apartmentFloor', size: '6' },
+                                                                      { name: 'Street Address', attr: 'streetAddress', type: 'textarea', size: '12' },
+                                                                  ]
+                                                                : [
+                                                                      {
+                                                                          title: 'Country',
+                                                                          options: fetchAllCountriesQuery,
+                                                                          optionsAttr: 'data',
+                                                                          label: 'country',
+                                                                          value: 'country',
+                                                                          size: '6',
+                                                                          attr: 'country',
+                                                                          type: 'fetchSelect',
+                                                                          payload: addresspayload,
+                                                                      },
+                                                                      {
+                                                                          name: 'City',
+                                                                          attr: 'city',
+                                                                          type: 'select',
+                                                                          options: cities,
+                                                                          size: '6',
+                                                                      },
+                                                                      { name: 'Building Number', attr: 'buildingNumber', size: '6' },
+                                                                      { name: 'Apartment Floor', attr: 'apartmentFloor', size: '6' },
+                                                                      { name: 'Street Address', attr: 'streetAddress', type: 'textarea', size: '12' },
+                                                                  ]
+                                                        }
                                                         payload={addresspayload}
                                                         setpayload={setaddresspayload}
                                                         button1disabled={buttonLoading}
@@ -827,7 +922,10 @@ const AddOrder = (props) => {
                                                                                     onClick={async () => {
                                                                                         try {
                                                                                             await setorderpayload({ ...orderpayload, address: item?.address?.id });
-
+                                                                                            setaddresspayload({
+                                                                                                city: item?.address?.city,
+                                                                                                country: item?.address?.country,
+                                                                                            });
                                                                                             await linkCurrentCustomerAddressMutation();
 
                                                                                             setsimilarAddresses([]);
@@ -865,7 +963,7 @@ const AddOrder = (props) => {
                                                                                 >
                                                                                     <div class="col-lg-12">
                                                                                         <span style={{ fontWeight: 600 }}>
-                                                                                            {item?.address?.city}, {item?.address?.country}
+                                                                                            {item?.address?.country}, {item?.address?.city}
                                                                                         </span>
                                                                                     </div>
 
@@ -897,7 +995,10 @@ const AddOrder = (props) => {
                                                                                     onClick={async () => {
                                                                                         try {
                                                                                             await setorderpayload({ ...orderpayload, address: item?.address?.id });
-
+                                                                                            setaddresspayload({
+                                                                                                city: item?.address?.city,
+                                                                                                country: item?.address?.country,
+                                                                                            });
                                                                                             await linkCurrentCustomerAddressMutation();
 
                                                                                             setsimilarAddresses([]);
@@ -935,7 +1036,7 @@ const AddOrder = (props) => {
                                                                                 >
                                                                                     <div class="col-lg-12">
                                                                                         <span style={{ fontWeight: 600 }}>
-                                                                                            {item?.address?.city}, {item?.address?.country}
+                                                                                            {item?.address?.country}, {item?.address?.city}
                                                                                         </span>
                                                                                     </div>
                                                                                     <div class="col-lg-12">
@@ -968,6 +1069,10 @@ const AddOrder = (props) => {
                                                                     <div
                                                                         onClick={() => {
                                                                             setorderpayload({ ...orderpayload, address: item?.details?.id });
+                                                                            setaddresspayload({
+                                                                                city: item?.details?.city,
+                                                                                country: item?.details?.country,
+                                                                            });
                                                                         }}
                                                                         style={{
                                                                             cursor: 'pointer',
@@ -1158,7 +1263,7 @@ const AddOrder = (props) => {
                                                 <div className="col-lg-6 p-1">
                                                     <div
                                                         onClick={() => {
-                                                            setorderpayload({ ...orderpayload, previousOrderId: item.id });
+                                                            setorderpayload({ ...orderpayload, previousOrderId: item.id, previousorder: item });
                                                         }}
                                                         style={{ cursor: 'pointer' }}
                                                         class={generalstyles.card + ' p-3 row m-0 w-100 allcentered '}
@@ -1367,7 +1472,7 @@ const AddOrder = (props) => {
                             }
                             payload={orderpayload}
                             setpayload={setorderpayload}
-                            // button1disabled={UserMutation.isLoading}
+                            button1disabled={true}
                         />
                         {orderpayload?.ordertype == 'exchange' && externalOrder && (
                             <div class="col-lg-12 mt-2">
@@ -1431,7 +1536,7 @@ const AddOrder = (props) => {
                                                                     <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
                                                                         <FaWindowMinimize
                                                                             onClick={() => {
-                                                                                if (orderpayload.returnOrderItems[index].count > 0) {
+                                                                                if (orderpayload.returnOrderItems[index].count > 1) {
                                                                                     var temp = { ...orderpayload };
                                                                                     temp.returnOrderItems[index].count = parseInt(temp.returnOrderItems[index].count) - 1;
                                                                                     setorderpayload({ ...temp });
@@ -1496,23 +1601,151 @@ const AddOrder = (props) => {
                             </div>
                         )}
                         {orderpayload?.ordertype == 'exchange' && (
-                            <Form
-                                size={'lg'}
-                                submit={submit}
-                                setsubmit={setsubmit}
-                                attr={
-                                    orderpayload?.returnoriginal == 1
-                                        ? [{ name: 'Return Original Price', attr: 'returnoriginal', type: 'checkbox', size: '12' }]
-                                        : [
-                                              { name: 'Original Price', attr: 'returnoriginal', type: 'checkbox', size: '12' },
-                                              { name: 'Return Price', attr: 'returnAmount', type: 'number', size: '12' },
-                                          ]
-                                }
-                                payload={orderpayload}
-                                setpayload={setorderpayload}
-                                // button1disabled={UserMutation.isLoading}
-                            />
+                            <>
+                                <Form
+                                    size={'lg'}
+                                    submit={submit}
+                                    setsubmit={setsubmit}
+                                    attr={[{ name: 'Return Original Price', attr: 'returnoriginal', type: 'checkbox', size: '12' }]}
+                                    payload={orderpayload}
+                                    setpayload={setorderpayload}
+                                    button1disabled={true}
+                                />
+                                {orderpayload?.returnoriginal != 1 && (
+                                    <div class={'col-lg-12'} style={{ position: 'relative' }}>
+                                        <BiMinus color="var(--danger)" style={{ position: 'absolute', bottom: '27px', zIndex: 100, left: '16px' }} />
+
+                                        <Inputfield
+                                            submit={submit}
+                                            setsubmit={setsubmit}
+                                            placeholder={'Return price'}
+                                            value={orderpayload.returnAmount}
+                                            onChange={(event) => {
+                                                setorderpayload({ ...orderpayload, returnAmount: event.target.value });
+                                            }}
+                                            type={'number'}
+                                        />
+                                    </div>
+                                )}
+                            </>
                         )}
+
+                        <div class="col-lg-12 p-0 mt-2">
+                            <div class="row m-0 w-100 d-flex">
+                                <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4">
+                                    <div class="row m-0 w-100">
+                                        <div class="col-lg-12 p-0 allcentered text-center">
+                                            <span style={{ fontWeight: 400, fontSize: '11px' }}>Price</span>
+                                        </div>
+                                        <div class="col-lg-12 p-0 allcentered text-center">
+                                            <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                {parseFloat(
+                                                    orderpayload?.ordertype == 'exchange'
+                                                        ? (orderpayload?.original == 1
+                                                              ? parseFloat(
+                                                                    orderpayload?.items?.reduce((acc, orderItem) => {
+                                                                        const count = parseInt(orderItem?.count);
+                                                                        const price = parseFloat(orderItem?.item?.price);
+                                                                        return acc + count * price;
+                                                                    }, 0),
+                                                                )?.toFixed(2)
+                                                              : orderpayload?.price
+                                                              ? parseFloat(orderpayload?.price)
+                                                              : 0) -
+                                                              (orderpayload?.returnoriginal == 1
+                                                                  ? externalOrder
+                                                                      ? parseFloat(
+                                                                            orderpayload?.returnOrderItems?.reduce((acc, orderItem) => {
+                                                                                const count = parseInt(orderItem?.count);
+                                                                                const price = parseFloat(orderItem?.item?.price);
+                                                                                return acc + count * price;
+                                                                            }, 0),
+                                                                        )?.toFixed(2)
+                                                                      : orderpayload?.previousorder?.price
+                                                                      ? parseFloat(orderpayload?.previousorder?.price)
+                                                                      : 0
+                                                                  : orderpayload?.returnAmount
+                                                                  ? parseFloat(orderpayload?.returnAmount)
+                                                                  : 0)
+                                                        : orderpayload?.original == 1
+                                                        ? parseFloat(
+                                                              orderpayload?.items?.reduce((acc, orderItem) => {
+                                                                  const count = parseInt(orderItem?.count);
+                                                                  const price = parseFloat(orderItem?.item?.price);
+                                                                  return acc + count * price;
+                                                              }, 0),
+                                                          )?.toFixed(2)
+                                                        : orderpayload?.price
+                                                        ? parseFloat(orderpayload?.price)
+                                                        : 0,
+                                                )?.toFixed(2)}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4">
+                                    <div class="row m-0 w-100">
+                                        <div class="col-lg-12 p-0 allcentered text-center">
+                                            <span style={{ fontWeight: 400, fontSize: '11px' }}>Shipping</span>
+                                        </div>
+                                        <div class="col-lg-12 p-0 allcentered text-center">
+                                            <span style={{ fontWeight: 600, fontSize: '13px' }}>{orderpayload?.ordertype == 'freeShipping' ? 0 : shipping}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style={{ fontWeight: 600, fontSize: '15px' }} className=" p-0 mb-2 allcentered col-lg-4">
+                                    <div class="row m-0 w-100">
+                                        <div class="col-lg-12 p-0 allcentered text-center">
+                                            <span style={{ fontWeight: 400, fontSize: '11px' }}>Total</span>
+                                        </div>
+                                        <div class="col-lg-12 p-0 allcentered text-center">
+                                            <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                {parseFloat(
+                                                    orderpayload?.ordertype == 'exchange'
+                                                        ? (orderpayload?.original == 1
+                                                              ? parseFloat(
+                                                                    orderpayload?.items?.reduce((acc, orderItem) => {
+                                                                        const count = parseInt(orderItem?.count);
+                                                                        const price = parseFloat(orderItem?.item?.price);
+                                                                        return acc + count * price;
+                                                                    }, 0),
+                                                                )?.toFixed(2)
+                                                              : orderpayload?.price
+                                                              ? parseFloat(orderpayload?.price)
+                                                              : 0) -
+                                                              (orderpayload?.returnoriginal == 1
+                                                                  ? externalOrder
+                                                                      ? parseFloat(
+                                                                            orderpayload?.returnOrderItems?.reduce((acc, orderItem) => {
+                                                                                const count = parseInt(orderItem?.count);
+                                                                                const price = parseFloat(orderItem?.item?.price);
+                                                                                return acc + count * price;
+                                                                            }, 0),
+                                                                        )?.toFixed(2)
+                                                                      : orderpayload?.previousorder?.price
+                                                                      ? parseFloat(orderpayload?.previousorder?.price)
+                                                                      : 0
+                                                                  : orderpayload?.returnAmount
+                                                                  ? parseFloat(orderpayload?.returnAmount)
+                                                                  : 0)
+                                                        : orderpayload?.original == 1
+                                                        ? parseFloat(
+                                                              orderpayload?.items?.reduce((acc, orderItem) => {
+                                                                  const count = parseInt(orderItem?.count);
+                                                                  const price = parseFloat(orderItem?.item?.price);
+                                                                  return acc + count * price;
+                                                              }, 0),
+                                                          )?.toFixed(2)
+                                                        : orderpayload?.price
+                                                        ? parseFloat(orderpayload?.price)
+                                                        : 0,
+                                                )?.toFixed(2) + parseFloat(orderpayload?.ordertype == 'freeShipping' ? 0 : shipping)}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

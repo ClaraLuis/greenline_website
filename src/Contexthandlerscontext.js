@@ -635,7 +635,7 @@ export const Contexthandlerscontext_provider = (props) => {
         { label: 'Exchange', value: 'exchange' },
         { label: 'Return', value: 'return' },
         { label: 'Free Shipping', value: 'freeShipping' },
-        { label: 'Free Of Charge', value: 'freeOfCharge' },
+        // { label: 'Free Of Charge', value: 'freeOfCharge' },
     ];
 
     const paymentTypeContext = [

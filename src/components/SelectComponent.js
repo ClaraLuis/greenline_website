@@ -71,12 +71,12 @@ const SelectComponent = (props) => {
     };
 
     useEffect(() => {
-        data?.map((item, index) => {
+        filteredData?.map((item, index) => {
             if (item[props?.value] == props?.payload[props?.payloadAttr]) {
                 setplaceholder(item[props?.label]);
             }
         });
-    }, [props?.payload]);
+    }, [props?.payload, filteredData]);
 
     return (
         <>

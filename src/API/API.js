@@ -49,6 +49,7 @@ const API = () => {
             }
         `;
     };
+
     const updateOrdersStatus = () => {
         return gql`
             mutation updateOrderStatus($input: UpdateCourierOrderStatusInput!) {
@@ -313,6 +314,17 @@ const API = () => {
                         }
                     }
                     accessToken
+                }
+            }
+        `;
+    };
+    const findSingleMerchantDomesticShipping = () => {
+        return gql`
+            query findSingleMerchantDomesticShipping($input: findMerchantDomesticShippingInput!) {
+                findSingleMerchantDomesticShipping(input: $input) {
+                    domesticShipping {
+                        total
+                    }
                 }
             }
         `;
@@ -1293,6 +1305,7 @@ const API = () => {
         fetchExpenses,
         createExpense,
         fetchAllCountries,
+        findSingleMerchantDomesticShipping,
     };
 };
 export default API;
