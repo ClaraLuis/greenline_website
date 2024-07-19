@@ -84,7 +84,7 @@ const UsersTable = (props) => {
                                             </div>
 
                                             <div className="col-lg-6 p-0 mb-2 d-flex justify-content-end">
-                                                {item?.id?.length != 7 && isAuth([1, 46]) && (
+                                                {item?.id?.length != 7 && isAuth([1, 46, 52]) && (
                                                     <div
                                                         onClick={() => {
                                                             var temp = { ...item };

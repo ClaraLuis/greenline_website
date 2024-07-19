@@ -22,7 +22,7 @@ const { ValueContainer, Placeholder } = components;
 const UserInfo = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { userRolesContext, userTypeContext, employeeTypeContext } = useContext(Contexthandlerscontext);
+    const { userRolesContext, userTypeContext, employeeTypeContext, isAuth } = useContext(Contexthandlerscontext);
     const { useQueryGQL, fetchUsers, useMutationGQL, addUser, editUserType, fetchMerchants, fetchInventories, fetchHubs } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -178,7 +178,15 @@ const UserInfo = (props) => {
                                     submit={submit}
                                     setsubmit={setsubmit}
                                     attr={
-                                        props?.payload?.type == 'merchant'
+                                        isAuth([52])
+                                            ? [
+                                                  { name: 'Name', attr: 'name', size: '6' },
+
+                                                  { name: 'Email', attr: 'email', size: '6' },
+                                                  { name: 'Phone number', attr: 'phone', type: 'number', size: '6' },
+                                                  { name: 'Birthdate', attr: 'birthdate', type: 'date', size: '6' },
+                                              ]
+                                            : props?.payload?.type == 'merchant'
                                             ? [
                                                   { name: 'Name', attr: 'name', size: '6' },
 

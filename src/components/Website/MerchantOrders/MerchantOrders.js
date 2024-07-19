@@ -25,6 +25,8 @@ import WaybillPrint from '../Orders/WaybillPrint.js';
 import { FiCheckCircle, FiCircle } from 'react-icons/fi';
 import MultiSelect from '../../MultiSelect.js';
 import { NotificationManager } from 'react-notifications';
+import Inputfield from '../../Inputfield.js';
+import { AiOutlineClose } from 'react-icons/ai';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -352,6 +354,60 @@ const MerchantOrders = (props) => {
                                                     });
                                                 }}
                                             />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <Inputfield
+                                            placeholder={'Order Ids'}
+                                            onKeyDown={(e) => {
+                                                if (e.key == 'Enter') {
+                                                    var exists = filterorders?.orderIds?.includes(parseInt(e?.target?.value));
+                                                    if (exists) {
+                                                        NotificationManager.warning('', 'Already exists');
+                                                    } else {
+                                                        var temp = filterorders.orderIds ?? [];
+                                                        temp.push(parseInt(e.target.value));
+                                                        setfilterorders({
+                                                            ...filterorders,
+                                                            orderIds: temp,
+                                                        });
+                                                        e.target.value = '';
+                                                    }
+                                                }
+                                            }}
+                                            type={'number'}
+                                        />
+                                        <div class="col-lg-12 p-0">
+                                            <div class="row m-0 w-100 scrollmenuclasssubscrollbar" style={{ overflow: 'scroll', flexWrap: 'nowrap' }}>
+                                                {filterorders?.orderIds?.map((orderItem, orderIndex) => {
+                                                    return (
+                                                        <div
+                                                            style={{
+                                                                background: '#ECECEC',
+                                                                padding: '5px 10px',
+                                                                cursor: 'pointer',
+                                                                borderRadius: '8px',
+                                                                justifyContent: 'space-between',
+                                                                width: 'fit-content',
+                                                                fontSize: '11px',
+                                                                minWidth: 'fit-content',
+                                                            }}
+                                                            className="d-flex align-items-center mr-2 mb-1"
+                                                            onClick={() => {
+                                                                var temp = filterorders.orderIds ?? [];
+                                                                temp.splice(orderIndex, 1);
+                                                                setfilterorders({
+                                                                    ...filterorders,
+                                                                    orderIds: temp?.length != 0 ? temp : undefined,
+                                                                });
+                                                            }}
+                                                        >
+                                                            {orderItem}
+                                                            <AiOutlineClose size={12} color="#6C757D" className="ml-2" />
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

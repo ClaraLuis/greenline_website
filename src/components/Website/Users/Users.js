@@ -77,7 +77,7 @@ const Users = (props) => {
                             <span style={{ color: 'var(--info)' }}> {fetchusers?.data?.paginateUsers?.data?.length} </span>
                         </p>
                     </div>
-                    {isAuth([1, 44]) && (
+                    {isAuth([1, 44, 52]) && (
                         <div class={' col-lg-6 col-md-6 col-sm-6 p-0 pr-3 pr-md-1 pr-sm-0 d-flex align-items-center justify-content-end pb-1 '}>
                             <button
                                 style={{ height: '35px' }}
@@ -132,7 +132,7 @@ const Users = (props) => {
                             </div>
                         </div>
                     </div>
-                    {isAuth([1, 43]) && (
+                    {isAuth([1, 43, 52]) && (
                         <>
                             <div class="col-lg-12 p-0">
                                 <Pagination

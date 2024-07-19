@@ -103,7 +103,8 @@
     "suneditor-react": "^3.3.0",
     "superstruct": "^0.15.3",
     "universal-cookie": "^4.0.4",
-    "web-vitals": "^1.1.2"
+    "web-vitals": "^1.1.2",
+    "xlsx": "^0.18.5"
   },
   "scripts": {
     "start": "react-scripts start",

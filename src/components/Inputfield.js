@@ -25,6 +25,7 @@ const Inputfield = (props) => {
                         border: props?.value?.length == 0 && props?.submit && props?.type != 'time' ? '1px solid var(--danger)' : '',
                     }}
                     onChange={props?.onChange}
+                    onKeyDown={props?.onKeyDown}
                 />
                 {props?.value?.length == 0 && props?.submit && props?.type != 'time' && (
                     <div class="col-lg-12 px-2 pt-2" style={{ color: 'var(--danger)', fontSize: '11px' }}>

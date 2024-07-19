@@ -72,7 +72,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/users',
                         permissionpage: [1],
-                        show: isAuth([1, 43, 44, 45, 46]),
+                        show: isAuth([1, 43, 44, 45, 46, 52]),
                     },
                     {
                         name: 'Hubs',

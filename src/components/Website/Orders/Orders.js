@@ -7,6 +7,7 @@ import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
 import { FaLayerGroup } from 'react-icons/fa';
 import Select, { components } from 'react-select';
+import { DateRangePicker } from 'rsuite';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
 import { IoMdClose } from 'react-icons/io';
@@ -20,6 +21,10 @@ import OrdersTable from './OrdersTable.js';
 import Pagination from '../../Pagination.js';
 import SelectComponent from '../../SelectComponent.js';
 import Cookies from 'universal-cookie';
+import Inputfield from '../../Inputfield.js';
+import MultiSelect from '../../MultiSelect.js';
+import { NotificationManager } from 'react-notifications';
+import { AiOutlineClose } from 'react-icons/ai';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -40,6 +45,8 @@ const Orders = (props) => {
         limit: 20,
     });
     const fetchOrdersInInventoryQuery = useQueryGQL('', fetchOrdersInInventory(), filterorders);
+    const { refetch: refetchOrdersInInventory } = useQueryGQL('', fetchOrdersInInventory(), filterorders);
+
     const [filterMerchants, setfilterMerchants] = useState({
         isAsc: true,
         limit: 20,
@@ -75,6 +82,10 @@ const Orders = (props) => {
         };
     }, [barcode, filterorders]);
 
+    useEffect(() => {
+        refetchOrdersInInventory();
+    }, [filterorders]);
+
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
@@ -83,8 +94,7 @@ const Orders = (props) => {
                         Orders
                     </p>
                 </div>
-
-                {/* <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>
+                <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>
                     <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
                         <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
                             <AccordionItemHeading>
@@ -118,28 +128,133 @@ const Orders = (props) => {
                             <AccordionItemPanel>
                                 <hr className="mt-2 mb-3" />
                                 <div class="row m-0 w-100">
-                                    <div class={'col-lg-2'} style={{ marginBottom: '15px' }}>
-                                        <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
-                                            <label for="name" class={formstyles.form__label}>
-                                                From date
-                                            </label>
-                                            <input type={'date'} class={formstyles.form__field} placeholder={''} />
+                                    <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                        <MultiSelect
+                                            title={'Merchants'}
+                                            filter={filterMerchants}
+                                            setfilter={setfilterMerchants}
+                                            options={fetchMerchantsQuery}
+                                            attr={'paginateMerchants'}
+                                            label={'name'}
+                                            value={'id'}
+                                            selected={filterorders?.merchantIds}
+                                            onClick={(option) => {
+                                                var tempArray = filterorders?.merchantIds ?? [];
+
+                                                if (option == 'All') {
+                                                    tempArray = undefined;
+                                                } else {
+                                                    if (!tempArray?.includes(option.id)) {
+                                                        tempArray.push(option.id);
+                                                    } else {
+                                                        tempArray.splice(tempArray?.indexOf(option?.id), 1);
+                                                    }
+                                                }
+
+                                                setfilterorders({ ...filterorders, merchantIds: tempArray?.length != 0 ? tempArray : undefined });
+                                            }}
+                                        />
+                                    </div>
+
+                                    <div class=" col-lg-3 mb-md-2">
+                                        <span>Date Range</span>
+                                        <div class="mt-1" style={{ width: '100%' }}>
+                                            <DateRangePicker
+                                                // disabledDate={allowedMaxDays(30)}
+                                                // value={[filterorders?.fromDate, filterorders?.toDate]}
+                                                onChange={(event) => {
+                                                    if (event != null) {
+                                                        const start = event[0];
+                                                        const startdate = new Date(start);
+                                                        const year1 = startdate.getFullYear();
+                                                        const month1 = startdate.getMonth() + 1; // Months are zero-indexed
+                                                        const day1 = startdate.getDate();
+
+                                                        const end = event[1];
+                                                        const enddate = new Date(end);
+                                                        const year2 = enddate.getFullYear();
+                                                        const month2 = enddate.getMonth() + 1; // Months are zero-indexed
+                                                        const day2 = enddate.getDate();
+                                                        setfilterorders({
+                                                            ...filterorders,
+                                                            fromDate: event[0],
+                                                            toDate: event[1],
+                                                            // from_date: year1 + '-' + month1 + '-' + day1,
+                                                            // to_date: year2 + '-' + month2 + '-' + day2,
+                                                        });
+                                                    }
+                                                }}
+                                                onClean={() => {
+                                                    setfilterorders({
+                                                        ...filterorders,
+                                                        fromDate: null,
+                                                        toDate: null,
+                                                    });
+                                                }}
+                                            />
                                         </div>
                                     </div>
-                                    <div class={'col-lg-2'} style={{ marginBottom: '15px' }}>
-                                        <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
-                                            <label for="name" class={formstyles.form__label}>
-                                                To date
-                                            </label>
-                                            <input type={'date'} class={formstyles.form__field} placeholder={''} />
+                                    <div class="col-lg-3">
+                                        <Inputfield
+                                            placeholder={'Order Ids'}
+                                            onKeyDown={(e) => {
+                                                e.stopPropagation();
+
+                                                if (e.key == 'Enter') {
+                                                    var exists = filterorders?.orderIds?.includes(parseInt(e?.target?.value));
+                                                    if (exists) {
+                                                        NotificationManager.warning('', 'Already exists');
+                                                    } else {
+                                                        var temp = filterorders.orderIds ?? [];
+                                                        temp.push(parseInt(e.target.value));
+                                                        setfilterorders({
+                                                            ...filterorders,
+                                                            orderIds: temp,
+                                                        });
+                                                        e.target.value = '';
+                                                    }
+                                                }
+                                            }}
+                                            type={'number'}
+                                        />
+                                        <div class="col-lg-12 p-0">
+                                            <div class="row m-0 w-100 scrollmenuclasssubscrollbar" style={{ overflow: 'scroll', flexWrap: 'nowrap' }}>
+                                                {filterorders?.orderIds?.map((orderItem, orderIndex) => {
+                                                    return (
+                                                        <div
+                                                            style={{
+                                                                background: '#ECECEC',
+                                                                padding: '5px 10px',
+                                                                cursor: 'pointer',
+                                                                borderRadius: '8px',
+                                                                justifyContent: 'space-between',
+                                                                width: 'fit-content',
+                                                                fontSize: '11px',
+                                                                minWidth: 'fit-content',
+                                                            }}
+                                                            className="d-flex align-items-center mr-2 mb-1"
+                                                            onClick={() => {
+                                                                var temp = filterorders.orderIds ?? [];
+                                                                temp.splice(orderIndex, 1);
+                                                                setfilterorders({
+                                                                    ...filterorders,
+                                                                    orderIds: temp?.length != 0 ? temp : undefined,
+                                                                });
+                                                            }}
+                                                        >
+                                                            {orderItem}
+                                                            <AiOutlineClose size={12} color="#6C757D" className="ml-2" />
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </AccordionItemPanel>
                         </AccordionItem>
                     </Accordion>
-                </div> */}
-
+                </div>
                 <div class={generalstyles.card + ' row m-0 w-100 my-2 p-2 px-2'}>
                     <div class="col-lg-12 p-0 ">
                         <div class="row m-0 w-100 d-flex align-items-center">

@@ -226,14 +226,15 @@ const Merchants = (props) => {
                                                     <button
                                                         onClick={() => {
                                                             // setchosenMerchantContext(item);
-                                                            const cookies = new Cookies();
-                                                            cookies.set('merchantId', item?.id);
-                                                            window.location.reload();
+                                                            // const cookies = new Cookies();
+                                                            // cookies.set('merchantId', item?.id);
+                                                            // window.location.reload();
+                                                            history.push('/updatemerchant?merchantId=' + item.id);
                                                         }}
                                                         style={{ minWidth: '200px', maxWidth: '200px', height: '35px' }}
                                                         class={generalstyles.roundbutton + ' p-1 px-3 allcentered'}
                                                     >
-                                                        View Dashboard
+                                                        View
                                                     </button>
                                                 </div>
                                             </div>

@@ -25,6 +25,7 @@ import Form from '../../Form.js';
 import { NotificationManager } from 'react-notifications';
 import Pagination from '../../Pagination.js';
 import SelectComponent from '../../SelectComponent.js';
+import * as XLSX from 'xlsx';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -105,6 +106,14 @@ const FinanceTransactions = (props) => {
     const Refetch = () => {
         refetchAllFinancialAccountsQuery();
     };
+
+    const exportToExcel = (data, fileName) => {
+        const worksheet = XLSX.utils.json_to_sheet(data);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+        XLSX.writeFile(workbook, `${fileName}.xlsx`);
+    };
+
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
@@ -114,17 +123,28 @@ const FinanceTransactions = (props) => {
                     </p>
                 </div>
                 <div class={' col-lg-6 col-md-6 col-sm-6 p-0 pr-3 pr-md-1 pr-sm-0 d-flex align-items-center justify-content-end pb-1 '}>
-                    {isAuth([1, 51, 28]) && (
+                    <div class="row m-0 w-100 d-flex align-items-center justify-content-end ">
+                        {isAuth([1, 51, 28]) && (
+                            <button
+                                style={{ height: '35px' }}
+                                class={generalstyles.roundbutton + '  mb-1 mx-1'}
+                                onClick={() => {
+                                    setopenModal({ open: true, type: 'transaction' });
+                                }}
+                            >
+                                Add Transaction
+                            </button>
+                        )}
                         <button
                             style={{ height: '35px' }}
                             class={generalstyles.roundbutton + '  mb-1 mx-1'}
                             onClick={() => {
-                                setopenModal({ open: true, type: 'transaction' });
+                                exportToExcel(fetchAllTransactionsQuery?.data?.paginateFinancialTransaction?.data, 'transactions');
                             }}
                         >
-                            Add Transaction
+                            Export
                         </button>
-                    )}
+                    </div>
 
                     {/* <button
                                 style={{ height: '35px' }}
