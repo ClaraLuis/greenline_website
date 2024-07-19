@@ -344,6 +344,13 @@ const MerchantOrders = (props) => {
                                                         });
                                                     }
                                                 }}
+                                                onClean={() => {
+                                                    setfilterorders({
+                                                        ...filterorders,
+                                                        fromDate: null,
+                                                        toDate: null,
+                                                    });
+                                                }}
                                             />
                                         </div>
                                     </div>

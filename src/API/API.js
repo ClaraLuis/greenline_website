@@ -51,8 +51,8 @@ const API = () => {
     };
     const updateOrdersStatus = () => {
         return gql`
-            mutation updateOrdersStatus($input: UpdateOrderStatusInput!) {
-                updateOrdersStatus(input: $input)
+            mutation updateOrderStatus($input: UpdateCourierOrderStatusInput!) {
+                updateOrderStatus(input: $input)
             }
         `;
     };

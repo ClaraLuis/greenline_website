@@ -520,7 +520,7 @@ const AddItem = (props) => {
                                     // await setitempayload({ ...itempayload, variantNames: tempOptions, variantOptions: tempValues, variantOptionAttributes: variantsTemp });
                                     try {
                                         const { data } = await addItemMutation();
-                                        NotificationManager.success('Item added successfuly!', 'Success!');
+                                        NotificationManager.success('Item added successfully!', 'Success!');
                                         history.push('/merchantitems');
                                         // Handle `data` here
                                         console.log('Mutation response:', data);

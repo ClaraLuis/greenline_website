@@ -110,9 +110,31 @@ const MultiSelect = (props) => {
                             setIsFocused(true);
                             setshowmenu(true);
                         }}
-                        className={cardstyles.formfield}
+                        className={cardstyles.formfield + ' d-flex align-items-center'}
                     >
-                        {placeholder}
+                        <div
+                            class=" row m-0 w-100"
+                            style={{
+                                overflow: 'hidden',
+                                display: '-webkit-box',
+                                flexWrap: 'nowrap',
+                            }}
+                        >
+                            {props?.selected == undefined && <>All</>}
+                            {props?.selected != undefined && (
+                                <>
+                                    {props?.selected?.map((selectedItem, selectedIndex) => {
+                                        var value = '';
+                                        filteredData?.map((i, ii) => {
+                                            if (selectedItem == i[props?.value]) {
+                                                value = i[props?.label];
+                                            }
+                                        });
+                                        return <div class="mr-1">{value}, </div>;
+                                    })}
+                                </>
+                            )}
+                        </div>
                     </div>
 
                     <div

@@ -32,6 +32,8 @@ const CourierSheet = (props) => {
     const [submitSheetPayload, setsubmitSheetPayload] = useState({});
     const [type, settype] = useState('');
     const [buttonLoading, setbuttonLoading] = useState(false);
+    const [updateStatusButtonLoading, setupdateStatusButtonLoading] = useState(false);
+
     const [fetchCourierSheetLazyQuery] = useLazyQueryGQL(fetchCourierSheet());
     const [fetchCourierSheetQuery, setfetchCourierSheetQuery] = useState({});
     const [statuspayload, setstatuspayload] = useState({
@@ -53,7 +55,7 @@ const CourierSheet = (props) => {
         updateSheetOrders: submitSheetPayload?.updateSheetOrders?.filter((item) => item.status == 'adminAccepted' || item.status == 'financeAccepted'),
     });
     const [updateOrdersStatusMutation] = useMutationGQL(updateOrdersStatus(), {
-        ids: [parseInt(statuspayload?.orderid)],
+        id: parseInt(statuspayload?.orderid),
         status: statuspayload?.status,
     });
 
@@ -770,6 +772,7 @@ const CourierSheet = (props) => {
                             <button
                                 onClick={async () => {
                                     try {
+                                        setupdateStatusButtonLoading(true);
                                         const { data } = await updateOrdersStatusMutation();
                                         var temp = { ...submitSheetPayload };
 
@@ -781,6 +784,8 @@ const CourierSheet = (props) => {
                                         setsubmitSheetPayload({ ...temp });
 
                                         setstatuspayload({ status: '', orderid: '' });
+                                        setchangestatusmodal(false);
+                                        NotificationManager.success('', 'Status changed successfully');
                                     } catch (error) {
                                         let errorMessage = 'An unexpected error occurred';
                                         if (error.graphQLErrors && error.graphQLErrors.length > 0) {
@@ -793,10 +798,13 @@ const CourierSheet = (props) => {
 
                                         NotificationManager.warning(errorMessage, 'Warning!');
                                     }
+                                    setupdateStatusButtonLoading(false);
                                 }}
                                 class={generalstyles.roundbutton}
+                                disabled={updateStatusButtonLoading}
                             >
-                                Update Status
+                                {updateStatusButtonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                {!updateStatusButtonLoading && <span>Update Status</span>}
                             </button>
                         </div>
 
@@ -825,9 +833,6 @@ const CourierSheet = (props) => {
                     </div>
                 </Modal.Body>
             </Modal>
-            <div class="col-lg-12" id={'id'}>
-                vnuirnve
-            </div>
         </div>
     );
 };

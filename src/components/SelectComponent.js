@@ -150,6 +150,7 @@ const SelectComponent = (props) => {
                                         e.stopPropagation();
                                         props?.onClick(item);
                                         setshowmenu(false);
+                                        setIsFocused(false);
                                     }}
                                     className="col-lg-12 p-0"
                                 >
