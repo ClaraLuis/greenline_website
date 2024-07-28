@@ -66,6 +66,8 @@ const ItemInfo = (props) => {
                                             <thead>
                                                 <th>Amount</th>
                                                 <th style={{ minWidth: '400px' }}>Description</th>
+                                                <th>User</th>
+                                                <th>Timestamp</th>
                                             </thead>
                                             <tbody>
                                                 {props?.fetchItemHistoryQuery?.paginateItemHistory?.data?.map((item, index) => {
@@ -76,6 +78,12 @@ const ItemInfo = (props) => {
                                                             </td>
                                                             <td style={{ minWidth: '400px' }}>
                                                                 <p className={' m-0 p-0 wordbreak '}>{item?.description}</p>
+                                                            </td>
+                                                            <td>
+                                                                <p className={' m-0 p-0 wordbreak '}>user</p>
+                                                            </td>
+                                                            <td>
+                                                                <p className={' m-0 p-0 wordbreak '}>{item?.createdAt}</p>
                                                             </td>
                                                         </tr>
                                                     );

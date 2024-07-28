@@ -875,6 +875,7 @@ const API = () => {
                     data {
                         amount
                         description
+                        createdAt
                     }
                     cursor
                 }

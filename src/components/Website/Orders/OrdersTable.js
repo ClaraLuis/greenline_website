@@ -21,6 +21,7 @@ import { IoMdClose } from 'react-icons/io';
 import Form from '../../Form.js';
 import { MdOutlineInventory2, MdOutlineLocationOn } from 'react-icons/md';
 import { FiCheckCircle } from 'react-icons/fi';
+import { BiUser } from 'react-icons/bi';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -141,7 +142,7 @@ const OrdersTable = (props) => {
                                         style={{ cursor: props?.clickable ? 'pointer' : '' }}
                                         className="col-lg-6 p-1"
                                     >
-                                        <div style={{ background: 'white' }} class={' p-3 row m-0 w-100 card'}>
+                                        <div style={{ background: selected ? 'var(--secondary)' : 'white', transition: '0.4s' }} class={' p-3 row m-0 w-100 card'}>
                                             <div className="col-lg-4 p-0">
                                                 <div class="row m-0 w-100 d-flex align-items-center">
                                                     <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
@@ -200,23 +201,19 @@ const OrdersTable = (props) => {
                                             {props?.srcFrom != 'inventory' && (
                                                 <>
                                                     <div class="col-lg-12 p-0 mb-2 text-capitalize">
-                                                        Courier: <span style={{ fontWeight: 600 }}>{item?.courier?.name}</span>
-                                                    </div>
-                                                    <div class="col-lg-12 p-0 mb-2 text-capitalize">
                                                         <span style={{ fontWeight: 600 }}>{item?.customerInfo?.customerName}</span>
                                                     </div>
                                                     <div className="col-lg-12 p-0 mb-1 d-flex align-items-center">
                                                         <MdOutlineLocationOn class="mr-1" />
                                                         <span style={{ fontWeight: 400, fontSize: '13px' }}>
-                                                            {item?.address?.city}, {item?.address?.country}
+                                                            {item?.address?.country}, {item?.address?.city},{' '}
+                                                            <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                {item?.address?.streetAddress}, {item?.address?.buildingNumber}, {item?.address?.apartmentFloor}
+                                                            </span>
                                                         </span>
                                                     </div>
-                                                    <div className="col-lg-12 p-0 ">
-                                                        <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                            {item?.address?.streetAddress}, {item?.address?.buildingNumber}, {item?.address?.apartmentFloor}
-                                                        </span>
-                                                    </div>
-                                                    <div className="col-lg-12 p-0 mt-3 mb-2">
+
+                                                    {/* <div className="col-lg-12 p-0 mt-3 mb-2">
                                                         <div
                                                             style={{ maxWidth: '100%', flexDirection: 'row', flexWrap: 'nowrap', overflow: 'scroll' }}
                                                             class="row m-0 w-100 scrollmenuclasssubscrollbar"
@@ -257,7 +254,7 @@ const OrdersTable = (props) => {
                                                                 );
                                                             })}
                                                         </div>
-                                                    </div>
+                                                    </div> */}
                                                     <div class="col-lg-12 p-0 mt-2">
                                                         <div class="row m-0 w-100 d-flex">
                                                             <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4">
@@ -384,22 +381,18 @@ const OrdersTable = (props) => {
                                                 </div>
                                             )}
 
-                                            {selected && (
-                                                <div
-                                                    style={{
-                                                        width: '35px',
-                                                        height: '35px',
-                                                        position: 'absolute',
-                                                        bottom: 10,
-                                                        left: 10,
-                                                    }}
-                                                    className=" allcentered"
-                                                >
-                                                    <FiCheckCircle style={{ transition: 'all 0.4s' }} color={selected ? 'var(--success)' : ''} size={20} />
-                                                </div>
-                                            )}
                                             <div style={{ fontSize: '12px' }} class="col-lg-12 p-0 mt-2 d-flex justify-content-end ">
-                                                <p className={' m-0 p-0 wordbreak  '}>{dateformatter(orderDate.toUTCString())}</p>
+                                                <div class="row m-0 w-100 d-flex align-items-center">
+                                                    {props?.srcFrom != 'inventory' && (
+                                                        <div class="col-lg-6 p-0 d-flex align-items-center">
+                                                            <BiUser class="mr-1" />
+                                                            <span style={{ fontWeight: 600 }}>{item?.courier?.name}</span>
+                                                        </div>
+                                                    )}
+                                                    <div class="col-lg-6 p-0 d-flex justify-content-end">
+                                                        <p className={' m-0 p-0 wordbreak  '}>{dateformatter(orderDate.toUTCString())}</p>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

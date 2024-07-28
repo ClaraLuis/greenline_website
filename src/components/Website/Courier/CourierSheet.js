@@ -22,7 +22,7 @@ import { defaultstyles } from '../Generalfiles/selectstyles.js';
 const CourierSheet = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, courierSheetStatusesContext, dateformatter, orderStatusEnumContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, courierSheetStatusesContext, dateformatter, orderStatusEnumContext, isAuth } = useContext(Contexthandlerscontext);
     const { useLazyQueryGQL, useQueryGQL, fetchCourierSheet, updateCourierSheet, useMutationGQL, updateOrdersStatus } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -52,6 +52,7 @@ const CourierSheet = (props) => {
     const [updateCourierSheetMutation] = useMutationGQL(updateCourierSheet(), {
         id: submitSheetPayload?.id,
         // ordersCount: submitSheetPayload?.orderCount,
+        asAdmin: type == 'admin' && isAuth([1]) ? true : false,
         updateSheetOrders: submitSheetPayload?.updateSheetOrders?.filter((item) => item.status == 'adminAccepted' || item.status == 'financeAccepted'),
     });
     const [updateOrdersStatusMutation] = useMutationGQL(updateOrdersStatus(), {
@@ -133,14 +134,16 @@ const CourierSheet = (props) => {
                 price: item?.order?.price,
                 shippingPrice: item?.order?.shippingPrice,
                 orderStatus: item?.order?.status,
+                amountCollected: item?.amountCollected,
             });
-            temp.updateSheetOrders.push({
-                sheetOrderId: item?.id,
-                status: type == 'admin' ? (item?.adminPass ? 'adminAccepted' : 'adminRejected') : item?.financePass ? 'financeAccepted' : 'financeRejected',
-                shippingCollected: item?.shippingCollected == 'collected' ? true : false,
-
-                description: '',
-            });
+            if (!(item?.adminPass && type == 'admin') && !(item?.financePass && type == 'finance')) {
+                temp.updateSheetOrders.push({
+                    sheetOrderId: item?.id,
+                    status: type == 'admin' ? (item?.adminPass ? 'adminAccepted' : 'adminRejected') : item?.financePass ? 'financeAccepted' : 'financeRejected',
+                    shippingCollected: item?.shippingCollected == 'collected' ? true : false,
+                    description: '',
+                });
+            }
         });
         temp.orderTotal = total;
         temp.orderCurrency = currency;
@@ -367,31 +370,38 @@ const CourierSheet = (props) => {
                                                                         class={generalstyles.roundbutton + '  allcentered'}
                                                                         onClick={(e) => {
                                                                             e.stopPropagation();
-                                                                            if (
-                                                                                item?.order?.status == 'delivered' ||
-                                                                                item?.order?.status == 'partiallyDelivered' ||
-                                                                                item?.order?.status == 'cancelled' ||
-                                                                                submitSheetPayload?.status == 'inProgress' ||
-                                                                                (type == 'admin' && submitSheetPayload?.status == 'waitingForAdminApproval') ||
-                                                                                (type != 'admin' && submitSheetPayload?.status == 'waitingForFinanceApproval')
-                                                                            ) {
-                                                                                handleAccordionChange(index);
-                                                                                var temp = { ...submitSheetPayload };
+                                                                            if (item?.amountCollected == null) {
+                                                                                NotificationManager.warning(`Can not update order`, 'Warning!');
+                                                                                return;
+                                                                            }
 
-                                                                                temp.updateSheetOrders.map((i, ii) => {
-                                                                                    if (i.sheetOrderId == item.id) {
-                                                                                        if (expandedItems.includes(index)) {
-                                                                                            temp.updateSheetOrders[ii].status = type == 'admin' ? 'adminAccepted' : 'financeAccepted';
-                                                                                            temp.updateSheetOrderstemp[ii].status = type == 'admin' ? 'adminAccepted' : 'financeAccepted';
-                                                                                        } else {
-                                                                                            temp.updateSheetOrders[ii].status = type == 'admin' ? 'adminRejected' : 'financeRejected';
-                                                                                            temp.updateSheetOrderstemp[ii].status = type == 'admin' ? 'adminRejected' : 'financeRejected';
+                                                                            const orderStatus = item?.order?.status;
+                                                                            const sheetOrder = submitSheetPayload?.updateSheetOrders?.find((e) => e.sheetOrderId == item.id);
+
+                                                                            const canUpdateOrder = ['delivered', 'partiallyDelivered', 'cancelled'].includes(orderStatus);
+                                                                            const isInProgress = submitSheetPayload?.status == 'inProgress';
+                                                                            const isWaitingForAdminApproval = submitSheetPayload?.status == 'waitingForAdminApproval' && type == 'admin';
+                                                                            const isWaitingForFinanceApproval = submitSheetPayload?.status == 'waitingForFinanceApproval' && type != 'admin';
+
+                                                                            if (sheetOrder) {
+                                                                                if (canUpdateOrder || isInProgress || isWaitingForAdminApproval || isWaitingForFinanceApproval) {
+                                                                                    handleAccordionChange(index);
+                                                                                    var temp = { ...submitSheetPayload };
+                                                                                    temp.updateSheetOrders.map((i, ii) => {
+                                                                                        if (i.sheetOrderId == item.id) {
+                                                                                            if (expandedItems.includes(index)) {
+                                                                                                temp.updateSheetOrders[ii].status = type == 'admin' ? 'adminAccepted' : 'financeAccepted';
+                                                                                                temp.updateSheetOrderstemp[ii].status = type == 'admin' ? 'adminAccepted' : 'financeAccepted';
+                                                                                            } else {
+                                                                                                temp.updateSheetOrders[ii].status = type == 'admin' ? 'adminRejected' : 'financeRejected';
+                                                                                                temp.updateSheetOrderstemp[ii].status = type == 'admin' ? 'adminRejected' : 'financeRejected';
+                                                                                            }
                                                                                         }
-                                                                                    }
-                                                                                });
-                                                                                setsubmitSheetPayload({ ...temp });
-                                                                            } else {
-                                                                                NotificationManager.warning('Can not update order with status ' + item?.order?.status, 'Warning!');
+                                                                                    });
+                                                                                    setsubmitSheetPayload({ ...temp });
+                                                                                } else {
+                                                                                    NotificationManager.warning(`Can not update order with status ${orderStatus}`, 'Warning!');
+                                                                                }
                                                                             }
                                                                         }}
                                                                     >
@@ -453,7 +463,7 @@ const CourierSheet = (props) => {
                                                         </div>
                                                         <div class="col-lg-12 p-0 allcentered text-center">
                                                             <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                {parseFloat(item?.amountCollected)} {item?.order?.currency}
+                                                                {item?.amountCollected ? parseFloat(item?.amountCollected) : 0} {item?.order?.currency}
                                                             </span>
                                                         </div>
                                                     </div>
@@ -477,7 +487,7 @@ const CourierSheet = (props) => {
                                                         </div>
                                                         <div class="col-lg-12 p-0 allcentered text-center">
                                                             <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                {tempsheetpayload?.shippingCollected ? parseFloat(item?.order?.shippingPrice) : 0} {item?.order?.currency}
+                                                                {parseFloat(item?.order?.shippingPrice)} {item?.order?.currency}
                                                             </span>
                                                         </div>
                                                     </div>
@@ -489,8 +499,7 @@ const CourierSheet = (props) => {
                                                         </div>
                                                         <div class="col-lg-12 p-0 allcentered text-center">
                                                             <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                {parseFloat(item?.order?.price) + (tempsheetpayload?.shippingCollected ? parseFloat(item?.order?.shippingPrice) : 0)}{' '}
-                                                                {item?.order?.currency}
+                                                                {parseFloat(item?.order?.price) + parseFloat(item?.order?.shippingPrice)} {item?.order?.currency}
                                                             </span>
                                                         </div>
                                                     </div>
@@ -515,7 +524,10 @@ const CourierSheet = (props) => {
                                                             {item?.order?.orderItems?.map((subitem, subindex) => {
                                                                 return (
                                                                     <div class={type == 'admin' ? 'col-lg-6 mb-2' : 'col-lg-12 p-0 mb-2'}>
-                                                                        <div style={{ border: '1px solid #eee', borderRadius: '18px' }} class="row m-0 w-100 p-2">
+                                                                        <div style={{ border: '1px solid #eee', borderRadius: '18px' }} class="row m-0 w-100 p-2 d-flex align-items-center">
+                                                                            <div style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }} className=" p-1 px-2 mr-1 allcentered">
+                                                                                {subitem?.partialCount != null ? parseFloat(subitem.count) - parseFloat(subitem.partialCount) : 0}
+                                                                            </div>
                                                                             {type == 'admin' && (
                                                                                 <div style={{ width: '40px', height: '40px', borderRadius: '7px', marginInlineEnd: '5px' }}>
                                                                                     <img
@@ -528,7 +540,8 @@ const CourierSheet = (props) => {
                                                                                     />
                                                                                 </div>
                                                                             )}
-                                                                            <div class="col-lg-6 d-flex align-items-center">
+
+                                                                            <div class="col-lg-5 d-flex align-items-center">
                                                                                 <div className="row m-0 w-100">
                                                                                     <div style={{ fontSize: '14px', fontWeight: 500 }} className={' col-lg-12 p-0 wordbreak wordbreak1'}>
                                                                                         {subitem?.info?.item?.name ?? '-'}
@@ -540,28 +553,11 @@ const CourierSheet = (props) => {
                                                                             </div>
                                                                             <div class={type == 'admin' ? 'col-lg-4 ' : 'col-lg-6 '}>
                                                                                 <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
-                                                                                    <div>
-                                                                                        {/* {subitem?.partialCount && (
-                                                                                            <div
-                                                                                                style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }}
-                                                                                                class="row m-0 w-100 p-1 px-2"
-                                                                                            >
-                                                                                                {parseFloat(subitem.count) - parseFloat(subitem.partialCount)}/{subitem.count}
-                                                                                            </div>
-                                                                                        )} */}
-                                                                                        {!subitem?.partialCount && (
-                                                                                            <div
-                                                                                                style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }}
-                                                                                                class="row m-0 w-100 p-1 px-4"
-                                                                                            >
-                                                                                                {subitem.count}
-                                                                                            </div>
-                                                                                        )}
-                                                                                    </div>
                                                                                     <div style={{ fontWeight: 700 }} class="mx-2">
-                                                                                        {subitem?.partialCount
-                                                                                            ? parseFloat(subitem.partialCount) * parseFloat(subitem?.unitPrice)
-                                                                                            : parseFloat(subitem.count) * parseFloat(subitem?.unitPrice)}{' '}
+                                                                                        {parseFloat(
+                                                                                            (subitem?.partialCount != null ? parseFloat(subitem.count) - parseFloat(subitem.partialCount) : 0) *
+                                                                                                parseFloat(subitem?.unitPrice),
+                                                                                        )}{' '}
                                                                                         {item?.info?.currency}
                                                                                     </div>
                                                                                 </div>
@@ -703,7 +699,7 @@ const CourierSheet = (props) => {
                                         <span class="px-2" style={{ borderInlineStart: '1px solid rgba(238, 238, 238, 0.6)' }}>
                                             {submitSheetPayload?.updateSheetOrderstemp
                                                 ?.filter((item) => item.status == 'adminAccepted' || item.status == 'financeAccepted')
-                                                .map((e) => parseFloat(e?.price ?? '0') + (e?.shippingCollected ? parseFloat(e?.shippingPrice ?? '0') : 0))
+                                                .map((e) => parseFloat(e?.amountCollected ?? '0') + (e?.shippingCollected ? parseFloat(e?.shippingPrice ?? '0') : 0))
                                                 .reduce((sum, current) => sum + current, 0)}{' '}
                                             {submitSheetPayload?.orderCurrency}
                                         </span>
