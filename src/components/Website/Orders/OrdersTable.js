@@ -5,12 +5,13 @@ import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
-import { FaLayerGroup } from 'react-icons/fa';
+import { FaEllipsisV, FaLayerGroup } from 'react-icons/fa';
 import Select, { components } from 'react-select';
 
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
 import { Modal } from 'react-bootstrap';
+import { Dropdown } from 'react-bootstrap';
 
 import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
@@ -28,12 +29,13 @@ const { ValueContainer, Placeholder } = components;
 const OrdersTable = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { orderStatusEnumContext, dateformatter, orderTypeContext } = useContext(Contexthandlerscontext);
+    const { orderStatusEnumContext, dateformatter, orderTypeContext, setchosenOrderContext } = useContext(Contexthandlerscontext);
 
     const { lang, langdetect } = useContext(LanguageContext);
 
     const [changestatusmodal, setchangestatusmodal] = useState(false);
     const [submit, setsubmit] = useState(false);
+    const [isOpen1, setIsOpen1] = useState(false);
     const [inventoryModal, setinventoryModal] = useState({ open: false, items: [] });
 
     const [statuspayload, setstatuspayload] = useState({
@@ -192,6 +194,37 @@ const OrdersTable = (props) => {
                                                                 return <span>{i.label}</span>;
                                                             }
                                                         })}
+                                                    </div>
+                                                    <div>
+                                                        <Dropdown
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                            }}
+                                                        >
+                                                            <Dropdown.Toggle>
+                                                                <div
+                                                                    style={{
+                                                                        color: 'var(--primary)',
+                                                                        borderRadius: '10px',
+                                                                        transition: 'all 0.4s',
+                                                                    }}
+                                                                >
+                                                                    <FaEllipsisV />
+                                                                </div>
+                                                            </Dropdown.Toggle>
+                                                            <Dropdown.Menu>
+                                                                <Dropdown.Item
+                                                                    onClick={async (e) => {
+                                                                        e.stopPropagation();
+                                                                        await setchosenOrderContext(item);
+                                                                        history.push(`/orderinfo?type=${props?.srcFrom}&orderId=` + item.id);
+                                                                    }}
+                                                                    class="py-2"
+                                                                >
+                                                                    <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>View order</p>
+                                                                </Dropdown.Item>
+                                                            </Dropdown.Menu>
+                                                        </Dropdown>
                                                     </div>
                                                 </div>
                                             </div>
@@ -382,7 +415,7 @@ const OrdersTable = (props) => {
                                             )}
 
                                             <div style={{ fontSize: '12px' }} class="col-lg-12 p-0 mt-2 d-flex justify-content-end ">
-                                                <div class="row m-0 w-100 d-flex align-items-center">
+                                                <div class="row m-0 w-100 d-flex align-items-center d-flex justify-content-end ">
                                                     {props?.srcFrom != 'inventory' && (
                                                         <div class="col-lg-6 p-0 d-flex align-items-center">
                                                             <BiUser class="mr-1" />

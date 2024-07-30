@@ -25,6 +25,8 @@ import Inputfield from '../../Inputfield.js';
 import MultiSelect from '../../MultiSelect.js';
 import { NotificationManager } from 'react-notifications';
 import { AiOutlineClose } from 'react-icons/ai';
+import { FiCheckCircle, FiCircle } from 'react-icons/fi';
+import WaybillPrint from './WaybillPrint.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -40,12 +42,14 @@ const Orders = (props) => {
 
     const [merchantModal, setmerchantModal] = useState(false);
     const [search, setSearch] = useState('');
+    const [waybills, setWaybills] = useState([]);
 
     const [filterorders, setfilterorders] = useState({
         limit: 20,
     });
     const fetchOrdersInInventoryQuery = useQueryGQL('', fetchOrdersInInventory(), filterorders);
     const { refetch: refetchOrdersInInventory } = useQueryGQL('', fetchOrdersInInventory(), filterorders);
+    const [selectedOrders, setSelectedOrders] = useState([]);
 
     const [filterMerchants, setfilterMerchants] = useState({
         isAsc: true,
@@ -54,7 +58,9 @@ const Orders = (props) => {
         beforeCursor: undefined,
     });
     const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filterMerchants);
-
+    const handleSelectOrder = (orderId) => {
+        setSelectedOrders((prevSelected) => (prevSelected.includes(orderId) ? prevSelected.filter((id) => id !== orderId) : [...prevSelected, orderId]));
+    };
     useEffect(() => {
         setpageactive_context('/orders');
     }, []);
@@ -86,6 +92,11 @@ const Orders = (props) => {
         refetchOrdersInInventory();
     }, [filterorders]);
 
+    useEffect(() => {
+        const selectedOrdersDetails = fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data.filter((order) => selectedOrders.includes(order.id));
+
+        setWaybills(selectedOrdersDetails);
+    }, [selectedOrders]);
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
@@ -288,6 +299,50 @@ const Orders = (props) => {
                     </div>
                 </div>
                 <div class={generalstyles.card + ' row m-0 w-100'}>
+                    <div className="col-lg-6 p-0 d-flex justify-content-end ">
+                        <div
+                            onClick={() => {
+                                var temp = [];
+                                if (selectedOrders?.length != fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.length) {
+                                    fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.map((i, ii) => {
+                                        temp.push(i.id);
+                                    });
+                                }
+                                setSelectedOrders(temp);
+                            }}
+                            class="row m-0 w-100 d-flex align-items-center"
+                            style={{
+                                cursor: 'pointer',
+                                // color:
+                                //     selectedOrders?.length == fetchOrdersInInventoryQuery?.data?.paginateOrders?.data?.length ? 'var(--success)' : '',
+                            }}
+                        >
+                            <div
+                                style={{
+                                    width: '30px',
+                                    height: '30px',
+                                }}
+                                className="iconhover allcentered mr-1"
+                            >
+                                {selectedOrders?.length != fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.length && (
+                                    <FiCircle
+                                        style={{ transition: 'all 0.4s' }}
+                                        color={selectedOrders?.length == fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.length ? 'var(--success)' : ''}
+                                        size={18}
+                                    />
+                                )}
+                                {selectedOrders?.length == fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.length && (
+                                    <FiCheckCircle
+                                        style={{ transition: 'all 0.4s' }}
+                                        color={selectedOrders?.length == fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.length ? 'var(--success)' : ''}
+                                        size={18}
+                                    />
+                                )}
+                            </div>
+                            {selectedOrders?.length != fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.length ? 'Select All' : 'Deselect All'}
+                        </div>
+                    </div>
+                    <div class="col-lg-6 d-flex justify-content-end"> {waybills?.length > 0 && <WaybillPrint waybills={waybills} />}</div>
                     <div class="col-lg-12 p-0">
                         <Pagination
                             beforeCursor={fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.cursor?.beforeCursor}
@@ -298,11 +353,9 @@ const Orders = (props) => {
                     </div>
                     <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
                         <OrdersTable
+                            selectedOrders={selectedOrders}
                             clickable={true}
-                            actiononclick={async (order) => {
-                                await setchosenOrderContext(order);
-                                history.push('/orderinfo?type=inventory&orderId=' + order.id);
-                            }}
+                            actiononclick={(order) => handleSelectOrder(order.id)}
                             fetchOrdersQuery={fetchOrdersInInventoryQuery}
                             attr={'paginateOrdersInInventory'}
                             srcFrom="inventory"

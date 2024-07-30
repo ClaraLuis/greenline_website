@@ -500,6 +500,7 @@ const MerchantOrders = (props) => {
                             actiononclick={(order) => handleSelectOrder(order.id)}
                             fetchOrdersQuery={fetchOrdersQuery}
                             attr={'paginateOrders'}
+                            srcFrom="merchant"
                         />
                     </div>
                     <div class="col-lg-12 p-0">

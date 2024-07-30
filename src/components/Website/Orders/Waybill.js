@@ -22,26 +22,26 @@ const Waybill = ({ order }) => {
                             </div>
                             <div style={{ borderInlineEnd: '2px solid #eee' }} className="company-info p-3 col-lg-4 col-md-4">
                                 <div class="row m-0 w-100">
-                                    <div class="col-lg-12 p-0"> {order.merchant.name}</div>
-                                    <div class="col-lg-12 p-0"> Date: {dateformatter(order.createdAt)}</div>
+                                    <div class="col-lg-12 p-0"> {order?.merchant?.name}</div>
+                                    <div class="col-lg-12 p-0"> Date: {dateformatter(order?.createdAt)}</div>
                                 </div>
                             </div>
                             <div className="company-info p-3 col-lg-4 col-md-4">
-                                {order.customerInfo.customerName}
-                                {order.customerInfo.phoneNumber && (
+                                {order?.customerInfo?.customerName}
+                                {order?.customerInfo?.phoneNumber && (
                                     <>
                                         <br />
-                                        +2 {order.customerInfo.phoneNumber}
+                                        +2 {order?.customerInfo?.phoneNumber}
                                     </>
                                 )}
                                 <br />
-                                {order.address.city}, {order.address.country}
+                                {order?.address?.city}, {order?.address?.country}
                                 <br />
-                                {order.address.streetAddress}
+                                {order?.address?.streetAddress}
                                 <br />
-                                {order.address.buildingNumber && (
+                                {order?.address?.buildingNumber && (
                                     <>
-                                        {order.address.buildingNumber}, {order.address.apartmentFloor}
+                                        {order?.address?.buildingNumber}, {order?.address?.apartmentFloor}
                                     </>
                                 )}
                             </div>
@@ -50,7 +50,7 @@ const Waybill = ({ order }) => {
                             <div style={{ borderInlineEnd: '2px solid #eee' }} className="company-info p-3 col-lg-4 col-md-4">
                                 <div class="row m-0 w-100">
                                     <div class="col-lg-12 p-0 allcentered">
-                                        Payment Method: <span style={{ fontWeight: 700 }}>{order.paymentType}</span>
+                                        Payment Method: <span style={{ fontWeight: 700 }}>{order?.paymentType}</span>
                                     </div>
                                 </div>
                             </div>
@@ -59,7 +59,7 @@ const Waybill = ({ order }) => {
                                     <div class="col-lg-12 p-0 allcentered">
                                         Order Type:{' '}
                                         <span style={{ fontWeight: 700 }} class="text-capitalize">
-                                            {order.type}
+                                            {order?.type}
                                         </span>
                                     </div>
                                 </div>
@@ -70,7 +70,7 @@ const Waybill = ({ order }) => {
                                 <div class="row m-0 w-100">
                                     <div class="col-lg-12 p-0">
                                         <label class={`${formstyles.checkbox} ${formstyles.checkbox_sub} ${formstyles.path}` + ' d-flex mb-0 p-1 '} style={{ background: 'transaprent' }}>
-                                            <input type="checkbox" class="mt-1 mb-1" checked={order.canOpen == 0 ? false : true} />
+                                            <input type="checkbox" class="mt-1 mb-1" checked={order?.canOpen == 0 ? false : true} />
                                             <svg viewBox="0 0 21 21" class="h-100">
                                                 <path d="M5,10.75 L8.5,14.25 L19.4,2.3 C18.8333333,1.43333333 18.0333333,1 17,1 L4,1 C2.35,1 1,2.35 1,4 L1,17 C1,18.65 2.35,20 4,20 L17,20 C18.65,20 20,18.65 20,17 L20,7.99769186"></path>
                                             </svg>
@@ -83,7 +83,7 @@ const Waybill = ({ order }) => {
                                 <div class="row m-0 w-100">
                                     <div class="col-lg-12 p-0">
                                         <label class={`${formstyles.checkbox} ${formstyles.checkbox_sub} ${formstyles.path}` + ' d-flex mb-0 p-1 '} style={{ background: 'transaprent' }}>
-                                            <input type="checkbox" class="mt-1 mb-1" checked={order.deliveryPart == 0 ? false : true} />
+                                            <input type="checkbox" class="mt-1 mb-1" checked={order?.deliveryPart == 0 ? false : true} />
                                             <svg viewBox="0 0 21 21" class="h-100">
                                                 <path d="M5,10.75 L8.5,14.25 L19.4,2.3 C18.8333333,1.43333333 18.0333333,1 17,1 L4,1 C2.35,1 1,2.35 1,4 L1,17 C1,18.65 2.35,20 4,20 L17,20 C18.65,20 20,18.65 20,17 L20,7.99769186"></path>
                                             </svg>
@@ -96,7 +96,7 @@ const Waybill = ({ order }) => {
                                 <div class="row m-0 w-100">
                                     <div class="col-lg-12 p-0">
                                         <label class={`${formstyles.checkbox} ${formstyles.checkbox_sub} ${formstyles.path}` + ' d-flex mb-0 p-1 '} style={{ background: 'transaprent' }}>
-                                            <input type="checkbox" class="mt-1 mb-1" checked={order.fragile == 0 ? false : true} />
+                                            <input type="checkbox" class="mt-1 mb-1" checked={order?.fragile == 0 ? false : true} />
                                             <svg viewBox="0 0 21 21" class="h-100">
                                                 <path d="M5,10.75 L8.5,14.25 L19.4,2.3 C18.8333333,1.43333333 18.0333333,1 17,1 L4,1 C2.35,1 1,2.35 1,4 L1,17 C1,18.65 2.35,20 4,20 L17,20 C18.65,20 20,18.65 20,17 L20,7.99769186"></path>
                                             </svg>

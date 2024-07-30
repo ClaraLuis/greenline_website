@@ -9,8 +9,10 @@ import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 import { Modal } from 'react-bootstrap';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
 import { FaRegClock } from 'react-icons/fa';
-
+import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
+import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
+
 // Icons
 import { IoMdClose } from 'react-icons/io';
 import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md';
@@ -20,6 +22,7 @@ import Pagination from '../../Pagination.js';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
 import ImportNewItem from './ImportNewItem.js';
 import ItemInfo from './ItemInfo.js';
+import MultiSelect from '../../MultiSelect.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -27,7 +30,7 @@ const InventoryItems = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, dateformatter, isAuth } = useContext(Contexthandlerscontext);
-    const { fetchUsers, useQueryGQL, fetchInventories, useMutationGQL, addInventory, fetchItemsInBox, fetchRacks, importNew, fetchItemHistory, exportItem, importItem, useLazyQueryGQL } = API();
+    const { fetchUsers, useQueryGQL, fetchInventories, useMutationGQL, addInventory, fetchItemsInBox, fetchMerchants, importNew, fetchItemHistory, exportItem, importItem, useLazyQueryGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
 
@@ -76,6 +79,13 @@ const InventoryItems = (props) => {
         afterCursor: null,
         beforeCursor: null,
     });
+    const [filterMerchants, setfilterMerchants] = useState({
+        isAsc: true,
+        limit: 20,
+        afterCursor: undefined,
+        beforeCursor: undefined,
+    });
+    const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filterMerchants);
 
     const [addInvrntoryMutation] = useMutationGQL(addInventory(), {
         name: inventoryPayload?.name,
@@ -126,11 +136,11 @@ const InventoryItems = (props) => {
         limit: 20,
         afterCursor: null,
         beforeCursor: null,
-        inventoryIds: [1],
+        inventoryIds: [],
     });
 
     const fetchItemsInBoxQuery = useQueryGQL('', fetchItemsInBox(), filterItemInBox);
-    const { refetch: reetchfetchItemsInBox } = useQueryGQL('', fetchItemsInBox(), filterItemInBox);
+    const { refetch: refetchfetchItemsInBox } = useQueryGQL('', fetchItemsInBox(), filterItemInBox);
 
     // let fetchItemHistoryQuery;
     // let refetchItemHistory;
@@ -166,6 +176,10 @@ const InventoryItems = (props) => {
     }, [barcode, filterItemInBox]);
 
     // Update the search state whenever the barcode state changes
+
+    useEffect(() => {
+        refetchfetchItemsInBox();
+    }, [filterItemInBox]);
 
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
@@ -257,6 +271,72 @@ const InventoryItems = (props) => {
                         )}
                     </div>
                 </div>
+                <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>
+                    <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
+                        <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
+                            <AccordionItemHeading>
+                                <AccordionItemButton>
+                                    <div class="row m-0 w-100">
+                                        <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
+                                            <p class={generalstyles.cardTitle + '  m-0 p-0 '}>Filter:</p>
+                                        </div>
+                                        <div class="col-lg-4 col-md-4 col-sm-4 p-0 d-flex align-items-center justify-content-end">
+                                            <AccordionItemState>
+                                                {(state) => {
+                                                    if (state.expanded == true) {
+                                                        return (
+                                                            <i class="h-100 d-flex align-items-center justify-content-center">
+                                                                <BsChevronUp />
+                                                            </i>
+                                                        );
+                                                    } else {
+                                                        return (
+                                                            <i class="h-100 d-flex align-items-center justify-content-center">
+                                                                <BsChevronDown />
+                                                            </i>
+                                                        );
+                                                    }
+                                                }}
+                                            </AccordionItemState>
+                                        </div>
+                                    </div>
+                                </AccordionItemButton>
+                            </AccordionItemHeading>
+                            <AccordionItemPanel>
+                                <hr className="mt-2 mb-3" />
+                                <div class="row m-0 w-100">
+                                    <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                        <MultiSelect
+                                            title={'Merchants'}
+                                            filter={filterMerchants}
+                                            setfilter={setfilterMerchants}
+                                            options={fetchMerchantsQuery}
+                                            attr={'paginateMerchants'}
+                                            label={'name'}
+                                            value={'id'}
+                                            selected={filterItemInBox?.merchantIds}
+                                            onClick={(option) => {
+                                                var tempArray = filterItemInBox?.merchantIds ?? [];
+
+                                                if (option == 'All') {
+                                                    tempArray = undefined;
+                                                } else {
+                                                    if (!tempArray?.includes(option.id)) {
+                                                        tempArray.push(option.id);
+                                                    } else {
+                                                        tempArray.splice(tempArray?.indexOf(option?.id), 1);
+                                                    }
+                                                }
+
+                                                setfilterItemInBox({ ...filterItemInBox, merchantIds: tempArray?.length != 0 ? tempArray : undefined });
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                            </AccordionItemPanel>
+                        </AccordionItem>
+                    </Accordion>
+                </div>
                 <div class={generalstyles.card + ' row m-0 w-100 p-2 pt-3 mb-2'}>
                     <div class={' col-lg-6 col-md-6 col-sm-12 p-0 d-flex align-items-center justify-content-start mb-2 px-2 '}>
                         <p class=" p-0 m-0" style={{ fontSize: '15px' }}>
@@ -265,7 +345,7 @@ const InventoryItems = (props) => {
                     </div>
                     <div class={' col-lg-6 col-md-6 col-sm-12 p-0 d-flex align-items-center justify-content-end mb-2 px-2 '}>
                         <div className="row m-0 w-100 d-flex align-items-center justify-content-end">
-                            <p class=" p-0 m-0" style={{ fontSize: '14px' }}>
+                            {/* <p class=" p-0 m-0" style={{ fontSize: '14px' }}>
                                 <span
                                     onClick={() => {
                                         history.push('/hubitems');
@@ -275,7 +355,7 @@ const InventoryItems = (props) => {
                                 >
                                     View all
                                 </span>
-                            </p>
+                            </p> */}
                             <p class=" p-0 m-0" style={{ fontSize: '14px' }}>
                                 <span
                                     onClick={() => {
@@ -675,7 +755,7 @@ const InventoryItems = (props) => {
                                         try {
                                             const { data } = await importMutation();
                                             setimportmodal({ open: false, type: '' });
-                                            reetchfetchItemsInBox();
+                                            refetchfetchItemsInBox();
                                             refetchItemHistory();
                                         } catch (error) {
                                             let errorMessage = 'An unexpected error occurred';
@@ -694,7 +774,7 @@ const InventoryItems = (props) => {
                                         try {
                                             const { data } = await exportMutation();
                                             setimportmodal({ open: false, type: '' });
-                                            reetchfetchItemsInBox();
+                                            refetchfetchItemsInBox();
                                             refetchItemHistory();
                                         } catch (error) {
                                             let errorMessage = 'An unexpected error occurred';

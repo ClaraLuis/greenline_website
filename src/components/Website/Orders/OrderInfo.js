@@ -194,43 +194,7 @@ const OrderInfo = (props) => {
                                                         <div
                                                             style={{ maxWidth: '100%', flexDirection: 'row', flexWrap: 'nowrap', overflow: 'scroll' }}
                                                             class="row m-0 w-100 scrollmenuclasssubscrollbar"
-                                                        >
-                                                            {chosenOrderContext?.orderItems?.map((orderItem, orderIndex) => {
-                                                                return (
-                                                                    <div class="p-0 mb-1 mr-2">
-                                                                        <div style={{ border: '1px solid #eee', borderRadius: '10px' }} class="row m-0 w-100 p-2 align-items-center">
-                                                                            <div style={{ width: '35px', height: '35px', borderRadius: '7px', marginInlineEnd: '15px' }}>
-                                                                                <img
-                                                                                    src={
-                                                                                        orderItem?.info?.imageUrl
-                                                                                            ? orderItem?.info?.imageUrl
-                                                                                            : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'
-                                                                                    }
-                                                                                    style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
-                                                                                />
-                                                                            </div>
-
-                                                                            <div class="">
-                                                                                <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
-                                                                                    <div>
-                                                                                        {orderItem?.partial && (
-                                                                                            <div style={{ fontWeight: 700 }} class="row m-0 w-100 p-1 px-3">
-                                                                                                {orderItem?.partialCount}/{orderItem?.count}
-                                                                                            </div>
-                                                                                        )}
-                                                                                        {!orderItem?.partial && (
-                                                                                            <div style={{ fontWeight: 700 }} class="row m-0 w-100 p-1 px-3">
-                                                                                                {orderItem?.count}
-                                                                                            </div>
-                                                                                        )}
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                );
-                                                            })}
-                                                        </div>
+                                                        ></div>
                                                     </div>
                                                     <div class="col-lg-12 p-0 mt-2">
                                                         <div class="row m-0 w-100 d-flex">
@@ -274,90 +238,6 @@ const OrderInfo = (props) => {
                                                     </div>
                                                 </>
                                             )}
-                                            {queryParameters?.get('type') == 'inventory' && (
-                                                <div className="col-lg-12 p-0 mt-2">
-                                                    <div style={{ maxHeight: '40vh', overflow: 'scroll' }} class="row m-0 w-100 scrollmenuclasssubscrollbar">
-                                                        {chosenOrderContext?.orderItems?.map((orderItem, orderIndex) => {
-                                                            var organizedData = [];
-                                                            if (queryParameters?.get('type') == 'inventory') {
-                                                                organizedData = organizeInventory(orderItem?.inventory);
-                                                            }
-                                                            return (
-                                                                <div class="col-lg-12 p-0 mb-1">
-                                                                    <div style={{ border: '1px solid #eee', borderRadius: '18px' }} class="row m-0 w-100 p-1 align-items-center">
-                                                                        <div style={{ width: '50px', height: '50px', borderRadius: '7px', marginInlineEnd: '10px' }}>
-                                                                            <img
-                                                                                src={
-                                                                                    orderItem?.info?.imageUrl
-                                                                                        ? orderItem?.info?.imageUrl
-                                                                                        : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'
-                                                                                }
-                                                                                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
-                                                                            />
-                                                                        </div>
-                                                                        <div class="col-lg-5 d-flex align-items-center">
-                                                                            {queryParameters?.get('type') == 'inventory' && (
-                                                                                <div className="row m-0 w-100">
-                                                                                    <div style={{ fontSize: '14px', fontWeight: 600 }} className={' col-lg-12 p-0'}>
-                                                                                        {orderItem?.info?.chosenOrderContext?.name}
-                                                                                    </div>
-                                                                                    <div style={{ fontSize: '13px' }} className={' col-lg-12 p-0'}>
-                                                                                        {orderItem?.info?.name}
-                                                                                    </div>
-                                                                                    <div style={{ color: 'lightgray', fontSize: '13px' }} className="col-lg-12 p-0">
-                                                                                        {orderItem?.info?.sku}
-                                                                                    </div>
-                                                                                </div>
-                                                                            )}
-                                                                        </div>
-                                                                        <div class="col-lg-5 ">
-                                                                            <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
-                                                                                <div>
-                                                                                    {orderItem?.partial && (
-                                                                                        <div style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }} class="row m-0 w-100 p-1 px-4">
-                                                                                            {orderItem?.partialCount}/{orderItem?.count}
-                                                                                        </div>
-                                                                                    )}
-                                                                                    {!orderItem?.partial && (
-                                                                                        <div style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }} class="row m-0 w-100 p-1 px-4">
-                                                                                            {orderItem?.count}
-                                                                                        </div>
-                                                                                    )}
-                                                                                </div>
-                                                                                {/* <div style={{ fontWeight: 700 }} class="mx-2">
-                                                                                    {orderItem?.partial
-                                                                                        ? parseInt(orderItem?.partialCount) * parseFloat(orderItem?.unitPrice)
-                                                                                        : parseInt(orderItem?.count) * parseFloat(orderItem?.unitPrice)}{' '}
-                                                                                    {chosenOrderContext?.info?.currency}
-                                                                                </div> */}
-                                                                                {queryParameters?.get('type') == 'inventory' && (
-                                                                                    <div
-                                                                                        onClick={() => {
-                                                                                            if (orderItem?.countInInventory != 0) {
-                                                                                                // alert(JSON.stringify(orderItem?.inventory));
-
-                                                                                                setinventoryModal({ open: true, items: organizedData });
-                                                                                            }
-                                                                                        }}
-                                                                                        style={{ width: '30px', height: '30px' }}
-                                                                                        class={
-                                                                                            orderItem?.countInInventory == 0
-                                                                                                ? 'allcentered iconhover text-danger'
-                                                                                                : 'allcentered iconhover text-success'
-                                                                                        }
-                                                                                    >
-                                                                                        <MdOutlineInventory2 size={20} />
-                                                                                    </div>
-                                                                                )}
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            );
-                                                        })}
-                                                    </div>
-                                                </div>
-                                            )}
 
                                             <div style={{ fontSize: '12px' }} class="col-lg-12 p-0 mt-2 d-flex justify-content-end ">
                                                 <p className={' m-0 p-0 wordbreak  '}>{dateformatter(chosenOrderContext?.orderDate)}</p>
@@ -366,10 +246,149 @@ const OrderInfo = (props) => {
                                     </div>
                                 </div>
                                 <div class={generalstyles.card + ' row m-0 w-100 p-4'}>
-                                    {fetchOrderHistoryQuery?.data?.paginateOrderHistory?.data?.lengt == 0 && (
+                                    <div className="col-lg-12 p-0 mb-2 text-capitalize">
+                                        <span style={{ fontWeight: 600 }}>{chosenOrderContext?.customerInfo?.customerName}</span>
+                                    </div>
+                                    <div className="col-lg-12 p-0 mb-1 d-flex align-items-center">
+                                        <MdOutlineLocationOn className="mr-1" />
+                                        <span style={{ fontWeight: 400, fontSize: '13px' }}>
+                                            {chosenOrderContext?.address?.city}, {chosenOrderContext?.address?.country}
+                                        </span>
+                                    </div>
+                                    <div className="col-lg-12 p-0 ">
+                                        <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                            {chosenOrderContext?.address?.streetAddress}, {chosenOrderContext?.address?.buildingNumber}, {chosenOrderContext?.address?.apartmentFloor}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class={generalstyles.card + ' row m-0 w-100 p-4'}>
+                                    <div className="col-lg-12 p-0 mt-2">
+                                        <div className="row m-0 w-100 d-flex align-items-center">
+                                            <div className="col-lg-4 p-0">
+                                                <div className="text-capitalize" style={{ fontWeight: 600 }}>
+                                                    Can Be Opened
+                                                </div>
+                                                <div className="text-capitalize">{chosenOrderContext?.canBeOpened == 1 ? 'Yes' : 'No'}</div>
+                                            </div>
+                                            <div className="col-lg-4 p-0">
+                                                <div className="text-capitalize" style={{ fontWeight: 600 }}>
+                                                    Fragile
+                                                </div>
+                                                <div className="text-capitalize">{chosenOrderContext?.fragile == 1 ? 'Yes' : 'No'}</div>
+                                            </div>
+                                            <div className="col-lg-4 p-0">
+                                                <div className="text-capitalize" style={{ fontWeight: 600 }}>
+                                                    Fragile
+                                                </div>
+                                                <div className="text-capitalize">{chosenOrderContext?.deliveryPart == 1 ? 'Yes' : 'No'}</div>
+                                            </div>
+                                            <div className="col-lg-4 p-0 mt-2">
+                                                <div className="text-capitalize" style={{ fontWeight: 600 }}>
+                                                    Payment Method
+                                                </div>
+                                                <div className="text-capitalize">{chosenOrderContext?.paymentType}</div>
+                                            </div>
+                                            <div className="col-lg-4 p-0 mt-2">
+                                                <div className="text-capitalize" style={{ fontWeight: 600 }}>
+                                                    Order Type
+                                                </div>
+                                                <div className="text-capitalize">{chosenOrderContext?.type}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class={generalstyles.card + ' row m-0 w-100 p-4'}>
+                                    <div className="col-lg-12 p-0 mt-2">
+                                        <div style={{ maxHeight: '40vh', overflow: 'scroll' }} class="row m-0 w-100 scrollmenuclasssubscrollbar">
+                                            {chosenOrderContext?.orderItems?.map((orderItem, orderIndex) => {
+                                                var organizedData = [];
+                                                if (queryParameters?.get('type') == 'inventory') {
+                                                    organizedData = organizeInventory(orderItem?.inventory);
+                                                }
+                                                return (
+                                                    <div class="col-lg-12 p-0 mb-1">
+                                                        <div style={{ border: '1px solid #eee', borderRadius: '18px' }} class="row m-0 w-100 p-1 align-items-center">
+                                                            <div class="mr-2">
+                                                                {orderItem?.partial && (
+                                                                    <div style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }} class="row m-0 w-100 p-1 px-3">
+                                                                        {orderItem?.partialCount}/{orderItem?.count}
+                                                                    </div>
+                                                                )}
+                                                                {!orderItem?.partial && (
+                                                                    <div style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }} class="row m-0 w-100 p-1 px-3">
+                                                                        {orderItem?.count}
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                            <div style={{ width: '50px', height: '50px', borderRadius: '7px', marginInlineEnd: '10px' }}>
+                                                                <img
+                                                                    src={
+                                                                        orderItem?.info?.imageUrl
+                                                                            ? orderItem?.info?.imageUrl
+                                                                            : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'
+                                                                    }
+                                                                    style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
+                                                                />
+                                                            </div>
+                                                            <div class="col-lg-4 d-flex align-items-center">
+                                                                {queryParameters?.get('type') == 'inventory' && (
+                                                                    <div className="row m-0 w-100">
+                                                                        <div style={{ fontSize: '14px', fontWeight: 600 }} className={' col-lg-12 p-0'}>
+                                                                            {orderItem?.info?.chosenOrderContext?.name}
+                                                                        </div>
+                                                                        <div style={{ fontSize: '13px' }} className={' col-lg-12 p-0'}>
+                                                                            {orderItem?.info?.name}
+                                                                        </div>
+                                                                        <div style={{ color: 'lightgray', fontSize: '13px' }} className="col-lg-12 p-0">
+                                                                            {orderItem?.info?.sku}
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                            <div class="col-lg-5 ">
+                                                                <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
+                                                                    <div class="mr-2">
+                                                                        {orderItem?.partial && (
+                                                                            <div style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }} class="row m-0 w-100 p-1 px-3">
+                                                                                {parseFloat(parseFloat(orderItem?.partialCount) * parseFloat(orderItem?.unitPrice)).toFixed(2)}{' '}
+                                                                                {chosenOrderContext?.currency}
+                                                                            </div>
+                                                                        )}
+                                                                        {!orderItem?.partial && (
+                                                                            <div style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }} class="row m-0 w-100 p-1 px-3">
+                                                                                {parseFloat(parseFloat(orderItem?.count) * parseFloat(orderItem?.unitPrice)).toFixed(2)} {chosenOrderContext?.currency}
+                                                                            </div>
+                                                                        )}
+                                                                    </div>
+                                                                    {queryParameters?.get('type') == 'inventory' && (
+                                                                        <div
+                                                                            onClick={() => {
+                                                                                if (orderItem?.countInInventory != 0) {
+                                                                                    // alert(JSON.stringify(orderItem?.inventory));
+
+                                                                                    setinventoryModal({ open: true, items: organizedData });
+                                                                                }
+                                                                            }}
+                                                                            style={{ width: '30px', height: '30px' }}
+                                                                            class={orderItem?.countInInventory == 0 ? 'allcentered iconhover text-danger' : 'allcentered iconhover text-success'}
+                                                                        >
+                                                                            <MdOutlineInventory2 size={20} />
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class={generalstyles.card + ' row m-0 w-100 p-4'}>
+                                    {fetchOrderHistoryQuery?.data?.paginateOrderHistory?.data?.length == 0 && (
                                         <div class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
                                             <div class="row m-0 w-100">
-                                                <FaLayerGroup size={35} class=" col-lg-12 mb-2" />
+                                                <FaLayerGroup size={30} class=" col-lg-12 mb-2" />
                                                 <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
                                                     No History Yet
                                                 </div>

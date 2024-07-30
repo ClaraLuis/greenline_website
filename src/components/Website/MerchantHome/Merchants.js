@@ -188,35 +188,29 @@ const Merchants = (props) => {
                                                         </div>
                                                     </Dropdown.Toggle>
                                                     <Dropdown.Menu>
-                                                        <Dropdown.Item class="py-2">
-                                                            <p
-                                                                class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}
-                                                                onClick={() => {
-                                                                    setinventoryModal(true);
-                                                                }}
-                                                            >
-                                                                Inventory Settings
-                                                            </p>
+                                                        <Dropdown.Item
+                                                            class="py-2"
+                                                            onClick={() => {
+                                                                setinventoryModal(true);
+                                                            }}
+                                                        >
+                                                            <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Inventory Settings</p>
                                                         </Dropdown.Item>
-                                                        <Dropdown.Item class="py-2">
-                                                            <p
-                                                                class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}
-                                                                onClick={() => {
-                                                                    history.push('/updateshipping?merchantId=' + item.id);
-                                                                }}
-                                                            >
-                                                                Shipping Prices
-                                                            </p>
+                                                        <Dropdown.Item
+                                                            class="py-2"
+                                                            onClick={() => {
+                                                                history.push('/updateshipping?merchantId=' + item.id);
+                                                            }}
+                                                        >
+                                                            <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Shipping Prices</p>
                                                         </Dropdown.Item>
-                                                        <Dropdown.Item class="py-2">
-                                                            <p
-                                                                class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}
-                                                                onClick={() => {
-                                                                    // history.push('/governorates?merchantId=' + item.id);
-                                                                }}
-                                                            >
-                                                                Terminate Merchant
-                                                            </p>
+                                                        <Dropdown.Item
+                                                            class="py-2"
+                                                            onClick={() => {
+                                                                // history.push('/governorates?merchantId=' + item.id);
+                                                            }}
+                                                        >
+                                                            <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Terminate Merchant</p>
                                                         </Dropdown.Item>
                                                     </Dropdown.Menu>
                                                 </Dropdown>

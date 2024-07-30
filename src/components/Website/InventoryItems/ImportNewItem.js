@@ -37,6 +37,7 @@ const ImportNewItem = (props) => {
         invetoryIds: [],
     });
     const [step, setstep] = useState(0);
+    const [itemChosen, setitemChosen] = useState({});
     const [buttonLoading, setbuttonLoading] = useState(false);
     const [filterInventories, setfilterInventories] = useState({
         limit: 10,
@@ -185,6 +186,7 @@ const ImportNewItem = (props) => {
                                 items={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.data}
                                 actiononclick={(item) => {
                                     props?.setimportItemPayload({ ...props?.importItemPayload, itemVariantId: item?.id });
+                                    setitemChosen({ ...item });
                                     setstep(step + 1);
                                 }}
                             />
@@ -196,6 +198,25 @@ const ImportNewItem = (props) => {
                                 filter={merchantFilter}
                                 setfilter={setmerchantFilter}
                             />
+                        </div>
+                    </div>
+                )}
+                {step != 0 && (
+                    <div class="row m-0 w-100">
+                        <div class="co-lg-12 mb-3">
+                            <div class="row m-0 w-100 d-flex align-items-center">
+                                <div style={{ width: '55px', height: '50px', border: '1px solid #eee', borderRadius: '10px' }}>
+                                    <img src={itemChosen?.imageUrl} style={{ width: '100%', height: '100%', borderRadius: '10px' }} />
+                                </div>
+                                <div class="ml-2">
+                                    <div class="col-lg-12 p-0" style={{ fontWeight: 600, fontSize: '13px' }}>
+                                        {itemChosen?.name}
+                                    </div>
+                                    <div class="col-lg-12 p-0" style={{ fontWeight: 500, fontSize: '13px', color: 'lightgray' }}>
+                                        {itemChosen?.sku}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 )}

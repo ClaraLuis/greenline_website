@@ -538,6 +538,12 @@ const API = () => {
                             buildingNumber
                             apartmentFloor
                         }
+                        customer {
+                            email
+                        }
+                        customerInfo {
+                            customerName
+                        }
                         merchant {
                             id
                             name

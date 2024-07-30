@@ -194,32 +194,30 @@ const App = (props) => {
                                         <hr class="p-0 m-0" />
                                     </div>
                                 </div>
-                                <Dropdown.Item>
-                                    <p
-                                        class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}
-                                        onClick={async () => {
-                                            await signOut(getAuth());
-                                            const cookies = new Cookies();
-                                            cookies.remove('accessToken');
-                                            cookies.remove('merchantId');
-                                            cookies.remove('userInfo');
-                                            window.open('/login', '_self');
-                                        }}
-                                    >
+                                <Dropdown.Item
+                                    onClick={async () => {
+                                        await signOut(getAuth());
+                                        const cookies = new Cookies();
+                                        cookies.remove('accessToken');
+                                        cookies.remove('merchantId');
+                                        cookies.remove('userInfo');
+                                        window.open('/login', '_self');
+                                    }}
+                                >
+                                    <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>
                                         <IoSettingsOutline size={15} style={{ marginInlineEnd: '10px' }} />
                                         Logout
                                     </p>
                                 </Dropdown.Item>
-                                <Dropdown.Item>
-                                    <p
-                                        class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}
-                                        onClick={() => {
-                                            NotificationManager.success('Logged out');
-                                            const cookies = new Cookies();
-                                            history.push('/');
-                                            fetchAuthorizationQueryContext.refetch();
-                                        }}
-                                    >
+                                <Dropdown.Item
+                                    onClick={() => {
+                                        NotificationManager.success('Logged out');
+                                        const cookies = new Cookies();
+                                        history.push('/');
+                                        fetchAuthorizationQueryContext.refetch();
+                                    }}
+                                >
+                                    <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>
                                         <IoSettingsOutline size={15} style={{ marginInlineEnd: '10px' }} />
                                         Account Settings
                                     </p>
