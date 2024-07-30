@@ -33,11 +33,13 @@ const AddSheetNew = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, dateformatter, orderStatusEnumContext, user, isAuth } = useContext(Contexthandlerscontext);
-    const { useQueryGQL, fetchOrders, addCourierSheet, useMutationGQL, fetchCouriers } = API();
+    const { useQueryGQL, fetchOrders, addCourierSheet, useMutationGQL, fetchCouriers, fetchCourierSheet, useLazyQueryGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [submit, setsubmit] = useState(false);
     const [buttonLoading, setbuttonLoading] = useState(false);
+    const [fetchCourierSheetQuery, setfetchCourierSheetQuery] = useState({});
+
     const [sheetpayload, setsheetpayload] = useState({
         functype: 'add',
         name: '',
@@ -105,6 +107,18 @@ const AddSheetNew = (props) => {
     useEffect(() => {
         setpageactive_context('/addsheet');
     }, []);
+    const [fetchCourierSheetLazyQuery] = useLazyQueryGQL(fetchCourierSheet());
+
+    useEffect(async () => {
+        if (queryParameters.get('sheetId')) {
+            var { data } = await fetchCourierSheetLazyQuery({
+                variables: {
+                    id: parseInt(queryParameters.get('sheetId')),
+                },
+            });
+            setfetchCourierSheetQuery({ data: data });
+        }
+    }, [queryParameters.get('sheetId')]);
 
     const [barcode, setBarcode] = useState('');
     useEffect(() => {
@@ -154,22 +168,32 @@ const AddSheetNew = (props) => {
                 <div style={{}} class="row m-0 w-100">
                     <div class="col-lg-12 mb-3 px-1">
                         <div class={generalstyles.card + ' row m-0 w-100 p-2 py-3 '} style={{}}>
-                            <div class={'col-lg-3'}>
-                                <SelectComponent
-                                    title={'Courier'}
-                                    filter={filterCouriers}
-                                    setfilter={setfilterCouriers}
-                                    options={fetchCouriersQuery}
-                                    attr={'paginateCouriers'}
-                                    payload={sheetpayload}
-                                    payloadAttr={'courier'}
-                                    label={'name'}
-                                    value={'id'}
-                                    onClick={(option) => {
-                                        setsheetpayload({ ...sheetpayload, courier: option.id });
-                                    }}
-                                />
-                            </div>
+                            {queryParameters.get('sheetId') != undefined && (
+                                <>
+                                    <div class="col-lg-12 mb-2" style={{ fontWeight: 600 }}>
+                                        Sheet # {queryParameters.get('sheetId')}
+                                    </div>
+                                    <div class="col-lg-12 mb-4">{fetchCourierSheetQuery?.data?.CourierSheet?.userInfo?.name}</div>
+                                </>
+                            )}
+                            {queryParameters.get('sheetId') == undefined && (
+                                <div class={'col-lg-3'}>
+                                    <SelectComponent
+                                        title={'Courier'}
+                                        filter={filterCouriers}
+                                        setfilter={setfilterCouriers}
+                                        options={fetchCouriersQuery}
+                                        attr={'paginateCouriers'}
+                                        payload={sheetpayload}
+                                        payloadAttr={'courier'}
+                                        label={'name'}
+                                        value={'id'}
+                                        onClick={(option) => {
+                                            setsheetpayload({ ...sheetpayload, courier: option.id });
+                                        }}
+                                    />
+                                </div>
+                            )}
                         </div>
                     </div>
                     <div class="col-lg-10 p-0 ">
@@ -261,18 +285,21 @@ const AddSheetNew = (props) => {
                                     // style={{ height: '30px', minWidth: '80%' }}
                                     class={generalstyles.roundbutton + ' allcentered p-0'}
                                     onClick={() => {
-                                        if (sheetpayload?.courier?.length == 0 || sheetpayload?.courier == undefined) {
-                                            NotificationManager.warning('Choose Courier first', 'Warning!');
-                                        }
-                                        if (sheetpayload?.orderIds?.length == 0 || sheetpayload?.orderIds == undefined) {
-                                            NotificationManager.warning('Choose Orders first', 'Warning!');
-                                        } else {
-                                            handleAddCourierSheet();
+                                        if (queryParameters.get('sheetId') == undefined) {
+                                            if (sheetpayload?.courier?.length == 0 || sheetpayload?.courier == undefined) {
+                                                NotificationManager.warning('Choose Courier first', 'Warning!');
+                                            }
+                                            if (sheetpayload?.orderIds?.length == 0 || sheetpayload?.orderIds == undefined) {
+                                                NotificationManager.warning('Choose Orders first', 'Warning!');
+                                            } else {
+                                                handleAddCourierSheet();
+                                            }
                                         }
                                     }}
                                     disabled={buttonLoading}
                                 >
-                                    Add Manifest
+                                    {queryParameters.get('sheetId') == undefined ? 'Add Manifest' : 'Update Manifest'}
+                                    {/* Add Manifest */}
                                 </button>
                             </div>
                         </div>

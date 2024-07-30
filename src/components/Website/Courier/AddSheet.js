@@ -344,7 +344,7 @@ const AddSheet = (props) => {
                                         <div class="col-lg-12 mb-2 allcentered">
                                             <button class={generalstyles.roundbutton}>Update sheet</button>
                                         </div>
-                                    </div>{' '}
+                                    </div>
                                 </div>
                             )}
                         </div>
