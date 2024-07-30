@@ -990,7 +990,15 @@ const API = () => {
                         financePass
                         shippingCollected
                         amountCollected
+                        orderId
                         order {
+                            previousOrder {
+                                id
+                            }
+                            parentOrder {
+                                id
+                            }
+                            otherId
                             id
                             originalPrice
                             type
