@@ -187,6 +187,13 @@ const API = () => {
             }
         `;
     };
+    const addOrdersToCourierSheet = () => {
+        return gql`
+            mutation addOrdersToCourierSheet($input: AddOrdersToCourierSheetInput!) {
+                addOrdersToCourierSheet(input: $input)
+            }
+        `;
+    };
 
     const updateCourierSheet = () => {
         return gql`
@@ -709,6 +716,20 @@ const API = () => {
                         description
                         currency
                         imageUrl
+                        itemVariants {
+                            id
+                            sku
+                            name
+                            shopifyId
+                            merchantSku
+                            merchantId
+                            itemId
+                            isEnabled
+                            imageUrl
+                            price
+                            weight
+                            createdAt
+                        }
                     }
                     cursor
                 }
@@ -1097,6 +1118,10 @@ const API = () => {
             query paginateFinancialTransaction($input: FinancialTransactionPaginationInput!) {
                 paginateFinancialTransaction(input: $input) {
                     data {
+                        sheetOrderId
+                        currency
+                        auditedById
+                        lastModified
                         id
                         type
                         description
@@ -1300,6 +1325,7 @@ const API = () => {
         fetchCourierOrders,
         createInventory,
         addCourierSheet,
+        addOrdersToCourierSheet,
         fetchCourierSheets,
         fetchCourierSheet,
         updateCourierSheet,

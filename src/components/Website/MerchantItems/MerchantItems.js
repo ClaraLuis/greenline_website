@@ -41,7 +41,7 @@ const MerchantItems = (props) => {
 
     const [openModal, setopenModal] = useState(false);
     const [openCompounditemsModal, setopenCompounditemsModal] = useState(false);
-    const [variantModel, setvariantModel] = useState(true);
+    const [variantModal, setvariantModal] = useState(true);
     const [itemsarray, setitemsarray] = useState([
         { sku: '123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1' },
         { sku: '123', name: 'item 1', size: 'size', color: 'cc', countinventory: '500', merchantname: 'Merchant 1' },
@@ -122,7 +122,7 @@ const MerchantItems = (props) => {
 
     const [options, setOptions] = useState([]);
     const [optionName, setOptionName] = useState('');
-    const [valueInput, setValueInput] = useState('');
+    const [variantsModal, setvariantsModal] = useState({ open: false, data: [] });
     const [valueInputs, setValueInputs] = useState({});
     const [variants, setVariants] = useState([]);
 
@@ -353,7 +353,14 @@ const MerchantItems = (props) => {
                                 />
                             </div>
                             <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
-                                <ItemsTable card="col-lg-3" items={fetchMerchantItemsQuery?.data?.paginateItems?.data} />
+                                <ItemsTable
+                                    clickable={true}
+                                    actiononclick={(item) => {
+                                        setvariantModal({ open: true, data: item?.itemVariants });
+                                    }}
+                                    card="col-lg-3"
+                                    items={fetchMerchantItemsQuery?.data?.paginateItems?.data}
+                                />
                             </div>
                             <div class="col-lg-12 p-0">
                                 <Pagination
@@ -967,6 +974,38 @@ const MerchantItems = (props) => {
                                 {!buttonLoading && <span>Add item</span>}
                             </button>
                         </div>
+                    </div>
+                </Modal.Body>
+            </Modal>
+
+            <Modal
+                show={variantModal?.open}
+                onHide={() => {
+                    setvariantModal({ open: false, data: [] });
+                }}
+                centered
+                size={'lg'}
+            >
+                <Modal.Header>
+                    <div className="row w-100 m-0 p-0">
+                        <div class="col-lg-6 pt-3 ">
+                            <div className="row w-100 m-0 p-0">Item Variants</div>
+                        </div>
+                        <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
+                            <div
+                                class={'close-modal-container'}
+                                onClick={() => {
+                                    setvariantModal({ open: false, data: [] });
+                                }}
+                            >
+                                <IoMdClose />
+                            </div>
+                        </div>{' '}
+                    </div>
+                </Modal.Header>
+                <Modal.Body>
+                    <div class="row m-0 w-100 py-2">
+                        <ItemsTable card="col-lg-3" items={variantModal.data} />
                     </div>
                 </Modal.Body>
             </Modal>

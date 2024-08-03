@@ -139,7 +139,15 @@ const FinanceTransactions = (props) => {
                             style={{ height: '35px' }}
                             class={generalstyles.roundbutton + '  mb-1 mx-1'}
                             onClick={() => {
-                                exportToExcel(fetchAllTransactionsQuery?.data?.paginateFinancialTransaction?.data, 'transactions');
+                                const transactions = fetchAllTransactionsQuery?.data?.paginateFinancialTransaction?.data;
+
+                                const exportData = transactions.map((transaction) => ({
+                                    ...transaction,
+                                    fromAccount: transaction.fromAccount?.name,
+                                    toAccount: transaction.toAccount?.name,
+                                }));
+
+                                exportToExcel(exportData, 'transactions');
                             }}
                         >
                             Export

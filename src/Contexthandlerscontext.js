@@ -387,7 +387,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/couriercollections',
                         permissionpage: [1],
-                        show: isAuth([1, 51, 19, 52]),
+                        show: isAuth([1, 51, 19]),
                     },
                     {
                         name: 'Merchant Payments',
@@ -399,7 +399,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/merchantpayments',
                         permissionpage: [1],
-                        show: isAuth([1, 51, 19, 52]),
+                        show: isAuth([1, 51, 19]),
                     },
 
                     {

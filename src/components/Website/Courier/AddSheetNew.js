@@ -33,7 +33,7 @@ const AddSheetNew = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, dateformatter, orderStatusEnumContext, user, isAuth } = useContext(Contexthandlerscontext);
-    const { useQueryGQL, fetchOrders, addCourierSheet, useMutationGQL, fetchCouriers, fetchCourierSheet, useLazyQueryGQL } = API();
+    const { useQueryGQL, fetchOrders, addCourierSheet, addOrdersToCourierSheet, useMutationGQL, fetchCouriers, fetchCourierSheet, useLazyQueryGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [submit, setsubmit] = useState(false);
@@ -51,19 +51,7 @@ const AddSheetNew = (props) => {
     const [search, setsearch] = useState('');
     const [openModal, setopenModal] = useState(false);
     const [assignOpenModal, setassignOpenModal] = useState(false);
-    const [addresspayload, setaddresspayload] = useState({
-        functype: 'add',
-        country: '',
-        city: '',
-        details: '',
-    });
 
-    const [filterorders, setfilterorders] = useState({
-        statuses: [], //arrivedToHub
-        limit: 20,
-        orderIds: undefined,
-    });
-    const fetchOrdersQuery = useQueryGQL('', fetchOrders(), filterorders); //network only
     const [filterCouriers, setfilterCouriers] = useState({
         isAsc: true,
         limit: 10,
@@ -76,32 +64,66 @@ const AddSheetNew = (props) => {
         userId: sheetpayload?.courier,
         orderIds: sheetpayload?.orderIds,
     });
+    const [addOrdersToCourierSheetMutation] = useMutationGQL(addOrdersToCourierSheet(), {
+        sheetId: parseInt(queryParameters.get('sheetId')),
+        orderIds: sheetpayload?.orderIds,
+    });
 
     const handleAddCourierSheet = async () => {
         setbuttonLoading(true);
-        try {
-            const { data } = await addCourierSheetMutation();
-            if (data?.createCourierSheet?.success == true) {
-                history.push('/couriersheets');
-            } else {
-                NotificationManager.warning(data?.createCourierSheet?.message, 'Warning!');
+        if (queryParameters.get('sheetId')) {
+            try {
+                const { data } = await addOrdersToCourierSheetMutation();
+                if (data?.addOrdersToCourierSheet?.success == true) {
+                    NotificationManager.success('Manifest Updated Successfully', 'Success');
+                    history.push('/couriersheets');
+                } else {
+                    NotificationManager.warning(data?.addOrdersToCourierSheet?.message, 'Warning!');
+                }
+            } catch (error) {
+                // alert(JSON.stringify(error));
+                let errorMessage = 'An unexpected error occurred';
+                // // Check for GraphQL errors
+                if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                    errorMessage = error.graphQLErrors[0].message || errorMessage;
+                } else if (error.networkError) {
+                    errorMessage = error.networkError.message || errorMessage;
+                } else if (error.message) {
+                    errorMessage = error.message;
+                }
+                NotificationManager.warning(errorMessage, 'Warning!');
+                if (errorMessage == 'Courier has an open sheet') {
+                    setassignOpenModal(true);
+                }
             }
-        } catch (error) {
-            // alert(JSON.stringify(error));
-            let errorMessage = 'An unexpected error occurred';
-            // // Check for GraphQL errors
-            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-                errorMessage = error.graphQLErrors[0].message || errorMessage;
-            } else if (error.networkError) {
-                errorMessage = error.networkError.message || errorMessage;
-            } else if (error.message) {
-                errorMessage = error.message;
-            }
-            NotificationManager.warning(errorMessage, 'Warning!');
-            if (errorMessage == 'Courier has an open sheet') {
-                setassignOpenModal(true);
+        } else {
+            try {
+                const { data } = await addCourierSheetMutation();
+                if (data?.createCourierSheet?.success == true) {
+                    NotificationManager.success('Manifest Added Successfully', 'Success');
+
+                    history.push('/couriersheets');
+                } else {
+                    NotificationManager.warning(data?.createCourierSheet?.message, 'Warning!');
+                }
+            } catch (error) {
+                // alert(JSON.stringify(error));
+                let errorMessage = 'An unexpected error occurred';
+                // // Check for GraphQL errors
+                if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                    errorMessage = error.graphQLErrors[0].message || errorMessage;
+                } else if (error.networkError) {
+                    errorMessage = error.networkError.message || errorMessage;
+                } else if (error.message) {
+                    errorMessage = error.message;
+                }
+                NotificationManager.warning(errorMessage, 'Warning!');
+                if (errorMessage == 'Courier has an open sheet') {
+                    setassignOpenModal(true);
+                }
             }
         }
+
         setbuttonLoading(false);
     };
     useEffect(() => {
@@ -116,6 +138,11 @@ const AddSheetNew = (props) => {
                     id: parseInt(queryParameters.get('sheetId')),
                 },
             });
+            var orderIdstemp = [];
+            data?.CourierSheet?.sheetOrders?.map((order) => {
+                orderIdstemp.push(order.orderId);
+            });
+            setsheetpayload({ ...sheetpayload, orderIdsOld: orderIdstemp });
             setfetchCourierSheetQuery({ data: data });
         }
     }, [queryParameters.get('sheetId')]);
@@ -246,6 +273,23 @@ const AddSheetNew = (props) => {
                                     <div class="col-lg-12 pb-2 px-0 " style={{ fontSize: '17px', fontWeight: 700 }}>
                                         Orders ({sheetpayload?.orderIds?.length})
                                     </div>
+                                    {sheetpayload?.orderIdsOld?.length != 0 && (
+                                        <div class="col-lg-12 p-0">
+                                            <div style={{ maxHeight: '40vh', overflow: 'scroll' }} class="row m-0 w-100 scrollmenuclasssubscrollbar">
+                                                {sheetpayload?.orderIdsOld?.map((item, index) => {
+                                                    return (
+                                                        <div class={' col-lg-3 '}>
+                                                            <div class={generalstyles.filter_container + ' p-2 row m-0 mb-3 w-100 allcentered'}>
+                                                                <div style={{ fontWeight: 700 }} class="col-lg-10 p-0 mb-2">
+                                                                    # {item}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    )}
                                     {sheetpayload?.orderIds?.length != 0 && (
                                         <div class="col-lg-12 p-0">
                                             <div style={{ maxHeight: '40vh', overflow: 'scroll' }} class="row m-0 w-100 scrollmenuclasssubscrollbar">
@@ -285,20 +329,20 @@ const AddSheetNew = (props) => {
                                     // style={{ height: '30px', minWidth: '80%' }}
                                     class={generalstyles.roundbutton + ' allcentered p-0'}
                                     onClick={() => {
-                                        if (queryParameters.get('sheetId') == undefined) {
-                                            if (sheetpayload?.courier?.length == 0 || sheetpayload?.courier == undefined) {
-                                                NotificationManager.warning('Choose Courier first', 'Warning!');
-                                            }
-                                            if (sheetpayload?.orderIds?.length == 0 || sheetpayload?.orderIds == undefined) {
-                                                NotificationManager.warning('Choose Orders first', 'Warning!');
-                                            } else {
-                                                handleAddCourierSheet();
-                                            }
+                                        if ((sheetpayload?.courier?.length == 0 || sheetpayload?.courier == undefined) && queryParameters.get('sheetId') == undefined) {
+                                            NotificationManager.warning('Choose Courier first', 'Warning!');
+                                            return;
+                                        }
+                                        if (sheetpayload?.orderIds?.length == 0 || sheetpayload?.orderIds == undefined) {
+                                            NotificationManager.warning('Choose Orders first', 'Warning!');
+                                        } else {
+                                            handleAddCourierSheet();
                                         }
                                     }}
                                     disabled={buttonLoading}
                                 >
-                                    {queryParameters.get('sheetId') == undefined ? 'Add Manifest' : 'Update Manifest'}
+                                    {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                    {!buttonLoading && <span>{queryParameters.get('sheetId') == undefined ? 'Add Manifest' : 'Update Manifest'}</span>}
                                     {/* Add Manifest */}
                                 </button>
                             </div>
