@@ -157,6 +157,7 @@ const AddOrder = (props) => {
         price: orderpayload?.price,
         returnAmount: orderpayload?.returnAmount,
         returnOrderItems: orderpayload?.returnOrderItems?.length == 0 ? undefined : orderpayload?.returnOrderItems,
+        previousOrderId: orderpayload?.previousOrderId?.length == 0 ? undefined : orderpayload?.previousOrderId,
         // currency: 'EGP',
         orderItems: cartItems,
         // shippingPrice: '0.0',
@@ -525,7 +526,7 @@ const AddOrder = (props) => {
                                     var exist = false;
                                     var chosenindex = null;
                                     temp.items.map((i, ii) => {
-                                        if (i.item.sku == item.sku) {
+                                        if (i?.item?.sku == item?.sku) {
                                             exist = true;
                                             chosenindex = ii;
                                         }
@@ -1180,7 +1181,7 @@ const AddOrder = (props) => {
                                             var exist = false;
                                             var chosenindex = null;
                                             temp.returnOrderItems.map((i, ii) => {
-                                                if (i.item.sku == item.sku) {
+                                                if (i?.item?.sku == item?.sku) {
                                                     exist = true;
                                                     chosenindex = ii;
                                                 }

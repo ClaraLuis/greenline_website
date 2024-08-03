@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
@@ -6,41 +6,44 @@ import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
 import { FaEllipsisV, FaLayerGroup } from 'react-icons/fa';
-import Select, { components } from 'react-select';
+import { components } from 'react-select';
 
-import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
-import { defaultstyles } from '../Generalfiles/selectstyles.js';
-import { Modal } from 'react-bootstrap';
-import { Dropdown } from 'react-bootstrap';
+import { Dropdown, Modal } from 'react-bootstrap';
 
-import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
-import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
-import API from '../../../API/API.js';
-import { IoMdClose } from 'react-icons/io';
-import Form from '../../Form.js';
-import { MdOutlineInventory2, MdOutlineLocationOn } from 'react-icons/md';
-import { FiCheckCircle } from 'react-icons/fi';
 import { BiUser } from 'react-icons/bi';
+import { IoMdClose } from 'react-icons/io';
+import { MdOutlineInventory2, MdOutlineLocationOn } from 'react-icons/md';
+import Form from '../../Form.js';
+import API from '../../../API/API.js';
+import { NotificationManager } from 'react-notifications';
 
 const { ValueContainer, Placeholder } = components;
 
 const OrdersTable = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { orderStatusEnumContext, dateformatter, orderTypeContext, setchosenOrderContext } = useContext(Contexthandlerscontext);
-
+    const { orderStatusEnumContext, dateformatter, orderTypeContext, setchosenOrderContext, isAuth } = useContext(Contexthandlerscontext);
+    const { requestOrderReturn, useMutationGQL } = API();
     const { lang, langdetect } = useContext(LanguageContext);
 
     const [changestatusmodal, setchangestatusmodal] = useState(false);
+    const [buttonLoading, setbuttonLoading] = useState(false);
     const [submit, setsubmit] = useState(false);
-    const [isOpen1, setIsOpen1] = useState(false);
+    const [returnOrderModal, setreturnOrderModal] = useState(false);
     const [inventoryModal, setinventoryModal] = useState({ open: false, items: [] });
 
     const [statuspayload, setstatuspayload] = useState({
         orderid: '',
         status: '',
+    });
+    const [requestReturnPayload, setrequestReturnPayload] = useState({
+        orderId: '',
+        orderDate: '',
+        returnAmount: '',
+        freeShipping: true,
+        originalPrice: true,
     });
     const organizeInventory = (inventory) => {
         const racks = {};
@@ -81,7 +84,13 @@ const OrdersTable = (props) => {
 
         return racks;
     };
-
+    const [requestOrderReturnMutation] = useMutationGQL(requestOrderReturn(), {
+        orderId: requestReturnPayload?.orderId,
+        orderDate: requestReturnPayload?.orderDate,
+        returnAmount: requestReturnPayload?.originalPrice ? undefined : requestReturnPayload?.returnAmount,
+        freeShipping: requestReturnPayload?.freeShipping,
+        merchantId: isAuth([1]) ? requestReturnPayload?.item?.merchant?.id : undefined,
+    });
     return (
         <>
             {props?.fetchOrdersQuery?.loading && (
@@ -208,6 +217,7 @@ const OrdersTable = (props) => {
                                                                         borderRadius: '10px',
                                                                         transition: 'all 0.4s',
                                                                     }}
+                                                                    class="ml-3"
                                                                 >
                                                                     <FaEllipsisV />
                                                                 </div>
@@ -223,6 +233,17 @@ const OrdersTable = (props) => {
                                                                 >
                                                                     <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>View order</p>
                                                                 </Dropdown.Item>
+                                                                {props?.srcFrom == 'merchant' && (
+                                                                    <Dropdown.Item
+                                                                        onClick={() => {
+                                                                            setrequestReturnPayload({ ...requestReturnPayload, item, orderId: item.id });
+                                                                            setreturnOrderModal(true);
+                                                                        }}
+                                                                        class="py-2"
+                                                                    >
+                                                                        <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Request Return</p>
+                                                                    </Dropdown.Item>
+                                                                )}
                                                             </Dropdown.Menu>
                                                         </Dropdown>
                                                     </div>
@@ -483,6 +504,122 @@ const OrdersTable = (props) => {
                             button1placeholder={'Update status'}
                             button1onClick={() => {
                                 setchangestatusmodal(false);
+                            }}
+                        />
+                    </div>
+                </Modal.Body>
+            </Modal>
+            <Modal
+                show={returnOrderModal}
+                onHide={() => {
+                    setreturnOrderModal(false);
+                }}
+                centered
+                size={'md'}
+            >
+                <Modal.Header>
+                    <div className="row w-100 m-0 p-0">
+                        <div class="col-lg-6 pt-3 ">
+                            <div className="row w-100 m-0 p-0">Request Return</div>
+                        </div>
+                        <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
+                            <div
+                                class={'close-modal-container'}
+                                onClick={() => {
+                                    setreturnOrderModal(false);
+                                }}
+                            >
+                                <IoMdClose />
+                            </div>
+                        </div>{' '}
+                    </div>
+                </Modal.Header>
+                <Modal.Body>
+                    <div class="row m-0 w-100 py-2">
+                        <Form
+                            size={'md'}
+                            submit={submit}
+                            setsubmit={setsubmit}
+                            attr={
+                                !requestReturnPayload?.originalPrice
+                                    ? [
+                                          {
+                                              name: 'Order Date',
+                                              attr: 'orderDate',
+                                              type: 'date',
+                                              size: '12',
+                                          },
+                                          {
+                                              name: 'Original Price',
+                                              attr: 'originalPrice',
+                                              type: 'switch',
+                                              size: '12',
+                                          },
+                                          {
+                                              name: 'Return Amount',
+                                              attr: 'returnAmount',
+                                              type: 'number',
+                                              size: '12',
+                                          },
+                                          {
+                                              name: 'Free Shipping',
+                                              attr: 'freeShipping',
+                                              type: 'switch',
+                                              size: '12',
+                                          },
+                                      ]
+                                    : [
+                                          {
+                                              name: 'Order Date',
+                                              attr: 'orderDate',
+                                              type: 'date',
+                                              size: '12',
+                                          },
+                                          {
+                                              name: 'Original Price',
+                                              attr: 'originalPrice',
+                                              type: 'switch',
+                                              size: '12',
+                                          },
+
+                                          {
+                                              name: 'Free Shipping',
+                                              attr: 'freeShipping',
+                                              type: 'switch',
+                                              size: '12',
+                                          },
+                                      ]
+                            }
+                            payload={requestReturnPayload}
+                            setpayload={setrequestReturnPayload}
+                            button1disabled={buttonLoading}
+                            button1class={generalstyles.roundbutton + '  mr-2 '}
+                            button1placeholder={'Request Return'}
+                            button1onClick={async () => {
+                                setbuttonLoading(true);
+
+                                try {
+                                    const data = await requestOrderReturnMutation();
+                                    setTimeout(() => {
+                                        if (props?.refetchOrders) {
+                                            props?.refetchOrders();
+                                        }
+                                        NotificationManager.success('Request Return submmited', 'success!');
+                                        setreturnOrderModal(false);
+                                    }, 1000);
+                                } catch (error) {
+                                    let errorMessage = 'An unexpected error occurred';
+                                    if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                        errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                    } else if (error.networkError) {
+                                        errorMessage = error.networkError.message || errorMessage;
+                                    } else if (error.message) {
+                                        errorMessage = error.message;
+                                    }
+
+                                    NotificationManager.warning(errorMessage, 'Warning!');
+                                }
+                                setbuttonLoading(false);
                             }}
                         />
                     </div>

@@ -505,6 +505,26 @@ const Form = (props) => {
                             </div>
                         </div>
                     );
+                } else if (item?.type == 'switch') {
+                    return (
+                        <div class={item.size == '6' ? 'col-lg-6' : 'col-lg-12'}>
+                            <div className="row m-0 w-100 d-flex justify-content-start">
+                                <label className={`${formstyles.switch} mr-2 `}>
+                                    <input
+                                        type="checkbox"
+                                        checked={props?.payload[item.attr] == 0 ? false : true}
+                                        onChange={() => {
+                                            var temp = { ...props?.payload };
+                                            temp[item?.attr] = temp[item?.attr] == 0 ? 1 : 0;
+                                            props?.setpayload({ ...temp });
+                                        }}
+                                    />
+                                    <span className={`${formstyles.slider} ${formstyles.round}`}></span>
+                                </label>
+                                <p className={`${generalstyles.checkbox_label} mb-0 text-focus text-capitalize cursor-pointer font_14 ml-1 mr-1 wordbreak`}>{item?.name}</p>
+                            </div>
+                        </div>
+                    );
                 }
             })}
             <div class="col-lg-12 p-0">

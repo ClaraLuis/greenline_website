@@ -37,6 +37,7 @@ const CourierSheet = (props) => {
     const [fetchCourierSheetLazyQuery] = useLazyQueryGQL(fetchCourierSheet());
     const [fetchCourierSheetQuery, setfetchCourierSheetQuery] = useState({});
     const [statuspayload, setstatuspayload] = useState({
+        step: 0,
         orderid: '',
         status: '',
     });
@@ -561,13 +562,24 @@ const CourierSheet = (props) => {
                                                                             </div>
                                                                             <div class={type == 'admin' ? 'col-lg-4 ' : 'col-lg-6 '}>
                                                                                 <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
-                                                                                    <div style={{ fontWeight: 700 }} class="mx-2">
-                                                                                        {parseFloat(
-                                                                                            (subitem?.partialCount != null ? parseFloat(subitem.count) - parseFloat(subitem.partialCount) : 0) *
-                                                                                                parseFloat(subitem?.unitPrice),
-                                                                                        )}{' '}
-                                                                                        {item?.info?.currency}
-                                                                                    </div>
+                                                                                    {item?.order?.type != 'return' && (
+                                                                                        <div style={{ fontWeight: 700 }} class="mx-2">
+                                                                                            {parseFloat(
+                                                                                                (subitem?.partialCount != null ? parseFloat(subitem.count) - parseFloat(subitem.partialCount) : 0) *
+                                                                                                    parseFloat(subitem?.unitPrice),
+                                                                                            )}{' '}
+                                                                                            {item?.info?.currency}
+                                                                                        </div>
+                                                                                    )}
+                                                                                    {item?.order?.type == 'return' && (
+                                                                                        <div style={{ fontWeight: 700 }} class="mx-2">
+                                                                                            {parseFloat(
+                                                                                                (subitem?.partialCount != null ? parseFloat(subitem.partialCount) : parseFloat(subitem.count)) *
+                                                                                                    parseFloat(subitem?.unitPrice),
+                                                                                            )}{' '}
+                                                                                            {item?.info?.currency}
+                                                                                        </div>
+                                                                                    )}
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -758,61 +770,89 @@ const CourierSheet = (props) => {
                     </div>
                 </Modal.Header>
                 <Modal.Body>
-                    <div class="row m-0 w-100 py-2">
-                        <div class={'col-lg-12 mb-3'}>
-                            <label for="name" class={formstyles.form__label}>
-                                Status
-                            </label>
-                            <Select
-                                options={orderStatusEnumContext}
-                                styles={defaultstyles}
-                                value={orderStatusEnumContext.filter((option) => option.value == statuspayload?.status)}
-                                onChange={(option) => {
-                                    setstatuspayload({ ...statuspayload, status: option.value });
-                                }}
-                            />
+                    {statuspayload?.step == 0 && (
+                        <div class="row m-0 w-100 py-2">
+                            <div class={'col-lg-12 mb-3'}>
+                                <label for="name" class={formstyles.form__label}>
+                                    Status
+                                </label>
+                                <Select
+                                    options={[
+                                        { label: 'Delivered', value: 'delivered' },
+                                        { label: 'Postponed', value: 'Postponed' },
+                                        { label: 'Unreachable', value: 'unreachable' },
+                                        { label: 'Canceled', value: 'canceled' },
+                                    ]}
+                                    styles={defaultstyles}
+                                    value={[
+                                        { label: 'Delivered', value: 'delivered' },
+                                        { label: 'Postponed', value: 'Postponed' },
+                                        { label: 'Unreachable', value: 'unreachable' },
+                                        { label: 'Canceled', value: 'canceled' },
+                                    ].filter((option) => option.value == statuspayload?.status)}
+                                    onChange={(option) => {
+                                        setstatuspayload({ ...statuspayload, status: option.value, step: 1 });
+                                    }}
+                                />
+                            </div>
                         </div>
-                        <div class="col-lg-12 mb-3 allcentered">
-                            <button
-                                onClick={async () => {
-                                    try {
-                                        setupdateStatusButtonLoading(true);
-                                        const { data } = await updateOrdersStatusMutation();
-                                        var temp = { ...submitSheetPayload };
+                    )}
+                    {statuspayload?.step == 1 && (
+                        <div class="row m-0 w-100 py-2">
+                            <div class={'col-lg-12 mb-3'}>
+                                <label for="name" class={formstyles.form__label}>
+                                    Status
+                                </label>
+                                <Select
+                                    options={orderStatusEnumContext}
+                                    styles={defaultstyles}
+                                    value={orderStatusEnumContext.filter((option) => option.value == statuspayload?.status)}
+                                    onChange={(option) => {
+                                        setstatuspayload({ ...statuspayload, status: option.value });
+                                    }}
+                                />
+                            </div>
+                            <div class="col-lg-12 mb-3 allcentered">
+                                <button
+                                    onClick={async () => {
+                                        try {
+                                            setupdateStatusButtonLoading(true);
+                                            const { data } = await updateOrdersStatusMutation();
+                                            var temp = { ...submitSheetPayload };
 
-                                        temp.updateSheetOrders.map((i, ii) => {
-                                            if (i.sheetOrderId == statuspayload.orderid) {
-                                                temp.updateSheetOrderstemp[ii].orderStatus = statuspayload?.status;
+                                            temp.updateSheetOrders.map((i, ii) => {
+                                                if (i.sheetOrderId == statuspayload.orderid) {
+                                                    temp.updateSheetOrderstemp[ii].orderStatus = statuspayload?.status;
+                                                }
+                                            });
+                                            setsubmitSheetPayload({ ...temp });
+
+                                            setstatuspayload({ status: '', orderid: '' });
+                                            setchangestatusmodal(false);
+                                            NotificationManager.success('', 'Status changed successfully');
+                                        } catch (error) {
+                                            let errorMessage = 'An unexpected error occurred';
+                                            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                                errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                            } else if (error.networkError) {
+                                                errorMessage = error.networkError.message || errorMessage;
+                                            } else if (error.message) {
+                                                errorMessage = error.message;
                                             }
-                                        });
-                                        setsubmitSheetPayload({ ...temp });
 
-                                        setstatuspayload({ status: '', orderid: '' });
-                                        setchangestatusmodal(false);
-                                        NotificationManager.success('', 'Status changed successfully');
-                                    } catch (error) {
-                                        let errorMessage = 'An unexpected error occurred';
-                                        if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-                                            errorMessage = error.graphQLErrors[0].message || errorMessage;
-                                        } else if (error.networkError) {
-                                            errorMessage = error.networkError.message || errorMessage;
-                                        } else if (error.message) {
-                                            errorMessage = error.message;
+                                            NotificationManager.warning(errorMessage, 'Warning!');
                                         }
+                                        setupdateStatusButtonLoading(false);
+                                    }}
+                                    class={generalstyles.roundbutton}
+                                    disabled={updateStatusButtonLoading}
+                                >
+                                    {updateStatusButtonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                    {!updateStatusButtonLoading && <span>Update Status</span>}
+                                </button>
+                            </div>
 
-                                        NotificationManager.warning(errorMessage, 'Warning!');
-                                    }
-                                    setupdateStatusButtonLoading(false);
-                                }}
-                                class={generalstyles.roundbutton}
-                                disabled={updateStatusButtonLoading}
-                            >
-                                {updateStatusButtonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                {!updateStatusButtonLoading && <span>Update Status</span>}
-                            </button>
-                        </div>
-
-                        {/* <Form
+                            {/* <Form
                             size={'md'}
                             submit={submit}
                             setsubmit={setsubmit}
@@ -834,7 +874,8 @@ const CourierSheet = (props) => {
                                 setchangestatusmodal(false);
                             }}
                         /> */}
-                    </div>
+                        </div>
+                    )}
                 </Modal.Body>
             </Modal>
         </div>

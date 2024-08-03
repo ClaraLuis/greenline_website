@@ -90,19 +90,14 @@ const AccountsTable = (props) => {
                                                         </div>
                                                     </Dropdown.Toggle>
                                                     <Dropdown.Menu style={{ minWidth: '170px', fontSize: '12px' }}>
-                                                        <div class="row m-0 w-100 p-1">
-                                                            <div class="col-lg-12 p-0  allcentered ">
-                                                                <p
-                                                                    // style={{ borderBottom: '1px solid #eee' }}
-                                                                    class={' mb-0 pb-0 avenirmedium text-secondaryhover text-center d-flex align-items-center pb-0  '}
-                                                                    onClick={() => {
-                                                                        props?.editFunc(item);
-                                                                    }}
-                                                                >
-                                                                    Change account name
-                                                                </p>
-                                                            </div>
-                                                        </div>
+                                                        <Dropdown.Item
+                                                            onClick={() => {
+                                                                props?.editFunc(item);
+                                                            }}
+                                                            class="py-2"
+                                                        >
+                                                            <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Change account name</p>
+                                                        </Dropdown.Item>
                                                     </Dropdown.Menu>
                                                 </Dropdown>
                                             )}

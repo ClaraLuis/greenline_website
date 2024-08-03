@@ -36,7 +36,7 @@ const MerchantOrders = (props) => {
     const cookies = new Cookies();
 
     const { setpageactive_context, orderStatusEnumContext, orderTypeContext, paymentTypeContext, isAuth, courierSheetStatusesContext } = useContext(Contexthandlerscontext);
-    const { fetchMerchants, useQueryGQL, fetchOrders, fetchCouriers, fetchGovernorates } = API();
+    const { fetchMerchants, useQueryGQL, useLazyQueryGQL, fetchOrders, fetchCouriers, fetchGovernorates } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [search, setsearch] = useState('');
@@ -46,15 +46,12 @@ const MerchantOrders = (props) => {
     const [filterorders, setfilterorders] = useState({
         limit: 20,
     });
-    const [filterordersLast, setfilterordersLast] = useState({
-        statuses: [],
-        limit: 20,
-    });
+    const [fetchOrdersQuery, setfetchOrdersQuery] = useState({});
     const fetchGovernoratesQuery = useQueryGQL('', fetchGovernorates());
 
-    const fetchOrdersQuery = useQueryGQL('', fetchOrders(), filterorders);
-    const { refetch: refetchOrdersQuery } = useQueryGQL('', fetchOrders(), filterorders);
-
+    const [fetchOrdersLazyQuey] = useLazyQueryGQL(fetchOrders(), 'cache-first');
+    // const { refetch: refetchOrdersQuery } = useQueryGQL('cache-and-network', fetchOrders(), filterorders);
+    //
     const [filterMerchants, setfilterMerchants] = useState({
         isAsc: true,
         limit: 20,
@@ -84,10 +81,16 @@ const MerchantOrders = (props) => {
         setWaybills(selectedOrdersDetails);
     }, [selectedOrders]);
 
-    useEffect(() => {
-        refetchOrdersQuery();
+    useEffect(async () => {
+        refetchOrders();
     }, [filterorders]);
 
+    const refetchOrders = async () => {
+        var { data } = await fetchOrdersLazyQuey({
+            variables: { input: filterorders },
+        });
+        setfetchOrdersQuery({ data: data });
+    };
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
@@ -166,7 +169,7 @@ const MerchantOrders = (props) => {
                                             value={'id'}
                                             selected={filterorders?.merchantIds}
                                             onClick={(option) => {
-                                                var tempArray = filterorders?.merchantIds ?? [];
+                                                var tempArray = [...(filterorders?.merchantIds ?? [])];
 
                                                 if (option == 'All') {
                                                     tempArray = undefined;
@@ -190,7 +193,7 @@ const MerchantOrders = (props) => {
                                             value={'value'}
                                             selected={filterorders?.statuses}
                                             onClick={(option) => {
-                                                var tempArray = filterorders?.statuses ?? [];
+                                                var tempArray = [...(filterorders?.statuses ?? [])];
                                                 if (option == 'All') {
                                                     tempArray = undefined;
                                                 } else {
@@ -212,7 +215,7 @@ const MerchantOrders = (props) => {
                                             value={'value'}
                                             selected={filterorders?.types}
                                             onClick={(option) => {
-                                                var tempArray = filterorders?.types ?? [];
+                                                var tempArray = [...(filterorders?.types ?? [])];
                                                 if (option == 'All') {
                                                     tempArray = undefined;
                                                 } else {
@@ -234,7 +237,7 @@ const MerchantOrders = (props) => {
                                             value={'value'}
                                             selected={filterorders?.paymentTypeContext}
                                             onClick={(option) => {
-                                                var tempArray = filterorders?.paymentTypeContext ?? [];
+                                                var tempArray = [...(filterorders?.paymentTypeContext ?? [])];
                                                 if (option == 'All') {
                                                     tempArray = undefined;
                                                 } else {
@@ -259,7 +262,7 @@ const MerchantOrders = (props) => {
                                             value={'id'}
                                             selected={filterorders?.courierIds}
                                             onClick={(option) => {
-                                                var tempArray = filterorders?.courierIds ?? [];
+                                                var tempArray = [...(filterorders?.courierIds ?? [])];
                                                 if (option == 'All') {
                                                     tempArray = undefined;
                                                 } else {
@@ -282,7 +285,7 @@ const MerchantOrders = (props) => {
                                             value={'id'}
                                             selected={filterorders?.governorateIds}
                                             onClick={(option) => {
-                                                var tempArray = filterorders?.governorateIds ?? [];
+                                                var tempArray = [...(filterorders?.governorateIds ?? [])];
                                                 if (option == 'All') {
                                                     tempArray = undefined;
                                                 } else {
@@ -304,7 +307,7 @@ const MerchantOrders = (props) => {
                                             value={'value'}
                                             selected={filterorders?.manifestStatuses}
                                             onClick={(option) => {
-                                                var tempArray = filterorders?.manifestStatuses ?? [];
+                                                var tempArray = [...(filterorders?.manifestStatuses ?? [])];
                                                 if (option == 'All') {
                                                     tempArray = undefined;
                                                 } else {
@@ -495,6 +498,7 @@ const MerchantOrders = (props) => {
                     </div>
                     <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
                         <OrdersTable
+                            refetchOrders={refetchOrders}
                             selectedOrders={selectedOrders}
                             clickable={true}
                             actiononclick={(order) => handleSelectOrder(order.id)}

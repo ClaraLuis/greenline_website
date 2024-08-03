@@ -109,30 +109,22 @@ const SheetsTable = (props) => {
                                                             </div>
                                                         </Dropdown.Toggle>
                                                         <Dropdown.Menu style={{ minWidth: '170px', fontSize: '12px' }}>
-                                                            <div class="row m-0 w-100">
-                                                                <div class="col-lg-12 p-1  allcentered mb-2 ">
-                                                                    <p
-                                                                        style={{ borderBottom: '1px solid #eee' }}
-                                                                        class={' mb-0 pb-0 avenirmedium text-secondaryhover text-center d-flex align-items-center pb-0  '}
-                                                                        onClick={() => {
-                                                                            // props?.editFunc(item);
-                                                                        }}
-                                                                    >
-                                                                        Delete Sheet
-                                                                    </p>
-                                                                </div>
-                                                                <div class="col-lg-12 p-1  allcentered ">
-                                                                    <p
-                                                                        // style={{ borderBottom: '1px solid #eee' }}
-                                                                        class={' mb-0 pb-0 avenirmedium text-secondaryhover text-center d-flex align-items-center pb-0  '}
-                                                                        onClick={() => {
-                                                                            history.push('/addsheet?sheetId=' + item?.id);
-                                                                        }}
-                                                                    >
-                                                                        Add orders
-                                                                    </p>
-                                                                </div>
-                                                            </div>
+                                                            <Dropdown.Item
+                                                                onClick={() => {
+                                                                    // props?.editFunc(item);
+                                                                }}
+                                                                class="py-2"
+                                                            >
+                                                                <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}> Delete Sheet</p>
+                                                            </Dropdown.Item>
+                                                            <Dropdown.Item
+                                                                onClick={() => {
+                                                                    history.push('/addsheet?sheetId=' + item?.id);
+                                                                }}
+                                                                class="py-2"
+                                                            >
+                                                                <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}> Add orders</p>
+                                                            </Dropdown.Item>
                                                         </Dropdown.Menu>
                                                     </Dropdown>
                                                 </div>

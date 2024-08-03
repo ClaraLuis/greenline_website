@@ -289,6 +289,14 @@ const API = () => {
         `;
     };
 
+    const requestOrderReturn = () => {
+        return gql`
+            mutation requestOrderReturn($input: RequestOrderReturnInput!) {
+                requestOrderReturn(input: $input)
+            }
+        `;
+    };
+
     // const removeFinancialAccount = () => {
     //     return gql`
     //         mutation removeFinancialAccount($input: UpdateFinancialAccountInput!) {
@@ -454,6 +462,7 @@ const API = () => {
                         createdAt
                         shippingPrice
                         merchant {
+                            id
                             name
                         }
                         address {
@@ -1013,6 +1022,7 @@ const API = () => {
                         amountCollected
                         orderId
                         order {
+                            previousOrderId
                             previousOrder {
                                 id
                             }
@@ -1269,9 +1279,9 @@ const API = () => {
         });
         return mutation;
     };
-    const useQueryGQL = (token, query, payload) => {
+    const useQueryGQL = (fetchPolicy, query, payload) => {
         return useQuery(query, {
-            fetchPolicy: 'network-only',
+            fetchPolicy: fetchPolicy?.length != 0 ? fetchPolicy : 'network-only',
             variables: {
                 input: payload,
             },
@@ -1367,6 +1377,7 @@ const API = () => {
         fetchAllCountries,
         findSingleMerchantDomesticShipping,
         findMerchantDomesticShippings,
+        requestOrderReturn,
     };
 };
 export default API;

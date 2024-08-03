@@ -4028,7 +4028,9 @@ hr {
     background-color: #fff2e0;
     color: #ffab2d;
 }
-
+.scrollmenuclasssubscrollbar::-webkit-scrollbar-corner {
+    background-color: transparent !important;
+}
 .scrollmenuclasssubscrollbar::-webkit-scrollbar {
     width: 5px;
     z-index: 1000;
