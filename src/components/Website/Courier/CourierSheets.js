@@ -57,7 +57,11 @@ const CourierSheets = (props) => {
                         style={{ height: '35px' }}
                         class={generalstyles.roundbutton + '  mb-1'}
                         onClick={() => {
-                            history.push('/addsheet');
+                            if (isAuth([1, 36, 53])) {
+                                history.push('/addsheet');
+                            } else {
+                                NotificationManager.warning('Not Authorized', 'Warning!');
+                            }
                         }}
                     >
                         Add Manifest

@@ -332,7 +332,7 @@ const AddSheet = (props) => {
                                     setpayload={setsheetpayload}
                                     button1disabled={buttonLoading}
                                     button1class={generalstyles.roundbutton + '  mr-2 '}
-                                    button1placeholder={sheetpayload?.functype == 'add' ? 'Add sheet' : lang.edit}
+                                    button1placeholder={sheetpayload?.functype == 'add' ? 'Add Manifest' : lang.edit}
                                     button1onClick={() => {
                                         handleAddCourierSheet();
                                     }}
@@ -342,7 +342,7 @@ const AddSheet = (props) => {
                                 <div class="col-lg-12 p-0">
                                     <div class="row m-0 w-100">
                                         <div class="col-lg-12 mb-2 allcentered">
-                                            <button class={generalstyles.roundbutton}>Update sheet</button>
+                                            <button class={generalstyles.roundbutton}>Update Manifest</button>
                                         </div>
                                     </div>
                                 </div>

@@ -1244,7 +1244,6 @@ const API = () => {
                         status
                         count
                         createdAt
-                        updatedAt
                     }
                     cursor
                 }

@@ -264,8 +264,7 @@ const AddSheetNew = (props) => {
                             Add order
                         </button>
                     </div>
-                    {/* TODO */}
-                    {/* {isAuth([1,53,  ])} */}
+
                     <div class="col-lg-12 mt-3 p-0">
                         <div class={generalstyles.card + ' row m-0 w-100 p-2 py-3 scrollmenuclasssubscrollbar'} style={{ overflow: 'scroll' }}>
                             <div class="col-lg-12">
@@ -329,14 +328,18 @@ const AddSheetNew = (props) => {
                                     // style={{ height: '30px', minWidth: '80%' }}
                                     class={generalstyles.roundbutton + ' allcentered p-0'}
                                     onClick={() => {
-                                        if ((sheetpayload?.courier?.length == 0 || sheetpayload?.courier == undefined) && queryParameters.get('sheetId') == undefined) {
-                                            NotificationManager.warning('Choose Courier first', 'Warning!');
-                                            return;
-                                        }
-                                        if (sheetpayload?.orderIds?.length == 0 || sheetpayload?.orderIds == undefined) {
-                                            NotificationManager.warning('Choose Orders first', 'Warning!');
+                                        if ((queryParameters.get('sheetId') == undefined && isAuth([1, 36, 53])) || (queryParameters.get('sheetId') != undefined && isAuth([1, 35, 53]))) {
+                                            if ((sheetpayload?.courier?.length == 0 || sheetpayload?.courier == undefined) && queryParameters.get('sheetId') == undefined) {
+                                                NotificationManager.warning('Choose Courier first', 'Warning!');
+                                                return;
+                                            }
+                                            if (sheetpayload?.orderIds?.length == 0 || sheetpayload?.orderIds == undefined) {
+                                                NotificationManager.warning('Choose Orders first', 'Warning!');
+                                            } else {
+                                                handleAddCourierSheet();
+                                            }
                                         } else {
-                                            handleAddCourierSheet();
+                                            NotificationManager.warning('Not Authorized', 'Warning!');
                                         }
                                     }}
                                     disabled={buttonLoading}

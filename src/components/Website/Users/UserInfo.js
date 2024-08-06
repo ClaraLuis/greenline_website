@@ -16,12 +16,15 @@ import Form from '../../Form.js';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 import { gql, useMutation, useQuery } from '@apollo/client';
 import AddEditSecuritylayers from '../Securitylayers/AddEditSecuritylayers.js';
+import Cookies from 'universal-cookie';
 
 const { ValueContainer, Placeholder } = components;
 
 const UserInfo = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
+    const cookies = new Cookies();
+
     const { userRolesContext, userTypeContext, employeeTypeContext, isAuth } = useContext(Contexthandlerscontext);
     const { useQueryGQL, fetchUsers, useMutationGQL, addUser, editUserType, fetchMerchants, fetchInventories, fetchHubs } = API();
 
@@ -53,7 +56,7 @@ const UserInfo = (props) => {
 
     const [addUser1] = useMutationGQL(addUser(), {
         name: props?.payload?.name,
-        type: props?.payload?.type,
+        type: cookies.get('merchantId') != undefined ? 'merchant' : props?.payload?.type,
         phone: props?.payload?.phone,
         email: props?.payload?.email,
         birthdate: props?.payload?.birthdate,
@@ -69,7 +72,7 @@ const UserInfo = (props) => {
         hubId: parseInt(props?.payload?.hubID),
         inventoryId: props?.payload?.inventoryId,
 
-        merchantId: parseInt(props?.payload?.merchant),
+        merchantId: cookies.get('merchantId') != undefined ? undefined : parseInt(props?.payload?.merchant),
     });
 
     const [editUserTypeMutation] = useMutationGQL(editUserType(), {

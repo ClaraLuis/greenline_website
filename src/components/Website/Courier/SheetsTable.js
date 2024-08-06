@@ -150,7 +150,7 @@ const SheetsTable = (props) => {
                                                 style={{ height: '30px' }}
                                                 class={generalstyles.roundbutton + ' p-0 allcentered'}
                                                 onClick={() => {
-                                                    if (isAuth([1, 34, 35, 53])) {
+                                                    if (isAuth([1, 34, 35, 53, 51])) {
                                                         if (props?.clickable) {
                                                             props?.onClick(item);
                                                         }
@@ -210,7 +210,7 @@ const SheetsTable = (props) => {
                 <Modal.Header>
                     <div className="row w-100 m-0 p-0">
                         <div class="col-lg-6 pt-3 ">
-                            <div className="row w-100 m-0 p-0">Update Sheet Status</div>
+                            <div className="row w-100 m-0 p-0">Update Manifest Status</div>
                         </div>
                         <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
                             <div

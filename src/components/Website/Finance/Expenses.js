@@ -4,10 +4,8 @@ import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
-import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
 import { Modal } from 'react-bootstrap';
 import { IoMdClose } from 'react-icons/io';
-import { FaLayerGroup } from 'react-icons/fa';
 import Select, { components } from 'react-select';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
@@ -16,15 +14,12 @@ import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, Ac
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
-import API from '../../../API/API.js';
-import TransactionsTable from './TransactionsTable.js';
-import AccountsTable from './AccountsTable.js';
-import OrdersTable from '../Orders/OrdersTable.js';
-import ExpensesTable from './ExpensesTable.js';
-import Form from '../../Form.js';
 import { NotificationManager } from 'react-notifications';
+import API from '../../../API/API.js';
+import Form from '../../Form.js';
 import Pagination from '../../Pagination.js';
 import SelectComponent from '../../SelectComponent.js';
+import TransactionsTable from './TransactionsTable.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -105,7 +100,7 @@ const Expenses = (props) => {
                     </p>
                 </div>
                 <div class={' col-lg-6 col-md-6 col-sm-6 p-0 pr-3 pr-md-1 pr-sm-0 d-flex align-items-center justify-content-end pb-1 '}>
-                    {isAuth([1, 51, 28]) && (
+                    {isAuth([1, 51, 23]) && (
                         <button
                             style={{ height: '35px' }}
                             class={generalstyles.roundbutton + '  mb-1 mx-1'}
@@ -237,7 +232,7 @@ const Expenses = (props) => {
                             <span style={{ color: 'var(--info)' }}>Expenses</span>
                         </p>
                     </div>
-                    {isAuth([1, 27, 51]) && (
+                    {isAuth([1, 51, 22]) && (
                         <>
                             <div class="col-lg-12 p-0">
                                 <Pagination

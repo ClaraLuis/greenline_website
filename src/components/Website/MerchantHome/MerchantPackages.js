@@ -24,7 +24,7 @@ import { FaLayerGroup } from 'react-icons/fa';
 const MerchantPackages = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, returnPackageStatusContext, returnPackageTypeContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, returnPackageStatusContext, isAuth } = useContext(Contexthandlerscontext);
     const { fetchPackages, useQueryGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -123,86 +123,90 @@ const MerchantPackages = (props) => {
                                 </AccordionItem>
                             </Accordion>
                         </div>
-                        <div class="col-lg-12 p-0 mb-3">
-                            <Pagination
-                                beforeCursor={fetchPackagesQuery?.data?.PaginateReturnPackages?.cursor?.beforeCursor}
-                                afterCursor={fetchPackagesQuery?.data?.PaginateReturnPackages?.cursor?.afterCursor}
-                                filter={filter}
-                                setfilter={setfilter}
-                            />
-                        </div>
-                        {fetchPackagesQuery?.data?.PaginateReturnPackages?.data?.length == 0 && (
-                            <div style={{ height: '70vh' }} class="col-lg-12 p-0 w-100 allcentered align-items-center m-0 text-lightprimary">
-                                <div class="row m-0 w-100">
-                                    <FaLayerGroup size={40} class=" col-lg-12" />
-                                    <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
-                                        No Packages
-                                    </div>
+                        {isAuth([61, 52, 1]) && (
+                            <>
+                                <div class="col-lg-12 p-0 mb-3">
+                                    <Pagination
+                                        beforeCursor={fetchPackagesQuery?.data?.PaginateReturnPackages?.cursor?.beforeCursor}
+                                        afterCursor={fetchPackagesQuery?.data?.PaginateReturnPackages?.cursor?.afterCursor}
+                                        filter={filter}
+                                        setfilter={setfilter}
+                                    />
                                 </div>
-                            </div>
-                        )}
-                        {fetchPackagesQuery?.data?.PaginateReturnPackages?.data?.map((item, index) => {
-                            return (
-                                <div className="col-lg-4 p-1">
-                                    <div
-                                        onClick={() => {
-                                            history.push('/merchantreturnpackageinfo?packageId=' + item.id);
-                                        }}
-                                        style={{ background: 'white', cursor: 'pointer' }}
-                                        class={' p-3 row m-0 w-100 card  d-flex align-items-center'}
-                                    >
-                                        <div className="col-lg-4 p-0">
-                                            <span style={{ fontSize: '12px', color: 'grey' }}># {item?.id}</span>
+                                {fetchPackagesQuery?.data?.PaginateReturnPackages?.data?.length == 0 && (
+                                    <div style={{ height: '70vh' }} class="col-lg-12 p-0 w-100 allcentered align-items-center m-0 text-lightprimary">
+                                        <div class="row m-0 w-100">
+                                            <FaLayerGroup size={40} class=" col-lg-12" />
+                                            <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
+                                                No Packages
+                                            </div>
                                         </div>
-                                        <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
-                                            <div class="row m-0 w-100 d-fex justify-content-end align-items-center">
-                                                <div
-                                                    className={
-                                                        item.status == 'delivered'
-                                                            ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered  '
-                                                            : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered '
-                                                    }
-                                                >
-                                                    {returnPackageStatusContext?.map((i, ii) => {
-                                                        if (i.value == item?.status) {
-                                                            return <span>{i.label}</span>;
-                                                        }
-                                                    })}
+                                    </div>
+                                )}
+                                {fetchPackagesQuery?.data?.PaginateReturnPackages?.data?.map((item, index) => {
+                                    return (
+                                        <div className="col-lg-4 p-1">
+                                            <div
+                                                onClick={() => {
+                                                    history.push('/merchantreturnpackageinfo?packageId=' + item.id);
+                                                }}
+                                                style={{ background: 'white', cursor: 'pointer' }}
+                                                class={' p-3 row m-0 w-100 card  d-flex align-items-center'}
+                                            >
+                                                <div className="col-lg-4 p-0">
+                                                    <span style={{ fontSize: '12px', color: 'grey' }}># {item?.id}</span>
                                                 </div>
-                                                {/* <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered mx-1 '}>
+                                                <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
+                                                    <div class="row m-0 w-100 d-fex justify-content-end align-items-center">
+                                                        <div
+                                                            className={
+                                                                item.status == 'delivered'
+                                                                    ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered  '
+                                                                    : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered '
+                                                            }
+                                                        >
+                                                            {returnPackageStatusContext?.map((i, ii) => {
+                                                                if (i.value == item?.status) {
+                                                                    return <span>{i.label}</span>;
+                                                                }
+                                                            })}
+                                                        </div>
+                                                        {/* <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered mx-1 '}>
                                                     {returnPackageTypeContext?.map((i, ii) => {
                                                         if (i.value == item?.type) {
                                                             return <span>{i.label}</span>;
                                                         }
                                                     })}
                                                 </div> */}
+                                                    </div>
+                                                </div>
+                                                <div className="col-lg-12 p-0 my-2">
+                                                    <hr className="m-0" />
+                                                </div>
+                                                <div className="col-lg-12 p-0 mb-2">
+                                                    SKU:{' '}
+                                                    <span style={{ fontWeight: 600 }} class="text-capitalize">
+                                                        {item?.sku}
+                                                    </span>
+                                                </div>
+
+                                                <div class="col-lg-12 p-0 d-flex justify-content-end" style={{ fontSize: '12px', color: 'grey' }}>
+                                                    {item?.createdAt}
+                                                </div>
                                             </div>
                                         </div>
-                                        <div className="col-lg-12 p-0 my-2">
-                                            <hr className="m-0" />
-                                        </div>
-                                        <div className="col-lg-12 p-0 mb-2">
-                                            SKU:{' '}
-                                            <span style={{ fontWeight: 600 }} class="text-capitalize">
-                                                {item?.sku}
-                                            </span>
-                                        </div>
-
-                                        <div class="col-lg-12 p-0 d-flex justify-content-end" style={{ fontSize: '12px', color: 'grey' }}>
-                                            {item?.createdAt}
-                                        </div>
-                                    </div>
+                                    );
+                                })}
+                                <div class="col-lg-12 p-0">
+                                    <Pagination
+                                        beforeCursor={fetchPackagesQuery?.data?.PaginateReturnPackages?.cursor?.beforeCursor}
+                                        afterCursor={fetchPackagesQuery?.data?.PaginateReturnPackages?.cursor?.afterCursor}
+                                        filter={filter}
+                                        setfilter={setfilter}
+                                    />
                                 </div>
-                            );
-                        })}
-                        <div class="col-lg-12 p-0">
-                            <Pagination
-                                beforeCursor={fetchPackagesQuery?.data?.PaginateReturnPackages?.cursor?.beforeCursor}
-                                afterCursor={fetchPackagesQuery?.data?.PaginateReturnPackages?.cursor?.afterCursor}
-                                filter={filter}
-                                setfilter={setfilter}
-                            />
-                        </div>
+                            </>
+                        )}
                     </div>
                 </div>
             </div>

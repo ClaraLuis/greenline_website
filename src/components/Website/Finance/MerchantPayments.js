@@ -232,7 +232,7 @@ const MerchantPayments = (props) => {
                 <div class="col-lg-12 p-0 ">
                     <div class="row m-0 w-100">
                         <div class="col-lg-9 p-0">
-                            {isAuth([1, 51, 19]) && (
+                            {isAuth([1, 51, 19, 60]) && (
                                 <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
                                     <div className="col-lg-6 p-0 d-flex justify-content-end ">
                                         <div
@@ -320,11 +320,14 @@ const MerchantPayments = (props) => {
                                     <button
                                         class={generalstyles.roundbutton + ' allcentered w-100'}
                                         onClick={async () => {
-                                            // if(isAuth([1,]))
-                                            if (selectedArray?.length != 0) {
-                                                setopenModal(true);
+                                            if (isAuth([1, 60])) {
+                                                if (selectedArray?.length != 0) {
+                                                    setopenModal(true);
+                                                } else {
+                                                    NotificationManager.warning('Choose transactions first', 'Warning!');
+                                                }
                                             } else {
-                                                NotificationManager.warning('Choose transactions first', 'Warning!');
+                                                NotificationManager.warning('Not Authorized', 'Warning!');
                                             }
                                         }}
                                     >

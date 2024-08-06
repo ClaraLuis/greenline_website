@@ -12,19 +12,16 @@ import { AiOutlineClose } from 'react-icons/ai';
 import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 import { Modal } from 'react-bootstrap';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
+import { FiCheckCircle, FiCircle } from 'react-icons/fi';
 import { IoMdClose } from 'react-icons/io';
 import { NotificationManager } from 'react-notifications';
-import Select from 'react-select';
 import Cookies from 'universal-cookie';
 import API from '../../../API/API.js';
 import Form from '../../Form.js';
-import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
-import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
-import { defaultstyles } from '../Generalfiles/selectstyles.js';
-import TransactionsTable from './TransactionsTable.js';
 import Pagination from '../../Pagination.js';
-import { FiCheckCircle, FiCircle } from 'react-icons/fi';
 import SelectComponent from '../../SelectComponent.js';
+import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
+import TransactionsTable from './TransactionsTable.js';
 
 const CourierCollection = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);

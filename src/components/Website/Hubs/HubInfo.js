@@ -23,33 +23,12 @@ const HubInfo = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { userRolesContext, userTypeContext, employeeTypeContext } = useContext(Contexthandlerscontext);
-    const { useQueryGQL, fetchUsers, useMutationGQL, addUser, editUserType, fetchMerchants, fetchInventories } = API();
+    const { useQueryGQL, fetchUsers, useMutationGQL, addUser, editUserType, fetchMerchants, fetchInventories, fetchGovernorates } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [submit, setsubmit] = useState(false);
     const [changerolesmodal, setchangerolesmodal] = useState(false);
     const [buttonLoading, setbuttonLoading] = useState(false);
-    const groupedRoles = _.groupBy(props?.payload?.userRoles, (role) => role.role.type);
-
-    // Transform into desired format
-    const userRoles = Object.keys(groupedRoles).map((type) => ({
-        type,
-        roles: groupedRoles[type],
-    }));
-    const [filterMerchants, setfilterMerchants] = useState({
-        isAsc: true,
-        limit: 20,
-        afterCursor: undefined,
-        beforeCursor: undefined,
-    });
-    const [filterInventories, setfilterInventories] = useState({
-        limit: 20,
-        afterCursor: null,
-        beforeCursor: null,
-    });
-    const fetchinventories = useQueryGQL('', fetchInventories(), filterInventories);
-
-    const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filterMerchants);
 
     const [addUser1] = useMutationGQL(addUser(), {
         name: props?.payload?.name,
@@ -80,14 +59,8 @@ const HubInfo = (props) => {
         // birthdate: props?.payload?.birthdate,
         id: props?.payload?.id,
     });
-    const [filterUsers, setfilterUsers] = useState({
-        isAsc: true,
-        limit: 20,
-        afterCursor: undefined,
-        beforeCursor: undefined,
-    });
 
-    const { refetch: refetchUsers } = useQueryGQL('', fetchUsers(), filterUsers);
+    const fetchGovernoratesQuery = useQueryGQL('', fetchGovernorates());
 
     const handleAddUser = async () => {
         setbuttonLoading(true);
@@ -100,7 +73,6 @@ const HubInfo = (props) => {
             }
             if (data?.createUser?.success) {
                 props?.setopenModal(false);
-                refetchUsers();
             } else {
                 NotificationManager.warning(data?.createUser?.message, 'Warning!');
             }
@@ -134,8 +106,8 @@ const HubInfo = (props) => {
                     <Modal.Header>
                         <div className="row w-100 m-0 p-0">
                             <div class="col-lg-6 pt-3 ">
-                                {props?.payload.functype == 'edit' && <div className="row w-100 m-0 p-0">User : {props?.payload.name}</div>}
-                                {props?.payload.functype == 'add' && <div className="row w-100 m-0 p-0">Add User</div>}
+                                {props?.payload.functype == 'edit' && <div className="row w-100 m-0 p-0">Hub : {props?.payload.name}</div>}
+                                {props?.payload.functype == 'add' && <div className="row w-100 m-0 p-0">Add Hub</div>}
                             </div>
                             <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
                                 <div
@@ -169,155 +141,19 @@ const HubInfo = (props) => {
                                     size={'lg'}
                                     submit={submit}
                                     setsubmit={setsubmit}
-                                    attr={
-                                        props?.payload?.type == 'merchant'
-                                            ? [
-                                                  { name: 'Name', attr: 'name', size: '6' },
+                                    attr={[
+                                        { name: 'Name', attr: 'name', size: '6' },
 
-                                                  { name: 'Email', attr: 'email', size: '6' },
-                                                  { name: 'Phone number', attr: 'phone', type: 'number', size: '6' },
-                                                  { name: 'Birthdate', attr: 'birthdate', type: 'date', size: '6' },
-                                                  {
-                                                      name: 'Type',
-                                                      attr: 'type',
-                                                      type: 'select',
-                                                      options: userTypeContext,
-                                                      size: '6',
-                                                  },
-
-                                                  {
-                                                      title: 'Merchant',
-                                                      filter: filterMerchants,
-                                                      setfilter: setfilterMerchants,
-                                                      options: fetchMerchantsQuery,
-                                                      optionsAttr: 'paginateMerchants',
-                                                      label: 'name',
-                                                      value: 'id',
-                                                      size: '6',
-                                                      attr: 'merchant',
-                                                      type: 'fetchSelect',
-                                                  },
-                                              ]
-                                            : props?.payload?.type == 'employee' && props?.payload?.employeeType != 'inventory'
-                                            ? [
-                                                  { name: 'Name', attr: 'name', size: '6' },
-
-                                                  { name: 'Email', attr: 'email', size: '6' },
-                                                  { name: 'Phone number', attr: 'phone', type: 'number', size: '6' },
-                                                  { name: 'Birthdate', attr: 'birthdate', type: 'date', size: '6' },
-                                                  {
-                                                      name: 'Type',
-                                                      attr: 'type',
-                                                      type: 'select',
-                                                      options: userTypeContext,
-                                                      size: '6',
-                                                  },
-                                                  {
-                                                      name: 'Employee Type',
-                                                      attr: 'employeeType',
-                                                      type: 'select',
-                                                      options: employeeTypeContext,
-                                                      size: '6',
-                                                  },
-
-                                                  {
-                                                      name: 'Hub',
-                                                      attr: 'hubID',
-                                                      size: '6',
-                                                      type: 'select',
-                                                      options: [
-                                                          { label: 'Hub 1', value: '1' },
-                                                          { label: 'Hub 2', value: '2' },
-                                                      ],
-                                                      size: '6',
-                                                  },
-                                                  { name: 'Commission', attr: 'commission', size: '6', type: 'number' },
-                                                  { name: 'Salary', attr: 'salary', size: '6', type: 'number' },
-                                                  {
-                                                      name: 'Currency',
-                                                      attr: 'currency',
-                                                      size: '6',
-                                                      type: 'select',
-                                                      options: [
-                                                          { label: 'EGP', value: 'EGP' },
-                                                          { label: 'USD', value: 'USD' },
-                                                      ],
-                                                      size: '6',
-                                                  },
-                                              ]
-                                            : props?.payload?.type == 'employee' && props?.payload?.employeeType == 'inventory'
-                                            ? [
-                                                  { name: 'Name', attr: 'name', size: '6' },
-
-                                                  { name: 'Email', attr: 'email', size: '6' },
-                                                  { name: 'Phone number', attr: 'phone', type: 'number', size: '6' },
-                                                  { name: 'Birthdate', attr: 'birthdate', type: 'date', size: '6' },
-                                                  {
-                                                      name: 'Type',
-                                                      attr: 'type',
-                                                      type: 'select',
-                                                      options: userTypeContext,
-                                                      size: '6',
-                                                  },
-                                                  {
-                                                      name: 'Employee Type',
-                                                      attr: 'employeeType',
-                                                      type: 'select',
-                                                      options: employeeTypeContext,
-                                                      size: '6',
-                                                  },
-                                                  {
-                                                      title: 'Inventory',
-                                                      filter: filterInventories,
-                                                      setfilter: setfilterInventories,
-                                                      options: fetchinventories,
-                                                      optionsAttr: 'paginateInventories',
-                                                      label: 'name',
-                                                      value: 'id',
-                                                      size: '6',
-                                                      attr: 'inventoryId',
-                                                      type: 'fetchSelect',
-                                                  },
-                                                  {
-                                                      name: 'Hub',
-                                                      attr: 'hubID',
-                                                      size: '6',
-                                                      type: 'select',
-                                                      options: [
-                                                          { label: 'Hub 1', value: '1' },
-                                                          { label: 'Hub 2', value: '2' },
-                                                      ],
-                                                      size: '6',
-                                                  },
-                                                  { name: 'Commission', attr: 'commission', size: '6', type: 'number' },
-                                                  { name: 'Salary', attr: 'salary', size: '6', type: 'number' },
-                                                  {
-                                                      name: 'Currency',
-                                                      attr: 'currency',
-                                                      size: '6',
-                                                      type: 'select',
-                                                      options: [
-                                                          { label: 'EGP', value: 'EGP' },
-                                                          { label: 'USD', value: 'USD' },
-                                                      ],
-                                                      size: '6',
-                                                  },
-                                              ]
-                                            : [
-                                                  { name: 'Name', attr: 'name', size: '6' },
-
-                                                  { name: 'Email', attr: 'email', size: '6' },
-                                                  { name: 'Phone number', attr: 'phone', type: 'number', size: '6' },
-                                                  { name: 'Birthdate', attr: 'birthdate', type: 'date', size: '6' },
-                                                  {
-                                                      name: 'Type',
-                                                      attr: 'type',
-                                                      type: 'select',
-                                                      options: userTypeContext,
-                                                      size: '6',
-                                                  },
-                                              ]
-                                    }
+                                        {
+                                            name: 'City',
+                                            attr: 'city',
+                                            type: 'select',
+                                            options: fetchGovernoratesQuery?.data?.findAllDomesticGovernorates,
+                                            size: '6',
+                                            optionValue: 'name',
+                                            optionLabel: 'name',
+                                        },
+                                    ]}
                                     payload={props?.payload}
                                     setpayload={props?.setpayload}
                                     button1disabled={buttonLoading}
@@ -334,32 +170,6 @@ const HubInfo = (props) => {
                                     //     // DeleteUserMutation.mutate(props?.payload);
                                     // }}
                                 />
-                            )}
-                            {props?.payload?.functype == 'edit' && (
-                                <div class="row m-0 w-100">
-                                    {userRoles?.map((item, index) => {
-                                        return (
-                                            <div class="col-lg-12 p-0 mb-2">
-                                                <div class="row m-0 w-100">
-                                                    <div class="col-lg-12 p-0 mb-2 text-capitaize" style={{ fontWeight: 500 }}>
-                                                        {item?.type}
-                                                    </div>
-                                                    {item?.roles?.map((role, roleIndex) => {
-                                                        return (
-                                                            <div class={' wordbreak text-warning bg-light-warning rounded-pill font-weight-600mr-2 '}>
-                                                                {userRolesContext?.map((i, ii) => {
-                                                                    if (i.value == role?.role?.id) {
-                                                                        return <>{i.label}</>;
-                                                                    }
-                                                                })}
-                                                            </div>
-                                                        );
-                                                    })}
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
                             )}
                         </div>
                     </Modal.Body>

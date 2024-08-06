@@ -733,12 +733,15 @@ const CourierSheet = (props) => {
                                 class={generalstyles.roundbutton}
                                 disabled={buttonLoading}
                                 onClick={() => {
-                                    // history.push('/addorder');
-                                    handleupdateCourierSheet();
+                                    if (isAuth([1, 53, 51, 35])) {
+                                        handleupdateCourierSheet();
+                                    } else {
+                                        NotificationManager.warning('Not Authorized', 'Warning!');
+                                    }
                                 }}
                             >
                                 {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                {!buttonLoading && <span>Update Sheet</span>}
+                                {!buttonLoading && <span>Update Manifest</span>}
                             </button>
                         </div>
                     </div>

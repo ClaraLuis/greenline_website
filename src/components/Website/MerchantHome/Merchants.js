@@ -100,9 +100,11 @@ const Merchants = (props) => {
                         <p class=" p-0 m-0" style={{ fontSize: '14px' }}>
                             <span
                                 onClick={() => {
-                                    // history.push('/hubitems');
-                                    // setopenMerchantModel(true);
-                                    history.push('/addmerchant' + '?type=add' + '&step=0');
+                                    if (isAuth([48, 1, 52])) {
+                                        history.push('/addmerchant' + '?type=add' + '&step=0');
+                                    } else {
+                                        NotificationManager.warning('Not Authorized', 'Warning');
+                                    }
                                 }}
                                 class={generalstyles.roundbutton}
                                 // style={{ textDecoration: 'underline' }}

@@ -105,12 +105,16 @@ const MerchantOrders = (props) => {
                             style={{ height: '35px' }}
                             class={generalstyles.roundbutton + '  mb-1 mx-2'}
                             onClick={() => {
-                                if (isAuth([1, 68])) {
-                                    setmerchantModal(true);
-                                } else {
-                                    var merchantId = cookies.get('userInfo')?.merchantId ?? cookies.get('merchantId');
+                                if (isAuth([1, 68, 52, 15])) {
+                                    if (isAuth([1, 68])) {
+                                        setmerchantModal(true);
+                                    } else {
+                                        var merchantId = cookies.get('userInfo')?.merchantId ?? cookies.get('merchantId');
 
-                                    history.push('/addorder?merchantId=' + merchantId);
+                                        history.push('/addorder?merchantId=' + merchantId);
+                                    }
+                                } else {
+                                    NotificationManager.warning('Not Authorized', 'Warning');
                                 }
                             }}
                         >
@@ -443,79 +447,80 @@ const MerchantOrders = (props) => {
                         </button>
                     </div>
                 </div>
-
-                <div class={generalstyles.card + ' row m-0 w-100'}>
-                    <div className="col-lg-6 p-0 d-flex justify-content-end ">
-                        <div
-                            onClick={() => {
-                                var temp = [];
-                                if (selectedOrders?.length != fetchOrdersQuery?.data?.paginateOrders?.data?.length) {
-                                    fetchOrdersQuery?.data?.paginateOrders?.data?.map((i, ii) => {
-                                        temp.push(i.id);
-                                    });
-                                }
-                                setSelectedOrders(temp);
-                            }}
-                            class="row m-0 w-100 d-flex align-items-center"
-                            style={{
-                                cursor: 'pointer',
-                                // color:
-                                //     selectedOrders?.length == fetchOrdersQuery?.data?.paginateOrders?.data?.length ? 'var(--success)' : '',
-                            }}
-                        >
+                {isAuth([1, 52, 14]) && (
+                    <div class={generalstyles.card + ' row m-0 w-100'}>
+                        <div className="col-lg-6 p-0 d-flex justify-content-end ">
                             <div
-                                style={{
-                                    width: '30px',
-                                    height: '30px',
+                                onClick={() => {
+                                    var temp = [];
+                                    if (selectedOrders?.length != fetchOrdersQuery?.data?.paginateOrders?.data?.length) {
+                                        fetchOrdersQuery?.data?.paginateOrders?.data?.map((i, ii) => {
+                                            temp.push(i.id);
+                                        });
+                                    }
+                                    setSelectedOrders(temp);
                                 }}
-                                className="iconhover allcentered mr-1"
+                                class="row m-0 w-100 d-flex align-items-center"
+                                style={{
+                                    cursor: 'pointer',
+                                    // color:
+                                    //     selectedOrders?.length == fetchOrdersQuery?.data?.paginateOrders?.data?.length ? 'var(--success)' : '',
+                                }}
                             >
-                                {selectedOrders?.length != fetchOrdersQuery?.data?.paginateOrders?.data?.length && (
-                                    <FiCircle
-                                        style={{ transition: 'all 0.4s' }}
-                                        color={selectedOrders?.length == fetchOrdersQuery?.data?.paginateOrders?.data?.length ? 'var(--success)' : ''}
-                                        size={18}
-                                    />
-                                )}
-                                {selectedOrders?.length == fetchOrdersQuery?.data?.paginateOrders?.data?.length && (
-                                    <FiCheckCircle
-                                        style={{ transition: 'all 0.4s' }}
-                                        color={selectedOrders?.length == fetchOrdersQuery?.data?.paginateOrders?.data?.length ? 'var(--success)' : ''}
-                                        size={18}
-                                    />
-                                )}
+                                <div
+                                    style={{
+                                        width: '30px',
+                                        height: '30px',
+                                    }}
+                                    className="iconhover allcentered mr-1"
+                                >
+                                    {selectedOrders?.length != fetchOrdersQuery?.data?.paginateOrders?.data?.length && (
+                                        <FiCircle
+                                            style={{ transition: 'all 0.4s' }}
+                                            color={selectedOrders?.length == fetchOrdersQuery?.data?.paginateOrders?.data?.length ? 'var(--success)' : ''}
+                                            size={18}
+                                        />
+                                    )}
+                                    {selectedOrders?.length == fetchOrdersQuery?.data?.paginateOrders?.data?.length && (
+                                        <FiCheckCircle
+                                            style={{ transition: 'all 0.4s' }}
+                                            color={selectedOrders?.length == fetchOrdersQuery?.data?.paginateOrders?.data?.length ? 'var(--success)' : ''}
+                                            size={18}
+                                        />
+                                    )}
+                                </div>
+                                {selectedOrders?.length != fetchOrdersQuery?.data?.paginateOrders?.data?.length ? 'Select All' : 'Deselect All'}
                             </div>
-                            {selectedOrders?.length != fetchOrdersQuery?.data?.paginateOrders?.data?.length ? 'Select All' : 'Deselect All'}
+                        </div>
+                        <div class="col-lg-12 p-0">
+                            <Pagination
+                                beforeCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.beforeCursor}
+                                afterCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.afterCursor}
+                                filter={filterorders}
+                                setfilter={setfilterorders}
+                            />
+                        </div>
+                        <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                            <OrdersTable
+                                refetchOrders={refetchOrders}
+                                selectedOrders={selectedOrders}
+                                clickable={true}
+                                actiononclick={(order) => handleSelectOrder(order.id)}
+                                fetchOrdersQuery={fetchOrdersQuery}
+                                attr={'paginateOrders'}
+                                srcFrom="merchant"
+                            />
+                        </div>
+                        <div class="col-lg-12 p-0">
+                            <Pagination
+                                beforeCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.beforeCursor}
+                                afterCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.afterCursor}
+                                filter={filterorders}
+                                setfilter={setfilterorders}
+                            />
                         </div>
                     </div>
-                    <div class="col-lg-12 p-0">
-                        <Pagination
-                            beforeCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.beforeCursor}
-                            afterCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.afterCursor}
-                            filter={filterorders}
-                            setfilter={setfilterorders}
-                        />
-                    </div>
-                    <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
-                        <OrdersTable
-                            refetchOrders={refetchOrders}
-                            selectedOrders={selectedOrders}
-                            clickable={true}
-                            actiononclick={(order) => handleSelectOrder(order.id)}
-                            fetchOrdersQuery={fetchOrdersQuery}
-                            attr={'paginateOrders'}
-                            srcFrom="merchant"
-                        />
-                    </div>
-                    <div class="col-lg-12 p-0">
-                        <Pagination
-                            beforeCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.beforeCursor}
-                            afterCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.afterCursor}
-                            filter={filterorders}
-                            setfilter={setfilterorders}
-                        />
-                    </div>
-                </div>
+                )}
             </div>
             <Modal
                 show={merchantModal}

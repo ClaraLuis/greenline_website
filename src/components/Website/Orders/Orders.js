@@ -266,6 +266,7 @@ const Orders = (props) => {
                         </AccordionItem>
                     </Accordion>
                 </div>
+
                 <div class={generalstyles.card + ' row m-0 w-100 my-2 p-2 px-2'}>
                     <div class="col-lg-12 p-0 ">
                         <div class="row m-0 w-100 d-flex align-items-center">
@@ -298,78 +299,80 @@ const Orders = (props) => {
                         </div>
                     </div>
                 </div>
-                <div class={generalstyles.card + ' row m-0 w-100'}>
-                    <div className="col-lg-6 p-0 d-flex justify-content-end ">
-                        <div
-                            onClick={() => {
-                                var temp = [];
-                                if (selectedOrders?.length != fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.length) {
-                                    fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.map((i, ii) => {
-                                        temp.push(i.id);
-                                    });
-                                }
-                                setSelectedOrders(temp);
-                            }}
-                            class="row m-0 w-100 d-flex align-items-center"
-                            style={{
-                                cursor: 'pointer',
-                                // color:
-                                //     selectedOrders?.length == fetchOrdersInInventoryQuery?.data?.paginateOrders?.data?.length ? 'var(--success)' : '',
-                            }}
-                        >
+                {isAuth([1, 54]) && (
+                    <div class={generalstyles.card + ' row m-0 w-100'}>
+                        <div className="col-lg-6 p-0 d-flex justify-content-end ">
                             <div
-                                style={{
-                                    width: '30px',
-                                    height: '30px',
+                                onClick={() => {
+                                    var temp = [];
+                                    if (selectedOrders?.length != fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.length) {
+                                        fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.map((i, ii) => {
+                                            temp.push(i.id);
+                                        });
+                                    }
+                                    setSelectedOrders(temp);
                                 }}
-                                className="iconhover allcentered mr-1"
+                                class="row m-0 w-100 d-flex align-items-center"
+                                style={{
+                                    cursor: 'pointer',
+                                    // color:
+                                    //     selectedOrders?.length == fetchOrdersInInventoryQuery?.data?.paginateOrders?.data?.length ? 'var(--success)' : '',
+                                }}
                             >
-                                {selectedOrders?.length != fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.length && (
-                                    <FiCircle
-                                        style={{ transition: 'all 0.4s' }}
-                                        color={selectedOrders?.length == fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.length ? 'var(--success)' : ''}
-                                        size={18}
-                                    />
-                                )}
-                                {selectedOrders?.length == fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.length && (
-                                    <FiCheckCircle
-                                        style={{ transition: 'all 0.4s' }}
-                                        color={selectedOrders?.length == fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.length ? 'var(--success)' : ''}
-                                        size={18}
-                                    />
-                                )}
+                                <div
+                                    style={{
+                                        width: '30px',
+                                        height: '30px',
+                                    }}
+                                    className="iconhover allcentered mr-1"
+                                >
+                                    {selectedOrders?.length != fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.length && (
+                                        <FiCircle
+                                            style={{ transition: 'all 0.4s' }}
+                                            color={selectedOrders?.length == fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.length ? 'var(--success)' : ''}
+                                            size={18}
+                                        />
+                                    )}
+                                    {selectedOrders?.length == fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.length && (
+                                        <FiCheckCircle
+                                            style={{ transition: 'all 0.4s' }}
+                                            color={selectedOrders?.length == fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.length ? 'var(--success)' : ''}
+                                            size={18}
+                                        />
+                                    )}
+                                </div>
+                                {selectedOrders?.length != fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.length ? 'Select All' : 'Deselect All'}
                             </div>
-                            {selectedOrders?.length != fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.length ? 'Select All' : 'Deselect All'}
+                        </div>
+                        <div class="col-lg-6 d-flex justify-content-end"> {waybills?.length > 0 && <WaybillPrint waybills={waybills} />}</div>
+                        <div class="col-lg-12 p-0">
+                            <Pagination
+                                beforeCursor={fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.cursor?.beforeCursor}
+                                afterCursor={fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.cursor?.afterCursor}
+                                filter={filterorders}
+                                setfilter={setfilterorders}
+                            />
+                        </div>
+                        <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                            <OrdersTable
+                                selectedOrders={selectedOrders}
+                                clickable={true}
+                                actiononclick={(order) => handleSelectOrder(order.id)}
+                                fetchOrdersQuery={fetchOrdersInInventoryQuery}
+                                attr={'paginateOrdersInInventory'}
+                                srcFrom="inventory"
+                            />
+                        </div>
+                        <div class="col-lg-12 p-0">
+                            <Pagination
+                                beforeCursor={fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.cursor?.beforeCursor}
+                                afterCursor={fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.cursor?.afterCursor}
+                                filter={filterorders}
+                                setfilter={setfilterorders}
+                            />
                         </div>
                     </div>
-                    <div class="col-lg-6 d-flex justify-content-end"> {waybills?.length > 0 && <WaybillPrint waybills={waybills} />}</div>
-                    <div class="col-lg-12 p-0">
-                        <Pagination
-                            beforeCursor={fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.cursor?.beforeCursor}
-                            afterCursor={fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.cursor?.afterCursor}
-                            filter={filterorders}
-                            setfilter={setfilterorders}
-                        />
-                    </div>
-                    <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
-                        <OrdersTable
-                            selectedOrders={selectedOrders}
-                            clickable={true}
-                            actiononclick={(order) => handleSelectOrder(order.id)}
-                            fetchOrdersQuery={fetchOrdersInInventoryQuery}
-                            attr={'paginateOrdersInInventory'}
-                            srcFrom="inventory"
-                        />
-                    </div>
-                    <div class="col-lg-12 p-0">
-                        <Pagination
-                            beforeCursor={fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.cursor?.beforeCursor}
-                            afterCursor={fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.cursor?.afterCursor}
-                            filter={filterorders}
-                            setfilter={setfilterorders}
-                        />
-                    </div>
-                </div>
+                )}
             </div>
             <Modal
                 show={merchantModal}
