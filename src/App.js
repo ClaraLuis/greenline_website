@@ -43,6 +43,7 @@ const errorLink = onError(({ graphQLErrors, networkError, operation, forward }) 
                 signOut(getAuth());
                 cookies.remove('accessToken');
                 cookies.remove('userInfo');
+                cookies.remove('merchantId');
                 window.location.reload();
                 // NotificationManager.warning('','')
             }
@@ -52,6 +53,8 @@ const errorLink = onError(({ graphQLErrors, networkError, operation, forward }) 
 
                     cookies.remove('accessToken');
                     cookies.remove('userInfo');
+                    cookies.remove('merchantId');
+
                     refreshAuthToken()
                         .then((newToken) => {
                             isRefreshing = false;
@@ -153,6 +156,9 @@ async function refreshAuthToken() {
             const userInfo = data?.signIn?.user;
             cookies.set('accessToken', newAccessToken);
             cookies.set('userInfo', JSON.stringify(userInfo));
+            if (userInfo?.merchantId?.length != 0 && userInfo?.merchantId != undefined && userInfo?.merchantId != null) {
+                cookies.set('merchantId', userInfo?.merchantId);
+            }
             if (!newAccessToken) throw new Error('Failed to refresh access token');
 
             return newAccessToken;
@@ -163,6 +169,8 @@ async function refreshAuthToken() {
         signOut(getAuth());
         cookies.remove('accessToken');
         cookies.remove('userInfo');
+        cookies.remove('merchantId');
+
         window.location.reload();
         console.error('Token refresh failed:', error);
         throw error;

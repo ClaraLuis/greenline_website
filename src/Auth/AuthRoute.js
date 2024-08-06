@@ -44,6 +44,13 @@ const AuthRoute = (props) => {
             setUserInfoContext(requestLoginData?.data?.signIn);
             cookies.set('accessToken', requestLoginData?.data?.signIn?.accessToken);
             cookies.set('userInfo', requestLoginData?.data?.signIn?.user);
+            if (
+                requestLoginData?.data?.signIn?.user?.merchantId?.length != 0 &&
+                requestLoginData?.data?.signIn?.user?.merchantId != null &&
+                requestLoginData?.data?.signIn?.user?.merchantId != undefined
+            ) {
+                cookies.set('merchantId', requestLoginData?.data?.signIn?.user?.merchantId);
+            }
             setloggedincontext(true);
             if (window.location.pathname == '/login') {
                 history.push('/users');
@@ -53,6 +60,7 @@ const AuthRoute = (props) => {
             const cookies = new Cookies();
             cookies.remove('accessToken');
             cookies.remove('userInfo');
+            cookies.remove('merchantId');
             let errorMessage = 'An unexpected error occurred';
             // // Check for GraphQL errors
             if (error.graphQLErrors && error.graphQLErrors.length > 0) {

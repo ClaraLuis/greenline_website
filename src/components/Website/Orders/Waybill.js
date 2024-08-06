@@ -150,7 +150,7 @@ const Waybill = ({ order }) => {
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-2 p-0 h-100">
+                <div class="col-lg-2 col-md-2 p-0 h-100">
                     <div class="row m-0 w-100 h-100">
                         <div className="col-lg-12 allcentered " style={{ height: '50%', borderBottom: '1px solid #eee' }}>
                             <div style={{ transform: 'rotate(270deg)' }}>
