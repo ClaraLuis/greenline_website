@@ -24,7 +24,7 @@ const { ValueContainer, Placeholder } = components;
 const TransactionsTable = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { transactionStatusTypeContext, transactionTypeContext, isAuth, transactionStatusesSelectContext } = useContext(Contexthandlerscontext);
+    const { transactionStatusTypeContext, transactionTypeContext, isAuth, transactionStatusesSelectContext, dateformatter } = useContext(Contexthandlerscontext);
     const { fetchUsers, useQueryGQL, updateAnyFinancialTransaction, updateMyFinancialTransaction, useMutationGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -122,7 +122,7 @@ const TransactionsTable = (props) => {
                                             <div className="col-lg-3 p-0">
                                                 <span style={{ fontWeight: 700, fontSize: '16px' }} class=" d-flex align-items-center">
                                                     {/* <FaMoneyBill class="mr-1" /> */}
-                                                    {item?.amount}
+                                                    {item?.amount} {item?.currency}
                                                 </span>
                                             </div>
                                             {/* <div className="col-lg-6 p-0 d-flex justify-content-end align-items-center">
@@ -308,7 +308,7 @@ const TransactionsTable = (props) => {
                                                 <div className="col-lg-12 p-0 mb-1 d-flex justify-content-end">
                                                     <span class="d-flex align-items-center" style={{ fontWeight: 500, color: 'grey', fontSize: '12px' }}>
                                                         <IoMdTime class="mr-1" />
-                                                        {item?.createdAt}
+                                                        {dateformatter(item?.createdAt)}
                                                     </span>
                                                 </div>
                                             )}

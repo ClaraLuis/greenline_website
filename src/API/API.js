@@ -910,6 +910,7 @@ const API = () => {
                 paginateItemHistory(input: $input) {
                     data {
                         amount
+                        currency
                         description
                         createdAt
                     }
@@ -1163,6 +1164,7 @@ const API = () => {
                         receipt
                         status
                         amount
+                        currency
                         fromAccount {
                             name
                         }
@@ -1195,6 +1197,7 @@ const API = () => {
                         receipt
                         status
                         amount
+                        currency
                         fromAccount {
                             name
                         }

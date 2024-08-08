@@ -238,14 +238,14 @@ const ImportNewItem = (props) => {
                                         variables: {
                                             input: {
                                                 limit: 50,
-                                                invetoryIds: [option.id],
+                                                invetoryIds: [option?.id],
                                             },
                                         },
                                     });
                                     setfetchRacksQuery(data);
                                     // alert(JSON.stringify(fetchRacksQuery));
-                                    props?.setimportItemPayload({ ...props?.importItemPayload, inventoryId: option.id });
-                                    setfilter({ ...filter, invetoryIds: [option.id] });
+                                    props?.setimportItemPayload({ ...props?.importItemPayload, inventoryId: option?.id });
+                                    setfilter({ ...filter, invetoryIds: [option?.id] });
                                 }}
                             />
                         </div>
@@ -458,8 +458,8 @@ const ImportNewItem = (props) => {
                                 payload={props?.importItemPayload}
                                 payloadAttr={'inventoryId'}
                                 onClick={(option) => {
-                                    props?.setimportItemPayload({ ...props?.importItemPayload, inventoryId: option.id });
-                                    setfilter({ ...filter, invetoryIds: [option.id] });
+                                    props?.setimportItemPayload({ ...props?.importItemPayload, inventoryId: option?.id });
+                                    setfilter({ ...filter, invetoryIds: [option?.id] });
                                 }}
                             />
                         </div>

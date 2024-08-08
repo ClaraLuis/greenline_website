@@ -28,6 +28,7 @@ export const Contexthandlerscontext_provider = (props) => {
     const [value, setValue] = useState(0);
     const [UserInfoContext, setUserInfoContext] = useState({});
     const [chosenOrderContext, setchosenOrderContext] = useState({});
+    const cookies = new Cookies();
 
     const setpageactive_context = (route) => {
         var temparr = [...pagesarray_context];
@@ -239,7 +240,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/merchantpayment',
                         permissionpage: [1],
-                        show: isAuth([1, 51, 19, 52]),
+                        show: isAuth([1, 51, 19, 52]) && cookies.get('merchantId') != undefined,
                     },
                 ],
             },

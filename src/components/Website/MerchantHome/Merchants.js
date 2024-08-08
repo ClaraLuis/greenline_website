@@ -28,7 +28,7 @@ const { ValueContainer, Placeholder } = components;
 const Merchants = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, inventoryRentTypeContext, chosenMerchantContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, inventoryRentTypeContext, chosenMerchantContext, isAuth } = useContext(Contexthandlerscontext);
     const { useQueryGQL, useMutationGQL, addMerchant, fetchMerchants, fetchItemHistory, exportItem, importItem } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);

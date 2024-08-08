@@ -155,8 +155,8 @@ const Orders = (props) => {
                                                 if (option == 'All') {
                                                     tempArray = undefined;
                                                 } else {
-                                                    if (!tempArray?.includes(option.id)) {
-                                                        tempArray.push(option.id);
+                                                    if (!tempArray?.includes(option?.id)) {
+                                                        tempArray.push(option?.id);
                                                     } else {
                                                         tempArray.splice(tempArray?.indexOf(option?.id), 1);
                                                     }
@@ -411,7 +411,7 @@ const Orders = (props) => {
                                 label={'name'}
                                 value={'id'}
                                 onClick={(option) => {
-                                    history.push('/addorder?merchantId=' + option.id);
+                                    history.push('/addorder?merchantId=' + option?.id);
                                 }}
                             />
                         </div>

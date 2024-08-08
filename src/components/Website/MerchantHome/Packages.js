@@ -27,7 +27,7 @@ import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js'
 const Packages = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, returnPackageStatusContext, returnPackageTypeContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, returnPackageStatusContext, returnPackageTypeContext, dateformatter } = useContext(Contexthandlerscontext);
     const { useMutationGQL, fetchMerchants, assignPackageToCourier, fetchCouriers, fetchPackages, useQueryGQL, createReturnPackage } = API();
     const [buttonLoading, setbuttonLoading] = useState(false);
     const { lang, langdetect } = useContext(LanguageContext);
@@ -116,7 +116,7 @@ const Packages = (props) => {
                                                     payload={filter}
                                                     payloadAttr={'courierId'}
                                                     onClick={(option) => {
-                                                        setfilter({ ...filter, courierId: option.id });
+                                                        setfilter({ ...filter, courierId: option?.id });
                                                     }}
                                                 />
                                             </div>
@@ -125,9 +125,9 @@ const Packages = (props) => {
                                                     Type
                                                 </label>
                                                 <Select
-                                                    options={returnPackageTypeContext}
+                                                    options={[{ label: 'All', value: undefined }, ...returnPackageTypeContext]}
                                                     styles={defaultstyles}
-                                                    value={returnPackageTypeContext.filter((option) => option.value == filter?.type)}
+                                                    value={[{ label: 'All', value: undefined }, ...returnPackageTypeContext].filter((option) => option.value == filter?.type)}
                                                     onChange={(option) => {
                                                         setfilter({ ...filter, type: option.value });
                                                     }}
@@ -138,9 +138,9 @@ const Packages = (props) => {
                                                     Status
                                                 </label>
                                                 <Select
-                                                    options={returnPackageStatusContext}
+                                                    options={[{ label: 'All', value: undefined }, ...returnPackageStatusContext]}
                                                     styles={defaultstyles}
-                                                    value={returnPackageStatusContext.filter((option) => option.value == filter?.status)}
+                                                    value={[{ label: 'All', value: undefined }, ...returnPackageStatusContext].filter((option) => option.value == filter?.status)}
                                                     onChange={(option) => {
                                                         setfilter({ ...filter, status: option.value });
                                                     }}
@@ -267,7 +267,7 @@ const Packages = (props) => {
                                             </span>
                                         </div>
                                         <div class="col-lg-12 p-0 d-flex justify-content-end" style={{ fontSize: '12px', color: 'grey' }}>
-                                            {item?.createdAt}
+                                            {dateformatter(item?.createdAt)}
                                         </div>
                                         {selected && (
                                             <div
@@ -321,7 +321,7 @@ const Packages = (props) => {
                                 payload={packagepayload}
                                 payloadAttr={'userId'}
                                 onClick={(option) => {
-                                    setpackagepayload({ ...packagepayload, userId: option.id });
+                                    setpackagepayload({ ...packagepayload, userId: option?.id });
                                 }}
                             />
                         </div>

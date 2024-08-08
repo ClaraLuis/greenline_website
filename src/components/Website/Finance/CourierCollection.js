@@ -191,15 +191,20 @@ const CourierCollection = (props) => {
                                             value={'id'}
                                             onClick={(option) => {
                                                 var temp = filterobj?.merchantIds ?? [];
-                                                var exist = false;
-                                                filterobj?.merchantIds?.map((i, ii) => {
-                                                    if (i == option.id) {
-                                                        exist = true;
+                                                if (option != undefined) {
+                                                    var exist = false;
+                                                    filterobj?.merchantIds?.map((i, ii) => {
+                                                        if (i == option?.id) {
+                                                            exist = true;
+                                                        }
+                                                    });
+                                                    if (!exist) {
+                                                        chosenMerchantsArray.push(option);
+                                                        temp.push(option?.id);
                                                     }
-                                                });
-                                                if (!exist) {
-                                                    chosenMerchantsArray.push(option);
-                                                    temp.push(option?.id);
+                                                } else {
+                                                    temp = undefined;
+                                                    setchosenMerchantsArray([]);
                                                 }
                                                 setfilterobj({ ...filterobj, merchantIds: temp });
                                                 refetchCourierCollectionTransactionsQuery();

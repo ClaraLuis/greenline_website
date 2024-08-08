@@ -110,7 +110,7 @@ const MerchantPayment = (props) => {
                         Merchant Payments
                     </p>
                 </div>
-                <div style={{ borderRadius: '18px', background: 'white' }} class={' mb-3 col-lg-12 p-2'}>
+                {/* <div style={{ borderRadius: '18px', background: 'white' }} class={' mb-3 col-lg-12 p-2'}>
                     <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
                         <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
                             <AccordionItemHeading>
@@ -155,16 +155,22 @@ const MerchantPayment = (props) => {
                                             value={'id'}
                                             onClick={(option) => {
                                                 var temp = filterobj?.merchantIds ?? [];
-                                                var exist = false;
-                                                filterobj?.merchantIds?.map((i, ii) => {
-                                                    if (i == option.id) {
-                                                        exist = true;
+                                                if (option != undefined) {
+                                                    var exist = false;
+                                                    filterobj?.merchantIds?.map((i, ii) => {
+                                                        if (i == option?.id) {
+                                                            exist = true;
+                                                        }
+                                                    });
+                                                    if (!exist) {
+                                                        chosenMerchantsArray.push(option);
+                                                        temp.push(option?.id);
                                                     }
-                                                });
-                                                if (!exist) {
-                                                    chosenMerchantsArray.push(option);
-                                                    temp.push(option?.id);
+                                                } else {
+                                                    temp = undefined;
+                                                    setchosenMerchantsArray([]);
                                                 }
+
                                                 setfilterobj({ ...filterobj, merchantIds: temp });
                                             }}
                                         />
@@ -184,7 +190,7 @@ const MerchantPayment = (props) => {
                                                 { label: 'All', value: undefined },
                                                 { label: 'True', value: true },
                                                 { label: 'False', value: false },
-                                            ].filter((option) => option.id == filterobj?.processing)}
+                                            ].filter((option) => option?.id == filterobj?.processing)}
                                             onChange={(option) => {
                                                 setfilterobj({ ...filterobj, processing: option.value });
                                             }}
@@ -224,7 +230,7 @@ const MerchantPayment = (props) => {
                             </AccordionItemPanel>
                         </AccordionItem>
                     </Accordion>
-                </div>
+                </div> */}
                 <div class="col-lg-12 p-0 ">
                     <div class="row m-0 w-100">
                         <div class="col-lg-12 p-0">

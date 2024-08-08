@@ -12,6 +12,7 @@ import '../Generalfiles/CSS_GENERAL/Phonenumberinput.css';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 import logo from '../Generalfiles/images/logo.png';
 import loginstyles from './login.module.css';
+import { BiEdit } from 'react-icons/bi';
 const Login = () => {
     const auth = getAuth();
     const { isValidEmailMutation, useMutationGQL, useQueryGQL, useLazyQueryGQL } = API();
@@ -27,12 +28,6 @@ const Login = () => {
         document.title = 'Dashboard';
     }, []);
     const { lang, langdetect } = useContext(LanguageContext);
-    const [assets, setassets] = useState([
-        { img: 'https://employer.ambitionbox.com/static/media/speak.d3e3e7b8ca6310dac40f564ec123879d.svg', title: 'Tell your story' },
-        { img: 'https://employer.ambitionbox.com/static/media/reviews.2704131c4656f93df4de179fd51101a3.svg', title: 'Manage reviews' },
-        { img: 'https://employer.ambitionbox.com/static/media/reports.1296dcbbd0b6151688f870710a713831.svg', title: 'Get reports and alerts' },
-        { img: 'https://employer.ambitionbox.com/static/media/promote.c7379ecbc98676e62d6158ba2765a2a1.svg', title: 'Promote your brand' },
-    ]);
 
     const [openModal, setopenModal] = useState(false);
     const [email, setemail] = useState('');
@@ -50,49 +45,100 @@ const Login = () => {
     // 0 = not valid
     // 1 = signup
     // 2 = login
+    useEffect(() => {
+        const handleKeyPress = (event) => {
+            if (event.key === 'Enter') {
+                handleSubmit();
+            }
+        };
+
+        document.addEventListener('keypress', handleKeyPress);
+        return () => {
+            document.removeEventListener('keypress', handleKeyPress);
+        };
+    }, [email, password, confirmpassword, isValid, inFirebase]);
 
     const handleSubmit = async () => {
         setbuttonLoading(true);
-        try {
-            const result = await fetchSignInMethodsForEmail(auth, email);
-            if (result.length > 0) {
-                // alert(JSON.stringify(result));
-                setinFirebase(true);
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (email != undefined && email?.length != 0 && regex.test(email)) {
+            if (!isValid) {
+                if (!isValid) {
+                    try {
+                        const result = await fetchSignInMethodsForEmail(auth, email);
+                        if (result.length > 0) {
+                            setinFirebase(true);
+                        }
+                        setisValid(true); // Set isValid to true after validating the email
+                    } catch (e) {
+                        handleError(e);
+                    }
+
+                    try {
+                        await checkEmail({ variables: { email } });
+                    } catch (error) {
+                        handleError(error);
+                    }
+                }
             } else {
-            }
-        } catch (e) {
-            let errorMessage = 'An unexpected error occurred';
-            if (e.graphQLErrors && e.graphQLErrors.length > 0) {
-                errorMessage = e.graphQLErrors[0].message || errorMessage;
-            } else if (e.networkError) {
-                errorMessage = e.networkError.message || errorMessage;
-            } else if (e.message) {
-                errorMessage = e.message;
-            }
+                setbuttonLoading(true);
 
-            NotificationManager.warning(errorMessage, 'Warning!');
-            // alert(JSON.stringify(e));
-        }
-        try {
-            await checkEmail({
-                variables: {
-                    email: email,
-                },
-            });
-        } catch (error) {
-            let errorMessage = 'An unexpected error occurred';
-            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-                errorMessage = error.graphQLErrors[0].message || errorMessage;
-            } else if (error.networkError) {
-                errorMessage = error.networkError.message || errorMessage;
-            } else if (error.message) {
-                errorMessage = error.message;
+                if (!inFirebase) {
+                    if (password === confirmpassword) {
+                        createUserWithEmailAndPassword(auth, email, password)
+                            .then((response) => {
+                                if (response) {
+                                    var temp = { ...payload };
+                                    temp.token = response.user.accessToken;
+                                    // handleRequestLoginResponse(temp);
+                                }
+                            })
+                            .catch((error) => {
+                                console.log(error);
+                                alert('error' + JSON.stringify(error));
+                            });
+                    } else {
+                        NotificationManager.warning("Passwords don't match", 'Warning');
+                    }
+                } else {
+                    signInWithEmailAndPassword(auth, email, password)
+                        .then((response) => {
+                            if (response) {
+                                var temp = { ...payload };
+                                temp.token = response.user.accessToken;
+                                // handleRequestLoginResponse(temp);
+                            }
+                        })
+                        .catch((error) => {
+                            if (error?.code == 'auth/missing-password') {
+                                NotificationManager.warning('Please Enter Your Password', 'Warning');
+                            } else if (error?.code == 'auth/wrong-password') {
+                                NotificationManager.warning('Wrong Password', 'Warning');
+                            }
+                        });
+                }
+                setbuttonLoading(false);
             }
-
-            NotificationManager.warning(errorMessage, 'Warning!');
-            console.error('Error adding user:', error);
+        } else {
+            NotificationManager.warning('Please enter a valid email', 'Warning');
         }
+
         setbuttonLoading(false);
+    };
+
+    const handleError = (error) => {
+        let errorMessage = 'An unexpected error occurred';
+        if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+            errorMessage = error.graphQLErrors[0].message || errorMessage;
+        } else if (error.networkError) {
+            errorMessage = error.networkError.message || errorMessage;
+        } else if (error.message) {
+            errorMessage = error.message;
+        }
+
+        NotificationManager.warning(errorMessage, 'Warning!');
+        console.error('Error:', error);
     };
 
     useEffect(() => {
@@ -143,6 +189,7 @@ const Login = () => {
                                         <div class="col-lg-12 flex-column mb-4 p-0 p-md-0">
                                             <p class="font-15 font-weight-500 mb-1"> Email </p>
                                             <input
+                                                style={{ position: 'relative' }}
                                                 disabled={isValid}
                                                 name="email"
                                                 type="email"
@@ -150,8 +197,26 @@ const Login = () => {
                                                 value={email}
                                                 onChange={(event) => {
                                                     setemail(event.target.value);
+                                                    setisValid(false); // Reset isValid when the email changes
+                                                    setinFirebase(false); // Also reset inFirebase
+                                                    setpassword(''); // Clear the password field
+                                                    setconfirmpassword(''); // Clear the confirm password field
                                                 }}
                                             />
+
+                                            {isValid && (
+                                                <BiEdit
+                                                    style={{ position: 'absolute', right: 10, zIndex: 10, top: '55%' }}
+                                                    size={20}
+                                                    class="text-secondaryhover"
+                                                    onClick={() => {
+                                                        setisValid(false);
+                                                        setinFirebase(false);
+                                                        setpassword('');
+                                                        setconfirmpassword('');
+                                                    }}
+                                                />
+                                            )}
                                         </div>
                                         {isValid && (
                                             <>
@@ -186,56 +251,7 @@ const Login = () => {
 
                                         <div class="col-lg-12 p-0 flex-column mt-0 p-md-0">
                                             <button
-                                                onClick={() => {
-                                                    // if (verified) {
-                                                    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-                                                    if (email != undefined && email?.length != 0 && regex.test(email)) {
-                                                        if (!isValid) {
-                                                            handleSubmit();
-                                                        } else {
-                                                            setbuttonLoading(true);
-
-                                                            if (!inFirebase) {
-                                                                if (password === confirmpassword) {
-                                                                    createUserWithEmailAndPassword(auth, email, password)
-                                                                        .then((response) => {
-                                                                            if (response) {
-                                                                                var temp = { ...payload };
-                                                                                temp.token = response.user.accessToken;
-                                                                                // handleRequestLoginResponse(temp);
-                                                                            }
-                                                                        })
-                                                                        .catch((error) => {
-                                                                            console.log(error);
-                                                                            alert('error' + JSON.stringify(error));
-                                                                        });
-                                                                } else {
-                                                                    NotificationManager.warning("Passwords don't match", 'Warning');
-                                                                }
-                                                            } else {
-                                                                signInWithEmailAndPassword(auth, email, password)
-                                                                    .then((response) => {
-                                                                        if (response) {
-                                                                            var temp = { ...payload };
-                                                                            temp.token = response.user.accessToken;
-                                                                            // handleRequestLoginResponse(temp);
-                                                                        }
-                                                                    })
-                                                                    .catch((error) => {
-                                                                        if (error?.code == 'auth/missing-password') {
-                                                                            NotificationManager.warning('Please Enter Your Password', 'Warning');
-                                                                        } else if (error?.code == 'auth/wrong-password') {
-                                                                            NotificationManager.warning('Wrong Password', 'Warning');
-                                                                        }
-                                                                    });
-                                                            }
-                                                            setbuttonLoading(false);
-                                                        }
-                                                    } else {
-                                                        NotificationManager.warning('Please enter a valid email', 'Warning');
-                                                    }
-                                                }}
+                                                onClick={handleSubmit}
                                                 class={`${generalstyles.btn} ${generalstyles.btn_primary}` + ' font-15 allcentered '}
                                                 style={{
                                                     width: '100%',

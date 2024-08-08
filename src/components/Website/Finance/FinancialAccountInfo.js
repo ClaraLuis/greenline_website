@@ -30,7 +30,7 @@ const { ValueContainer, Placeholder } = components;
 const FinancialAccountInfo = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, financialAccountTypeContext, transactionTypeContext, isAuth, expenseTypeContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, financialAccountTypeContext, transactionTypeContext, isAuth, expenseTypeContext, dateformatter } = useContext(Contexthandlerscontext);
     const { fetchUsers, useQueryGQL, fetchFinancialAccounts, fetchTransactions, sendAnyFinancialTransaction, useMutationGQL, sendMyFinancialTransaction } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -164,7 +164,7 @@ const FinancialAccountInfo = (props) => {
                         <div className="col-lg-12 p-0 mb-2 d-flex justify-content-end">
                             <span class="d-flex align-items-center" style={{ fontWeight: 500, color: 'grey', fontSize: '12px' }}>
                                 <IoMdTime class="mr-1" />
-                                {accountItem?.createdAt}
+                                {dateformatter(accountItem?.createdAt)}
                             </span>
                         </div>
                     </div>

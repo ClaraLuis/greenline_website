@@ -321,8 +321,8 @@ const InventoryItems = (props) => {
                                                 if (option == 'All') {
                                                     tempArray = undefined;
                                                 } else {
-                                                    if (!tempArray?.includes(option.id)) {
-                                                        tempArray.push(option.id);
+                                                    if (!tempArray?.includes(option?.id)) {
+                                                        tempArray.push(option?.id);
                                                     } else {
                                                         tempArray.splice(tempArray?.indexOf(option?.id), 1);
                                                     }

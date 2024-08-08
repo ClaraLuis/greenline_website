@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Modal } from 'react-bootstrap';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
 import { IoMdClose } from 'react-icons/io';
@@ -7,13 +7,14 @@ import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { useMutation } from 'react-query';
 import { FaLayerGroup } from 'react-icons/fa';
 import { components } from 'react-select';
+import { Contexthandlerscontext } from '../../../Contexthandlerscontext';
 
 const { ValueContainer, Placeholder } = components;
 
 const ItemInfo = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-
+    const { dateformatter } = useContext(Contexthandlerscontext);
     return (
         <>
             <Modal
@@ -83,7 +84,7 @@ const ItemInfo = (props) => {
                                                                 <p className={' m-0 p-0 wordbreak '}>user</p>
                                                             </td>
                                                             <td>
-                                                                <p className={' m-0 p-0 wordbreak '}>{item?.createdAt}</p>
+                                                                <p className={' m-0 p-0 wordbreak '}>{dateformatter(item?.createdAt)}</p>
                                                             </td>
                                                         </tr>
                                                     );

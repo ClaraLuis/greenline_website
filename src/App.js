@@ -151,9 +151,12 @@ async function refreshAuthToken() {
                     },
                 },
             });
-
+            cookies.remove('accessToken');
+            cookies.remove('userInfo');
+            cookies.remove('merchantId');
             const newAccessToken = data?.signIn?.accessToken;
             const userInfo = data?.signIn?.user;
+
             cookies.set('accessToken', newAccessToken);
             cookies.set('userInfo', JSON.stringify(userInfo));
             if (userInfo?.merchantId?.length != 0 && userInfo?.merchantId != undefined && userInfo?.merchantId != null) {

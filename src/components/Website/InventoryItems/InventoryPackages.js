@@ -21,7 +21,7 @@ import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 const InventoryPackages = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, returnPackageStatusContext, isAuth } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, returnPackageStatusContext, isAuth, dateformatter } = useContext(Contexthandlerscontext);
     const { fetchPackages, useQueryGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -247,7 +247,7 @@ const InventoryPackages = (props) => {
                                                 </div>
 
                                                 <div class="col-lg-12 p-0 d-flex justify-content-end" style={{ fontSize: '12px', color: 'grey' }}>
-                                                    {item?.createdAt}
+                                                    {dateformatter(item?.createdAt)}
                                                 </div>
                                             </div>
                                         </div>

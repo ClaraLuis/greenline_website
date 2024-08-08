@@ -238,7 +238,7 @@ const FinanceTransactions = (props) => {
                                             onClick={(option) => {
                                                 setfilterTransactionsObj({
                                                     ...filterTransactionsObj,
-                                                    fromAccountId: option.id,
+                                                    fromAccountId: option?.id,
                                                 });
                                             }}
                                         />
@@ -257,7 +257,7 @@ const FinanceTransactions = (props) => {
                                             onClick={(option) => {
                                                 setfilterTransactionsObj({
                                                     ...filterTransactionsObj,
-                                                    toAccountId: option.id,
+                                                    toAccountId: option?.id,
                                                 });
                                             }}
                                         />

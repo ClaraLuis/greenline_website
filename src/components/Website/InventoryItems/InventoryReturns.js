@@ -113,8 +113,8 @@ const InventoryReturns = (props) => {
                                                     payload={filter}
                                                     payloadAttr={'inventoryId'}
                                                     onClick={(option) => {
-                                                        setfilter({ ...filter, inventoryId: option.id });
-                                                        setpackagepayload({ ...packagepayload, toInventoryId: option.id });
+                                                        setfilter({ ...filter, inventoryId: option?.id });
+                                                        setpackagepayload({ ...packagepayload, toInventoryId: option?.id });
                                                     }}
                                                 />
                                             </div>
@@ -228,7 +228,7 @@ const InventoryReturns = (props) => {
                                 payload={packagepayload}
                                 payloadAttr={'toInventoryId'}
                                 onClick={(option) => {
-                                    setpackagepayload({ ...packagepayload, toInventoryId: option.id });
+                                    setpackagepayload({ ...packagepayload, toInventoryId: option?.id });
                                 }}
                             />
                         </div>

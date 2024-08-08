@@ -12,6 +12,8 @@ import { defaultstyles } from '../Generalfiles/selectstyles.js';
 
 import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
+
+import { DateRangePicker } from 'rsuite';
 // Icons
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import { NotificationManager } from 'react-notifications';
@@ -20,6 +22,7 @@ import Form from '../../Form.js';
 import Pagination from '../../Pagination.js';
 import SelectComponent from '../../SelectComponent.js';
 import TransactionsTable from './TransactionsTable.js';
+import MultiSelect from '../../MultiSelect.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -33,16 +36,6 @@ const Expenses = (props) => {
 
     const [openModal, setopenModal] = useState({ open: false, type: '' });
     const [submit, setsubmit] = useState(false);
-
-    const [transactionpayload, settransactionpayload] = useState({
-        functype: 'add',
-        type: '',
-        description: undefined,
-        fromAccountId: '',
-        toAccountId: '',
-        amount: '',
-        receipt: undefined,
-    });
 
     const [expensepayload, setexpensepayload] = useState({
         functype: 'add',
@@ -70,6 +63,9 @@ const Expenses = (props) => {
         limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
+        types: undefined,
+        fromDate: undefined,
+        toDate: undefined,
     });
 
     const fetchAllFinancialAccountsQuery = useQueryGQL('', fetchFinancialAccounts(), filterExpensesObj);
@@ -156,69 +152,65 @@ const Expenses = (props) => {
                             <AccordionItemPanel>
                                 <hr className="mt-2 mb-3" />
                                 <div class="row m-0 w-100">
-                                    <div class={'col-lg-2'} style={{ marginBottom: '15px' }}>
-                                        <label for="name" class={formstyles.form__label}>
-                                            Type
-                                        </label>
-                                        <Select
-                                            options={[{ label: 'All', value: undefined }, ...transactionTypeContext]}
-                                            styles={defaultstyles}
-                                            value={[{ label: 'All', value: undefined }, ...transactionTypeContext].filter((option) => option.value == filterTransactionsObj?.type)}
-                                            onChange={(option) => {
-                                                setfilterTransactionsObj({ ...filterTransactionsObj, type: option.value });
-                                            }}
-                                        />
-                                    </div>
-                                    <div class={'col-lg-2'} style={{ marginBottom: '15px' }}>
-                                        <label for="name" class={formstyles.form__label}>
-                                            Status
-                                        </label>
-                                        <Select
-                                            options={[{ label: 'All', value: undefined }, ...transactionStatusTypeContext]}
-                                            styles={defaultstyles}
-                                            value={[{ label: 'All', value: undefined }, ...transactionStatusTypeContext].filter((option) => option.value == filterTransactionsObj?.status)}
-                                            onChange={(option) => {
-                                                setfilterTransactionsObj({ ...filterTransactionsObj, status: option.value });
-                                            }}
-                                        />
-                                    </div>
-                                    <div className={'col-lg-2'} style={{ marginBottom: '15px' }}>
-                                        <SelectComponent
-                                            title={'From Account'}
-                                            filter={filterExpensesObj}
-                                            setfilter={setfilterExpensesObj}
-                                            options={fetchAllFinancialAccountsQuery}
-                                            attr={'paginateFinancialAccounts'}
-                                            label={'name'}
-                                            value={'id'}
-                                            payload={filterTransactionsObj}
-                                            payloadAttr={'fromAccountId'}
+                                    <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                        <MultiSelect
+                                            title={'Type'}
+                                            options={expenseTypeContext}
+                                            label={'label'}
+                                            value={'value'}
+                                            selected={filterExpensesObj?.types}
                                             onClick={(option) => {
-                                                setfilterTransactionsObj({
-                                                    ...filterTransactionsObj,
-                                                    fromAccountId: option.id,
-                                                });
+                                                var tempArray = [...(filterExpensesObj?.types ?? [])];
+                                                if (option == 'All') {
+                                                    tempArray = undefined;
+                                                } else {
+                                                    if (!tempArray?.includes(option.value)) {
+                                                        tempArray.push(option.value);
+                                                    } else {
+                                                        tempArray.splice(tempArray?.indexOf(option?.value), 1);
+                                                    }
+                                                }
+                                                setfilterExpensesObj({ ...filterExpensesObj, types: tempArray?.length != 0 ? tempArray : undefined });
                                             }}
                                         />
                                     </div>
-                                    <div className={'col-lg-2'} style={{ marginBottom: '15px' }}>
-                                        <SelectComponent
-                                            title={'To Account'}
-                                            filter={filterExpensesObj}
-                                            setfilter={setfilterExpensesObj}
-                                            options={fetchAllFinancialAccountsQuery}
-                                            attr={'paginateFinancialAccounts'}
-                                            label={'name'}
-                                            value={'id'}
-                                            payload={filterTransactionsObj}
-                                            payloadAttr={'toAccountId'}
-                                            onClick={(option) => {
-                                                setfilterTransactionsObj({
-                                                    ...filterTransactionsObj,
-                                                    toAccountId: option.id,
-                                                });
-                                            }}
-                                        />
+                                    <div class=" col-lg-3 mb-md-2">
+                                        <span>Date Range</span>
+                                        <div class="mt-1" style={{ width: '100%' }}>
+                                            <DateRangePicker
+                                                // disabledDate={allowedMaxDays(30)}
+                                                // value={[filterExpensesObj?.fromDate, filterExpensesObj?.toDate]}
+                                                onChange={(event) => {
+                                                    if (event != null) {
+                                                        const start = event[0];
+                                                        const startdate = new Date(start);
+                                                        const year1 = startdate.getFullYear();
+                                                        const month1 = startdate.getMonth() + 1; // Months are zero-indexed
+                                                        const day1 = startdate.getDate();
+
+                                                        const end = event[1];
+                                                        const enddate = new Date(end);
+                                                        const year2 = enddate.getFullYear();
+                                                        const month2 = enddate.getMonth() + 1; // Months are zero-indexed
+                                                        const day2 = enddate.getDate();
+                                                        setfilterExpensesObj({
+                                                            ...filterExpensesObj,
+                                                            fromDate: event[0],
+                                                            toDate: event[1],
+                                                            // from_date: year1 + '-' + month1 + '-' + day1,
+                                                            // to_date: year2 + '-' + month2 + '-' + day2,
+                                                        });
+                                                    }
+                                                }}
+                                                onClean={() => {
+                                                    setfilterExpensesObj({
+                                                        ...filterExpensesObj,
+                                                        fromDate: null,
+                                                        toDate: null,
+                                                    });
+                                                }}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </AccordionItemPanel>

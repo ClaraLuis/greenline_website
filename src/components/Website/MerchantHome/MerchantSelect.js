@@ -35,10 +35,6 @@ const MerchantSelect = (props) => {
 
     const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filterMerchants);
 
-    useEffect(() => {
-        setpageactive_context('/merchantfinance');
-    }, []);
-
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
             {isAuth([1]) && (
@@ -83,11 +79,14 @@ const MerchantSelect = (props) => {
                                             setfilter={setfilterMerchants}
                                             options={fetchMerchantsQuery}
                                             attr={'paginateMerchants'}
+                                            payload={props?.filter}
+                                            payloadAttr={'merchantId'}
                                             label={'name'}
                                             value={'id'}
                                             onClick={(option) => {
                                                 setchosenMerchantContext(option);
-                                                cookies.set('merchantId', option?.id);
+                                                props?.setFilter({ ...props?.filter, merchantId: option?.id });
+                                                // cookies.set('merchantId', option?.id);
                                             }}
                                         />
                                     </div>

@@ -437,7 +437,9 @@ const AddOrder = (props) => {
                                         await setorderpayload({ ...orderpayload, returnOrderItems: temp1 });
                                         await setcartItems([...temp]);
                                         await addOrderMutation();
-                                        history.push('/merchantorders');
+                                        setTimeout(() => {
+                                            history.push('/merchantorders');
+                                        }, 500);
                                     } else {
                                         NotificationManager.warning('Complete the missing fields', 'Warning!');
                                     }

@@ -159,16 +159,23 @@ const MerchantPayments = (props) => {
                                             value={'id'}
                                             onClick={(option) => {
                                                 var temp = filterobj?.merchantIds ?? [];
-                                                var exist = false;
-                                                filterobj?.merchantIds?.map((i, ii) => {
-                                                    if (i == option.id) {
-                                                        exist = true;
+
+                                                if (option != undefined) {
+                                                    var exist = false;
+                                                    filterobj?.merchantIds?.map((i, ii) => {
+                                                        if (i == option?.id) {
+                                                            exist = true;
+                                                        }
+                                                    });
+                                                    if (!exist) {
+                                                        chosenMerchantsArray.push(option);
+                                                        temp.push(option?.id);
                                                     }
-                                                });
-                                                if (!exist) {
-                                                    chosenMerchantsArray.push(option);
-                                                    temp.push(option?.id);
+                                                } else {
+                                                    temp = undefined;
+                                                    setchosenMerchantsArray([]);
                                                 }
+
                                                 setfilterobj({ ...filterobj, merchantIds: temp });
                                             }}
                                         />
@@ -188,7 +195,7 @@ const MerchantPayments = (props) => {
                                                 { label: 'All', value: undefined },
                                                 { label: 'True', value: true },
                                                 { label: 'False', value: false },
-                                            ].filter((option) => option.id == filterobj?.processing)}
+                                            ].filter((option) => option?.id == filterobj?.processing)}
                                             onChange={(option) => {
                                                 setfilterobj({ ...filterobj, processing: option.value });
                                             }}

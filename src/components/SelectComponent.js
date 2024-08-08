@@ -142,6 +142,23 @@ const SelectComponent = (props) => {
                             </div>
                         </div>
                     )}
+                    {props?.removeAll != true && (
+                        <div
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                props?.onClick(undefined);
+                                setshowmenu(false);
+                                setIsFocused(false);
+                            }}
+                            className="col-lg-12 p-0"
+                        >
+                            <div style={{ cursor: 'pointer', zIndex: 1000, fontSize: '11px' }} className={cardstyles.searchitem}>
+                                <div style={{ fontSize: '11px' }} className={cardstyles.companyname}>
+                                    All
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                     {!props?.options?.loading && (
                         <>

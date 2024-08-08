@@ -437,7 +437,7 @@ const OrdersTable = (props) => {
 
                                             <div style={{ fontSize: '12px' }} class="col-lg-12 p-0 mt-2 d-flex justify-content-end ">
                                                 <div class="row m-0 w-100 d-flex align-items-center d-flex justify-content-end ">
-                                                    {props?.srcFrom != 'inventory' && (
+                                                    {props?.srcFrom != 'inventory' && item?.courier?.name?.length != 0 && item?.courier != undefined && item?.courier != null && (
                                                         <div class="col-lg-6 p-0 d-flex align-items-center">
                                                             <BiUser class="mr-1" />
                                                             <span style={{ fontWeight: 600 }}>{item?.courier?.name}</span>

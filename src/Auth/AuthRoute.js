@@ -32,6 +32,9 @@ const AuthRoute = (props) => {
             return;
         }
         try {
+            cookies.remove('accessToken');
+            cookies.remove('userInfo');
+            cookies.remove('merchantId');
             const firebaseToken = await auth.currentUser.getIdToken();
             const requestLoginData = await requestLogin({
                 variables: {

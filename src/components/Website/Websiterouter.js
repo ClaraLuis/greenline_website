@@ -209,7 +209,7 @@ const App = (props) => {
                                         Logout
                                     </p>
                                 </Dropdown.Item>
-                                <Dropdown.Item
+                                {/* <Dropdown.Item
                                     onClick={() => {
                                         NotificationManager.success('Logged out');
                                         const cookies = new Cookies();
@@ -221,7 +221,7 @@ const App = (props) => {
                                         <IoSettingsOutline size={15} style={{ marginInlineEnd: '10px' }} />
                                         Account Settings
                                     </p>
-                                </Dropdown.Item>
+                                </Dropdown.Item> */}
                             </Dropdown.Menu>
                         </Dropdown>
                     </div>

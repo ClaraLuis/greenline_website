@@ -76,7 +76,7 @@ const MerchantItems = (props) => {
         color: '',
         colorHEX: '',
     });
-    const [payload, setfilter] = useState({
+    const [payload, setPayload] = useState({
         limit: 5,
         isAsc: true,
         afterCursor: '',
@@ -107,18 +107,6 @@ const MerchantItems = (props) => {
     useEffect(() => {
         setpageactive_context('/merchantitems');
     }, []);
-
-    useEffect(() => {
-        setfilter({
-            limit: 5,
-            isAsc: true,
-            afterCursor: '',
-            beforeCursor: '',
-            name: '',
-            sku: '',
-            merchantId: parseInt(cookies.get('merchantId')) ?? undefined,
-        });
-    }, [chosenMerchantContext]);
 
     const [options, setOptions] = useState([]);
     const [optionName, setOptionName] = useState('');
@@ -309,8 +297,7 @@ const MerchantItems = (props) => {
                         </button>
                     </div>
                 )}
-
-                <MerchantSelect />
+                {cookies.get('merchantId') == undefined && <MerchantSelect fiter={payload} setFilter={setPayload} />}
                 {isAuth([1, 52, 12]) && (
                     <>
                         <div class={generalstyles.card + ' row m-0 w-100 mb-4 p-2 px-2'}>
@@ -323,7 +310,7 @@ const MerchantItems = (props) => {
                                         value={payload?.name}
                                         placeholder={'Search by name '}
                                         onChange={() => {
-                                            setfilter({ ...payload, name: event.target.value });
+                                            setPayload({ ...payload, name: event.target.value });
                                         }}
                                     />
                                 </div>
@@ -337,7 +324,7 @@ const MerchantItems = (props) => {
                                         value={payload?.sku}
                                         placeholder={'Search by SKU'}
                                         onChange={() => {
-                                            setfilter({ ...payload, sku: event.target.value });
+                                            setPayload({ ...payload, sku: event.target.value });
                                         }}
                                     />
                                 </div>
@@ -349,7 +336,7 @@ const MerchantItems = (props) => {
                                     beforeCursor={fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.beforeCursor}
                                     afterCursor={fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.afterCursor}
                                     filter={payload}
-                                    setfilter={setfilter}
+                                    setPayload={setPayload}
                                 />
                             </div>
                             <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
@@ -367,7 +354,7 @@ const MerchantItems = (props) => {
                                     beforeCursor={fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.beforeCursor}
                                     afterCursor={fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.afterCursor}
                                     filter={payload}
-                                    setfilter={setfilter}
+                                    setPayload={setPayload}
                                 />
                             </div>
                         </div>

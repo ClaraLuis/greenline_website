@@ -50,6 +50,7 @@ const MerchantOrders = (props) => {
     const fetchGovernoratesQuery = useQueryGQL('', fetchGovernorates());
 
     const [fetchOrdersLazyQuey] = useLazyQueryGQL(fetchOrders(), 'cache-first');
+    const [fetchOrdersLazyQuey1] = useLazyQueryGQL(fetchOrders(), 'network-only');
     // const { refetch: refetchOrdersQuery } = useQueryGQL('cache-and-network', fetchOrders(), filterorders);
     //
     const [filterMerchants, setfilterMerchants] = useState({
@@ -66,8 +67,12 @@ const MerchantOrders = (props) => {
         beforeCursor: undefined,
     });
     const fetchCouriersQuery = useQueryGQL('', fetchCouriers(), filterCouriers);
-    useEffect(() => {
+    useEffect(async () => {
         setpageactive_context('/merchantorders');
+        var { data } = await fetchOrdersLazyQuey1({
+            variables: { input: filterorders },
+        });
+        setfetchOrdersQuery({ data: data });
     }, []);
     const [selectedOrders, setSelectedOrders] = useState([]);
 
@@ -178,8 +183,8 @@ const MerchantOrders = (props) => {
                                                 if (option == 'All') {
                                                     tempArray = undefined;
                                                 } else {
-                                                    if (!tempArray?.includes(option.id)) {
-                                                        tempArray.push(option.id);
+                                                    if (!tempArray?.includes(option?.id)) {
+                                                        tempArray.push(option?.id);
                                                     } else {
                                                         tempArray.splice(tempArray?.indexOf(option?.id), 1);
                                                     }
@@ -270,8 +275,8 @@ const MerchantOrders = (props) => {
                                                 if (option == 'All') {
                                                     tempArray = undefined;
                                                 } else {
-                                                    if (!tempArray?.includes(option.id)) {
-                                                        tempArray.push(option.id);
+                                                    if (!tempArray?.includes(option?.id)) {
+                                                        tempArray.push(option?.id);
                                                     } else {
                                                         tempArray.splice(tempArray?.indexOf(option?.id), 1);
                                                     }
@@ -293,8 +298,8 @@ const MerchantOrders = (props) => {
                                                 if (option == 'All') {
                                                     tempArray = undefined;
                                                 } else {
-                                                    if (!tempArray?.includes(option.id)) {
-                                                        tempArray.push(option.id);
+                                                    if (!tempArray?.includes(option?.id)) {
+                                                        tempArray.push(option?.id);
                                                     } else {
                                                         tempArray.splice(tempArray?.indexOf(option?.id), 1);
                                                     }
@@ -559,7 +564,7 @@ const MerchantOrders = (props) => {
                                 label={'name'}
                                 value={'id'}
                                 onClick={(option) => {
-                                    history.push('/addorder?merchantId=' + option.id);
+                                    history.push('/addorder?merchantId=' + option?.id);
                                 }}
                             />
                         </div>

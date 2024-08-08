@@ -216,8 +216,9 @@ const AddSheetNew = (props) => {
                                         label={'name'}
                                         value={'id'}
                                         onClick={(option) => {
-                                            setsheetpayload({ ...sheetpayload, courier: option.id });
+                                            setsheetpayload({ ...sheetpayload, courier: option?.id });
                                         }}
+                                        removeAll={true}
                                     />
                                 </div>
                             )}
