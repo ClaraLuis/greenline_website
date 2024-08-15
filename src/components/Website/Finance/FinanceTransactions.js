@@ -11,6 +11,7 @@ import { FaLayerGroup } from 'react-icons/fa';
 import Select, { components } from 'react-select';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
+import { DateRangePicker } from 'rsuite';
 
 import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
@@ -261,6 +262,34 @@ const FinanceTransactions = (props) => {
                                                 });
                                             }}
                                         />
+                                    </div>
+                                    <div class=" col-lg-3 mb-md-2">
+                                        <span>Date Range</span>
+                                        <div class="mt-1" style={{ width: '100%' }}>
+                                            <DateRangePicker
+                                                // disabledDate={allowedMaxDays(30)}
+                                                // value={[filterorders?.fromDate, filterorders?.toDate]}
+                                                onChange={(event) => {
+                                                    if (event != null) {
+                                                        const start = event[0];
+                                                        const startdate = new Date(start);
+                                                        const year1 = startdate.getFullYear();
+                                                        const month1 = startdate.getMonth() + 1; // Months are zero-indexed
+                                                        const day1 = startdate.getDate();
+
+                                                        const end = event[1];
+                                                        const enddate = new Date(end);
+                                                        const year2 = enddate.getFullYear();
+                                                        const month2 = enddate.getMonth() + 1; // Months are zero-indexed
+                                                        const day2 = enddate.getDate();
+                                                        setfilterTransactionsObj({ ...filterTransactionsObj, fromDate: event[0], toDate: event[1] });
+                                                    }
+                                                }}
+                                                onClean={() => {
+                                                    setfilterTransactionsObj({ ...filterTransactionsObj, fromDate: null, toDate: null });
+                                                }}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </AccordionItemPanel>

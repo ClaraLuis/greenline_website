@@ -8,6 +8,7 @@ import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
 import { AiOutlineClose } from 'react-icons/ai';
+import { DateRangePicker } from 'rsuite';
 
 import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 import { Modal } from 'react-bootstrap';
@@ -210,6 +211,34 @@ const CourierCollection = (props) => {
                                                 refetchCourierCollectionTransactionsQuery();
                                             }}
                                         />
+                                    </div>
+                                    <div class=" col-lg-3 mb-md-2">
+                                        <span>Date Range</span>
+                                        <div class="mt-1" style={{ width: '100%' }}>
+                                            <DateRangePicker
+                                                // disabledDate={allowedMaxDays(30)}
+                                                // value={[filterorders?.fromDate, filterorders?.toDate]}
+                                                onChange={(event) => {
+                                                    if (event != null) {
+                                                        const start = event[0];
+                                                        const startdate = new Date(start);
+                                                        const year1 = startdate.getFullYear();
+                                                        const month1 = startdate.getMonth() + 1; // Months are zero-indexed
+                                                        const day1 = startdate.getDate();
+
+                                                        const end = event[1];
+                                                        const enddate = new Date(end);
+                                                        const year2 = enddate.getFullYear();
+                                                        const month2 = enddate.getMonth() + 1; // Months are zero-indexed
+                                                        const day2 = enddate.getDate();
+                                                        setfilterobj({ ...filterobj, fromDate: event[0], toDate: event[1] });
+                                                    }
+                                                }}
+                                                onClean={() => {
+                                                    setfilterobj({ ...filterobj, fromDate: null, toDate: null });
+                                                }}
+                                            />
+                                        </div>
                                     </div>
                                     <div class="col-lg-12">
                                         <div class="row m-0 w-100">

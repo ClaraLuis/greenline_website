@@ -689,6 +689,18 @@ const API = () => {
                     data {
                         id
                         name
+                        inventoryRent {
+                            id
+                            merchantId
+                            type
+                            startDate
+                            lastBill
+                            pricePerUnit
+                            sqaureMeter
+                            currency
+                            createdAt
+                            lastModified
+                        }
                     }
                     cursor
                 }
