@@ -23,6 +23,7 @@ import { FiPlus } from 'react-icons/fi';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
 import { MdEmail, MdOutlinePhone } from 'react-icons/md';
 import { CiUnlock } from 'react-icons/ci';
+import { RiSettings4Line } from 'react-icons/ri';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -117,6 +118,12 @@ const UsersTable = (props) => {
                                                 <span style={{ fontWeight: 600 }} class="d-flex align-items-center">
                                                     <MdEmail class="mr-1" />
                                                     {item?.email}
+                                                </span>
+                                            </div>
+                                            <div className="col-lg-12 p-0 mb-1">
+                                                <span style={{ fontWeight: 600 }} class="d-flex align-items-center text-capitalize">
+                                                    <RiSettings4Line class="mr-1" />
+                                                    {item?.type?.split(/(?=[A-Z])/).join(' ')}
                                                 </span>
                                             </div>
                                             <div className="col-lg-12 p-0 ">

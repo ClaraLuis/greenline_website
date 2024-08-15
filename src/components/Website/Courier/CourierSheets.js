@@ -17,6 +17,7 @@ import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import API from '../../../API/API.js';
 import SheetsTable from './SheetsTable.js';
 import Pagination from '../../Pagination.js';
+import * as XLSX from 'xlsx';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -43,6 +44,12 @@ const CourierSheets = (props) => {
         // refetchCourierSheets();
     }, []);
 
+    const exportToExcel = (data, fileName) => {
+        const worksheet = XLSX.utils.json_to_sheet(data);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+        XLSX.writeFile(workbook, `${fileName}.xlsx`);
+    };
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
@@ -65,6 +72,23 @@ const CourierSheets = (props) => {
                         }}
                     >
                         Add Manifest
+                    </button>
+                    <button
+                        style={{ height: '35px' }}
+                        class={generalstyles.roundbutton + '  mb-1 mx-1'}
+                        onClick={() => {
+                            const couriersheets = fetchSheetsQuery?.data?.paginateCourierSheets?.data;
+
+                            const exportData = couriersheets.map((sheet) => ({
+                                ...sheet,
+                                courier: sheet.userInfo?.name,
+                                userInfo: undefined,
+                            }));
+
+                            exportToExcel(exportData, 'couriersheets');
+                        }}
+                    >
+                        Export
                     </button>
                 </div>
                 {/* <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>

@@ -519,54 +519,37 @@ const AddMerchant = (props) => {
                                                             setpayload={setaddresspayload}
                                                             button1disabled={buttonLoading}
                                                             button1class={generalstyles.roundbutton + '  mr-2 '}
-                                                            button1placeholder={'Add address'}
+                                                            button1placeholder={'Search address'}
                                                             button1onClick={async () => {
                                                                 setbuttonLoading(true);
                                                                 if (addresspayload?.city?.length != 0 && addresspayload?.country?.length != 0 && addresspayload?.streetAddress?.length != 0) {
-                                                                    var { data } = await fetchSimilarAddressesQuery({
-                                                                        variables: {
-                                                                            input: {
-                                                                                city: addresspayload?.city,
-                                                                                country: addresspayload?.country,
-                                                                                streetAddress: addresspayload?.streetAddress,
-                                                                                buildingNumber: addresspayload?.buildingNumber,
-                                                                                apartmentFloor: addresspayload?.apartmentFloor,
-                                                                                merchantId: merchantId,
-                                                                            },
-                                                                        },
-                                                                    });
-                                                                    if (data?.findSimilarAddresses?.length != 0 && data?.findSimilarAddresses) {
-                                                                        setsimilarAddresses([...data?.findSimilarAddresses]);
-                                                                    } else {
-                                                                        try {
-                                                                            var { data } = await createAddressMutation();
-                                                                            var { data } = await fetchCustomerAddressesQuery({
-                                                                                variables: {
-                                                                                    input: {
-                                                                                        merchantId: merchantId,
-                                                                                        limit: 20,
-                                                                                    },
+                                                                    try {
+                                                                        var { data } = await fetchSimilarAddressesQuery({
+                                                                            variables: {
+                                                                                input: {
+                                                                                    city: addresspayload?.city,
+                                                                                    country: addresspayload?.country,
+                                                                                    streetAddress: addresspayload?.streetAddress,
+                                                                                    buildingNumber: addresspayload?.buildingNumber,
+                                                                                    apartmentFloor: addresspayload?.apartmentFloor,
                                                                                     merchantId: merchantId,
                                                                                 },
-                                                                            });
-
-                                                                            setuserAddresses([...data?.paginateAddresses?.data]);
-                                                                        } catch (e) {
-                                                                            let errorMessage = 'An unexpected error occurred';
-                                                                            if (e.graphQLErrors && e.graphQLErrors.length > 0) {
-                                                                                errorMessage = e.graphQLErrors[0].message || errorMessage;
-                                                                            } else if (e.networkError) {
-                                                                                errorMessage = e.networkError.message || errorMessage;
-                                                                            } else if (e.message) {
-                                                                                errorMessage = e.message;
-                                                                            }
-
-                                                                            NotificationManager.warning(errorMessage, 'Warning!');
-                                                                            // alert(JSON.stringify(e));
+                                                                            },
+                                                                        });
+                                                                        if (data?.findSimilarAddresses) {
+                                                                            setsimilarAddresses([...data?.findSimilarAddresses]);
                                                                         }
+                                                                    } catch (e) {
+                                                                        let errorMessage = 'An unexpected error occurred';
+                                                                        if (e.graphQLErrors && e.graphQLErrors.length > 0) {
+                                                                            errorMessage = e.graphQLErrors[0].message || errorMessage;
+                                                                        } else if (e.networkError) {
+                                                                            errorMessage = e.networkError.message || errorMessage;
+                                                                        } else if (e.message) {
+                                                                            errorMessage = e.message;
+                                                                        }
+                                                                        NotificationManager.warning(errorMessage, 'Warning!');
                                                                     }
-                                                                    // setopenModal(false);
-                                                                    // alert(JSON.stringify(data));
                                                                 } else {
                                                                     NotificationManager.warning('', 'Please complete the missing fields');
                                                                 }
@@ -584,7 +567,7 @@ const AddMerchant = (props) => {
                                                                         if (item?.score == 0) {
                                                                             return (
                                                                                 <>
-                                                                                    <div class="col-lg-6 mt-2 ">
+                                                                                    <div class="col-lg-12 mt-2 ">
                                                                                         <div
                                                                                             onClick={async () => {
                                                                                                 try {
@@ -653,7 +636,7 @@ const AddMerchant = (props) => {
                                                                         if (item?.score != 0) {
                                                                             return (
                                                                                 <>
-                                                                                    <div class="col-lg-6 mt-2 ">
+                                                                                    <div class="col-lg-12 mt-2 ">
                                                                                         <div
                                                                                             onClick={async () => {
                                                                                                 try {

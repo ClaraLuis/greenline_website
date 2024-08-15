@@ -17,6 +17,7 @@ import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 import { gql, useMutation, useQuery } from '@apollo/client';
 import AddEditSecuritylayers from '../Securitylayers/AddEditSecuritylayers.js';
 import Cookies from 'universal-cookie';
+import SelectComponent from '../../SelectComponent.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -158,6 +159,27 @@ const UserInfo = (props) => {
                                     <IoMdClose />
                                 </div>
                             </div>{' '}
+                        </div>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div class="row m-0 w-100 py-2">
+                            {/* <div class="col-lg-12">
+                                <SelectComponent
+                                    title={'Inventory'}
+                                    filter={filterInventories}
+                                    setfilter={setfilterInventories}
+                                    options={fetchinventories}
+                                    attr={'paginateInventories'}
+                                    label={'name'}
+                                    value={'id'}
+                                    payload={props?.payload}
+                                    payloadAttr={'inventoryId'}
+                                    onClick={async (option) => {
+                                        props?.setpayload({ ...props?.payload, invetoryId: option?.id });
+                                    }}
+                                    removeAll={true}
+                                />
+                            </div> */}
                             {props?.payload.functype == 'edit' && (
                                 <div class="col-lg-12 d-flex justify-content-end py-0">
                                     <div
@@ -171,10 +193,6 @@ const UserInfo = (props) => {
                                     </div>
                                 </div>
                             )}
-                        </div>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <div class="row m-0 w-100 py-2">
                             {props?.payload?.functype == 'add' && (
                                 <Form
                                     size={'lg'}

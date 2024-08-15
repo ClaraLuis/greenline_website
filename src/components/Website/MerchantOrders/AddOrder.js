@@ -9,23 +9,22 @@ import { FaPlus, FaWindowMinimize } from 'react-icons/fa';
 import { components } from 'react-select';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 
+import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
-import { Accordion, AccordionItem, AccordionItemHeading, AccordionItemButton, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 // Icons
-import { NotificationManager } from 'react-notifications';
-import API from '../../../API/API.js';
+import { BiMinus } from 'react-icons/bi';
+import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
+import { MdOutlineLocationOn } from 'react-icons/md';
 import { RiErrorWarningFill } from 'react-icons/ri';
+import { NotificationManager } from 'react-notifications';
+import { useQuery } from 'react-query';
+import API from '../../../API/API.js';
 import Form from '../../Form.js';
 import Inputfield from '../../Inputfield.js';
 import Pagination from '../../Pagination.js';
 import DynamicInputfield from '../DynamicInputfield/DynamicInputfield.js';
 import ItemsTable from '../MerchantItems/ItemsTable.js';
 import AddCustomer from './AddCustomer.js';
-import { MdOutlineLocationOn } from 'react-icons/md';
-import { FiCheckCircle } from 'react-icons/fi';
-import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
-import { useQuery } from 'react-query';
-import { BiMinus } from 'react-icons/bi';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -70,7 +69,7 @@ const AddOrder = (props) => {
         user: '',
         address: '',
         ordertype: 'delivery',
-        paymenttype: '',
+        paymenttype: 'cash',
         shippingprice: '',
         canbeoppened: 1,
         fragile: 0,
@@ -1268,7 +1267,7 @@ const AddOrder = (props) => {
                                                         onClick={() => {
                                                             setorderpayload({ ...orderpayload, previousOrderId: item.id, previousorder: item });
                                                         }}
-                                                        style={{ cursor: 'pointer' }}
+                                                        style={{ background: selected ? 'var(--secondary)' : '', transition: 'all 0.4s', cursor: 'pointer' }}
                                                         class={generalstyles.card + ' p-3 row m-0 w-100 allcentered '}
                                                     >
                                                         <div className="col-lg-6 p-0">
@@ -1308,20 +1307,6 @@ const AddOrder = (props) => {
                                                                 {item?.address?.streetAddress}, {item?.address?.buildingNumber}, {item?.address?.apartmentFloor}
                                                             </span>
                                                         </div>
-                                                        {selected && (
-                                                            <div
-                                                                style={{
-                                                                    width: '35px',
-                                                                    height: '35px',
-                                                                    position: 'absolute',
-                                                                    bottom: 20,
-                                                                    right: 10,
-                                                                }}
-                                                                className=" allcentered"
-                                                            >
-                                                                <FiCheckCircle style={{ transition: 'all 0.4s' }} color={selected ? 'var(--success)' : ''} size={20} />
-                                                            </div>
-                                                        )}
                                                     </div>
                                                 </div>
                                             </>

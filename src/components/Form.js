@@ -268,6 +268,7 @@ const Form = (props) => {
                                     temp[item?.attr] = item?.value ? option[item.value] : option.value;
                                     props?.setpayload({ ...temp });
                                 }}
+                                removeAll={true}
                             />
                         </div>
                     );

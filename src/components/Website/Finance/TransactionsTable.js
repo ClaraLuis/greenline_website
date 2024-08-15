@@ -6,25 +6,27 @@ import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
-import { FaLayerGroup, FaMoneyBill } from 'react-icons/fa';
+import { FaLayerGroup } from 'react-icons/fa';
 import { components } from 'react-select';
-import { GrUpdate } from 'react-icons/gr';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
+import { BiEdit } from 'react-icons/bi';
+import { FaEllipsisV } from 'react-icons/fa';
+import { FcCancel } from 'react-icons/fc';
 import { IoMdClose, IoMdTime } from 'react-icons/io';
 import { MdOutlineAccountCircle, MdOutlineCallMade, MdOutlineCallReceived } from 'react-icons/md';
 import { TbFileDescription } from 'react-icons/tb';
+import { NotificationManager } from 'react-notifications';
 import API from '../../../API/API.js';
 import Form from '../../Form.js';
-import { NotificationManager } from 'react-notifications';
-import { FcCancel } from 'react-icons/fc';
-import { FiCheckCircle } from 'react-icons/fi';
+
+import { Dropdown } from 'react-bootstrap';
 const { ValueContainer, Placeholder } = components;
 
 const TransactionsTable = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { transactionStatusTypeContext, transactionTypeContext, isAuth, transactionStatusesSelectContext, dateformatter } = useContext(Contexthandlerscontext);
+    const { transactionStatusTypeContext, setchosenOrderContext, isAuth, transactionStatusesSelectContext, dateformatter } = useContext(Contexthandlerscontext);
     const { fetchUsers, useQueryGQL, updateAnyFinancialTransaction, updateMyFinancialTransaction, useMutationGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -118,7 +120,10 @@ const TransactionsTable = (props) => {
                                         }}
                                         className="p-1 pb-0"
                                     >
-                                        <div class={generalstyles.card + ' p-2 px-3 row m-0 w-100 allcentered'}>
+                                        <div
+                                            style={{ background: props?.allowSelect && selected ? 'var(--secondary)' : '', transition: 'all 0.4s' }}
+                                            class={generalstyles.card + ' p-2 px-3 row m-0 w-100 allcentered'}
+                                        >
                                             <div className="col-lg-3 p-0">
                                                 <span style={{ fontWeight: 700, fontSize: '16px' }} class=" d-flex align-items-center">
                                                     {/* <FaMoneyBill class="mr-1" /> */}
@@ -205,7 +210,7 @@ const TransactionsTable = (props) => {
                                                             }}
                                                             class={' iconhover allcentered '}
                                                         >
-                                                            <GrUpdate />
+                                                            <BiEdit size={28} />
                                                         </button>
                                                     )}
                                                     {props?.srctype == 'sent' && item?.status == 'pendingReceiver' && (
@@ -236,6 +241,40 @@ const TransactionsTable = (props) => {
                                                         >
                                                             <FcCancel size={25} />
                                                         </button>
+                                                    )}
+                                                    {props?.hasOrder && (
+                                                        <div>
+                                                            <Dropdown
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                }}
+                                                            >
+                                                                <Dropdown.Toggle>
+                                                                    <div
+                                                                        style={{
+                                                                            color: 'var(--primary)',
+                                                                            borderRadius: '10px',
+                                                                            transition: 'all 0.4s',
+                                                                        }}
+                                                                        class="ml-0"
+                                                                    >
+                                                                        <FaEllipsisV />
+                                                                    </div>
+                                                                </Dropdown.Toggle>
+                                                                <Dropdown.Menu>
+                                                                    <Dropdown.Item
+                                                                        onClick={async (e) => {
+                                                                            e.stopPropagation();
+                                                                            await setchosenOrderContext(item?.sheetOrder?.order);
+                                                                            history.push(`/orderinfo?type=merchant&orderId=` + item?.sheetOrder?.order?.id);
+                                                                        }}
+                                                                        class="py-2"
+                                                                    >
+                                                                        <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>View order</p>
+                                                                    </Dropdown.Item>
+                                                                </Dropdown.Menu>
+                                                            </Dropdown>
+                                                        </div>
                                                     )}
                                                 </div>
                                             </div>
@@ -290,20 +329,7 @@ const TransactionsTable = (props) => {
                                                     {props?.srctype == 'expenses' ? item?.comment : item?.description}
                                                 </span>
                                             </div>
-                                            {props?.allowSelect && selected && (
-                                                <div
-                                                    style={{
-                                                        width: '30px',
-                                                        height: '30px',
-                                                        position: 'absolute',
-                                                        right: 15,
-                                                        bottom: 30,
-                                                    }}
-                                                    className=" allcentered"
-                                                >
-                                                    <FiCheckCircle style={{ transition: 'all 0.4s' }} color={selected ? 'var(--success)' : ''} size={18} />
-                                                </div>
-                                            )}
+
                                             {!props?.allowSelect && (
                                                 <div className="col-lg-12 p-0 mb-1 d-flex justify-content-end">
                                                     <span class="d-flex align-items-center" style={{ fontWeight: 500, color: 'grey', fontSize: '12px' }}>

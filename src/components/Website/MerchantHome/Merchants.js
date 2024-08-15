@@ -368,23 +368,97 @@ const Merchants = (props) => {
                             </div>
                         </div>
                         {inventorySettings?.inInventory && (
-                            <Form
-                                size={'lg'}
-                                submit={submit}
-                                setsubmit={setsubmit}
-                                attr={[
-                                    { name: 'Inventory Type', attr: 'type', type: 'select', options: inventoryRentTypeContext, size: '12' },
-                                    { name: 'Price', attr: 'price', type: 'number', size: '12' },
-                                ]}
-                                payload={inventorySettings}
-                                setpayload={setinventorySettings}
-                                // button1disabled={UserMutation.isLoading}
-                                button1class={generalstyles.roundbutton + '  mr-2 '}
-                                button1placeholder={'Save'}
-                                button1onClick={() => {
-                                    // handleAddCourierSheet();
-                                }}
-                            />
+                            <div class={' row m-0 w-100'}>
+                                <div class={'col-lg-12 mb-3'}>
+                                    <label for="name" class={formstyles.form__label}>
+                                        Rent Type
+                                    </label>
+                                    <Select
+                                        options={inventoryRentTypeContext}
+                                        styles={defaultstyles}
+                                        value={inventoryRentTypeContext.filter((option) => option.value == inventorySettings?.type)}
+                                        onChange={(option) => {
+                                            setinventorySettings({ ...inventorySettings, type: option.value });
+                                        }}
+                                    />
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="row m-0 w-100  ">
+                                        <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                            <label class={formstyles.form__label}>Start Date</label>
+                                            <input
+                                                type={'date'}
+                                                class={formstyles.form__field}
+                                                value={inventorySettings.startDate}
+                                                onChange={(event) => {
+                                                    setinventorySettings({ ...inventorySettings, startDate: event.target.value });
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="row m-0 w-100  ">
+                                        <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                            <label class={formstyles.form__label}>Currency</label>
+                                            <input
+                                                class={formstyles.form__field}
+                                                value={inventorySettings.currency}
+                                                onChange={(event) => {
+                                                    setinventorySettings({ ...inventorySettings, currency: event.target.value });
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                {inventorySettings?.type == 'meter' && (
+                                    <div class="col-lg-12">
+                                        <div class="row m-0 w-100  ">
+                                            <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                <label class={formstyles.form__label}>Sqaure Meter</label>
+                                                <input
+                                                    type={'number'}
+                                                    class={formstyles.form__field}
+                                                    value={inventorySettings.sqaureMeter}
+                                                    onChange={(event) => {
+                                                        setinventorySettings({ ...inventorySettings, sqaureMeter: event.target.value });
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                                <div class="col-lg-12">
+                                    <div class="row m-0 w-100  ">
+                                        <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                            <label class={formstyles.form__label}>
+                                                {inventorySettings?.type === 'item'
+                                                    ? 'Price Per Item'
+                                                    : inventorySettings?.type == 'order'
+                                                    ? 'Price Per Order'
+                                                    : inventorySettings?.type == 'meter'
+                                                    ? 'Price Per Meter'
+                                                    : 'Price Per Unit Per Month'}
+                                            </label>
+                                            <input
+                                                type={'number'}
+                                                step="any"
+                                                class={formstyles.form__field}
+                                                value={inventorySettings.pricePerUnit}
+                                                onChange={(event) => {
+                                                    setinventorySettings({ ...inventorySettings, pricePerUnit: event.target.value });
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class={'col-lg-12 d-flex justify-content-end mt-5'}>
+                                    <button disabled={buttonLoading} class={generalstyles.roundbutton + ' allcentered'} onClick={() => {}} style={{ padding: '0px' }}>
+                                        {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                        {!buttonLoading && <span>continue</span>}
+                                    </button>
+                                </div>
+                            </div>
                         )}
                     </div>
                 </Modal.Body>

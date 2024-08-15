@@ -25,6 +25,7 @@ import TransactionsTable from './TransactionsTable.js';
 import Pagination from '../../Pagination.js';
 import { FiCheckCircle, FiCircle } from 'react-icons/fi';
 import SelectComponent from '../../SelectComponent.js';
+import * as XLSX from 'xlsx';
 
 const MerchantPayments = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -106,6 +107,12 @@ const MerchantPayments = (props) => {
         setTotal(totalTemp);
     }, [fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data, selectedArray]);
 
+    const exportToExcel = (data, fileName) => {
+        const worksheet = XLSX.utils.json_to_sheet(data);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+        XLSX.writeFile(workbook, `${fileName}.xlsx`);
+    };
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
@@ -113,6 +120,25 @@ const MerchantPayments = (props) => {
                     <p class=" p-0 m-0" style={{ fontSize: '27px' }}>
                         Merchant Payments
                     </p>
+                </div>
+                <div class="col-lg-6 co-mf-6 p-0 d-flex justify-content-end">
+                    <button
+                        style={{ height: '35px' }}
+                        class={generalstyles.roundbutton + '  mb-1 mx-1'}
+                        onClick={() => {
+                            const merchantTransactions = fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data;
+
+                            const exportData = merchantTransactions.map((transaction) => ({
+                                ...transaction,
+                                fromAccount: transaction.fromAccount?.name,
+                                toAccount: transaction.toAccount?.name,
+                            }));
+
+                            exportToExcel(exportData, 'merchantTransactions');
+                        }}
+                    >
+                        Export
+                    </button>
                 </div>
                 <div style={{ borderRadius: '18px', background: 'white' }} class={' mb-3 col-lg-12 p-2'}>
                     <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
@@ -182,19 +208,19 @@ const MerchantPayments = (props) => {
                                     </div>
                                     <div class={'col-lg-2'} style={{ marginBottom: '15px' }}>
                                         <label for="name" class={formstyles.form__label}>
-                                            Processing
+                                            Status
                                         </label>
                                         <Select
                                             options={[
                                                 { label: 'All', value: undefined },
-                                                { label: 'True', value: true },
-                                                { label: 'False', value: false },
+                                                { label: 'Processing', value: true },
+                                                { label: 'Completed', value: false },
                                             ]}
                                             styles={defaultstyles}
                                             defaultValue={[
                                                 { label: 'All', value: undefined },
-                                                { label: 'True', value: true },
-                                                { label: 'False', value: false },
+                                                { label: 'Processing', value: true },
+                                                { label: 'Completed', value: false },
                                             ].filter((option) => option?.id == filterobj?.processing)}
                                             onChange={(option) => {
                                                 setfilterobj({ ...filterobj, processing: option.value });
@@ -312,6 +338,7 @@ const MerchantPayments = (props) => {
                                             allowSelect={true}
                                             selectedArray={selectedArray}
                                             setselectedArray={setselectedArray}
+                                            hasOrder={true}
                                         />
                                     </div>
                                 </div>

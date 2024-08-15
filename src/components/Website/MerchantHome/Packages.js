@@ -219,7 +219,10 @@ const Packages = (props) => {
                                     style={{ cursor: 'pointer' }}
                                     className="col-lg-6 p-1"
                                 >
-                                    <div style={{ background: 'white' }} class={' p-3 row m-0 w-100 card  d-flex align-items-center'}>
+                                    <div
+                                        style={{ background: selected ? 'var(--secondary)' : 'white', transition: 'all 0.4s', cursor: 'pointer' }}
+                                        class={' p-3 row m-0 w-100 card  d-flex align-items-center'}
+                                    >
                                         <div className="col-lg-4 p-0">
                                             <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
                                                 # {item?.id}
@@ -269,20 +272,6 @@ const Packages = (props) => {
                                         <div class="col-lg-12 p-0 d-flex justify-content-end" style={{ fontSize: '12px', color: 'grey' }}>
                                             {dateformatter(item?.createdAt)}
                                         </div>
-                                        {selected && (
-                                            <div
-                                                style={{
-                                                    width: '30px',
-                                                    height: '30px',
-                                                    position: 'absolute',
-                                                    left: 15,
-                                                    bottom: 0,
-                                                }}
-                                                className=" allcentered"
-                                            >
-                                                <FiCheckCircle style={{ transition: 'all 0.4s' }} color={selected ? 'var(--success)' : ''} size={18} />
-                                            </div>
-                                        )}
                                     </div>
                                 </div>
                             );

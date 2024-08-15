@@ -566,6 +566,7 @@ const MerchantOrders = (props) => {
                                 onClick={(option) => {
                                     history.push('/addorder?merchantId=' + option?.id);
                                 }}
+                                removeAll={true}
                             />
                         </div>
                     </div>

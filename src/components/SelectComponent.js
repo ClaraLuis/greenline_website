@@ -71,6 +71,7 @@ const SelectComponent = (props) => {
     };
 
     useEffect(() => {
+        // alert(JSON.stringify(props?.payload[props?.payloadAttr]));
         if (props?.payload) {
             filteredData?.map((item, index) => {
                 if (item[props?.value] == props?.payload[props?.payloadAttr]) {

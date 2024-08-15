@@ -645,6 +645,13 @@ const API = () => {
                         type
                         email
                         phone
+                        hubId
+                        merchantId
+                        inventoryId
+
+                        hub {
+                            name
+                        }
                         userRoles {
                             roleId
                             role {
@@ -1051,6 +1058,7 @@ const API = () => {
                                 name
                             }
                             orderItems {
+                                id
                                 partialCount
                                 count
                                 unitPrice
@@ -1206,8 +1214,45 @@ const API = () => {
                         }
                         sheetOrder {
                             order {
+                                previousOrderId
+                                previousOrder {
+                                    id
+                                }
+                                parentOrder {
+                                    id
+                                }
+                                otherId
+                                id
+                                originalPrice
+                                type
+                                status
+                                currency
+                                shippingPrice
+                                price
+                                customer {
+                                    email
+                                    phone
+                                }
+                                customerInfo {
+                                    customerName
+                                }
+
                                 merchant {
+                                    id
                                     name
+                                }
+                                orderItems {
+                                    id
+                                    partialCount
+                                    count
+                                    unitPrice
+                                    itemVariantId
+                                    info {
+                                        name
+                                        item {
+                                            name
+                                        }
+                                    }
                                 }
                             }
                         }

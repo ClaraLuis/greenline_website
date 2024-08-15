@@ -181,7 +181,8 @@ const AddSheet = (props) => {
                                                         }
                                                         setsheetpayload({ ...temp });
                                                     }}
-                                                    style={{ cursor: 'pointer' }}
+                                                    style={{ background: selected ? 'var(--secondary)' : 'white', transition: 'all 0.4s', cursor: 'pointer' }}
+                                                    // style={{ cursor: 'pointer' }}
                                                     class={generalstyles.card + ' p-3 row m-0 w-100 allcentered '}
                                                 >
                                                     <div className="col-lg-6 p-0">
@@ -221,20 +222,6 @@ const AddSheet = (props) => {
                                                             {item?.address?.streetAddress}, {item?.address?.buildingNumber}, {item?.address?.apartmentFloor}
                                                         </span>
                                                     </div>
-                                                    {selected && (
-                                                        <div
-                                                            style={{
-                                                                width: '35px',
-                                                                height: '35px',
-                                                                position: 'absolute',
-                                                                bottom: 20,
-                                                                right: 10,
-                                                            }}
-                                                            className=" allcentered"
-                                                        >
-                                                            <FiCheckCircle style={{ transition: 'all 0.4s' }} color={selected ? 'var(--success)' : ''} size={20} />
-                                                        </div>
-                                                    )}
                                                 </div>
                                             </div>
                                         </>

@@ -253,6 +253,7 @@ const MerchantPayment = (props) => {
                                             refetchFunc={() => {
                                                 Refetch();
                                             }}
+                                            hasOrder={true}
                                             // allowSelect={true}
                                             // selectedArray={selectedArray}
                                             // setselectedArray={setselectedArray}

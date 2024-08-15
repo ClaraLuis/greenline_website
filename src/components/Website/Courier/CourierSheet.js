@@ -18,6 +18,7 @@ import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js'
 import Form from '../../Form.js';
 import Select from 'react-select';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
+import Inputfield from '../../Inputfield.js';
 
 const CourierSheet = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -40,6 +41,7 @@ const CourierSheet = (props) => {
         step: 0,
         orderid: '',
         status: '',
+        fullDelivery: true,
     });
     useEffect(() => {
         setpageactive_context('/CourierSheet');
@@ -54,11 +56,52 @@ const CourierSheet = (props) => {
         id: submitSheetPayload?.id,
         // ordersCount: submitSheetPayload?.orderCount,
         asAdmin: type == 'admin' && isAuth([1]) ? true : false,
-        updateSheetOrders: submitSheetPayload?.updateSheetOrders?.filter((item) => item.status == 'adminAccepted' || item.status == 'financeAccepted'),
+        updateSheetOrders: submitSheetPayload?.updateSheetOrders
+            ?.filter((item) => item.status === 'adminAccepted' || item.status === 'financeAccepted')
+            .map((item) => ({
+                ...item,
+                orderId: undefined,
+            })),
     });
+
+    const calculateAmountCollected = () => {
+        var amount = 0;
+        var orderItemsAmount = 0;
+        statuspayload?.order?.orderItems?.map((i) => {
+            orderItemsAmount += parseFloat(i.unitPrice) * parseInt(i.count);
+        });
+        if (statuspayload?.order?.originalPrice) {
+            if (statuspayload?.shippingCollected) {
+                amount = parseFloat(statuspayload?.order?.shippingPrice) + parseFloat(statuspayload?.orderItemsAmount);
+            } else {
+                amount = parseFloat(statuspayload?.orderItemsAmount);
+            }
+            return amount;
+        } else if (!statuspayload?.order?.originalPrice && !statuspayload?.fullDelivery) {
+            if (statuspayload?.shippingCollected) {
+                amount = parseFloat(statuspayload?.order?.shippingPrice) + parseFloat(statuspayload?.amountCollected);
+            } else {
+                amount = parseFloat(statuspayload?.amountCollected);
+            }
+            return amount;
+        } else if (!statuspayload?.order?.originalPrice && statuspayload?.fullDelivery) {
+            if (statuspayload?.shippingCollected) {
+                amount = parseFloat(statuspayload?.order?.shippingPrice) + parseFloat(statuspayload?.price);
+            } else {
+                amount = parseFloat(statuspayload?.price);
+            }
+            return amount;
+        }
+    };
     const [updateOrdersStatusMutation] = useMutationGQL(updateOrdersStatus(), {
-        id: parseInt(statuspayload?.orderid),
         status: statuspayload?.status,
+        sheetOrderId: parseInt(statuspayload?.orderid),
+        amountCollected: calculateAmountCollected(),
+        description: statuspayload?.description,
+        postponeDate: statuspayload?.postponeDate,
+        shippingCollected: statuspayload?.shippingCollected,
+        partialItems: statuspayload?.partialItems,
+        returnOrderUpdateInput: statuspayload?.returnOrderUpdateInput,
     });
 
     const handleupdateCourierSheet = async () => {
@@ -136,6 +179,7 @@ const CourierSheet = (props) => {
                 shippingPrice: item?.order?.shippingPrice,
                 orderStatus: item?.order?.status,
                 amountCollected: item?.amountCollected,
+                orderId: item?.order?.id,
             });
             if (!(item?.adminPass && type == 'admin') && !(item?.financePass && type == 'finance')) {
                 temp.updateSheetOrders.push({
@@ -143,6 +187,7 @@ const CourierSheet = (props) => {
                     status: type == 'admin' ? (item?.adminPass ? 'adminAccepted' : 'adminRejected') : item?.financePass ? 'financeAccepted' : 'financeRejected',
                     shippingCollected: item?.shippingCollected == 'collected' ? true : false,
                     description: '',
+                    orderId: item?.order?.id,
                 });
             }
         });
@@ -193,9 +238,13 @@ const CourierSheet = (props) => {
                     var tempsheetpayload = {};
                     var show = false;
                     submitSheetPayload?.updateSheetOrderstemp?.map((i, ii) => {
-                        if (item?.id == i.sheetOrderId) {
+                        if (item?.order?.id == i.orderId) {
                             tempsheetpayload = i;
-                            if (status == 'Accepted' && ((type == 'admin' && i?.status == 'adminAccepted') || (type != 'admin' && i?.status == 'financeAccepted'))) {
+                            if (
+                                status == 'Accepted' &&
+                                ((type == 'admin' && i?.status == 'adminAccepted') ||
+                                    (type != 'admin' && i?.status == 'financeAccepted' && submitSheetPayload?.updateSheetOrders?.find((e) => e.sheetOrderId == item.id)))
+                            ) {
                                 show = true;
                             }
 
@@ -214,7 +263,7 @@ const CourierSheet = (props) => {
                                     handleAccordionChange(index);
                                     var temp = { ...submitSheetPayload };
 
-                                    temp.updateSheetOrders.map((i, ii) => {
+                                    temp.updateSheetOrderstemp.map((i, ii) => {
                                         if (i.sheetOrderId == item.id) {
                                             // temp.updateSheetOrders[ii].expanded = !tempsheetpayload?.expanded;
                                             temp.updateSheetOrderstemp[ii].expanded = !tempsheetpayload?.expanded;
@@ -249,7 +298,7 @@ const CourierSheet = (props) => {
                                                                         handleAccordionChange(index);
                                                                         var temp = { ...submitSheetPayload };
 
-                                                                        temp.updateSheetOrders.map((i, ii) => {
+                                                                        temp.updateSheetOrderstemp.map((i, ii) => {
                                                                             if (i.sheetOrderId == item.id) {
                                                                                 // temp.updateSheetOrders[ii].expanded = !tempsheetpayload?.expanded;
                                                                                 temp.updateSheetOrderstemp[ii].expanded = !tempsheetpayload?.expanded;
@@ -302,7 +351,13 @@ const CourierSheet = (props) => {
                                                                 onClick={(e) => {
                                                                     e.stopPropagation();
 
-                                                                    setstatuspayload({ ...statuspayload, orderid: item.id });
+                                                                    setstatuspayload({
+                                                                        step: 0,
+                                                                        orderid: item.id,
+                                                                        status: '',
+                                                                        order: item?.order,
+                                                                        fullDelivery: true,
+                                                                    });
 
                                                                     setchangestatusmodal(true);
                                                                 }}
@@ -338,6 +393,11 @@ const CourierSheet = (props) => {
                                                                             temp.updateSheetOrders.map((i, ii) => {
                                                                                 if (i.sheetOrderId == item.id) {
                                                                                     temp.updateSheetOrders[ii].shippingCollected = !temp.updateSheetOrders[ii].shippingCollected;
+                                                                                }
+                                                                            });
+
+                                                                            temp.updateSheetOrderstemp.map((i, ii) => {
+                                                                                if (i.sheetOrderId == item.id) {
                                                                                     temp.updateSheetOrderstemp[ii].shippingCollected = !temp.updateSheetOrders[ii].shippingCollected;
                                                                                 }
                                                                             });
@@ -389,12 +449,19 @@ const CourierSheet = (props) => {
                                                                                     handleAccordionChange(index);
                                                                                     var temp = { ...submitSheetPayload };
                                                                                     temp.updateSheetOrders.map((i, ii) => {
-                                                                                        if (i.sheetOrderId == item.id) {
+                                                                                        if (i.orderId == item.order.id) {
                                                                                             if (expandedItems.includes(index)) {
                                                                                                 temp.updateSheetOrders[ii].status = type == 'admin' ? 'adminAccepted' : 'financeAccepted';
-                                                                                                temp.updateSheetOrderstemp[ii].status = type == 'admin' ? 'adminAccepted' : 'financeAccepted';
                                                                                             } else {
                                                                                                 temp.updateSheetOrders[ii].status = type == 'admin' ? 'adminRejected' : 'financeRejected';
+                                                                                            }
+                                                                                        }
+                                                                                    });
+                                                                                    temp.updateSheetOrderstemp.map((i, ii) => {
+                                                                                        if (i.orderId == item.order.id) {
+                                                                                            if (expandedItems.includes(index)) {
+                                                                                                temp.updateSheetOrderstemp[ii].status = type == 'admin' ? 'adminAccepted' : 'financeAccepted';
+                                                                                            } else {
                                                                                                 temp.updateSheetOrderstemp[ii].status = type == 'admin' ? 'adminRejected' : 'financeRejected';
                                                                                             }
                                                                                         }
@@ -609,8 +676,12 @@ const CourierSheet = (props) => {
                                                                         var temp = { ...submitSheetPayload };
 
                                                                         temp.updateSheetOrders.map((i, ii) => {
-                                                                            if (i.sheetOrderId == item.id) {
+                                                                            if (i.orderId == item?.order?.id) {
                                                                                 temp.updateSheetOrders[ii].description = event.target.value;
+                                                                            }
+                                                                        });
+                                                                        temp.updateSheetOrderstemp.map((i, ii) => {
+                                                                            if (i.orderId == item?.order?.id) {
                                                                                 temp.updateSheetOrderstemp[ii].description = event.target.value;
                                                                             }
                                                                         });
@@ -782,14 +853,14 @@ const CourierSheet = (props) => {
                                 <Select
                                     options={[
                                         { label: 'Delivered', value: 'delivered' },
-                                        { label: 'Postponed', value: 'Postponed' },
+                                        { label: 'Postponed', value: 'postponed' },
                                         { label: 'Unreachable', value: 'unreachable' },
                                         { label: 'Canceled', value: 'canceled' },
                                     ]}
                                     styles={defaultstyles}
                                     value={[
                                         { label: 'Delivered', value: 'delivered' },
-                                        { label: 'Postponed', value: 'Postponed' },
+                                        { label: 'Postponed', value: 'postponed' },
                                         { label: 'Unreachable', value: 'unreachable' },
                                         { label: 'Canceled', value: 'canceled' },
                                     ].filter((option) => option.value == statuspayload?.status)}
@@ -802,19 +873,196 @@ const CourierSheet = (props) => {
                     )}
                     {statuspayload?.step == 1 && (
                         <div class="row m-0 w-100 py-2">
-                            <div class={'col-lg-12 mb-3'}>
-                                <label for="name" class={formstyles.form__label}>
-                                    Status
-                                </label>
-                                <Select
-                                    options={orderStatusEnumContext}
-                                    styles={defaultstyles}
-                                    value={orderStatusEnumContext.filter((option) => option.value == statuspayload?.status)}
-                                    onChange={(option) => {
-                                        setstatuspayload({ ...statuspayload, status: option.value });
-                                    }}
-                                />
-                            </div>
+                            {statuspayload?.status == 'canceled' && (
+                                <div class={'col-lg-12 mb-3'}>
+                                    <label for="name" class={formstyles.form__label}>
+                                        Shipping
+                                    </label>
+                                    <Select
+                                        options={[
+                                            { label: 'Collected', value: true },
+                                            { label: 'Not Collected', value: false },
+                                        ]}
+                                        styles={defaultstyles}
+                                        value={[
+                                            { label: 'Collected', value: true },
+                                            { label: 'Not Collected', value: false },
+                                        ].filter((option) => option.value == statuspayload?.shippingCollected)}
+                                        onChange={(option) => {
+                                            setstatuspayload({ ...statuspayload, shippingCollected: option.value });
+                                        }}
+                                    />
+                                </div>
+                            )}
+                            {statuspayload?.status == 'postponed' && (
+                                <div class={'col-lg-12 mb-3'}>
+                                    <Inputfield
+                                        placeholder={'Postpone Date'}
+                                        value={statuspayload?.postponeDate}
+                                        onChange={(event) => {
+                                            setstatuspayload({ ...statuspayload, postponeDate: event.target.value });
+                                        }}
+                                        type={'date'}
+                                    />
+                                </div>
+                            )}
+                            {statuspayload?.status == 'delivered' && (
+                                <div class={'col-lg-12 mb-3'}>
+                                    <div class="row m-0 w-100">
+                                        <div class={'col-lg-12 mb-3 p-0 '}>
+                                            <div className="row m-0 w-100 d-flex align-items-center">
+                                                <label className={`${formstyles.switch} mx-2 my-0`}>
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={statuspayload?.fullDelivery}
+                                                        onChange={(e) => {
+                                                            var newStatus = !statuspayload?.fullDelivery;
+                                                            var partialItemsTemp = [];
+                                                            if (!newStatus) {
+                                                                statuspayload?.order?.orderItems?.map((i) => {
+                                                                    partialItemsTemp.push({ id: i.id, partialCount: i.count });
+                                                                });
+                                                            }
+                                                            setstatuspayload({
+                                                                ...statuspayload,
+                                                                fullDelivery: newStatus,
+                                                                partialDilevery: !newStatus,
+                                                                partialItems: newStatus ? undefined : partialItemsTemp,
+                                                            });
+                                                        }}
+                                                    />
+                                                    <span className={`${formstyles.slider} ${formstyles.round}`}></span>
+                                                </label>
+                                                <p className={`${generalstyles.checkbox_label} mb-0 text-focus text-capitalize cursor-pointer font_14 ml-1 mr-1 wordbreak`}>Full delivery</p>
+                                            </div>
+                                        </div>
+                                        {statuspayload?.order?.orderItems?.map((subitem, subindex) => {
+                                            var partialItem = {};
+                                            statuspayload?.partialItems?.map((i) => {
+                                                if (i.id == subitem.id) {
+                                                    partialItem = i;
+                                                }
+                                            });
+                                            return (
+                                                <div class={'col-lg-12 p-0 mb-2'}>
+                                                    <div style={{ border: '1px solid #eee', borderRadius: '18px' }} class="row m-0 w-100 p-2 d-flex align-items-center">
+                                                        <div style={{ width: '50px', height: '50px', borderRadius: '7px', marginInlineEnd: '5px' }}>
+                                                            <img
+                                                                src={
+                                                                    subitem?.info?.imageUrl
+                                                                        ? subitem?.info?.imageUrl
+                                                                        : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'
+                                                                }
+                                                                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
+                                                            />
+                                                        </div>
+
+                                                        <div class="col-lg-5 d-flex align-items-center">
+                                                            <div className="row m-0 w-100">
+                                                                <div style={{ fontSize: '14px', fontWeight: 500 }} className={' col-lg-12 p-0 wordbreak wordbreak1'}>
+                                                                    {subitem?.info?.item?.name ?? '-'}
+                                                                </div>
+                                                                <div style={{ fontSize: '12px' }} className={' col-lg-12 p-0 wordbreak wordbreak1'}>
+                                                                    {subitem?.info?.name ?? '-'}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class={'col-lg-5 '}>
+                                                            <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
+                                                                <div style={{ fontWeight: 700 }} class="mx-2">
+                                                                    {statuspayload?.fullDelivery
+                                                                        ? parseFloat(subitem?.count) * parseFloat(subitem?.unitPrice)
+                                                                        : parseFloat(subitem.unitPrice) * parseFloat(partialItem?.partialCount)}{' '}
+                                                                    {statuspayload?.info?.currency}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-lg-12 p-0 mt-2">
+                                                            <div class="row m-0 w-100">
+                                                                {statuspayload?.fullDelivery && (
+                                                                    <div
+                                                                        style={{
+                                                                            border: '1px solid #eee',
+                                                                            borderRadius: '8px',
+                                                                            fontWeight: 700,
+                                                                            background: 'var(--primary)',
+                                                                            color: 'white',
+                                                                            width: '35px',
+                                                                        }}
+                                                                        className=" p-1 px-2 mr-1 allcentered"
+                                                                    >
+                                                                        {parseFloat(subitem.count)}
+                                                                    </div>
+                                                                )}
+                                                                {!statuspayload?.fullDelivery && (
+                                                                    <>
+                                                                        {Array.from({ length: parseFloat(subitem.count) + 1 }, (_, i) => (
+                                                                            <div
+                                                                                onClick={() => {
+                                                                                    var partialItemsTemp = [...statuspayload?.partialItems] ?? [];
+                                                                                    const existingItemIndex = partialItemsTemp?.findIndex((i) => i.id === subitem?.id);
+                                                                                    partialItemsTemp[existingItemIndex].partialCount = i;
+                                                                                    setstatuspayload({ ...statuspayload, partialItems: partialItemsTemp });
+                                                                                }}
+                                                                                key={i}
+                                                                                style={{
+                                                                                    border: '1px solid #eee',
+                                                                                    borderRadius: '8px',
+                                                                                    fontWeight: 700,
+                                                                                    background: partialItem.partialCount == i ? 'var(--primary)' : '',
+                                                                                    color: partialItem.partialCount == i ? 'white' : '',
+                                                                                    width: '35px',
+                                                                                    cursor: 'pointer',
+                                                                                    transition: 'all 0.4s',
+                                                                                }}
+                                                                                className="p-1 px-2 mr-1 allcentered"
+                                                                            >
+                                                                                {i}
+                                                                            </div>
+                                                                        ))}
+                                                                    </>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                        <div class={'col-lg-12 mb-3 p-0 '}>
+                                            <div className="row m-0 w-100 d-flex align-items-center">
+                                                <label className={`${formstyles.switch} mx-2 my-0`}>
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={statuspayload?.shippingCollected}
+                                                        onChange={(e) => {
+                                                            setstatuspayload({
+                                                                ...statuspayload,
+                                                                shippingCollected: !statuspayload?.shippingCollected,
+                                                            });
+                                                        }}
+                                                    />
+                                                    <span className={`${formstyles.slider} ${formstyles.round}`}></span>
+                                                </label>
+                                                <p className={`${generalstyles.checkbox_label} mb-0 text-focus text-capitalize cursor-pointer font_14 ml-1 mr-1 wordbreak`}>Shipping Collected</p>
+                                            </div>
+                                        </div>
+                                        {!statuspayload?.order?.originalPrice && !statuspayload?.fullDelivery && (
+                                            <div class={'col-lg-12 mb-3'}>
+                                                <Inputfield
+                                                    placeholder={'Amount Recieved'}
+                                                    value={statuspayload?.amountCollected}
+                                                    onChange={(event) => {
+                                                        setstatuspayload({ ...statuspayload, amountCollected: event.target.value });
+                                                    }}
+                                                    type={'number'}
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+
                             <div class="col-lg-12 mb-3 allcentered">
                                 <button
                                     onClick={async () => {
@@ -822,15 +1070,13 @@ const CourierSheet = (props) => {
                                             setupdateStatusButtonLoading(true);
                                             const { data } = await updateOrdersStatusMutation();
                                             var temp = { ...submitSheetPayload };
-
-                                            temp.updateSheetOrders.map((i, ii) => {
+                                            temp.updateSheetOrderstemp.map((i, ii) => {
                                                 if (i.sheetOrderId == statuspayload.orderid) {
                                                     temp.updateSheetOrderstemp[ii].orderStatus = statuspayload?.status;
                                                 }
                                             });
                                             setsubmitSheetPayload({ ...temp });
-
-                                            setstatuspayload({ status: '', orderid: '' });
+                                            setstatuspayload({ step: 0, orderid: '', status: '', fullDelivery: true });
                                             setchangestatusmodal(false);
                                             NotificationManager.success('', 'Status changed successfully');
                                         } catch (error) {
@@ -854,29 +1100,6 @@ const CourierSheet = (props) => {
                                     {!updateStatusButtonLoading && <span>Update Status</span>}
                                 </button>
                             </div>
-
-                            {/* <Form
-                            size={'md'}
-                            submit={submit}
-                            setsubmit={setsubmit}
-                            attr={[
-                                {
-                                    name: 'Status',
-                                    attr: 'status',
-                                    type: 'select',
-                                    options: orderStatusEnumContext,
-                                    size: '12',
-                                },
-                            ]}
-                            payload={statuspayload}
-                            setpayload={setstatuspayload}
-                            // button1disabled={UserMutation.isLoading}
-                            button1class={generalstyles.roundbutton + '  mr-2 '}
-                            button1placeholder={'Update status'}
-                            button1onClick={() => {
-                                setchangestatusmodal(false);
-                            }}
-                        /> */}
                         </div>
                     )}
                 </Modal.Body>
