@@ -5062,3 +5062,22 @@ ul {
     -webkit-transform: rotate(0deg) !important;
     transform: rotate(0deg) !important;
 }
+
+.rs-input-group {
+    border-radius: 18px !important;
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-transition: border-color ease-in-out 0.15s;
+    transition: border-color ease-in-out 0.15s;
+    width: 100%;
+    cursor: text;
+    color: #343434;
+    color: var(--rs-text-primary);
+    border: 0.0625rem solid #eee !important;
+    margin-top: 2px !important;
+}
+
+.rs-input-group.rs-input-group-inside .rs-input {
+    border-radius: 18px !important;
+}

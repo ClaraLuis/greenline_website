@@ -177,7 +177,7 @@ const OrderInfo = (props) => {
                                             {queryParameters?.get('type') != 'inventory' && (
                                                 <>
                                                     <div class="col-lg-12 p-0 mb-2 text-capitalize">
-                                                        <span style={{ fontWeight: 600 }}>{chosenOrderContext?.customerInfo?.customerName}</span>
+                                                        <span style={{ fontWeight: 600 }}>{chosenOrderContext?.merchantCustomer?.customerName}</span>
                                                     </div>
                                                     <div className="col-lg-12 p-0 mb-1 d-flex align-items-center">
                                                         <MdOutlineLocationOn class="mr-1" />
@@ -247,7 +247,7 @@ const OrderInfo = (props) => {
                                 </div>
                                 <div class={generalstyles.card + ' row m-0 w-100 p-4'}>
                                     <div className="col-lg-12 p-0 mb-2 text-capitalize">
-                                        <span style={{ fontWeight: 600 }}>{chosenOrderContext?.customerInfo?.customerName}</span>
+                                        <span style={{ fontWeight: 600 }}>{chosenOrderContext?.merchantCustomer?.customerName}</span>
                                     </div>
                                     <div className="col-lg-12 p-0 mb-1 d-flex align-items-center">
                                         <MdOutlineLocationOn className="mr-1" />

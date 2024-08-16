@@ -27,11 +27,11 @@ const Waybill = ({ order }) => {
                                 </div>
                             </div>
                             <div className="company-info p-3 col-lg-4 col-md-4">
-                                {order?.customerInfo?.customerName}
-                                {order?.customerInfo?.phoneNumber && (
+                                {order?.merchantCustomer?.customerName}
+                                {order?.merchantCustomer?.customer?.phoneNumber && (
                                     <>
                                         <br />
-                                        +2 {order?.customerInfo?.phoneNumber}
+                                        +2 {order?.merchantCustomer?.customer?.phoneNumber}
                                     </>
                                 )}
                                 <br />

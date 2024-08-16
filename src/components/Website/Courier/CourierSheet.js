@@ -318,14 +318,14 @@ const CourierSheet = (props) => {
                                                     </div>
 
                                                     <div className="col-lg-12 mt-1">
-                                                        <span>{item?.order?.customerInfo?.customerName}</span>
-                                                        {item?.order?.customer && (
+                                                        <span>{item?.order?.merchantCustomer?.customerName}</span>
+                                                        {item?.order?.merchantCustomer?.customer && (
                                                             <>
                                                                 <br />
-                                                                <span>{item?.order?.customer?.email}</span>
+                                                                <span>{item?.order?.merchantCustomer?.customer?.email}</span>
 
                                                                 <br />
-                                                                <span>{item?.order?.customer?.phone}</span>
+                                                                <span>{item?.order?.merchantCustomer?.customer?.phone}</span>
                                                             </>
                                                         )}
                                                     </div>

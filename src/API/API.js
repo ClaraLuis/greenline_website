@@ -481,11 +481,12 @@ const API = () => {
                         status
                         orderDate
                         currency
-                        customer {
-                            email
-                        }
-                        customerInfo {
+                        merchantCustomer {
                             customerName
+                            customer {
+                                email
+                                phone
+                            }
                         }
                         address {
                             country
@@ -532,7 +533,6 @@ const API = () => {
                         type
                         paymentType
                         status
-                        customerId
                         addressId
                         merchantId
                         isDomestic
@@ -554,11 +554,12 @@ const API = () => {
                             buildingNumber
                             apartmentFloor
                         }
-                        customer {
-                            email
-                        }
-                        customerInfo {
+                        merchantCustomer {
                             customerName
+                            customer {
+                                email
+                                phone
+                            }
                         }
                         merchant {
                             id
@@ -815,11 +816,12 @@ const API = () => {
                         status
                         orderDate
                         currency
-                        customer {
-                            email
-                        }
-                        customerInfo {
+                        merchantCustomer {
                             customerName
+                            customer {
+                                email
+                                phone
+                            }
                         }
                         address {
                             country
@@ -929,7 +931,6 @@ const API = () => {
                 paginateItemHistory(input: $input) {
                     data {
                         amount
-                        currency
                         description
                         createdAt
                     }
@@ -1057,14 +1058,13 @@ const API = () => {
                             currency
                             shippingPrice
                             price
-                            customer {
-                                email
-                                phone
-                            }
-                            customerInfo {
+                            merchantCustomer {
                                 customerName
+                                customer {
+                                    email
+                                    phone
+                                }
                             }
-
                             merchant {
                                 id
                                 name
@@ -1241,14 +1241,13 @@ const API = () => {
                                 currency
                                 shippingPrice
                                 price
-                                customer {
-                                    email
-                                    phone
-                                }
-                                customerInfo {
+                                merchantCustomer {
                                     customerName
+                                    customer {
+                                        email
+                                        phone
+                                    }
                                 }
-
                                 merchant {
                                     id
                                     name
