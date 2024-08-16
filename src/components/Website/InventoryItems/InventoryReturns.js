@@ -53,7 +53,7 @@ const InventoryReturns = (props) => {
     const { refetch: refetchInventoryItemReturnsQuery } = useQueryGQL('', fetchInventoryItemReturns(), filter);
 
     const [createReturnPackageMutation] = useMutationGQL(createReturnPackage(), {
-        ids: cartItems,
+        orderItemorderItemIds: cartItems,
         type: 'inventory',
         toInventoryId: packagepayload?.toInventoryId,
     });
@@ -243,7 +243,9 @@ const InventoryReturns = (props) => {
                                             try {
                                                 var temp = [];
                                                 await packagepayload?.ids?.map((item, index) => {
-                                                    temp.push(item.id);
+                                                    item?.orderItems?.map((i, ii) => {
+                                                        temp.push(i.id);
+                                                    });
                                                 });
                                                 await setcartItems([...temp]);
                                                 await createReturnPackageMutation();

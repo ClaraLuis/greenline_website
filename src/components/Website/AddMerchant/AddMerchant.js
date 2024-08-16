@@ -46,7 +46,6 @@ const AddMerchant = (props) => {
     const [buttonLoading, setbuttonLoading] = useState(false);
     const { lang, langdetect } = useContext(LanguageContext);
     const [similarAddresses, setsimilarAddresses] = useState([]);
-    const [userAddresses, setuserAddresses] = useState();
 
     const [governoratesItems, setgovernoratesItems] = useState([
         {
@@ -78,21 +77,6 @@ const AddMerchant = (props) => {
         merchantId: merchantId,
         list: governoratesItemsList,
     });
-    const [updateMerchantDomesticShippingMutation] = useMutationGQL(updateMerchantDomesticShipping(), {
-        merchantId: merchantId,
-        list: governoratesItemsList,
-    });
-    const [createAddressMutation] = useMutationGQL(createAddress(), {
-        city: addresspayload?.city,
-        country: addresspayload?.country,
-        streetAddress: addresspayload?.streetAddress,
-        buildingNumber: addresspayload?.buildingNumber,
-        apartmentFloor: addresspayload?.apartmentFloor,
-        merchantId: merchantId,
-        governorateId: addresspayload?.country == 'Egypt' ? fetchGovernoratesQuery?.data?.findAllDomesticGovernorates?.filter((item) => item.name == addresspayload?.city)[0]?.id : undefined,
-    });
-
-    const [fetchCustomerAddressesQuery] = useLazyQueryGQL(fetchCustomerAddresses(), 'network-only');
 
     const [merchantPayload, setmerchantPayload] = useState({
         functype: 'add',
@@ -122,14 +106,19 @@ const AddMerchant = (props) => {
         currency: merchantPayload?.currency,
         threshold: merchantPayload?.threshold,
         overShipping: merchantPayload?.overShipping,
-        address: {
-            country: addresspayload?.country,
-            city: addresspayload?.city,
-            buildingNumber: addresspayload?.buildingNumber,
-            apartmentFloor: addresspayload?.apartmentFloor,
-            streetAddress: addresspayload?.streetAddress,
-            governorateId: addresspayload?.country == 'Egypt' ? fetchGovernoratesQuery?.data?.findAllDomesticGovernorates?.filter((item) => item.name == addresspayload?.city)[0]?.id : undefined,
-        },
+        address:
+            merchantPayload?.addressId == undefined
+                ? {
+                      country: addresspayload?.country,
+                      city: addresspayload?.city,
+                      buildingNumber: addresspayload?.buildingNumber,
+                      apartmentFloor: addresspayload?.apartmentFloor,
+                      streetAddress: addresspayload?.streetAddress,
+                      governorateId:
+                          addresspayload?.country == 'Egypt' ? fetchGovernoratesQuery?.data?.findAllDomesticGovernorates?.filter((item) => item.name == addresspayload?.city)[0]?.id : undefined,
+                  }
+                : undefined,
+        addressId: merchantPayload?.addressId,
         bankName: merchantPayload?.bankName,
         bankNumber: merchantPayload?.bankNumber,
         taxId: merchantPayload?.taxId,
@@ -560,189 +549,94 @@ const AddMerchant = (props) => {
                                                     {similarAddresses?.length != 0 && (
                                                         <>
                                                             {' '}
-                                                            <div class="col-lg-12 p-0">
-                                                                <div class="row m-0 w-100">
-                                                                    <div class="col-lg-12">Strongly recommended:</div>
-                                                                    {similarAddresses?.map((item, index) => {
-                                                                        if (item?.score == 0) {
-                                                                            return (
-                                                                                <>
-                                                                                    <div class="col-lg-12 mt-2 ">
-                                                                                        <div
-                                                                                            onClick={async () => {
-                                                                                                try {
-                                                                                                    setaddresspayload({
-                                                                                                        city: item?.address?.city,
-                                                                                                        country: item?.address?.country,
-                                                                                                    });
-                                                                                                    await linkCurrentCustomerAddressMutation();
+                                                            {similarAddresses?.filter((i) => i?.score == 0)?.length != 0 && (
+                                                                <div class="col-lg-12 p-0">
+                                                                    <div class="row m-0 w-100">
+                                                                        <div class="col-lg-12">Strongly recommended:</div>
+                                                                        {similarAddresses?.map((item, index) => {
+                                                                            if (item?.score == 0) {
+                                                                                return (
+                                                                                    <>
+                                                                                        <div class="col-lg-12 mt-2 ">
+                                                                                            <div
+                                                                                                onClick={async () => {
+                                                                                                    setmerchantPayload({ ...merchantPayload, addressId: item?.address?.id });
+                                                                                                }}
+                                                                                                style={{
+                                                                                                    cursor: 'pointer',
+                                                                                                    transition: 'all 0.4s',
+                                                                                                    border: merchantPayload?.addressId == item?.address?.id ? '1px solid var(--primary)' : '',
+                                                                                                }}
+                                                                                                class={generalstyles.card + ' row m-0 p-2 w-100'}
+                                                                                            >
+                                                                                                <div class="col-lg-12">
+                                                                                                    <span style={{ fontWeight: 600 }}>
+                                                                                                        {item?.address?.country}, {item?.address?.city}
+                                                                                                    </span>
+                                                                                                </div>
 
-                                                                                                    setsimilarAddresses([]);
-                                                                                                    var { data } = await fetchCustomerAddressesQuery({
-                                                                                                        variables: {
-                                                                                                            input: {
-                                                                                                                merchantId: merchantId,
-                                                                                                                limit: 20,
-                                                                                                            },
-                                                                                                            merchantId: merchantId,
-                                                                                                        },
-                                                                                                    });
-                                                                                                    setuserAddresses([...data?.paginateAddresses?.data]);
-                                                                                                } catch (e) {
-                                                                                                    if (
-                                                                                                        e?.graphQLErrors[0]?.message.includes('Duplicate entry') &&
-                                                                                                        e?.graphQLErrors[0]?.message.includes('merchant-customer-address.PRIMARY')
-                                                                                                    ) {
-                                                                                                        // setopenModal(false);
-                                                                                                        setsimilarAddresses([]);
-                                                                                                    } else {
-                                                                                                        NotificationManager.warning('', e?.graphQLErrors[0]?.message);
-                                                                                                    }
-                                                                                                }
-                                                                                            }}
-                                                                                            style={{
-                                                                                                cursor: 'pointer',
-                                                                                                transition: 'all 0.4s',
-                                                                                                // border: orderpayload?.address == item?.address?.id ? '1px solid var(--primary)' : '',
-                                                                                            }}
-                                                                                            class={generalstyles.card + ' row m-0 p-2 w-100'}
-                                                                                        >
-                                                                                            <div class="col-lg-12">
-                                                                                                <span style={{ fontWeight: 600 }}>
-                                                                                                    {item?.address?.country}, {item?.address?.city}
-                                                                                                </span>
-                                                                                            </div>
+                                                                                                <div class="col-lg-12">
+                                                                                                    Building: <span style={{ fontWeight: 600 }}>{item?.address?.buildingNumber}</span>, Floor:{' '}
+                                                                                                    <span style={{ fontWeight: 600 }}>{item?.address?.apartmentFloor}</span>
+                                                                                                </div>
 
-                                                                                            <div class="col-lg-12">
-                                                                                                Building: <span style={{ fontWeight: 600 }}>{item?.address?.buildingNumber}</span>, Floor:{' '}
-                                                                                                <span style={{ fontWeight: 600 }}>{item?.address?.apartmentFloor}</span>
-                                                                                            </div>
-
-                                                                                            <div class="col-lg-12">
-                                                                                                Address: <span style={{ fontWeight: 600 }}>{item?.address?.streetAddress}</span>
+                                                                                                <div class="col-lg-12">
+                                                                                                    Address: <span style={{ fontWeight: 600 }}>{item?.address?.streetAddress}</span>
+                                                                                                </div>
                                                                                             </div>
                                                                                         </div>
-                                                                                    </div>
-                                                                                </>
-                                                                            );
-                                                                        }
-                                                                    })}
+                                                                                    </>
+                                                                                );
+                                                                            }
+                                                                        })}
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                            <div class="col-lg-12 p-0">
-                                                                <div class="row m-0 w-100">
-                                                                    <div class="col-lg-12">Suggestions:</div>
-                                                                    {similarAddresses?.map((item, index) => {
-                                                                        if (item?.score != 0) {
-                                                                            return (
-                                                                                <>
-                                                                                    <div class="col-lg-12 mt-2 ">
-                                                                                        <div
-                                                                                            onClick={async () => {
-                                                                                                try {
-                                                                                                    setaddresspayload({
-                                                                                                        city: item?.address?.city,
-                                                                                                        country: item?.address?.country,
-                                                                                                    });
-                                                                                                    await linkCurrentCustomerAddressMutation();
+                                                            )}
+                                                            {similarAddresses?.filter((i) => i?.score != 0)?.length != 0 && (
+                                                                <div class="col-lg-12 p-0">
+                                                                    <div class="row m-0 w-100">
+                                                                        <div class="col-lg-12">Suggestions:</div>
+                                                                        {similarAddresses?.map((item, index) => {
+                                                                            if (item?.score != 0) {
+                                                                                return (
+                                                                                    <>
+                                                                                        <div class="col-lg-12 mt-2 ">
+                                                                                            <div
+                                                                                                onClick={async () => {
+                                                                                                    setmerchantPayload({ ...merchantPayload, addressId: item?.address?.id });
+                                                                                                }}
+                                                                                                style={{
+                                                                                                    cursor: 'pointer',
+                                                                                                    transition: 'all 0.4s',
+                                                                                                    border: merchantPayload?.addressId == item?.address?.id ? '1px solid var(--primary)' : '',
+                                                                                                }}
+                                                                                                class={generalstyles.card + ' row m-0 p-2 w-100'}
+                                                                                            >
+                                                                                                <div class="col-lg-12">
+                                                                                                    <span style={{ fontWeight: 600 }}>
+                                                                                                        {item?.address?.country}, {item?.address?.city}
+                                                                                                    </span>
+                                                                                                </div>
+                                                                                                <div class="col-lg-12">
+                                                                                                    Building Number: <span style={{ fontWeight: 600 }}>{item?.address?.buildingNumber}</span>
+                                                                                                </div>
+                                                                                                <div class="col-lg-12">
+                                                                                                    Floor: <span style={{ fontWeight: 600 }}>{item?.address?.apartmentFloor}</span>
+                                                                                                </div>
 
-                                                                                                    setsimilarAddresses([]);
-                                                                                                    var { data } = await fetchCustomerAddressesQuery({
-                                                                                                        variables: {
-                                                                                                            input: {
-                                                                                                                merchantId: merchantId,
-                                                                                                                limit: 20,
-                                                                                                            },
-                                                                                                            merchantId: merchantId,
-                                                                                                        },
-                                                                                                    });
-                                                                                                    setuserAddresses([...data?.paginateAddresses?.data]);
-                                                                                                } catch (e) {
-                                                                                                    if (
-                                                                                                        e?.graphQLErrors[0]?.message.includes('Duplicate entry') &&
-                                                                                                        e?.graphQLErrors[0]?.message.includes('merchant-customer-address.PRIMARY')
-                                                                                                    ) {
-                                                                                                        // setopenModal(false);
-                                                                                                        setsimilarAddresses([]);
-                                                                                                    } else {
-                                                                                                        NotificationManager.warning('', e?.graphQLErrors[0]?.message);
-                                                                                                    }
-                                                                                                }
-                                                                                            }}
-                                                                                            style={{
-                                                                                                cursor: 'pointer',
-                                                                                                transition: 'all 0.4s',
-                                                                                                // border: orderpayload?.address == item?.address?.id ? '1px solid var(--primary)' : '',
-                                                                                            }}
-                                                                                            class={generalstyles.card + ' row m-0 p-2 w-100'}
-                                                                                        >
-                                                                                            <div class="col-lg-12">
-                                                                                                <span style={{ fontWeight: 600 }}>
-                                                                                                    {item?.address?.country}, {item?.address?.city}
-                                                                                                </span>
-                                                                                            </div>
-                                                                                            <div class="col-lg-12">
-                                                                                                Building Number: <span style={{ fontWeight: 600 }}>{item?.address?.buildingNumber}</span>
-                                                                                            </div>
-                                                                                            <div class="col-lg-12">
-                                                                                                Floor: <span style={{ fontWeight: 600 }}>{item?.address?.apartmentFloor}</span>
-                                                                                            </div>
-
-                                                                                            <div class="col-lg-12">
-                                                                                                Address: <span style={{ fontWeight: 600 }}>{item?.address?.streetAddress}</span>
+                                                                                                <div class="col-lg-12">
+                                                                                                    Address: <span style={{ fontWeight: 600 }}>{item?.address?.streetAddress}</span>
+                                                                                                </div>
                                                                                             </div>
                                                                                         </div>
-                                                                                    </div>
-                                                                                </>
-                                                                            );
-                                                                        }
-                                                                    })}
+                                                                                    </>
+                                                                                );
+                                                                            }
+                                                                        })}
+                                                                    </div>
                                                                 </div>
-                                                            </div>
+                                                            )}
                                                         </>
-                                                    )}
-
-                                                    {similarAddresses?.length == 0 && (
-                                                        <div class="col-lg-12 p-0">
-                                                            <div class="row m-0 w-100">
-                                                                {userAddresses?.map((item, index) => {
-                                                                    return (
-                                                                        <div class="col-lg-6 mt-2 ">
-                                                                            <div
-                                                                                onClick={() => {
-                                                                                    setaddresspayload({
-                                                                                        city: item?.details?.city,
-                                                                                        country: item?.details?.country,
-                                                                                    });
-                                                                                }}
-                                                                                style={{
-                                                                                    cursor: 'pointer',
-                                                                                    transition: 'all 0.4s',
-                                                                                    // border: orderpayload?.address == item?.details?.id ? '1px solid var(--primary)' : '',
-                                                                                }}
-                                                                                class={generalstyles.card + ' row m-0 p-2 w-100'}
-                                                                            >
-                                                                                <div class="col-lg-12">
-                                                                                    <span style={{ fontWeight: 600 }}>
-                                                                                        {item?.details?.country}, {item?.details?.city}
-                                                                                    </span>
-                                                                                </div>
-                                                                                <div class="col-lg-12">
-                                                                                    Building Number: <span style={{ fontWeight: 600 }}>{item?.details?.buildingNumber}</span>
-                                                                                </div>
-                                                                                <div class="col-lg-12">
-                                                                                    Floor: <span style={{ fontWeight: 600 }}>{item?.details?.apartmentFloor}</span>
-                                                                                </div>
-
-                                                                                <div class="col-lg-12">
-                                                                                    Address: <span style={{ fontWeight: 600 }}>{item?.details?.streetAddress}</span>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    );
-                                                                })}
-                                                            </div>
-                                                        </div>
                                                     )}
                                                 </div>
                                             </div>

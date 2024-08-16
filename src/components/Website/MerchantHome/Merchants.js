@@ -29,7 +29,7 @@ const Merchants = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, inventoryRentTypeContext, chosenMerchantContext, isAuth } = useContext(Contexthandlerscontext);
-    const { useQueryGQL, useMutationGQL, addMerchant, fetchMerchants, fetchItemHistory, exportItem, importItem } = API();
+    const { useQueryGQL, useMutationGQL, addMerchant, fetchMerchants, fetchItemHistory, exportItem, createInventoryRent, updateInventoryRent } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
 
@@ -51,6 +51,22 @@ const Merchants = (props) => {
         name: merchantPayload?.name,
         includesVat: merchantPayload?.includesVat,
     });
+    const [createInventoryRentMutation] = useMutationGQL(createInventoryRent(), {
+        startDate: inventorySettings?.startDate,
+        pricePerUnit: inventorySettings?.pricePerUnit,
+        currency: inventorySettings?.currency,
+        type: inventorySettings?.type,
+        sqaureMeter: inventorySettings?.sqaureMeter,
+        merchantId: inventorySettings?.merchantId,
+    });
+
+    const [updateInventoryRentMutation] = useMutationGQL(updateInventoryRent(), {
+        pricePerUnit: inventorySettings?.pricePerUnit,
+        currency: inventorySettings?.currency,
+        sqaureMeter: inventorySettings?.sqaureMeter,
+        merchantId: inventorySettings?.merchantId,
+    });
+
     const [filterMerchants, setfilterMerchants] = useState({
         isAsc: true,
         limit: 20,
@@ -194,6 +210,12 @@ const Merchants = (props) => {
                                                             class="py-2"
                                                             onClick={() => {
                                                                 setinventoryModal(true);
+                                                                setinventorySettings({
+                                                                    ...item?.inventoryRent,
+                                                                    merchantId: item?.id,
+                                                                    functype: item?.inventoryRent == null ? 'add' : 'edit',
+                                                                    inInventory: item?.inventoryRent == null ? false : true,
+                                                                });
                                                             }}
                                                         >
                                                             <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Inventory Settings</p>
@@ -374,6 +396,7 @@ const Merchants = (props) => {
                                         Rent Type
                                     </label>
                                     <Select
+                                        isDisabled={inventorySettings?.functype == 'edit'}
                                         options={inventoryRentTypeContext}
                                         styles={defaultstyles}
                                         value={inventoryRentTypeContext.filter((option) => option.value == inventorySettings?.type)}
@@ -387,6 +410,7 @@ const Merchants = (props) => {
                                         <div class={`${formstyles.form__group} ${formstyles.field}`}>
                                             <label class={formstyles.form__label}>Start Date</label>
                                             <input
+                                                disabled={inventorySettings?.functype == 'edit'}
                                                 type={'date'}
                                                 class={formstyles.form__field}
                                                 value={inventorySettings.startDate}
@@ -397,6 +421,7 @@ const Merchants = (props) => {
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="col-lg-12">
                                     <div class="row m-0 w-100  ">
                                         <div class={`${formstyles.form__group} ${formstyles.field}`}>
@@ -452,10 +477,57 @@ const Merchants = (props) => {
                                         </div>
                                     </div>
                                 </div>
-                                <div class={'col-lg-12 d-flex justify-content-end mt-5'}>
-                                    <button disabled={buttonLoading} class={generalstyles.roundbutton + ' allcentered'} onClick={() => {}} style={{ padding: '0px' }}>
+                                <div class={'col-lg-12 d-flex justify-content-center mt-5'}>
+                                    <button
+                                        disabled={buttonLoading}
+                                        class={generalstyles.roundbutton + ' allcentered'}
+                                        onClick={async () => {
+                                            setbuttonLoading(true);
+                                            try {
+                                                if (
+                                                    inventorySettings?.type &&
+                                                    inventorySettings?.type?.length != 0 &&
+                                                    inventorySettings?.startDate &&
+                                                    inventorySettings?.startDate?.length != 0 &&
+                                                    inventorySettings?.merchantId &&
+                                                    inventorySettings?.merchantId?.length != 0 &&
+                                                    inventorySettings?.currency &&
+                                                    inventorySettings?.currency?.length != 0 &&
+                                                    inventorySettings?.pricePerUnit &&
+                                                    inventorySettings?.pricePerUnit?.length != 0
+                                                ) {
+                                                    if (inventorySettings?.functype == 'add') {
+                                                        const { data } = await createInventoryRentMutation();
+                                                        refetchMerchants();
+                                                        setinventoryModal(false);
+                                                    } else if (inventorySettings?.functype == 'edit') {
+                                                        const { data } = await updateInventoryRentMutation();
+                                                        refetchMerchants();
+                                                        setinventoryModal(false);
+                                                    }
+                                                    NotificationManager.success('', 'Success');
+                                                } else {
+                                                    NotificationManager.warning('Please Complete all fields', 'Warning');
+                                                }
+                                            } catch (error) {
+                                                let errorMessage = 'An unexpected error occurred';
+                                                if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                                    errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                                } else if (error.networkError) {
+                                                    errorMessage = error.networkError.message || errorMessage;
+                                                } else if (error.message) {
+                                                    errorMessage = error.message;
+                                                }
+
+                                                NotificationManager.warning(errorMessage, 'Warning!');
+                                                console.error('Error adding Merchant:', error);
+                                            }
+                                            setbuttonLoading(false);
+                                        }}
+                                        style={{ padding: '0px' }}
+                                    >
                                         {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                        {!buttonLoading && <span>continue</span>}
+                                        {!buttonLoading && <span>{inventorySettings?.functype == 'add' ? 'Add' : 'Edit'}</span>}
                                     </button>
                                 </div>
                             </div>

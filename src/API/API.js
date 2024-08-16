@@ -41,6 +41,13 @@ const API = () => {
             }
         `;
     };
+    const updateInventoryRent = () => {
+        return gql`
+            mutation updateInventoryRent($input: updateInventoryRentInput!) {
+                updateInventoryRent(input: $input)
+            }
+        `;
+    };
 
     const updateMerchantDomesticShipping = () => {
         return gql`
@@ -862,6 +869,7 @@ const API = () => {
                         id
                         merchantId
                         orderItems {
+                            id
                             info {
                                 id
                                 sku
@@ -1159,6 +1167,9 @@ const API = () => {
                         receipt
                         status
                         amount
+                        auditedBy {
+                            name
+                        }
                         fromAccount {
                             name
                         }
@@ -1427,6 +1438,7 @@ const API = () => {
         createMerchantDomesticShipping,
         updateMerchantDomesticShipping,
         createInventoryRent,
+        updateInventoryRent,
         fetchHubs,
         fetchOrderHistory,
         updateOrdersStatus,

@@ -142,10 +142,13 @@ const FinanceTransactions = (props) => {
                             onClick={() => {
                                 const transactions = fetchAllTransactionsQuery?.data?.paginateFinancialTransaction?.data;
 
-                                const exportData = transactions.map((transaction) => ({
-                                    ...transaction,
-                                    fromAccount: transaction.fromAccount?.name,
-                                    toAccount: transaction.toAccount?.name,
+                                const exportData = transactions.map(({ id, createdAt, __typename, fromAccount, toAccount, auditedBy, ...rest }) => ({
+                                    id,
+                                    ...rest,
+                                    auditedBy: auditedBy.name,
+                                    fromAccount: fromAccount?.name,
+                                    toAccount: toAccount?.name,
+                                    createdAt,
                                 }));
 
                                 exportToExcel(exportData, 'transactions');

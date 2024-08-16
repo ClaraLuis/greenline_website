@@ -70,13 +70,15 @@ const ReturnsTable = (props) => {
                                 <div
                                     style={{
                                         cursor: props?.clickable ? 'pointer' : '',
+                                        background: selected ? 'var(--secondary)' : '',
+                                        transition: 'all 0.4s',
                                     }}
                                     onClick={() => {
                                         props?.actiononclick(item);
                                     }}
                                     class={generalstyles.card + ' p-0 row m-0 w-100'}
                                 >
-                                    {selected && (
+                                    {/* {selected && (
                                         <div
                                             style={{
                                                 position: 'absolute',
@@ -88,7 +90,7 @@ const ReturnsTable = (props) => {
                                         >
                                             <FaCheck color="white" />
                                         </div>
-                                    )}
+                                    )} */}
                                     <div class="col-lg-12 py-2 px-3">
                                         <span style={{ fontSize: '12px', color: 'grey' }}># {item?.id}</span>
                                     </div>

@@ -88,7 +88,7 @@ const OrdersTable = (props) => {
         orderId: requestReturnPayload?.orderId,
         orderDate: requestReturnPayload?.orderDate,
         returnAmount: requestReturnPayload?.originalPrice ? undefined : requestReturnPayload?.returnAmount,
-        freeShipping: requestReturnPayload?.freeShipping,
+        freeShipping: requestReturnPayload?.freeShipping == 0 ? false : true,
         merchantId: isAuth([1]) ? requestReturnPayload?.item?.merchant?.id : undefined,
     });
     return (
@@ -233,7 +233,7 @@ const OrdersTable = (props) => {
                                                                 >
                                                                     <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>View order</p>
                                                                 </Dropdown.Item>
-                                                                {props?.srcFrom == 'merchant' && (
+                                                                {props?.srcFrom == 'merchant' && item?.type == 'delivery' && (
                                                                     <Dropdown.Item
                                                                         onClick={() => {
                                                                             setrequestReturnPayload({ ...requestReturnPayload, item, orderId: item.id });
@@ -444,7 +444,7 @@ const OrdersTable = (props) => {
                                                         </div>
                                                     )}
                                                     <div class="col-lg-6 p-0 d-flex justify-content-end">
-                                                        <p className={' m-0 p-0 wordbreak  '}>{dateformatter(orderDate.toUTCString())}</p>
+                                                        <p className={' m-0 p-0 wordbreak  '}>{dateformatter(item?.createdAt)}</p>
                                                     </div>
                                                 </div>
                                             </div>

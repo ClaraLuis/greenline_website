@@ -58,7 +58,7 @@ const MerchanReturns = (props) => {
     const { refetch: refetchMerchantItemReturnsQuery } = useQueryGQL('', fetchMerchantItemReturns(), filter);
 
     const [createReturnPackageMutation] = useMutationGQL(createReturnPackage(), {
-        ids: cartItems,
+        orderItemIds: cartItems,
         type: 'merchant',
         toMerchantId: filter?.merchantId,
     });
@@ -235,11 +235,14 @@ const MerchanReturns = (props) => {
                                             try {
                                                 var temp = [];
                                                 await packagepayload?.ids?.map((item, index) => {
-                                                    temp.push(item.id);
+                                                    item?.orderItems?.map((i, ii) => {
+                                                        temp.push(i.id);
+                                                    });
                                                 });
                                                 await setcartItems([...temp]);
                                                 await createReturnPackageMutation();
                                                 refetchMerchantItemReturnsQuery();
+                                                NotificationManager.success('Return Items package created', 'Success');
                                             } catch (error) {
                                                 let errorMessage = 'An unexpected error occurred';
                                                 if (error.graphQLErrors && error.graphQLErrors.length > 0) {

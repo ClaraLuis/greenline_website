@@ -48,11 +48,13 @@ const ImportNewItem = (props) => {
     const [importNewMutation] = useMutationGQL(importNew(), {
         itemVariantId: props?.importItemPayload?.itemVariantId,
         ownedByOneMerchant: props?.importItemPayload?.ownedByOneMerchant,
-        ballotId: props?.importItemPayload?.ballotId,
+        ballotId: props?.importItemPayload?.ballotId?.length == 0 ? undefined : props?.importItemPayload?.ballotId,
         inventoryId: props?.importItemPayload?.inventoryId,
         boxName: props?.importItemPayload?.boxName,
         ballotName: props?.importItemPayload?.ballotName,
+        ballotLevel: parseInt(props?.importItemPayload?.ballotLevel),
         rackId: props?.importItemPayload?.rackId,
+        boxId: props?.importItemPayload?.boxId,
         count: parseInt(props?.importItemPayload?.count),
         minCount: parseInt(props?.importItemPayload?.minCount),
     });
@@ -63,7 +65,16 @@ const ImportNewItem = (props) => {
             const { data } = await importNewMutation();
             // setop(false);
             // refetchInventories();
-            props?.openModals(false);
+            props?.setimportItemPayload({
+                itemVariantId: undefined,
+                ownedByOneMerchant: true,
+                ballotId: undefined,
+                inventoryId: undefined,
+                boxName: undefined,
+                count: 0,
+                minCount: 0,
+            });
+            props?.setopenModal(false);
             // console.log(data); // Handle response
         } catch (error) {
             let errorMessage = 'An unexpected error occurred';
@@ -107,11 +118,11 @@ const ImportNewItem = (props) => {
             onHide={() => {
                 props?.setopenModal(false);
                 props?.setimportItemPayload({
-                    itemVariantId: '',
+                    itemVariantId: undefined,
                     ownedByOneMerchant: true,
-                    ballotId: '',
-                    inventoryId: '',
-                    boxName: '',
+                    ballotId: undefined,
+                    inventoryId: undefined,
+                    boxName: undefined,
                     count: 0,
                     minCount: 0,
                 });
@@ -151,11 +162,11 @@ const ImportNewItem = (props) => {
                             onClick={() => {
                                 props?.setopenModal(false);
                                 props?.setimportItemPayload({
-                                    itemVariantId: '',
+                                    itemVariantId: undefined,
                                     ownedByOneMerchant: true,
-                                    ballotId: '',
-                                    inventoryId: '',
-                                    boxName: '',
+                                    ballotId: undefined,
+                                    inventoryId: undefined,
+                                    boxName: undefined,
                                     count: 0,
                                     minCount: 0,
                                 });
@@ -398,7 +409,8 @@ const ImportNewItem = (props) => {
                                 </div>
                             </div>
                         )}
-                        {props?.importItemPayload?.ballotId && (
+
+                        {(props?.importItemPayload?.ballotId || props?.importItemPayload?.rackId) && (
                             <div class="col-lg-6">
                                 <div class="row m-0 w-100  ">
                                     <div class={`${formstyles.form__group} ${formstyles.field}`}>
@@ -409,6 +421,23 @@ const ImportNewItem = (props) => {
                                             value={props?.importItemPayload.boxName}
                                             onChange={(event) => {
                                                 props?.setimportItemPayload({ ...props?.importItemPayload, boxName: event.target.value });
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        {props?.importItemPayload?.rackId && (
+                            <div class="col-lg-6">
+                                <div class="row m-0 w-100  ">
+                                    <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                        <label class={formstyles.form__label}>Level</label>
+                                        <input
+                                            type={'number'}
+                                            class={formstyles.form__field}
+                                            value={props?.importItemPayload.ballotLevel}
+                                            onChange={(event) => {
+                                                props?.setimportItemPayload({ ...props?.importItemPayload, ballotLevel: event.target.value });
                                             }}
                                         />
                                     </div>
