@@ -28,7 +28,8 @@ const ImportNewItem = (props) => {
     const cookies = new Cookies();
 
     const { setpageactive_context, dateformatter } = useContext(Contexthandlerscontext);
-    const { fetchUsers, useQueryGQL, fetchInventories, useMutationGQL, useLazyQueryGQL, fetchMerchantItemVariants, fetchRacks, importNew, fetchItemHistory } = API();
+    const { fetchMerchants, useQueryGQL, fetchInventories, useMutationGQL, useLazyQueryGQL, fetchMerchantItemVariants, fetchRacks, importNew, fetchItemHistory } = API();
+    const [search, setsearch] = useState('');
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [fetchRacksQuery, setfetchRacksQuery] = useState(null);
@@ -44,6 +45,14 @@ const ImportNewItem = (props) => {
         afterCursor: null,
         beforeCursor: null,
     });
+    const [filteMerchants, setfilteMerchants] = useState({
+        isAsc: true,
+        limit: 10,
+        afterCursor: undefined,
+        beforeCursor: undefined,
+    });
+
+    const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filteMerchants);
 
     const [importNewMutation] = useMutationGQL(importNew(), {
         itemVariantId: props?.importItemPayload?.itemVariantId,
@@ -182,6 +191,56 @@ const ImportNewItem = (props) => {
             <Modal.Body>
                 {step == 0 && (
                     <div class="row m-0 w-100 py-2 pb-3">
+                        <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                            <SelectComponent
+                                title={'Merchant'}
+                                filter={filteMerchants}
+                                setfilter={setfilteMerchants}
+                                options={fetchMerchantsQuery}
+                                attr={'paginateMerchants'}
+                                label={'name'}
+                                value={'id'}
+                                payload={merchantFilter}
+                                payloadAttr={'merchantId'}
+                                onClick={(option) => {
+                                    // setfilterobj({ ...filterobj, merchantIds: temp });
+                                    setmerchantFilter({ ...merchantFilter, merchantId: option?.id });
+                                }}
+                            />
+                        </div>
+                        <div class="col-lg-12 p-0 my-3 ">
+                            <div class="row m-0 w-100 d-flex align-items-center">
+                                <div class="col-lg-10 p-0">
+                                    <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
+                                        <input
+                                            // disabled={props?.disabled}
+                                            // type={props?.type}
+                                            class={formstyles.form__field}
+                                            value={search}
+                                            placeholder={'Search by name, SKU '}
+                                            onChange={(event) => {
+                                                setsearch(event.target.value);
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 p-1">
+                                    <button
+                                        style={{ height: '30px' }}
+                                        class={generalstyles.roundbutton + ' p-0 allcentered'}
+                                        onClick={() => {
+                                            if (search.length == 0) {
+                                                setmerchantFilter({ ...merchantFilter, name: undefined });
+                                            } else {
+                                                setmerchantFilter({ ...merchantFilter, name: search });
+                                            }
+                                        }}
+                                    >
+                                        search
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                         <div class="col-lg-12 p-0">
                             <Pagination
                                 beforeCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.beforeCursor}

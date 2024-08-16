@@ -22,6 +22,7 @@ import { defaultstyles } from '../Generalfiles/selectstyles.js';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
 import { useQuery } from 'react-query';
 import Form from '../../Form.js';
+import Decimal from 'decimal.js';
 
 const AddMerchant = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -880,7 +881,7 @@ const AddMerchant = (props) => {
                                                                                             }}
                                                                                         />
                                                                                         <p style={{ width: '45%' }} className={' m-0 p-0 mx-1 h-100 d-flex align-items-center '}>
-                                                                                            {(parseFloat(item.shipping) * parseFloat(item.vat)).toFixed(2)}
+                                                                                            {new Decimal(item?.shipping).mul(new Decimal(item?.vat)).toFixed(2)}
                                                                                         </p>
                                                                                     </div>
                                                                                 </td>
@@ -901,7 +902,7 @@ const AddMerchant = (props) => {
                                                                                             }}
                                                                                         />
                                                                                         <p style={{ width: '45%' }} className={' m-0 p-0 mx-1 h-100 d-flex align-items-center '}>
-                                                                                            {(parseFloat(item.shipping) * parseFloat(item.post)).toFixed(2)}
+                                                                                            {new Decimal(item.shipping).mul(new Decimal(item.post)).toFixed(2)}
                                                                                         </p>
                                                                                     </div>
                                                                                 </td>
@@ -923,7 +924,7 @@ const AddMerchant = (props) => {
                                                                                 </td>
                                                                                 <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
                                                                                     <p className={' m-0 p-0  h-100 d-flex align-items-center '}>
-                                                                                        {parseFloat(item.shipping) - (parseFloat(item.base) + parseFloat(item.shipping) * 0.14)}
+                                                                                        {new Decimal(item.shipping).minus(new Decimal(item.base).plus(new Decimal(item.shipping).mul(0.14))).toFixed(2)}
                                                                                     </p>
                                                                                 </td>
                                                                             </tr>
@@ -969,7 +970,7 @@ const AddMerchant = (props) => {
                                                                                         }}
                                                                                     />
                                                                                     <p style={{ width: '45%' }} className={' m-0 p-0 mx-1 h-100 d-flex align-items-center '}>
-                                                                                        {(parseFloat(item.shipping) * parseFloat(item.vat)).toFixed(2)}
+                                                                                        {new Decimal(item.shipping).mul(new Decimal(item.vat)).toFixed(2)}
                                                                                     </p>
                                                                                 </div>
                                                                             </td>
@@ -990,7 +991,7 @@ const AddMerchant = (props) => {
                                                                                         }}
                                                                                     />
                                                                                     <p style={{ width: '45%' }} className={' m-0 p-0 mx-1 h-100 d-flex align-items-center '}>
-                                                                                        {(parseFloat(item.shipping) * parseFloat(item.post)).toFixed(2)}
+                                                                                        {new Decimal(item.shipping).mul(new Decimal(item.post)).toFixed(2)}
                                                                                     </p>
                                                                                 </div>
                                                                             </td>
@@ -1012,7 +1013,7 @@ const AddMerchant = (props) => {
                                                                             </td>
                                                                             <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
                                                                                 <p className={' m-0 p-0  h-100 d-flex align-items-center '}>
-                                                                                    {parseFloat(item.shipping) - (parseFloat(item.base) + parseFloat(item.shipping) * 0.14)}
+                                                                                    {new Decimal(item.shipping).minus(new Decimal(item.base).plus(new Decimal(item.shipping).mul(0.14))).toFixed(2)}
                                                                                 </p>
                                                                             </td>
                                                                         </tr>
@@ -1022,42 +1023,6 @@ const AddMerchant = (props) => {
                                                         </tbody>
                                                     </table>
                                                 </div>
-                                                {/* <div style={{ position: 'fixed', bottom: '2%', right: '2%' }}>
-                                                <button
-                                                    style={{ height: '35px' }}
-                                                    class={generalstyles.roundbutton + '  mb-1 mx-2'}
-                                                    onClick={async () => {
-                                                        var temp = [];
-                                                        await governoratesItems?.map((item, index) => {
-                                                            temp.push({
-                                                                govId: item.id,
-                                                                total: item.shipping,
-                                                                vatDecimal: item.vat,
-                                                                base: item.base,
-                                                                extra: parseFloat(item.shipping) - (parseFloat(item.base) + parseFloat(item.shipping) * 0.14),
-                                                            });
-                                                        });
-                                                        await setgovernoratesItemsList([...temp]);
-                                                        if (queryParameters?.get('type') == 'add') {
-                                                            var { data } = await createMerchantDomesticShippingMutation();
-                                                            if (data?.createMerchantDomesticShipping?.success) {
-                                                                NotificationManager.success('', 'Success!');
-                                                            } else {
-                                                                NotificationManager.warning(data?.createMerchantDomesticShipping?.message, 'Warning!');
-                                                            }
-                                                        } else {
-                                                            var { data } = await updateMerchantDomesticShippingMutation();
-                                                            if (data?.updateMerchantDomesticShipping?.success) {
-                                                                NotificationManager.success('', 'Success!');
-                                                            } else {
-                                                                NotificationManager.warning(data?.updateMerchantDomesticShipping?.message, 'Warning!');
-                                                            }
-                                                        }
-                                                    }}
-                                                >
-                                                    Submit
-                                                </button>
-                                            </div> */}
                                             </div>
                                         )}
                                     </>

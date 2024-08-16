@@ -57,6 +57,8 @@ const Expenses = (props) => {
         type: undefined,
     });
     const fetchExpensesQuery = useQueryGQL('', fetchExpenses(), filterTransactionsObj);
+    const { refetch: refetchExpensesQuery } = useQueryGQL('', fetchExpenses(), filterTransactionsObj);
+
     const [buttonLoading, setbuttonLoading] = useState(false);
     const [filterExpensesObj, setfilterExpensesObj] = useState({
         isAsc: true,
@@ -86,6 +88,7 @@ const Expenses = (props) => {
 
     const Refetch = () => {
         refetchAllFinancialAccountsQuery();
+        refetchExpensesQuery();
     };
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">

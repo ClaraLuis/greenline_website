@@ -19,6 +19,7 @@ import Form from '../../Form.js';
 import Select from 'react-select';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
 import Inputfield from '../../Inputfield.js';
+import Decimal from 'decimal.js';
 
 const CourierSheet = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -65,33 +66,36 @@ const CourierSheet = (props) => {
     });
 
     const calculateAmountCollected = () => {
-        var amount = 0;
-        var orderItemsAmount = 0;
-        statuspayload?.order?.orderItems?.map((i) => {
-            orderItemsAmount += parseFloat(i.unitPrice) * parseInt(i.count);
+        let amount = new Decimal(0);
+        let orderItemsAmount = new Decimal(0);
+
+        // Calculate orderItemsAmount
+        statuspayload?.order?.orderItems?.forEach((i) => {
+            orderItemsAmount = orderItemsAmount.plus(new Decimal(i.unitPrice).mul(new Decimal(i.count)));
         });
+
+        // Determine amount based on conditions
         if (statuspayload?.order?.originalPrice) {
             if (statuspayload?.shippingCollected) {
-                amount = parseFloat(statuspayload?.order?.shippingPrice) + parseFloat(statuspayload?.orderItemsAmount);
+                amount = new Decimal(statuspayload?.order?.shippingPrice || 0).plus(orderItemsAmount);
             } else {
-                amount = parseFloat(statuspayload?.orderItemsAmount);
+                amount = orderItemsAmount;
             }
-            return amount;
         } else if (!statuspayload?.order?.originalPrice && !statuspayload?.fullDelivery) {
             if (statuspayload?.shippingCollected) {
-                amount = parseFloat(statuspayload?.order?.shippingPrice) + parseFloat(statuspayload?.amountCollected);
+                amount = new Decimal(statuspayload?.order?.shippingPrice || 0).plus(new Decimal(statuspayload?.amountCollected || 0));
             } else {
-                amount = parseFloat(statuspayload?.amountCollected);
+                amount = new Decimal(statuspayload?.amountCollected || 0);
             }
-            return amount;
         } else if (!statuspayload?.order?.originalPrice && statuspayload?.fullDelivery) {
             if (statuspayload?.shippingCollected) {
-                amount = parseFloat(statuspayload?.order?.shippingPrice) + parseFloat(statuspayload?.price);
+                amount = new Decimal(statuspayload?.order?.shippingPrice || 0).plus(new Decimal(statuspayload?.price || 0));
             } else {
-                amount = parseFloat(statuspayload?.price);
+                amount = new Decimal(statuspayload?.price || 0);
             }
-            return amount;
         }
+
+        return amount; // Return amount formatted to 2 decimal places
     };
     const [updateOrdersStatusMutation] = useMutationGQL(updateOrdersStatus(), {
         status: statuspayload?.status,

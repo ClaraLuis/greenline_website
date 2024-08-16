@@ -43,7 +43,7 @@ const API = () => {
     };
     const updateInventoryRent = () => {
         return gql`
-            mutation updateInventoryRent($input: updateInventoryRentInput!) {
+            mutation updateInventoryRent($input: UpdateInventoryRentInput!) {
                 updateInventoryRent(input: $input)
             }
         `;

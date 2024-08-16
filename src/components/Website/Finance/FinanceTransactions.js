@@ -71,6 +71,8 @@ const FinanceTransactions = (props) => {
         type: undefined,
     });
     const fetchAllTransactionsQuery = useQueryGQL('', fetchTransactions(), filterTransactionsObj);
+    const { refetch: refetchAllTransactionsQuery } = useQueryGQL('', fetchTransactions(), filterTransactionsObj);
+
     const [buttonLoading, setbuttonLoading] = useState(false);
     const [filterAllFinancialAccountsObj, setfilterAllFinancialAccountsObj] = useState({
         isAsc: true,
@@ -106,6 +108,7 @@ const FinanceTransactions = (props) => {
 
     const Refetch = () => {
         refetchAllFinancialAccountsQuery();
+        refetchAllTransactionsQuery();
     };
 
     const exportToExcel = (data, fileName) => {

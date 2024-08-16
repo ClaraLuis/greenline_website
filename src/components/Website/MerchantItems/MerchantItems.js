@@ -106,6 +106,7 @@ const MerchantItems = (props) => {
 
     useEffect(() => {
         setpageactive_context('/merchantitems');
+        refetchItems();
     }, []);
 
     const [options, setOptions] = useState([]);

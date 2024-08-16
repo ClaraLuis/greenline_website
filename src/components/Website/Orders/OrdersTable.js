@@ -236,8 +236,12 @@ const OrdersTable = (props) => {
                                                                 {props?.srcFrom == 'merchant' && item?.type == 'delivery' && (
                                                                     <Dropdown.Item
                                                                         onClick={() => {
-                                                                            setrequestReturnPayload({ ...requestReturnPayload, item, orderId: item.id });
-                                                                            setreturnOrderModal(true);
+                                                                            if (item?.status == 'delivered' || item?.status == 'partiallyDelivered') {
+                                                                                setrequestReturnPayload({ ...requestReturnPayload, item, orderId: item.id });
+                                                                                setreturnOrderModal(true);
+                                                                            } else {
+                                                                                NotificationManager.warning('Order is not yet delivered', 'Warning!');
+                                                                            }
                                                                         }}
                                                                         class="py-2"
                                                                     >

@@ -18,14 +18,16 @@ import API from '../../../API/API.js';
 import SheetsTable from './SheetsTable.js';
 import Pagination from '../../Pagination.js';
 import * as XLSX from 'xlsx';
+import SelectComponent from '../../SelectComponent.js';
+import MultiSelect from '../../MultiSelect.js';
 
 const { ValueContainer, Placeholder } = components;
 
 const CourierSheets = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, dateformatter, isAuth } = useContext(Contexthandlerscontext);
-    const { useQueryGQL, fetchCourierSheets } = API();
+    const { setpageactive_context, setpagetitle_context, courierSheetStatusesContext, isAuth } = useContext(Contexthandlerscontext);
+    const { useQueryGQL, fetchCourierSheets, fetchCouriers } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
 
@@ -35,10 +37,18 @@ const CourierSheets = (props) => {
         isAsc: true,
         afterCursor: '',
         beforeCursor: '',
+        statuses: ['inProgress', 'waitingForAdminApproval', 'waitingForFinanceApproval'],
     });
     const fetchSheetsQuery = useQueryGQL('', fetchCourierSheets(), filter);
     const { refetch: refetchCourierSheets } = useQueryGQL('', fetchCourierSheets(), filter);
 
+    const [filterCouriers, setfilterCouriers] = useState({
+        isAsc: true,
+        limit: 10,
+        afterCursor: undefined,
+        beforeCursor: undefined,
+    });
+    const fetchCouriersQuery = useQueryGQL('', fetchCouriers(), filterCouriers);
     useEffect(() => {
         setpageactive_context('/couriersheets');
         // refetchCourierSheets();
@@ -91,7 +101,7 @@ const CourierSheets = (props) => {
                         Export
                     </button>
                 </div>
-                {/* <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>
+                <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>
                     <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
                         <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
                             <AccordionItemHeading>
@@ -125,53 +135,42 @@ const CourierSheets = (props) => {
                             <AccordionItemPanel>
                                 <hr className="mt-2 mb-3" />
                                 <div class="row m-0 w-100">
-                                    <div class={'col-lg-2'} style={{ marginBottom: '15px' }}>
-                                        <label for="name" class={formstyles.form__label}>
-                                            Couriers
-                                        </label>
-                                        <Select
-                                            options={[
-                                                { label: 'Courier 1', value: '1' },
-                                                { label: 'Courier 2', value: '2' },
-                                            ]}
-                                            styles={defaultstyles}
-                                            value={
-                                                [
-                                                    { label: 'Courier 1', value: '1' },
-                                                    { label: 'Courier 2', value: '2' },
-                                                ]
-                                                // .filter((option) => option.value == props?.payload[item?.attr])
-                                            }
-                                            onChange={(option) => {
-                                                // props?.setsubmit(false);
-                                                // var temp = { ...props?.payload };
-                                                // temp[item?.attr] = option.value;
-                                                // props?.setpayload({ ...temp });
+                                    <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                        <SelectComponent
+                                            title={'Courier'}
+                                            filter={filterCouriers}
+                                            setfilter={setfilterCouriers}
+                                            options={fetchCouriersQuery}
+                                            attr={'paginateCouriers'}
+                                            label={'name'}
+                                            value={'id'}
+                                            payload={filter}
+                                            payloadAttr={'courierId'}
+                                            onClick={(option) => {
+                                                setfilter({ ...filter, courierId: option?.id });
                                             }}
                                         />
                                     </div>
-                                    <div class={'col-lg-2'} style={{ marginBottom: '15px' }}>
-                                        <label for="name" class={formstyles.form__label}>
-                                            Status
-                                        </label>
-                                        <Select
-                                            options={[
-                                                { label: 'Pending', value: '1' },
-                                                { label: 'Done', value: '2' },
-                                            ]}
-                                            styles={defaultstyles}
-                                            value={
-                                                [
-                                                    { label: 'Pending', value: '1' },
-                                                    { label: 'Done', value: '2' },
-                                                ]
-                                                // .filter((option) => option.value == props?.payload[item?.attr])
-                                            }
-                                            onChange={(option) => {
-                                                // props?.setsubmit(false);
-                                                // var temp = { ...props?.payload };
-                                                // temp[item?.attr] = option.value;
-                                                // props?.setpayload({ ...temp });
+                                    <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                        <MultiSelect
+                                            title={'Status'}
+                                            options={courierSheetStatusesContext}
+                                            label={'label'}
+                                            value={'value'}
+                                            selected={filter?.statuses}
+                                            onClick={(option) => {
+                                                var tempArray = [...(filter?.statuses ?? [])];
+                                                if (option == 'All') {
+                                                    tempArray = undefined;
+                                                } else {
+                                                    if (!tempArray?.includes(option.value)) {
+                                                        tempArray.push(option.value);
+                                                    } else {
+                                                        tempArray.splice(tempArray?.indexOf(option?.value), 1);
+                                                    }
+                                                }
+
+                                                setfilter({ ...filter, statuses: tempArray?.length != 0 ? tempArray : undefined });
                                             }}
                                         />
                                     </div>
@@ -179,7 +178,7 @@ const CourierSheets = (props) => {
                             </AccordionItemPanel>
                         </AccordionItem>
                     </Accordion>
-                </div> */}
+                </div>
                 {isAuth([1, 34, 53]) && (
                     <>
                         <div class="col-lg-12 p-0">

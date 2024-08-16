@@ -12,6 +12,7 @@ import { NotificationManager } from 'react-notifications';
 import API from '../../../API/API.js';
 import { BiCheck, BiEdit } from 'react-icons/bi';
 import { Check } from 'react-bootstrap-icons';
+import Decimal from 'decimal.js';
 
 const UpdateShipping = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -110,7 +111,7 @@ const UpdateShipping = (props) => {
                                 }}
                             />
                             <p style={{ width: '45%' }} className={' m-0 p-0 mx-1 h-100 d-flex align-items-center '}>
-                                {(parseFloat(item.shipping) * parseFloat(item.vat)).toFixed(2)}
+                                {new Decimal(item.shipping).mul(new Decimal(item.vat)).toFixed(2)}
                             </p>
                         </div>
                     </td>
@@ -131,7 +132,7 @@ const UpdateShipping = (props) => {
                                 }}
                             />
                             <p style={{ width: '45%' }} className={' m-0 p-0 mx-1 h-100 d-flex align-items-center '}>
-                                {(parseFloat(item.shipping) * parseFloat(item.post)).toFixed(2)}
+                                {new Decimal(item.shipping).mul(new Decimal(item.post)).toFixed(2)}
                             </p>
                         </div>
                     </td>
@@ -152,7 +153,7 @@ const UpdateShipping = (props) => {
                         />
                     </td>
                     <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
-                        <p className={' m-0 p-0  h-100 d-flex align-items-center '}>{parseFloat(parseFloat(item.shipping) - (parseFloat(item.base) + parseFloat(item.shipping) * 0.14))?.toFixed(2)}</p>
+                        <p className={' m-0 p-0  h-100 d-flex align-items-center '}>{new Decimal(item.shipping).minus(new Decimal(item.base).plus(new Decimal(item.shipping).mul(0.14))).toFixed(2)}</p>
                     </td>
                     <td class="allcentered" style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
                         <BiCheck
@@ -208,7 +209,7 @@ const UpdateShipping = (props) => {
                     </td>
 
                     <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
-                        <p className={' m-0 p-0  h-100 d-flex align-items-center '}>{parseFloat(parseFloat(item.shipping) - (parseFloat(item.base) + parseFloat(item.shipping) * 0.14))?.toFixed(2)}</p>
+                        <p className={' m-0 p-0  h-100 d-flex align-items-center '}>{new Decimal(item.shipping).minus(new Decimal(item.base).plus(new Decimal(item.shipping).mul(0.14))).toFixed(2)}</p>
                     </td>
                     <td class="allcentered" style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
                         <BiEdit

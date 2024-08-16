@@ -52,7 +52,6 @@ const AddressInfo = (props) => {
             const { data } = await addUser1();
             props?.setopenModal(false);
             refetchUsers();
-
             console.log(data); // Handle response
         } catch (error) {
             let errorMessage = 'An unexpected error occurred';

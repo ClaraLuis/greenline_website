@@ -21,14 +21,16 @@ import OrdersTable from '../Orders/OrdersTable.js';
 import ExpensesTable from './ExpensesTable.js';
 import SheetsTable from '../Courier/SheetsTable.js';
 import Pagination from '../../Pagination.js';
+import MultiSelect from '../../MultiSelect.js';
+import SelectComponent from '../../SelectComponent.js';
 
 const { ValueContainer, Placeholder } = components;
 
 const FinanceSheets = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, dateformatter, isAuth } = useContext(Contexthandlerscontext);
-    const { fetchUsers, useQueryGQL, fetchCourierSheets } = API();
+    const { setpageactive_context, setpagetitle_context, courierSheetStatusesContext, isAuth } = useContext(Contexthandlerscontext);
+    const { fetchCouriers, useQueryGQL, fetchCourierSheets } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
 
@@ -59,8 +61,16 @@ const FinanceSheets = (props) => {
         isAsc: true,
         afterCursor: '',
         beforeCursor: '',
+        statuses: ['inProgress', 'waitingForAdminApproval', 'waitingForFinanceApproval'],
     });
     const fetchSheetsQuery = useQueryGQL('', fetchCourierSheets(), filter);
+    const [filterCouriers, setfilterCouriers] = useState({
+        isAsc: true,
+        limit: 10,
+        afterCursor: undefined,
+        beforeCursor: undefined,
+    });
+    const fetchCouriersQuery = useQueryGQL('', fetchCouriers(), filterCouriers);
     // const fetchusers = [];
     useEffect(() => {
         setpageactive_context('/financesheets');
@@ -79,6 +89,84 @@ const FinanceSheets = (props) => {
                     <p class=" p-0 m-0" style={{ fontSize: '15px' }}>
                         <span style={{ color: 'var(--info)' }}>Manifests</span>
                     </p>
+                </div>
+                <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>
+                    <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
+                        <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
+                            <AccordionItemHeading>
+                                <AccordionItemButton>
+                                    <div class="row m-0 w-100">
+                                        <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
+                                            <p class={generalstyles.cardTitle + '  m-0 p-0 '}>Filter:</p>
+                                        </div>
+                                        <div class="col-lg-4 col-md-4 col-sm-4 p-0 d-flex align-items-center justify-content-end">
+                                            <AccordionItemState>
+                                                {(state) => {
+                                                    if (state.expanded == true) {
+                                                        return (
+                                                            <i class="h-100 d-flex align-items-center justify-content-center">
+                                                                <BsChevronUp />
+                                                            </i>
+                                                        );
+                                                    } else {
+                                                        return (
+                                                            <i class="h-100 d-flex align-items-center justify-content-center">
+                                                                <BsChevronDown />
+                                                            </i>
+                                                        );
+                                                    }
+                                                }}
+                                            </AccordionItemState>
+                                        </div>
+                                    </div>
+                                </AccordionItemButton>
+                            </AccordionItemHeading>
+                            <AccordionItemPanel>
+                                <hr className="mt-2 mb-3" />
+                                <div class="row m-0 w-100">
+                                    <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                        <SelectComponent
+                                            title={'Courier'}
+                                            filter={filterCouriers}
+                                            setfilter={setfilterCouriers}
+                                            options={fetchCouriersQuery}
+                                            attr={'paginateCouriers'}
+                                            label={'name'}
+                                            value={'id'}
+                                            payload={filter}
+                                            payloadAttr={'courierId'}
+                                            onClick={(option) => {
+                                                setfilter({ ...filter, courierId: option?.id });
+                                            }}
+                                        />
+                                    </div>
+                                    <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                        <MultiSelect
+                                            title={'Status'}
+                                            options={courierSheetStatusesContext}
+                                            label={'label'}
+                                            value={'value'}
+                                            selected={filter?.statuses}
+                                            onClick={(option) => {
+                                                var tempArray = [...(filter?.statuses ?? [])];
+                                                if (option == 'All') {
+                                                    tempArray = undefined;
+                                                } else {
+                                                    if (!tempArray?.includes(option.value)) {
+                                                        tempArray.push(option.value);
+                                                    } else {
+                                                        tempArray.splice(tempArray?.indexOf(option?.value), 1);
+                                                    }
+                                                }
+
+                                                setfilter({ ...filter, statuses: tempArray?.length != 0 ? tempArray : undefined });
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                            </AccordionItemPanel>
+                        </AccordionItem>
+                    </Accordion>
                 </div>
                 {isAuth([1, 34, 53, 51]) && (
                     <>

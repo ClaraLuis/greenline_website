@@ -63,7 +63,7 @@ const Merchants = (props) => {
     const [updateInventoryRentMutation] = useMutationGQL(updateInventoryRent(), {
         pricePerUnit: inventorySettings?.pricePerUnit,
         currency: inventorySettings?.currency,
-        sqaureMeter: inventorySettings?.sqaureMeter,
+        squareMeter: inventorySettings?.sqaureMeter,
         merchantId: inventorySettings?.merchantId,
     });
 
@@ -102,6 +102,9 @@ const Merchants = (props) => {
     useEffect(() => {
         setpageactive_context('/merchants');
     }, []);
+    const formatDate = (isoDate) => {
+        return isoDate.split('T')[0];
+    };
 
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
@@ -413,7 +416,7 @@ const Merchants = (props) => {
                                                 disabled={inventorySettings?.functype == 'edit'}
                                                 type={'date'}
                                                 class={formstyles.form__field}
-                                                value={inventorySettings.startDate}
+                                                value={inventorySettings.startDate ? formatDate(inventorySettings.startDate) : ''}
                                                 onChange={(event) => {
                                                     setinventorySettings({ ...inventorySettings, startDate: event.target.value });
                                                 }}
