@@ -90,7 +90,7 @@ const UsersTable = (props) => {
                                                         onClick={() => {
                                                             var temp = { ...item };
                                                             temp.functype = 'edit';
-                                                            setpayload({ ...temp });
+                                                            setpayload({ ...temp, employeeType: item?.employee?.type, salary: item?.employee?.salary, commission: item?.employee?.commission });
                                                             setopenModal(true);
                                                         }}
                                                         style={{
@@ -123,7 +123,7 @@ const UsersTable = (props) => {
                                             <div className="col-lg-12 p-0 mb-1">
                                                 <span style={{ fontWeight: 600 }} class="d-flex align-items-center text-capitalize">
                                                     <RiSettings4Line class="mr-1" />
-                                                    {item?.type?.split(/(?=[A-Z])/).join(' ')}
+                                                    {item?.type?.split(/(?=[A-Z])/).join(' ')} {item?.employee?.type?.split(/(?=[A-Z])/).join(' ')}
                                                 </span>
                                             </div>
                                             <div className="col-lg-12 p-0 ">

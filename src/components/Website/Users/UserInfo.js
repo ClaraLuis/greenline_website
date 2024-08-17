@@ -27,7 +27,7 @@ const UserInfo = (props) => {
     const cookies = new Cookies();
 
     const { userRolesContext, userTypeContext, employeeTypeContext, isAuth } = useContext(Contexthandlerscontext);
-    const { useQueryGQL, fetchUsers, useMutationGQL, addUser, editUserType, fetchMerchants, fetchInventories, fetchHubs } = API();
+    const { useQueryGQL, fetchUsers, useMutationGQL, addUser, editUserType, fetchMerchants, fetchInventories, fetchHubs, updateEmployeeInfo } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [submit, setsubmit] = useState(false);
@@ -75,15 +75,15 @@ const UserInfo = (props) => {
 
         merchantId: cookies.get('merchantId') != undefined ? undefined : parseInt(props?.payload?.merchant),
     });
-
-    const [editUserTypeMutation] = useMutationGQL(editUserType(), {
-        type: props?.payload?.type,
-        // name: props?.payload?.name,
-        // phone: props?.payload?.phone,
-        // email: props?.payload?.email,
-        // birthdate: props?.payload?.birthdate,
+    const [updateEmployeeInfoMutation] = useMutationGQL(updateEmployeeInfo(), {
+        type: props?.payload?.employeeType,
+        salary: props?.payload?.salary,
+        commission: props?.payload?.commission,
+        hubId: parseInt(props?.payload?.hubID),
+        inventoryId: props?.payload?.inventoryId,
         id: props?.payload?.id,
     });
+
     const [filterUsers, setfilterUsers] = useState({
         isAsc: true,
         limit: 20,
@@ -106,15 +106,23 @@ const UserInfo = (props) => {
 
         try {
             if (props?.payload.functype == 'edit') {
-                var { data } = await editUserTypeMutation();
+                var { data } = await updateEmployeeInfoMutation();
+                if (data?.updateEmployeeInfo?.success) {
+                    props?.setopenModal(false);
+                    refetchUsers();
+                    NotificationManager.success('', 'Success');
+                } else {
+                    NotificationManager.warning(data?.updateEmployeeInfo?.message, 'Warning!');
+                }
             } else {
                 var { data } = await addUser1();
-            }
-            if (data?.createUser?.success) {
-                props?.setopenModal(false);
-                refetchUsers();
-            } else {
-                NotificationManager.warning(data?.createUser?.message, 'Warning!');
+                if (data?.createUser?.success) {
+                    props?.setopenModal(false);
+                    refetchUsers();
+                    NotificationManager.success('', 'Success');
+                } else {
+                    NotificationManager.warning(data?.createUser?.message, 'Warning!');
+                }
             }
         } catch (error) {
             let errorMessage = 'An unexpected error occurred';
@@ -163,23 +171,56 @@ const UserInfo = (props) => {
                     </Modal.Header>
                     <Modal.Body>
                         <div class="row m-0 w-100 py-2">
-                            {/* <div class="col-lg-12">
-                                <SelectComponent
-                                    title={'Inventory'}
-                                    filter={filterInventories}
-                                    setfilter={setfilterInventories}
-                                    options={fetchinventories}
-                                    attr={'paginateInventories'}
-                                    label={'name'}
-                                    value={'id'}
+                            {props?.payload?.functype == 'edit' && (
+                                <Form
+                                    size={'lg'}
+                                    submit={submit}
+                                    setsubmit={setsubmit}
+                                    attr={[
+                                        {
+                                            name: 'Employee Type',
+                                            attr: 'employeeType',
+                                            type: 'select',
+                                            options: employeeTypeContext,
+                                            size: '6',
+                                        },
+                                        {
+                                            title: 'Inventory',
+                                            filter: filterInventories,
+                                            setfilter: setfilterInventories,
+                                            options: fetchinventories,
+                                            optionsAttr: 'paginateInventories',
+                                            label: 'name',
+                                            value: 'id',
+                                            size: '6',
+                                            attr: 'inventoryId',
+                                            type: 'fetchSelect',
+                                        },
+                                        {
+                                            title: 'Hub',
+                                            filter: filterHubs,
+                                            setfilter: setfilterHubs,
+                                            options: fetchHubsQuery,
+                                            optionsAttr: 'paginateHubs',
+                                            label: 'name',
+                                            value: 'id',
+                                            size: '6',
+                                            attr: 'hubID',
+                                            type: 'fetchSelect',
+                                        },
+                                        { name: 'Commission', attr: 'commission', size: '6', type: 'number' },
+                                        { name: 'Salary', attr: 'salary', size: '6', type: 'number' },
+                                    ]}
                                     payload={props?.payload}
-                                    payloadAttr={'inventoryId'}
-                                    onClick={async (option) => {
-                                        props?.setpayload({ ...props?.payload, invetoryId: option?.id });
+                                    setpayload={props?.setpayload}
+                                    button1disabled={buttonLoading}
+                                    button1class={generalstyles.roundbutton + '  mr-2 '}
+                                    button1placeholder={props?.payload?.functype == 'add' ? lang.add : lang.edit}
+                                    button1onClick={() => {
+                                        handleAddUser();
                                     }}
-                                    removeAll={true}
                                 />
-                            </div> */}
+                            )}
                             {props?.payload.functype == 'edit' && (
                                 <div class="col-lg-12 d-flex justify-content-end py-0">
                                     <div

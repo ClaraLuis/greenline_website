@@ -30,25 +30,23 @@ const MerchantPayment = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, isAuth, financialAccountTypeContext } = useContext(Contexthandlerscontext);
-    const { useQueryGQL, fetchMerchants, useMutationGQL, createFinancialAccount, updateFinancialAccount, fetchMerchantPaymentTransactions, completeMerchantPayments, fetchFinancialAccounts } = API();
+    const {
+        useQueryGQL,
+        fetchMerchants,
+        useMutationGQL,
+        createFinancialAccount,
+        calculateFinancialTransactionsTotal,
+        fetchMerchantPaymentTransactions,
+        completeMerchantPayments,
+        fetchFinancialAccounts,
+    } = API();
     const cookies = new Cookies();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [buttonLoading, setbuttonLoading] = useState(false);
-    const [openModal, setopenModal] = useState(false);
-    const [chosenMerchantsArray, setchosenMerchantsArray] = useState([]);
-    const [total, setTotal] = useState(0);
-    const [submit, setsubmit] = useState(false);
+
     const [selectedArray, setselectedArray] = useState([]);
 
-    const [payload, setpayload] = useState({
-        functype: 'add',
-        name: '',
-        type: '',
-        merchantId: undefined,
-        balance: 0,
-        userId: undefined,
-    });
     const [filterobj, setfilterobj] = useState({
         isAsc: true,
         limit: 20,
@@ -71,19 +69,6 @@ const MerchantPayment = (props) => {
             processing: undefined,
         });
     }, []);
-    const [filteMerchants, setfilteMerchants] = useState({
-        isAsc: true,
-        limit: 10,
-        afterCursor: undefined,
-        beforeCursor: undefined,
-    });
-    const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filteMerchants);
-    const { refetch: refetchMerchantPaymentTransactionsQuery } = useQueryGQL('', fetchMerchantPaymentTransactions(), filterobj);
-
-    const [completeMerchantPaymentsMutation] = useMutationGQL(completeMerchantPayments(), {
-        transactionIds: selectedArray,
-        description: payload?.description,
-    });
 
     useEffect(() => {
         var totalTemp = 0;

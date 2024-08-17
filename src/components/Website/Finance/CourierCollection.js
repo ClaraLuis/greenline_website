@@ -30,7 +30,7 @@ const CourierCollection = (props) => {
     const { setpageactive_context, isAuth, financialAccountTypeContext } = useContext(Contexthandlerscontext);
     const {
         useQueryGQL,
-
+        calculateFinancialTransactionsTotal,
         fetchMerchants,
         useMutationGQL,
         createFinancialAccount,
@@ -76,6 +76,8 @@ const CourierCollection = (props) => {
 
     const fetchCourierCollectionTransactionsQuery = useQueryGQL('', fetchCourierCollectionTransactions(), filterobj);
     const fetchCourierCollectionTransactionsQuery1 = useQueryGQL('', fetchCourierCollectionTransactions(), filterobj1);
+    const { isAsc, limit, processing, ...filteredFilterObj } = filterobj;
+    const calculateFinancialTransactionsTotalQuery = useQueryGQL('', calculateFinancialTransactionsTotal(), { ...filteredFilterObj, category: 'courierCollection' });
     const [filterAllFinancialAccountsObj, setfilterAllFinancialAccountsObj] = useState({
         isAsc: true,
         limit: 20,
@@ -363,7 +365,8 @@ const CourierCollection = (props) => {
                             <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
                                 <div class="col-lg-12 p-0 mb-3">
                                     <span style={{ fontWeight: 600 }}>Total: </span>
-                                    {total}
+                                    {calculateFinancialTransactionsTotalQuery?.data?.calculateFinancialTransactionsTotal?.total}{' '}
+                                    {calculateFinancialTransactionsTotalQuery?.data?.calculateFinancialTransactionsTotal?.currency}
                                 </div>
                                 <div class="col-lg-12 mb-3">
                                     <button

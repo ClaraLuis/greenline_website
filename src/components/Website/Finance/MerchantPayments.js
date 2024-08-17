@@ -34,7 +34,16 @@ const MerchantPayments = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, isAuth, financialAccountTypeContext } = useContext(Contexthandlerscontext);
-    const { useQueryGQL, fetchMerchants, useMutationGQL, createFinancialAccount, updateFinancialAccount, fetchMerchantPaymentTransactions, completeMerchantPayments, fetchFinancialAccounts } = API();
+    const {
+        useQueryGQL,
+        fetchMerchants,
+        useMutationGQL,
+        calculateFinancialTransactionsTotal,
+        updateFinancialAccount,
+        fetchMerchantPaymentTransactions,
+        completeMerchantPayments,
+        fetchFinancialAccounts,
+    } = API();
     const cookies = new Cookies();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -63,6 +72,8 @@ const MerchantPayments = (props) => {
     });
 
     const fetchMerchantPaymentTransactionsQuery = useQueryGQL('', fetchMerchantPaymentTransactions(), filterobj);
+    const { isAsc, limit, processing, ...filteredFilterObj } = filterobj;
+    const calculateFinancialTransactionsTotalQuery = useQueryGQL('', calculateFinancialTransactionsTotal(), { ...filteredFilterObj, category: 'merchantOrderPayment' });
 
     useEffect(() => {
         setpageactive_context('/merchantpayments');
@@ -381,7 +392,8 @@ const MerchantPayments = (props) => {
                             <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
                                 <div class="col-lg-12 p-0 mb-3">
                                     <span style={{ fontWeight: 600 }}>Total: </span>
-                                    {total}
+                                    {calculateFinancialTransactionsTotalQuery?.data?.calculateFinancialTransactionsTotal?.total}{' '}
+                                    {calculateFinancialTransactionsTotalQuery?.data?.calculateFinancialTransactionsTotal?.currency}
                                 </div>
                                 <div class="col-lg-12">
                                     <button

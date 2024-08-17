@@ -27,6 +27,13 @@ const API = () => {
             }
         `;
     };
+    const updateEmployeeInfo = () => {
+        return gql`
+            mutation updateEmployeeInfo($input: UpdateEmployeeInput!) {
+                updateEmployeeInfo(input: $input)
+            }
+        `;
+    };
     const createMerchantDomesticShipping = () => {
         return gql`
             mutation createMerchantDomesticShipping($input: CreateMerchantShippingListInput!) {
@@ -458,6 +465,30 @@ const API = () => {
             }
         `;
     };
+    const fetchTransactionHistory = () => {
+        return gql`
+            query paginateOrderTransactionsHistory($input: PaginateOrderTransactionsInput!) {
+                paginateOrderTransactionsHistory(input: $input) {
+                    data {
+                        id
+                        type
+                        description
+                        fromAccountId
+                        sheetOrderId
+                        toAccountId
+                        amount
+                        currency
+                        receipt
+                        status
+                        auditedById
+                        createdAt
+                        lastModified
+                    }
+                    cursor
+                }
+            }
+        `;
+    };
 
     const fetchOrders = () => {
         return gql`
@@ -648,6 +679,8 @@ const API = () => {
             query findUsers($input: PaginateUsersInput!) {
                 paginateUsers(paginateUsersInput: $input) {
                     data {
+                        birthdate
+
                         id
                         name
                         type
@@ -656,7 +689,13 @@ const API = () => {
                         hubId
                         merchantId
                         inventoryId
-
+                        employee {
+                            id
+                            type
+                            currency
+                            salary
+                            commission
+                        }
                         hub {
                             name
                         }
@@ -1285,6 +1324,17 @@ const API = () => {
             }
         `;
     };
+    const calculateFinancialTransactionsTotal = (payload) => {
+        return gql`
+            query calculateFinancialTransactionsTotal($input: FinancialTotalInput!) {
+                calculateFinancialTransactionsTotal(input: $input) {
+                    total
+                    currency
+                    count
+                }
+            }
+        `;
+    };
 
     const findRoles = (payload) => {
         return gql`
@@ -1374,6 +1424,7 @@ const API = () => {
     return {
         useMutationGQL,
         addUser,
+        updateEmployeeInfo,
         useQueryGQL,
         fetchUsers,
         isValidEmailMutation,
@@ -1427,6 +1478,7 @@ const API = () => {
         transferMyCourierCollectionFunds,
         processMerchantPayments,
         fetchMerchantPaymentTransactions,
+        calculateFinancialTransactionsTotal,
         completeMerchantPayments,
         fetchMerchantItemReturns,
         createReturnPackage,
@@ -1448,6 +1500,7 @@ const API = () => {
         findSingleMerchantDomesticShipping,
         findMerchantDomesticShippings,
         requestOrderReturn,
+        fetchTransactionHistory,
     };
 };
 export default API;

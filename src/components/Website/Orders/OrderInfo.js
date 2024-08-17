@@ -29,7 +29,7 @@ const OrderInfo = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, chosenOrderContext, dateformatter, orderStatusEnumContext, orderTypeContext } = useContext(Contexthandlerscontext);
-    const { useQueryGQL, useMutationGQL, fetchGovernorates, createMerchantDomesticShipping, updateMerchantDomesticShipping, fetchOrdersInInventory, fetchOrderHistory, createInventoryRent } = API();
+    const { useQueryGQL, useMutationGQL, fetchGovernorates, createMerchantDomesticShipping, updateMerchantDomesticShipping, fetchTransactionHistory, fetchOrderHistory, createInventoryRent } = API();
     const steps = ['Merchant Info', 'Shipping', 'Inventory Settings'];
     const [inventoryModal, setinventoryModal] = useState({ open: false, items: [] });
     const [outOfStock, setoutOfStock] = useState(false);
@@ -42,6 +42,7 @@ const OrderInfo = (props) => {
     });
 
     const fetchOrderHistoryQuery = useQueryGQL('', fetchOrderHistory(), filterordershistory);
+    const fetchTransactionHistoryQuery = useQueryGQL('', fetchTransactionHistory(), filterordershistory);
 
     const organizeInventory = (inventory) => {
         const racks = {};
@@ -386,18 +387,18 @@ const OrderInfo = (props) => {
                                     </div>
                                 </div>
                                 <div class={generalstyles.card + ' row m-0 w-100 p-4'}>
-                                    <div class="col-lg-12 p-0">
+                                    <div class="col-lg-12 p-0 mb-3">
                                         <div class="row m-0 w-100 allcentered">
                                             <button
                                                 onClick={() => sethistoryType('order')}
-                                                style={{ fontWeight: historyType == 'order' ? 800 : 400 }}
+                                                style={{ fontWeight: historyType == 'order' ? 800 : 400, width: '40%' }}
                                                 class={generalstyles.roundbutton + ' allcentered p-0 mr-2'}
                                             >
                                                 Order History
                                             </button>
                                             <button
                                                 onClick={() => sethistoryType('payment')}
-                                                style={{ fontWeight: historyType == 'payment' ? 800 : 400 }}
+                                                style={{ fontWeight: historyType == 'payment' ? 800 : 400, width: '40%' }}
                                                 class={generalstyles.roundbutton + ' allcentered p-0 '}
                                             >
                                                 Transaction History
@@ -421,7 +422,49 @@ const OrderInfo = (props) => {
                                                     <div class="container1">
                                                         <ul class="progressbar">
                                                             {fetchOrderHistoryQuery?.data?.paginateOrderHistory?.data?.map((historyItem, historyIndex) => {
-                                                                return <li class="active text-capitalize">{historyItem?.status.split(/(?=[A-Z])/).join(' ')}</li>;
+                                                                return (
+                                                                    <li class="active text-capitalize">
+                                                                        {historyItem?.status.split(/(?=[A-Z])/).join(' ')}{' '}
+                                                                        <span style={{ fontSize: '11px', color: 'lightgrey' }} class="ml-1">
+                                                                            {dateformatter(historyItem?.createdAt)}
+                                                                        </span>
+                                                                    </li>
+                                                                );
+                                                            })}
+
+                                                            {/* <li>Step 5</li> */}
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </>
+                                    )}
+                                    {historyType == 'payment' && (
+                                        <>
+                                            {fetchTransactionHistoryQuery?.data?.paginateOrderTransactionsHistory?.data?.length == 0 && (
+                                                <div class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
+                                                    <div class="row m-0 w-100">
+                                                        <FaLayerGroup size={30} class=" col-lg-12 mb-2" />
+                                                        <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
+                                                            No History Yet
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+                                            {fetchTransactionHistoryQuery?.data?.paginateOrderTransactionsHistory?.data?.length != 0 && (
+                                                <div style={{ overflowY: 'scroll' }} class={' row m-0 w-100 p-2 pb-4 py-3 scrollmenuclasssubscrollbar'}>
+                                                    <div class="container1">
+                                                        <ul class="progressbar">
+                                                            {fetchTransactionHistoryQuery?.data?.paginateOrderTransactionsHistory?.data?.map((historyItem, historyIndex) => {
+                                                                return (
+                                                                    <li class="active text-capitalize">
+                                                                        {' '}
+                                                                        {historyItem?.type?.split(/(?=[A-Z])/).join(' ')}, {historyItem?.status?.split(/(?=[A-Z])/).join(' ')}{' '}
+                                                                        <span style={{ fontSize: '11px', color: 'lightgrey' }} class="ml-1">
+                                                                            {dateformatter(historyItem?.createdAt)}
+                                                                        </span>
+                                                                    </li>
+                                                                );
                                                             })}
 
                                                             {/* <li>Step 5</li> */}
