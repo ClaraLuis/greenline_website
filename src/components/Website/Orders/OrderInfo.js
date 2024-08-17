@@ -34,6 +34,7 @@ const OrderInfo = (props) => {
     const [inventoryModal, setinventoryModal] = useState({ open: false, items: [] });
     const [outOfStock, setoutOfStock] = useState(false);
     const [diffInDays, setdiffInDays] = useState(0);
+    const [historyType, sethistoryType] = useState('order');
 
     const [filterordershistory, setfilterordershistory] = useState({
         limit: 20,
@@ -385,28 +386,50 @@ const OrderInfo = (props) => {
                                     </div>
                                 </div>
                                 <div class={generalstyles.card + ' row m-0 w-100 p-4'}>
-                                    {fetchOrderHistoryQuery?.data?.paginateOrderHistory?.data?.length == 0 && (
-                                        <div class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
-                                            <div class="row m-0 w-100">
-                                                <FaLayerGroup size={30} class=" col-lg-12 mb-2" />
-                                                <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
-                                                    No History Yet
+                                    <div class="col-lg-12 p-0">
+                                        <div class="row m-0 w-100 allcentered">
+                                            <button
+                                                onClick={() => sethistoryType('order')}
+                                                style={{ fontWeight: historyType == 'order' ? 800 : 400 }}
+                                                class={generalstyles.roundbutton + ' allcentered p-0 mr-2'}
+                                            >
+                                                Order History
+                                            </button>
+                                            <button
+                                                onClick={() => sethistoryType('payment')}
+                                                style={{ fontWeight: historyType == 'payment' ? 800 : 400 }}
+                                                class={generalstyles.roundbutton + ' allcentered p-0 '}
+                                            >
+                                                Payment History
+                                            </button>
+                                        </div>
+                                    </div>
+                                    {historyType == 'order' && (
+                                        <>
+                                            {fetchOrderHistoryQuery?.data?.paginateOrderHistory?.data?.length == 0 && (
+                                                <div class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
+                                                    <div class="row m-0 w-100">
+                                                        <FaLayerGroup size={30} class=" col-lg-12 mb-2" />
+                                                        <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
+                                                            No History Yet
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    )}
-                                    {fetchOrderHistoryQuery?.data?.paginateOrderHistory?.data?.length != 0 && (
-                                        <div style={{ overflowY: 'scroll' }} class={' row m-0 w-100 p-2 pb-4 py-3 scrollmenuclasssubscrollbar'}>
-                                            <div class="container1">
-                                                <ul class="progressbar">
-                                                    {fetchOrderHistoryQuery?.data?.paginateOrderHistory?.data?.map((historyItem, historyIndex) => {
-                                                        return <li class="active text-capitalize">{historyItem?.status.split(/(?=[A-Z])/).join(' ')}</li>;
-                                                    })}
+                                            )}
+                                            {fetchOrderHistoryQuery?.data?.paginateOrderHistory?.data?.length != 0 && (
+                                                <div style={{ overflowY: 'scroll' }} class={' row m-0 w-100 p-2 pb-4 py-3 scrollmenuclasssubscrollbar'}>
+                                                    <div class="container1">
+                                                        <ul class="progressbar">
+                                                            {fetchOrderHistoryQuery?.data?.paginateOrderHistory?.data?.map((historyItem, historyIndex) => {
+                                                                return <li class="active text-capitalize">{historyItem?.status.split(/(?=[A-Z])/).join(' ')}</li>;
+                                                            })}
 
-                                                    {/* <li>Step 5</li> */}
-                                                </ul>
-                                            </div>
-                                        </div>
+                                                            {/* <li>Step 5</li> */}
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </>
                                     )}
                                 </div>
                             </>
