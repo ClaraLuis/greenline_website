@@ -225,10 +225,10 @@ const AddMerchant = (props) => {
                         await governoratesItems?.map((item, index) => {
                             temp.push({
                                 govId: item.id,
-                                total: item.shipping,
+                                total: item?.shipping,
                                 vatDecimal: item.vat,
                                 postDecimal: item.post,
-                                base: item.base,
+                                base: item?.base,
                                 orderType: item?.orderType,
                             });
                         });
@@ -300,10 +300,10 @@ const AddMerchant = (props) => {
                         await governoratesItems?.map((item, index) => {
                             temp.push({
                                 govId: item.id,
-                                total: item.shipping,
+                                total: item?.shipping,
                                 vatDecimal: item.vat,
                                 postDecimal: item.post,
-                                base: item.base,
+                                base: item?.base,
                                 orderType: item?.orderType,
                             });
                         });
@@ -828,11 +828,11 @@ const AddMerchant = (props) => {
                                                     <table style={{}} className={'table'}>
                                                         <thead>
                                                             <th style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}></th>
-                                                            <th style={{ maxWidth: '150px', minWidth: '150px', width: '150px' }}>Total</th>
                                                             <th>VAT (14%)</th>
                                                             <th>Post (10%)</th>
                                                             <th style={{ maxWidth: '150px', minWidth: '150px', width: '150px' }}>Base</th>
                                                             <th style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>Extra</th>
+                                                            <th style={{ maxWidth: '150px', minWidth: '150px', width: '150px' }}>Total</th>
                                                         </thead>
                                                         <tbody>
                                                             {governoratesItems?.map((item, index) => {
@@ -850,18 +850,6 @@ const AddMerchant = (props) => {
                                                                                             {item?.orderType}
                                                                                         </span>
                                                                                     </p>
-                                                                                </td>
-                                                                                <td style={{ maxWidth: '150px', minWidth: '150px', width: '150px' }}>
-                                                                                    <input
-                                                                                        type={'text'}
-                                                                                        class={formstyles.form__field}
-                                                                                        value={item.shipping}
-                                                                                        onChange={(event) => {
-                                                                                            var governoratesItemsTemp = [...governoratesItems];
-                                                                                            governoratesItemsTemp[index].shipping = event.target.value;
-                                                                                            setgovernoratesItems([...governoratesItemsTemp]);
-                                                                                        }}
-                                                                                    />
                                                                                 </td>
 
                                                                                 <td>
@@ -881,7 +869,7 @@ const AddMerchant = (props) => {
                                                                                             }}
                                                                                         />
                                                                                         <p style={{ width: '45%' }} className={' m-0 p-0 mx-1 h-100 d-flex align-items-center '}>
-                                                                                            {new Decimal(item?.shipping).mul(new Decimal(item?.vat)).toFixed(2)}
+                                                                                            {new Decimal(item?.shipping ?? 0).sub(new Decimal(item?.shipping ?? 0).div(1.14)).toFixed(2)}
                                                                                         </p>
                                                                                     </div>
                                                                                 </td>
@@ -902,7 +890,7 @@ const AddMerchant = (props) => {
                                                                                             }}
                                                                                         />
                                                                                         <p style={{ width: '45%' }} className={' m-0 p-0 mx-1 h-100 d-flex align-items-center '}>
-                                                                                            {new Decimal(item.shipping).mul(new Decimal(item.post)).toFixed(2)}
+                                                                                            {new Decimal(0.1).mul(new Decimal(item?.base ?? 0)).toFixed(2)}
                                                                                         </p>
                                                                                     </div>
                                                                                 </td>
@@ -910,7 +898,7 @@ const AddMerchant = (props) => {
                                                                                     <input
                                                                                         type={'text'}
                                                                                         class={formstyles.form__field}
-                                                                                        value={item.base}
+                                                                                        value={item?.base}
                                                                                         onChange={(event) => {
                                                                                             var governoratesItemsTemp = [...governoratesItems];
                                                                                             if (event.target.value.length == 0) {
@@ -924,8 +912,27 @@ const AddMerchant = (props) => {
                                                                                 </td>
                                                                                 <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
                                                                                     <p className={' m-0 p-0  h-100 d-flex align-items-center '}>
-                                                                                        {new Decimal(item.shipping).minus(new Decimal(item.base).plus(new Decimal(item.shipping).mul(0.14))).toFixed(2)}
+                                                                                        {new Decimal(item?.shipping ?? 0)
+                                                                                            .div(1.14)
+                                                                                            .minus(new Decimal(item?.base ?? 0))
+                                                                                            .toFixed(2)}
                                                                                     </p>
+                                                                                </td>
+                                                                                <td style={{ maxWidth: '150px', minWidth: '150px', width: '150px' }}>
+                                                                                    <input
+                                                                                        type={'text'}
+                                                                                        class={formstyles.form__field}
+                                                                                        value={item?.shipping}
+                                                                                        onChange={(event) => {
+                                                                                            var governoratesItemsTemp = [...governoratesItems];
+                                                                                            if (event.target.value.length == 0) {
+                                                                                                governoratesItemsTemp[index].shipping = 0;
+                                                                                            } else {
+                                                                                                governoratesItemsTemp[index].shipping = event.target.value;
+                                                                                            }
+                                                                                            setgovernoratesItems([...governoratesItemsTemp]);
+                                                                                        }}
+                                                                                    />
                                                                                 </td>
                                                                             </tr>
                                                                         </>
@@ -939,18 +946,6 @@ const AddMerchant = (props) => {
                                                                                         {item?.orderType}
                                                                                     </span>
                                                                                 </p>
-                                                                            </td>
-                                                                            <td style={{ maxWidth: '150px', minWidth: '150px', width: '150px' }}>
-                                                                                <input
-                                                                                    type={'text'}
-                                                                                    class={formstyles.form__field}
-                                                                                    value={item.shipping}
-                                                                                    onChange={(event) => {
-                                                                                        var governoratesItemsTemp = [...governoratesItems];
-                                                                                        governoratesItemsTemp[index].shipping = event.target.value;
-                                                                                        setgovernoratesItems([...governoratesItemsTemp]);
-                                                                                    }}
-                                                                                />
                                                                             </td>
 
                                                                             <td>
@@ -970,7 +965,7 @@ const AddMerchant = (props) => {
                                                                                         }}
                                                                                     />
                                                                                     <p style={{ width: '45%' }} className={' m-0 p-0 mx-1 h-100 d-flex align-items-center '}>
-                                                                                        {new Decimal(item.shipping).mul(new Decimal(item.vat)).toFixed(2)}
+                                                                                        {new Decimal(item?.shipping ?? 0).sub(new Decimal(item?.shipping ?? 0).div(1.14)).toFixed(2)}
                                                                                     </p>
                                                                                 </div>
                                                                             </td>
@@ -991,7 +986,7 @@ const AddMerchant = (props) => {
                                                                                         }}
                                                                                     />
                                                                                     <p style={{ width: '45%' }} className={' m-0 p-0 mx-1 h-100 d-flex align-items-center '}>
-                                                                                        {new Decimal(item.shipping).mul(new Decimal(item.post)).toFixed(2)}
+                                                                                        {new Decimal(0.1).mul(new Decimal(item?.base ?? 0)).toFixed(2)}
                                                                                     </p>
                                                                                 </div>
                                                                             </td>
@@ -999,7 +994,7 @@ const AddMerchant = (props) => {
                                                                                 <input
                                                                                     type={'text'}
                                                                                     class={formstyles.form__field}
-                                                                                    value={item.base}
+                                                                                    value={item?.base}
                                                                                     onChange={(event) => {
                                                                                         var governoratesItemsTemp = [...governoratesItems];
                                                                                         if (event.target.value.length == 0) {
@@ -1013,8 +1008,27 @@ const AddMerchant = (props) => {
                                                                             </td>
                                                                             <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
                                                                                 <p className={' m-0 p-0  h-100 d-flex align-items-center '}>
-                                                                                    {new Decimal(item.shipping).minus(new Decimal(item.base).plus(new Decimal(item.shipping).mul(0.14))).toFixed(2)}
+                                                                                    {new Decimal(item?.shipping ?? 0)
+                                                                                        .div(1.14)
+                                                                                        .minus(new Decimal(item?.base ?? 0))
+                                                                                        .toFixed(2)}
                                                                                 </p>
+                                                                            </td>
+                                                                            <td style={{ maxWidth: '150px', minWidth: '150px', width: '150px' }}>
+                                                                                <input
+                                                                                    type={'text'}
+                                                                                    class={formstyles.form__field}
+                                                                                    value={item?.shipping}
+                                                                                    onChange={(event) => {
+                                                                                        var governoratesItemsTemp = [...governoratesItems];
+                                                                                        if (event.target.value.length == 0) {
+                                                                                            governoratesItemsTemp[index].shipping = 0;
+                                                                                        } else {
+                                                                                            governoratesItemsTemp[index].shipping = event.target.value;
+                                                                                        }
+                                                                                        setgovernoratesItems([...governoratesItemsTemp]);
+                                                                                    }}
+                                                                                />
                                                                             </td>
                                                                         </tr>
                                                                     );

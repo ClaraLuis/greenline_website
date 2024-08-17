@@ -28,6 +28,7 @@ import Pagination from '../../Pagination.js';
 import { FiCheckCircle, FiCircle } from 'react-icons/fi';
 import SelectComponent from '../../SelectComponent.js';
 import * as XLSX from 'xlsx';
+import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
 
 const MerchantPayments = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -86,6 +87,7 @@ const MerchantPayments = (props) => {
     const [completeMerchantPaymentsMutation] = useMutationGQL(completeMerchantPayments(), {
         transactionIds: selectedArray,
         description: payload?.description,
+        allTransactions: payload?.allTransactions,
     });
     const [updateFinancialAccountMutation] = useMutationGQL(updateFinancialAccount(), {
         name: payload?.name,
@@ -399,6 +401,38 @@ const MerchantPayments = (props) => {
                                         Complete
                                     </button>
                                 </div>
+                                <div class="col-lg-12 p-0 allcentered">
+                                    <button
+                                        class={generalstyles.roundbutton + ' mt-2'}
+                                        disabled={buttonLoading}
+                                        onClick={async () => {
+                                            setbuttonLoading(true);
+                                            try {
+                                                await setpayload({ ...payload, allTransactions: true });
+                                                const { data } = await completeMerchantPaymentsMutation();
+                                                refetchMerchantPaymentTransactionsQuery();
+                                                setselectedArray([]);
+                                                setopenModal(false);
+                                                NotificationManager.success('', 'Success');
+                                            } catch (error) {
+                                                let errorMessage = 'An unexpected error occurred';
+                                                if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                                    errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                                } else if (error.networkError) {
+                                                    errorMessage = error.networkError.message || errorMessage;
+                                                } else if (error.message) {
+                                                    errorMessage = error.message;
+                                                }
+
+                                                NotificationManager.warning(errorMessage, 'Warning!');
+                                            }
+                                            setbuttonLoading(false);
+                                        }}
+                                    >
+                                        {buttonLoading && <CircularProgress color="var(--primary)" width="15px" height="15px" duration="1s" />}
+                                        {!buttonLoading && <span>Complete All Payments</span>}
+                                    </button>{' '}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -454,10 +488,12 @@ const MerchantPayments = (props) => {
                             button1onClick={async () => {
                                 setbuttonLoading(true);
                                 try {
+                                    await setpayload({ ...payload, allTransactions: false });
                                     const { data } = await completeMerchantPaymentsMutation();
                                     refetchMerchantPaymentTransactionsQuery();
                                     setselectedArray([]);
                                     setopenModal(false);
+                                    NotificationManager.success('', 'Success');
                                 } catch (error) {
                                     let errorMessage = 'An unexpected error occurred';
                                     if (error.graphQLErrors && error.graphQLErrors.length > 0) {
@@ -473,6 +509,35 @@ const MerchantPayments = (props) => {
                                 setbuttonLoading(false);
                             }}
                         />
+                        {/* <div class="col-lg-12 p-0 allcentered">
+                            <button
+                                class={generalstyles.roundbutton}
+                                onClick={async () => {
+                                    setbuttonLoading(true);
+                                    try {
+                                        await setpayload({ ...payload, allTransactions: true });
+                                        const { data } = await completeMerchantPaymentsMutation();
+                                        refetchMerchantPaymentTransactionsQuery();
+                                        setselectedArray([]);
+                                        setopenModal(false);
+                                    } catch (error) {
+                                        let errorMessage = 'An unexpected error occurred';
+                                        if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                            errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                        } else if (error.networkError) {
+                                            errorMessage = error.networkError.message || errorMessage;
+                                        } else if (error.message) {
+                                            errorMessage = error.message;
+                                        }
+
+                                        NotificationManager.warning(errorMessage, 'Warning!');
+                                    }
+                                    setbuttonLoading(false);
+                                }}
+                            >
+                                Complete All Payments
+                            </button>{' '}
+                        </div> */}
                     </div>
                 </Modal.Body>
             </Modal>
