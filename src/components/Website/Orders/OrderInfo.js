@@ -400,7 +400,7 @@ const OrderInfo = (props) => {
                                                 style={{ fontWeight: historyType == 'payment' ? 800 : 400 }}
                                                 class={generalstyles.roundbutton + ' allcentered p-0 '}
                                             >
-                                                Payment History
+                                                Transaction History
                                             </button>
                                         </div>
                                     </div>
