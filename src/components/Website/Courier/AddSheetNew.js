@@ -163,6 +163,11 @@ const AddSheetNew = (props) => {
                         exist = true;
                     }
                 });
+                temp.orderIdsOld.map((i, ii) => {
+                    if (i == search) {
+                        exist = true;
+                    }
+                });
                 if (!exist) {
                     if (barcode?.length != 0 && !isNaN(parseInt(barcode))) {
                         temp.orderIds.push(parseInt(barcode));
@@ -245,6 +250,11 @@ const AddSheetNew = (props) => {
                                 var temp = { ...sheetpayload };
                                 var exist = false;
                                 temp.orderIds.map((i, ii) => {
+                                    if (i == search) {
+                                        exist = true;
+                                    }
+                                });
+                                temp.orderIdsOld.map((i, ii) => {
                                     if (i == search) {
                                         exist = true;
                                     }
