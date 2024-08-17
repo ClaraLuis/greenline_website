@@ -115,6 +115,7 @@ const CourierCollection = (props) => {
         transactionIds: selectedArray,
         merchantIds: filterobj?.merchantIds,
         description: payload?.description,
+        allTransactions: payload?.allTransactions,
     });
 
     useEffect(() => {
@@ -404,7 +405,7 @@ const CourierCollection = (props) => {
                                         onClick={async () => {
                                             if (filterobj?.merchantIds?.length != 0 && filterobj?.merchantIds != undefined) {
                                                 if (selectedArray?.length != 0) {
-                                                    setpayload({ ...payload, type: 'process' });
+                                                    setpayload({ ...payload, type: 'process', allTransactions: false });
                                                     setopenModal(true);
                                                 } else {
                                                     NotificationManager.warning('Choose transactions first', 'Warning!');
@@ -415,6 +416,25 @@ const CourierCollection = (props) => {
                                         }}
                                     >
                                         Process
+                                    </button>
+                                </div>
+                                <div class="col-lg-12 mb-3">
+                                    <button
+                                        class={generalstyles.roundbutton + ' allcentered w-100'}
+                                        onClick={async () => {
+                                            if (filterobj?.merchantIds?.length != 0 && filterobj?.merchantIds != undefined) {
+                                                if (selectedArray?.length != 0) {
+                                                    setpayload({ ...payload, type: 'process', allTransactions: true });
+                                                    setopenModal(true);
+                                                } else {
+                                                    NotificationManager.warning('Choose transactions first', 'Warning!');
+                                                }
+                                            } else {
+                                                NotificationManager.warning('Choose Merchants first', 'Warning!');
+                                            }
+                                        }}
+                                    >
+                                        Process All
                                     </button>
                                 </div>
                             </div>

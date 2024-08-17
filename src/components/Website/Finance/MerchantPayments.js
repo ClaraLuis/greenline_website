@@ -389,6 +389,8 @@ const MerchantPayments = (props) => {
                                         onClick={async () => {
                                             if (isAuth([1, 60])) {
                                                 if (selectedArray?.length != 0) {
+                                                    setpayload({ ...payload, allTransactions: false });
+
                                                     setopenModal(true);
                                                 } else {
                                                     NotificationManager.warning('Choose transactions first', 'Warning!');
@@ -401,37 +403,24 @@ const MerchantPayments = (props) => {
                                         Complete
                                     </button>
                                 </div>
-                                <div class="col-lg-12 p-0 allcentered">
+                                <div class="col-lg-12 mt-3">
                                     <button
-                                        class={generalstyles.roundbutton + ' mt-2'}
-                                        disabled={buttonLoading}
+                                        class={generalstyles.roundbutton + ' allcentered w-100'}
                                         onClick={async () => {
-                                            setbuttonLoading(true);
-                                            try {
-                                                await setpayload({ ...payload, allTransactions: true });
-                                                const { data } = await completeMerchantPaymentsMutation();
-                                                refetchMerchantPaymentTransactionsQuery();
-                                                setselectedArray([]);
-                                                setopenModal(false);
-                                                NotificationManager.success('', 'Success');
-                                            } catch (error) {
-                                                let errorMessage = 'An unexpected error occurred';
-                                                if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-                                                    errorMessage = error.graphQLErrors[0].message || errorMessage;
-                                                } else if (error.networkError) {
-                                                    errorMessage = error.networkError.message || errorMessage;
-                                                } else if (error.message) {
-                                                    errorMessage = error.message;
+                                            if (filterobj?.merchantIds?.length != 0 && filterobj?.merchantIds != undefined) {
+                                                if (selectedArray?.length != 0) {
+                                                    setpayload({ ...payload, allTransactions: true });
+                                                    setopenModal(true);
+                                                } else {
+                                                    NotificationManager.warning('Choose transactions first', 'Warning!');
                                                 }
-
-                                                NotificationManager.warning(errorMessage, 'Warning!');
+                                            } else {
+                                                NotificationManager.warning('Choose Merchants first', 'Warning!');
                                             }
-                                            setbuttonLoading(false);
                                         }}
                                     >
-                                        {buttonLoading && <CircularProgress color="var(--primary)" width="15px" height="15px" duration="1s" />}
-                                        {!buttonLoading && <span>Complete All Payments</span>}
-                                    </button>{' '}
+                                        Complete All Payments
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -488,7 +477,6 @@ const MerchantPayments = (props) => {
                             button1onClick={async () => {
                                 setbuttonLoading(true);
                                 try {
-                                    await setpayload({ ...payload, allTransactions: false });
                                     const { data } = await completeMerchantPaymentsMutation();
                                     refetchMerchantPaymentTransactionsQuery();
                                     setselectedArray([]);
@@ -509,35 +497,6 @@ const MerchantPayments = (props) => {
                                 setbuttonLoading(false);
                             }}
                         />
-                        {/* <div class="col-lg-12 p-0 allcentered">
-                            <button
-                                class={generalstyles.roundbutton}
-                                onClick={async () => {
-                                    setbuttonLoading(true);
-                                    try {
-                                        await setpayload({ ...payload, allTransactions: true });
-                                        const { data } = await completeMerchantPaymentsMutation();
-                                        refetchMerchantPaymentTransactionsQuery();
-                                        setselectedArray([]);
-                                        setopenModal(false);
-                                    } catch (error) {
-                                        let errorMessage = 'An unexpected error occurred';
-                                        if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-                                            errorMessage = error.graphQLErrors[0].message || errorMessage;
-                                        } else if (error.networkError) {
-                                            errorMessage = error.networkError.message || errorMessage;
-                                        } else if (error.message) {
-                                            errorMessage = error.message;
-                                        }
-
-                                        NotificationManager.warning(errorMessage, 'Warning!');
-                                    }
-                                    setbuttonLoading(false);
-                                }}
-                            >
-                                Complete All Payments
-                            </button>{' '}
-                        </div> */}
                     </div>
                 </Modal.Body>
             </Modal>
