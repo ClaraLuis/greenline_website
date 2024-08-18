@@ -67,61 +67,73 @@ const CourierSheet = (props) => {
             })),
     });
     const calculateAmountCollected = () => {
-        let amount = 0;
-        let orderItemsAmount = 0;
+        let amount = new Decimal(0);
+        let orderItemsAmount = new Decimal(0);
+
         if (statuspayload?.fullDelivery) {
             statuspayload?.order?.orderItems?.forEach((i) => {
-                orderItemsAmount += parseFloat(i?.unitPrice || 0) * parseFloat(i?.count || 0);
+                const unitPrice = new Decimal(i?.unitPrice ?? 0);
+                const count = new Decimal(i?.count ?? 0);
+                orderItemsAmount = orderItemsAmount.plus(unitPrice.times(count));
             });
         } else {
             statuspayload?.partialItems?.forEach((i) => {
-                orderItemsAmount += parseFloat(statuspayload?.order?.orderItems?.filter((ii) => ii.id == i.id)[0]?.unitPrice || 0) * parseFloat(i?.partialCount || 0);
+                const orderItem = statuspayload?.order?.orderItems?.filter((ii) => ii.id === i.id)[0];
+                const unitPrice = new Decimal(orderItem?.unitPrice ?? 0);
+                const partialCount = new Decimal(i?.partialCount ?? 0);
+                orderItemsAmount = orderItemsAmount.plus(unitPrice.times(partialCount));
             });
         }
 
         if (statuspayload?.order?.originalPrice) {
             if (statuspayload?.shippingCollected) {
-                amount = parseFloat(statuspayload?.order?.shippingPrice || 0) + orderItemsAmount;
+                amount = new Decimal(statuspayload?.order?.shippingPrice ?? 0).plus(orderItemsAmount);
             } else {
                 amount = orderItemsAmount;
             }
         } else if (!statuspayload?.order?.originalPrice) {
             if (statuspayload?.shippingCollected) {
-                amount = parseFloat(statuspayload?.order?.shippingPrice || 0) + parseFloat(statuspayload?.amountCollected || 0);
+                amount = new Decimal(statuspayload?.order?.shippingPrice ?? 0).plus(new Decimal(statuspayload?.amountCollected ?? 0));
             } else {
-                amount = parseFloat(statuspayload?.amountCollected || 0);
+                amount = new Decimal(statuspayload?.amountCollected ?? 0);
             }
         }
 
-        return parseFloat(amount.toFixed(2));
+        return amount.toFixed(2);
     };
     const calculateAmountCollectedReturn = () => {
-        let amount = 0;
-        let orderItemsAmountReturn = 0;
+        let amount = new Decimal(0);
+        let orderItemsAmountReturn = new Decimal(0);
 
         if (statuspayload?.fullReturn) {
             statuspayload?.previousOrder?.orderItems?.forEach((i) => {
-                orderItemsAmountReturn += parseFloat(i?.unitPrice || 0) * parseFloat(i?.count || 0);
+                const unitPrice = new Decimal(i?.unitPrice ?? 0);
+                const count = new Decimal(i?.count ?? 0);
+                orderItemsAmountReturn = orderItemsAmountReturn.plus(unitPrice.times(count));
             });
         } else {
             statuspayload?.partialItemsReturn?.forEach((i) => {
-                orderItemsAmountReturn += parseFloat(statuspayload?.previousOrder?.orderItems?.filter((ii) => ii.id == i.id)[0]?.unitPrice || 0) * parseFloat(i?.partialCount || 0);
+                const orderItem = statuspayload?.previousOrder?.orderItems?.filter((ii) => ii.id === i.id)[0];
+                const unitPrice = new Decimal(orderItem?.unitPrice ?? 0);
+                const partialCount = new Decimal(i?.partialCount ?? 0);
+                orderItemsAmountReturn = orderItemsAmountReturn.plus(unitPrice.times(partialCount));
             });
         }
 
-        if (statuspayload?.previousOrder && statuspayload?.returnStatus == 'returned') {
+        if (statuspayload?.previousOrder && statuspayload?.returnStatus === 'returned') {
             if (statuspayload?.previousOrder?.originalPrice) {
-                amount += orderItemsAmountReturn;
+                amount = amount.plus(orderItemsAmountReturn);
             } else if (!statuspayload?.previousOrder?.originalPrice) {
-                amount += parseFloat(statuspayload?.amountCollectedReturn || 0);
+                amount = amount.plus(new Decimal(statuspayload?.amountCollectedReturn ?? 0));
             }
         }
 
-        return parseFloat(amount.toFixed(2));
+        return amount.toFixed(2);
     };
 
     useEffect(() => {
-        settotal(parseFloat(calculateAmountCollected()) + parseFloat(calculateAmountCollectedReturn()));
+        const total = new Decimal(calculateAmountCollected()).plus(new Decimal(calculateAmountCollectedReturn()));
+        settotal(total.toFixed(2));
     }, [statuspayload]);
 
     const [updateOrdersStatusMutation] = useMutationGQL(updateOrdersStatus(), {
@@ -1271,7 +1283,7 @@ const CourierSheet = (props) => {
                                         </div>
                                     )}
                                     <div style={{ border: '1px solid #eee', borderRadius: '18px' }} class="row m-0 w-100 p-2 d-flex align-items-center">
-                                        {total}
+                                        Total: {total}
                                     </div>
                                 </div>
                             )}
