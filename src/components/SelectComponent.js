@@ -78,6 +78,9 @@ const SelectComponent = (props) => {
                     setplaceholder(item[props?.label]);
                 }
             });
+            if (props?.removeAll != true && props?.payload[props?.payloadAttr] == undefined) {
+                setplaceholder('All');
+            }
         }
     }, [props?.payload, filteredData]);
 

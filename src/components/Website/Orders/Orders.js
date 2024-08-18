@@ -35,8 +35,8 @@ const Orders = (props) => {
     let history = useHistory();
     const cookies = new Cookies();
 
-    const { setpageactive_context, setpagetitle_context, dateformatter, chosenOrderContext, isAuth, setchosenOrderContext } = useContext(Contexthandlerscontext);
-    const { fetchMerchants, useQueryGQL, fetchOrdersInInventory } = API();
+    const { setpageactive_context, setpagetitle_context, dateformatter, orderStatusEnumContext, isAuth, setchosenOrderContext } = useContext(Contexthandlerscontext);
+    const { fetchMerchants, useQueryGQL, fetchOrdersInInventory, fetchInventories } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
 
@@ -50,6 +50,13 @@ const Orders = (props) => {
     const fetchOrdersInInventoryQuery = useQueryGQL('', fetchOrdersInInventory(), filterorders);
     const { refetch: refetchOrdersInInventory } = useQueryGQL('', fetchOrdersInInventory(), filterorders);
     const [selectedOrders, setSelectedOrders] = useState([]);
+
+    const [filterInventories, setfilterInventories] = useState({
+        limit: 10,
+        afterCursor: null,
+        beforeCursor: null,
+    });
+    const fetchinventories = useQueryGQL('', fetchInventories(), filterInventories);
 
     const [filterMerchants, setfilterMerchants] = useState({
         isAsc: true,
@@ -204,6 +211,48 @@ const Orders = (props) => {
                                                 }}
                                             />
                                         </div>
+                                    </div>
+                                    <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                        <MultiSelect
+                                            title={'Status'}
+                                            options={orderStatusEnumContext}
+                                            label={'label'}
+                                            value={'value'}
+                                            selected={filterorders?.statuses}
+                                            onClick={(option) => {
+                                                var tempArray = [...(filterorders?.statuses ?? [])];
+                                                if (option == 'All') {
+                                                    tempArray = undefined;
+                                                } else {
+                                                    if (!tempArray?.includes(option.value)) {
+                                                        tempArray.push(option.value);
+                                                    } else {
+                                                        tempArray.splice(tempArray?.indexOf(option?.value), 1);
+                                                    }
+                                                }
+                                                setfilterorders({ ...filterorders, statuses: tempArray?.length != 0 ? tempArray : undefined });
+                                            }}
+                                        />
+                                    </div>
+                                    <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                        <SelectComponent
+                                            title={'Inventory'}
+                                            filter={filterInventories}
+                                            setfilter={setfilterInventories}
+                                            options={fetchinventories}
+                                            attr={'paginateInventories'}
+                                            label={'name'}
+                                            value={'id'}
+                                            payload={filterorders}
+                                            payloadAttr={'inventoryId'}
+                                            onClick={(option) => {
+                                                if (option != undefined) {
+                                                    setfilterorders({ ...filterorders, inventoryId: option.id });
+                                                } else {
+                                                    setfilterorders({ ...filterorders, inventoryId: undefined });
+                                                }
+                                            }}
+                                        />
                                     </div>
                                     <div class="col-lg-3">
                                         <Inputfield

@@ -29,6 +29,7 @@ const CourierSheet = (props) => {
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [changestatusmodal, setchangestatusmodal] = useState(false);
+    const [total, settotal] = useState(0);
 
     const [sheetID, setsheetID] = useState(null);
     const [submitSheetPayload, setsubmitSheetPayload] = useState({});
@@ -44,6 +45,7 @@ const CourierSheet = (props) => {
         status: '',
         fullDelivery: true,
     });
+
     useEffect(() => {
         setpageactive_context('/CourierSheet');
         if (queryParameters.get('id')) {
@@ -64,39 +66,64 @@ const CourierSheet = (props) => {
                 orderId: undefined,
             })),
     });
-
     const calculateAmountCollected = () => {
-        let amount = new Decimal(0);
-        let orderItemsAmount = new Decimal(0);
+        let amount = 0;
+        let orderItemsAmount = 0;
+        if (statuspayload?.fullDelivery) {
+            statuspayload?.order?.orderItems?.forEach((i) => {
+                orderItemsAmount += parseFloat(i?.unitPrice || 0) * parseFloat(i?.count || 0);
+            });
+        } else {
+            statuspayload?.partialItems?.forEach((i) => {
+                orderItemsAmount += parseFloat(statuspayload?.order?.orderItems?.filter((ii) => ii.id == i.id)[0]?.unitPrice || 0) * parseFloat(i?.partialCount || 0);
+            });
+        }
 
-        // Calculate orderItemsAmount
-        statuspayload?.order?.orderItems?.forEach((i) => {
-            orderItemsAmount = orderItemsAmount.plus(new Decimal(i.unitPrice).mul(new Decimal(i.count)));
-        });
-
-        // Determine amount based on conditions
         if (statuspayload?.order?.originalPrice) {
             if (statuspayload?.shippingCollected) {
-                amount = new Decimal(statuspayload?.order?.shippingPrice || 0).plus(orderItemsAmount);
+                amount = parseFloat(statuspayload?.order?.shippingPrice || 0) + orderItemsAmount;
             } else {
                 amount = orderItemsAmount;
             }
-        } else if (!statuspayload?.order?.originalPrice && !statuspayload?.fullDelivery) {
+        } else if (!statuspayload?.order?.originalPrice) {
             if (statuspayload?.shippingCollected) {
-                amount = new Decimal(statuspayload?.order?.shippingPrice || 0).plus(new Decimal(statuspayload?.amountCollected || 0));
+                amount = parseFloat(statuspayload?.order?.shippingPrice || 0) + parseFloat(statuspayload?.amountCollected || 0);
             } else {
-                amount = new Decimal(statuspayload?.amountCollected || 0);
-            }
-        } else if (!statuspayload?.order?.originalPrice && statuspayload?.fullDelivery) {
-            if (statuspayload?.shippingCollected) {
-                amount = new Decimal(statuspayload?.order?.shippingPrice || 0).plus(new Decimal(statuspayload?.price || 0));
-            } else {
-                amount = new Decimal(statuspayload?.price || 0);
+                amount = parseFloat(statuspayload?.amountCollected || 0);
             }
         }
 
-        return amount; // Return amount formatted to 2 decimal places
+        return parseFloat(amount.toFixed(2));
     };
+    const calculateAmountCollectedReturn = () => {
+        let amount = 0;
+        let orderItemsAmountReturn = 0;
+
+        if (statuspayload?.fullReturn) {
+            statuspayload?.previousOrder?.orderItems?.forEach((i) => {
+                orderItemsAmountReturn += parseFloat(i?.unitPrice || 0) * parseFloat(i?.count || 0);
+            });
+        } else {
+            statuspayload?.partialItemsReturn?.forEach((i) => {
+                orderItemsAmountReturn += parseFloat(statuspayload?.previousOrder?.orderItems?.filter((ii) => ii.id == i.id)[0]?.unitPrice || 0) * parseFloat(i?.partialCount || 0);
+            });
+        }
+
+        if (statuspayload?.previousOrder && statuspayload?.returnStatus == 'returned') {
+            if (statuspayload?.previousOrder?.originalPrice) {
+                amount += orderItemsAmountReturn;
+            } else if (!statuspayload?.previousOrder?.originalPrice) {
+                amount += parseFloat(statuspayload?.amountCollectedReturn || 0);
+            }
+        }
+
+        return parseFloat(amount.toFixed(2));
+    };
+
+    useEffect(() => {
+        settotal(parseFloat(calculateAmountCollected()) + parseFloat(calculateAmountCollectedReturn()));
+    }, [statuspayload]);
+
     const [updateOrdersStatusMutation] = useMutationGQL(updateOrdersStatus(), {
         status: statuspayload?.status,
         sheetOrderId: parseInt(statuspayload?.orderid),
@@ -105,7 +132,13 @@ const CourierSheet = (props) => {
         postponeDate: statuspayload?.postponeDate,
         shippingCollected: statuspayload?.shippingCollected,
         partialItems: statuspayload?.partialItems,
-        returnOrderUpdateInput: statuspayload?.returnOrderUpdateInput,
+        returnOrderUpdateInput: statuspayload?.previousOrder
+            ? {
+                  status: statuspayload?.returnStatus,
+                  partialItems: statuspayload?.partialItemsReturn,
+                  amountCollected: calculateAmountCollectedReturn(),
+              }
+            : undefined,
     });
 
     const handleupdateCourierSheet = async () => {
@@ -360,7 +393,12 @@ const CourierSheet = (props) => {
                                                                         orderid: item.id,
                                                                         status: '',
                                                                         order: item?.order,
+                                                                        previousOrder: fetchCourierSheetQuery?.data?.CourierSheet?.sheetOrders?.filter(
+                                                                            (ii) => ii.orderId == item?.order?.previousOrderId,
+                                                                        )[0]?.order,
                                                                         fullDelivery: true,
+                                                                        fullReturn: true,
+                                                                        returnStatus: 'returned',
                                                                     });
 
                                                                     setchangestatusmodal(true);
@@ -1063,6 +1101,177 @@ const CourierSheet = (props) => {
                                                 />
                                             </div>
                                         )}
+                                    </div>
+                                    {statuspayload?.previousOrder && (
+                                        <div className="row m-0 w-100">
+                                            <div class={'col-lg-12 mb-3'}>
+                                                <label for="name" class={formstyles.form__label}>
+                                                    Status
+                                                </label>
+                                                <Select
+                                                    options={[
+                                                        { label: 'Canceled', value: 'canceled' },
+                                                        { label: 'Returned', value: 'returned' },
+                                                    ]}
+                                                    styles={defaultstyles}
+                                                    value={[
+                                                        { label: 'Canceled', value: 'canceled' },
+                                                        { label: 'Returned', value: 'returned' },
+                                                    ].filter((option) => option.value == statuspayload?.returnStatus)}
+                                                    onChange={(option) => {
+                                                        setstatuspayload({ ...statuspayload, returnStatus: option.value, step: 1 });
+                                                    }}
+                                                />
+                                            </div>
+                                            {statuspayload?.returnStatus == 'returned' && (
+                                                <>
+                                                    <div className="col-lg-12 mb-3 p-0">
+                                                        <div className="row m-0 w-100 d-flex align-items-center">
+                                                            <label className={`${formstyles.switch} mx-2 my-0`}>
+                                                                <input
+                                                                    type="checkbox"
+                                                                    checked={statuspayload?.fullReturn}
+                                                                    onChange={(e) => {
+                                                                        const newStatus = !statuspayload?.fullReturn;
+                                                                        const partialItemsReturnTemp = newStatus
+                                                                            ? []
+                                                                            : statuspayload?.previousOrder?.orderItems?.map((i) => ({
+                                                                                  id: i.id,
+                                                                                  partialCount: i.count,
+                                                                              })) || [];
+
+                                                                        setstatuspayload((prev) => ({
+                                                                            ...prev,
+                                                                            fullReturn: newStatus,
+                                                                            partialDilevery: !newStatus,
+                                                                            partialItemsReturn: newStatus ? undefined : partialItemsReturnTemp,
+                                                                        }));
+                                                                    }}
+                                                                />
+                                                                <span className={`${formstyles.slider} ${formstyles.round}`}></span>
+                                                            </label>
+                                                            <p className={`${generalstyles.checkbox_label} mb-0 text-focus text-capitalize cursor-pointer font_14 ml-1 mr-1 wordbreak`}>Full return</p>
+                                                        </div>
+                                                    </div>
+
+                                                    {statuspayload?.previousOrder?.orderItems?.map((subitem, subindex) => {
+                                                        const partialItem = statuspayload?.partialItemsReturn?.find((i) => i.id === subitem.id) || {};
+
+                                                        return (
+                                                            <div key={subindex} className="col-lg-12 p-0 mb-2">
+                                                                <div style={{ border: '1px solid #eee', borderRadius: '18px' }} className="row m-0 w-100 p-2 d-flex align-items-center">
+                                                                    <div style={{ width: '50px', height: '50px', borderRadius: '7px', marginInlineEnd: '5px' }}>
+                                                                        <img
+                                                                            src={
+                                                                                subitem?.info?.imageUrl
+                                                                                    ? subitem?.info?.imageUrl
+                                                                                    : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'
+                                                                            }
+                                                                            style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
+                                                                        />
+                                                                    </div>
+
+                                                                    <div className="col-lg-5 d-flex align-items-center">
+                                                                        <div className="row m-0 w-100">
+                                                                            <div style={{ fontSize: '14px', fontWeight: 500 }} className="col-lg-12 p-0 wordbreak wordbreak1">
+                                                                                {subitem?.info?.item?.name ?? '-'}
+                                                                            </div>
+                                                                            <div style={{ fontSize: '12px' }} className="col-lg-12 p-0 wordbreak wordbreak1">
+                                                                                {subitem?.info?.name ?? '-'}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div className="col-lg-5">
+                                                                        <div className="row m-0 w-100 d-flex align-items-center justify-content-end">
+                                                                            <div style={{ fontWeight: 700 }} className="mx-2">
+                                                                                {statuspayload?.fullReturn
+                                                                                    ? parseFloat(subitem?.count) * parseFloat(subitem?.unitPrice)
+                                                                                    : parseFloat(subitem.unitPrice) * parseFloat(partialItem?.partialCount ?? 0)}{' '}
+                                                                                {statuspayload?.info?.currency}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div className="col-lg-12 p-0 mt-2">
+                                                                        <div className="row m-0 w-100">
+                                                                            {statuspayload?.fullReturn && (
+                                                                                <div
+                                                                                    style={{
+                                                                                        border: '1px solid #eee',
+                                                                                        borderRadius: '8px',
+                                                                                        fontWeight: 700,
+                                                                                        background: 'var(--primary)',
+                                                                                        color: 'white',
+                                                                                        width: '35px',
+                                                                                    }}
+                                                                                    className="p-1 px-2 mr-1 allcentered"
+                                                                                >
+                                                                                    {parseFloat(subitem.count)}
+                                                                                </div>
+                                                                            )}
+                                                                            {!statuspayload?.fullReturn && (
+                                                                                <>
+                                                                                    {Array.from({ length: parseFloat(subitem.count) + 1 }, (_, i) => (
+                                                                                        <div
+                                                                                            key={i}
+                                                                                            onClick={() => {
+                                                                                                const partialItemsReturnTemp = [...(statuspayload?.partialItemsReturn || [])];
+                                                                                                const existingItemIndex = partialItemsReturnTemp?.findIndex((item) => item.id === subitem?.id);
+
+                                                                                                if (existingItemIndex !== -1) {
+                                                                                                    partialItemsReturnTemp[existingItemIndex].partialCount = i;
+                                                                                                } else {
+                                                                                                    partialItemsReturnTemp.push({ id: subitem?.id, partialCount: i });
+                                                                                                }
+
+                                                                                                setstatuspayload((prev) => ({
+                                                                                                    ...prev,
+                                                                                                    partialItemsReturn: partialItemsReturnTemp,
+                                                                                                }));
+                                                                                            }}
+                                                                                            style={{
+                                                                                                border: '1px solid #eee',
+                                                                                                borderRadius: '8px',
+                                                                                                fontWeight: 700,
+                                                                                                background: partialItem?.partialCount === i ? 'var(--primary)' : '',
+                                                                                                color: partialItem?.partialCount === i ? 'white' : '',
+                                                                                                width: '35px',
+                                                                                                cursor: 'pointer',
+                                                                                                transition: 'all 0.4s',
+                                                                                            }}
+                                                                                            className="p-1 px-2 mr-1 allcentered"
+                                                                                        >
+                                                                                            {i}
+                                                                                        </div>
+                                                                                    ))}
+                                                                                </>
+                                                                            )}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        );
+                                                    })}
+
+                                                    {!statuspayload?.previousOrder?.originalPrice && !statuspayload?.fullReturn && (
+                                                        <div className="col-lg-12 mb-3">
+                                                            <Inputfield
+                                                                placeholder={'Amount Received'}
+                                                                value={statuspayload?.amountCollectedReturn}
+                                                                onChange={(event) => {
+                                                                    setstatuspayload((prev) => ({ ...prev, amountCollectedReturn: event.target.value }));
+                                                                }}
+                                                                type={'number'}
+                                                            />
+                                                        </div>
+                                                    )}
+                                                </>
+                                            )}
+                                        </div>
+                                    )}
+                                    <div style={{ border: '1px solid #eee', borderRadius: '18px' }} class="row m-0 w-100 p-2 d-flex align-items-center">
+                                        {total}
                                     </div>
                                 </div>
                             )}
