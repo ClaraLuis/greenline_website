@@ -145,7 +145,8 @@ const AddOrder = (props) => {
         merchantId: merchantId,
     });
     const [addOrderMutation] = useMutationGQL(addOrder(), {
-        customerId: orderpayload?.customerId,
+        merchantCustomerId: merchantId ? orderpayload?.customerId : undefined,
+        customerId: !merchantId ? orderpayload?.customerId : undefined,
         addressId: orderpayload?.address,
         type: orderpayload?.ordertype,
         merchantId: merchantId,
@@ -247,7 +248,7 @@ const AddOrder = (props) => {
             if (customerData?.findCustomer?.data[0]) {
                 setorderpayload({
                     ...orderpayload,
-                    customerId: customerData?.findCustomer?.data[0]?.id,
+                    customerId: customerData?.findCustomer?.data[0]?.details?.id,
                     email: customerData?.findCustomer?.data[0]?.email,
                     user: customerData?.findCustomer?.data[0]?.details?.customerName,
                 });
@@ -297,7 +298,7 @@ const AddOrder = (props) => {
             if (customerDataSuggestions?.findCustomer?.data[0]) {
                 setorderpayload({
                     ...orderpayload,
-                    customerId: customerDataSuggestions?.findCustomer?.data[0]?.id,
+                    customerId: customerDataSuggestions?.findCustomer?.data[0]?.details?.id,
                     email: customerDataSuggestions?.findCustomer?.data[0]?.email,
                 });
                 nameSuggestions = [...customerDataSuggestions?.findCustomer?.data[0]?.nameSuggestions];
@@ -695,7 +696,7 @@ const AddOrder = (props) => {
                                                             <div class="col-lg-6">
                                                                 <div
                                                                     onClick={() => {
-                                                                        setorderpayload({ ...orderpayload, customerId: item.id, user: item?.details?.customerName });
+                                                                        setorderpayload({ ...orderpayload, customerId: item?.details?.id, user: item?.details?.customerName });
                                                                     }}
                                                                     style={{
                                                                         border: orderpayload?.customerId == item?.id ? '1px solid var(--primary)' : '',
