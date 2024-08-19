@@ -1015,6 +1015,7 @@ const API = () => {
                         phone
                         email
                         details(merchantId: $merchantId) {
+                            id
                             customerName
                         }
                     }
