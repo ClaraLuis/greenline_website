@@ -146,7 +146,7 @@ const AddOrder = (props) => {
     });
     const [addOrderMutation] = useMutationGQL(addOrder(), {
         merchantCustomerId: merchantId ? orderpayload?.customerId : undefined,
-        customerId: !merchantId ? orderpayload?.customerId : undefined,
+        // customerId: !merchantId ? orderpayload?.customerId : undefined,
         addressId: orderpayload?.address,
         type: orderpayload?.ordertype,
         merchantId: merchantId,
