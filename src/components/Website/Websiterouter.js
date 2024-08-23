@@ -273,6 +273,7 @@ const App = (props) => {
                                                                 <Route exact path="/hubitems" component={HubItems} />
                                                                 <Route exact path="/merchanthome" component={MerchantHome} />
                                                                 <Route exact path="/orders" component={Orders} />
+                                                                <Route exact path="/handpicked" component={Orders} />
                                                                 <Route exact path="/merchantfinance" component={Finance} />
                                                                 <Route exact path="/merchantitems" component={MerchantItems} />
                                                                 <Route exact path="/merchantorders" component={MerchantOrders} />

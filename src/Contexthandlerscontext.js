@@ -141,6 +141,18 @@ export const Contexthandlerscontext_provider = (props) => {
                         show: isAuth([1, 54]),
                     },
                     {
+                        name: 'Hand Picked',
+                        isselected: false,
+                        icon: (
+                            <i class={'allcentered'}>
+                                <LuPackageOpen size={18} />
+                            </i>
+                        ),
+                        path: '/handpicked',
+                        permissionpage: [1],
+                        show: isAuth([1, 54]),
+                    },
+                    {
                         name: 'Return Packages',
                         isselected: false,
                         icon: (
@@ -479,10 +491,10 @@ export const Contexthandlerscontext_provider = (props) => {
         { label: 'Finance Accepted', value: 'financeAccepted' },
         { label: 'Finance Rejected', value: 'financeRejected' },
     ];
-
     const orderStatusEnumContext = [
         { label: 'Idle', value: 'idle' },
-        { label: 'Assembled', value: 'assembled' },
+        { label: 'Hand Picked', value: 'handPicked' },
+        { label: 'Fulfilled', value: 'fulfilled' },
         { label: 'Dispatched', value: 'dispatched' },
         { label: 'Picked Up', value: 'pickedUp' },
         { label: 'Arrived At Sort Facilities', value: 'arrivedAtSortFacilities' },
@@ -494,9 +506,9 @@ export const Contexthandlerscontext_provider = (props) => {
         { label: 'Cancelled', value: 'cancelled' },
         { label: 'Failed Delivery Attempt', value: 'failedDeliveryAttempt' },
         { label: 'Postponed', value: 'postponed' },
-        { label: 'Return Requested', value: 'returnRequested' },
         { label: 'Returned', value: 'returned' },
         { label: 'Partially Returned', value: 'partiallyReturned' },
+        { label: 'Lost', value: 'lost' },
     ];
 
     const transactionUpdateTypeContext = [
@@ -680,7 +692,7 @@ export const Contexthandlerscontext_provider = (props) => {
         { label: 'Return', value: 'return' },
         { label: 'Order Return', value: 'orderReturn' },
         { label: 'Export', value: 'export' },
-        { label: 'Order Assembly', value: 'orderAssembly' },
+        { label: 'Order Pick', value: 'orderPick' },
     ];
 
     const inventoryRentTypeContext = [
