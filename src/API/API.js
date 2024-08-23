@@ -543,6 +543,7 @@ const API = () => {
                             info {
                                 name
                                 imageUrl
+                                sku
                                 item {
                                     name
                                 }

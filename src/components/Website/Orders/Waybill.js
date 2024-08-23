@@ -11,8 +11,8 @@ const Waybill = ({ order }) => {
             <div class="row m-0 w-100  h-100">
                 <div style={{ borderInlineEnd: '1px solid #eee' }} class="col-lg-10 col-md-10">
                     <div class="row m-0 w-100 d-flex justify-content-center">
-                        <div style={{ borderBottom: '1px solid #eee' }} className=" row w-100 m-0 p-2">
-                            <div style={{ borderInlineEnd: '2px solid #eee' }} className="company-info p-3 col-lg-4 col-md-4">
+                        <div style={{ borderBottom: '1px solid #eee' }} className=" row w-100 m-0 p-1">
+                            <div style={{ borderInlineEnd: '2px solid #eee' }} className="company-info p-1 col-lg-4 col-md-4">
                                 <h1 className="company-name">
                                     <img src={logo} style={{ objectFit: 'contain', width: '180px' }} />
                                 </h1>
@@ -20,13 +20,13 @@ const Waybill = ({ order }) => {
                                     <span>Phone Number: +20100077400</span>
                                 </div>
                             </div>
-                            <div style={{ borderInlineEnd: '2px solid #eee' }} className="company-info p-3 col-lg-4 col-md-4">
+                            <div style={{ borderInlineEnd: '2px solid #eee' }} className="company-info p-1 col-lg-4 col-md-4">
                                 <div class="row m-0 w-100">
                                     <div class="col-lg-12 p-0"> {order?.merchant?.name}</div>
                                     <div class="col-lg-12 p-0"> Date: {dateformatter(order?.createdAt)}</div>
                                 </div>
                             </div>
-                            <div className="company-info p-3 col-lg-4 col-md-4">
+                            <div className="company-info p-1 col-lg-4 col-md-4">
                                 {order?.merchantCustomer?.customerName}
                                 {order?.merchantCustomer?.customer?.phoneNumber && (
                                     <>
@@ -46,15 +46,15 @@ const Waybill = ({ order }) => {
                                 )}
                             </div>
                         </div>
-                        <div style={{ borderBottom: '1px solid #eee' }} className=" row allcentered w-100 m-0 p-2">
-                            <div style={{ borderInlineEnd: '2px solid #eee' }} className="company-info p-3 col-lg-4 col-md-4">
+                        <div style={{ borderBottom: '1px solid #eee' }} className=" row allcentered w-100 m-0 p-1">
+                            <div style={{ borderInlineEnd: '2px solid #eee' }} className="company-info p-1 col-lg-4 col-md-4">
                                 <div class="row m-0 w-100">
                                     <div class="col-lg-12 p-0 allcentered">
                                         Payment Method: <span style={{ fontWeight: 700 }}>{order?.paymentType}</span>
                                     </div>
                                 </div>
                             </div>
-                            <div className="company-info p-3 col-lg-4 col-md-4">
+                            <div className="company-info p-1 col-lg-4 col-md-4">
                                 <div class="row m-0 w-100">
                                     <div class="col-lg-12 p-0 allcentered">
                                         Order Type:{' '}
@@ -65,8 +65,8 @@ const Waybill = ({ order }) => {
                                 </div>
                             </div>
                         </div>
-                        <div style={{ borderBottom: '1px solid #eee' }} className=" row allcentered w-100 m-0 p-2">
-                            <div style={{ borderInlineEnd: '2px solid #eee' }} className="company-info p-3 col-lg-4 col-md-4">
+                        <div style={{ borderBottom: '1px solid #eee' }} className=" row allcentered w-100 m-0 p-1">
+                            <div style={{ borderInlineEnd: '2px solid #eee' }} className="company-info p-1 col-lg-4 col-md-4">
                                 <div class="row m-0 w-100">
                                     <div class="col-lg-12 p-0">
                                         <label class={`${formstyles.checkbox} ${formstyles.checkbox_sub} ${formstyles.path}` + ' d-flex mb-0 p-1 '} style={{ background: 'transaprent' }}>
@@ -79,7 +79,7 @@ const Waybill = ({ order }) => {
                                     </div>
                                 </div>
                             </div>
-                            <div style={{ borderInlineEnd: '2px solid #eee' }} className="company-info p-3 col-lg-4 col-md-4">
+                            <div style={{ borderInlineEnd: '2px solid #eee' }} className="company-info p-1 col-lg-4 col-md-4">
                                 <div class="row m-0 w-100">
                                     <div class="col-lg-12 p-0">
                                         <label class={`${formstyles.checkbox} ${formstyles.checkbox_sub} ${formstyles.path}` + ' d-flex mb-0 p-1 '} style={{ background: 'transaprent' }}>
@@ -92,7 +92,7 @@ const Waybill = ({ order }) => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="company-info p-3 col-lg-4 col-md-4">
+                            <div className="company-info p-1 col-lg-4 col-md-4">
                                 <div class="row m-0 w-100">
                                     <div class="col-lg-12 p-0">
                                         <label class={`${formstyles.checkbox} ${formstyles.checkbox_sub} ${formstyles.path}` + ' d-flex mb-0 p-1 '} style={{ background: 'transaprent' }}>
@@ -106,7 +106,16 @@ const Waybill = ({ order }) => {
                                 </div>
                             </div>
                         </div>
-                        <div class="row allcentered w-100 m-0 p-2">
+                        <div style={{ borderBottom: '1px solid #eee' }} className=" row allcentered w-100 m-0 p-1">
+                            {order?.orderItems?.map((item, index) => {
+                                return (
+                                    <div class="col-lg-12">
+                                        ({item?.count}) <span style={{ fontWeight: 600 }}>{item?.info?.item?.name}, </span> <span style={{ fontSize: '11px' }}>{item?.info?.sku} </span>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                        <div class="row allcentered w-100 m-0 p-1">
                             <div class="col-lg-12 p-0 mt-2">
                                 <div class="row m-0 w-100 d-flex">
                                     <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4 col-md-4">
