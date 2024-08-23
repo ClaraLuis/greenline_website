@@ -226,7 +226,7 @@ const Merchants = (props) => {
                                                         <Dropdown.Item
                                                             class="py-2"
                                                             onClick={() => {
-                                                                history.push('/updateshipping?merchantId=' + item.id);
+                                                                history.push('/updateshipping?merchantId=' + item.id + '&n=' + item?.name);
                                                             }}
                                                         >
                                                             <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Shipping Prices</p>

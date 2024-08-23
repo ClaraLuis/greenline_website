@@ -258,8 +258,11 @@ const OrdersTable = (props) => {
                                             </div>
                                             {props?.srcFrom != 'inventory' && (
                                                 <>
-                                                    <div class="col-lg-12 p-0 mb-2 text-capitalize">
+                                                    <div class="col-lg-12 p-0 mb-0 text-capitalize">
                                                         <span style={{ fontWeight: 600 }}>{item?.merchantCustomer?.customerName}</span>
+                                                    </div>
+                                                    <div class="col-lg-12 p-0 mb-1 text-capitalize">
+                                                        <span style={{ fontWeight: 500, fontSize: '12px' }}>{item?.merchantCustomer?.customer?.phone}</span>
                                                     </div>
                                                     <div className="col-lg-12 p-0 mb-1 d-flex align-items-center">
                                                         <MdOutlineLocationOn class="mr-1" />

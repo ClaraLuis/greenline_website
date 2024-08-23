@@ -258,14 +258,12 @@ const Orders = (props) => {
                                         <Inputfield
                                             placeholder={'Order Ids'}
                                             onKeyDown={(e) => {
-                                                e.stopPropagation();
-
-                                                if (e.key == 'Enter') {
+                                                if (e.key == 'Enter' && e.target.value?.length != 0) {
                                                     var exists = filterorders?.orderIds?.includes(parseInt(e?.target?.value));
                                                     if (exists) {
                                                         NotificationManager.warning('', 'Already exists');
                                                     } else {
-                                                        var temp = filterorders.orderIds ?? [];
+                                                        var temp = [...(filterorders?.orderIds ?? [])];
                                                         temp.push(parseInt(e.target.value));
                                                         setfilterorders({
                                                             ...filterorders,
@@ -273,6 +271,8 @@ const Orders = (props) => {
                                                         });
                                                         e.target.value = '';
                                                     }
+                                                    setBarcode('');
+                                                    setSearch('');
                                                 }
                                             }}
                                             type={'number'}

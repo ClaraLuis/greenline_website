@@ -13,6 +13,7 @@ import API from '../../../API/API.js';
 import { BiCheck, BiEdit } from 'react-icons/bi';
 import { Check } from 'react-bootstrap-icons';
 import Decimal from 'decimal.js';
+import { FaRegUser } from 'react-icons/fa';
 
 const UpdateShipping = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -237,6 +238,11 @@ const UpdateShipping = (props) => {
     };
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
+            <div class="col-lg-12 p-0">
+                <div class={generalstyles.card + ' row m-0 w-100 d-flex align-items-center'} style={{ fontWeight: 600 }}>
+                    <FaRegUser class="mr-2" /> {queryParameters.get('n')}
+                </div>
+            </div>
             {!fetchGovernoratesQuery?.loading && (
                 <div class={generalstyles.card + ' row m-0 w-100'}>
                     <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>

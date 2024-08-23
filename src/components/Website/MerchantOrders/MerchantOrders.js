@@ -349,6 +349,7 @@ const MerchantOrders = (props) => {
                                                         const year2 = enddate.getFullYear();
                                                         const month2 = enddate.getMonth() + 1; // Months are zero-indexed
                                                         const day2 = enddate.getDate();
+
                                                         setfilterorders({
                                                             ...filterorders,
                                                             fromDate: event[0],
@@ -372,12 +373,12 @@ const MerchantOrders = (props) => {
                                         <Inputfield
                                             placeholder={'Order Ids'}
                                             onKeyDown={(e) => {
-                                                if (e.key == 'Enter') {
+                                                if (e.key == 'Enter' && e.target.value?.length != 0) {
                                                     var exists = filterorders?.orderIds?.includes(parseInt(e?.target?.value));
                                                     if (exists) {
                                                         NotificationManager.warning('', 'Already exists');
                                                     } else {
-                                                        var temp = filterorders.orderIds ?? [];
+                                                        var temp = [...(filterorders?.orderIds ?? [])];
                                                         temp.push(parseInt(e.target.value));
                                                         setfilterorders({
                                                             ...filterorders,
