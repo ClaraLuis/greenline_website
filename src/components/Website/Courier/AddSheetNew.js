@@ -3,28 +3,16 @@ import { useHistory } from 'react-router-dom';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
-import { Modal } from 'react-bootstrap';
 // import { fetch_collection_data } from '../../../API/API';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
-import { FaLayerGroup } from 'react-icons/fa';
-import Select, { components } from 'react-select';
+import { components } from 'react-select';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
-import { defaultstyles } from '../Generalfiles/selectstyles.js';
 
-import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
-import { BsChevronDown, BsChevronUp, BsTrash } from 'react-icons/bs';
-import API from '../../../API/API.js';
-import ItemsTable from '../MerchantItems/ItemsTable.js';
-import Users from '../Users/Users.js';
-import AddressInfo from '../Users/AddressInfo.js';
-import Form from '../../Form.js';
-import OrdersTable from '../Orders/OrdersTable.js';
-import { FiCheckCircle } from 'react-icons/fi';
+import { BsTrash } from 'react-icons/bs';
 import { NotificationManager } from 'react-notifications';
-import { MdOutlineLocationOn } from 'react-icons/md';
-import { IoMdClose } from 'react-icons/io';
+import API from '../../../API/API.js';
 import SelectComponent from '../../SelectComponent.js';
 
 const { ValueContainer, Placeholder } = components;
@@ -33,7 +21,7 @@ const AddSheetNew = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, dateformatter, orderStatusEnumContext, user, isAuth } = useContext(Contexthandlerscontext);
-    const { useQueryGQL, fetchOrders, addCourierSheet, addOrdersToCourierSheet, useMutationGQL, fetchCouriers, fetchCourierSheet, useLazyQueryGQL } = API();
+    const { useQueryGQL, updateupdateOrderIdsStatus, addCourierSheet, addOrdersToCourierSheet, useMutationGQL, fetchCouriers, fetchCourierSheet, useLazyQueryGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [submit, setsubmit] = useState(false);
@@ -64,6 +52,11 @@ const AddSheetNew = (props) => {
         userId: sheetpayload?.courier,
         orderIds: sheetpayload?.orderIds,
     });
+    const [updateupdateOrderIdsStatusMutation] = useMutationGQL(updateupdateOrderIdsStatus(), {
+        status: 'arrivedAtHub',
+        ids: sheetpayload?.orderIds,
+    });
+
     const [addOrdersToCourierSheetMutation] = useMutationGQL(addOrdersToCourierSheet(), {
         sheetId: parseInt(queryParameters.get('sheetId')),
         orderIds: sheetpayload?.orderIds,
@@ -127,7 +120,7 @@ const AddSheetNew = (props) => {
         setbuttonLoading(false);
     };
     useEffect(() => {
-        setpageactive_context('/addsheet');
+        setpageactive_context(window.location.pathname);
     }, []);
     const [fetchCourierSheetLazyQuery] = useLazyQueryGQL(fetchCourierSheet());
 
@@ -163,7 +156,7 @@ const AddSheetNew = (props) => {
                         exist = true;
                     }
                 });
-                temp.orderIdsOld.map((i, ii) => {
+                temp?.orderIdsOld?.map((i, ii) => {
                     if (i == search) {
                         exist = true;
                     }
@@ -198,37 +191,40 @@ const AddSheetNew = (props) => {
         <div style={{ minHeight: '100vh' }} class="row m-0 w-100 p-md-2 pt-2 d-flex align-items-start">
             <div className={' col-lg-12 p-1 py-0 '}>
                 <div style={{}} class="row m-0 w-100">
-                    <div class="col-lg-12 mb-3 px-1">
-                        <div class={generalstyles.card + ' row m-0 w-100 p-2 py-3 '} style={{}}>
-                            {queryParameters.get('sheetId') != undefined && (
-                                <>
-                                    <div class="col-lg-12 mb-2" style={{ fontWeight: 600 }}>
-                                        Sheet # {queryParameters.get('sheetId')}
+                    {window.location.pathname != '/arrivedathub' && (
+                        <div class="col-lg-12 mb-3 px-1">
+                            <div class={generalstyles.card + ' row m-0 w-100 p-2 py-3 '} style={{}}>
+                                {queryParameters.get('sheetId') != undefined && (
+                                    <>
+                                        <div class="col-lg-12 mb-2" style={{ fontWeight: 600 }}>
+                                            Sheet # {queryParameters.get('sheetId')}
+                                        </div>
+                                        <div class="col-lg-12 mb-4">{fetchCourierSheetQuery?.data?.CourierSheet?.userInfo?.name}</div>
+                                    </>
+                                )}
+                                {queryParameters.get('sheetId') == undefined && (
+                                    <div class={'col-lg-3'}>
+                                        <SelectComponent
+                                            title={'Courier'}
+                                            filter={filterCouriers}
+                                            setfilter={setfilterCouriers}
+                                            options={fetchCouriersQuery}
+                                            attr={'paginateCouriers'}
+                                            payload={sheetpayload}
+                                            payloadAttr={'courier'}
+                                            label={'name'}
+                                            value={'id'}
+                                            onClick={(option) => {
+                                                setsheetpayload({ ...sheetpayload, courier: option?.id });
+                                            }}
+                                            removeAll={true}
+                                        />
                                     </div>
-                                    <div class="col-lg-12 mb-4">{fetchCourierSheetQuery?.data?.CourierSheet?.userInfo?.name}</div>
-                                </>
-                            )}
-                            {queryParameters.get('sheetId') == undefined && (
-                                <div class={'col-lg-3'}>
-                                    <SelectComponent
-                                        title={'Courier'}
-                                        filter={filterCouriers}
-                                        setfilter={setfilterCouriers}
-                                        options={fetchCouriersQuery}
-                                        attr={'paginateCouriers'}
-                                        payload={sheetpayload}
-                                        payloadAttr={'courier'}
-                                        label={'name'}
-                                        value={'id'}
-                                        onClick={(option) => {
-                                            setsheetpayload({ ...sheetpayload, courier: option?.id });
-                                        }}
-                                        removeAll={true}
-                                    />
-                                </div>
-                            )}
+                                )}
+                            </div>
                         </div>
-                    </div>
+                    )}
+
                     <div class="col-lg-10 p-0 ">
                         <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
                             <input
@@ -254,7 +250,7 @@ const AddSheetNew = (props) => {
                                         exist = true;
                                     }
                                 });
-                                temp.orderIdsOld.map((i, ii) => {
+                                temp?.orderIdsOld?.map((i, ii) => {
                                     if (i == search) {
                                         exist = true;
                                     }
@@ -335,30 +331,70 @@ const AddSheetNew = (props) => {
                     <div style={{ position: 'fixed', bottom: 0, width: '77%' }} class=" mb-3 px-1">
                         <div class={generalstyles.card + ' row m-0 w-100 p-2 py-3 d-flex justify-content-end '}>
                             <div class="col-lg-2 p-0 allcentered">
-                                <button
-                                    // style={{ height: '30px', minWidth: '80%' }}
-                                    class={generalstyles.roundbutton + ' allcentered p-0'}
-                                    onClick={() => {
-                                        if ((queryParameters.get('sheetId') == undefined && isAuth([1, 36, 53])) || (queryParameters.get('sheetId') != undefined && isAuth([1, 35, 53]))) {
-                                            if ((sheetpayload?.courier?.length == 0 || sheetpayload?.courier == undefined) && queryParameters.get('sheetId') == undefined) {
-                                                NotificationManager.warning('Choose Courier first', 'Warning!');
-                                                return;
-                                            }
-                                            if (sheetpayload?.orderIds?.length == 0 || sheetpayload?.orderIds == undefined) {
-                                                NotificationManager.warning('Choose Orders first', 'Warning!');
+                                {window.location.pathname != '/arrivedathub' && (
+                                    <button
+                                        // style={{ height: '30px', minWidth: '80%' }}
+                                        class={generalstyles.roundbutton + ' allcentered p-0'}
+                                        onClick={() => {
+                                            if ((queryParameters.get('sheetId') == undefined && isAuth([1, 36, 53])) || (queryParameters.get('sheetId') != undefined && isAuth([1, 35, 53]))) {
+                                                if ((sheetpayload?.courier?.length == 0 || sheetpayload?.courier == undefined) && queryParameters.get('sheetId') == undefined) {
+                                                    NotificationManager.warning('Choose Courier first', 'Warning!');
+                                                    return;
+                                                }
+                                                if (sheetpayload?.orderIds?.length == 0 || sheetpayload?.orderIds == undefined) {
+                                                    NotificationManager.warning('Choose Orders first', 'Warning!');
+                                                } else {
+                                                    handleAddCourierSheet();
+                                                }
                                             } else {
-                                                handleAddCourierSheet();
+                                                NotificationManager.warning('Not Authorized', 'Warning!');
                                             }
-                                        } else {
-                                            NotificationManager.warning('Not Authorized', 'Warning!');
-                                        }
-                                    }}
-                                    disabled={buttonLoading}
-                                >
-                                    {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                    {!buttonLoading && <span>{queryParameters.get('sheetId') == undefined ? 'Add Manifest' : 'Update Manifest'}</span>}
-                                    {/* Add Manifest */}
-                                </button>
+                                        }}
+                                        disabled={buttonLoading}
+                                    >
+                                        {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                        {!buttonLoading && <span>{queryParameters.get('sheetId') == undefined ? 'Add Manifest' : 'Update Manifest'}</span>}
+                                        {/* Add Manifest */}
+                                    </button>
+                                )}
+                                {window.location.pathname == '/arrivedathub' && (
+                                    <button
+                                        // style={{ height: '30px', minWidth: '80%' }}
+                                        class={generalstyles.roundbutton + ' allcentered p-0'}
+                                        onClick={async () => {
+                                            setbuttonLoading(true);
+                                            if (sheetpayload?.orderIds?.length != 0) {
+                                                try {
+                                                    const { data } = await updateupdateOrderIdsStatusMutation();
+                                                    if (data?.updateOrdersStatus?.success == true) {
+                                                        NotificationManager.success('Orders status updated successfully', 'Success');
+                                                    } else {
+                                                        NotificationManager.warning(data?.updateOrdersStatus?.message, 'Warning!');
+                                                    }
+                                                } catch (error) {
+                                                    // alert(JSON.stringify(error));
+                                                    let errorMessage = 'An unexpected error occurred';
+                                                    // // Check for GraphQL errors
+                                                    if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                                        errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                                    } else if (error.networkError) {
+                                                        errorMessage = error.networkError.message || errorMessage;
+                                                    } else if (error.message) {
+                                                        errorMessage = error.message;
+                                                    }
+                                                    NotificationManager.warning(errorMessage, 'Warning!');
+                                                }
+                                            }
+
+                                            setbuttonLoading(false);
+                                        }}
+                                        disabled={buttonLoading}
+                                    >
+                                        {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                        {!buttonLoading && <span>Arrived at hub</span>}
+                                        {/* Add Manifest */}
+                                    </button>
+                                )}
                             </div>
                         </div>
                     </div>

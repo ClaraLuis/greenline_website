@@ -4,7 +4,7 @@ import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
-import { FaLayerGroup, FaPlus, FaWindowMinimize } from 'react-icons/fa';
+import { FaEllipsisV, FaLayerGroup, FaPlus, FaWindowMinimize } from 'react-icons/fa';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
@@ -18,6 +18,7 @@ import { defaultstyles } from '../Generalfiles/selectstyles.js';
 import ItemsTable from './ItemsTable.js';
 import { NotificationManager } from 'react-notifications';
 import { FiCheckCircle } from 'react-icons/fi';
+import { Dropdown } from 'react-bootstrap';
 
 import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
@@ -223,12 +224,12 @@ const Packages = (props) => {
                                         style={{ background: selected ? 'var(--secondary)' : 'white', transition: 'all 0.4s', cursor: 'pointer' }}
                                         class={' p-3 row m-0 w-100 card  d-flex align-items-center'}
                                     >
-                                        <div className="col-lg-4 p-0">
+                                        <div className="col-lg-2 p-0">
                                             <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
                                                 # {item?.id}
                                             </span>
                                         </div>
-                                        <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
+                                        <div className="col-lg-10 p-0 d-flex justify-content-end align-items-center">
                                             <div class="row m-0 w-100 d-fex justify-content-end align-items-center">
                                                 <div
                                                     className={
@@ -250,6 +251,33 @@ const Packages = (props) => {
                                                         }
                                                     })}
                                                 </div>
+                                                <Dropdown>
+                                                    <Dropdown.Toggle>
+                                                        <div
+                                                            class="iconhover allcentered"
+                                                            style={{
+                                                                color: 'var(--primary)',
+                                                                // borderRadius: '10px',
+                                                                width: '28px',
+                                                                height: '28px',
+                                                                transition: 'all 0.4s',
+                                                            }}
+                                                        >
+                                                            <FaEllipsisV />
+                                                        </div>
+                                                    </Dropdown.Toggle>
+                                                    <Dropdown.Menu style={{ minWidth: '170px', fontSize: '12px' }}>
+                                                        <Dropdown.Item
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                history.push('/merchantreturnpackageinfo?packageId=' + item.id);
+                                                            }}
+                                                            class="py-2"
+                                                        >
+                                                            <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Show Package</p>
+                                                        </Dropdown.Item>
+                                                    </Dropdown.Menu>
+                                                </Dropdown>
                                             </div>
                                         </div>
                                         <div className="col-lg-12 p-0 my-2">

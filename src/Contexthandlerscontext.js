@@ -296,6 +296,18 @@ export const Contexthandlerscontext_provider = (props) => {
                         permissionpage: [1],
                         show: isAuth([1]),
                     },
+                    {
+                        name: 'Transfers',
+                        isselected: false,
+                        icon: (
+                            <i class={'allcentered'}>
+                                <LuPackageOpen size={18} />
+                            </i>
+                        ),
+                        path: '/arrivedathub',
+                        permissionpage: [1],
+                        show: isAuth([1, 53, 36]),
+                    },
                 ],
             },
             {

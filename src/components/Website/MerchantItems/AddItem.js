@@ -25,6 +25,7 @@ import { Arrow90degDown, ArrowDown, Trash2 } from 'react-bootstrap-icons';
 import { BiDownArrow } from 'react-icons/bi';
 import { FaChevronDown } from 'react-icons/fa';
 import Cookies from 'universal-cookie';
+import SelectComponent from '../../SelectComponent.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -32,7 +33,7 @@ const AddItem = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, dateformatter, chosenMerchantContext, isAuth } = useContext(Contexthandlerscontext);
-    const { fetchMerchantItems, useQueryGQL, useMutationGQL, addItem, addCompoundItem } = API();
+    const { fetchMerchantItems, useQueryGQL, useMutationGQL, fetchMerchants, addCompoundItem } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const cookies = new Cookies();
@@ -278,6 +279,14 @@ const AddItem = (props) => {
             groupedVariants[colorValue].push(variant);
         }
     });
+    const [filteMerchants, setfilteMerchants] = useState({
+        isAsc: true,
+        limit: 10,
+        afterCursor: undefined,
+        beforeCursor: undefined,
+    });
+
+    const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filteMerchants);
 
     return (
         <div class="row m-0 w-100 p-md-2 pt-2 d-flex justify-content-center">
@@ -288,6 +297,29 @@ const AddItem = (props) => {
                             <div class="col-lg-12 my-3" style={{ fontWeight: 600 }}>
                                 Main Info
                             </div>
+                            {isAuth([1]) && (
+                                <div class="col-lg-6">
+                                    <SelectComponent
+                                        title={'Merchant'}
+                                        filter={filteMerchants}
+                                        setfilter={setfilteMerchants}
+                                        options={fetchMerchantsQuery}
+                                        attr={'paginateMerchants'}
+                                        label={'name'}
+                                        value={'id'}
+                                        removeAll={true}
+                                        payload={itempayload}
+                                        payloadAttr={'merchantId'}
+                                        onClick={(option) => {
+                                            if (option != undefined) {
+                                                setitempayload({ ...itempayload, merchantId: option.id });
+                                            } else {
+                                                setitempayload({ ...itempayload, merchantId: undefined });
+                                            }
+                                        }}
+                                    />
+                                </div>
+                            )}
                             <div class="col-lg-6">
                                 <div class="row m-0 w-100  ">
                                     <div class={`${formstyles.form__group} ${formstyles.field}`}>

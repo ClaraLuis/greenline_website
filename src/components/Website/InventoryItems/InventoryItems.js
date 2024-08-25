@@ -23,6 +23,7 @@ import { defaultstyles } from '../Generalfiles/selectstyles.js';
 import ImportNewItem from './ImportNewItem.js';
 import ItemInfo from './ItemInfo.js';
 import MultiSelect from '../../MultiSelect.js';
+import { CiExport, CiImport } from 'react-icons/ci';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -447,6 +448,9 @@ const InventoryItems = (props) => {
                                                         <div class="col-lg-12 p-0 " style={{ fontSize: '14px', fontWeight: 600 }}>
                                                             {element?.itemVariant?.item?.name}
                                                         </div>
+                                                        <div class="col-lg-12 p-0 " style={{ fontSize: '11px', fontWeight: 600, color: 'grey' }}>
+                                                            {element?.itemVariant?.sku}
+                                                        </div>
                                                         <div className="row m-0 w-100">
                                                             <div class="col-lg-8 p-0 " style={{ fontSize: '13px', fontWeight: 500 }}>
                                                                 {element?.itemVariant?.name}
@@ -457,7 +461,7 @@ const InventoryItems = (props) => {
                                                 </div>
                                             </div>
 
-                                            <div class="col-lg-12 p-0 mt-3">
+                                            <div class="col-lg-12 p-0 my-3">
                                                 <div class="row m-0 w-100 d-flex align-items-center justify-content-center">
                                                     <button
                                                         onClick={async () => {
@@ -487,10 +491,10 @@ const InventoryItems = (props) => {
                                                             });
                                                             setimportmodal({ open: true, type: 'import' });
                                                         }}
-                                                        style={{ height: '25px', width: '40%', marginInlineEnd: '5px' }}
+                                                        style={{ height: '25px', minWidth: 'fit-content', marginInlineEnd: '5px' }}
                                                         class={generalstyles.roundbutton + '  allcentered'}
                                                     >
-                                                        import
+                                                        <CiImport size={18} />
                                                     </button>
                                                     <button
                                                         onClick={() => {
@@ -502,10 +506,10 @@ const InventoryItems = (props) => {
                                                             });
                                                             setimportmodal({ open: true, type: 'export' });
                                                         }}
-                                                        style={{ height: '25px', width: '40%' }}
+                                                        style={{ height: '25px', minWidth: 'fit-content', marginInlineEnd: '5px' }}
                                                         class={generalstyles.roundbutton + '  allcentered bg-danger bg-dangerhover'}
                                                     >
-                                                        export
+                                                        <CiExport size={18} />
                                                     </button>
                                                 </div>
                                             </div>

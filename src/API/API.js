@@ -71,6 +71,13 @@ const API = () => {
             }
         `;
     };
+    const updateupdateOrderIdsStatus = () => {
+        return gql`
+            mutation updateOrderIds($input: UpdateOrderStatusInput!) {
+                updateOrdersStatus(input: $input)
+            }
+        `;
+    };
 
     const editUserType = () => {
         return gql`
@@ -410,11 +417,13 @@ const API = () => {
                         inventoryId
                         count
                         totalCount
+
                         itemVariant {
                             name
                             merchantId
                             imageUrl
                             id
+                            sku
                             item {
                                 name
                             }
@@ -1496,6 +1505,7 @@ const API = () => {
         fetchHubs,
         fetchOrderHistory,
         updateOrdersStatus,
+        updateupdateOrderIdsStatus,
         fetchExpenses,
         createExpense,
         fetchAllCountries,
