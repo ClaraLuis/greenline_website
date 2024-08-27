@@ -5081,3 +5081,45 @@ ul {
 .rs-input-group.rs-input-group-inside .rs-input {
     border-radius: 18px !important;
 }
+
+.css-v6mo1y-MuiTimelineDot-root {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-align-self: baseline;
+    -ms-flex-item-align: baseline;
+    align-self: baseline;
+    border-style: solid;
+    border-width: 2px;
+    padding: 4px;
+    border-radius: 50%;
+    box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+    margin: 11.5px 0;
+    border-color: transparent;
+    color: var(--primary) !important;
+    background-color: var(--primary) !important;
+}
+.css-1ami7lv-MuiTimelineConnector-root {
+    width: 2px;
+    background-color: var(--primary) !important;
+    -webkit-box-flex: 1;
+    -webkit-flex-grow: 1;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+}
+.css-18y2uza-MuiTypography-root-MuiTimelineContent-root {
+    margin: 0;
+    /* font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif; */
+    font-weight: 600 !important;
+    font-size: 1rem;
+    color: #000 !important;
+    line-height: 1.5;
+    letter-spacing: 0.00938em;
+    -webkit-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    padding: 6px 16px;
+    text-align: left;
+    text-transform: capitalize !important;
+}

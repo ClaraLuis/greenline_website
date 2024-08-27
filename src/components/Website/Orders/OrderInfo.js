@@ -1,29 +1,26 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
-import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
-import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
-import { NotificationManager } from 'react-notifications';
-import Select from 'react-select';
 import { Modal } from 'react-bootstrap';
 import API from '../../../API/API.js';
 
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
-import Stepper from '@mui/material/Stepper';
-import Typography from '@mui/material/Typography';
-import { defaultstyles } from '../Generalfiles/selectstyles.js';
-import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
-import { MdOutlineInventory2, MdOutlineLocationOn } from 'react-icons/md';
-import { IoMdClose } from 'react-icons/io';
 import { FaLayerGroup } from 'react-icons/fa';
+import { IoMdClose } from 'react-icons/io';
+import { MdOutlineInventory2, MdOutlineLocationOn } from 'react-icons/md';
+
+import Timeline from '@mui/lab/Timeline';
+import TimelineConnector from '@mui/lab/TimelineConnector';
+import TimelineContent from '@mui/lab/TimelineContent';
+import TimelineDot from '@mui/lab/TimelineDot';
+import TimelineItem from '@mui/lab/TimelineItem';
+import TimelineSeparator from '@mui/lab/TimelineSeparator';
+
+import TimelineOppositeContent, { timelineOppositeContentClasses } from '@mui/lab/TimelineOppositeContent';
 
 const OrderInfo = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -35,6 +32,17 @@ const OrderInfo = (props) => {
     const [outOfStock, setoutOfStock] = useState(false);
     const [diffInDays, setdiffInDays] = useState(0);
     const [historyType, sethistoryType] = useState('order');
+
+    const dateformatterDayAndMonth = (date) => {
+        const d = new Date(date);
+        const day = d.getDate();
+        const month = d.toLocaleString('default', { month: 'long' });
+        return `${day} ${month}`;
+    };
+    const dateformatterTime = (date) => {
+        const options = { hour: '2-digit', minute: '2-digit', hour12: true };
+        return new Date(date).toLocaleTimeString(undefined, options);
+    };
 
     const [filterordershistory, setfilterordershistory] = useState({
         limit: 20,
@@ -418,23 +426,32 @@ const OrderInfo = (props) => {
                                                 </div>
                                             )}
                                             {fetchOrderHistoryQuery?.data?.paginateOrderHistory?.data?.length != 0 && (
-                                                <div style={{ overflowY: 'scroll' }} class={' row m-0 w-100 p-2 pb-4 py-3 scrollmenuclasssubscrollbar'}>
-                                                    <div class="container1">
-                                                        <ul class="progressbar">
-                                                            {fetchOrderHistoryQuery?.data?.paginateOrderHistory?.data?.map((historyItem, historyIndex) => {
-                                                                return (
-                                                                    <li class="active text-capitalize">
-                                                                        {historyItem?.status.split(/(?=[A-Z])/).join(' ')}{' '}
-                                                                        <span style={{ fontSize: '11px', color: 'lightgrey' }} class="ml-1">
-                                                                            {dateformatter(historyItem?.createdAt)}
-                                                                        </span>
-                                                                    </li>
-                                                                );
-                                                            })}
-
-                                                            {/* <li>Step 5</li> */}
-                                                        </ul>
-                                                    </div>
+                                                <div style={{ overflowY: 'scroll' }} class={' row m-0 w-100 p-0 pb-4 py-3 scrollmenuclasssubscrollbar'}>
+                                                    <Timeline
+                                                        style={{ width: '100%' }}
+                                                        sx={{
+                                                            [`& .${timelineOppositeContentClasses.root}`]: {
+                                                                flex: 0.2,
+                                                            },
+                                                        }}
+                                                    >
+                                                        {fetchOrderHistoryQuery?.data?.paginateOrderHistory?.data?.map((historyItem, historyIndex) => {
+                                                            return (
+                                                                <TimelineItem>
+                                                                    <TimelineOppositeContent style={{ fontSize: '13px' }}>
+                                                                        <span style={{ fontSize: '13px', color: 'black', fontWeight: 600 }}>{dateformatterDayAndMonth(historyItem?.createdAt)}</span>
+                                                                        <br />
+                                                                        {dateformatterTime(historyItem?.createdAt)}
+                                                                    </TimelineOppositeContent>
+                                                                    <TimelineSeparator>
+                                                                        <TimelineDot />
+                                                                        {historyIndex < fetchOrderHistoryQuery?.data?.paginateOrderHistory?.data?.length - 1 && <TimelineConnector />}
+                                                                    </TimelineSeparator>
+                                                                    <TimelineContent>{historyItem?.status.split(/(?=[A-Z])/).join(' ')} </TimelineContent>
+                                                                </TimelineItem>
+                                                            );
+                                                        })}
+                                                    </Timeline>
                                                 </div>
                                             )}
                                         </>
@@ -453,23 +470,37 @@ const OrderInfo = (props) => {
                                             )}
                                             {fetchTransactionHistoryQuery?.data?.paginateOrderTransactionsHistory?.data?.length != 0 && (
                                                 <div style={{ overflowY: 'scroll' }} class={' row m-0 w-100 p-2 pb-4 py-3 scrollmenuclasssubscrollbar'}>
-                                                    <div class="container1">
-                                                        <ul class="progressbar">
-                                                            {fetchTransactionHistoryQuery?.data?.paginateOrderTransactionsHistory?.data?.map((historyItem, historyIndex) => {
-                                                                return (
-                                                                    <li class="active text-capitalize">
-                                                                        {' '}
-                                                                        {historyItem?.type?.split(/(?=[A-Z])/).join(' ')}, {historyItem?.status?.split(/(?=[A-Z])/).join(' ')}{' '}
-                                                                        <span style={{ fontSize: '11px', color: 'lightgrey' }} class="ml-1">
-                                                                            {dateformatter(historyItem?.createdAt)}
-                                                                        </span>
-                                                                    </li>
-                                                                );
-                                                            })}
-
-                                                            {/* <li>Step 5</li> */}
-                                                        </ul>
-                                                    </div>
+                                                    <Timeline
+                                                        style={{ width: '100%' }}
+                                                        sx={{
+                                                            [`& .${timelineOppositeContentClasses.root}`]: {
+                                                                flex: 0.2,
+                                                            },
+                                                        }}
+                                                    >
+                                                        {fetchTransactionHistoryQuery?.data?.paginateOrderTransactionsHistory?.data?.map((historyItem, historyIndex) => {
+                                                            return (
+                                                                <TimelineItem>
+                                                                    <TimelineOppositeContent style={{ fontSize: '13px' }}>
+                                                                        <span style={{ fontSize: '13px', color: 'black', fontWeight: 600 }}>{dateformatterDayAndMonth(historyItem?.createdAt)}</span>
+                                                                        <br />
+                                                                        {dateformatterTime(historyItem?.createdAt)}
+                                                                    </TimelineOppositeContent>
+                                                                    <TimelineSeparator>
+                                                                        <TimelineDot />
+                                                                        {historyIndex < fetchTransactionHistoryQuery?.data?.paginateOrderTransactionsHistory?.data?.length - 1 && <TimelineConnector />}
+                                                                    </TimelineSeparator>
+                                                                    <TimelineContent>
+                                                                        {historyItem?.type?.split(/(?=[A-Z])/).join(' ')}
+                                                                        <br />
+                                                                        <span style={{ fontSize: '14px', fontWeight: 400 }}>
+                                                                            {historyItem?.status?.split(/(?=[A-Z])/).join(' ')}, {historyItem?.amount} {historyItem?.currency}
+                                                                        </span>{' '}
+                                                                    </TimelineContent>
+                                                                </TimelineItem>
+                                                            );
+                                                        })}
+                                                    </Timeline>
                                                 </div>
                                             )}
                                         </>
