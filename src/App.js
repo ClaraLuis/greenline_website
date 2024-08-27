@@ -218,12 +218,13 @@ const App = (props) => {
                                                 <Route
                                                     exact
                                                     path="/"
-                                                    render={(props) => {
-                                                        return <Redirect to={'/users'} />;
-                                                    }}
+                                                    // render={(props) => {
+                                                    //     return <Redirect to={'/users'} />;
+                                                    // }}
                                                 />
+                                                {!loggedincontext && <Login />}
                                                 <AuthRoute>{loggedincontext && <Route exact path="*" component={Websiterouter} />}</AuthRoute>
-                                                <Route exact path="/login" component={Login} />
+                                                {/* <Route exact path="/login" component={Login} /> */}
                                             </Suspense>
                                         </div>
                                     </Routedispatcherprovider>

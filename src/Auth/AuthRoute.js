@@ -55,9 +55,9 @@ const AuthRoute = (props) => {
                 cookies.set('merchantId', requestLoginData?.data?.signIn?.user?.merchantId);
             }
             setloggedincontext(true);
-            if (window.location.pathname == '/login') {
-                history.push('/users');
-            }
+            // if (window.location.pathname == '/login') {
+            //     history.push('/users');
+            // }
         } catch (error) {
             signOut(getAuth());
             const cookies = new Cookies();
@@ -93,7 +93,8 @@ const AuthRoute = (props) => {
                 }
             } else {
                 console.log('unauthorized: frebase');
-                history.push('/login');
+                setloggedincontext(false);
+                // history.push('/login');
             }
         });
     }, [auth]);
