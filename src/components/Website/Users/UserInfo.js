@@ -18,6 +18,8 @@ import { gql, useMutation, useQuery } from '@apollo/client';
 import AddEditSecuritylayers from '../Securitylayers/AddEditSecuritylayers.js';
 import Cookies from 'universal-cookie';
 import SelectComponent from '../../SelectComponent.js';
+import { BiEdit } from 'react-icons/bi';
+import { MdClose } from 'react-icons/md';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -31,6 +33,7 @@ const UserInfo = (props) => {
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [submit, setsubmit] = useState(false);
+    const [edit, setedit] = useState(false);
     const [changerolesmodal, setchangerolesmodal] = useState(false);
     const [buttonLoading, setbuttonLoading] = useState(false);
     const groupedRoles = _.groupBy(props?.payload?.userRoles, (role) => role.role.type);
@@ -109,6 +112,8 @@ const UserInfo = (props) => {
                 var { data } = await updateEmployeeInfoMutation();
                 if (data?.updateEmployeeInfo?.success) {
                     props?.setopenModal(false);
+                    setedit(false);
+
                     refetchUsers();
                     NotificationManager.success('', 'Success');
                 } else {
@@ -118,6 +123,8 @@ const UserInfo = (props) => {
                 var { data } = await addUser1();
                 if (data?.createUser?.success) {
                     props?.setopenModal(false);
+                    setedit(false);
+
                     refetchUsers();
                     NotificationManager.success('', 'Success');
                 } else {
@@ -147,6 +154,7 @@ const UserInfo = (props) => {
                     show={props?.openModal}
                     onHide={() => {
                         props?.setopenModal(false);
+                        setedit(false);
                     }}
                     centered
                     size={'lg'}
@@ -162,6 +170,7 @@ const UserInfo = (props) => {
                                     class={'close-modal-container'}
                                     onClick={() => {
                                         props?.setopenModal(false);
+                                        setedit(false);
                                     }}
                                 >
                                     <IoMdClose />
@@ -171,57 +180,184 @@ const UserInfo = (props) => {
                     </Modal.Header>
                     <Modal.Body>
                         <div class="row m-0 w-100 py-2">
-                            {props?.payload?.functype == 'edit' && (
-                                <Form
-                                    size={'lg'}
-                                    submit={submit}
-                                    setsubmit={setsubmit}
-                                    attr={[
-                                        {
-                                            name: 'Employee Type',
-                                            attr: 'employeeType',
-                                            type: 'select',
-                                            options: employeeTypeContext,
-                                            size: '6',
-                                        },
-                                        {
-                                            title: 'Inventory',
-                                            filter: filterInventories,
-                                            setfilter: setfilterInventories,
-                                            options: fetchinventories,
-                                            optionsAttr: 'paginateInventories',
-                                            label: 'name',
-                                            value: 'id',
-                                            size: '6',
-                                            attr: 'inventoryId',
-                                            type: 'fetchSelect',
-                                        },
-                                        {
-                                            title: 'Hub',
-                                            filter: filterHubs,
-                                            setfilter: setfilterHubs,
-                                            options: fetchHubsQuery,
-                                            optionsAttr: 'paginateHubs',
-                                            label: 'name',
-                                            value: 'id',
-                                            size: '6',
-                                            attr: 'hubID',
-                                            type: 'fetchSelect',
-                                        },
-                                        { name: 'Commission', attr: 'commission', size: '6', type: 'number' },
-                                        { name: 'Salary', attr: 'salary', size: '6', type: 'number' },
-                                    ]}
-                                    payload={props?.payload}
-                                    setpayload={props?.setpayload}
-                                    button1disabled={buttonLoading}
-                                    button1class={generalstyles.roundbutton + '  mr-2 '}
-                                    button1placeholder={props?.payload?.functype == 'add' ? lang.add : lang.edit}
-                                    button1onClick={() => {
-                                        handleAddUser();
-                                    }}
-                                />
+                            {!edit && props?.payload?.functype == 'edit' && props?.payload?.type == 'view' && (
+                                <div class={' row m-0 w-100'}>
+                                    <div class="col-lg-12 mb-1" style={{ color: 'grey', fontSize: '12px' }}>
+                                        <div class="row m-0 w-100 d-flex align-items-center justify-content-between">
+                                            <div> Main Info</div>
+                                            <BiEdit
+                                                onClick={() => {
+                                                    setedit(true);
+                                                }}
+                                                class="text-secondaryhover"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6 mb-3">
+                                        <div class="row m-0 w-100">
+                                            <div class="form__group field">
+                                                <label class="form__label">Name</label>
+                                                <div>{props?.payload?.name}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6 mb-3">
+                                        <div class="row m-0 w-100">
+                                            <div class="form__group field">
+                                                <label class="form__label">Phone</label>
+                                                <div>{props?.payload?.phone}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 mb-3">
+                                        <div class="row m-0 w-100">
+                                            <div class="form__group field">
+                                                <label class="form__label">Email</label>
+                                                <div>{props?.payload?.email}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 mb-3">
+                                        <div class="row m-0 w-100">
+                                            <div class="form__group field">
+                                                <label class="form__label">Birthdate</label>
+                                                <div>{props?.payload?.birthdate.split('T')[0]}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {props?.payload?.hub && (
+                                        <div class="col-lg-6 mb-3">
+                                            <div class="row m-0 w-100">
+                                                <div class="form__group field">
+                                                    <label class="form__label">Hub</label>
+                                                    <div>{props?.payload?.hub?.name}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {props?.payload?.merchant && (
+                                        <div class="col-lg-6 mb-3">
+                                            <div class="row m-0 w-100">
+                                                <div class="form__group field">
+                                                    <label class="form__label">Merchant</label>
+                                                    <div>{props?.payload?.merchant?.name}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    <div class="col-lg-6 mb-3">
+                                        <div class="row m-0 w-100">
+                                            <div class="form__group field">
+                                                <label class="form__label">Type</label>
+                                                <div>{props?.payload?.type}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 mb-3">
+                                        <div class="row m-0 w-100">
+                                            <div class="form__group field">
+                                                <label class="form__label">Employee Type</label>
+                                                <div>{props?.payload?.employee?.type}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6 mb-3">
+                                        <div class="row m-0 w-100">
+                                            <div class="form__group field">
+                                                <label class="form__label">Currency</label>
+                                                <div>{props?.payload?.employee?.currency}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6 mb-3">
+                                        <div class="row m-0 w-100">
+                                            <div class="form__group field">
+                                                <label class="form__label">Salary</label>
+                                                <div>{props?.payload?.employee?.salary}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6 mb-3">
+                                        <div class="row m-0 w-100">
+                                            <div class="form__group field">
+                                                <label class="form__label">Commission</label>
+                                                <div>{props?.payload?.employee?.commission}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             )}
-                            {props?.payload.functype == 'edit' && (
+                            {props?.payload?.functype == 'edit' && props?.payload?.type != 'merchant' && edit && props?.payload?.type == 'view' && (
+                                <>
+                                    <div class="col-lg-12 mb-1" style={{ color: 'grey', fontSize: '12px' }}>
+                                        <div class="row m-0 w-100 d-flex align-items-center justify-content-between">
+                                            <div> Main Info</div>
+                                            <MdClose
+                                                onClick={() => {
+                                                    setedit(false);
+                                                }}
+                                                class="text-secondaryhover"
+                                            />
+                                        </div>
+                                    </div>
+                                    <Form
+                                        size={'lg'}
+                                        submit={submit}
+                                        setsubmit={setsubmit}
+                                        attr={[
+                                            {
+                                                name: 'Employee Type',
+                                                attr: 'employeeType',
+                                                type: 'select',
+                                                options: employeeTypeContext,
+                                                size: '6',
+                                            },
+                                            {
+                                                title: 'Inventory',
+                                                filter: filterInventories,
+                                                setfilter: setfilterInventories,
+                                                options: fetchinventories,
+                                                optionsAttr: 'paginateInventories',
+                                                label: 'name',
+                                                value: 'id',
+                                                size: '6',
+                                                attr: 'inventoryId',
+                                                type: 'fetchSelect',
+                                            },
+                                            {
+                                                title: 'Hub',
+                                                filter: filterHubs,
+                                                setfilter: setfilterHubs,
+                                                options: fetchHubsQuery,
+                                                optionsAttr: 'paginateHubs',
+                                                label: 'name',
+                                                value: 'id',
+                                                size: '6',
+                                                attr: 'hubID',
+                                                type: 'fetchSelect',
+                                            },
+                                            { name: 'Commission', attr: 'commission', size: '6', type: 'number' },
+                                            { name: 'Salary', attr: 'salary', size: '6', type: 'number' },
+                                        ]}
+                                        payload={props?.payload}
+                                        setpayload={props?.setpayload}
+                                        button1disabled={buttonLoading}
+                                        button1class={generalstyles.roundbutton + '  mr-2 '}
+                                        button1placeholder={props?.payload?.functype == 'add' ? lang.add : lang.edit}
+                                        button1onClick={() => {
+                                            handleAddUser();
+                                        }}
+                                    />
+                                </>
+                            )}
+                            {props?.payload.functype == 'edit' && props?.payload?.type == 'roles' && (
                                 <div class="col-lg-12 d-flex justify-content-end py-0">
                                     <div
                                         onClick={() => {
@@ -415,7 +551,7 @@ const UserInfo = (props) => {
                                     // }}
                                 />
                             )}
-                            {props?.payload?.functype == 'edit' && (
+                            {props?.payload?.functype == 'edit' && props?.payload?.type == 'roles' && (
                                 <div class="row m-0 w-100">
                                     {userRoles?.map((item, index) => {
                                         return (
@@ -426,7 +562,7 @@ const UserInfo = (props) => {
                                                     </div>
                                                     {item?.roles?.map((role, roleIndex) => {
                                                         return (
-                                                            <div class={' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 mr-2 text-capitalize '}>
+                                                            <div class={' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 mr-2 mb-2 text-capitalize '}>
                                                                 {role?.role?.name?.split(/(?=[A-Z])/).join(' ')}
                                                             </div>
                                                         );

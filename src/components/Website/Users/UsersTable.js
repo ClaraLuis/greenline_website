@@ -10,9 +10,11 @@ import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
-import { FaLayerGroup } from 'react-icons/fa';
+import { FaEllipsisV, FaLayerGroup } from 'react-icons/fa';
 import { NotificationManager } from 'react-notifications';
 import { useMutation } from 'react-query';
+import { Dropdown } from 'react-bootstrap';
+
 import reviewsstyles from './reviews.module.css';
 import Select, { components } from 'react-select';
 
@@ -86,21 +88,74 @@ const UsersTable = (props) => {
 
                                             <div className="col-lg-6 p-0 mb-2 d-flex justify-content-end">
                                                 {item?.id?.length != 7 && isAuth([1, 46, 52]) && (
-                                                    <div
-                                                        onClick={() => {
-                                                            var temp = { ...item };
-                                                            temp.functype = 'edit';
-                                                            setpayload({ ...temp, employeeType: item?.employee?.type, salary: item?.employee?.salary, commission: item?.employee?.commission });
-                                                            setopenModal(true);
-                                                        }}
-                                                        style={{
-                                                            width: '35px',
-                                                            height: '35px',
-                                                        }}
-                                                        className="iconhover allcentered"
-                                                    >
-                                                        <CiUnlock style={{ transition: 'all 0.4s' }} size={20} />
-                                                    </div>
+                                                    <Dropdown>
+                                                        <Dropdown.Toggle>
+                                                            <div
+                                                                class="iconhover allcentered ml-1"
+                                                                style={{
+                                                                    color: 'var(--primary)',
+                                                                    // borderRadius: '10px',
+                                                                    width: '28px',
+                                                                    height: '28px',
+                                                                    transition: 'all 0.4s',
+                                                                }}
+                                                            >
+                                                                <FaEllipsisV />
+                                                            </div>
+                                                        </Dropdown.Toggle>
+                                                        <Dropdown.Menu style={{ minWidth: '170px', fontSize: '12px' }}>
+                                                            <Dropdown.Item
+                                                                onClick={() => {
+                                                                    var temp = { ...item };
+
+                                                                    temp.functype = 'edit';
+                                                                    setpayload({
+                                                                        ...temp,
+                                                                        employeeType: item?.employee?.type,
+                                                                        salary: item?.employee?.salary,
+                                                                        commission: item?.employee?.commission,
+                                                                        type: 'view',
+                                                                    });
+                                                                    setopenModal(true);
+                                                                }}
+                                                                class="py-2"
+                                                            >
+                                                                <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>View</p>
+                                                            </Dropdown.Item>
+                                                            <Dropdown.Item
+                                                                onClick={() => {
+                                                                    var temp = { ...item };
+                                                                    temp.functype = 'edit';
+                                                                    setpayload({
+                                                                        ...temp,
+                                                                        employeeType: item?.employee?.type,
+                                                                        salary: item?.employee?.salary,
+                                                                        commission: item?.employee?.commission,
+                                                                        type: 'roles',
+                                                                    });
+                                                                    setopenModal(true);
+                                                                }}
+                                                                class="py-2"
+                                                            >
+                                                                <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Update Roles</p>
+                                                            </Dropdown.Item>
+                                                        </Dropdown.Menu>
+                                                    </Dropdown>
+                                                    // <div
+                                                    //     onClick={() => {
+                                                    //         var temp = { ...item };
+                                                    //         temp.functype = 'edit';
+                                                    //         setpayload({ ...temp, employeeType: item?.employee?.type, salary: item?.employee?.salary, commission: item?.employee?.commission });
+                                                    //         setopenModal(true);
+                                                    //     }}
+                                                    //     style={{
+                                                    //         width: '35px',
+                                                    //         height: '35px',
+                                                    //     }}
+                                                    //     className="iconhover allcentered"
+                                                    // >
+                                                    //     <CiUnlock style={{ transition: 'all 0.4s' }} size={20} />
+                                                    // </div>
                                                 )}
                                                 {item?.id?.length == 7 && (
                                                     <div

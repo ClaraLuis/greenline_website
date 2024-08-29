@@ -709,6 +709,10 @@ const API = () => {
                         hub {
                             name
                         }
+
+                        merchant {
+                            name
+                        }
                         userRoles {
                             roleId
                             role {
