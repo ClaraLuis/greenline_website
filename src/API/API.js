@@ -1350,9 +1350,11 @@ const API = () => {
                             name
                         }
                         fromAccount {
+                            id
                             name
                         }
                         toAccount {
+                            id
                             name
                         }
                         createdAt
@@ -1375,10 +1377,15 @@ const API = () => {
                         status
                         amount
                         currency
+                        auditedBy {
+                            name
+                        }
                         fromAccount {
+                            id
                             name
                         }
                         toAccount {
+                            id
                             name
                         }
                         sheetOrder {
@@ -1410,10 +1417,15 @@ const API = () => {
                         status
                         amount
                         currency
+                        auditedBy {
+                            name
+                        }
                         fromAccount {
+                            id
                             name
                         }
                         toAccount {
+                            id
                             name
                         }
                         sheetOrder {

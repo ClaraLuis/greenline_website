@@ -10,6 +10,7 @@ import { FaLayerGroup } from 'react-icons/fa';
 import { components } from 'react-select';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
+import { TbUserDollar } from 'react-icons/tb';
 import { BiEdit } from 'react-icons/bi';
 import { FaEllipsisV } from 'react-icons/fa';
 import { FcCancel } from 'react-icons/fc';
@@ -137,7 +138,7 @@ const TransactionsTable = (props) => {
                                                             if (i.value == item.status) {
                                                                 return (
                                                                     <div
-                                                                        style={{ cursor: props?.srctype == 'recieved' ? 'pointer' : '' }}
+                                                                        style={{ cursor: item?.toAccount?.id == props?.accountId ? 'pointer' : '' }}
                                                                         className={
                                                                             item.status == 'completed'
                                                                                 ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 '
@@ -175,7 +176,7 @@ const TransactionsTable = (props) => {
                                                         if (i.value == item.status) {
                                                             return (
                                                                 <div
-                                                                    style={{ cursor: props?.srctype == 'recieved' ? 'pointer' : '' }}
+                                                                    style={{ cursor: item?.toAccount?.id == props?.accountId ? 'pointer' : '' }}
                                                                     className={
                                                                         item.status == 'completed'
                                                                             ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 '
@@ -198,7 +199,7 @@ const TransactionsTable = (props) => {
                                                     <div style={{ color: 'white' }} className={' wordbreak bg-primary rounded-pill font-weight-600 allcentered mx-1 text-capitalize'}>
                                                         {item?.type?.split(/(?=[A-Z])/).join(' ')}
                                                     </div>
-                                                    {props?.srctype == 'recieved' && (
+                                                    {item?.toAccount?.id == props?.accountId && (
                                                         <button
                                                             onClick={() => {
                                                                 setstatuspayload({ ...statuspayload, id: item?.id });
@@ -213,7 +214,7 @@ const TransactionsTable = (props) => {
                                                             <BiEdit size={28} />
                                                         </button>
                                                     )}
-                                                    {props?.srctype == 'sent' && item?.status == 'pendingReceiver' && (
+                                                    {item?.fromAccount?.id == props?.accountId && item?.status == 'pendingReceiver' && (
                                                         <button
                                                             onClick={async () => {
                                                                 await setstatuspayload({ ...statuspayload, id: item?.id, status: 'cancel' });
@@ -316,9 +317,9 @@ const TransactionsTable = (props) => {
 
                                             {props?.srctype != 'all' && props?.srctype != 'courierCollection' && props?.srctype != 'expenses' && (
                                                 <div className="col-lg-12 p-0 mb-1">
-                                                    <span class="d-flex align-items-center" style={{ fontWeight: 600, color: props?.srctype == 'recieved' ? '#4C8CF5' : '#1EC000' }}>
+                                                    <span class="d-flex align-items-center" style={{ fontWeight: 600, color: item?.toAccount?.id == props?.accountId ? '#4C8CF5' : '#1EC000' }}>
                                                         <MdOutlineAccountCircle class="mr-1" />
-                                                        {props?.srctype == 'recieved' ? item?.fromAccount?.name ?? '-' : item?.toAccount?.name ?? '-'}
+                                                        {item?.toAccount?.id == props?.accountId ? item?.fromAccount?.name ?? '-' : item?.toAccount?.name ?? '-'}
                                                     </span>
                                                 </div>
                                             )}
@@ -330,16 +331,30 @@ const TransactionsTable = (props) => {
                                                 </span>
                                             </div>
 
-                                            {!props?.allowSelect && (
-                                                <div className="col-lg-12 p-0 mb-1 d-flex justify-content-end">
-                                                    <span class="d-flex align-items-center" style={{ fontWeight: 500, color: 'grey', fontSize: '12px' }}>
-                                                        <IoMdTime class="mr-1" />
-                                                        {dateformatter(item?.createdAt)}
-                                                    </span>
+                                            {/* {!props?.allowSelect && ( */}
+                                            <div class="col-lg-12 p-0">
+                                                <div class="row m-0 w-100 justify-content-end">
+                                                    {item?.auditedBy && (
+                                                        <div className="col-lg-6 p-0 mb-1 d-flex ">
+                                                            <span class="d-flex align-items-center" style={{ fontWeight: 500, fontSize: '13px' }}>
+                                                                <TbUserDollar class="mr-1" />
+                                                                {item?.auditedBy?.name}
+                                                            </span>
+                                                        </div>
+                                                    )}
+
+                                                    <div className="col-lg-6 p-0 mb-1 d-flex justify-content-end">
+                                                        <span class="d-flex align-items-center" style={{ fontWeight: 500, color: 'grey', fontSize: '12px' }}>
+                                                            <IoMdTime class="mr-1" />
+                                                            {dateformatter(item?.createdAt)}
+                                                        </span>
+                                                    </div>
                                                 </div>
-                                            )}
+                                            </div>
+
+                                            {/* )} */}
                                             {/* <div class="col-lg-12 p-0 allcentered">
-                                                {props?.srctype == 'recieved' && (
+                                                {item?.toAccount?.id == props?.accountId && (
                                                     <button
                                                         onClick={() => {
                                                             setstatuspayload({ ...statuspayload, id: item?.id });
@@ -355,7 +370,7 @@ const TransactionsTable = (props) => {
                                                         Update status
                                                     </button>
                                                 )}
-                                                {props?.srctype == 'sent' && item?.status == 'pendingReceiver' && (
+                                                {item?.fromAccount?.id == props?.accountId && item?.status == 'pendingReceiver' && (
                                                     <button
                                                         onClick={async () => {
                                                             await setstatuspayload({ ...statuspayload, id: item?.id, status: 'cancel' });

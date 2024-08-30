@@ -69,6 +69,7 @@ const FinanceTransactions = (props) => {
         fromAccountId: undefined,
         status: undefined,
         type: undefined,
+        fromMyAccount: true,
     });
     const fetchAllTransactionsQuery = useQueryGQL('', fetchTransactions(), filterTransactionsObj);
     const { refetch: refetchAllTransactionsQuery } = useQueryGQL('', fetchTransactions(), filterTransactionsObj);
@@ -205,6 +206,91 @@ const FinanceTransactions = (props) => {
                             <AccordionItemPanel>
                                 <hr className="mt-2 mb-3" />
                                 <div class="row m-0 w-100">
+                                    <div class="col-lg-12 p-0">
+                                        <div class="row m-0 w-100">
+                                            {isAuth([1, 51]) && (
+                                                <div className="col-lg-2 p-0 mb-2 d-flex align-items-center ">
+                                                    <div className="row m-0 w-100 d-flex ">
+                                                        <label className={`${formstyles.switch}  my-0`}>
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={filterTransactionsObj?.fromMyAccount}
+                                                                onChange={(e) => {
+                                                                    e.stopPropagation();
+                                                                    setfilterTransactionsObj({ ...filterTransactionsObj, fromMyAccount: !filterTransactionsObj?.fromMyAccount });
+                                                                }}
+                                                            />
+                                                            <span className={`${formstyles.slider} ${formstyles.round}`}></span>
+                                                        </label>
+                                                        <p className={`${generalstyles.checkbox_label} mb-0 text-focus text-capitalize cursor-pointer font_14 ml-2 mr-2 wordbreak`}>My Account</p>
+                                                    </div>
+                                                </div>
+                                            )}
+                                            {filterTransactionsObj?.fromMyAccount && (
+                                                <div className={'col-lg-2'} style={{ marginBottom: '15px' }}>
+                                                    <SelectComponent
+                                                        title={'Other Account'}
+                                                        filter={filterAllFinancialAccountsObj}
+                                                        setfilter={setfilterAllFinancialAccountsObj}
+                                                        options={fetchAllFinancialAccountsQuery}
+                                                        attr={'paginateFinancialAccounts'}
+                                                        label={'name'}
+                                                        value={'id'}
+                                                        payload={filterTransactionsObj}
+                                                        payloadAttr={'otherAccountId'}
+                                                        onClick={(option) => {
+                                                            setfilterTransactionsObj({
+                                                                ...filterTransactionsObj,
+                                                                otherAccountId: option?.id,
+                                                            });
+                                                        }}
+                                                    />
+                                                </div>
+                                            )}
+                                            {!filterTransactionsObj?.fromMyAccount && (
+                                                <>
+                                                    <div className={'col-lg-2'} style={{ marginBottom: '15px' }}>
+                                                        <SelectComponent
+                                                            title={'From Account'}
+                                                            filter={filterAllFinancialAccountsObj}
+                                                            setfilter={setfilterAllFinancialAccountsObj}
+                                                            options={fetchAllFinancialAccountsQuery}
+                                                            attr={'paginateFinancialAccounts'}
+                                                            label={'name'}
+                                                            value={'id'}
+                                                            payload={filterTransactionsObj}
+                                                            payloadAttr={'fromAccountId'}
+                                                            onClick={(option) => {
+                                                                setfilterTransactionsObj({
+                                                                    ...filterTransactionsObj,
+                                                                    fromAccountId: option?.id,
+                                                                });
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    <div className={'col-lg-2'} style={{ marginBottom: '15px' }}>
+                                                        <SelectComponent
+                                                            title={'To Account'}
+                                                            filter={filterAllFinancialAccountsObj}
+                                                            setfilter={setfilterAllFinancialAccountsObj}
+                                                            options={fetchAllFinancialAccountsQuery}
+                                                            attr={'paginateFinancialAccounts'}
+                                                            label={'name'}
+                                                            value={'id'}
+                                                            payload={filterTransactionsObj}
+                                                            payloadAttr={'toAccountId'}
+                                                            onClick={(option) => {
+                                                                setfilterTransactionsObj({
+                                                                    ...filterTransactionsObj,
+                                                                    toAccountId: option?.id,
+                                                                });
+                                                            }}
+                                                        />
+                                                    </div>
+                                                </>
+                                            )}
+                                        </div>
+                                    </div>
                                     <div class={'col-lg-2'} style={{ marginBottom: '15px' }}>
                                         <label for="name" class={formstyles.form__label}>
                                             Type
@@ -231,44 +317,7 @@ const FinanceTransactions = (props) => {
                                             }}
                                         />
                                     </div>
-                                    <div className={'col-lg-2'} style={{ marginBottom: '15px' }}>
-                                        <SelectComponent
-                                            title={'From Account'}
-                                            filter={filterAllFinancialAccountsObj}
-                                            setfilter={setfilterAllFinancialAccountsObj}
-                                            options={fetchAllFinancialAccountsQuery}
-                                            attr={'paginateFinancialAccounts'}
-                                            label={'name'}
-                                            value={'id'}
-                                            payload={filterTransactionsObj}
-                                            payloadAttr={'fromAccountId'}
-                                            onClick={(option) => {
-                                                setfilterTransactionsObj({
-                                                    ...filterTransactionsObj,
-                                                    fromAccountId: option?.id,
-                                                });
-                                            }}
-                                        />
-                                    </div>
-                                    <div className={'col-lg-2'} style={{ marginBottom: '15px' }}>
-                                        <SelectComponent
-                                            title={'To Account'}
-                                            filter={filterAllFinancialAccountsObj}
-                                            setfilter={setfilterAllFinancialAccountsObj}
-                                            options={fetchAllFinancialAccountsQuery}
-                                            attr={'paginateFinancialAccounts'}
-                                            label={'name'}
-                                            value={'id'}
-                                            payload={filterTransactionsObj}
-                                            payloadAttr={'toAccountId'}
-                                            onClick={(option) => {
-                                                setfilterTransactionsObj({
-                                                    ...filterTransactionsObj,
-                                                    toAccountId: option?.id,
-                                                });
-                                            }}
-                                        />
-                                    </div>
+
                                     <div class=" col-lg-3 mb-md-2">
                                         <span>Date Range</span>
                                         <div class="mt-1" style={{ width: '100%' }}>

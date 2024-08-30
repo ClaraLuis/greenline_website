@@ -63,19 +63,21 @@ const FinancialAccountInfo = (props) => {
         afterCursor: undefined,
         beforeCursor: undefined,
         fromAccountId: parseInt(queryParameters.get('accountId')),
+        myHubOnly: isAuth([1, 51]) ? false : undefined,
     });
 
-    const [filterRecievedTransactionsObj, setfilterRecievedTransactionsObj] = useState({
-        isAsc: true,
-        limit: 20,
-        afterCursor: undefined,
-        beforeCursor: undefined,
-        toAccountId: parseInt(queryParameters.get('accountId')),
-    });
+    // const [filterRecievedTransactionsObj, setfilterRecievedTransactionsObj] = useState({
+    //     isAsc: true,
+    //     limit: 20,
+    //     afterCursor: undefined,
+    //     beforeCursor: undefined,
+    //     toAccountId: parseInt(queryParameters.get('accountId')),
+    //     myHubOnly: isAuth([1, 51]) ? false : undefined,
+    // });
 
     const fetchOneFinancialAccountsQuery = useQueryGQL('', fetchFinancialAccounts(), filterobj);
     const fetchSenttTransactionsQuery = useQueryGQL('', fetchTransactions(), filterSentTransactionsObj);
-    const fetchRecievedTransactionsQuery = useQueryGQL('', fetchTransactions(), filterRecievedTransactionsObj);
+    // const fetchRecievedTransactionsQuery = useQueryGQL('', fetchTransactions(), filterRecievedTransactionsObj);
 
     const [filterAllFinancialAccountsObj, setfilterAllFinancialAccountsObj] = useState({
         isAsc: true,
@@ -88,13 +90,13 @@ const FinancialAccountInfo = (props) => {
 
     const { refetch: refetchOneFinancialAccountsQuery } = useQueryGQL('', fetchFinancialAccounts(), filterobj);
     const { refetch: refetchSenttTransactionsQuery } = useQueryGQL('', fetchTransactions(), filterSentTransactionsObj);
-    const { refetch: refetchRecievedTransactionsQuery } = useQueryGQL('', fetchTransactions(), filterRecievedTransactionsObj);
+    // const { refetch: refetchRecievedTransactionsQuery } = useQueryGQL('', fetchTransactions(), filterRecievedTransactionsObj);
     const { refetch: refetchAllFinancialAccountsQuery } = useQueryGQL('', fetchFinancialAccounts(), filterAllFinancialAccountsObj);
 
     const Refetch = () => {
         refetchOneFinancialAccountsQuery();
         refetchSenttTransactionsQuery();
-        refetchRecievedTransactionsQuery();
+        // refetchRecievedTransactionsQuery();
         refetchAllFinancialAccountsQuery();
     };
     useEffect(() => {
@@ -204,12 +206,12 @@ const FinancialAccountInfo = (props) => {
                 </div>
                 <div class="col-lg-12 p-0">
                     <div class="row m-0 w-100">
-                        <div class="col-lg-6">
+                        <div class="col-lg-12">
                             {' '}
                             <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
                                 <div class={' col-lg-12 col-md-12 col-sm-12 p-0 d-flex align-items-center justify-content-start '}>
                                     <p class=" p-0 m-0 text-uppercase" style={{ fontSize: '15px' }}>
-                                        <span style={{ color: 'var(--info)' }}>sent transactions</span>
+                                        <span style={{ color: 'var(--info)' }}>Transactions</span>
                                     </p>
                                 </div>
                                 {isAuth([1, 51, 27]) && (
@@ -224,42 +226,11 @@ const FinancialAccountInfo = (props) => {
                                         </div>
                                         <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
                                             <TransactionsTable
-                                                width={'100%'}
+                                                width={'50%'}
                                                 query={fetchSenttTransactionsQuery}
                                                 paginationAttr="paginateFinancialTransaction"
                                                 srctype="sent"
-                                                refetchFunc={() => {
-                                                    Refetch();
-                                                }}
-                                            />
-                                        </div>
-                                    </>
-                                )}
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
-                                <div class={' col-lg-12 col-md-12 col-sm-12 p-0 d-flex align-items-center justify-content-start '}>
-                                    <p class=" p-0 m-0 text-uppercase" style={{ fontSize: '15px' }}>
-                                        <span style={{ color: 'var(--info)' }}>recieved transactions</span>
-                                    </p>
-                                </div>
-                                {isAuth([1, 51, 27]) && (
-                                    <>
-                                        <div class="col-lg-12 p-0">
-                                            <Pagination
-                                                beforeCursor={fetchRecievedTransactionsQuery?.data?.paginateFinancialTransaction?.cursor?.beforeCursor}
-                                                afterCursor={fetchRecievedTransactionsQuery?.data?.paginateFinancialTransaction?.cursor?.afterCursor}
-                                                filter={filterRecievedTransactionsObj}
-                                                setfilter={setfilterRecievedTransactionsObj}
-                                            />
-                                        </div>
-                                        <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
-                                            <TransactionsTable
-                                                width={'100%'}
-                                                query={fetchRecievedTransactionsQuery}
-                                                paginationAttr="paginateFinancialTransaction"
-                                                srctype="recieved"
+                                                accountId={queryParameters.get('accountId')}
                                                 refetchFunc={() => {
                                                     Refetch();
                                                 }}

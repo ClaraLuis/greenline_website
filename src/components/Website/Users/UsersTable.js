@@ -17,7 +17,7 @@ import { Dropdown } from 'react-bootstrap';
 
 import reviewsstyles from './reviews.module.css';
 import Select, { components } from 'react-select';
-
+import { TbUserPentagon } from 'react-icons/tb';
 // Icons
 import API from '../../../API/API.js';
 import UserInfo from './UserInfo.js';
@@ -177,7 +177,7 @@ const UsersTable = (props) => {
                                             </div>
                                             <div className="col-lg-12 p-0 mb-1">
                                                 <span style={{ fontWeight: 600 }} class="d-flex align-items-center text-capitalize">
-                                                    <RiSettings4Line class="mr-1" />
+                                                    <TbUserPentagon class="mr-1" />
                                                     {item?.type?.split(/(?=[A-Z])/).join(' ')} {item?.employee?.type?.split(/(?=[A-Z])/).join(' ')}
                                                 </span>
                                             </div>
