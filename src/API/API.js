@@ -55,6 +55,21 @@ const API = () => {
             }
         `;
     };
+    const assignMerchantToInventory = () => {
+        return gql`
+            mutation assignMerchantToInventory($input: AssignMerchantToInventoryInput!) {
+                assignMerchantToInventory(input: $input)
+            }
+        `;
+    };
+    const removeMerchantAssignmentFromInventory = () => {
+        return gql`
+            mutation removeMerchantAssignmentFromInventory($input: RemoveMerchantAssignmentInput!) {
+                removeMerchantAssignmentFromInventory(input: $input)
+            }
+        `;
+    };
+
     const updateInventoryRent = () => {
         return gql`
             mutation updateInventoryRent($input: UpdateInventoryRentInput!) {
@@ -803,21 +818,32 @@ const API = () => {
             findOneInventory(input: {
               id:${JSON.stringify(inventoryId)}
             }){
-                id
-              name,
-              racks{
-                id,
-                name
-                ballots{
-                  id,
-                  name,
-                  level
-                   boxes{
-                                            name
-                                            id
-                                            }
-                }
+              id
+        name
+        racks {
+        merchant{name}
+          id
+          name
+          ballots {
+        merchant{name}
+
+            rackId
+            id
+            name
+            level
+            boxes {
+        merchant{name}
+
+              ballotId
+              ballot {
+                rackId
               }
+              name
+              id
+            }
+          }
+        }
+              
             }
           }
         `;
@@ -1661,6 +1687,8 @@ const API = () => {
         requestOrderReturn,
         fetchTransactionHistory,
         createHub,
+        assignMerchantToInventory,
+        removeMerchantAssignmentFromInventory,
     };
 };
 export default API;
