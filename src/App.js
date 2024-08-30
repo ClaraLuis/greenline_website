@@ -28,6 +28,7 @@ const cookies = new Cookies();
 
 const Websiterouter = React.lazy(() => import('./components/Website/Websiterouter'));
 const Login = React.lazy(() => import('./components/Website/Login/Login'));
+const PrivacyPolicy = React.lazy(() => import('./components/Website/PrivacyPolicy/PrivacyPolicy.js'));
 let isRefreshing = false;
 let pendingRequests = [];
 
@@ -101,8 +102,8 @@ const authLink = setContext(async (_, { headers }) => {
 });
 
 const httpLink = new HttpLink({
-    // uri: 'http://localhost:3001/graphql',
-    uri: 'https://greenlineco.site/graphql',
+    uri: 'http://localhost:3001/graphql',
+    // uri: 'https://greenlineco.site/graphql',
 });
 
 const client = new ApolloClient({
@@ -184,6 +185,9 @@ async function refreshAuthToken() {
 const App = (props) => {
     let history = useHistory();
     const { loggedincontext, setloggedincontext } = useContext(Loggedincontext);
+    useEffect(() => {
+        document.title = 'Greenline';
+    }, []);
 
     return (
         <ApolloProvider client={client}>
@@ -222,8 +226,9 @@ const App = (props) => {
                                                     //     return <Redirect to={'/users'} />;
                                                     // }}
                                                 />
-                                                {!loggedincontext && <Login />}
-                                                <AuthRoute>{loggedincontext && <Route exact path="*" component={Websiterouter} />}</AuthRoute>
+                                                {!loggedincontext && window.location.pathname != '/privacypolicy' && <Login />}
+                                                <Route exact path="/privacypolicy" component={PrivacyPolicy} />
+                                                <AuthRoute>{loggedincontext && window.location.pathname != '/privacypolicy' && <Route exact path="*" component={Websiterouter} />}</AuthRoute>
                                                 {/* <Route exact path="/login" component={Login} /> */}
                                             </Suspense>
                                         </div>

@@ -39,7 +39,7 @@ const WaybillPrint = ({ waybills }) => {
                 content={() => componentRef.current}
             />
             <div style={{ display: 'none' }} className="col-lg-12">
-                <div ref={componentRef} className="row m-0 w-100">
+                <div ref={componentRef} className="print-container row m-0 w-100">
                     {waybills.map((order, index) => (
                         <Waybill key={index} order={order} />
                     ))}

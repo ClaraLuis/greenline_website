@@ -25,7 +25,7 @@ const Login = () => {
     useEffect(() => {
         setpagetitle_context('login');
         setpageactive_context('/login');
-        document.title = 'Dashboard';
+        document.title = 'Greenline';
     }, []);
     const { lang, langdetect } = useContext(LanguageContext);
 

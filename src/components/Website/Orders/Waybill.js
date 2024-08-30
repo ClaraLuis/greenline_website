@@ -7,7 +7,7 @@ import { Contexthandlerscontext } from '../../../Contexthandlerscontext';
 const Waybill = ({ order }) => {
     const { dateformatter } = useContext(Contexthandlerscontext);
     return (
-        <div style={{ fontSize: '12px' }} className="waybill p-1 col-lg-12">
+        <div style={{ fontSize: '12px' }} className="print-item waybill p-1 col-lg-12">
             <div class="row m-0 w-100  h-100">
                 <div style={{ borderInlineEnd: '1px solid #eee' }} class="col-lg-10 col-md-10">
                     <div class="row m-0 w-100 d-flex justify-content-center">
@@ -167,9 +167,11 @@ const Waybill = ({ order }) => {
                             </div>
                         </div>
                         <div className="col-lg-12 allcentered " style={{ height: '50%', borderBottom: '1px solid #eee' }}>
-                            <div style={{ transform: 'rotate(270deg)' }}>
-                                <Barcode value={order?.id} width={2} height={40} fontSize={12} background="transparent" style={{ background: 'transparent', transform: 'rotate(90deg)' }} />
-                            </div>
+                            {order?.otherId && (
+                                <div style={{ transform: 'rotate(270deg)' }}>
+                                    <Barcode value={order?.otherId} width={2} height={40} fontSize={12} background="transparent" style={{ background: 'transparent', transform: 'rotate(90deg)' }} />
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

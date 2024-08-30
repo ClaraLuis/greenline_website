@@ -5,7 +5,7 @@ import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
-import { FaEllipsisV, FaLayerGroup } from 'react-icons/fa';
+import { FaEllipsisV, FaLayerGroup, FaShopify } from 'react-icons/fa';
 import { components } from 'react-select';
 
 import { Dropdown, Modal } from 'react-bootstrap';
@@ -159,9 +159,6 @@ const OrdersTable = (props) => {
                                                     <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
                                                         # {item?.id}
                                                     </span>{' '}
-                                                    {outOfStock && props?.srcFrom == 'inventory' && (
-                                                        <div className={'ml-1 wordbreak text-danger bg-light-danger rounded-pill font-weight-600 '}>Out Of Stock</div>
-                                                    )}
                                                     <span style={{ fontWeight: 600 }} class="text-capitalize">
                                                         {item?.merchant?.name}
                                                     </span>
@@ -169,9 +166,7 @@ const OrdersTable = (props) => {
                                             </div>
                                             <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
                                                 <div class="row m-0 w-100  d-flex justify-content-end align-items-center">
-                                                    {props?.srcFrom == 'inventory' && (
-                                                        <div className={' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 mr-1 '}>{diffInDays} days late</div>
-                                                    )}
+                                                    {props?.srcFrom == 'inventory' && <div className={'mr-1 wordbreak text-danger bg-light-danger rounded-pill font-weight-600 '}>Out Of Stock</div>}
                                                     <div
                                                         // onClick={() => {
                                                         //     setchangestatusmodal(true);
@@ -256,25 +251,35 @@ const OrdersTable = (props) => {
                                             <div className="col-lg-12 p-0 my-2">
                                                 <hr className="m-0" />
                                             </div>
-                                            {props?.srcFrom != 'inventory' && (
-                                                <>
-                                                    <div class="col-lg-12 p-0 mb-0 text-capitalize">
-                                                        <span style={{ fontWeight: 600 }}>{item?.merchantCustomer?.customerName}</span>
-                                                    </div>
-                                                    <div class="col-lg-12 p-0 mb-1 text-capitalize">
-                                                        <span style={{ fontWeight: 500, fontSize: '12px' }}>{item?.merchantCustomer?.customer?.phone}</span>
-                                                    </div>
-                                                    <div className="col-lg-12 p-0 mb-1 d-flex align-items-center">
-                                                        <MdOutlineLocationOn class="mr-1" />
-                                                        <span style={{ fontWeight: 400, fontSize: '13px' }}>
-                                                            {item?.address?.country}, {item?.address?.city},{' '}
-                                                            <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                {item?.address?.streetAddress}, {item?.address?.buildingNumber}, {item?.address?.apartmentFloor}
-                                                            </span>
-                                                        </span>
-                                                    </div>
+                                            <div class="col-lg-12 p-0 ">
+                                                <div class="row m-0 w-100" style={{ position: 'relative' }}>
+                                                    {item?.shopifyName && (
+                                                        <div style={{ position: 'absolute', right: 10 }}>
+                                                            <div class="row m-0 w-100 aign-items-center">
+                                                                <FaShopify /> {item?.shopifyName}
+                                                            </div>
+                                                        </div>
+                                                    )}
 
-                                                    {/* <div className="col-lg-12 p-0 mt-3 mb-2">
+                                                    {props?.srcFrom != 'inventory' && (
+                                                        <>
+                                                            <div class="col-lg-12 p-0 mb-0 text-capitalize">
+                                                                <span style={{ fontWeight: 600 }}>{item?.merchantCustomer?.customerName}</span>
+                                                            </div>
+                                                            <div class="col-lg-12 p-0 mb-1 text-capitalize">
+                                                                <span style={{ fontWeight: 500, fontSize: '12px' }}>{item?.merchantCustomer?.customer?.phone}</span>
+                                                            </div>
+                                                            <div className="col-lg-12 p-0 mb-1 d-flex align-items-center">
+                                                                <MdOutlineLocationOn class="mr-1" />
+                                                                <span style={{ fontWeight: 400, fontSize: '13px' }}>
+                                                                    {item?.address?.country}, {item?.address?.city},{' '}
+                                                                    <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                        {item?.address?.streetAddress}, {item?.address?.buildingNumber}, {item?.address?.apartmentFloor}
+                                                                    </span>
+                                                                </span>
+                                                            </div>
+
+                                                            {/* <div className="col-lg-12 p-0 mt-3 mb-2">
                                                         <div
                                                             style={{ maxWidth: '100%', flexDirection: 'row', flexWrap: 'nowrap', overflow: 'scroll' }}
                                                             class="row m-0 w-100 scrollmenuclasssubscrollbar"
@@ -316,131 +321,139 @@ const OrdersTable = (props) => {
                                                             })}
                                                         </div>
                                                     </div> */}
-                                                    <div class="col-lg-12 p-0 mt-2">
-                                                        <div class="row m-0 w-100 d-flex">
-                                                            <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4">
-                                                                <div class="row m-0 w-100">
-                                                                    <div class="col-lg-12 p-0 allcentered text-center">
-                                                                        <span style={{ fontWeight: 400, fontSize: '11px' }}>Price</span>
-                                                                    </div>
-                                                                    <div class="col-lg-12 p-0 allcentered text-center">
-                                                                        <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                            {parseFloat(item?.price)} {item?.currency}
-                                                                        </span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4">
-                                                                <div class="row m-0 w-100">
-                                                                    <div class="col-lg-12 p-0 allcentered text-center">
-                                                                        <span style={{ fontWeight: 400, fontSize: '11px' }}>Shipping</span>
-                                                                    </div>
-                                                                    <div class="col-lg-12 p-0 allcentered text-center">
-                                                                        <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                            {parseFloat(item?.shippingPrice)} {item?.currency}
-                                                                        </span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div style={{ fontWeight: 600, fontSize: '15px' }} className=" p-0 mb-2 allcentered col-lg-4">
-                                                                <div class="row m-0 w-100">
-                                                                    <div class="col-lg-12 p-0 allcentered text-center">
-                                                                        <span style={{ fontWeight: 400, fontSize: '11px' }}>Total</span>
-                                                                    </div>
-                                                                    <div class="col-lg-12 p-0 allcentered text-center">
-                                                                        <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                            {parseFloat(item?.price) + parseFloat(item?.shippingPrice)} {item?.currency}
-                                                                        </span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </>
-                                            )}
-                                            {props?.srcFrom == 'inventory' && (
-                                                <div className="col-lg-12 p-0 mt-2">
-                                                    <div style={{ maxHeight: '40vh', overflow: 'scroll' }} class="row m-0 w-100 scrollmenuclasssubscrollbar">
-                                                        {item?.orderItems?.map((orderItem, orderIndex) => {
-                                                            var organizedData = [];
-                                                            if (props?.srcFrom == 'inventory') {
-                                                                organizedData = organizeInventory(orderItem?.inventory);
-                                                            }
-                                                            return (
-                                                                <div class="col-lg-12 p-0 mb-1">
-                                                                    <div style={{ border: '1px solid #eee', borderRadius: '18px' }} class="row m-0 w-100 p-1 align-items-center">
-                                                                        <div style={{ width: '50px', height: '50px', borderRadius: '7px', marginInlineEnd: '10px' }}>
-                                                                            <img
-                                                                                src={
-                                                                                    orderItem?.info?.imageUrl
-                                                                                        ? orderItem?.info?.imageUrl
-                                                                                        : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'
-                                                                                }
-                                                                                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
-                                                                            />
+                                                            <div class="col-lg-12 p-0 mt-2">
+                                                                <div class="row m-0 w-100 d-flex">
+                                                                    <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4">
+                                                                        <div class="row m-0 w-100">
+                                                                            <div class="col-lg-12 p-0 allcentered text-center">
+                                                                                <span style={{ fontWeight: 400, fontSize: '11px' }}>Price</span>
+                                                                            </div>
+                                                                            <div class="col-lg-12 p-0 allcentered text-center">
+                                                                                <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                                    {parseFloat(item?.price)} {item?.currency}
+                                                                                </span>
+                                                                            </div>
                                                                         </div>
-                                                                        <div class="col-lg-5 d-flex align-items-center">
-                                                                            {props?.srcFrom == 'inventory' && (
-                                                                                <div className="row m-0 w-100">
-                                                                                    <div style={{ fontSize: '14px', fontWeight: 600 }} className={' col-lg-12 p-0'}>
-                                                                                        {orderItem?.info?.item?.name}
-                                                                                    </div>
-                                                                                    <div style={{ fontSize: '13px' }} className={' col-lg-12 p-0'}>
-                                                                                        {orderItem?.info?.name}
-                                                                                    </div>
-                                                                                    <div style={{ color: 'lightgray', fontSize: '13px' }} className="col-lg-12 p-0">
-                                                                                        {orderItem?.info?.sku}
-                                                                                    </div>
+                                                                    </div>
+                                                                    <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4">
+                                                                        <div class="row m-0 w-100">
+                                                                            <div class="col-lg-12 p-0 allcentered text-center">
+                                                                                <span style={{ fontWeight: 400, fontSize: '11px' }}>Shipping</span>
+                                                                            </div>
+                                                                            <div class="col-lg-12 p-0 allcentered text-center">
+                                                                                <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                                    {parseFloat(item?.shippingPrice)} {item?.currency}
+                                                                                </span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div style={{ fontWeight: 600, fontSize: '15px' }} className=" p-0 mb-2 allcentered col-lg-4">
+                                                                        <div class="row m-0 w-100">
+                                                                            <div class="col-lg-12 p-0 allcentered text-center">
+                                                                                <span style={{ fontWeight: 400, fontSize: '11px' }}>Total</span>
+                                                                            </div>
+                                                                            <div class="col-lg-12 p-0 allcentered text-center">
+                                                                                <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                                    {parseFloat(item?.price) + parseFloat(item?.shippingPrice)} {item?.currency}
+                                                                                </span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </>
+                                                    )}
+                                                    {props?.srcFrom == 'inventory' && (
+                                                        <div className={item?.shopifyName ? 'col-lg-12 p-0 mt-4' : 'col-lg-12 p-0'}>
+                                                            <div style={{ maxHeight: '40vh', overflow: 'scroll' }} class="row m-0 w-100 scrollmenuclasssubscrollbar">
+                                                                {item?.orderItems?.map((orderItem, orderIndex) => {
+                                                                    var organizedData = [];
+                                                                    if (props?.srcFrom == 'inventory') {
+                                                                        organizedData = organizeInventory(orderItem?.inventory);
+                                                                    }
+                                                                    return (
+                                                                        <div class="col-lg-12 p-0 mb-1">
+                                                                            <div style={{ border: '1px solid #eee', borderRadius: '18px' }} class="row m-0 w-100 p-1 align-items-center">
+                                                                                <div style={{ width: '50px', height: '50px', borderRadius: '7px', marginInlineEnd: '10px' }}>
+                                                                                    <img
+                                                                                        src={
+                                                                                            orderItem?.info?.imageUrl
+                                                                                                ? orderItem?.info?.imageUrl
+                                                                                                : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'
+                                                                                        }
+                                                                                        style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
+                                                                                    />
                                                                                 </div>
-                                                                            )}
-                                                                        </div>
-                                                                        <div class="col-lg-5 ">
-                                                                            <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
-                                                                                <div>
-                                                                                    {orderItem?.partial && (
-                                                                                        <div style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }} class="row m-0 w-100 p-1 px-4">
-                                                                                            {orderItem.partialCount}/{orderItem.count}
-                                                                                        </div>
-                                                                                    )}
-                                                                                    {!orderItem?.partial && (
-                                                                                        <div style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }} class="row m-0 w-100 p-1 px-4">
-                                                                                            {orderItem.count}
+                                                                                <div class="col-lg-5 d-flex align-items-center">
+                                                                                    {props?.srcFrom == 'inventory' && (
+                                                                                        <div className="row m-0 w-100">
+                                                                                            <div style={{ fontSize: '14px', fontWeight: 600 }} className={' col-lg-12 p-0'}>
+                                                                                                {orderItem?.info?.item?.name}
+                                                                                            </div>
+                                                                                            <div style={{ fontSize: '13px' }} className={' col-lg-12 p-0'}>
+                                                                                                {orderItem?.info?.name}
+                                                                                            </div>
+                                                                                            <div style={{ color: 'lightgray', fontSize: '13px' }} className="col-lg-12 p-0">
+                                                                                                {orderItem?.info?.sku}
+                                                                                            </div>
                                                                                         </div>
                                                                                     )}
                                                                                 </div>
-                                                                                {/* <div style={{ fontWeight: 700 }} class="mx-2">
+                                                                                <div class="col-lg-5 ">
+                                                                                    <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
+                                                                                        <div>
+                                                                                            {orderItem?.partial && (
+                                                                                                <div
+                                                                                                    style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }}
+                                                                                                    class="row m-0 w-100 p-1 px-4"
+                                                                                                >
+                                                                                                    {orderItem.partialCount}/{orderItem.count}
+                                                                                                </div>
+                                                                                            )}
+                                                                                            {!orderItem?.partial && (
+                                                                                                <div
+                                                                                                    style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }}
+                                                                                                    class="row m-0 w-100 p-1 px-4"
+                                                                                                >
+                                                                                                    {orderItem.count}
+                                                                                                </div>
+                                                                                            )}
+                                                                                        </div>
+                                                                                        {/* <div style={{ fontWeight: 700 }} class="mx-2">
                                                                                     {orderItem?.partial
                                                                                         ? parseInt(orderItem.partialCount) * parseFloat(orderItem?.unitPrice)
                                                                                         : parseInt(orderItem.count) * parseFloat(orderItem?.unitPrice)}{' '}
                                                                                     {item?.info?.currency}
                                                                                 </div> */}
-                                                                                {props?.srcFrom == 'inventory' && (
-                                                                                    <div
-                                                                                        onClick={(e) => {
-                                                                                            e.stopPropagation();
-                                                                                            if (orderItem?.countInInventory != 0) {
-                                                                                                setinventoryModal({ open: true, items: organizedData });
-                                                                                            }
-                                                                                        }}
-                                                                                        style={{ width: '30px', height: '30px' }}
-                                                                                        class={
-                                                                                            orderItem?.countInInventory == 0
-                                                                                                ? 'allcentered iconhover text-danger'
-                                                                                                : 'allcentered iconhover text-success'
-                                                                                        }
-                                                                                    >
-                                                                                        <MdOutlineInventory2 size={20} />
+                                                                                        {props?.srcFrom == 'inventory' && (
+                                                                                            <div
+                                                                                                onClick={(e) => {
+                                                                                                    e.stopPropagation();
+                                                                                                    if (orderItem?.countInInventory != 0) {
+                                                                                                        setinventoryModal({ open: true, items: organizedData });
+                                                                                                    }
+                                                                                                }}
+                                                                                                style={{ width: '30px', height: '30px' }}
+                                                                                                class={
+                                                                                                    orderItem?.countInInventory == 0
+                                                                                                        ? 'allcentered iconhover text-danger'
+                                                                                                        : 'allcentered iconhover text-success'
+                                                                                                }
+                                                                                            >
+                                                                                                <MdOutlineInventory2 size={20} />
+                                                                                            </div>
+                                                                                        )}
                                                                                     </div>
-                                                                                )}
+                                                                                </div>
                                                                             </div>
                                                                         </div>
-                                                                    </div>
-                                                                </div>
-                                                            );
-                                                        })}
-                                                    </div>
+                                                                    );
+                                                                })}
+                                                            </div>
+                                                        </div>
+                                                    )}
                                                 </div>
-                                            )}
+                                            </div>
 
                                             <div style={{ fontSize: '12px' }} class="col-lg-12 p-0 mt-2 d-flex justify-content-end ">
                                                 <div class="row m-0 w-100 d-flex align-items-center d-flex justify-content-end ">
@@ -448,6 +461,11 @@ const OrdersTable = (props) => {
                                                         <div class="col-lg-6 p-0 d-flex align-items-center">
                                                             <BiUser class="mr-1" />
                                                             <span style={{ fontWeight: 600 }}>{item?.courier?.name}</span>
+                                                        </div>
+                                                    )}
+                                                    {outOfStock && props?.srcFrom == 'inventory' && (
+                                                        <div class="col-lg-6 p-0 d-flex align-items-center">
+                                                            <div className={' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 mr-1 '}>{diffInDays} days late</div>
                                                         </div>
                                                     )}
                                                     <div class="col-lg-6 p-0 d-flex justify-content-end">

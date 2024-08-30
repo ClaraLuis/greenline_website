@@ -119,7 +119,7 @@ const HubsTable = (props) => {
                             /> */}
                 </>
             )}
-            <HubInfo openModal={openModal} setopenModal={setopenModal} payload={payload} setpayload={setpayload} />
+            <HubInfo openModal={openModal} setopenModal={setopenModal} payload={payload} setpayload={setpayload} refetchHubs={props?.fetchHubsQuery.refetch} />
         </>
     );
 };

@@ -474,7 +474,7 @@ const InventoryItems = (props) => {
                                                             setchosenitem(element);
                                                             setopenModal(true);
                                                         }}
-                                                        style={{ height: '25px', minWidth: 'fit-content', marginInlineEnd: '5px' }}
+                                                        style={{ height: '25px', minWidth: 'fit-content', marginInlineEnd: '5px', background: 'grey' }}
                                                         class={generalstyles.roundbutton + '  allcentered'}
                                                     >
                                                         <FaRegClock />

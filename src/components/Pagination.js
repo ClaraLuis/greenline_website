@@ -11,10 +11,11 @@ const Pagination = (props) => {
 
     return (
         <div class="row m-0 w-100 p-md-2 pt-2 d-flex justify-content-end align-items-center">
-            Rows per page:
+            Items per page:
             <div class="mx-2">
                 <FormControl sx={{ minWidth: 65, maxHeight: 30 }} size="small">
                     <Select
+                        style={{ height: 30 }}
                         value={props?.filter?.limit}
                         onChange={(event) => {
                             props?.setfilter({ ...props?.filter, limit: event.target.value, beforeCursor: null, afterCursor: null });

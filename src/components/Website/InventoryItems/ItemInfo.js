@@ -23,7 +23,7 @@ const ItemInfo = (props) => {
                     props?.setopenModal(false);
                 }}
                 centered
-                size={'lg'}
+                size={'xl'}
             >
                 <Modal.Header>
                     <div className="row w-100 m-0 p-0">
@@ -81,7 +81,7 @@ const ItemInfo = (props) => {
                                                                 <p className={' m-0 p-0 wordbreak '}>{item?.description}</p>
                                                             </td>
                                                             <td>
-                                                                <p className={' m-0 p-0 wordbreak '}>user</p>
+                                                                <p className={' m-0 p-0 wordbreak '}>{item?.user?.name}</p>
                                                             </td>
                                                             <td>
                                                                 <p className={' m-0 p-0 wordbreak '}>{dateformatter(item?.createdAt)}</p>

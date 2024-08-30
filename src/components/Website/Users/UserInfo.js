@@ -180,7 +180,7 @@ const UserInfo = (props) => {
                     </Modal.Header>
                     <Modal.Body>
                         <div class="row m-0 w-100 py-2">
-                            {!edit && props?.payload?.functype == 'edit' && props?.payload?.type == 'view' && (
+                            {!edit && props?.payload?.functype == 'edit' && props?.payload?.modaltype == 'view' && (
                                 <div class={' row m-0 w-100'}>
                                     <div class="col-lg-12 mb-1" style={{ color: 'grey', fontSize: '12px' }}>
                                         <div class="row m-0 w-100 d-flex align-items-center justify-content-between">
@@ -197,7 +197,9 @@ const UserInfo = (props) => {
                                     <div class="col-lg-6 mb-3">
                                         <div class="row m-0 w-100">
                                             <div class="form__group field">
-                                                <label class="form__label">Name</label>
+                                                <label class="form__label" style={{ marginBottom: 0, fontSize: '13px', color: 'grey' }}>
+                                                    Name
+                                                </label>
                                                 <div>{props?.payload?.name}</div>
                                             </div>
                                         </div>
@@ -206,7 +208,9 @@ const UserInfo = (props) => {
                                     <div class="col-lg-6 mb-3">
                                         <div class="row m-0 w-100">
                                             <div class="form__group field">
-                                                <label class="form__label">Phone</label>
+                                                <label class="form__label" style={{ marginBottom: 0, fontSize: '13px', color: 'grey' }}>
+                                                    Phone
+                                                </label>
                                                 <div>{props?.payload?.phone}</div>
                                             </div>
                                         </div>
@@ -214,7 +218,9 @@ const UserInfo = (props) => {
                                     <div class="col-lg-6 mb-3">
                                         <div class="row m-0 w-100">
                                             <div class="form__group field">
-                                                <label class="form__label">Email</label>
+                                                <label class="form__label" style={{ marginBottom: 0, fontSize: '13px', color: 'grey' }}>
+                                                    Email
+                                                </label>
                                                 <div>{props?.payload?.email}</div>
                                             </div>
                                         </div>
@@ -222,7 +228,9 @@ const UserInfo = (props) => {
                                     <div class="col-lg-6 mb-3">
                                         <div class="row m-0 w-100">
                                             <div class="form__group field">
-                                                <label class="form__label">Birthdate</label>
+                                                <label class="form__label" style={{ marginBottom: 0, fontSize: '13px', color: 'grey' }}>
+                                                    Birthdate
+                                                </label>
                                                 <div>{props?.payload?.birthdate.split('T')[0]}</div>
                                             </div>
                                         </div>
@@ -231,7 +239,9 @@ const UserInfo = (props) => {
                                         <div class="col-lg-6 mb-3">
                                             <div class="row m-0 w-100">
                                                 <div class="form__group field">
-                                                    <label class="form__label">Hub</label>
+                                                    <label class="form__label" style={{ marginBottom: 0, fontSize: '13px', color: 'grey' }}>
+                                                        Hub
+                                                    </label>
                                                     <div>{props?.payload?.hub?.name}</div>
                                                 </div>
                                             </div>
@@ -242,59 +252,74 @@ const UserInfo = (props) => {
                                         <div class="col-lg-6 mb-3">
                                             <div class="row m-0 w-100">
                                                 <div class="form__group field">
-                                                    <label class="form__label">Merchant</label>
+                                                    <label class="form__label" style={{ marginBottom: 0, fontSize: '13px', color: 'grey' }}>
+                                                        Merchant
+                                                    </label>
                                                     <div>{props?.payload?.merchant?.name}</div>
                                                 </div>
                                             </div>
                                         </div>
                                     )}
+                                    {props?.payload?.type != 'merchant' && (
+                                        <>
+                                            <div class="col-lg-6 mb-3">
+                                                <div class="row m-0 w-100">
+                                                    <div class="form__group field">
+                                                        <label class="form__label" style={{ marginBottom: 0, fontSize: '13px', color: 'grey' }}>
+                                                            Type
+                                                        </label>
+                                                        <div>{props?.payload?.type}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 mb-3">
+                                                <div class="row m-0 w-100">
+                                                    <div class="form__group field">
+                                                        <label class="form__label" style={{ marginBottom: 0, fontSize: '13px', color: 'grey' }}>
+                                                            Employee Type
+                                                        </label>
+                                                        <div>{props?.payload?.employee?.type}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
 
-                                    <div class="col-lg-6 mb-3">
-                                        <div class="row m-0 w-100">
-                                            <div class="form__group field">
-                                                <label class="form__label">Type</label>
-                                                <div>{props?.payload?.type}</div>
+                                            <div class="col-lg-6 mb-3">
+                                                <div class="row m-0 w-100">
+                                                    <div class="form__group field">
+                                                        <label class="form__label" style={{ marginBottom: 0, fontSize: '13px', color: 'grey' }}>
+                                                            Currency
+                                                        </label>
+                                                        <div>{props?.payload?.employee?.currency}</div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 mb-3">
-                                        <div class="row m-0 w-100">
-                                            <div class="form__group field">
-                                                <label class="form__label">Employee Type</label>
-                                                <div>{props?.payload?.employee?.type}</div>
-                                            </div>
-                                        </div>
-                                    </div>
 
-                                    <div class="col-lg-6 mb-3">
-                                        <div class="row m-0 w-100">
-                                            <div class="form__group field">
-                                                <label class="form__label">Currency</label>
-                                                <div>{props?.payload?.employee?.currency}</div>
+                                            <div class="col-lg-6 mb-3">
+                                                <div class="row m-0 w-100">
+                                                    <div class="form__group field">
+                                                        <label class="form__label" style={{ marginBottom: 0, fontSize: '13px', color: 'grey' }}>
+                                                            Salary
+                                                        </label>
+                                                        <div>{props?.payload?.employee?.salary}</div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
 
-                                    <div class="col-lg-6 mb-3">
-                                        <div class="row m-0 w-100">
-                                            <div class="form__group field">
-                                                <label class="form__label">Salary</label>
-                                                <div>{props?.payload?.employee?.salary}</div>
+                                            <div class="col-lg-6 mb-3">
+                                                <div class="row m-0 w-100">
+                                                    <div class="form__group field">
+                                                        <label class="form__label" style={{ marginBottom: 0, fontSize: '13px', color: 'grey' }}>
+                                                            Commission
+                                                        </label>
+                                                        <div>{props?.payload?.employee?.commission}</div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-6 mb-3">
-                                        <div class="row m-0 w-100">
-                                            <div class="form__group field">
-                                                <label class="form__label">Commission</label>
-                                                <div>{props?.payload?.employee?.commission}</div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                        </>
+                                    )}
                                 </div>
                             )}
-                            {props?.payload?.functype == 'edit' && props?.payload?.type != 'merchant' && edit && props?.payload?.type == 'view' && (
+                            {props?.payload?.functype == 'edit' && props?.payload?.type != 'merchant' && edit && props?.payload?.modaltype == 'view' && (
                                 <>
                                     <div class="col-lg-12 mb-1" style={{ color: 'grey', fontSize: '12px' }}>
                                         <div class="row m-0 w-100 d-flex align-items-center justify-content-between">
@@ -357,7 +382,7 @@ const UserInfo = (props) => {
                                     />
                                 </>
                             )}
-                            {props?.payload.functype == 'edit' && props?.payload?.type == 'roles' && (
+                            {props?.payload.functype == 'edit' && props?.payload?.modaltype == 'roles' && (
                                 <div class="col-lg-12 d-flex justify-content-end py-0">
                                     <div
                                         onClick={() => {
@@ -551,7 +576,7 @@ const UserInfo = (props) => {
                                     // }}
                                 />
                             )}
-                            {props?.payload?.functype == 'edit' && props?.payload?.type == 'roles' && (
+                            {props?.payload?.functype == 'edit' && props?.payload?.modaltype == 'roles' && (
                                 <div class="row m-0 w-100">
                                     {userRoles?.map((item, index) => {
                                         return (

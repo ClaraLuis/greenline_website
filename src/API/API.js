@@ -34,6 +34,13 @@ const API = () => {
             }
         `;
     };
+    const createHub = () => {
+        return gql`
+            mutation createHub($input: CreateHubInput!) {
+                createHub(input: $input)
+            }
+        `;
+    };
     const createMerchantDomesticShipping = () => {
         return gql`
             mutation createMerchantDomesticShipping($input: CreateMerchantShippingListInput!) {
@@ -528,6 +535,8 @@ const API = () => {
                         status
                         orderDate
                         currency
+                        otherId
+                        shopifyName
                         merchantCustomer {
                             customerName
                             customer {
@@ -576,6 +585,7 @@ const API = () => {
                         id
                         createdAt
                         otherId
+                        shopifyName
                         currency
                         previousOrderId
                         type
@@ -993,6 +1003,9 @@ const API = () => {
                     data {
                         amount
                         description
+                        user {
+                            name
+                        }
                         createdAt
                     }
                     cursor
@@ -1113,6 +1126,7 @@ const API = () => {
                                 id
                             }
                             otherId
+                            shopifyName
                             id
                             originalPrice
                             type
@@ -1258,6 +1272,8 @@ const API = () => {
                         }
                         sheetOrder {
                             order {
+                                otherId
+                                shopifyName
                                 merchant {
                                     name
                                 }
@@ -1299,6 +1315,7 @@ const API = () => {
                                     id
                                 }
                                 otherId
+                                shopifyName
                                 id
                                 originalPrice
                                 type
@@ -1517,6 +1534,7 @@ const API = () => {
         findMerchantDomesticShippings,
         requestOrderReturn,
         fetchTransactionHistory,
+        createHub,
     };
 };
 export default API;

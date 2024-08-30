@@ -134,9 +134,6 @@ const OrderInfo = (props) => {
                                                     <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
                                                         # {chosenOrderContext?.id}
                                                     </span>{' '}
-                                                    {outOfStock && queryParameters?.get('type') == 'inventory' && (
-                                                        <div className={'ml-1 wordbreak text-danger bg-light-danger rounded-pill font-weight-600 '}>Out Of Stock</div>
-                                                    )}
                                                     <span style={{ fontWeight: 600 }} class="text-capitalize">
                                                         {chosenOrderContext?.merchant?.name}
                                                     </span>
@@ -144,9 +141,10 @@ const OrderInfo = (props) => {
                                             </div>
                                             <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
                                                 <div class="row m-0 w-100  d-flex justify-content-end align-items-center">
-                                                    {queryParameters?.get('type') == 'inventory' && (
-                                                        <div className={' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 mr-1 '}>{diffInDays} days late</div>
+                                                    {outOfStock && queryParameters?.get('type') == 'inventory' && (
+                                                        <div className={'mr-1 wordbreak text-danger bg-light-danger rounded-pill font-weight-600 '}>Out Of Stock</div>
                                                     )}
+
                                                     <div
                                                         // onClick={() => {
                                                         //     setchangestatusmodal(true);
@@ -248,9 +246,18 @@ const OrderInfo = (props) => {
                                                     </div>
                                                 </>
                                             )}
+                                            <div class="col-lg-12 p-0 ">
+                                                <div class="row m-0 w-100 d-flex justify-content-end align-items-center mt-2">
+                                                    {queryParameters?.get('type') == 'inventory' && (
+                                                        <div class="col-lg-6 p-0 d-flex align-item-center">
+                                                            <div className={' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 mr-1 '}>{diffInDays} days late</div>
+                                                        </div>
+                                                    )}
 
-                                            <div style={{ fontSize: '12px' }} class="col-lg-12 p-0 mt-2 d-flex justify-content-end ">
-                                                <p className={' m-0 p-0 wordbreak  '}>{dateformatter(chosenOrderContext?.orderDate)}</p>
+                                                    <div style={{ fontSize: '12px' }} class="col-lg-6 p-0 d-flex justify-content-end ">
+                                                        <p className={' m-0 p-0 wordbreak  '}>{dateformatter(chosenOrderContext?.orderDate)}</p>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

@@ -114,7 +114,7 @@ const UsersTable = (props) => {
                                                                         employeeType: item?.employee?.type,
                                                                         salary: item?.employee?.salary,
                                                                         commission: item?.employee?.commission,
-                                                                        type: 'view',
+                                                                        modaltype: 'view',
                                                                     });
                                                                     setopenModal(true);
                                                                 }}
@@ -131,7 +131,7 @@ const UsersTable = (props) => {
                                                                         employeeType: item?.employee?.type,
                                                                         salary: item?.employee?.salary,
                                                                         commission: item?.employee?.commission,
-                                                                        type: 'roles',
+                                                                        modaltype: 'roles',
                                                                     });
                                                                     setopenModal(true);
                                                                 }}
