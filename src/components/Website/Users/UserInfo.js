@@ -20,6 +20,7 @@ import Cookies from 'universal-cookie';
 import SelectComponent from '../../SelectComponent.js';
 import { BiEdit } from 'react-icons/bi';
 import { MdClose } from 'react-icons/md';
+import { TbEdit } from 'react-icons/tb';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -185,7 +186,7 @@ const UserInfo = (props) => {
                                     <div class="col-lg-12 mb-1" style={{ color: 'grey', fontSize: '12px' }}>
                                         <div class="row m-0 w-100 d-flex align-items-center justify-content-between">
                                             <div> Main Info</div>
-                                            <BiEdit
+                                            <TbEdit
                                                 onClick={() => {
                                                     setedit(true);
                                                 }}

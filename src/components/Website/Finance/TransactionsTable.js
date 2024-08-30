@@ -10,7 +10,7 @@ import { FaLayerGroup } from 'react-icons/fa';
 import { components } from 'react-select';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
-import { TbUserDollar } from 'react-icons/tb';
+import { TbEdit, TbUserDollar } from 'react-icons/tb';
 import { BiEdit } from 'react-icons/bi';
 import { FaEllipsisV } from 'react-icons/fa';
 import { FcCancel } from 'react-icons/fc';
@@ -211,7 +211,7 @@ const TransactionsTable = (props) => {
                                                             }}
                                                             class={' iconhover allcentered '}
                                                         >
-                                                            <BiEdit size={28} />
+                                                            <TbEdit size={28} />
                                                         </button>
                                                     )}
                                                     {item?.fromAccount?.id == props?.accountId && item?.status == 'pendingReceiver' && (

@@ -14,6 +14,7 @@ import { BiCheck, BiEdit } from 'react-icons/bi';
 import { Check } from 'react-bootstrap-icons';
 import Decimal from 'decimal.js';
 import { FaRegUser } from 'react-icons/fa';
+import { TbEdit } from 'react-icons/tb';
 
 const UpdateShipping = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -223,7 +224,7 @@ const UpdateShipping = (props) => {
                         <p className={' m-0 p-0  h-100 d-flex align-items-center '}>{item?.shipping}</p>
                     </td>
                     <td class="allcentered" style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
-                        <BiEdit
+                        <TbEdit
                             onClick={() => {
                                 var temp = [...governoratesItems];
                                 temp[index].edit = true;

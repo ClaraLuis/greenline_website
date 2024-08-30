@@ -22,7 +22,7 @@ import { defaultstyles } from '../Generalfiles/selectstyles.js';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
 import { useQuery } from 'react-query';
 import Form from '../../Form.js';
-import { BiEdit } from 'react-icons/bi';
+import { TbEdit } from 'react-icons/tb';
 
 const UpdateMerchant = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -70,7 +70,7 @@ const UpdateMerchant = (props) => {
                         <div class="col-lg-12 mb-1" style={{ color: 'grey', fontSize: '12px' }}>
                             <div class="row m-0 w-100 d-flex align-items-center justify-content-between">
                                 <div> Main Info</div>
-                                <BiEdit
+                                <TbEdit
                                     onClick={() => {
                                         setEdit({ ...edit, mainInfo: true });
                                     }}
@@ -140,7 +140,7 @@ const UpdateMerchant = (props) => {
                         <div class="col-lg-12 mb-1" style={{ color: 'grey', fontSize: '12px' }}>
                             <div class="row m-0 w-100 d-flex align-items-center justify-content-between">
                                 <div>Address</div>
-                                <BiEdit
+                                <TbEdit
                                     onClick={() => {
                                         setEdit({ ...edit, address: true });
                                     }}
@@ -266,7 +266,7 @@ const UpdateMerchant = (props) => {
                         <div class="col-lg-12 mb-1" style={{ color: 'grey', fontSize: '12px' }}>
                             <div class="row m-0 w-100 d-flex align-items-center justify-content-between">
                                 <div>Billing Info</div>
-                                <BiEdit
+                                <TbEdit
                                     onClick={() => {
                                         setEdit({ ...edit, billingInfo: true });
                                     }}
@@ -380,7 +380,7 @@ const UpdateMerchant = (props) => {
                         <div class="col-lg-12 mb-1" style={{ color: 'grey', fontSize: '12px' }}>
                             <div class="row m-0 w-100 d-flex align-items-center justify-content-between">
                                 <div>Owner Info</div>
-                                <BiEdit
+                                <TbEdit
                                     onClick={() => {
                                         setEdit({ ...edit, ownerInfo: true });
                                     }}

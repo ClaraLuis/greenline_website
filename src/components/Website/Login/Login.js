@@ -13,6 +13,7 @@ import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 import logo from '../Generalfiles/images/logo.png';
 import loginstyles from './login.module.css';
 import { BiEdit } from 'react-icons/bi';
+import { TbEdit } from 'react-icons/tb';
 const Login = () => {
     const auth = getAuth();
     const { isValidEmailMutation, useMutationGQL, useQueryGQL, useLazyQueryGQL } = API();
@@ -205,7 +206,7 @@ const Login = () => {
                                             />
 
                                             {isValid && (
-                                                <BiEdit
+                                                <TbEdit
                                                     style={{ position: 'absolute', right: 10, zIndex: 10, top: '55%' }}
                                                     size={20}
                                                     class="text-secondaryhover"
