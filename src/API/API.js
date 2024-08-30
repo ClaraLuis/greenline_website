@@ -481,6 +481,24 @@ const API = () => {
             }
         `;
     };
+
+    const paginateReturnPackageHistory = () => {
+        return gql`
+            query paginateReturnPackageHistory($input: PaginateReturnPackageHistoryInput!) {
+                paginateReturnPackageHistory(input: $input) {
+                    data {
+                        id
+                        returnPackageId
+                        status
+                        description
+                        transferredToId
+                        createdAt
+                    }
+                    cursor
+                }
+            }
+        `;
+    };
     const fetchTransactionHistory = () => {
         return gql`
             query paginateOrderTransactionsHistory($input: PaginateOrderTransactionsInput!) {
@@ -804,6 +822,99 @@ const API = () => {
           }
         `;
     };
+
+    const findOneOrder = () => gql`
+        query findOneOrder($id: Int!) {
+            findOneOrder(id: $id) {
+                id
+                type
+                createdAt
+                shippingPrice
+                merchant {
+                    id
+                    name
+                }
+                address {
+                    country
+                    city
+                    streetAddress
+                    buildingNumber
+                    apartmentFloor
+                }
+                courier {
+                    id
+                    name
+                }
+                price
+                paymentType
+                status
+                orderDate
+                currency
+                otherId
+                shopifyName
+                merchantCustomer {
+                    customerName
+                    customer {
+                        email
+                        phone
+                    }
+                }
+                orderItems {
+                    id
+                    orderId
+                    count
+                    unitPrice
+                    unitDiscount
+                    partialCount
+                    countInInventory
+                    info {
+                        name
+                        imageUrl
+                        item {
+                            name
+                        }
+                    }
+
+                    inventory {
+                        count
+                        box {
+                            id
+                            name
+                            ballot {
+                                id
+                                level
+                                name
+                                rack {
+                                    name
+                                    id
+                                }
+                            }
+                        }
+                    }
+                }
+                canOpen
+                fragile
+                deliveryPart
+            }
+        }
+    `;
+
+    const findOneReturnPackage = () => gql`
+        query findOneReturnPackage($id: Int!) {
+            findOneReturnPackage(input: $id) {
+                id
+                sku
+                type
+                hubId
+                courierId
+                toInventoryId
+                toMerchantId
+                status
+                count
+                createdAt
+            }
+        }
+    `;
 
     const fetchMerchantItems = (payload) => {
         return gql`
@@ -1475,6 +1586,8 @@ const API = () => {
         exportItem,
         importItem,
         fetcOneInventory,
+        findOneOrder,
+        findOneReturnPackage,
         fetchCustomer,
         addCustomer,
         fetchCustomerNameSuggestions,
@@ -1525,6 +1638,7 @@ const API = () => {
         updateInventoryRent,
         fetchHubs,
         fetchOrderHistory,
+        paginateReturnPackageHistory,
         updateOrdersStatus,
         updateupdateOrderIdsStatus,
         fetchExpenses,

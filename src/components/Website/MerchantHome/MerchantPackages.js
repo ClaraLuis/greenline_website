@@ -24,7 +24,7 @@ import { FaLayerGroup } from 'react-icons/fa';
 const MerchantPackages = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, returnPackageStatusContext, isAuth, dateformatter } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setchosenPackageContext, returnPackageStatusContext, isAuth, dateformatter } = useContext(Contexthandlerscontext);
     const { fetchPackages, useQueryGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -149,6 +149,7 @@ const MerchantPackages = (props) => {
                                             <div
                                                 onClick={() => {
                                                     history.push('/merchantreturnpackageinfo?packageId=' + item.id);
+                                                    setchosenPackageContext(item);
                                                 }}
                                                 style={{ background: 'white', cursor: 'pointer' }}
                                                 class={' p-3 row m-0 w-100 card  d-flex align-items-center'}

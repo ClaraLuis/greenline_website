@@ -25,8 +25,8 @@ import TimelineOppositeContent, { timelineOppositeContentClasses } from '@mui/la
 const OrderInfo = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, chosenOrderContext, dateformatter, orderStatusEnumContext, orderTypeContext } = useContext(Contexthandlerscontext);
-    const { useQueryGQL, useMutationGQL, fetchGovernorates, createMerchantDomesticShipping, updateMerchantDomesticShipping, fetchTransactionHistory, fetchOrderHistory, createInventoryRent } = API();
+    const { setchosenOrderContext, chosenOrderContext, dateformatter, orderStatusEnumContext, orderTypeContext } = useContext(Contexthandlerscontext);
+    const { useQueryGQL, useMutationGQL, fetchGovernorates, createMerchantDomesticShipping, useLazyQueryGQL, fetchTransactionHistory, fetchOrderHistory, findOneOrder } = API();
     const steps = ['Merchant Info', 'Shipping', 'Inventory Settings'];
     const [inventoryModal, setinventoryModal] = useState({ open: false, items: [] });
     const [outOfStock, setoutOfStock] = useState(false);
@@ -50,12 +50,15 @@ const OrderInfo = (props) => {
     });
 
     const fetchOrderHistoryQuery = useQueryGQL('', fetchOrderHistory(), filterordershistory);
+
+    const [fetchOneOrderLazyQuery] = useLazyQueryGQL(findOneOrder());
+
     const fetchTransactionHistoryQuery = useQueryGQL('', fetchTransactionHistory(), filterordershistory);
 
     const organizeInventory = (inventory) => {
         const racks = {};
 
-        inventory.forEach((item) => {
+        inventory?.forEach((item) => {
             const box = item.box;
             const ballot = box.ballot;
             const rack = ballot.rack;
@@ -94,7 +97,21 @@ const OrderInfo = (props) => {
 
     useEffect(() => {
         if (JSON.stringify(chosenOrderContext) == '{}') {
-            history.push('/orders');
+            // const fetchOrder = async () => {
+            //     if (queryParameters.get('orderId')) {
+            //         var { data } = await fetchOneOrderLazyQuery({
+            //             variables: {
+            //                 id: parseInt(queryParameters.get('orderId')),
+            //             },
+            //         });
+            //         // Handle the data or set state here
+            //         setchosenOrderContext(data?.findOneOrder);
+            //         // alert('1');
+            //         console.log(data);
+            //     }
+            // };
+            // fetchOrder();
+            history.push(queryParameters?.get('type') == 'inventory' ? '/orders' : 'merchantorders');
         }
 
         chosenOrderContext?.orderItems?.map((orderitem, orderindex) => {
@@ -451,10 +468,14 @@ const OrderInfo = (props) => {
                                                                         {dateformatterTime(historyItem?.createdAt)}
                                                                     </TimelineOppositeContent>
                                                                     <TimelineSeparator>
-                                                                        <TimelineDot />
-                                                                        {historyIndex < fetchOrderHistoryQuery?.data?.paginateOrderHistory?.data?.length - 1 && <TimelineConnector />}
+                                                                        <TimelineDot style={{ background: 'var(--primary)' }} />
+                                                                        {historyIndex < fetchOrderHistoryQuery?.data?.paginateOrderHistory?.data?.length - 1 && (
+                                                                            <TimelineConnector style={{ background: 'var(--primary)' }} />
+                                                                        )}
                                                                     </TimelineSeparator>
-                                                                    <TimelineContent>{historyItem?.status.split(/(?=[A-Z])/).join(' ')} </TimelineContent>
+                                                                    <TimelineContent style={{ fontWeight: 600, color: 'black', textTransform: 'capitalize' }}>
+                                                                        {historyItem?.status.split(/(?=[A-Z])/).join(' ')}{' '}
+                                                                    </TimelineContent>
                                                                 </TimelineItem>
                                                             );
                                                         })}
@@ -494,11 +515,15 @@ const OrderInfo = (props) => {
                                                                         {dateformatterTime(historyItem?.createdAt)}
                                                                     </TimelineOppositeContent>
                                                                     <TimelineSeparator>
-                                                                        <TimelineDot />
-                                                                        {historyIndex < fetchTransactionHistoryQuery?.data?.paginateOrderTransactionsHistory?.data?.length - 1 && <TimelineConnector />}
+                                                                        <TimelineDot style={{ background: 'var(--primary)' }} />
+                                                                        {historyIndex < fetchTransactionHistoryQuery?.data?.paginateOrderTransactionsHistory?.data?.length - 1 && (
+                                                                            <TimelineConnector style={{ background: 'var(--primary)' }} />
+                                                                        )}
                                                                     </TimelineSeparator>
                                                                     <TimelineContent>
-                                                                        {historyItem?.type?.split(/(?=[A-Z])/).join(' ')}
+                                                                        <span style={{ fontWeight: 600, color: 'black', textTransform: 'capitalize' }}>
+                                                                            {historyItem?.type?.split(/(?=[A-Z])/).join(' ')}
+                                                                        </span>
                                                                         <br />
                                                                         <span style={{ fontSize: '14px', fontWeight: 400 }}>
                                                                             {historyItem?.status?.split(/(?=[A-Z])/).join(' ')}, {historyItem?.amount} {historyItem?.currency}

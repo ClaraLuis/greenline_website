@@ -97,6 +97,11 @@ const ReturnsTable = (props) => {
                                     <div className="col-lg-12 p-0 my-2">
                                         <hr className="m-0" />
                                     </div>
+                                    <div class="col-lg-12 mb-1" style={{ color: 'grey', fontSize: '12px' }}>
+                                        <div class="row m-0 w-100 d-flex align-items-center justify-content-between">
+                                            <div>Items</div>
+                                        </div>
+                                    </div>
                                     {item?.orderItems?.map((subitem, subindex) => {
                                         return (
                                             <div class={'col-lg-12 mb-2'}>
