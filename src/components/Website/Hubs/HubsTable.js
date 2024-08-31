@@ -29,7 +29,7 @@ const { ValueContainer, Placeholder } = components;
 const HubsTable = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, dateformatter, isAuth } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, dateformatter, isAuth, setchosenHubContext } = useContext(Contexthandlerscontext);
 
     const { lang, langdetect } = useContext(LanguageContext);
 
@@ -50,9 +50,6 @@ const HubsTable = (props) => {
     });
 
     // const fetchHubsQuery = [];
-    useEffect(() => {
-        setpageactive_context('/users');
-    }, []);
 
     return (
         <>
@@ -85,11 +82,13 @@ const HubsTable = (props) => {
 
                                             <div className="col-lg-6 p-0 mb-2 d-flex justify-content-end">
                                                 <div
-                                                    onClick={() => {
+                                                    onClick={async () => {
                                                         var temp = { ...item };
                                                         temp.functype = 'edit';
                                                         setpayload({ ...temp });
-                                                        setopenModal(true);
+                                                        await setchosenHubContext({ ...temp });
+                                                        history.push('/hubdetails?id=' + item?.id);
+                                                        // setopenModal(true);
                                                     }}
                                                     style={{
                                                         width: '35px',

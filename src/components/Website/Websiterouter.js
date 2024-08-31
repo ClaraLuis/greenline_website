@@ -57,6 +57,7 @@ import ReturnPackageInfo from './InventoryItems/ReturnPackageInfo.js';
 import MerchantReturnPackageInfo from './MerchantHome/MerchantReturnPackageInfo.js';
 import UpdateShipping from './AddMerchant/UpdateShipping.js';
 import UpdateMerchant from './AddMerchant/UpdateMerchant.js';
+import HubDetails from './Hubs/HubDetails.js';
 const App = (props) => {
     const history = useHistory();
     const location = useLocation();
@@ -280,6 +281,7 @@ const App = (props) => {
                                                                 <Route exact path="/addorder" component={AddOrder} />
                                                                 <Route exact path="/updateshipping" component={UpdateShipping} />
                                                                 <Route exact path="/updatemerchant" component={UpdateMerchant} />
+                                                                <Route exact path="/hubdetails" component={HubDetails} />
 
                                                                 <Route exact path="/courierhome" component={CourierHome} />
                                                                 <Route exact path="/couriersheets" component={CourierSheets} />

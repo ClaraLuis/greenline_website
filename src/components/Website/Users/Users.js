@@ -143,7 +143,7 @@ const Users = (props) => {
                                 />
                             </div>
                             <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
-                                <UsersTable fetchusers={fetchusers} />
+                                <UsersTable fetchusers={fetchusers} card="col-lg-4 p-1" />
                             </div>
                         </>
                     )}

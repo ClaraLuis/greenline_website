@@ -29,6 +29,7 @@ export const Contexthandlerscontext_provider = (props) => {
     const [UserInfoContext, setUserInfoContext] = useState({});
     const [chosenOrderContext, setchosenOrderContext] = useState({});
     const [chosenPackageContext, setchosenPackageContext] = useState({});
+    const [chosenHubContext, setchosenHubContext] = useState({});
     const cookies = new Cookies();
 
     const setpageactive_context = (route) => {
@@ -903,6 +904,8 @@ export const Contexthandlerscontext_provider = (props) => {
                 chosenOrderContext,
                 chosenPackageContext,
                 setchosenPackageContext,
+                chosenHubContext,
+                setchosenHubContext,
             }}
         >
             {props.children}

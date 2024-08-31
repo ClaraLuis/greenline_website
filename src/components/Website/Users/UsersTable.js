@@ -53,9 +53,6 @@ const UsersTable = (props) => {
     });
 
     // const fetchusers = [];
-    useEffect(() => {
-        setpageactive_context('/users');
-    }, []);
 
     return (
         <>
@@ -80,7 +77,7 @@ const UsersTable = (props) => {
                         <div class="row m-0 w-100">
                             {props?.fetchusers?.data?.paginateUsers?.data?.map((item, index) => {
                                 return (
-                                    <div className="col-lg-4 p-1">
+                                    <div className={props?.card}>
                                         <div class={generalstyles.card + ' p-3 row m-0 w-100 allcentered'}>
                                             <div className="col-lg-6 p-0  text-capitalize mb-2">
                                                 <span style={{ fontWeight: 700 }}>{item?.name}</span>
