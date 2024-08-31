@@ -20,19 +20,31 @@ import Select, { components } from 'react-select';
 import API from '../../../API/API.js';
 import { FiPlus } from 'react-icons/fi';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
-import { TbSquareCheck, TbSquare } from 'react-icons/tb';
+import { TbSquareCheck, TbSquare, TbPlus, TbEdit } from 'react-icons/tb';
 
 import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import SelectComponent from '../../SelectComponent.js';
+import Inputfield from '../../Inputfield.js';
 const { ValueContainer, Placeholder } = components;
 var _ = require('lodash');
 const InventoryDetails = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, dateformatter } = useContext(Contexthandlerscontext);
-    const { fetchMerchants, useQueryGQL, fetcOneInventory, assignMerchantToInventory, useMutationGQL, removeMerchantAssignmentFromInventory } = API();
+    const {
+        fetchMerchants,
+        useQueryGQL,
+        fetcOneInventory,
+        assignMerchantToInventory,
+        useMutationGQL,
+        removeMerchantAssignmentFromInventory,
+        updateRackName,
+        updateBallotName,
+        updateBoxName,
+        addRackLevels,
+    } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [merchantModal, setmerchantModal] = useState({ open: false, type: '' });
@@ -53,6 +65,22 @@ const InventoryDetails = (props) => {
         rackIds: racks?.length == 0 ? undefined : racks,
         ballotIds: ballots?.length == 0 ? undefined : ballots,
         boxIds: boxes?.length == 0 ? undefined : boxes,
+    });
+    const [updateRackNameMutation] = useMutationGQL(updateRackName(), {
+        id: merchantModal?.id,
+        name: merchantModal?.name,
+    });
+    const [updateBallotNameMutation] = useMutationGQL(updateBallotName(), {
+        id: merchantModal?.id,
+        name: merchantModal?.name,
+    });
+    const [updateBoxNameMutation] = useMutationGQL(updateBoxName(), {
+        id: merchantModal?.id,
+        name: merchantModal?.name,
+    });
+    const [addRackLevelsMutation] = useMutationGQL(addRackLevels(), {
+        id: merchantModal?.id,
+        levels: parseInt(merchantModal?.levels),
     });
     const [removeMerchantAssignmentFromInventoryMutation] = useMutationGQL(removeMerchantAssignmentFromInventory(), {
         rackIds: racks?.length == 0 ? undefined : racks,
@@ -81,11 +109,9 @@ const InventoryDetails = (props) => {
             setinventoryId(newarray);
         }
     }, []);
-    const outerPadding = '15px';
-    const middlePadding = '10px';
-    const innerPadding = '8px';
+    const middlePadding = '15px';
+    const innerPadding = '15px';
 
-    const outerBorderRadius = '15px';
     const middleBorderRadius = '12px';
     const innerBorderRadius = '10px';
 
@@ -121,7 +147,7 @@ const InventoryDetails = (props) => {
                         </div>
                     )}
                 </div>
-                <div class={generalstyles.card + ' row m-0 w-100 p-2'}>
+                <div class={generalstyles.card + ' row m-0 w-100'} style={{ padding: '15px' }}>
                     {fetcOneInventoryQuery?.loading && (
                         <div style={{ height: '70vh' }} class="row w-100 allcentered m-0">
                             <CircularProgress color="var(--primary)" width="60px" height="60px" duration="1s" />
@@ -142,21 +168,58 @@ const InventoryDetails = (props) => {
                             <div class={'col-lg-12 p-0'}>
                                 <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
                                     {fetcOneInventoryQuery?.data?.findOneInventory?.racks?.map((item, index) => {
+                                        // var ballotsCount = 0;
                                         const levels1 = _.groupBy(item?.ballots, 'level');
-                                        const levels = _.map(levels1, (ballots, level) => {
+                                        let ballotsCount = 0;
+
+                                        const levels = _.map(_.range(1, item.levels + 1), (level) => {
+                                            const ballots = levels1[level] || []; // Get the ballots for the level, or an empty array if none exist
+                                            ballotsCount += ballots.length;
+
                                             return { level: level, ballots: ballots };
                                         });
 
                                         return (
-                                            <AccordionItem style={{ borderRadius: '15px' }} class={`${generalstyles.filter_container}` + ' mb-3 p-2 w-100'}>
+                                            <AccordionItem style={{ borderRadius: '14px', padding: '15px' }} class={`${generalstyles.filter_container}` + ' mb-3 w-100'}>
                                                 <AccordionItemHeading>
                                                     <AccordionItemButton>
                                                         <div className="col-lg-12 p-0" style={{ fontWeight: 700 }}>
                                                             <div className="row m-0 w-100 justify-content-between align-items-center">
-                                                                <div>
-                                                                    Rack {item.name} - <span style={{ fontSize: '13px', color: 'grey' }}>({item?.merchant?.name})</span>
+                                                                <div className="row m-0 d-flex align-items-center">
+                                                                    Rack {item.name}
+                                                                    <TbEdit
+                                                                        onClick={(e) => {
+                                                                            e.stopPropagation();
+                                                                            setmerchantModal({ open: true, type: 'edit', id: item?.id, name: item?.name, editType: 'rack' });
+                                                                        }}
+                                                                        class="ml-1 text-secondaryhover"
+                                                                    />
                                                                 </div>
                                                                 <div class="row m-0 d-flex align-items-center">
+                                                                    <div
+                                                                        onClick={() => {
+                                                                            setmerchantModal({ open: true, id: item?.id, levels: 0, type: 'addlevels', initialLevels: levels?.length });
+                                                                        }}
+                                                                        style={{ color: 'white' }}
+                                                                        className={' mx-1 wordbreak bg-primary bg-secondaryhover rounded-pill  allcentered d-flex align-items-center '}
+                                                                    >
+                                                                        {item?.levels} Levels <TbPlus class=" mx-1" />
+                                                                    </div>
+                                                                    <div
+                                                                        // onClick={() => {
+                                                                        //     setchangestatusmodal(true);
+                                                                        // }}
+                                                                        style={{ color: 'white' }}
+                                                                        className={'  wordbreak text-success bg-light-success rounded-pill font-weight-600 '}
+                                                                    >
+                                                                        {ballotsCount} Ballots
+                                                                    </div>
+                                                                    {item?.merchant && (
+                                                                        <span style={{ color: 'white' }} className={' mx-1 wordbreak text-success bg-light-success rounded-pill font-weight-600 '}>
+                                                                            {' '}
+                                                                            {item?.merchant?.name}
+                                                                        </span>
+                                                                    )}
                                                                     <div
                                                                         onClick={(e) => {
                                                                             e.stopPropagation();
@@ -211,21 +274,53 @@ const InventoryDetails = (props) => {
                                                 </AccordionItemHeading>
                                                 <AccordionItemPanel>
                                                     {/* <hr className="mt-2 mb-3" /> */}
-                                                    <div className="row m-0 w-100 p-2" style={{ border: '1px solid #eee', borderRadius: outerBorderRadius, padding: outerPadding, fontSize: '12px' }}>
-                                                        {/* <div className="col-lg-12 p-0">
+                                                    <div className="row m-0 w-100">
+                                                        <div className="col-lg-12 p-0">
                                                             <hr className="p-0 m-0" />
-                                                        </div> */}
+                                                        </div>
                                                         <div className="col-lg-12 p-0 mt-2">
                                                             <div className="row m-0 w-100">
                                                                 {levels?.map((level, levelindex) => (
                                                                     <div className="col-lg-12 p-0" key={level.level}>
                                                                         <div className="row m-0 w-100 d-flex align-items-center">
                                                                             <div className="col-lg-12">
-                                                                                <span style={{ fontWeight: 700 }}>Level {level?.level}</span>
+                                                                                <div className="row m-0 w-100 d-flex justify-content-between align-items-center">
+                                                                                    <span style={{ fontWeight: 700 }}>Level {level?.level}</span>
+                                                                                    {level?.ballots?.length != 0 && (
+                                                                                        <div
+                                                                                            onClick={(e) => {
+                                                                                                e.stopPropagation();
+                                                                                                if (!racks.includes(item?.id)) {
+                                                                                                    // Add all ballots of this level to the ballots array
+                                                                                                    const updatedBallots = [...ballots, ...level.ballots.map((ballot) => ballot.id)];
+
+                                                                                                    // Remove all boxes associated with this level's ballots from the boxes array
+                                                                                                    const updatedBoxes = boxes.filter(
+                                                                                                        (boxId) => !level.ballots.flatMap((b) => b.boxes).some((box) => box.id === boxId),
+                                                                                                    );
+
+                                                                                                    setballots(updatedBallots);
+                                                                                                    setboxes(updatedBoxes);
+
+                                                                                                    // Mark the level's rack as selected
+                                                                                                    // setracks([...racks, item?.id]);
+                                                                                                }
+                                                                                            }}
+                                                                                            className={`iconhover allcentered ${racks.includes(item?.id) ? 'disabled' : ''}`}
+                                                                                            style={{ width: '35px', height: '35px', pointerEvents: racks.includes(item?.id) ? 'none' : 'auto' }}
+                                                                                        >
+                                                                                            {level?.ballots?.every((ballot) => ballots.includes(ballot.id)) ? (
+                                                                                                <TbSquareCheck size={18} color={'var(--success)'} />
+                                                                                            ) : (
+                                                                                                <TbSquare size={18} color={''} />
+                                                                                            )}
+                                                                                        </div>
+                                                                                    )}
+                                                                                </div>
                                                                             </div>
-                                                                            <div className="col-lg-12 mb-3 mt-2">
+                                                                            <div className="col-lg-12 mb-3 mt-2 p-0">
                                                                                 <div
-                                                                                    className="row m-0 w-100 p-3 scrollmenuclasssubscrollbar"
+                                                                                    className="row m-0 w-100 scrollmenuclasssubscrollbar"
                                                                                     style={{
                                                                                         border: '1px solid #eee',
                                                                                         borderRadius: middleBorderRadius,
@@ -233,6 +328,7 @@ const InventoryDetails = (props) => {
                                                                                         fontSize: '12px',
                                                                                         overflowX: 'scroll',
                                                                                         flexWrap: 'nowrap',
+                                                                                        background: '#f4f4f4',
                                                                                     }}
                                                                                 >
                                                                                     {level?.ballots?.map((ballot, ballotindex) => (
@@ -242,48 +338,74 @@ const InventoryDetails = (props) => {
                                                                                                     border: '1px solid #eee',
                                                                                                     borderRadius: middleBorderRadius,
                                                                                                     padding: middlePadding,
+                                                                                                    background: 'white',
+                                                                                                    boxShadow: '#919eab4d 0 0 2px, #919eab1f 0 12px 24px -4px',
                                                                                                 }}
                                                                                                 className="row m-0 w-100 d-flex align-items-center"
                                                                                             >
                                                                                                 <div className="row m-0 w-100 justify-content-between align-items-center">
-                                                                                                    <div>
-                                                                                                        {ballot?.name} -{' '}
-                                                                                                        <span style={{ fontSize: '13px', color: 'grey' }}>({item?.merchant?.name})</span>
-                                                                                                    </div>
-                                                                                                    <div
-                                                                                                        onClick={() => {
-                                                                                                            if (!racks?.includes(ballot?.rackId)) {
-                                                                                                                setballots((prevBallots) => {
-                                                                                                                    if (prevBallots.includes(ballot?.id)) {
-                                                                                                                        // If the ballot is already selected, remove it and all associated boxes
-                                                                                                                        const filteredBallots = prevBallots.filter((id) => id !== ballot?.id);
+                                                                                                    <div className="row m-0 d-flex align-items-center">
+                                                                                                        {ballot?.name}
 
-                                                                                                                        return filteredBallots;
-                                                                                                                    } else {
-                                                                                                                        const updatedBoxes = boxes.filter((boxId) => {
-                                                                                                                            const box = ballot.boxes.find((b) => b.id === boxId);
-                                                                                                                            return !box;
-                                                                                                                        });
-                                                                                                                        setboxes(updatedBoxes);
-                                                                                                                        // If the ballot is not selected, add it to the selected ballots
-                                                                                                                        return [...prevBallots, ballot?.id];
-                                                                                                                    }
+                                                                                                        <TbEdit
+                                                                                                            onClick={(e) => {
+                                                                                                                e.stopPropagation();
+                                                                                                                setmerchantModal({
+                                                                                                                    open: true,
+                                                                                                                    type: 'edit',
+                                                                                                                    id: ballot?.id,
+                                                                                                                    name: ballot?.name,
+                                                                                                                    editType: 'ballot',
                                                                                                                 });
-                                                                                                            }
-                                                                                                        }}
-                                                                                                        className="iconhover allcentered"
-                                                                                                        style={{ width: '35px', height: '35px' }}
-                                                                                                    >
-                                                                                                        {ballots.includes(ballot?.id) ? (
-                                                                                                            <TbSquareCheck size={16} color={'var(--success)'} />
-                                                                                                        ) : (
-                                                                                                            <TbSquare size={16} color={''} />
+                                                                                                            }}
+                                                                                                            class="ml-1 text-secondaryhover"
+                                                                                                        />
+                                                                                                    </div>
+                                                                                                    <div class="row m-0 d-flex align-items-center">
+                                                                                                        {ballot?.merchant && (
+                                                                                                            <span
+                                                                                                                style={{ color: 'white' }}
+                                                                                                                className={' wordbreak text-success bg-light-success rounded-pill font-weight-600 '}
+                                                                                                            >
+                                                                                                                {' '}
+                                                                                                                {ballot?.merchant?.name}
+                                                                                                            </span>
                                                                                                         )}
+                                                                                                        <div
+                                                                                                            onClick={() => {
+                                                                                                                if (!racks?.includes(ballot?.rackId)) {
+                                                                                                                    setballots((prevBallots) => {
+                                                                                                                        if (prevBallots.includes(ballot?.id)) {
+                                                                                                                            // If the ballot is already selected, remove it and all associated boxes
+                                                                                                                            const filteredBallots = prevBallots.filter((id) => id !== ballot?.id);
+
+                                                                                                                            const updatedBoxes = boxes.filter((boxId) => {
+                                                                                                                                const box = ballot.boxes.find((b) => b.id === boxId);
+                                                                                                                                return !box;
+                                                                                                                            });
+
+                                                                                                                            setboxes(updatedBoxes);
+                                                                                                                            return filteredBallots;
+                                                                                                                        } else {
+                                                                                                                            return [...prevBallots, ballot?.id];
+                                                                                                                        }
+                                                                                                                    });
+                                                                                                                }
+                                                                                                            }}
+                                                                                                            className="iconhover allcentered"
+                                                                                                            style={{ width: '35px', height: '35px' }}
+                                                                                                        >
+                                                                                                            {ballots.includes(ballot?.id) ? (
+                                                                                                                <TbSquareCheck size={16} color={'var(--success)'} />
+                                                                                                            ) : (
+                                                                                                                <TbSquare size={16} color={''} />
+                                                                                                            )}
+                                                                                                        </div>
                                                                                                     </div>
                                                                                                 </div>
                                                                                                 <div className="col-lg-12 mb-3 mt-2 p-0">
                                                                                                     <div
-                                                                                                        className="row m-0 w-100 p-2 scrollmenuclasssubscrollbar"
+                                                                                                        className="row m-0 w-100 scrollmenuclasssubscrollbar "
                                                                                                         style={{
                                                                                                             border: '1px solid #eee',
                                                                                                             borderRadius: innerBorderRadius,
@@ -291,6 +413,7 @@ const InventoryDetails = (props) => {
                                                                                                             fontSize: '12px',
                                                                                                             overflowX: 'scroll',
                                                                                                             flexWrap: 'nowrap',
+                                                                                                            background: '#f4f4f4',
                                                                                                         }}
                                                                                                     >
                                                                                                         {ballot?.boxes?.map((box, boxindex) => {
@@ -298,110 +421,163 @@ const InventoryDetails = (props) => {
                                                                                                                 return (
                                                                                                                     <div
                                                                                                                         key={boxindex}
-                                                                                                                        className="d-flex flex-column col-lg-5"
+                                                                                                                        className="d-flex flex-column col-lg-5 p-0"
                                                                                                                         style={{
-                                                                                                                            // minWidth: '200px',
                                                                                                                             marginRight: '10px',
                                                                                                                         }}
                                                                                                                     >
                                                                                                                         <div
                                                                                                                             className="box-container"
                                                                                                                             style={{
-                                                                                                                                border: '1px solid #ccc',
+                                                                                                                                border: '1px solid #eee',
                                                                                                                                 borderRadius: innerBorderRadius,
                                                                                                                                 padding: innerPadding,
                                                                                                                                 marginBottom: '10px',
+                                                                                                                                background: 'white',
+                                                                                                                                boxShadow: '#919eab4d 0 0 2px, #919eab1f 0 12px 24px -4px',
                                                                                                                             }}
                                                                                                                         >
                                                                                                                             <div className="col-lg-12 p-0">
                                                                                                                                 <div className="row m-0 w-100 justify-content-between align-items-center">
-                                                                                                                                    <div>
-                                                                                                                                        {box?.name} -{' '}
-                                                                                                                                        <span style={{ fontSize: '13px', color: 'grey' }}>
-                                                                                                                                            ({item?.merchant?.name})
-                                                                                                                                        </span>
-                                                                                                                                    </div>
-                                                                                                                                    <div
-                                                                                                                                        onClick={() => {
-                                                                                                                                            if (
-                                                                                                                                                !racks?.includes(box?.ballot?.rackId) &&
-                                                                                                                                                !ballots?.includes(box?.ballotId)
-                                                                                                                                            ) {
-                                                                                                                                                setboxes((prevBoxes) => {
-                                                                                                                                                    if (prevBoxes.includes(box?.id)) {
-                                                                                                                                                        return prevBoxes.filter((id) => id !== box?.id);
-                                                                                                                                                    } else {
-                                                                                                                                                        return [...prevBoxes, box?.id];
-                                                                                                                                                    }
+                                                                                                                                    <div className="row m-0 d-flex align-items-center">
+                                                                                                                                        {box?.name}
+
+                                                                                                                                        <TbEdit
+                                                                                                                                            onClick={(e) => {
+                                                                                                                                                e.stopPropagation();
+                                                                                                                                                setmerchantModal({
+                                                                                                                                                    open: true,
+                                                                                                                                                    type: 'edit',
+                                                                                                                                                    id: box?.id,
+                                                                                                                                                    name: box?.name,
+                                                                                                                                                    editType: 'box',
                                                                                                                                                 });
-                                                                                                                                            }
-                                                                                                                                        }}
-                                                                                                                                        className="iconhover allcentered"
-                                                                                                                                        style={{ width: '35px', height: '35px' }}
-                                                                                                                                    >
-                                                                                                                                        {boxes.includes(box?.id) ? (
-                                                                                                                                            <TbSquareCheck size={14} color={'var(--success)'} />
-                                                                                                                                        ) : (
-                                                                                                                                            <TbSquare size={14} color={''} />
+                                                                                                                                            }}
+                                                                                                                                            class="ml-1 text-secondaryhover"
+                                                                                                                                        />
+                                                                                                                                    </div>
+                                                                                                                                    <div class="row m-0 d-flex align-items-center">
+                                                                                                                                        {box?.merchant && (
+                                                                                                                                            <span
+                                                                                                                                                style={{ color: 'white' }}
+                                                                                                                                                className={
+                                                                                                                                                    ' wordbreak text-success bg-light-success rounded-pill font-weight-600 '
+                                                                                                                                                }
+                                                                                                                                            >
+                                                                                                                                                {' '}
+                                                                                                                                                {box?.merchant?.name}
+                                                                                                                                            </span>
                                                                                                                                         )}
+                                                                                                                                        <div
+                                                                                                                                            onClick={() => {
+                                                                                                                                                if (
+                                                                                                                                                    !racks?.includes(box?.ballot?.rackId) &&
+                                                                                                                                                    !ballots?.includes(box?.ballotId)
+                                                                                                                                                ) {
+                                                                                                                                                    setboxes((prevBoxes) => {
+                                                                                                                                                        if (prevBoxes.includes(box?.id)) {
+                                                                                                                                                            return prevBoxes.filter(
+                                                                                                                                                                (id) => id !== box?.id,
+                                                                                                                                                            );
+                                                                                                                                                        } else {
+                                                                                                                                                            return [...prevBoxes, box?.id];
+                                                                                                                                                        }
+                                                                                                                                                    });
+                                                                                                                                                }
+                                                                                                                                            }}
+                                                                                                                                            className="iconhover allcentered"
+                                                                                                                                            style={{ width: '35px', height: '35px' }}
+                                                                                                                                        >
+                                                                                                                                            {boxes.includes(box?.id) ? (
+                                                                                                                                                <TbSquareCheck size={14} color={'var(--success)'} />
+                                                                                                                                            ) : (
+                                                                                                                                                <TbSquare size={14} color={''} />
+                                                                                                                                            )}
+                                                                                                                                        </div>
                                                                                                                                     </div>
                                                                                                                                 </div>
                                                                                                                             </div>
                                                                                                                         </div>
-                                                                                                                        {/* Render the second box in the pair if available */}
                                                                                                                         {ballot?.boxes[boxindex + 1] && (
                                                                                                                             <div
                                                                                                                                 className="box-container"
                                                                                                                                 style={{
-                                                                                                                                    border: '1px solid #ccc',
+                                                                                                                                    border: '1px solid #eee',
                                                                                                                                     borderRadius: innerBorderRadius,
                                                                                                                                     padding: innerPadding,
+                                                                                                                                    background: 'white',
+                                                                                                                                    boxShadow: '#919eab4d 0 0 2px, #919eab1f 0 12px 24px -4px',
                                                                                                                                 }}
                                                                                                                             >
                                                                                                                                 <div className="row m-0 w-100 justify-content-between align-items-center">
-                                                                                                                                    <div>
-                                                                                                                                        {ballot?.boxes[boxindex + 1]?.name} -{' '}
-                                                                                                                                        <span style={{ fontSize: '13px', color: 'grey' }}>
-                                                                                                                                            ({item?.merchant?.name})
-                                                                                                                                        </span>
-                                                                                                                                    </div>
-                                                                                                                                    <div
-                                                                                                                                        onClick={() => {
-                                                                                                                                            if (
-                                                                                                                                                !racks?.includes(
-                                                                                                                                                    ballot?.boxes[boxindex + 1]?.ballot?.rackId,
-                                                                                                                                                ) &&
-                                                                                                                                                !ballots?.includes(
-                                                                                                                                                    ballot?.boxes[boxindex + 1]?.ballotId,
-                                                                                                                                                )
-                                                                                                                                            ) {
-                                                                                                                                                setboxes((prevBoxes) => {
-                                                                                                                                                    if (
-                                                                                                                                                        prevBoxes.includes(
-                                                                                                                                                            ballot?.boxes[boxindex + 1]?.id,
-                                                                                                                                                        )
-                                                                                                                                                    ) {
-                                                                                                                                                        return prevBoxes.filter(
-                                                                                                                                                            (id) =>
-                                                                                                                                                                id !== ballot?.boxes[boxindex + 1]?.id,
-                                                                                                                                                        );
-                                                                                                                                                    } else {
-                                                                                                                                                        return [
-                                                                                                                                                            ...prevBoxes,
-                                                                                                                                                            ballot?.boxes[boxindex + 1]?.id,
-                                                                                                                                                        ];
-                                                                                                                                                    }
+                                                                                                                                    <div className="row m-0 d-flex align-items-center">
+                                                                                                                                        {ballot?.boxes[boxindex + 1]?.name}
+
+                                                                                                                                        <TbEdit
+                                                                                                                                            onClick={(e) => {
+                                                                                                                                                e.stopPropagation();
+                                                                                                                                                setmerchantModal({
+                                                                                                                                                    open: true,
+                                                                                                                                                    type: 'edit',
+                                                                                                                                                    id: ballot?.boxes[boxindex + 1]?.id,
+                                                                                                                                                    name: ballot?.boxes[boxindex + 1]?.name,
+                                                                                                                                                    editType: 'box',
                                                                                                                                                 });
-                                                                                                                                            }
-                                                                                                                                        }}
-                                                                                                                                        className="iconhover allcentered"
-                                                                                                                                        style={{ width: '35px', height: '35px' }}
-                                                                                                                                    >
-                                                                                                                                        {boxes.includes(ballot?.boxes[boxindex + 1]?.id) ? (
-                                                                                                                                            <TbSquareCheck size={14} color={'var(--success)'} />
-                                                                                                                                        ) : (
-                                                                                                                                            <TbSquare size={14} color={''} />
+                                                                                                                                            }}
+                                                                                                                                            class="ml-1 text-secondaryhover"
+                                                                                                                                        />
+                                                                                                                                    </div>
+                                                                                                                                    <div class="row m-0 d-flex align-items-center">
+                                                                                                                                        {ballot?.boxes[boxindex + 1]?.merchant && (
+                                                                                                                                            <span
+                                                                                                                                                style={{ color: 'white' }}
+                                                                                                                                                className={
+                                                                                                                                                    ' wordbreak text-success bg-light-success rounded-pill font-weight-600 '
+                                                                                                                                                }
+                                                                                                                                            >
+                                                                                                                                                {' '}
+                                                                                                                                                {ballot?.boxes[boxindex + 1]?.merchant?.name}
+                                                                                                                                            </span>
                                                                                                                                         )}
+                                                                                                                                        <div
+                                                                                                                                            onClick={() => {
+                                                                                                                                                if (
+                                                                                                                                                    !racks?.includes(
+                                                                                                                                                        ballot?.boxes[boxindex + 1]?.ballot?.rackId,
+                                                                                                                                                    ) &&
+                                                                                                                                                    !ballots?.includes(
+                                                                                                                                                        ballot?.boxes[boxindex + 1]?.ballotId,
+                                                                                                                                                    )
+                                                                                                                                                ) {
+                                                                                                                                                    setboxes((prevBoxes) => {
+                                                                                                                                                        if (
+                                                                                                                                                            prevBoxes.includes(
+                                                                                                                                                                ballot?.boxes[boxindex + 1]?.id,
+                                                                                                                                                            )
+                                                                                                                                                        ) {
+                                                                                                                                                            return prevBoxes.filter(
+                                                                                                                                                                (id) =>
+                                                                                                                                                                    id !==
+                                                                                                                                                                    ballot?.boxes[boxindex + 1]?.id,
+                                                                                                                                                            );
+                                                                                                                                                        } else {
+                                                                                                                                                            return [
+                                                                                                                                                                ...prevBoxes,
+                                                                                                                                                                ballot?.boxes[boxindex + 1]?.id,
+                                                                                                                                                            ];
+                                                                                                                                                        }
+                                                                                                                                                    });
+                                                                                                                                                }
+                                                                                                                                            }}
+                                                                                                                                            className="iconhover allcentered"
+                                                                                                                                            style={{ width: '35px', height: '35px' }}
+                                                                                                                                        >
+                                                                                                                                            {boxes.includes(ballot?.boxes[boxindex + 1]?.id) ? (
+                                                                                                                                                <TbSquareCheck size={14} color={'var(--success)'} />
+                                                                                                                                            ) : (
+                                                                                                                                                <TbSquare size={14} color={''} />
+                                                                                                                                            )}
+                                                                                                                                        </div>
                                                                                                                                     </div>
                                                                                                                                 </div>
                                                                                                                             </div>
@@ -478,7 +654,7 @@ const InventoryDetails = (props) => {
                     <Modal.Header>
                         <div className="row w-100 m-0 p-0">
                             <div class="col-lg-6 pt-3 ">
-                                <div className="row w-100 m-0 p-0">Choose Merchant</div>
+                                <div className="row w-100 m-0 p-0">{merchantModal?.type == 'edit' ? 'Edit' : merchantModal?.type == 'addlevels' ? 'Add Levels' : 'Choose Merchant'}</div>
                             </div>
                             <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
                                 <div
@@ -568,7 +744,133 @@ const InventoryDetails = (props) => {
                                         }}
                                     >
                                         {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                        {!buttonLoading && <>Deassign</>}
+                                        {!buttonLoading && <>{merchantModal?.modalType == 'assign' ? 'Assign' : 'Remove assigned'}</>}
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                        {merchantModal?.type == 'edit' && (
+                            <div class="row m-0 w-100 py-2">
+                                <div class="col-lg-12 p-0">
+                                    <Inputfield
+                                        placeholder={'Name'}
+                                        value={merchantModal?.name}
+                                        onChange={(event) => {
+                                            setmerchantModal({ ...merchantModal, name: event.target.value });
+                                        }}
+                                        // type={'date'}
+                                    />
+                                </div>
+                                <div class="col-lg-12 text-center allcentered my-3">
+                                    <button
+                                        style={{ height: '35px' }}
+                                        class={generalstyles.roundbutton + '  mb-1 mx-2'}
+                                        disabled={buttonLoading}
+                                        onClick={async () => {
+                                            setbuttonLoading(true);
+                                            try {
+                                                if (merchantModal?.editType == 'rack') {
+                                                    const { data } = await updateRackNameMutation();
+                                                    if (data?.updateRackName?.success == true) {
+                                                        await refetcOneInventory();
+
+                                                        setmerchantModal({ open: false });
+                                                        NotificationManager.success('', 'Success');
+                                                    } else {
+                                                        NotificationManager.warning(data?.updateRackName?.message, 'Warning!');
+                                                    }
+                                                } else if (merchantModal?.editType == 'ballot') {
+                                                    const { data } = await updateBallotNameMutation();
+                                                    if (data?.updateBallotName?.success == true) {
+                                                        await refetcOneInventory();
+
+                                                        setmerchantModal({ open: false });
+                                                        NotificationManager.success('', 'Success');
+                                                    } else {
+                                                        NotificationManager.warning(data?.updateBallotName?.message, 'Warning!');
+                                                    }
+                                                } else if (merchantModal?.editType == 'box') {
+                                                    const { data } = await updateBoxNameMutation();
+                                                    if (data?.updateBoxName?.success == true) {
+                                                        await refetcOneInventory();
+
+                                                        setmerchantModal({ open: false });
+                                                        NotificationManager.success('', 'Success');
+                                                    } else {
+                                                        NotificationManager.warning(data?.updateBoxName?.message, 'Warning!');
+                                                    }
+                                                }
+                                            } catch (error) {
+                                                // alert(JSON.stringify(error));
+                                                let errorMessage = 'An unexpected error occurred';
+                                                // // Check for GraphQL errors
+                                                if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                                    errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                                } else if (error.networkError) {
+                                                    errorMessage = error.networkError.message || errorMessage;
+                                                } else if (error.message) {
+                                                    errorMessage = error.message;
+                                                }
+                                                NotificationManager.warning(errorMessage, 'Warning!');
+                                            }
+                                            setbuttonLoading(false);
+                                        }}
+                                    >
+                                        {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                        {!buttonLoading && <>{'Edit Name'}</>}
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                        {merchantModal?.type == 'addlevels' && (
+                            <div class="row m-0 w-100 py-2">
+                                <div class="col-lg-12 p-0">
+                                    <Inputfield
+                                        placeholder={'Number of levels to be added'}
+                                        value={merchantModal?.levels}
+                                        onChange={(event) => {
+                                            setmerchantModal({ ...merchantModal, levels: event.target.value });
+                                        }}
+                                        type={'number'}
+                                    />
+                                </div>
+                                <div class="col-lg-12 p-0" style={{ fontSize: '15px' }}>
+                                    Total <span style={{ fontWeight: 600 }}>{parseInt(merchantModal?.initialLevels) + parseInt(merchantModal?.levels?.length != 0 ? merchantModal?.levels : 0)}</span>
+                                </div>
+                                <div class="col-lg-12 text-center allcentered my-3">
+                                    <button
+                                        style={{ height: '35px' }}
+                                        class={generalstyles.roundbutton + '  mb-1 mx-2'}
+                                        disabled={buttonLoading}
+                                        onClick={async () => {
+                                            setbuttonLoading(true);
+                                            try {
+                                                const { data } = await addRackLevelsMutation();
+                                                if (data?.addRackLevels?.success == true) {
+                                                    await refetcOneInventory();
+                                                    setmerchantModal({ open: false });
+                                                    NotificationManager.success('', 'Success');
+                                                } else {
+                                                    NotificationManager.warning(data?.addRackLevels?.message, 'Warning!');
+                                                }
+                                            } catch (error) {
+                                                // alert(JSON.stringify(error));
+                                                let errorMessage = 'An unexpected error occurred';
+                                                // // Check for GraphQL errors
+                                                if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                                    errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                                } else if (error.networkError) {
+                                                    errorMessage = error.networkError.message || errorMessage;
+                                                } else if (error.message) {
+                                                    errorMessage = error.message;
+                                                }
+                                                NotificationManager.warning(errorMessage, 'Warning!');
+                                            }
+                                            setbuttonLoading(false);
+                                        }}
+                                    >
+                                        {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                        {!buttonLoading && <>{'Add levels'}</>}
                                     </button>
                                 </div>
                             </div>

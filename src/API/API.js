@@ -70,6 +70,38 @@ const API = () => {
         `;
     };
 
+    const updateRackName = () => {
+        return gql`
+            mutation updateRackName($input: UpdateRackNameInput!) {
+                updateRackName(input: $input)
+            }
+        `;
+    };
+
+    const updateBallotName = () => {
+        return gql`
+            mutation updateBallotName($input: UpdateBallotNameInput!) {
+                updateBallotName(input: $input)
+            }
+        `;
+    };
+
+    const updateBoxName = () => {
+        return gql`
+            mutation updateBoxName($input: UpdateBoxNameInput!) {
+                updateBoxName(input: $input)
+            }
+        `;
+    };
+
+    const addRackLevels = () => {
+        return gql`
+            mutation addRackLevels($input: AddRackLevelsInput!) {
+                addRackLevels(input: $input)
+            }
+        `;
+    };
+
     const updateInventoryRent = () => {
         return gql`
             mutation updateInventoryRent($input: UpdateInventoryRentInput!) {
@@ -821,6 +853,7 @@ const API = () => {
               id
         name
         racks {
+        levels
         merchant{name}
           id
           name
@@ -1689,6 +1722,10 @@ const API = () => {
         createHub,
         assignMerchantToInventory,
         removeMerchantAssignmentFromInventory,
+        updateRackName,
+        updateBallotName,
+        updateBoxName,
+        addRackLevels,
     };
 };
 export default API;
