@@ -28,8 +28,7 @@ const UpdateMerchant = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, dateformatter, inventoryRentTypeContext } = useContext(Contexthandlerscontext);
-    const { useQueryGQL, useMutationGQL, fetchGovernorates, createMerchantDomesticShipping, updateMerchantDomesticShipping, fetchMerchants, addMerchant, createInventoryRent, fetchAllCountries } =
-        API();
+    const { useQueryGQL, useMutationGQL, fetchGovernorates, findOneMerchant, useLazyQueryGQL, fetchMerchants, addMerchant, createInventoryRent, fetchAllCountries } = API();
     const steps = ['Merchant Info', 'Shipping', 'Inventory Settings'];
     const [buttonLoading, setbuttonLoading] = useState(false);
     const { lang, langdetect } = useContext(LanguageContext);
@@ -53,6 +52,7 @@ const UpdateMerchant = (props) => {
         keepPreviousData: true,
         staleTime: Infinity,
     });
+    const [findOneMerchantQuery] = useLazyQueryGQL(findOneMerchant());
 
     const [submit, setsubmit] = React.useState(false);
     const [edit, setEdit] = React.useState({

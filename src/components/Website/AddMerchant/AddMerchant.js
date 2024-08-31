@@ -509,7 +509,7 @@ const AddMerchant = (props) => {
                                                             setpayload={setaddresspayload}
                                                             button1disabled={buttonLoading}
                                                             button1class={generalstyles.roundbutton + '  mr-2 '}
-                                                            button1placeholder={'Search address'}
+                                                            button1placeholder={'Confirm address'}
                                                             button1onClick={async () => {
                                                                 setbuttonLoading(true);
                                                                 if (addresspayload?.city?.length != 0 && addresspayload?.country?.length != 0 && addresspayload?.streetAddress?.length != 0) {

@@ -844,6 +844,46 @@ const API = () => {
         `;
     };
 
+    const findOneMerchant = (payload) => {
+        return gql`
+            query findOneMerchant($id: Int!) {
+                findOneMerchant(id: $id) {
+                    id
+                    name
+                    inventoryRent {
+                        id
+                        merchantId
+                        type
+                        startDate
+                        lastBill
+                        pricePerUnit
+                        sqaureMeter
+                        currency
+                        createdAt
+                        lastModified
+                    }
+                    shopifyShop
+                    currency
+                    includesVat
+                    taxId
+                    bankNumber
+                    bankName
+                    ownerId
+                    addressId
+                    threshold
+                    overShipping
+                    address {
+                        country
+                        city
+                        streetAddress
+                        buildingNumber
+                        apartmentFloor
+                    }
+                }
+            }
+        `;
+    };
+
     const fetcOneInventory = (inventoryId) => {
         return gql`
         query findSingleInventory{
@@ -1726,6 +1766,7 @@ const API = () => {
         updateBallotName,
         updateBoxName,
         addRackLevels,
+        findOneMerchant,
     };
 };
 export default API;

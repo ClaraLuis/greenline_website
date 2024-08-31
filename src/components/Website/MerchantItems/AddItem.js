@@ -38,7 +38,6 @@ const AddItem = (props) => {
     const { lang, langdetect } = useContext(LanguageContext);
     const cookies = new Cookies();
     const [buttonLoading, setbuttonLoading] = useState(false);
-
     const [itempayload, setitempayload] = useState({
         functype: 'add',
         merchansku: '',
@@ -56,17 +55,7 @@ const AddItem = (props) => {
         variantOptions: [],
         variantOptionAttributes: [],
     });
-    const [itemprice, setitemprice] = useState({
-        currency: '',
-        price: '',
-        discount: null,
-        startDiscount: null,
-        endDiscount: null,
-    });
-    const [colorpayload, setcolorpayload] = useState({
-        color: '',
-        colorHEX: '',
-    });
+
     const [payload, setfilter] = useState({
         limit: 5,
         isAsc: true,
@@ -76,7 +65,6 @@ const AddItem = (props) => {
         sku: '',
         merchantId: parseInt(cookies.get('merchantId')),
     });
-    const fetchMerchantItemsQuery = useQueryGQL('', fetchMerchantItems(), payload);
 
     const [addItemMutation] = useMutationGQL(addCompoundItem(), {
         merchantId: 1,
@@ -99,6 +87,137 @@ const AddItem = (props) => {
     useEffect(() => {
         setpageactive_context('/merchantitems');
     }, []);
+    // const variantsList = [];
+    const [variantsList, setvariantsList] = useState([]);
+    const [itemVariants, setitemVariants] = useState({});
+    class VariantName {
+        constructor(name, variantOptions) {
+            this.name = name;
+            this.variantOptions = variantOptions !== null && variantOptions !== void 0 ? variantOptions : [];
+        }
+        addVariantOption(variantOption) {
+            var _a;
+            if ((_a = this.variantOptions) === null || _a === void 0 ? void 0 : _a.length) {
+                this.variantOptions.push(variantOption);
+            } else {
+                this.variantOptions = [variantOption];
+            }
+        }
+    }
+    class VariantOption {
+        constructor(value, colorHex) {
+            this.value = value;
+            this.colorHex = colorHex;
+        }
+    }
+    class ItemVariant {
+        constructor(variantOptions) {
+            this.variantOptions = variantOptions;
+        }
+    }
+    function addVariantName(name) {
+        var variantsListtemp = [...variantsList];
+        if (variantsListtemp.find((e) => e.name.toLocaleLowerCase() === name.toLocaleLowerCase())) return false;
+        variantsListtemp.push(new VariantName(name));
+        setvariantsList([...variantsListtemp]);
+        setOptionName('');
+        return true;
+    }
+    function addVariantOption(variantName, variantOption) {
+        const variantsListtemp = [...variantsList];
+        const variantIndex = variantsListtemp.findIndex((e) => e.name.toLocaleLowerCase() === variantName.toLocaleLowerCase());
+
+        if (variantIndex === -1) {
+            return false;
+        }
+
+        const updatedVariant = new VariantName(
+            variantsListtemp[variantIndex].name,
+            [...variantsListtemp[variantIndex].variantOptions], // Copy the existing options
+        );
+        updatedVariant.addVariantOption(variantOption);
+        variantsListtemp[variantIndex] = updatedVariant;
+        setvariantsList(variantsListtemp);
+        var valueInputsTemp = { ...valueInputs };
+        valueInputsTemp[variantName] = '';
+        setValueInputs({ ...valueInputsTemp });
+
+        return true;
+    }
+    function createVariantOptions(variantOptions, index) {
+        if (!variantsList?.length || !variantsList[index].variantOptions?.length) {
+            return [variantOptions];
+        } else {
+            let variantOptionsList = [];
+            if (index === variantsList.length - 1) {
+                for (const variantOption of variantsList[index].variantOptions) {
+                    variantOptionsList.push([...variantOptions, variantOption]);
+                }
+            } else {
+                for (const variantOption of variantsList[index].variantOptions) {
+                    variantOptionsList = [...variantOptionsList, ...createVariantOptions([...variantOptions, variantOption], index + 1)];
+                }
+            }
+            return variantOptionsList;
+        }
+    }
+
+    function findSimilar(oldList, item) {
+        var similars = [...oldList];
+        for (const option of item.variantOptions) {
+            if (!similars?.length) return similars;
+
+            similars = similars.filter((e) => e?.variantOptions?.find((e) => e.value == option.value));
+        }
+        return similars;
+    }
+
+    useEffect(() => {
+        const itemVariantsTemp = createVariantOptions([], 0);
+        const itemVariantsObjects = [];
+        for (const combination of itemVariantsTemp) {
+            itemVariantsObjects.push(new ItemVariant(combination));
+        }
+        // alert(JSON.stringify());
+        // const groupedByFirstValue = _.groupBy(
+        //     itemVariantsObjects?.filter((e) => e.variantOptions?.length > 0),
+        //     (item) => item.variantOptions[0].value,
+        // );
+
+        const groupedByFirstValue = itemVariantsObjects
+            ?.filter((e) => e.variantOptions?.length > 0)
+            .reduce((acc, item) => {
+                // Check if variantOptions exists and has at least one item
+                const firstValue = item.variantOptions[0].value;
+                const remainingOptions = item.variantOptions.slice(1);
+
+                if (!acc[firstValue]) {
+                    acc[firstValue] = { variants: [] };
+                }
+
+                acc[firstValue].variants.push({ variantOptions: remainingOptions });
+                return acc;
+            }, {});
+
+        setitemVariants((prevItemVariants) => {
+            // Extract current keys and new keys
+            const newKeys = Object.keys(groupedByFirstValue);
+            var groupedByFirstValueTemp = groupedByFirstValue;
+            for (const key of newKeys) {
+                const oldList = prevItemVariants[key]?.variants;
+                if (!oldList) continue;
+
+                const newList = groupedByFirstValue[key].variants;
+                newList.map((item, index) => {
+                    const similar = findSimilar(oldList, item);
+                    if (similar?.length) {
+                        groupedByFirstValueTemp[key].variants[index] = similar[0];
+                    }
+                });
+            }
+            return groupedByFirstValueTemp;
+        });
+    }, [variantsList]);
 
     useEffect(() => {
         setfilter({
@@ -118,137 +237,75 @@ const AddItem = (props) => {
     const [valueInputs, setValueInputs] = useState({});
     const [variants, setVariants] = useState([]);
 
-    const addOption = () => {
-        if (optionName.trim() === '') return;
-
-        const newOption = { name: optionName, values: [] };
-        setOptions([...options, newOption]);
-        setValueInputs({ ...valueInputs, [optionName]: '' });
-        setOptionName('');
-    };
-    const addValue = (optionName) => {
-        if (valueInputs[optionName].trim() === '') return;
-
-        const updatedOptions = [...options];
-        const optionIndex = options.findIndex((option) => option.name === optionName);
-
-        if (updatedOptions[optionIndex].values?.length < 3) {
-            updatedOptions[optionIndex].values.push(valueInputs[optionName]);
-        } else {
-            NotificationManager.warning('Values can not be more than 3', '');
-            return; // Stop execution if values exceed the limit
-        }
-
-        const generateCombinations = (options, index = 0) => {
-            if (index === options.length) {
-                return [[]];
-            }
-            const currentOption = options[index];
-            const restCombinations = generateCombinations(options, index + 1);
-            const combinations = [];
-            currentOption.values.forEach((value) => {
-                restCombinations.forEach((combination) => {
-                    combinations.push([{ [currentOption.name]: value }, ...combination]);
-                });
-            });
-            return combinations;
-        };
-
-        const allCombinations = generateCombinations(options);
-
-        if (allCombinations.length > 100) {
-            NotificationManager.warning('Variants cannot exceed 100', '');
-            return; // Stop execution if variants exceed the limit
-        }
-
-        setOptions(updatedOptions);
-        setValueInputs({ ...valueInputs, [optionName]: '' });
+    const deleteOption = (optionIndex) => {
+        var updatedOptions = [...variantsList];
+        updatedOptions.splice(optionIndex, 1);
+        setvariantsList(updatedOptions);
     };
 
-    const deleteOption = (optionName) => {
-        const updatedOptions = options.filter((option) => option.name !== optionName);
-        setOptions(updatedOptions);
-        const { [optionName]: _, ...updatedValueInputs } = valueInputs;
-        setValueInputs(updatedValueInputs);
+    const deleteValue = (optionIndex, valueIndex) => {
+        var updatedOptions = [...variantsList];
+        updatedOptions[optionIndex].variantOptions.splice(valueIndex, 1);
+        setvariantsList(updatedOptions);
     };
 
-    const deleteValue = (optionName, valueIndex) => {
-        const updatedOptions = [...options];
-        const optionIndex = options.findIndex((option) => option.name === optionName);
-        updatedOptions[optionIndex].values.splice(valueIndex, 1);
-        setOptions(updatedOptions);
-    };
-
-    const editOptionName = (oldName, newName) => {
-        const updatedOptions = [...options];
-        const optionIndex = options.findIndex((option) => option.name === oldName);
+    const editOptionName = (optionIndex, newName) => {
+        var updatedOptions = [...variantsList];
         updatedOptions[optionIndex].name = newName;
-        setOptions(updatedOptions);
-        setValueInputs({ ...valueInputs, [newName]: valueInputs[oldName] });
-        const { [oldName]: _, ...updatedValueInputs } = valueInputs;
-        setValueInputs(updatedValueInputs);
+        setvariantsList(updatedOptions);
     };
 
-    const editValue = (optionName, valueIndex, newValue) => {
-        const updatedOptions = [...options];
-        const optionIndex = options.findIndex((option) => option.name === optionName);
-        updatedOptions[optionIndex].values[valueIndex] = newValue;
-        setOptions(updatedOptions);
+    const editValue = (optionIndex, valueIndex, newValue) => {
+        var updatedOptions = [...variantsList];
+        updatedOptions[optionIndex].variantOptions[valueIndex].value = newValue;
+        setvariantsList(updatedOptions);
     };
-
-    useEffect(() => {
-        const generateCombinations = (options) => {
-            if (options.length === 0) return [];
-            const [first, ...rest] = options;
-            const restCombinations = generateCombinations(rest);
-            if (restCombinations.length === 0) {
-                return first.values.map((value) => [{ [first.name]: value }]);
-            }
-            const combinations = [];
-            first.values.forEach((value) => {
-                restCombinations.forEach((combination) => {
-                    combinations.push([{ [first.name]: value }, ...combination]);
-                });
-            });
-            return combinations;
-        };
-
-        const allCombinations = generateCombinations(options);
-        const generatedVariants = allCombinations.map((combination) => {
-            const variant = {
-                options: combination,
-                price: '',
-            };
-            return variant;
-        });
-
-        setVariants(generatedVariants);
-    }, [options]);
 
     const handlePriceChange = (color, variantIndex, event) => {
-        const updatedVariants = [...variants];
-        const variantToUpdate = groupedVariants[color][variantIndex];
-        const globalIndex = variants.indexOf(variantToUpdate);
-        updatedVariants[globalIndex].price = event.target.value;
-        setVariants(updatedVariants);
+        const newPrice = event.target.value;
+        setitemVariants((prevItemVariants) => {
+            const updatedVariants = { ...prevItemVariants };
+            const colorVariants = updatedVariants[color]?.variants || [];
+            if (colorVariants[variantIndex]) {
+                colorVariants[variantIndex].price = newPrice;
+            }
+            return {
+                ...updatedVariants,
+                [color]: { ...updatedVariants[color], variants: colorVariants },
+            };
+        });
     };
 
+    // Handle image URL change
     const handleImageChange = (color, variantIndex, event) => {
-        const updatedVariants = [...variants];
-        const variantToUpdate = groupedVariants[color][variantIndex];
-        const globalIndex = variants.indexOf(variantToUpdate);
-        updatedVariants[globalIndex].imageUrl = event.target.value;
-        setVariants(updatedVariants);
+        const newImageUrl = event.target.value;
+        setitemVariants((prevItemVariants) => {
+            const updatedVariants = { ...prevItemVariants };
+            const colorVariants = updatedVariants[color]?.variants || [];
+            if (colorVariants[variantIndex]) {
+                colorVariants[variantIndex].imageUrl = newImageUrl;
+            }
+            return {
+                ...updatedVariants,
+                [color]: { ...updatedVariants[color], variants: colorVariants },
+            };
+        });
     };
 
     const handleMerchantSkuChange = (color, variantIndex, event) => {
-        const updatedVariants = [...variants];
-        const variantToUpdate = groupedVariants[color][variantIndex];
-        const globalIndex = variants.indexOf(variantToUpdate);
-        updatedVariants[globalIndex].merchantSku = event.target.value;
-        setVariants(updatedVariants);
+        const newMerchantSku = event.target.value;
+        setitemVariants((prevItemVariants) => {
+            const updatedVariants = { ...prevItemVariants };
+            const colorVariants = updatedVariants[color]?.variants || [];
+            if (colorVariants[variantIndex]) {
+                colorVariants[variantIndex].merchantSku = newMerchantSku;
+            }
+            return {
+                ...updatedVariants,
+                [color]: { ...updatedVariants[color], variants: colorVariants },
+            };
+        });
     };
-
     const handleOptionChange = (optionName, event) => {
         setOptionName(event.target.value);
         const newInputValues = { ...valueInputs };
@@ -267,18 +324,6 @@ const AddItem = (props) => {
         setActiveColor(activeColor === color ? null : color);
     };
 
-    // Group variants by color
-    const groupedVariants = {};
-    variants.forEach((variant) => {
-        const color = variant.options.find((option) => Object.keys(option)[0] === options[0]?.name);
-        if (color) {
-            const colorValue = Object.values(color)[0];
-            if (!groupedVariants[colorValue]) {
-                groupedVariants[colorValue] = [];
-            }
-            groupedVariants[colorValue].push(variant);
-        }
-    });
     const [filteMerchants, setfilteMerchants] = useState({
         isAsc: true,
         limit: 10,
@@ -403,24 +448,19 @@ const AddItem = (props) => {
                             <div class="col-lg-12 my-3" style={{ fontWeight: 600 }}>
                                 Item Options
                             </div>
-
-                            {options.map((option, index) => (
+                            {variantsList.map((option, index) => (
                                 <div style={{ border: '1px solid #eee', borderRadius: '18px' }} class="p-2 mb-2 row m-0 w-100 d-flex align-items-center" key={index}>
                                     <div style={{ position: 'relative' }} class={formstyles.form__field + ' col-lg-10'}>
-                                        <input type="text" value={option.name} onChange={(event) => editOptionName(option.name, event.target.value)} />
+                                        <input type="text" value={option.name} onChange={(event) => editOptionName(index, event.target.value)} />
 
-                                        <Trash2 style={{ position: 'absolute', right: 10, top: '30%' }} onClick={() => deleteOption(option.name)} class=" text-danger text-dangerhover" />
+                                        <Trash2 style={{ position: 'absolute', right: 10, top: '30%' }} onClick={() => deleteOption(index)} class=" text-danger text-dangerhover" />
                                     </div>
-                                    {option.values.map((value, idx) => (
+                                    {option.variantOptions.map((value, idx) => (
                                         <div class="col-lg-3 p-0 mt-2 mr-1" key={idx}>
                                             <div class="row m-0 w-100 allcentered">
                                                 <div style={{ position: 'relative' }} class={formstyles.form__field + ' col-lg-10'}>
-                                                    <input style={{ width: '100%' }} type="text" value={value} onChange={(event) => editValue(option.name, idx, event.target.value)} />
-                                                    <Trash2
-                                                        onClick={() => deleteValue(option.name, idx)}
-                                                        style={{ position: 'absolute', right: 10, top: '30%' }}
-                                                        class="text-danger text-dangerhover"
-                                                    />
+                                                    <input style={{ width: '100%' }} type="text" value={value?.value} onChange={(event) => editValue(index, idx, event.target.value)} />
+                                                    <Trash2 onClick={() => deleteValue(index, idx)} style={{ position: 'absolute', right: 10, top: '30%' }} class="text-danger text-dangerhover" />
                                                 </div>
                                             </div>
                                         </div>
@@ -435,7 +475,11 @@ const AddItem = (props) => {
                                                 onChange={(event) => handleValueChange(option.name, event)}
                                                 placeholder="Enter value"
                                             />
-                                            <button style={{ height: '30px' }} class={generalstyles.roundbutton + '  my-2 p-0'} onClick={() => addValue(option.name)}>
+                                            <button
+                                                style={{ height: '30px' }}
+                                                class={generalstyles.roundbutton + '  my-2 p-0'}
+                                                onClick={() => addVariantOption(option.name, new VariantOption(valueInputs[option.name]))}
+                                            >
                                                 Add Value
                                             </button>
                                         </div>
@@ -451,7 +495,13 @@ const AddItem = (props) => {
                                     onChange={(event) => handleOptionChange(optionName, event)}
                                     placeholder="Enter option name"
                                 />
-                                <button style={{ height: '30px' }} class={generalstyles.roundbutton + ' p-0'} onClick={addOption}>
+                                <button
+                                    style={{ height: '30px' }}
+                                    class={generalstyles.roundbutton + ' p-0'}
+                                    onClick={() => {
+                                        addVariantName(optionName);
+                                    }}
+                                >
                                     Add Option
                                 </button>
                             </div>
@@ -462,24 +512,29 @@ const AddItem = (props) => {
                             <div class="col-lg-12 my-3" style={{ fontWeight: 600 }}>
                                 Item Variants
                             </div>
-                            {groupedVariants?.length != 0 && (
+                            {itemVariants?.length != 0 && (
                                 <div class="col-lg-12 p-3">
-                                    {Object.entries(groupedVariants).map(([color, variants], colorIndex) => (
+                                    {Object.entries(itemVariants).map(([color, variants], colorIndex) => (
                                         <div key={colorIndex} style={{ border: '1px solid #eee', borderRadius: '18px', fontSize: '13px', cursor: 'pointer' }} className="p-3 mb-2">
-                                            <div className="col-lg-12 p-0" onClick={() => handleColorClick(color)}>
-                                                {color}
-                                            </div>
-                                            <div className="col-lg-12 p-0 mb-2" style={{ color: 'grey', fontSize: '12px' }} onClick={() => handleColorClick(color)}>
-                                                {variants?.length} variants <FaChevronDown className="mx-2" />
+                                            <div class="col-lg-12 p-0">
+                                                <div class="row m-0 w-100">
+                                                    <div className="col-lg-10 p-0" onClick={() => handleColorClick(color)}>
+                                                        {color}
+                                                    </div>
+                                                    <div className="col-lg-2 p-0 mb-2" style={{ color: 'grey', fontSize: '12px' }} onClick={() => handleColorClick(color)}>
+                                                        {/* {JSON.stringify(variants?.variants)} */}
+                                                        {variants?.variants?.length} variants <FaChevronDown className="mx-2" />
+                                                    </div>
+                                                </div>
                                             </div>
                                             {activeColor === color && (
                                                 <div style={{ borderTop: '1px solid #eee' }} className="p-3">
-                                                    {variants.map((variant, variantIdx) => (
+                                                    {variants?.variants.map((variant, variantIdx) => (
                                                         <div key={variantIdx} className="mb-2">
-                                                            {variant.options.map((option, optionIdx) => (
+                                                            {variant.variantOptions.map((option, optionIdx) => (
                                                                 <span key={optionIdx}>
-                                                                    {Object.values(option)[0] == color ? '' : Object.values(option)[0]}
-                                                                    {Object.values(option)[0] == color ? '' : optionIdx !== variant.options.length - 1 && '-'}
+                                                                    {option?.value}
+                                                                    {optionIdx !== variant.variantOptions.length - 1 && '-'}
                                                                 </span>
                                                             ))}
                                                             <input
