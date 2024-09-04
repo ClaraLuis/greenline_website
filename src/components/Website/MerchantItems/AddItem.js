@@ -56,16 +56,12 @@ const AddItem = (props) => {
         variantOptionAttributes: [],
     });
 
-    const [payload, setfilter] = useState({
-        limit: 5,
-        isAsc: true,
-        afterCursor: '',
-        beforeCursor: '',
-        name: '',
-        sku: '',
-        merchantId: parseInt(cookies.get('merchantId')),
-    });
-
+    useEffect(() => {
+        setpageactive_context('/merchantitems');
+    }, []);
+    // const variantsList = [];
+    const [variantsList, setvariantsList] = useState([]);
+    const [itemVariants, setitemVariants] = useState({});
     const [addItemMutation] = useMutationGQL(addCompoundItem(), {
         merchantId: 1,
         items: [
@@ -82,14 +78,6 @@ const AddItem = (props) => {
         ],
     });
 
-    const { refetch: refetchItems } = useQueryGQL('', fetchMerchantItems(), payload);
-
-    useEffect(() => {
-        setpageactive_context('/merchantitems');
-    }, []);
-    // const variantsList = [];
-    const [variantsList, setvariantsList] = useState([]);
-    const [itemVariants, setitemVariants] = useState({});
     class VariantName {
         constructor(name, variantOptions) {
             this.name = name;
@@ -113,15 +101,26 @@ const AddItem = (props) => {
     class ItemVariant {
         constructor(variantOptions) {
             this.variantOptions = variantOptions;
+            this.price = variantOptions?.price;
+            this.imageUrl = variantOptions?.imageUrl;
+            this.merchantSku = variantOptions?.merchantSku;
         }
     }
     function addVariantName(name) {
-        var variantsListtemp = [...variantsList];
-        if (variantsListtemp.find((e) => e.name.toLocaleLowerCase() === name.toLocaleLowerCase())) return false;
-        variantsListtemp.push(new VariantName(name));
-        setvariantsList([...variantsListtemp]);
-        setOptionName('');
-        return true;
+        if (name?.length) {
+            if (variantsList?.length < 3) {
+                var variantsListtemp = [...variantsList];
+                if (variantsListtemp.find((e) => e.name.toLocaleLowerCase() === name.toLocaleLowerCase())) return false;
+                variantsListtemp.push(new VariantName(name));
+                setvariantsList([...variantsListtemp]);
+                setOptionName('');
+                return true;
+            } else {
+                NotificationManager.warning('Can not add more than three options', 'Warning!');
+            }
+        } else {
+            NotificationManager.warning('Please enter option name first', 'Warning!');
+        }
     }
     function addVariantOption(variantName, variantOption) {
         const variantsListtemp = [...variantsList];
@@ -137,11 +136,20 @@ const AddItem = (props) => {
         );
         updatedVariant.addVariantOption(variantOption);
         variantsListtemp[variantIndex] = updatedVariant;
-        setvariantsList(variantsListtemp);
-        var valueInputsTemp = { ...valueInputs };
-        valueInputsTemp[variantName] = '';
-        setValueInputs({ ...valueInputsTemp });
-
+        const itemVariantsTemp = createVariantOptions1([], 0, variantsListtemp);
+        const itemVariantsObjects = [];
+        for (const combination of itemVariantsTemp) {
+            itemVariantsObjects.push(new ItemVariant(combination));
+        }
+        // alert(itemVariantsObjects?.length);
+        if (itemVariantsObjects?.length <= 100) {
+            setvariantsList(variantsListtemp);
+            var valueInputsTemp = { ...valueInputs };
+            valueInputsTemp[variantName] = '';
+            setValueInputs({ ...valueInputsTemp });
+        } else {
+            NotificationManager.warning('Variants cannot exceed 100', '');
+        }
         return true;
     }
     function createVariantOptions(variantOptions, index) {
@@ -156,6 +164,24 @@ const AddItem = (props) => {
             } else {
                 for (const variantOption of variantsList[index].variantOptions) {
                     variantOptionsList = [...variantOptionsList, ...createVariantOptions([...variantOptions, variantOption], index + 1)];
+                }
+            }
+            return variantOptionsList;
+        }
+    }
+
+    function createVariantOptions1(variantOptions, index, variantsList) {
+        if (!variantsList?.length || !variantsList[index].variantOptions?.length) {
+            return [variantOptions];
+        } else {
+            let variantOptionsList = [];
+            if (index === variantsList.length - 1) {
+                for (const variantOption of variantsList[index].variantOptions) {
+                    variantOptionsList.push([...variantOptions, variantOption]);
+                }
+            } else {
+                for (const variantOption of variantsList[index].variantOptions) {
+                    variantOptionsList = [...variantOptionsList, ...createVariantOptions1([...variantOptions, variantOption], index + 1, variantsList)];
                 }
             }
             return variantOptionsList;
@@ -178,11 +204,6 @@ const AddItem = (props) => {
         for (const combination of itemVariantsTemp) {
             itemVariantsObjects.push(new ItemVariant(combination));
         }
-        // alert(JSON.stringify());
-        // const groupedByFirstValue = _.groupBy(
-        //     itemVariantsObjects?.filter((e) => e.variantOptions?.length > 0),
-        //     (item) => item.variantOptions[0].value,
-        // );
 
         const groupedByFirstValue = itemVariantsObjects
             ?.filter((e) => e.variantOptions?.length > 0)
@@ -219,21 +240,8 @@ const AddItem = (props) => {
         });
     }, [variantsList]);
 
-    useEffect(() => {
-        setfilter({
-            limit: 5,
-            isAsc: true,
-            afterCursor: '',
-            beforeCursor: '',
-            name: '',
-            sku: '',
-            merchantId: parseInt(cookies.get('merchantId')),
-        });
-    }, [chosenMerchantContext]);
-
     const [options, setOptions] = useState([]);
     const [optionName, setOptionName] = useState('');
-    const [valueInput, setValueInput] = useState('');
     const [valueInputs, setValueInputs] = useState({});
     const [variants, setVariants] = useState([]);
 
@@ -472,6 +480,11 @@ const AddItem = (props) => {
                                                 class={formstyles.form__field + ' mt-2'}
                                                 value={valueInputs[option.name] || ''}
                                                 style={{ width: '50%', marginInlineEnd: '15px' }}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') {
+                                                        addVariantOption(option.name, new VariantOption(valueInputs[option.name]));
+                                                    }
+                                                }}
                                                 onChange={(event) => handleValueChange(option.name, event)}
                                                 placeholder="Enter value"
                                             />
@@ -492,7 +505,14 @@ const AddItem = (props) => {
                                     class={formstyles.form__field}
                                     style={{ width: '50%', marginInlineEnd: '15px' }}
                                     value={optionName}
-                                    onChange={(event) => handleOptionChange(optionName, event)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            addVariantName(event?.target.value);
+                                        }
+                                    }}
+                                    onChange={(event) => {
+                                        handleOptionChange(optionName, event);
+                                    }}
                                     placeholder="Enter option name"
                                 />
                                 <button
@@ -598,12 +618,42 @@ const AddItem = (props) => {
                                         };
                                         variantsTemp.push(temp);
                                     });
+                                    const itemVariantsTemp = createVariantOptions([], 0);
+                                    const itemVariantsObjects = [];
+                                    for (const combination of itemVariantsTemp) {
+                                        itemVariantsObjects.push(new ItemVariant(combination));
+                                    }
+                                    const extractData = (data) => {
+                                        const result = [];
+
+                                        // Iterate over each key in the data object
+                                        Object.keys(data).forEach((key) => {
+                                            const variants = data[key].variants;
+
+                                            // Process each variant
+                                            variants.forEach((variant) => {
+                                                const { price, imageUrl, merchantSku } = variant;
+                                                if (price || imageUrl || merchantSku) {
+                                                    result.push({
+                                                        price,
+                                                        imageUrl,
+                                                        merchantSku,
+                                                    });
+                                                }
+                                            });
+                                        });
+
+                                        return result;
+                                    };
                                     await setitempayload({
                                         ...itempayload,
-                                        variantNames: tempOptions?.length == 0 ? undefined : tempOptions,
-                                        variantOptions: tempValues?.length == 0 ? undefined : tempValues,
-                                        variantOptionAttributes: variantsTemp?.length == 0 ? undefined : variantsTemp,
+                                        variantNames: variantsList.map((e) => e.name) ?? undefined,
+                                        variantOptions: variantsList.map((e) => e.variantOptions).flat() ?? undefined,
+                                        variantOptionAttributes: extractData(itemVariants),
                                     });
+
+                                    // alert(JSON.stringify(extractData(itemVariants)));
+                                    // alert(JSON.stringify(itemVariantsObjects));
                                     // await setitempayload({ ...itempayload, variantNames: tempOptions, variantOptions: tempValues, variantOptionAttributes: variantsTemp });
                                     try {
                                         const { data } = await addItemMutation();
