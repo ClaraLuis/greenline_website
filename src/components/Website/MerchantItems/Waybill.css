@@ -1,0 +1,74 @@
+.waybill {
+    border: 1px solid #000;
+    padding: 16px;
+    margin: 16px 0;
+}
+
+.waybill-header {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #000;
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo-img {
+    height: 80px;
+    margin-right: 16px;
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.waybill-title {
+    text-align: right;
+}
+
+.waybill-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.waybill-row {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #000;
+    padding: 8px 0;
+}
+
+.waybill-column {
+    width: 30%;
+}
+
+.item-description {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.item-image {
+    width: 100px;
+    height: auto;
+    margin-left: 16px;
+}
+
+@media print {
+    @page {
+        size: 5cm 3cm; /* Custom page size for the thermal printer */
+        margin: 0; /* Set margins to zero or adjust as needed */
+    }
+
+    .print-item {
+        page-break-after: always;
+        page-break-inside: avoid;
+        width: 5cm; /* Set width for content to fit the page size */
+        height: 3cm; /* Set height for content to fit the page size */
+    }
+}

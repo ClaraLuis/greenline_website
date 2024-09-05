@@ -71,6 +71,8 @@ const ItemsTable = (props) => {
                             <div class={props?.card}>
                                 <div
                                     style={{
+                                        backgroundColor: props?.selectBackground && selected ? 'var(--secondary)' : '',
+                                        transition: 'all 0.4s',
                                         cursor: props?.clickable ? 'pointer' : '',
                                     }}
                                     onClick={() => {
@@ -81,7 +83,7 @@ const ItemsTable = (props) => {
                                     class={generalstyles.card + ' p-3 row m-0 w-100'}
                                 >
                                     {' '}
-                                    {selected && (
+                                    {selected && !props?.selectBackground && (
                                         <div
                                             style={{
                                                 position: 'absolute',
@@ -121,7 +123,7 @@ const ItemsTable = (props) => {
                                             </div>
                                         </div>
                                     )} */}
-                                    <div class="col-lg-12 p-0" style={{ fontWeight: 600, fontSize: '13px', color: 'lightgray' }}>
+                                    <div class="col-lg-12 p-0" style={{ fontWeight: 600, fontSize: '13px', color: props?.selectBackground && selected ? 'white' : 'lightgray' }}>
                                         {item?.sku}
                                     </div>
                                     <div class="col-lg-12 p-0 mt-2" style={{ fontWeight: 700, fontSize: '15px' }}>

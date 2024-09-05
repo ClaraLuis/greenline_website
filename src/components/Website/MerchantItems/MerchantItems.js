@@ -26,6 +26,7 @@ import { BiDownArrow } from 'react-icons/bi';
 import { FaChevronDown } from 'react-icons/fa';
 import Cookies from 'universal-cookie';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
+import SkuPrint from './SkuPrint.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -38,6 +39,7 @@ const MerchantItems = (props) => {
     const { lang, langdetect } = useContext(LanguageContext);
     const cookies = new Cookies();
     const [variantModal, setvariantModal] = useState(true);
+    const [selectedVariants, setselectedVariants] = useState([]);
 
     const [payload, setPayload] = useState({
         limit: 20,
@@ -170,7 +172,32 @@ const MerchantItems = (props) => {
                 </Modal.Header>
                 <Modal.Body>
                     <div class="row m-0 w-100 py-2">
-                        <ItemsTable card="col-lg-3" items={variantModal.data} />
+                        <div class="col-lg-12 d-flex justify-content-end">{selectedVariants?.length > 0 && <SkuPrint skus={selectedVariants} />}</div>
+                        <ItemsTable
+                            clickable={true}
+                            selectBackground={true}
+                            selectedItems={selectedVariants}
+                            actiononclick={(item) => {
+                                var temp = [...selectedVariants];
+                                var exist = false;
+                                var chosenindex = null;
+                                temp.map((i, ii) => {
+                                    if (i?.item?.sku == item?.sku) {
+                                        exist = true;
+                                        chosenindex = ii;
+                                    }
+                                });
+                                if (!exist) {
+                                    temp.push({ item: item });
+                                } else {
+                                    temp.splice(chosenindex, 1);
+                                }
+                                // alert(JSON.stringify(temp));
+                                setselectedVariants([...temp]);
+                            }}
+                            card="col-lg-3"
+                            items={variantModal.data}
+                        />
                     </div>
                 </Modal.Body>
             </Modal>
