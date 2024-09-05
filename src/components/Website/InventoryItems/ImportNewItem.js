@@ -116,11 +116,6 @@ const ImportNewItem = (props) => {
 
     const [fetchRacksLazyQuery] = useLazyQueryGQL(fetchRacks());
 
-    // const fetchusers = [];
-    useEffect(async () => {
-        setpageactive_context('/inventoryitems');
-    }, []);
-
     return (
         <Modal
             show={props?.openModal}
