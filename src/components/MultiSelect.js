@@ -29,23 +29,48 @@ const MultiSelect = (props) => {
                     const newData = props?.options?.data[props?.attr] || [];
                     const mergedData = [...data, ...newData];
                     setData(mergedData);
-                    setFilteredData(mergedData); // Update filteredData as well
+                    if (!props?.filter?.name) {
+                        setFilteredData(mergedData); // Update filteredData as well
+                    } else if (props?.filter?.name) {
+                        const filtered = mergedData.filter((item) => item[props?.label].toLowerCase().includes(props?.filter?.name.toLowerCase()));
+
+                        setFilteredData(filtered);
+                    } else {
+                        setFilteredData(data);
+                    }
                 }
             } else {
                 if (props?.options?.data && !props?.options?.loading) {
                     const newData = props?.options?.data[props?.attr]?.data || [];
                     const mergedData = [...data, ...newData];
                     setData(mergedData);
-                    setFilteredData(mergedData); // Update filteredData as well
+                    if (!props?.filter?.name) {
+                        setFilteredData(mergedData); // Update filteredData as well
+                    } else if (props?.filter?.name) {
+                        const filtered = mergedData.filter((item) => item[props?.label].toLowerCase().includes(props?.filter?.name.toLowerCase()));
+
+                        setFilteredData(filtered);
+                    } else {
+                        setFilteredData(data);
+                    }
                 }
             }
         } else {
             const newData = props?.options || [];
             const mergedData = [...data, ...newData];
+
             setData(mergedData);
-            setFilteredData(mergedData); // Update filteredData as well
+            if (!props?.filter?.name) {
+                setFilteredData(mergedData); // Update filteredData as well
+            } else if (props?.filter?.name) {
+                const filtered = mergedData.filter((item) => item[props?.label].toLowerCase().includes(props?.filter?.name.toLowerCase()));
+
+                setFilteredData(filtered);
+            } else {
+                setFilteredData(data);
+            }
         }
-    }, [props?.options?.data, props?.options?.loading]);
+    }, [props?.filter, props?.options?.data, props?.options?.loading]);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -80,6 +105,7 @@ const MultiSelect = (props) => {
     const handleInputChange = (event) => {
         const value = event.target.value;
         setsearch(value);
+
         // setplaceholder(value);
         if (value) {
             const filtered = data.filter((item) => item[props?.label].toLowerCase().includes(value.toLowerCase()));
@@ -89,6 +115,15 @@ const MultiSelect = (props) => {
             setFilteredData(data);
         }
     };
+
+    useEffect(() => {
+        if (props?.setfilter) {
+            props?.setfilter({
+                ...props?.filter,
+                name: search?.length ? search : undefined,
+            });
+        }
+    }, [search]);
 
     useEffect(() => {
         data?.map((item, index) => {
