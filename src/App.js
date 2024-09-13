@@ -22,6 +22,7 @@ import { getAuth, signOut } from 'firebase/auth';
 import { ApolloClient, InMemoryCache, HttpLink, ApolloLink, from, ApolloProvider, gql, Observable } from '@apollo/client';
 import { onError } from '@apollo/link-error';
 import { setContext } from '@apollo/client/link/context';
+import { serverbaselinkGQL } from './Env_Variables.js';
 
 initializeApp(firebaseConfig);
 const cookies = new Cookies();
@@ -102,7 +103,7 @@ const authLink = setContext(async (_, { headers }) => {
 });
 
 const httpLink = new HttpLink({
-    uri: 'http://localhost:3001/graphql',
+    uri: process.env.REACT_APP_API_GQL,
     // uri: 'https://greenlineco.site/graphql',
 });
 
@@ -187,6 +188,7 @@ const App = (props) => {
     const { loggedincontext, loggedincontextLoading } = useContext(Loggedincontext);
     useEffect(() => {
         document.title = 'Greenline';
+        // alert();
     }, []);
 
     return (

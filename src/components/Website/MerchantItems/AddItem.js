@@ -470,7 +470,7 @@ const AddItem = (props) => {
         try {
             const response = await axios({
                 method: 'post',
-                url: 'http://localhost:3001/aws-bucket/file',
+                url: process.env.REACT_APP_API_GQL + '/aws-bucket/file',
                 data: formData,
                 headers: axiosheaders,
             });
