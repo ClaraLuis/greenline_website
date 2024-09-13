@@ -30,28 +30,27 @@ const MultiSelect = (props) => {
                     const mergedData = [...data, ...newData];
                     setData(mergedData);
                     if (!props?.filter?.name) {
+                        setData(mergedData);
+
                         setFilteredData(mergedData); // Update filteredData as well
                     } else if (props?.filter?.name) {
                         const filtered = mergedData.filter((item) => item[props?.label].toLowerCase().includes(props?.filter?.name.toLowerCase()));
 
                         setFilteredData(filtered);
-                    } else {
-                        setFilteredData(data);
                     }
                 }
             } else {
                 if (props?.options?.data && !props?.options?.loading) {
                     const newData = props?.options?.data[props?.attr]?.data || [];
                     const mergedData = [...data, ...newData];
-                    setData(mergedData);
                     if (!props?.filter?.name) {
-                        setFilteredData(mergedData); // Update filteredData as well
+                        setData(mergedData);
+
+                        setFilteredData(mergedData);
                     } else if (props?.filter?.name) {
                         const filtered = mergedData.filter((item) => item[props?.label].toLowerCase().includes(props?.filter?.name.toLowerCase()));
 
                         setFilteredData(filtered);
-                    } else {
-                        setFilteredData(data);
                     }
                 }
             }
@@ -59,8 +58,8 @@ const MultiSelect = (props) => {
             const newData = props?.options || [];
             const mergedData = [...data, ...newData];
 
-            setData(mergedData);
             if (!props?.filter?.name) {
+                setData(mergedData);
                 setFilteredData(mergedData); // Update filteredData as well
             } else if (props?.filter?.name) {
                 const filtered = mergedData.filter((item) => item[props?.label].toLowerCase().includes(props?.filter?.name.toLowerCase()));

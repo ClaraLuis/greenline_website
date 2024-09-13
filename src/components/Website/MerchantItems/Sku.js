@@ -8,8 +8,8 @@ const Sku = ({ item }) => {
     const { dateformatter } = useContext(Contexthandlerscontext);
     return (
         <div style={{ fontSize: '12px' }} className="print-item p-1 col-lg-12">
-            <div class="row m-0 w-100  h-100">
-                <Barcode value={item?.sku} width={2} height={40} fontSize={12} background="transparent" style={{ background: 'transparent', transform: 'rotate(90deg)' }} />
+            <div style={{ width: '5cm', height: '3cm' }} class="row m-0 w-100  h-100">
+                <Barcode value={item?.sku} background="transparent" style={{ background: 'transparent', transform: 'rotate(90deg)' }} />
             </div>
         </div>
     );

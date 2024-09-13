@@ -58,17 +58,3 @@
     height: auto;
     margin-left: 16px;
 }
-
-@media print {
-    @page {
-        size: 5cm 3cm; /* Custom page size for the thermal printer */
-        margin: 0; /* Set margins to zero or adjust as needed */
-    }
-
-    .print-item {
-        page-break-after: always;
-        page-break-inside: avoid;
-        width: 5cm; /* Set width for content to fit the page size */
-        height: 3cm; /* Set height for content to fit the page size */
-    }
-}
