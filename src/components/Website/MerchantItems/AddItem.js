@@ -366,6 +366,10 @@ const AddItem = (props) => {
 
     useEffect(async () => {
         if (queryParameters?.get('import') === 'true') {
+            if (!importedDataContext?.length) {
+                history.push('/merchantitems');
+                return;
+            }
             const importedData = importedDataContext[itemIndex] || {};
             console.log('Imported Data:', importedData); // Debug log
 
@@ -404,7 +408,11 @@ const AddItem = (props) => {
                 })),
             );
             var itemtemp = {
-                ...itempayload,
+                merchansku: importedData?.productSku,
+                name: importedData?.productName,
+                description: importedData?.productDescrioption,
+                price: importedData?.defaultPrice,
+                imageUrl: importedData?.imageUrl,
                 variantNames: variantNames.map((e) => e.name) ?? undefined,
                 variantOptions: updatedVariantOptions ?? undefined,
                 variantOptionAttributes: extractData(itemVariants),
@@ -417,22 +425,19 @@ const AddItem = (props) => {
 
             let tempproductsarray = [];
             try {
-                const importedItemsCookie = cookies.get('ImportedItems') ?? '[]';
+                const importedItemsCookie = cookies.get('ImportedItems') ?? [];
                 tempproductsarray = importedItemsCookie;
             } catch (error) {
                 console.warn('Error parsing ImportedItems cookie:', error);
                 tempproductsarray = [];
             }
-
             // Hash the item without variant option image URLs
             const itemHash = sha256(JSON.stringify(itemWithoutVariantOptionImageUrls));
 
             // Check if the hash already exists in the array
             const exist = tempproductsarray.includes(itemHash);
+            setexistWarning(exist);
 
-            if (exist) {
-                setexistWarning(true);
-            }
             console.log('Item Variants:', itemVariants); // Debug log
 
             setitempayload({
@@ -453,6 +458,14 @@ const AddItem = (props) => {
         <div class="row m-0 w-100 p-md-2 pt-2 d-flex justify-content-center">
             <div class="col-lg-7 p-0">
                 <div class="row m-0 w-100">
+                    {importedDataContext?.length && (
+                        <div class="col-lg-12 p-0 mb-2 " style={{ fontWeight: 700, fontSize: '23px' }}>
+                            Import item{' '}
+                            <span class="mx-1 text-primary" style={{ fontSize: '20px' }}>
+                                {itemIndex + 1}/{importedDataContext?.length}
+                            </span>
+                        </div>
+                    )}
                     {existWarning && <div class="col-lg-12 p-0 mb-3 text-warning">*This product already added</div>}
                     <div class="col-lg-12 p-0 mb-3">
                         <div class={generalstyles.card + ' row m-0 w-100 p-1'}>
@@ -856,7 +869,7 @@ const AddItem = (props) => {
                             {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
                             {!buttonLoading && <span>Add item</span>}
                         </button>
-                        {importedDataContext?.length && itemIndex < importedDataContext.length - 1 && (
+                        {importedDataContext?.length && (
                             <button
                                 style={{ height: '35px' }}
                                 class={generalstyles.roundbutton + '  mb-1 mx-2'}
