@@ -20,14 +20,30 @@ const SelectComponent = (props) => {
     const [data, setData] = useState([]);
     const [filteredData, setFilteredData] = useState([]); // Add filteredData state
 
+    // useEffect(() => {
+    //     if (props?.options?.data && !props?.options?.loading) {
+    //         const newData = props?.options?.data[props?.attr]?.data || [];
+    //         const mergedData = [...data, ...newData];
+    //         setData(mergedData);
+    //         setFilteredData(mergedData); // Update filteredData as well
+    //     }
+    // }, [props?.options?.data, props?.options?.loading]);
     useEffect(() => {
         if (props?.options?.data && !props?.options?.loading) {
             const newData = props?.options?.data[props?.attr]?.data || [];
             const mergedData = [...data, ...newData];
-            setData(mergedData);
-            setFilteredData(mergedData); // Update filteredData as well
+            // setData(mergedData);
+            if (props?.filter?.name) {
+                const filtered = newData.filter((item) => item[props?.label].toLowerCase().includes(props?.filter?.name.toLowerCase()));
+
+                setFilteredData(filtered);
+            } else {
+                setData(mergedData);
+
+                setFilteredData(mergedData); // Update filteredData as well
+            }
         }
-    }, [props?.options?.data, props?.options?.loading]);
+    }, [props?.filter, props?.options?.data, props?.options?.loading]);
 
     useEffect(() => {
         const handleScroll = () => {
