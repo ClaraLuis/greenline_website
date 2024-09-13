@@ -290,7 +290,7 @@ const InventoryDetails = (props) => {
                                                                                         <div
                                                                                             onClick={(e) => {
                                                                                                 e.stopPropagation();
-                                                                                                if (!racks.includes(item?.id)) {
+                                                                                                if (!level?.ballots?.every((ballot) => ballots.includes(ballot.id))) {
                                                                                                     // Add all ballots of this level to the ballots array
                                                                                                     const updatedBallots = [...ballots, ...level.ballots.map((ballot) => ballot.id)];
 
@@ -305,11 +305,9 @@ const InventoryDetails = (props) => {
                                                                                                     // Mark the level's rack as selected
                                                                                                     // setracks([...racks, item?.id]);
                                                                                                 } else {
-                                                                                                    const updatedBallots = ballots.filter((ballotId) => {
-                                                                                                        const ballot = item.ballots.find((b) => b.id === ballotId);
-                                                                                                        return !ballot;
-                                                                                                    });
-
+                                                                                                    const updatedBallots = ballots.filter(
+                                                                                                        (ballotId) => !level.ballots.some((ballot) => ballot.id === ballotId),
+                                                                                                    );
                                                                                                     const updatedBoxes = boxes.filter(
                                                                                                         (boxId) => !level.ballots.flatMap((b) => b.boxes).some((box) => box.id === boxId),
                                                                                                     );
@@ -318,8 +316,12 @@ const InventoryDetails = (props) => {
                                                                                                     setboxes(updatedBoxes);
                                                                                                 }
                                                                                             }}
-                                                                                            className={`iconhover allcentered ${racks.includes(item?.id) ? 'disabled' : ''}`}
-                                                                                            style={{ width: '35px', height: '35px', pointerEvents: racks.includes(item?.id) ? 'none' : 'auto' }}
+                                                                                            className={`iconhover allcentered`}
+                                                                                            style={{
+                                                                                                width: '35px',
+                                                                                                height: '35px',
+                                                                                                // pointerEvents: level?.ballots?.every((ballot) => ballots.includes(ballot.id)) ? 'none' : 'auto',
+                                                                                            }}
                                                                                         >
                                                                                             {level?.ballots?.every((ballot) => ballots.includes(ballot.id)) ? (
                                                                                                 <TbSquareCheck size={18} color={'var(--success)'} />
