@@ -761,7 +761,7 @@ const AddItem = (props) => {
 
                                     let tempproductsarray = [];
                                     try {
-                                        const importedItemsCookie = cookies.get('ImportedItems') ?? '[]';
+                                        const importedItemsCookie = cookies.get('ImportedItems') ?? [];
                                         tempproductsarray = importedItemsCookie;
                                     } catch (error) {
                                         console.warn('Error parsing ImportedItems cookie:', error);
