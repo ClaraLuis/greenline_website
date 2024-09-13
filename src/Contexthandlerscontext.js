@@ -24,6 +24,7 @@ export const Contexthandlerscontext_provider = (props) => {
     const [openloginmodalcontext, setopenloginmodalcontext] = useState(true);
     const [allcachedproductscontext, setallcachedproductscontext] = useState([]);
     const [pagesarray_context, setpagesarray_context] = useState([]);
+    const [importedDataContext, setimportedDataContext] = useState([]);
     const [pagetitle_context, setpagetitle_context] = useState('');
     const [value, setValue] = useState(0);
     const [UserInfoContext, setUserInfoContext] = useState({});
@@ -906,6 +907,8 @@ export const Contexthandlerscontext_provider = (props) => {
                 setchosenPackageContext,
                 chosenHubContext,
                 setchosenHubContext,
+                importedDataContext,
+                setimportedDataContext,
             }}
         >
             {props.children}

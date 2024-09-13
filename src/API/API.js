@@ -102,6 +102,14 @@ const API = () => {
         `;
     };
 
+    const uploadExcelFile = () => {
+        return gql`
+            mutation uploadExcelFile($base64File: String!) {
+                uploadExcelFile(base64File: $base64File)
+            }
+        `;
+    };
+
     const updateInventoryRent = () => {
         return gql`
             mutation updateInventoryRent($input: UpdateInventoryRentInput!) {
@@ -1639,6 +1647,17 @@ const API = () => {
         });
         return mutation;
     };
+    const useMutationNoInputGQL = (query, payload) => {
+        const mutation = useMutation(query, {
+            variables: payload,
+            // context: {
+            //     headers: {
+            //         Authorization: ` Bearer ${accessToken}`,
+            //     },
+            // },
+        });
+        return mutation;
+    };
 
     const useLazyQueryGQL = (query, fetchPolicy) => {
         // alert(JSON.stringify(fetchPolicy) + ' ' + JSON.stringify(query));
@@ -1767,6 +1786,8 @@ const API = () => {
         updateBoxName,
         addRackLevels,
         findOneMerchant,
+        uploadExcelFile,
+        useMutationNoInputGQL,
     };
 };
 export default API;

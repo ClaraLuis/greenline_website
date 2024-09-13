@@ -26,29 +26,29 @@ import { BiDownArrow } from 'react-icons/bi';
 import { FaChevronDown } from 'react-icons/fa';
 import Cookies from 'universal-cookie';
 import SelectComponent from '../../SelectComponent.js';
+import { sha256 } from 'js-sha256';
 
 const { ValueContainer, Placeholder } = components;
 
 const AddItem = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, dateformatter, chosenMerchantContext, isAuth } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, dateformatter, importedDataContext, isAuth } = useContext(Contexthandlerscontext);
     const { fetchMerchantItems, useQueryGQL, useMutationGQL, fetchMerchants, addCompoundItem } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const cookies = new Cookies();
     const [buttonLoading, setbuttonLoading] = useState(false);
+    const [itemIndex, setitemIndex] = useState(0);
     const [itempayload, setitempayload] = useState({
         functype: 'add',
         merchansku: '',
         name: '',
         color: '',
-        colorHEX: '',
         description: '',
         size: '',
         itemPrices: [],
         colorsarray: [],
-        colorHEXarray: [],
         imageUrl: '',
         imageUrls: [],
         variantNames: [],
@@ -62,6 +62,7 @@ const AddItem = (props) => {
     // const variantsList = [];
     const [variantsList, setvariantsList] = useState([]);
     const [itemVariants, setitemVariants] = useState({});
+    const [existWarning, setexistWarning] = useState(false);
     const [addItemMutation] = useMutationGQL(addCompoundItem(), {
         merchantId: 1,
         items: [
@@ -92,10 +93,32 @@ const AddItem = (props) => {
             }
         }
     }
+    const extractData = (data) => {
+        const result = [];
+
+        // Iterate over each key in the data object
+        Object.keys(data).forEach((key) => {
+            const variants = data[key].variants;
+
+            // Process each variant
+            variants.forEach((variant) => {
+                const { price, imageUrl, merchantSku } = variant;
+                if (price || imageUrl || merchantSku) {
+                    result.push({
+                        price,
+                        imageUrl,
+                        merchantSku,
+                    });
+                }
+            });
+        });
+
+        return result;
+    };
     class VariantOption {
-        constructor(value, colorHex) {
+        constructor(value, colorCode) {
             this.value = value;
-            this.colorHex = colorHex;
+            this.colorCode = colorCode;
         }
     }
     class ItemVariant {
@@ -198,48 +221,6 @@ const AddItem = (props) => {
         return similars;
     }
 
-    useEffect(() => {
-        const itemVariantsTemp = createVariantOptions([], 0);
-        const itemVariantsObjects = [];
-        for (const combination of itemVariantsTemp) {
-            itemVariantsObjects.push(new ItemVariant(combination));
-        }
-
-        const groupedByFirstValue = itemVariantsObjects
-            ?.filter((e) => e.variantOptions?.length > 0)
-            .reduce((acc, item) => {
-                // Check if variantOptions exists and has at least one item
-                const firstValue = item.variantOptions[0].value;
-                const remainingOptions = item.variantOptions.slice(1);
-
-                if (!acc[firstValue]) {
-                    acc[firstValue] = { variants: [] };
-                }
-
-                acc[firstValue].variants.push({ variantOptions: remainingOptions });
-                return acc;
-            }, {});
-
-        setitemVariants((prevItemVariants) => {
-            // Extract current keys and new keys
-            const newKeys = Object.keys(groupedByFirstValue);
-            var groupedByFirstValueTemp = groupedByFirstValue;
-            for (const key of newKeys) {
-                const oldList = prevItemVariants[key]?.variants;
-                if (!oldList) continue;
-
-                const newList = groupedByFirstValue[key].variants;
-                newList.map((item, index) => {
-                    const similar = findSimilar(oldList, item);
-                    if (similar?.length) {
-                        groupedByFirstValueTemp[key].variants[index] = similar[0];
-                    }
-                });
-            }
-            return groupedByFirstValueTemp;
-        });
-    }, [variantsList]);
-
     const [options, setOptions] = useState([]);
     const [optionName, setOptionName] = useState('');
     const [valueInputs, setValueInputs] = useState({});
@@ -341,10 +322,138 @@ const AddItem = (props) => {
 
     const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filteMerchants);
 
+    useEffect(() => {
+        const itemVariantsTemp = createVariantOptions([], 0);
+        const itemVariantsObjects = [];
+        for (const combination of itemVariantsTemp) {
+            itemVariantsObjects.push(new ItemVariant(combination));
+        }
+
+        const groupedByFirstValue = itemVariantsObjects
+            ?.filter((e) => e.variantOptions?.length > 0)
+            .reduce((acc, item) => {
+                const firstValue = item.variantOptions[0].value;
+                const remainingOptions = item.variantOptions.slice(1);
+
+                if (!acc[firstValue]) {
+                    acc[firstValue] = { variants: [] };
+                }
+
+                acc[firstValue].variants.push({ variantOptions: remainingOptions });
+                return acc;
+            }, {});
+
+        setitemVariants((prevItemVariants) => {
+            const newKeys = Object.keys(groupedByFirstValue);
+            const groupedByFirstValueTemp = groupedByFirstValue;
+            for (const key of newKeys) {
+                const oldList = prevItemVariants[key]?.variants;
+                if (!oldList) continue;
+
+                const newList = groupedByFirstValue[key].variants;
+                newList.forEach((item, index) => {
+                    const similar = findSimilar(oldList, item);
+                    if (similar?.length) {
+                        groupedByFirstValueTemp[key].variants[index] = similar[0];
+                    }
+                });
+            }
+            console.log('Item Variants112:', groupedByFirstValueTemp); // Debug log
+
+            return groupedByFirstValueTemp;
+        });
+    }, [variantsList]);
+
+    useEffect(async () => {
+        if (queryParameters?.get('import') === 'true') {
+            const importedData = importedDataContext[itemIndex] || {};
+            console.log('Imported Data:', importedData); // Debug log
+
+            const variantNames = importedData.variantNames || [];
+            console.log('Variant Names:', variantNames); // Debug log
+
+            const itemVariants = importedData.variantOptionAttributes?.reduce((acc, attr) => {
+                console.log('Processing Attribute:', attr); // Debug log
+
+                const color = attr.variantOptions[0]?.value;
+                const remainingOptions = attr.variantOptions.slice(1).map((option) => ({
+                    value: option.value,
+                    colorCode: option.colorHex || '',
+                }));
+
+                if (color) {
+                    if (!acc[color]) {
+                        acc[color] = { variants: [] };
+                    }
+
+                    acc[color].variants.push({
+                        variantOptions: remainingOptions,
+                        price: attr.price || '', // Ensure price is included
+                        imageUrl: attr.imageUrl || '', // Ensure imageUrl is included
+                        merchantSku: attr.sku || '', // Ensure merchantSku is included
+                    });
+                }
+
+                return acc;
+            }, {});
+
+            const updatedVariantOptions = variantNames.map((e) =>
+                e.variantOptions.map((option) => ({
+                    value: option.value,
+                    colorCode: option.colorHex || '',
+                })),
+            );
+            var itemtemp = {
+                ...itempayload,
+                variantNames: variantNames.map((e) => e.name) ?? undefined,
+                variantOptions: updatedVariantOptions ?? undefined,
+                variantOptionAttributes: extractData(itemVariants),
+            };
+            const { imageUrl, variantOptionAttributes, ...itemWithoutImageUrls } = itemtemp;
+            const itemWithoutVariantOptionImageUrls = {
+                ...itemWithoutImageUrls,
+                variantOptionAttributes: variantOptionAttributes.map(({ imageUrl, ...rest }) => rest),
+            };
+
+            let tempproductsarray = [];
+            try {
+                const importedItemsCookie = cookies.get('ImportedItems') ?? '[]';
+                tempproductsarray = importedItemsCookie;
+            } catch (error) {
+                console.warn('Error parsing ImportedItems cookie:', error);
+                tempproductsarray = [];
+            }
+
+            // Hash the item without variant option image URLs
+            const itemHash = sha256(JSON.stringify(itemWithoutVariantOptionImageUrls));
+
+            // Check if the hash already exists in the array
+            const exist = tempproductsarray.includes(itemHash);
+
+            if (exist) {
+                setexistWarning(true);
+            }
+            console.log('Item Variants:', itemVariants); // Debug log
+
+            setitempayload({
+                merchansku: importedData?.productSku,
+                name: importedData?.productName,
+                description: importedData?.productDescrioption,
+                price: importedData?.defaultPrice,
+                imageUrl: importedData?.imageUrl,
+            });
+
+            setitemVariants(itemVariants);
+
+            setvariantsList(variantNames);
+        }
+    }, [importedDataContext, itemIndex]);
+
     return (
         <div class="row m-0 w-100 p-md-2 pt-2 d-flex justify-content-center">
             <div class="col-lg-7 p-0">
                 <div class="row m-0 w-100">
+                    {existWarning && <div class="col-lg-12 p-0 mb-3 text-warning">*This product already added</div>}
                     <div class="col-lg-12 p-0 mb-3">
                         <div class={generalstyles.card + ' row m-0 w-100 p-1'}>
                             <div class="col-lg-12 my-3" style={{ fontWeight: 600 }}>
@@ -623,47 +732,112 @@ const AddItem = (props) => {
                                     for (const combination of itemVariantsTemp) {
                                         itemVariantsObjects.push(new ItemVariant(combination));
                                     }
-                                    const extractData = (data) => {
-                                        const result = [];
 
-                                        // Iterate over each key in the data object
-                                        Object.keys(data).forEach((key) => {
-                                            const variants = data[key].variants;
+                                    // alert(JSON.stringify(variantsList));
+                                    const updatedVariantOptions = variantsList.map((e) =>
+                                        e.variantOptions.map((option) => ({
+                                            value: option.value,
+                                            colorCode: option.colorHex || '',
+                                        })),
+                                    );
 
-                                            // Process each variant
-                                            variants.forEach((variant) => {
-                                                const { price, imageUrl, merchantSku } = variant;
-                                                if (price || imageUrl || merchantSku) {
-                                                    result.push({
-                                                        price,
-                                                        imageUrl,
-                                                        merchantSku,
-                                                    });
-                                                }
-                                            });
-                                        });
-
-                                        return result;
-                                    };
                                     await setitempayload({
                                         ...itempayload,
                                         variantNames: variantsList.map((e) => e.name) ?? undefined,
-                                        variantOptions: variantsList.map((e) => e.variantOptions).flat() ?? undefined,
+                                        variantOptions: updatedVariantOptions ?? undefined,
                                         variantOptionAttributes: extractData(itemVariants),
                                     });
+                                    var itemtemp = {
+                                        ...itempayload,
+                                        variantNames: variantsList.map((e) => e.name) ?? undefined,
+                                        variantOptions: updatedVariantOptions ?? undefined,
+                                        variantOptionAttributes: extractData(itemVariants),
+                                    };
+                                    const { imageUrl, variantOptionAttributes, ...itemWithoutImageUrls } = itemtemp;
+                                    const itemWithoutVariantOptionImageUrls = {
+                                        ...itemWithoutImageUrls,
+                                        variantOptionAttributes: variantOptionAttributes.map(({ imageUrl, ...rest }) => rest),
+                                    };
 
-                                    // alert(JSON.stringify(extractData(itemVariants)));
-                                    // alert(JSON.stringify(itemVariantsObjects));
-                                    // await setitempayload({ ...itempayload, variantNames: tempOptions, variantOptions: tempValues, variantOptionAttributes: variantsTemp });
+                                    let tempproductsarray = [];
                                     try {
-                                        const { data } = await addItemMutation();
-                                        NotificationManager.success('Item added successfully!', 'Success!');
-                                        history.push('/merchantitems');
-                                        // Handle `data` here
-                                        console.log('Mutation response:', data);
+                                        const importedItemsCookie = cookies.get('ImportedItems') ?? '[]';
+                                        tempproductsarray = importedItemsCookie;
                                     } catch (error) {
+                                        console.warn('Error parsing ImportedItems cookie:', error);
+                                        tempproductsarray = [];
+                                    }
+
+                                    // Hash the item without variant option image URLs
+                                    const itemHash = sha256(JSON.stringify(itemWithoutVariantOptionImageUrls));
+
+                                    // Check if the hash already exists in the array
+                                    const exist = tempproductsarray.includes(itemHash);
+
+                                    if (exist) {
+                                        if (window.confirm('This item was previously added. Are you sure you want to duplicate it?')) {
+                                            try {
+                                                const { data } = await addItemMutation();
+
+                                                NotificationManager.success('Item added successfully!', 'Success!');
+
+                                                if (importedDataContext?.length) {
+                                                    // Add the new hash to the array
+                                                    tempproductsarray.push(itemHash);
+
+                                                    // Update the cookie with the new array of hashes
+                                                    cookies.set('ImportedItems', JSON.stringify(tempproductsarray), {
+                                                        expires: new Date(Date.now() + 2 * 60 * 60 * 1000),
+                                                        path: '/',
+                                                    });
+
+                                                    if (itemIndex < importedDataContext.length - 1) {
+                                                        setitemIndex(itemIndex + 1);
+                                                    } else {
+                                                        history.push('/merchantitems');
+                                                    }
+                                                } else {
+                                                    history.push('/merchantitems');
+                                                }
+
+                                                console.log('Mutation response:', data);
+                                            } catch (error) {
+                                                handleMutationError(error);
+                                            }
+                                        }
+                                    } else {
+                                        try {
+                                            const { data } = await addItemMutation();
+
+                                            NotificationManager.success('Item added successfully!', 'Success!');
+
+                                            if (importedDataContext?.length) {
+                                                tempproductsarray.push(itemHash);
+
+                                                // Update the cookie with the new array of hashes
+                                                cookies.set('ImportedItems', JSON.stringify(tempproductsarray), {
+                                                    expires: new Date(Date.now() + 2 * 60 * 60 * 1000),
+                                                    path: '/',
+                                                });
+
+                                                if (itemIndex < importedDataContext.length - 1) {
+                                                    setitemIndex(itemIndex + 1);
+                                                } else {
+                                                    history.push('/merchantitems');
+                                                }
+                                            } else {
+                                                history.push('/merchantitems');
+                                            }
+
+                                            console.log('Mutation response:', data);
+                                        } catch (error) {
+                                            handleMutationError(error);
+                                        }
+                                    }
+
+                                    function handleMutationError(error) {
                                         let errorMessage = 'An unexpected error occurred';
-                                        if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                        if (error.graphQLErrors?.length > 0) {
                                             errorMessage = error.graphQLErrors[0].message || errorMessage;
                                         } else if (error.networkError) {
                                             errorMessage = error.networkError.message || errorMessage;
@@ -672,7 +846,6 @@ const AddItem = (props) => {
                                         }
 
                                         NotificationManager.warning(errorMessage, 'Warning!');
-                                        // Handle error
                                         console.error('Mutation error:', error);
                                     }
                                 }
@@ -683,6 +856,17 @@ const AddItem = (props) => {
                             {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
                             {!buttonLoading && <span>Add item</span>}
                         </button>
+                        {importedDataContext?.length && itemIndex < importedDataContext.length - 1 && (
+                            <button
+                                style={{ height: '35px' }}
+                                class={generalstyles.roundbutton + '  mb-1 mx-2'}
+                                onClick={() => {
+                                    setitemIndex(itemIndex + 1);
+                                }}
+                            >
+                                Skip
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>
