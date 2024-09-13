@@ -2887,12 +2887,27 @@
   dependencies:
     tslib "^2.4.0"
 
+"@syncfusion/ej2-barcode-generator@26.2.14":
+  version "26.2.14"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-barcode-generator/-/ej2-barcode-generator-26.2.14.tgz#eb80bb0a09f7114c27529c6959b0c7111d9ab7f1"
+  integrity sha512-5n2d3vAi3scO2dCJaktv/Q0BhL5wUgQAB48dY0oQ9S29u+FDU1KZtv2F0e/LDeoNDg1ekNI7WE7OqJzguIX2Tw==
+  dependencies:
+    "@syncfusion/ej2-base" "~26.2.10"
+    "@syncfusion/ej2-data" "~26.2.14"
+
 "@syncfusion/ej2-base@~24.1.41", "@syncfusion/ej2-base@~24.1.42":
   version "24.1.42"
   resolved "https://registry.yarnpkg.com/@syncfusion/ej2-base/-/ej2-base-24.1.42.tgz#3ac29604c9c7cbe590507ebe77ed406eafc3b3c3"
   integrity sha512-3Zolyu6xA2pasid3Ttaf0qqQcEU/cQMJwuhaGa5vBnt1Xmo4oPkipUAsWLCtlfkmF/iUN9Hts3+8a4fBr4x3dA==
   dependencies:
     "@syncfusion/ej2-icons" "~24.1.41"
+
+"@syncfusion/ej2-base@~26.2.10":
+  version "26.2.10"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-base/-/ej2-base-26.2.10.tgz#49b7bb04416974d64bc3c2c3dd5915be93766545"
+  integrity sha512-i7TCvXGNsHmCoLA9AlHn3dIAyH8Bce6KCZUGshJS0EKu623SkVKjvWVWtgfar75/8SbTGWZQlGqEW5egYm3uTA==
+  dependencies:
+    "@syncfusion/ej2-icons" "~26.2.10"
 
 "@syncfusion/ej2-buttons@~24.1.41":
   version "24.1.41"
@@ -2919,10 +2934,22 @@
   dependencies:
     "@syncfusion/ej2-base" "~24.1.41"
 
+"@syncfusion/ej2-data@~26.2.14":
+  version "26.2.14"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-data/-/ej2-data-26.2.14.tgz#4b06b0edd55de6ade1d0598528e43dc43be81be8"
+  integrity sha512-KJ5JsRwBbKjNLkFvkLgUz5SkC4zTJxS40mmBdWJTTROopKYjcHAe9HJxQJmJUOy/gxqfx5iPINVJaArqdtpPeQ==
+  dependencies:
+    "@syncfusion/ej2-base" "~26.2.10"
+
 "@syncfusion/ej2-icons@~24.1.41":
   version "24.1.41"
   resolved "https://registry.yarnpkg.com/@syncfusion/ej2-icons/-/ej2-icons-24.1.41.tgz#87b49c7ac177526616779d68535e222919e93274"
   integrity sha512-r44Xr0QC1iGP6Ed5UVNyfIa3lmcDn680nzNoUbykUv02JaJv6nF0OQZeZNjjY3m8YrFhYCHdms0h9A9sU7c9/Q==
+
+"@syncfusion/ej2-icons@~26.2.10":
+  version "26.2.10"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-icons/-/ej2-icons-26.2.10.tgz#14bb63c70c363127f97792d757ad4de70c1405e6"
+  integrity sha512-ay+kr1oVqBOCe9MwJ0vjXS85CDAA5XwtwKb/Gf8cdz79IpsX/1VOvqOBofYu1+OPfbMX9w9mCLciNCMPCaRZFA==
 
 "@syncfusion/ej2-inputs@~24.1.41":
   version "24.1.41"
@@ -2952,12 +2979,28 @@
     "@syncfusion/ej2-base" "~24.1.41"
     "@syncfusion/ej2-buttons" "~24.1.41"
 
+"@syncfusion/ej2-react-barcode-generator@^26.2.14":
+  version "26.2.14"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-react-barcode-generator/-/ej2-react-barcode-generator-26.2.14.tgz#ccce810147259828e3e502ff4ebdf6deac570bb4"
+  integrity sha512-XJ4mvkoR1OyW/0W8pep14GegypiRL9BI6gdc5ptgOLU2HWoOGZPIRx11F28+Vb3iDpj8Yi2eBPLmKgWvX7dnsQ==
+  dependencies:
+    "@syncfusion/ej2-barcode-generator" "26.2.14"
+    "@syncfusion/ej2-base" "~26.2.10"
+    "@syncfusion/ej2-react-base" "~26.2.10"
+
 "@syncfusion/ej2-react-base@~24.1.41":
   version "24.1.41"
   resolved "https://registry.yarnpkg.com/@syncfusion/ej2-react-base/-/ej2-react-base-24.1.41.tgz#78c412a80a74b9adb0585832b9713cf8c6bc3e2e"
   integrity sha512-jEfFIBrGqyAu66x0SBTUo64r15/+hrrgwD519Yth0eFqU6J2vvGuv61SK6nNhswNbeBLgIQ0i2WBH6/1ET4YHw==
   dependencies:
     "@syncfusion/ej2-base" "~24.1.41"
+
+"@syncfusion/ej2-react-base@~26.2.10":
+  version "26.2.10"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-react-base/-/ej2-react-base-26.2.10.tgz#48922b08318c23efd60b82798f628c8d69cf0e38"
+  integrity sha512-h7N14nvada2JFvHYffsapq2ZeFrQEPn0wO79uLsp8aGknNynBgyYqFjQQrMntYzz7qj1OMqb675nvJamTkCgRQ==
+  dependencies:
+    "@syncfusion/ej2-base" "~26.2.10"
 
 "@syncfusion/ej2-react-calendars@^24.1.41":
   version "24.1.43"
@@ -4450,6 +4493,11 @@ builtin-modules@^3.1.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/builtin-modules/-/builtin-modules-3.3.0.tgz#cae62812b89801e9656336e46223e030386be7b6"
   integrity sha512-zhaCDicdLuWN5UbN5IMnFqNMhNfo919sH85y2/ea+5Yg9TsTkeZxpL+JLbp6cgYFS4sRLp3YV4S6yDuqVWHYOw==
+
+bwip-js@^4.5.1:
+  version "4.5.1"
+  resolved "https://registry.yarnpkg.com/bwip-js/-/bwip-js-4.5.1.tgz#005eb0372409e26d0347aca3494ddaf6e0411564"
+  integrity sha512-83yQCKiIftz5YonnsTh6wIkFoHHWl+B/XaGWD1UdRw7aB6XP9JtyYP9n8sRy3m5rzL+Ch/RUPnu28UW0RrPZUA==
 
 bytes@3.0.0:
   version "3.0.0"

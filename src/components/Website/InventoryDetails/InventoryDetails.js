@@ -304,6 +304,18 @@ const InventoryDetails = (props) => {
 
                                                                                                     // Mark the level's rack as selected
                                                                                                     // setracks([...racks, item?.id]);
+                                                                                                } else {
+                                                                                                    const updatedBallots = ballots.filter((ballotId) => {
+                                                                                                        const ballot = item.ballots.find((b) => b.id === ballotId);
+                                                                                                        return !ballot;
+                                                                                                    });
+
+                                                                                                    const updatedBoxes = boxes.filter(
+                                                                                                        (boxId) => !level.ballots.flatMap((b) => b.boxes).some((box) => box.id === boxId),
+                                                                                                    );
+
+                                                                                                    setballots(updatedBallots);
+                                                                                                    setboxes(updatedBoxes);
                                                                                                 }
                                                                                             }}
                                                                                             className={`iconhover allcentered ${racks.includes(item?.id) ? 'disabled' : ''}`}
