@@ -44,7 +44,7 @@ const Packages = (props) => {
         afterCursor: undefined,
         beforeCursor: undefined,
     });
-    const fetchCouriersQuery = useQueryGQL('', fetchCouriers(), filterCouriers);
+    const fetchCouriersQuery = useQueryGQL('cache-first', fetchCouriers(), filterCouriers);
 
     const [filter, setfilter] = useState({
         limit: 20,

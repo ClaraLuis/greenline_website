@@ -64,7 +64,7 @@ const Orders = (props) => {
         afterCursor: undefined,
         beforeCursor: undefined,
     });
-    const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filterMerchants);
+    const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
     const handleSelectOrder = (orderId) => {
         setSelectedOrders((prevSelected) => (prevSelected.includes(orderId) ? prevSelected.filter((id) => id !== orderId) : [...prevSelected, orderId]));
     };

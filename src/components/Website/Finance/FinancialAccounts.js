@@ -76,7 +76,7 @@ const FinancialAccounts = (props) => {
         afterCursor: undefined,
         beforeCursor: undefined,
     });
-    const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filterMerchants);
+    const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
     const { refetch: refetchFinancialAccountsQuery } = useQueryGQL('', fetchFinancialAccounts(), filterobj);
 
     const [createFinancialAccountMutation] = useMutationGQL(createFinancialAccount(), {

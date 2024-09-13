@@ -43,7 +43,7 @@ const MerchanReturns = (props) => {
         afterCursor: undefined,
         beforeCursor: undefined,
     });
-    const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filterMerchants);
+    const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
 
     const [filter, setfilter] = useState({
         limit: 20,

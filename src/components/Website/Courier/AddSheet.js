@@ -68,7 +68,7 @@ const AddSheet = (props) => {
         afterCursor: undefined,
         beforeCursor: undefined,
     });
-    const fetchCouriersQuery = useQueryGQL('', fetchCouriers(), filterCouriers);
+    const fetchCouriersQuery = useQueryGQL('cache-first', fetchCouriers(), filterCouriers);
 
     const [fetchCourierSheetLazyQuery] = useLazyQueryGQL(fetchCourierSheet());
 

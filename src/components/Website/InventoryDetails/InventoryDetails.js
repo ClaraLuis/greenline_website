@@ -95,7 +95,7 @@ const InventoryDetails = (props) => {
         afterCursor: undefined,
         beforeCursor: undefined,
     });
-    const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filterMerchants);
+    const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
     useEffect(() => {
         setpageactive_context('/inventorydetails');
     }, []);

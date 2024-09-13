@@ -35,11 +35,9 @@ const SelectComponent = (props) => {
             // setData(mergedData);
             if (props?.filter?.name) {
                 const filtered = newData.filter((item) => item[props?.label].toLowerCase().includes(props?.filter?.name.toLowerCase()));
-
                 setFilteredData(filtered);
             } else {
                 setData(mergedData);
-
                 setFilteredData(mergedData); // Update filteredData as well
             }
         }
@@ -99,6 +97,19 @@ const SelectComponent = (props) => {
             }
         }
     }, [props?.payload, filteredData]);
+    useEffect(() => {
+        const debounceTimer = setTimeout(() => {
+            if (props?.setfilter) {
+                props?.setfilter({
+                    ...props?.filter,
+                    name: search?.length ? search : undefined,
+                });
+            }
+        }, 500); // Set delay to 500ms or any delay you prefer
+
+        // Clean up the timer if the component unmounts or search changes
+        return () => clearTimeout(debounceTimer);
+    }, [search]);
 
     return (
         <>

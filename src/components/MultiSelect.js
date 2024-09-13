@@ -107,12 +107,17 @@ const MultiSelect = (props) => {
     };
 
     useEffect(() => {
-        if (props?.setfilter) {
-            props?.setfilter({
-                ...props?.filter,
-                name: search?.length ? search : undefined,
-            });
-        }
+        const debounceTimer = setTimeout(() => {
+            if (props?.setfilter) {
+                props?.setfilter({
+                    ...props?.filter,
+                    name: search?.length ? search : undefined,
+                });
+            }
+        }, 500); // Set delay to 500ms or any delay you prefer
+
+        // Clean up the timer if the component unmounts or search changes
+        return () => clearTimeout(debounceTimer);
     }, [search]);
 
     useEffect(() => {

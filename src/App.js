@@ -184,7 +184,7 @@ async function refreshAuthToken() {
 
 const App = (props) => {
     let history = useHistory();
-    const { loggedincontext, setloggedincontext } = useContext(Loggedincontext);
+    const { loggedincontext, loggedincontextLoading } = useContext(Loggedincontext);
     useEffect(() => {
         document.title = 'Greenline';
     }, []);
@@ -226,7 +226,7 @@ const App = (props) => {
                                                     //     return <Redirect to={'/users'} />;
                                                     // }}
                                                 />
-                                                {!loggedincontext && window.location.pathname != '/privacypolicy' && <Login />}
+                                                {!loggedincontext && window.location.pathname != '/privacypolicy' && !loggedincontextLoading && <Login />}
                                                 <Route exact path="/privacypolicy" component={PrivacyPolicy} />
                                                 <AuthRoute>{loggedincontext && window.location.pathname != '/privacypolicy' && <Route exact path="*" component={Websiterouter} />}</AuthRoute>
                                                 {/* <Route exact path="/login" component={Login} /> */}

@@ -59,14 +59,14 @@ const MerchantOrders = (props) => {
         afterCursor: undefined,
         beforeCursor: undefined,
     });
-    const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filterMerchants);
+    const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
     const [filterCouriers, setfilterCouriers] = useState({
         isAsc: true,
         limit: 10,
         afterCursor: undefined,
         beforeCursor: undefined,
     });
-    const fetchCouriersQuery = useQueryGQL('', fetchCouriers(), filterCouriers);
+    const fetchCouriersQuery = useQueryGQL('cache-first', fetchCouriers(), filterCouriers);
     useEffect(async () => {
         setpageactive_context('/merchantorders');
         var { data } = await fetchOrdersLazyQuey1({

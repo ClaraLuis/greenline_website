@@ -57,7 +57,7 @@ const UserInfo = (props) => {
     });
     const fetchinventories = useQueryGQL('', fetchInventories(), filterInventories);
 
-    const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filterMerchants);
+    const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
 
     const [addUser1] = useMutationGQL(addUser(), {
         name: props?.payload?.name,

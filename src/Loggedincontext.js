@@ -10,6 +10,7 @@ export const Loggedincontext = React.createContext();
 export const Loggedincontext_provider = (props) => {
     const [cookies, setCookie] = useCookies();
     const [loggedincontext, setloggedincontext] = useState(false);
+    const [loggedincontextLoading, setloggedincontextLoading] = useState(false);
 
     const [tokencontext, settokencontext] = useState('');
 
@@ -66,6 +67,8 @@ export const Loggedincontext_provider = (props) => {
                 getoken,
                 loggedincontext,
                 setloggedincontext,
+                loggedincontextLoading,
+                setloggedincontextLoading,
             }}
         >
             {props.children}

@@ -98,7 +98,7 @@ const AddMerchant = (props) => {
         beforeCursor: undefined,
     });
 
-    const { refetch: refetchMerchants } = useQueryGQL('', fetchMerchants(), filterMerchants);
+    const { refetch: refetchMerchants } = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
     const [fetchSimilarAddressesQuery] = useLazyQueryGQL(fetchSimilarAddresses());
 
     const [addMerchantMutation] = useMutationGQL(addMerchant(), {

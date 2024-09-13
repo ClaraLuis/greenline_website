@@ -33,7 +33,7 @@ const MerchantSelect = (props) => {
         beforeCursor: undefined,
     });
 
-    const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filterMerchants);
+    const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
 
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">

@@ -12,7 +12,7 @@ import Cookies from 'universal-cookie';
 const AuthRoute = (props) => {
     const { useLazyQueryGQL, useMutationGQL, requestLoginResponse } = API();
     const { children } = props;
-    const { loggedincontext, setloggedincontext } = useContext(Loggedincontext);
+    const { loggedincontext, setloggedincontext, loggedincontextLoading, setloggedincontextLoading } = useContext(Loggedincontext);
     const { setUserInfoContext, UserInfoContext } = useContext(Contexthandlerscontext);
     const cookies = new Cookies();
     const accessToken = cookies.get('accessToken');
@@ -27,6 +27,7 @@ const AuthRoute = (props) => {
     //TODO
     // auth.currentUser.accessToken
     const handleRequestLoginResponse = async (tokenpayload) => {
+        setloggedincontextLoading(true);
         if (cookies.get('accessToken')) {
             setloggedincontext(true);
             return;
@@ -76,11 +77,14 @@ const AuthRoute = (props) => {
 
             NotificationManager.warning(errorMessage, 'Warning!');
         }
+        setloggedincontextLoading(false);
     };
 
     useEffect(() => {
         // alert('1');
         // if (accessToken == 'null' || accessToken == undefined) {
+        setloggedincontextLoading(true);
+
         onAuthStateChanged(auth, async (user) => {
             setLoading(false);
             if (user) {
@@ -96,6 +100,7 @@ const AuthRoute = (props) => {
                 setloggedincontext(false);
                 // history.push('/login');
             }
+            setloggedincontextLoading(false);
         });
     }, [auth]);
 

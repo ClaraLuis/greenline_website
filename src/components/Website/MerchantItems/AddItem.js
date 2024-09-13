@@ -27,6 +27,8 @@ import { FaChevronDown } from 'react-icons/fa';
 import Cookies from 'universal-cookie';
 import SelectComponent from '../../SelectComponent.js';
 import { sha256 } from 'js-sha256';
+import { TbCameraPlus } from 'react-icons/tb';
+import axios from 'axios';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -93,28 +95,7 @@ const AddItem = (props) => {
             }
         }
     }
-    const extractData = (data) => {
-        const result = [];
 
-        // Iterate over each key in the data object
-        Object.keys(data).forEach((key) => {
-            const variants = data[key].variants;
-
-            // Process each variant
-            variants.forEach((variant) => {
-                const { price, imageUrl, merchantSku } = variant;
-                if (price || imageUrl || merchantSku) {
-                    result.push({
-                        price,
-                        imageUrl,
-                        merchantSku,
-                    });
-                }
-            });
-        });
-
-        return result;
-    };
     class VariantOption {
         constructor(value, colorCode) {
             this.value = value;
@@ -267,12 +248,13 @@ const AddItem = (props) => {
 
     // Handle image URL change
     const handleImageChange = (color, variantIndex, event) => {
-        const newImageUrl = event.target.value;
+        const newImageUrl = event?.target?.files[0];
         setitemVariants((prevItemVariants) => {
             const updatedVariants = { ...prevItemVariants };
             const colorVariants = updatedVariants[color]?.variants || [];
             if (colorVariants[variantIndex]) {
                 colorVariants[variantIndex].imageUrl = newImageUrl;
+                colorVariants[variantIndex].imageUrlPrev = URL.createObjectURL(event?.target?.files[0]);
             }
             return {
                 ...updatedVariants,
@@ -400,6 +382,29 @@ const AddItem = (props) => {
 
                 return acc;
             }, {});
+            const extractData = (data) => {
+                const result = [];
+
+                // Iterate over each key in the data object
+                Object.keys(data).forEach((key) => {
+                    const variants = data[key].variants;
+
+                    // Process each variant
+                    variants.forEach(async (variant) => {
+                        const { price, imageUrl, merchantSku } = variant;
+
+                        if (price || imageUrl || merchantSku) {
+                            result.push({
+                                price,
+                                imageUrl,
+                                merchantSku,
+                            });
+                        }
+                    });
+                });
+
+                return result;
+            };
 
             const updatedVariantOptions = variantNames.map((e) =>
                 e.variantOptions.map((option) => ({
@@ -454,11 +459,35 @@ const AddItem = (props) => {
         }
     }, [importedDataContext, itemIndex]);
 
+    const uploadImage = async (img) => {
+        const axiosheaders = {
+            'Content-Type': 'multipart/form-data',
+        };
+        const formData = new FormData();
+        formData.append('file', img);
+        formData.append('isPublic', true);
+
+        try {
+            const response = await axios({
+                method: 'post',
+                url: 'http://localhost:3001/aws-bucket/file',
+                data: formData,
+                headers: axiosheaders,
+            });
+
+            console.log('resp:', response?.data?.key);
+            return response?.data?.key; // Return the key
+        } catch (error) {
+            console.log(error);
+            NotificationManager.error('', 'Error');
+            throw error; // Throw error so you can handle it in the calling function if needed
+        }
+    };
     return (
         <div class="row m-0 w-100 p-md-2 pt-2 d-flex justify-content-center">
             <div class="col-lg-7 p-0">
                 <div class="row m-0 w-100">
-                    {importedDataContext?.length && (
+                    {queryParameters.get('import') == 'true' && importedDataContext?.length && (
                         <div class={' col-lg-12 p-0 mb-0'} style={{ fontWeight: 700, fontSize: '23px', position: 'sticky', top: 75, zIndex: 100 }}>
                             <div class={generalstyles.card + ' row m-0 w-100 p-2 d-flex justify-content-between'}>
                                 <div class="col-lg-12 p-0">
@@ -511,18 +540,56 @@ const AddItem = (props) => {
                                                                 colorCode: option.colorHex || '',
                                                             })),
                                                         );
+                                                        var resp = undefined;
+                                                        if (itempayload.image) {
+                                                            resp = await uploadImage(itempayload.image);
+                                                        }
+                                                        // alert(resp);
+                                                        const extractData = async (data) => {
+                                                            const result = [];
+
+                                                            // Iterate over each key in the data object
+                                                            await Promise.all(
+                                                                Object.keys(data).map(async (key) => {
+                                                                    const variants = data[key].variants;
+
+                                                                    // Process each variant
+                                                                    await Promise.all(
+                                                                        variants.map(async (variant) => {
+                                                                            const { price, imageUrl, merchantSku } = variant;
+                                                                            let resp1 = undefined;
+                                                                            if (imageUrl) {
+                                                                                resp1 = await uploadImage(imageUrl);
+                                                                            }
+
+                                                                            if (price || merchantSku) {
+                                                                                result.push({
+                                                                                    price,
+                                                                                    imageUrl: resp1,
+                                                                                    merchantSku,
+                                                                                });
+                                                                            }
+                                                                        }),
+                                                                    );
+                                                                }),
+                                                            );
+
+                                                            return result;
+                                                        };
 
                                                         await setitempayload({
                                                             ...itempayload,
+                                                            imageUrl: resp,
                                                             variantNames: variantsList.map((e) => e.name) ?? undefined,
                                                             variantOptions: updatedVariantOptions ?? undefined,
-                                                            variantOptionAttributes: extractData(itemVariants),
+                                                            variantOptionAttributes: await extractData(itemVariants),
                                                         });
+
                                                         var itemtemp = {
                                                             ...itempayload,
                                                             variantNames: variantsList.map((e) => e.name) ?? undefined,
                                                             variantOptions: updatedVariantOptions ?? undefined,
-                                                            variantOptionAttributes: extractData(itemVariants),
+                                                            variantOptionAttributes: await extractData(itemVariants),
                                                         };
                                                         const { imageUrl, variantOptionAttributes, ...itemWithoutImageUrls } = itemtemp;
                                                         const itemWithoutVariantOptionImageUrls = {
@@ -651,6 +718,56 @@ const AddItem = (props) => {
                             <div class="col-lg-12 my-3" style={{ fontWeight: 600 }}>
                                 Main Info
                             </div>
+                            <div class="col-lg-12 mb-3">
+                                <div class="row m-0 w-100  ">
+                                    <div class={generalstyles.avatar_upload + ' text-center justify-content-center align-items-center m-auto '}>
+                                        <div class={generalstyles.avatar_edit}>
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                name="updatecompanybanner"
+                                                id="updatecompanybanner"
+                                                hidden
+                                                onChange={(event) => {
+                                                    var temp = { ...itempayload };
+
+                                                    temp.imagepreview = URL.createObjectURL(event?.target?.files[0]);
+                                                    temp.image = event?.target?.files[0];
+
+                                                    setitempayload({ ...temp });
+                                                }}
+                                                style={{ display: 'none' }}
+                                            />
+                                        </div>
+                                        <label for="updatecompanybanner" class={generalstyles.avatar_preview + ' pointer '}>
+                                            <div class={generalstyles.imgpreviewtxt + ' text-capitalize'}>
+                                                <i class="">
+                                                    <TbCameraPlus size={25} />
+                                                </i>
+                                                <br />
+                                                upload image
+                                            </div>
+                                            <img
+                                                src={itempayload?.imagepreview}
+                                                class={itempayload?.imagepreview == '' ? 'd-none' : 'd-block'}
+                                                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                                            />
+                                        </label>
+                                    </div>
+                                    {/* <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                        <label class={formstyles.form__label}>Image URL</label>
+                                        <input
+                                            type={'text'}
+                                            class={formstyles.form__field}
+                                            value={itempayload.imageUrl}
+                                            onChange={(event) => {
+                                                setitempayload({ ...itempayload, imageUrl: event.target.value });
+                                            }}
+                                        />
+                                    </div> */}
+                                </div>
+                            </div>
+
                             {isAuth([1]) && (
                                 <div class="col-lg-6">
                                     <SelectComponent
@@ -674,6 +791,7 @@ const AddItem = (props) => {
                                     />
                                 </div>
                             )}
+
                             <div class="col-lg-6">
                                 <div class="row m-0 w-100  ">
                                     <div class={`${formstyles.form__group} ${formstyles.field}`}>
@@ -689,21 +807,7 @@ const AddItem = (props) => {
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-6">
-                                <div class="row m-0 w-100  ">
-                                    <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                        <label class={formstyles.form__label}>Image URL</label>
-                                        <input
-                                            type={'text'}
-                                            class={formstyles.form__field}
-                                            value={itempayload.imageUrl}
-                                            onChange={(event) => {
-                                                setitempayload({ ...itempayload, imageUrl: event.target.value });
-                                            }}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
+
                             <div class="col-lg-6">
                                 <div class="row m-0 w-100  ">
                                     <div class={`${formstyles.form__group} ${formstyles.field}`}>
@@ -858,6 +962,38 @@ const AddItem = (props) => {
                                                                     {optionIdx !== variant.variantOptions.length - 1 && '-'}
                                                                 </span>
                                                             ))}
+                                                            <div class="col-lg-12 mb-3">
+                                                                <div class="row m-0 w-100  ">
+                                                                    <div class={generalstyles.avatar_upload + ' text-center justify-content-center align-items-center m-auto '}>
+                                                                        <div class={generalstyles.avatar_edit}>
+                                                                            <input
+                                                                                type="file"
+                                                                                accept="image/*"
+                                                                                name="updatecompanybanner"
+                                                                                id={'updatecompanybanner' + variantIdx}
+                                                                                hidden
+                                                                                onChange={(event) => handleImageChange(color, variantIdx, event)}
+                                                                                style={{ display: 'none' }}
+                                                                            />
+                                                                        </div>
+                                                                        <label for={'updatecompanybanner' + variantIdx} class={generalstyles.avatar_preview + ' pointer '}>
+                                                                            <div class={generalstyles.imgpreviewtxt + ' text-capitalize'}>
+                                                                                <i class="">
+                                                                                    <TbCameraPlus size={25} />
+                                                                                </i>
+                                                                                <br />
+                                                                                upload image
+                                                                            </div>
+                                                                            <img
+                                                                                src={variant.imageUrlPrev}
+                                                                                class={variant.imageUrlPrev == '' ? 'd-none' : 'd-block'}
+                                                                                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                                                                            />
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
                                                             <input
                                                                 className={formstyles.form__field + ' col-lg-3 mx-1 ml-4'}
                                                                 type="text"
@@ -865,13 +1001,7 @@ const AddItem = (props) => {
                                                                 onChange={(event) => handlePriceChange(color, variantIdx, event)}
                                                                 placeholder="Enter price"
                                                             />
-                                                            <input
-                                                                className={formstyles.form__field + ' col-lg-3 mx-1'}
-                                                                type="text"
-                                                                value={variant.imageUrl}
-                                                                onChange={(event) => handleImageChange(color, variantIdx, event)}
-                                                                placeholder="Enter ImageUrl"
-                                                            />
+
                                                             <input
                                                                 className={formstyles.form__field + ' col-lg-3 mx-1'}
                                                                 type="text"

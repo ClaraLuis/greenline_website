@@ -73,8 +73,8 @@ const Merchants = (props) => {
         afterCursor: undefined,
         beforeCursor: undefined,
     });
-    const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filterMerchants);
-    const { refetch: refetchMerchants } = useQueryGQL('', fetchMerchants(), filterMerchants);
+    const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
+    const { refetch: refetchMerchants } = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
     const [buttonLoading, setbuttonLoading] = useState(false);
     const [search, setSearch] = useState('');
 
