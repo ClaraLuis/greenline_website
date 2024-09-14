@@ -5,29 +5,23 @@ import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
 import { Modal } from 'react-bootstrap';
-import Select, { components } from 'react-select';
+import { components } from 'react-select';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
-
-import { defaultstyles } from '../Generalfiles/selectstyles.js';
-
 import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
-import { TextareaAutosize } from '@mui/material';
-import { BsChevronDown, BsChevronUp, BsTrash } from 'react-icons/bs';
+import * as XLSX from 'xlsx';
+import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
 import { IoMdClose } from 'react-icons/io';
-import API from '../../../API/API.js';
-import ItemsTable from './ItemsTable.js';
 import { NotificationManager } from 'react-notifications';
+import Cookies from 'universal-cookie';
+import API from '../../../API/API.js';
+import Inputfield from '../../Inputfield.js';
 import Pagination from '../../Pagination.js';
 import MerchantSelect from '../MerchantHome/MerchantSelect.js';
-import { Arrow90degDown, ArrowDown, Trash2 } from 'react-bootstrap-icons';
-import { BiDownArrow } from 'react-icons/bi';
-import { FaChevronDown } from 'react-icons/fa';
-import Cookies from 'universal-cookie';
-import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
+import ItemsTable from './ItemsTable.js';
 import SkuPrint from './SkuPrint.js';
-import Inputfield from '../../Inputfield.js';
+import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -798,6 +792,91 @@ keep data consistent.</span></p>
         refetchItems();
     }, []);
 
+    const handleDownload = () => {
+        // Prepare the data in row format
+        const data = {
+            uploadExcelFile: {
+                result: [
+                    {
+                        productName: 'Shirt',
+                        productDescription: 'Good quality shirt',
+                        productSku: 'primary_sku',
+                        defaultPrice: 27.5,
+                        variantOptionAttributes: [
+                            {
+                                sku: 'RED-L-TH-SHIRT_23',
+                                price: 22.2,
+                                variantOptions: [{ value: 'red', colorHex: 'FF0000' }, { value: 'large' }, { value: 'leather', colorHex: 'FF00FF' }],
+                            },
+                            {
+                                sku: 'RED-M-TH-SHIRT_28',
+                                price: 27.5,
+                                variantOptions: [{ value: 'red', colorHex: 'FF0000' }, { value: 'medium' }, { value: 'leather', colorHex: 'FF00FF' }],
+                            },
+                            {
+                                sku: 'RED-S-TH-SHIRT_24',
+                                price: 27.5,
+                                variantOptions: [{ value: 'red', colorHex: 'FF0000' }, { value: 'small' }, { value: 'leather', colorHex: 'FF00FF' }],
+                            },
+                        ],
+                    },
+                    {
+                        productName: 'Pants',
+                        productDescription: 'Jeans pants',
+                        productSku: 'primary_sku',
+                        defaultPrice: 105,
+                        variantOptionAttributes: [
+                            {
+                                sku: 'BLUE_JEANS_L',
+                                price: 150,
+                                variantOptions: [{ value: 'blue' }, { value: 'large' }],
+                            },
+                            {
+                                sku: 'BLK_JEANS_L',
+                                price: 105,
+                                variantOptions: [{ value: 'black', colorHex: 'FFFFFF' }, { value: 'large' }],
+                            },
+                            {
+                                sku: 'GREY_JNZ_L',
+                                price: 70,
+                                variantOptions: [{ value: 'grey' }, { value: 'large' }],
+                            },
+                        ],
+                    },
+                ],
+            },
+        };
+
+        const rows = [];
+        data.uploadExcelFile.result.forEach((product, index) => {
+            product.variantOptionAttributes.forEach((variant, variantIndex) => {
+                const variantNames = product.variantOptionAttributes[0].variantOptions.map((option) => (option.colorHex ? option.value : option.value)).join(',');
+
+                const variantOptions = variant.variantOptions.map((option) => option.value).join(',');
+                const variantHex = variant.variantOptions.map((option) => option.colorHex || '').join(',');
+
+                rows.push({
+                    id: index + 1,
+                    product_name: variantIndex === 0 ? product.productName : '',
+                    product_description: variantIndex === 0 ? product.productDescription : '',
+                    product_sku: variantIndex === 0 ? product.productSku : '',
+                    default_price: variantIndex === 0 ? product.defaultPrice : '',
+                    variant_name: index < 3 ? 'Color,Size,Texture' : 'Color,Size',
+                    variant_option: variantOptions,
+                    variant_option_hex: variantHex,
+                    variant_sku: variant.sku,
+                    variant_price: variant.price || '',
+                });
+            });
+        });
+
+        const worksheet = XLSX.utils.json_to_sheet(rows);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Products');
+
+        XLSX.writeFile(workbook, 'products.xlsx');
+    };
+
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
@@ -978,7 +1057,6 @@ keep data consistent.</span></p>
                 </Modal.Header>
                 <Modal.Body>
                     <div class="row m-0 w-100 py-2">
-                        <div dangerouslySetInnerHTML={{ __html: content }} />
                         <div class="col-lg-12">
                             <Inputfield
                                 placeholder={'CSV File'}
@@ -1010,7 +1088,6 @@ keep data consistent.</span></p>
                                     try {
                                         const { data } = await uploadExcelFileMutation();
 
-                                        // alert(JSON.stringify(data?.uploadExcelFile));
                                         if (data?.uploadExcelFile?.result) {
                                             await setimportedDataContext([...data?.uploadExcelFile?.result]);
 
@@ -1020,9 +1097,7 @@ keep data consistent.</span></p>
                                             NotificationManager.warning(data?.uploadExcelFile?.message, 'Warning!');
                                         }
                                     } catch (error) {
-                                        // alert(JSON.stringify(error));
                                         let errorMessage = 'An unexpected error occurred';
-                                        // // Check for GraphQL errors
                                         if (error.graphQLErrors && error.graphQLErrors.length > 0) {
                                             errorMessage = error.graphQLErrors[0].message || errorMessage;
                                         } else if (error.networkError) {
@@ -1038,6 +1113,59 @@ keep data consistent.</span></p>
                                 {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
                                 {!buttonLoading && <>{'Import'}</>}
                             </button>
+
+                            <button
+                                style={{ height: '35px' }}
+                                class={generalstyles.roundbutton + '  mb-1 mx-2 '}
+                                disabled={buttonLoading}
+                                onClick={async () => {
+                                    handleDownload();
+                                }}
+                            >
+                                {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                {!buttonLoading && <>{'Export'}</>}
+                            </button>
+                        </div>
+
+                        <div class={generalstyles.filter_container + ' my-3 col-lg-12 p-2'}>
+                            <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
+                                <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
+                                    <AccordionItemHeading>
+                                        <AccordionItemButton>
+                                            <div class="row m-0 w-100">
+                                                <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
+                                                    <p class={generalstyles.cardTitle + '  m-0 p-0 '}>Import Instructions</p>
+                                                </div>
+                                                <div class="col-lg-4 col-md-4 col-sm-4 p-0 d-flex align-items-center justify-content-end">
+                                                    <AccordionItemState>
+                                                        {(state) => {
+                                                            if (state.expanded == true) {
+                                                                return (
+                                                                    <i class="h-100 d-flex align-items-center justify-content-center">
+                                                                        <BsChevronUp />
+                                                                    </i>
+                                                                );
+                                                            } else {
+                                                                return (
+                                                                    <i class="h-100 d-flex align-items-center justify-content-center">
+                                                                        <BsChevronDown />
+                                                                    </i>
+                                                                );
+                                                            }
+                                                        }}
+                                                    </AccordionItemState>
+                                                </div>
+                                            </div>
+                                        </AccordionItemButton>
+                                    </AccordionItemHeading>
+                                    <AccordionItemPanel>
+                                        <hr className="mt-2 mb-3" />
+                                        <div class="row m-0 w-100">
+                                            <div dangerouslySetInnerHTML={{ __html: content }} />
+                                        </div>
+                                    </AccordionItemPanel>
+                                </AccordionItem>
+                            </Accordion>
                         </div>
                     </div>
                 </Modal.Body>

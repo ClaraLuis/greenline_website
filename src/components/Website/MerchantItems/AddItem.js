@@ -4,33 +4,22 @@ import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
-import { Modal } from 'react-bootstrap';
-import Select, { components } from 'react-select';
+import { components } from 'react-select';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 
-import { defaultstyles } from '../Generalfiles/selectstyles.js';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
-import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
 import { TextareaAutosize } from '@mui/material';
-import { BsChevronDown, BsChevronUp, BsTrash } from 'react-icons/bs';
-import { IoMdClose } from 'react-icons/io';
-import API from '../../../API/API.js';
-import ItemsTable from './ItemsTable.js';
-import { NotificationManager } from 'react-notifications';
-import Pagination from '../../Pagination.js';
-import MerchantSelect from '../MerchantHome/MerchantSelect.js';
-import { Arrow90degDown, ArrowDown, Trash2 } from 'react-bootstrap-icons';
-import { BiDownArrow } from 'react-icons/bi';
-import { FaChevronDown } from 'react-icons/fa';
-import Cookies from 'universal-cookie';
-import SelectComponent from '../../SelectComponent.js';
-import { sha256 } from 'js-sha256';
-import { TbCameraPlus } from 'react-icons/tb';
 import axios from 'axios';
-
-const { ValueContainer, Placeholder } = components;
+import { sha256 } from 'js-sha256';
+import { Trash2 } from 'react-bootstrap-icons';
+import { FaChevronDown } from 'react-icons/fa';
+import { TbCameraPlus } from 'react-icons/tb';
+import { NotificationManager } from 'react-notifications';
+import Cookies from 'universal-cookie';
+import API from '../../../API/API.js';
+import SelectComponent from '../../SelectComponent.js';
 
 const AddItem = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
