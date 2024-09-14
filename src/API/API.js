@@ -380,6 +380,22 @@ const API = () => {
         `;
     };
 
+    const updateMerchantItem = () => {
+        return gql`
+            mutation updateMerchantItem($input: UpdateMerchantItemInput!) {
+                updateMerchantItem(input: $input)
+            }
+        `;
+    };
+
+    const updateMerchant = () => {
+        return gql`
+            mutation updateMerchant($input: UpdateMerchantInput!) {
+                updateMerchant(input: $input)
+            }
+        `;
+    };
+
     // const removeFinancialAccount = () => {
     //     return gql`
     //         mutation removeFinancialAccount($input: UpdateFinancialAccountInput!) {
@@ -886,6 +902,14 @@ const API = () => {
                         streetAddress
                         buildingNumber
                         apartmentFloor
+                    }
+                    owner {
+                        id
+                        type
+                        name
+                        email
+                        phone
+                        birthdate
                     }
                 }
             }
@@ -1788,6 +1812,8 @@ const API = () => {
         findOneMerchant,
         uploadExcelFile,
         useMutationNoInputGQL,
+        updateMerchantItem,
+        updateMerchant,
     };
 };
 export default API;
