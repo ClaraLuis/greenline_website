@@ -192,6 +192,7 @@ const CourierSheets = (props) => {
                         <div class={' row m-0 w-100'}>
                             <SheetsTable
                                 clickable={true}
+                                refetchCourierSheets={refetchCourierSheets}
                                 fetchSheetsQuery={fetchSheetsQuery}
                                 onClick={(item) => {
                                     history.push('/couriersheet?id=' + item?.id + '&type=admin');

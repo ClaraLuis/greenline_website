@@ -109,6 +109,13 @@ const API = () => {
             }
         `;
     };
+    const deleteCourierSheet = () => {
+        return gql`
+            mutation deleteCourierSheet($id: Int!) {
+                deleteCourierSheet(id: $id)
+            }
+        `;
+    };
 
     const updateInventoryRent = () => {
         return gql`
@@ -1826,6 +1833,7 @@ const API = () => {
         updateMerchantItem,
         updateMerchant,
         findAllZones,
+        deleteCourierSheet,
     };
 };
 export default API;

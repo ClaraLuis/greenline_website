@@ -15,6 +15,7 @@ import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
 import { NotificationManager } from 'react-notifications';
 import Form from '../../Form.js';
+import API from '../../../API/API.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -22,21 +23,19 @@ const SheetsTable = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { courierSheetStatusesContext, dateformatter, isAuth } = useContext(Contexthandlerscontext);
-
+    const { deleteCourierSheet, useMutationNoInputGQL } = API();
     const { lang, langdetect } = useContext(LanguageContext);
+    const [buttonLoading, setbuttonLoading] = useState(false);
 
     const [submit, setsubmit] = useState(false);
     const [changestatusmodal, setchangestatusmodal] = useState(false);
+    const [sheetID, setsheetID] = useState(undefined);
 
     const [statuspayload, setstatuspayload] = useState({
         sheetID: '',
         status: '',
     });
-    const [itemsarray, setitemsarray] = useState([
-        { id: '1', courier: 'courier 1', orderscount: '5', status: 'inProgress', moneyTobeCollected: '1000' },
-        { id: '2', courier: 'courier 2', orderscount: '15', status: 'waitingForAdminApproval', moneyTobeCollected: '500' },
-        { id: '3', courier: 'courier 3', orderscount: '10', status: 'completed', moneyTobeCollected: '10000' },
-    ]);
+    const [deleteCourierSheetMutation] = useMutationNoInputGQL(deleteCourierSheet(), { id: sheetID });
 
     const [payload, setpayload] = useState({
         functype: 'add',
@@ -108,15 +107,47 @@ const SheetsTable = (props) => {
                                                                 <FaEllipsisV />
                                                             </div>
                                                         </Dropdown.Toggle>
+
                                                         <Dropdown.Menu style={{ minWidth: '170px', fontSize: '12px' }}>
-                                                            <Dropdown.Item
-                                                                onClick={() => {
-                                                                    // props?.editFunc(item);
-                                                                }}
-                                                                class="py-2"
-                                                            >
-                                                                <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}> Delete Sheet</p>
-                                                            </Dropdown.Item>
+                                                            {parseInt(item?.orderCount) == 0 && (
+                                                                <Dropdown.Item
+                                                                    onClick={async () => {
+                                                                        if (!buttonLoading) {
+                                                                            setbuttonLoading(true);
+                                                                            await setsheetID(item?.id);
+                                                                            try {
+                                                                                const { data } = await deleteCourierSheetMutation();
+
+                                                                                if (data?.deleteCourierSheet?.success == true) {
+                                                                                    if (props?.refetchCourierSheets) {
+                                                                                        props?.refetchCourierSheets();
+                                                                                    }
+                                                                                    NotificationManager.success('', 'Success');
+                                                                                } else {
+                                                                                    NotificationManager.warning(data?.deleteCourierSheet?.message, 'Warning!');
+                                                                                }
+                                                                            } catch (error) {
+                                                                                let errorMessage = 'An unexpected error occurred';
+                                                                                if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                                                                    errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                                                                } else if (error.networkError) {
+                                                                                    errorMessage = error.networkError.message || errorMessage;
+                                                                                } else if (error.message) {
+                                                                                    errorMessage = error.message;
+                                                                                }
+                                                                                NotificationManager.warning(errorMessage, 'Warning!');
+                                                                            }
+                                                                            setbuttonLoading(false);
+                                                                        }
+                                                                    }}
+                                                                    class="py-2"
+                                                                >
+                                                                    <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>
+                                                                        {buttonLoading && <CircularProgress color="var(--primary)" width="15px" height="15px" duration="1s" />}
+                                                                        {!buttonLoading && <span>Delete Manifest</span>}
+                                                                    </p>
+                                                                </Dropdown.Item>
+                                                            )}
                                                             <Dropdown.Item
                                                                 onClick={() => {
                                                                     history.push('/addsheet?sheetId=' + item?.id);
