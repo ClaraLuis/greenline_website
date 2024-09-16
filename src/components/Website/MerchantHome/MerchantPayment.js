@@ -29,6 +29,8 @@ import SelectComponent from '../../SelectComponent.js';
 const MerchantPayment = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
+    const [total, setTotal] = useState(0);
+
     const { setpageactive_context, isAuth, financialAccountTypeContext } = useContext(Contexthandlerscontext);
     const {
         useQueryGQL,
@@ -95,157 +97,35 @@ const MerchantPayment = (props) => {
                         Merchant Payments
                     </p>
                 </div>
-                {/* <div style={{ borderRadius: '18px', background: 'white' }} class={' mb-3 col-lg-12 p-2'}>
-                    <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
-                        <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
-                            <AccordionItemHeading>
-                                <AccordionItemButton>
-                                    <div class="row m-0 w-100">
-                                        <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
-                                            <p class={generalstyles.cardTitle + '  m-0 p-0 '}>Filter:</p>
-                                        </div>
-                                        <div class="col-lg-4 col-md-4 col-sm-4 p-0 d-flex align-items-center justify-content-end">
-                                            <AccordionItemState>
-                                                {(state) => {
-                                                    if (state.expanded == true) {
-                                                        return (
-                                                            <i class="h-100 d-flex align-items-center justify-content-center">
-                                                                <BsChevronUp />
-                                                            </i>
-                                                        );
-                                                    } else {
-                                                        return (
-                                                            <i class="h-100 d-flex align-items-center justify-content-center">
-                                                                <BsChevronDown />
-                                                            </i>
-                                                        );
-                                                    }
-                                                }}
-                                            </AccordionItemState>
-                                        </div>
-                                    </div>
-                                </AccordionItemButton>
-                            </AccordionItemHeading>
-                            <AccordionItemPanel>
-                                <hr className="mt-2 mb-3" />
-                                <div class="row m-0 w-100">
-                                    <div class={'col-lg-2'} style={{ marginBottom: '15px' }}>
-                                        <SelectComponent
-                                            title={'Merchant'}
-                                            filter={filteMerchants}
-                                            setfilter={setfilteMerchants}
-                                            options={fetchMerchantsQuery}
-                                            attr={'paginateMerchants'}
-                                            label={'name'}
-                                            value={'id'}
-                                            onClick={(option) => {
-                                                var temp = filterobj?.merchantIds ?? [];
-                                                if (option != undefined) {
-                                                    var exist = false;
-                                                    filterobj?.merchantIds?.map((i, ii) => {
-                                                        if (i == option?.id) {
-                                                            exist = true;
-                                                        }
-                                                    });
-                                                    if (!exist) {
-                                                        chosenMerchantsArray.push(option);
-                                                        temp.push(option?.id);
-                                                    }
-                                                } else {
-                                                    temp = undefined;
-                                                    setchosenMerchantsArray([]);
-                                                }
 
-                                                setfilterobj({ ...filterobj, merchantIds: temp });
-                                            }}
-                                        />
-                                    </div>
-                                    <div class={'col-lg-2'} style={{ marginBottom: '15px' }}>
-                                        <label for="name" class={formstyles.form__label}>
-                                            Processing
-                                        </label>
-                                        <Select
-                                            options={[
-                                                { label: 'All', value: undefined },
-                                                { label: 'True', value: true },
-                                                { label: 'False', value: false },
-                                            ]}
-                                            styles={defaultstyles}
-                                            defaultValue={[
-                                                { label: 'All', value: undefined },
-                                                { label: 'True', value: true },
-                                                { label: 'False', value: false },
-                                            ].filter((option) => option?.id == filterobj?.processing)}
-                                            onChange={(option) => {
-                                                setfilterobj({ ...filterobj, processing: option.value });
-                                            }}
-                                        />
-                                    </div>
-                                    <div class="col-lg-12">
-                                        <div class="row m-0 w-100">
-                                            {chosenMerchantsArray?.map((item, index) => {
-                                                return (
-                                                    <div
-                                                        style={{
-                                                            background: '#ECECEC',
-                                                            padding: '5px 10px',
-                                                            cursor: 'pointer',
-                                                            borderRadius: '8px',
-                                                            justifyContent: 'space-between',
-                                                            width: 'fit-content',
-                                                            fontSize: '11px',
-                                                            minWidth: 'fit-content',
-                                                        }}
-                                                        className="d-flex align-items-center mr-2 mb-1"
-                                                        onClick={() => {
-                                                            var temp = [...filterobj?.merchantIds];
-                                                            chosenMerchantsArray.splice(index, 1);
-                                                            temp.splice(index, 1);
-                                                            setfilterobj({ ...filterobj, merchantIds: temp });
-                                                        }}
-                                                    >
-                                                        {item?.name}
-                                                        <AiOutlineClose size={12} color="#6C757D" className="ml-2" />
-                                                    </div>
-                                                );
-                                            })}
-                                        </div>
-                                    </div>
-                                </div>
-                            </AccordionItemPanel>
-                        </AccordionItem>
-                    </Accordion>
-                </div> */}
                 <div class="col-lg-12 p-0 ">
                     <div class="row m-0 w-100">
                         <div class="col-lg-12 p-0">
-                            {isAuth([1, 51, 19]) && (
-                                <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
-                                    <div class="col-lg-12 p-0">
-                                        <Pagination
-                                            beforeCursor={fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.cursor?.beforeCursor}
-                                            afterCursor={fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.cursor?.afterCursor}
-                                            filter={filterobj}
-                                            setfilter={setfilterobj}
-                                        />
-                                    </div>
-                                    <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
-                                        <TransactionsTable
-                                            width={'40%'}
-                                            query={fetchMerchantPaymentTransactionsQuery}
-                                            paginationAttr="paginateMerchantPaymentTransactions"
-                                            srctype="all"
-                                            refetchFunc={() => {
-                                                Refetch();
-                                            }}
-                                            hasOrder={true}
-                                            // allowSelect={true}
-                                            // selectedArray={selectedArray}
-                                            // setselectedArray={setselectedArray}
-                                        />
-                                    </div>
+                            <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
+                                <div class="col-lg-12 p-0">
+                                    <Pagination
+                                        beforeCursor={fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.cursor?.beforeCursor}
+                                        afterCursor={fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.cursor?.afterCursor}
+                                        filter={filterobj}
+                                        setfilter={setfilterobj}
+                                    />
                                 </div>
-                            )}
+                                <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                                    <TransactionsTable
+                                        width={'40%'}
+                                        query={fetchMerchantPaymentTransactionsQuery}
+                                        paginationAttr="paginateMerchantPaymentTransactions"
+                                        srctype="all"
+                                        refetchFunc={() => {
+                                            Refetch();
+                                        }}
+                                        hasOrder={true}
+                                        // allowSelect={true}
+                                        // selectedArray={selectedArray}
+                                        // setselectedArray={setselectedArray}
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
