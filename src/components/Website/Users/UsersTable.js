@@ -119,6 +119,17 @@ const UsersTable = (props) => {
                                                             >
                                                                 <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>View</p>
                                                             </Dropdown.Item>
+                                                            {item?.type == 'merchant' && (
+                                                                <Dropdown.Item
+                                                                    onClick={() => {
+                                                                        history.push('/updatemerchant?merchantId=' + item.merchantId);
+                                                                    }}
+                                                                    class="py-2"
+                                                                >
+                                                                    <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>View Merchant</p>
+                                                                </Dropdown.Item>
+                                                            )}
+
                                                             <Dropdown.Item
                                                                 onClick={() => {
                                                                     var temp = { ...item };
@@ -175,7 +186,8 @@ const UsersTable = (props) => {
                                             <div className="col-lg-12 p-0 mb-1">
                                                 <span style={{ fontWeight: 600 }} class="d-flex align-items-center text-capitalize">
                                                     <TbUserPentagon class="mr-1" />
-                                                    {item?.type?.split(/(?=[A-Z])/).join(' ')} {item?.employee?.type?.split(/(?=[A-Z])/).join(' ')}
+                                                    {item?.type?.split(/(?=[A-Z])/).join(' ')}
+                                                    {item?.employee?.type?.split(/(?=[A-Z])/).join(' ')}
                                                 </span>
                                             </div>
                                             <div className="col-lg-12 p-0 ">
