@@ -1304,6 +1304,17 @@ const API = () => {
             }
         `;
     };
+    const findAllZones = (payload) => {
+        return gql`
+            query findAllZones {
+                findAllZones {
+                    id
+                    name
+                    governorateId
+                }
+            }
+        `;
+    };
     const fetchCourierSheets = (payload) => {
         return gql`
             query paginateCourierSheets($input: PaginateCourierSheetInput!) {
@@ -1814,6 +1825,7 @@ const API = () => {
         useMutationNoInputGQL,
         updateMerchantItem,
         updateMerchant,
+        findAllZones,
     };
 };
 export default API;

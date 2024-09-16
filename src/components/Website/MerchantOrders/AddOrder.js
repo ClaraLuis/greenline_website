@@ -50,6 +50,7 @@ const AddOrder = (props) => {
         fetchAllCountries,
         fetchGovernorates,
         findSingleMerchantDomesticShipping,
+        findAllZones,
     } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -109,7 +110,8 @@ const AddOrder = (props) => {
         orderIds: undefined,
     });
     const fetchOrdersQuery = useQueryGQL('', fetchOrders(), filterorders); //network only
-    const fetchGovernoratesQuery = useQueryGQL('', fetchGovernorates());
+    const fetchGovernoratesQuery = useQueryGQL('cache-and-network', fetchGovernorates());
+    const findAllZonesQuery = useQueryGQL('cache-and-network', findAllZones());
 
     const [filterCustomerPayload, setfilterCustomerPayload] = useState({
         phone: '',
@@ -183,6 +185,7 @@ const AddOrder = (props) => {
         buildingNumber: addresspayload?.buildingNumber,
         apartmentFloor: addresspayload?.apartmentFloor,
         merchantId: merchantId,
+        zoneId: addresspayload?.zone,
         governorateId: addresspayload?.country == 'Egypt' ? fetchGovernoratesQuery?.data?.findAllDomesticGovernorates?.filter((item) => item.name == addresspayload?.city)[0]?.id : undefined,
     });
 
@@ -816,6 +819,19 @@ const AddOrder = (props) => {
                                                                           optionValue: 'name',
                                                                           optionLabel: 'name',
                                                                       },
+                                                                      {
+                                                                          name: 'Zone',
+                                                                          attr: 'zone',
+                                                                          type: 'select',
+                                                                          options: findAllZonesQuery?.data?.findAllZones?.filter(
+                                                                              (e) =>
+                                                                                  e.governorateId ==
+                                                                                  fetchGovernoratesQuery?.data?.findAllDomesticGovernorates?.find((i) => i.name == addresspayload?.city)?.id,
+                                                                          ),
+                                                                          size: '6',
+                                                                          optionValue: 'id',
+                                                                          optionLabel: 'name',
+                                                                      },
                                                                       { name: 'Building Number', attr: 'buildingNumber', size: '6' },
                                                                       { name: 'Apartment Floor', attr: 'apartmentFloor', size: '6' },
                                                                       { name: 'Street Address', attr: 'streetAddress', type: 'textarea', size: '12' },
@@ -839,6 +855,19 @@ const AddOrder = (props) => {
                                                                           options: cities,
                                                                           size: '6',
                                                                       },
+                                                                      {
+                                                                          name: 'Zone',
+                                                                          attr: 'zone',
+                                                                          type: 'select',
+                                                                          options: findAllZonesQuery?.data?.findAllZones?.filter(
+                                                                              (e) =>
+                                                                                  e.governorateId ==
+                                                                                  fetchGovernoratesQuery?.data?.findAllDomesticGovernorates?.find((i) => i.name == addresspayload?.city)?.id,
+                                                                          ),
+                                                                          size: '6',
+                                                                          optionValue: 'id',
+                                                                          optionLabel: 'name',
+                                                                      },
                                                                       { name: 'Building Number', attr: 'buildingNumber', size: '6' },
                                                                       { name: 'Apartment Floor', attr: 'apartmentFloor', size: '6' },
                                                                       { name: 'Street Address', attr: 'streetAddress', type: 'textarea', size: '12' },
@@ -861,6 +890,7 @@ const AddOrder = (props) => {
                                                                             streetAddress: addresspayload?.streetAddress,
                                                                             buildingNumber: addresspayload?.buildingNumber,
                                                                             apartmentFloor: addresspayload?.apartmentFloor,
+                                                                            zoneId: addresspayload?.zone,
                                                                             merchantId: merchantId,
                                                                         },
                                                                     },

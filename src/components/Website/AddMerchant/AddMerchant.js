@@ -42,6 +42,7 @@ const AddMerchant = (props) => {
         useLazyQueryGQL,
         createAddress,
         fetchCustomerAddresses,
+        findAllZones,
     } = API();
     const steps = ['Merchant Info', 'Shipping', 'Inventory Settings'];
     const [buttonLoading, setbuttonLoading] = useState(false);
@@ -73,7 +74,8 @@ const AddMerchant = (props) => {
         country: 'Egypt',
         streetAddress: '',
     });
-    const fetchGovernoratesQuery = useQueryGQL('', fetchGovernorates());
+    const fetchGovernoratesQuery = useQueryGQL('cache-and-network', fetchGovernorates());
+    const findAllZonesQuery = useQueryGQL('cache-and-network', findAllZones());
     const [createMerchantDomesticShippingMutation] = useMutationGQL(createMerchantDomesticShipping(), {
         merchantId: merchantId,
         list: governoratesItemsList,
@@ -115,6 +117,7 @@ const AddMerchant = (props) => {
                       buildingNumber: addresspayload?.buildingNumber,
                       apartmentFloor: addresspayload?.apartmentFloor,
                       streetAddress: addresspayload?.streetAddress,
+                      zoneId: addresspayload?.zone,
                       governorateId:
                           addresspayload?.country == 'Egypt' ? fetchGovernoratesQuery?.data?.findAllDomesticGovernorates?.filter((item) => item.name == addresspayload?.city)[0]?.id : undefined,
                   }
@@ -477,6 +480,19 @@ const AddMerchant = (props) => {
                                                                               optionValue: 'name',
                                                                               optionLabel: 'name',
                                                                           },
+                                                                          {
+                                                                              name: 'Zone',
+                                                                              attr: 'zone',
+                                                                              type: 'select',
+                                                                              options: findAllZonesQuery?.data?.findAllZones?.filter(
+                                                                                  (e) =>
+                                                                                      e.governorateId ==
+                                                                                      fetchGovernoratesQuery?.data?.findAllDomesticGovernorates?.find((i) => i.name == addresspayload?.city)?.id,
+                                                                              ),
+                                                                              size: '6',
+                                                                              optionValue: 'id',
+                                                                              optionLabel: 'name',
+                                                                          },
                                                                           { name: 'Building Number', attr: 'buildingNumber', size: '6' },
                                                                           { name: 'Apartment Floor', attr: 'apartmentFloor', size: '6' },
                                                                           { name: 'Street Address', attr: 'streetAddress', type: 'textarea', size: '12' },
@@ -500,6 +516,19 @@ const AddMerchant = (props) => {
                                                                               options: cities,
                                                                               size: '6',
                                                                           },
+                                                                          {
+                                                                              name: 'Zone',
+                                                                              attr: 'zone',
+                                                                              type: 'select',
+                                                                              options: findAllZonesQuery?.data?.findAllZones?.filter(
+                                                                                  (e) =>
+                                                                                      e.governorateId ==
+                                                                                      fetchGovernoratesQuery?.data?.findAllDomesticGovernorates?.find((i) => i.name == addresspayload?.city)?.id,
+                                                                              ),
+                                                                              size: '6',
+                                                                              optionValue: 'id',
+                                                                              optionLabel: 'name',
+                                                                          },
                                                                           { name: 'Building Number', attr: 'buildingNumber', size: '6' },
                                                                           { name: 'Apartment Floor', attr: 'apartmentFloor', size: '6' },
                                                                           { name: 'Street Address', attr: 'streetAddress', type: 'textarea', size: '12' },
@@ -522,6 +551,8 @@ const AddMerchant = (props) => {
                                                                                     streetAddress: addresspayload?.streetAddress,
                                                                                     buildingNumber: addresspayload?.buildingNumber,
                                                                                     apartmentFloor: addresspayload?.apartmentFloor,
+                                                                                    zoneId: addresspayload?.zone,
+
                                                                                     merchantId: merchantId,
                                                                                 },
                                                                             },

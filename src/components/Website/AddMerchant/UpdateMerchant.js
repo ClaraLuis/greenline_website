@@ -12,23 +12,18 @@ import { NotificationManager } from 'react-notifications';
 import Select from 'react-select';
 import API from '../../../API/API.js';
 
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
-import Stepper from '@mui/material/Stepper';
-import Typography from '@mui/material/Typography';
-import { defaultstyles } from '../Generalfiles/selectstyles.js';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
+import { TbEdit } from 'react-icons/tb';
 import { useQuery } from 'react-query';
 import Form from '../../Form.js';
-import { TbEdit } from 'react-icons/tb';
+import { defaultstyles } from '../Generalfiles/selectstyles.js';
 
 const UpdateMerchant = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, isAuth, inventoryRentTypeContext } = useContext(Contexthandlerscontext);
-    const { useQueryGQL, useMutationGQL, fetchGovernorates, findOneMerchant, useLazyQueryGQL, fetchSimilarAddresses, fetchUsers, fetchMerchants, updateMerchant, fetchAllCountries } = API();
+    const { useQueryGQL, useMutationGQL, fetchGovernorates, findOneMerchant, useLazyQueryGQL, fetchSimilarAddresses, fetchUsers, fetchMerchants, updateMerchant, fetchAllCountries, findAllZones } =
+        API();
     const steps = ['Merchant Info', 'Shipping', 'Inventory Settings'];
     const [buttonLoading, setbuttonLoading] = useState(false);
     const { lang, langdetect } = useContext(LanguageContext);
@@ -40,7 +35,8 @@ const UpdateMerchant = (props) => {
         country: 'Egypt',
         streetAddress: '',
     });
-    const fetchGovernoratesQuery = useQueryGQL('', fetchGovernorates());
+    const fetchGovernoratesQuery = useQueryGQL('cache-and-network', fetchGovernorates());
+    const findAllZonesQuery = useQueryGQL('cache-and-network', findAllZones());
 
     const [merchantPayload, setmerchantPayload] = useState({
         functype: 'add',
@@ -94,6 +90,7 @@ const UpdateMerchant = (props) => {
                       buildingNumber: addresspayload?.buildingNumber,
                       apartmentFloor: addresspayload?.apartmentFloor,
                       streetAddress: addresspayload?.streetAddress,
+                      zoneId: addresspayload?.zone,
                       governorateId:
                           addresspayload?.country == 'Egypt' ? fetchGovernoratesQuery?.data?.findAllDomesticGovernorates?.filter((item) => item.name == addresspayload?.city)[0]?.id : undefined,
                   }
@@ -488,6 +485,18 @@ const UpdateMerchant = (props) => {
                                                                   optionValue: 'name',
                                                                   optionLabel: 'name',
                                                               },
+                                                              {
+                                                                  name: 'Zone',
+                                                                  attr: 'zone',
+                                                                  type: 'select',
+                                                                  options: findAllZonesQuery?.data?.findAllZones?.filter(
+                                                                      (e) =>
+                                                                          e.governorateId == fetchGovernoratesQuery?.data?.findAllDomesticGovernorates?.find((i) => i.name == addresspayload?.city)?.id,
+                                                                  ),
+                                                                  size: '6',
+                                                                  optionValue: 'id',
+                                                                  optionLabel: 'name',
+                                                              },
                                                               { name: 'Building Number', attr: 'buildingNumber', size: '6' },
                                                               { name: 'Apartment Floor', attr: 'apartmentFloor', size: '6' },
                                                               { name: 'Street Address', attr: 'streetAddress', type: 'textarea', size: '12' },
@@ -510,6 +519,18 @@ const UpdateMerchant = (props) => {
                                                                   type: 'select',
                                                                   options: cities,
                                                                   size: '6',
+                                                              },
+                                                              {
+                                                                  name: 'Zone',
+                                                                  attr: 'zone',
+                                                                  type: 'select',
+                                                                  options: findAllZonesQuery?.data?.findAllZones?.filter(
+                                                                      (e) =>
+                                                                          e.governorateId == fetchGovernoratesQuery?.data?.findAllDomesticGovernorates?.find((i) => i.name == addresspayload?.city)?.id,
+                                                                  ),
+                                                                  size: '6',
+                                                                  optionValue: 'id',
+                                                                  optionLabel: 'name',
                                                               },
                                                               { name: 'Building Number', attr: 'buildingNumber', size: '6' },
                                                               { name: 'Apartment Floor', attr: 'apartmentFloor', size: '6' },
@@ -635,6 +656,7 @@ const UpdateMerchant = (props) => {
                                                                         streetAddress: addresspayload?.streetAddress,
                                                                         buildingNumber: addresspayload?.buildingNumber,
                                                                         apartmentFloor: addresspayload?.apartmentFloor,
+                                                                        zoneId: addresspayload?.zone,
                                                                         merchantId: parseInt(queryParameters?.get('merchantId')),
                                                                     },
                                                                 },
