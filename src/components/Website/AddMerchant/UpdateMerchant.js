@@ -122,23 +122,23 @@ const UpdateMerchant = (props) => {
             if (data?.findOneMerchant) {
                 setmerchantPayload({
                     ...data?.findOneMerchant,
-                    country: data?.findOneMerchant?.address.country,
-                    city: data?.findOneMerchant?.address.city,
-                    buildingNumber: data?.findOneMerchant?.address.buildingNumber,
-                    apartmentFloor: data?.findOneMerchant?.address.apartmentFloor,
-                    streetAddress: data?.findOneMerchant?.address.streetAddress,
-                    ownerName: data?.findOneMerchant?.owner.name,
-                    ownerBirthdate: data?.findOneMerchant?.owner.birthdate,
-                    ownerPhone: data?.findOneMerchant?.owner.phone,
-                    ownerEmail: data?.findOneMerchant?.owner.email,
+                    country: data?.findOneMerchant?.address?.country,
+                    city: data?.findOneMerchant?.address?.city,
+                    buildingNumber: data?.findOneMerchant?.address?.buildingNumber,
+                    apartmentFloor: data?.findOneMerchant?.address?.apartmentFloor,
+                    streetAddress: data?.findOneMerchant?.address?.streetAddress,
+                    ownerName: data?.findOneMerchant?.owner?.name,
+                    ownerBirthdate: data?.findOneMerchant?.owner?.birthdate,
+                    ownerPhone: data?.findOneMerchant?.owner?.phone,
+                    ownerEmail: data?.findOneMerchant?.owner?.email,
                 });
 
                 setaddresspayload({
-                    country: data?.findOneMerchant?.address.country ?? 'Egypt',
-                    city: data?.findOneMerchant?.address.city,
-                    buildingNumber: data?.findOneMerchant?.address.buildingNumber,
-                    apartmentFloor: data?.findOneMerchant?.address.apartmentFloor,
-                    streetAddress: data?.findOneMerchant?.address.streetAddress,
+                    country: data?.findOneMerchant?.address?.country ?? 'Egypt',
+                    city: data?.findOneMerchant?.address?.city,
+                    buildingNumber: data?.findOneMerchant?.address?.buildingNumber,
+                    apartmentFloor: data?.findOneMerchant?.address?.apartmentFloor,
+                    streetAddress: data?.findOneMerchant?.address?.streetAddress,
                 });
             }
         } catch (e) {

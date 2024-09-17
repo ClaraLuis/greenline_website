@@ -1245,6 +1245,50 @@ const API = () => {
             }
         `;
     };
+
+    const paginateBoxes = () => {
+        return gql`
+            query paginateBoxes($input: BoxPaginationInput!) {
+                paginateBoxes(input: $input) {
+                    data {
+                        id
+                        merchantId
+                        ballotId
+                        name
+                        createdAt
+                        lastModified
+                        deletedAt
+                    }
+
+                    cursor
+                }
+            }
+        `;
+    };
+
+    const paginateBallots = () => {
+        return gql`
+            query paginateBallots($input: BallotPaginationInput!) {
+                paginateBallots(input: $input) {
+                    data {
+                        id
+                        name
+                    }
+
+                    cursor
+                }
+            }
+        `;
+    };
+
+    const sumInventoryRentTransaction = () => {
+        return gql`
+            query sumInventoryRentTransaction($input: InventoryRentTransactionPageInput!) {
+                sumInventoryRentTransaction(input: $input)
+            }
+        `;
+    };
+
     const fetchItemHistory = (payload) => {
         return gql`
             query paginateItemHistory($input: PaginateItemHistoryInput!) {
@@ -1754,6 +1798,9 @@ const API = () => {
         importNew,
         fetchOrders,
         fetchRacks,
+        paginateBoxes,
+        paginateBallots,
+        sumInventoryRentTransaction,
         fetchItemHistory,
         exportItem,
         importItem,

@@ -58,6 +58,7 @@ import MerchantReturnPackageInfo from './MerchantHome/MerchantReturnPackageInfo.
 import UpdateShipping from './AddMerchant/UpdateShipping.js';
 import UpdateMerchant from './AddMerchant/UpdateMerchant.js';
 import HubDetails from './Hubs/HubDetails.js';
+import InventorySettings from './MerchantHome/InventorySettings.js';
 const App = (props) => {
     const history = useHistory();
     const location = useLocation();
@@ -282,6 +283,7 @@ const App = (props) => {
                                                                 <Route exact path="/updateshipping" component={UpdateShipping} />
                                                                 <Route exact path="/updatemerchant" component={UpdateMerchant} />
                                                                 <Route exact path="/hubdetails" component={HubDetails} />
+                                                                <Route exact path="/inventorysettings" component={InventorySettings} />
 
                                                                 <Route exact path="/courierhome" component={CourierHome} />
                                                                 <Route exact path="/couriersheets" component={CourierSheets} />
