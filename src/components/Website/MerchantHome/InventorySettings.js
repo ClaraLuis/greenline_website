@@ -25,23 +25,33 @@ const InventorySettings = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, inventoryRentTypeContext } = useContext(Contexthandlerscontext);
-    const { useQueryGQL, fetchTransactions, findOneMerchant, useLazyQueryGQL, fetchRacks, paginateBoxes, paginateBallots, sumInventoryRentTransaction } = API();
+    const {
+        useQueryGQL,
+        fetchTransactions,
+        findOneMerchant,
+        useLazyQueryGQL,
+        fetchRacks,
+        paginateBoxes,
+        paginateBallots,
+        sumInventoryRentTransaction,
+        removeMerchantAssignmentFromInventory,
+        useMutationGQL,
+        countInventoryRentTransaction,
+    } = API();
     const [importItemModel, setimportItemModel] = useState(false);
     const [inventorySettings, setinventorySettings] = useState({});
     const [buttonLoading, setbuttonLoading] = useState(false);
 
     const [fetchRacksQuery, setfetchRacksQuery] = useState(null);
     const [fetchBoxesQuery, setfetchBoxesQuery] = useState(null);
+    const [sumInventoryRent, setsumInventoryRent] = useState(null);
     const [fetchBallotsQuery, setfetchBallotsQuery] = useState(null);
+    const [countInventoryRent, setcountInventoryRent] = useState(null);
 
-    const [importItemPayload, setimportItemPayload] = useState({
-        itemSku: '',
-        ownedByOneMerchant: true,
-        ballotId: '',
-        inventoryId: '',
-        boxName: '',
-        count: 0,
-        minCount: 0,
+    const [idsToBeRemoved, setidsToBeRemoved] = useState({
+        rackIds: undefined,
+        ballotIds: undefined,
+        boxIds: undefined,
     });
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -60,9 +70,17 @@ const InventorySettings = (props) => {
     const [paginateBoxesLazyQuery] = useLazyQueryGQL(paginateBoxes());
     const [paginateBallotsLazyQuery] = useLazyQueryGQL(paginateBallots());
     const [sumInventoryRentTransactionLazyQuery] = useLazyQueryGQL(sumInventoryRentTransaction());
+    const [countInventoryRentTransactionLazyQuery] = useLazyQueryGQL(countInventoryRentTransaction());
+
+    const [removeMerchantAssignmentFromInventoryMutation] = useMutationGQL(removeMerchantAssignmentFromInventory(), {
+        rackIds: idsToBeRemoved?.rackIds,
+        ballotIds: idsToBeRemoved?.ballotIds,
+        boxIds: idsToBeRemoved?.boxIds,
+    });
 
     useEffect(async () => {
         try {
+            var lastbill = undefined;
             var { data } = await findOneMerchantQuery({
                 variables: {
                     id: parseInt(queryParameters?.get('merchantId')),
@@ -80,6 +98,7 @@ const InventorySettings = (props) => {
                     sqaureMeter: data?.findOneMerchant?.inventoryRent?.sqaureMeter,
                     startDate: data?.findOneMerchant?.inventoryRent?.startDate,
                 });
+                lastbill = data?.findOneMerchant?.inventoryRent?.lastBill;
                 if (data?.findOneMerchant?.inventoryRent?.type == 'rack') {
                     var { data } = await fetchRacksLazyQuery({
                         variables: {
@@ -115,12 +134,24 @@ const InventorySettings = (props) => {
                         variables: {
                             input: {
                                 merchantId: parseInt(queryParameters.get('merchantId')),
+                                afterDate: lastbill ?? undefined,
                             },
                         },
                     });
+                    setsumInventoryRent(data?.sumInventoryRentTransaction);
                     // setfetchBallotsQuery(data);
-                    alert(JSON.stringify(data));
+                    // alert(JSON.stringify(data?.sumInventoryRentTransaction));
                 }
+
+                var { data } = await countInventoryRentTransactionLazyQuery({
+                    variables: {
+                        input: {
+                            merchantId: parseInt(queryParameters.get('merchantId')),
+                            afterDate: lastbill ?? undefined,
+                        },
+                    },
+                });
+                setcountInventoryRent(data?.countInventoryRentTransaction);
             }
         } catch (e) {
             let errorMessage = 'An unexpected error occurred';
@@ -138,8 +169,46 @@ const InventorySettings = (props) => {
         return isoDate.split('T')[0];
     };
 
+    const toggleSelection = (type, id) => {
+        setIdsToBeRemoved((prevState) => {
+            const ids = prevState[`${type}Ids`];
+            const isSelected = ids.includes(id);
+
+            return {
+                ...prevState,
+                [`${type}Ids`]: isSelected ? ids.filter((itemId) => itemId !== id) : [...ids, id],
+            };
+        });
+    };
+
     return (
         <>
+            <div class="col-lg-12 p-0">
+                <div class="row m-0 w-100">
+                    {inventorySettings?.type == 'item' && (
+                        <div class="col-lg-4">
+                            <div class={generalstyles.card + ' row m-0 p-3 w-100'}>
+                                <div style={{ fontSize: '17px' }} class="col-lg-12 mb-1">
+                                    Inventory Rent Transactions
+                                </div>
+                                <div class="col-lg-12">
+                                    <span style={{ fontWeight: 800, fontSize: '23px' }}>{sumInventoryRent}</span>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    <div class="col-lg-4">
+                        <div class={generalstyles.card + ' row m-0 p-3 w-100'}>
+                            <div style={{ fontSize: '17px' }} class="col-lg-12 mb-1">
+                                Inventory Rent Count
+                            </div>
+                            <div class="col-lg-12">
+                                <span style={{ fontWeight: 800, fontSize: '23px' }}>{countInventoryRent}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
                 <div class={' col-lg-12 col-md-12 col-sm-12 p-0 d-flex align-items-center justify-content-start '}>
                     <p class=" p-0 m-0 text-uppercase" style={{ fontSize: '15px' }}>
@@ -312,81 +381,76 @@ const InventorySettings = (props) => {
                     </div>
                 </div>
             </div>
+            {(inventorySettings?.type == 'rack' || inventorySettings?.type == 'box' || inventorySettings?.type == 'ballot') && (
+                <div class="col-lg-12 p-0 d-flex align-items-center justify-content-end">
+                    <button
+                        style={{ height: '35px' }}
+                        class={generalstyles.roundbutton + ' allcentered p-0'}
+                        onClick={async () => {
+                            setbuttonLoading(true);
+                            try {
+                                const { data } = await removeMerchantAssignmentFromInventoryMutation();
+                            } catch (error) {
+                                let errorMessage = 'An unexpected error occurred';
+                                if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                    errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                } else if (error.networkError) {
+                                    errorMessage = error.networkError.message || errorMessage;
+                                } else if (error.message) {
+                                    errorMessage = error.message;
+                                }
+
+                                NotificationManager.warning(errorMessage, 'Warning!');
+                                console.error('Error adding Inventory Rent:', error);
+                            }
+                            setbuttonLoading(false);
+                        }}
+                    >
+                        {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                        {!buttonLoading && <span>Remove</span>}
+                    </button>
+                </div>
+            )}
+
             {inventorySettings?.type == 'rack' && (
-                <div class="col-lg-12 p-0">
+                <div className="col-lg-12 p-0">
                     {fetchRacksQuery?.loading && (
-                        <div style={{ height: '70vh' }} class="row w-100 allcentered m-0">
+                        <div style={{ height: '70vh' }} className="row w-100 allcentered m-0">
                             <CircularProgress color="var(--primary)" width="60px" height="60px" duration="1s" />
                         </div>
                     )}
                     {fetchRacksQuery?.paginateRacks != undefined && (
                         <>
-                            {fetchRacksQuery?.paginateRacks?.data?.length == 0 && (
-                                <div style={{ height: '70vh' }} class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
-                                    <div class="row m-0 w-100">
-                                        <FaLayerGroup size={40} class=" col-lg-12" />
-                                        <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
+                            {fetchRacksQuery?.paginateRacks?.data?.length === 0 && (
+                                <div style={{ height: '70vh' }} className="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
+                                    <div className="row m-0 w-100">
+                                        <FaLayerGroup size={40} className=" col-lg-12" />
+                                        <div className="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
                                             No Racks
                                         </div>
                                     </div>
                                 </div>
                             )}
-                            <div class="row w-100 allcentered m-0">
-                                {fetchRacksQuery?.paginateRacks?.data?.map((item, index) => {
-                                    const levels1 = _.groupBy(item?.ballots, 'level');
-                                    var levels = _.map(levels1, (ballots, level) => {
-                                        return { level: level, ballots: ballots };
-                                    });
+                            <div className="row w-100 allcentered m-0">
+                                {fetchRacksQuery?.paginateRacks?.data?.map((item) => {
+                                    const isSelected = idsToBeRemoved.rackIds.includes(item.id);
 
                                     return (
-                                        <div class="col-lg-6 mb-2">
-                                            <div class="row m-0 w-100 p-2" style={{ border: '1px solid #eee', borderRadius: '15px', fontSize: '12px' }}>
-                                                <div class="col-lg-12 p-0">
-                                                    <div class="row m-0 w-100 d-flex align-items-center">
-                                                        <div class="col-lg-6 p-0" style={{ fontWeight: 700 }}>
+                                        <div key={item.id} className="col-lg-6 mb-2" onClick={() => toggleSelection('rack', item.id)}>
+                                            <div
+                                                className="row m-0 w-100 p-2"
+                                                style={{
+                                                    border: '1px solid #eee',
+                                                    borderRadius: '15px',
+                                                    fontSize: '12px',
+                                                    background: isSelected ? 'var(--secondary)' : 'transparent',
+                                                }}
+                                            >
+                                                <div className="col-lg-12 p-0">
+                                                    <div className="row m-0 w-100 d-flex align-items-center">
+                                                        <div className="col-lg-6 p-0" style={{ fontWeight: 700 }}>
                                                             Rack {item.name}
                                                         </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-12 p-0">
-                                                    <hr class="p-0 m-0" />
-                                                </div>
-                                                <div class="col-lg-12 p-0 mt-1">
-                                                    <div class="row m-0 w-100">
-                                                        {levels?.map((level, levelindex) => {
-                                                            return (
-                                                                <div class="col-lg-12 p-0">
-                                                                    <div class="row m-0 w-100 d-flex align-items-center">
-                                                                        Level {level?.level}:
-                                                                        {level?.ballots?.map((ballot, ballotindex) => {
-                                                                            return (
-                                                                                <div class="col-lg-12 p-0 mt-1">
-                                                                                    <div style={{ border: '1px solid #eee', borderRadius: '8px' }} class="row m-0 p-1 w-100 d-flex align-items-center">
-                                                                                        <div class="col-lg-6 p-0" style={{ fontWeight: 700 }}>
-                                                                                            {ballot?.name}
-                                                                                        </div>
-
-                                                                                        {ballot?.boxes?.map((box, boxIndex) => {
-                                                                                            return (
-                                                                                                <div
-                                                                                                    onClick={() => {
-                                                                                                        props?.setimportItemPayload({ ...props?.importItemPayload, boxId: box.id });
-                                                                                                        setstep(step + 1);
-                                                                                                    }}
-                                                                                                    class={'searchpill'}
-                                                                                                >
-                                                                                                    {box?.name}
-                                                                                                </div>
-                                                                                            );
-                                                                                        })}
-                                                                                    </div>
-                                                                                </div>
-                                                                            );
-                                                                        })}
-                                                                    </div>
-                                                                </div>
-                                                            );
-                                                        })}
                                                     </div>
                                                 </div>
                                             </div>
@@ -398,33 +462,44 @@ const InventorySettings = (props) => {
                     )}
                 </div>
             )}
+
             {inventorySettings?.type == 'box' && (
-                <div class="col-lg-12 p-0">
+                <div className="col-lg-12 p-0">
                     {fetchBoxesQuery?.loading && (
-                        <div style={{ height: '70vh' }} class="row w-100 allcentered m-0">
+                        <div style={{ height: '70vh' }} className="row w-100 allcentered m-0">
                             <CircularProgress color="var(--primary)" width="60px" height="60px" duration="1s" />
                         </div>
                     )}
                     {fetchBoxesQuery?.paginateBoxes != undefined && (
                         <>
-                            {fetchBoxesQuery?.paginateBoxes?.data?.length == 0 && (
-                                <div style={{ height: '70vh' }} class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
-                                    <div class="row m-0 w-100">
-                                        <FaLayerGroup size={40} class=" col-lg-12" />
-                                        <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
+                            {fetchBoxesQuery?.paginateBoxes?.data?.length === 0 && (
+                                <div style={{ height: '70vh' }} className="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
+                                    <div className="row m-0 w-100">
+                                        <FaLayerGroup size={40} className=" col-lg-12" />
+                                        <div className="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
                                             No Boxes
                                         </div>
                                     </div>
                                 </div>
                             )}
-                            <div class="row w-100 allcentered m-0">
-                                {fetchBoxesQuery?.paginateBoxes?.data?.map((item, index) => {
+                            <div className="row w-100 allcentered m-0">
+                                {fetchBoxesQuery?.paginateBoxes?.data?.map((item) => {
+                                    const isSelected = idsToBeRemoved.boxIds.includes(item.id);
+
                                     return (
-                                        <div class="col-lg-6 mb-2">
-                                            <div class="row m-0 w-100 p-2" style={{ border: '1px solid #eee', borderRadius: '15px', fontSize: '12px' }}>
-                                                <div class="col-lg-12 p-0">
-                                                    <div class="row m-0 w-100 d-flex align-items-center">
-                                                        <div class="col-lg-6 p-0" style={{ fontWeight: 700 }}>
+                                        <div key={item.id} className="col-lg-6 mb-2" onClick={() => toggleSelection('box', item.id)}>
+                                            <div
+                                                className="row m-0 w-100 p-2"
+                                                style={{
+                                                    border: '1px solid #eee',
+                                                    borderRadius: '15px',
+                                                    fontSize: '12px',
+                                                    background: isSelected ? 'var(--secondary)' : 'transparent',
+                                                }}
+                                            >
+                                                <div className="col-lg-12 p-0">
+                                                    <div className="row m-0 w-100 d-flex align-items-center">
+                                                        <div className="col-lg-6 p-0" style={{ fontWeight: 700 }}>
                                                             {item.name}
                                                         </div>
                                                     </div>
@@ -438,33 +513,44 @@ const InventorySettings = (props) => {
                     )}
                 </div>
             )}
+
             {inventorySettings?.type == 'ballot' && (
-                <div class="col-lg-12 p-0">
+                <div className="col-lg-12 p-0">
                     {fetchBallotsQuery?.loading && (
-                        <div style={{ height: '70vh' }} class="row w-100 allcentered m-0">
+                        <div style={{ height: '70vh' }} className="row w-100 allcentered m-0">
                             <CircularProgress color="var(--primary)" width="60px" height="60px" duration="1s" />
                         </div>
                     )}
-                    {fetchBallotsQuery?.paginaallotsxes != undefined && (
+                    {fetchBallotsQuery?.paginateBallots != undefined && (
                         <>
-                            {fetchBallotsQuery?.paginateBallots?.data?.length == 0 && (
-                                <div style={{ height: '70vh' }} class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
-                                    <div class="row m-0 w-100">
-                                        <FaLayerGroup size={40} class=" col-lg-12" />
-                                        <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
+                            {fetchBallotsQuery?.paginateBallots?.data?.length === 0 && (
+                                <div style={{ height: '70vh' }} className="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
+                                    <div className="row m-0 w-100">
+                                        <FaLayerGroup size={40} className=" col-lg-12" />
+                                        <div className="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
                                             No Ballots
                                         </div>
                                     </div>
                                 </div>
                             )}
-                            <div class="row w-100 allcentered m-0">
-                                {fetchBallotsQuery?.paginateBallots?.data?.map((item, index) => {
+                            <div className="row w-100 allcentered m-0">
+                                {fetchBallotsQuery?.paginateBallots?.data?.map((item) => {
+                                    const isSelected = idsToBeRemoved.ballotIds.includes(item.id);
+
                                     return (
-                                        <div class="col-lg-6 mb-2">
-                                            <div class="row m-0 w-100 p-2" style={{ border: '1px solid #eee', borderRadius: '15px', fontSize: '12px' }}>
-                                                <div class="col-lg-12 p-0">
-                                                    <div class="row m-0 w-100 d-flex align-items-center">
-                                                        <div class="col-lg-6 p-0" style={{ fontWeight: 700 }}>
+                                        <div key={item.id} className="col-lg-6 mb-2" onClick={() => toggleSelection('ballot', item.id)}>
+                                            <div
+                                                className="row m-0 w-100 p-2"
+                                                style={{
+                                                    border: '1px solid #eee',
+                                                    borderRadius: '15px',
+                                                    fontSize: '12px',
+                                                    background: isSelected ? 'var(--secondary)' : 'transparent',
+                                                }}
+                                            >
+                                                <div className="col-lg-12 p-0">
+                                                    <div className="row m-0 w-100 d-flex align-items-center">
+                                                        <div className="col-lg-6 p-0" style={{ fontWeight: 700 }}>
                                                             {item.name}
                                                         </div>
                                                     </div>

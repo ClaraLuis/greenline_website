@@ -1289,6 +1289,14 @@ const API = () => {
         `;
     };
 
+    const countInventoryRentTransaction = () => {
+        return gql`
+            query countInventoryRentTransaction($input: InventoryRentTransactionPageInput!) {
+                countInventoryRentTransaction(input: $input)
+            }
+        `;
+    };
+
     const fetchItemHistory = (payload) => {
         return gql`
             query paginateItemHistory($input: PaginateItemHistoryInput!) {
@@ -1801,6 +1809,7 @@ const API = () => {
         paginateBoxes,
         paginateBallots,
         sumInventoryRentTransaction,
+        countInventoryRentTransaction,
         fetchItemHistory,
         exportItem,
         importItem,
