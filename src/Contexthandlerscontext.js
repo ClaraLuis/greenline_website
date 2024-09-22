@@ -324,6 +324,18 @@ export const Contexthandlerscontext_provider = (props) => {
                         permissionpage: [1],
                         show: isAuth([1, 53, 36]),
                     },
+                    {
+                        name: 'Facilities',
+                        isselected: false,
+                        icon: (
+                            <i class={'allcentered'}>
+                                <LuPackageOpen size={18} />
+                            </i>
+                        ),
+                        path: '/facilities',
+                        permissionpage: [1],
+                        show: isAuth([1, 53, 36]),
+                    },
                 ],
             },
             {

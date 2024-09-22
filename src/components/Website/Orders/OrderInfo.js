@@ -528,6 +528,8 @@ const OrderInfo = (props) => {
                                                                         <span style={{ fontSize: '14px', fontWeight: 400 }}>
                                                                             {historyItem?.status?.split(/(?=[A-Z])/).join(' ')}, {historyItem?.amount} {historyItem?.currency}
                                                                         </span>{' '}
+                                                                        <br />
+                                                                        <span style={{ fontSize: '14px', fontWeight: 400 }}>{historyItem?.auditedBy?.name}</span>{' '}
                                                                     </TimelineContent>
                                                                 </TimelineItem>
                                                             );

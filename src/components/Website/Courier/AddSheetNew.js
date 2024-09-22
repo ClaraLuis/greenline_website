@@ -53,7 +53,7 @@ const AddSheetNew = (props) => {
         orderIds: sheetpayload?.orderIds,
     });
     const [updateupdateOrderIdsStatusMutation] = useMutationGQL(updateupdateOrderIdsStatus(), {
-        status: 'arrivedAtHub',
+        status: window.location.pathname == '/facilities' ? 'arrivedAtSortFacilities' : 'arrivedAtHub',
         ids: sheetpayload?.orderIds,
     });
 
@@ -191,7 +191,7 @@ const AddSheetNew = (props) => {
         <div style={{ minHeight: '100vh' }} class="row m-0 w-100 p-md-2 pt-2 d-flex align-items-start">
             <div className={' col-lg-12 p-1 py-0 '}>
                 <div style={{}} class="row m-0 w-100">
-                    {window.location.pathname != '/arrivedathub' && (
+                    {window.location.pathname == '/addsheet' && (
                         <div class="col-lg-12 mb-3 px-1">
                             <div class={generalstyles.card + ' row m-0 w-100 p-2 py-3 '} style={{}}>
                                 {queryParameters.get('sheetId') != undefined && (
@@ -331,7 +331,7 @@ const AddSheetNew = (props) => {
                     <div style={{ position: 'fixed', bottom: 0, width: '77%' }} class=" mb-3 px-1">
                         <div class={generalstyles.card + ' row m-0 w-100 p-2 py-3 d-flex justify-content-end '}>
                             <div class="col-lg-2 p-0 allcentered">
-                                {window.location.pathname != '/arrivedathub' && (
+                                {window.location.pathname == '/addsheet' && (
                                     <button
                                         // style={{ height: '30px', minWidth: '80%' }}
                                         class={generalstyles.roundbutton + ' allcentered p-0'}
@@ -357,10 +357,10 @@ const AddSheetNew = (props) => {
                                         {/* Add Manifest */}
                                     </button>
                                 )}
-                                {window.location.pathname == '/arrivedathub' && (
+                                {window.location.pathname != '/addsheet' && (
                                     <button
-                                        // style={{ height: '30px', minWidth: '80%' }}
-                                        class={generalstyles.roundbutton + ' allcentered p-0'}
+                                        style={{ height: '30px', minWidth: '170px' }}
+                                        class={generalstyles.roundbutton + ' allcentered  p-0'}
                                         onClick={async () => {
                                             setbuttonLoading(true);
                                             if (sheetpayload?.orderIds?.length != 0) {
@@ -391,7 +391,7 @@ const AddSheetNew = (props) => {
                                         disabled={buttonLoading}
                                     >
                                         {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                        {!buttonLoading && <span>Arrived at hub</span>}
+                                        {!buttonLoading && <span>{window.location.pathname == '/facilities' ? 'Arrived At Sort Facilities' : 'Arrived at hub'}</span>}
                                         {/* Add Manifest */}
                                     </button>
                                 )}

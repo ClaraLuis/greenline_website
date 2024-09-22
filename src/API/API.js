@@ -595,6 +595,10 @@ const API = () => {
                         auditedById
                         createdAt
                         lastModified
+                        auditedBy {
+                            name
+                            email
+                        }
                     }
                     cursor
                 }
