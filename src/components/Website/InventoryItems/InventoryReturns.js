@@ -53,7 +53,7 @@ const InventoryReturns = (props) => {
     const { refetch: refetchInventoryItemReturnsQuery } = useQueryGQL('', fetchInventoryItemReturns(), filter);
 
     const [createReturnPackageMutation] = useMutationGQL(createReturnPackage(), {
-        orderItemorderItemIds: cartItems,
+        orderItemIds: cartItems,
         type: 'inventory',
         toInventoryId: packagepayload?.toInventoryId,
     });
@@ -230,6 +230,7 @@ const InventoryReturns = (props) => {
                                 onClick={(option) => {
                                     setpackagepayload({ ...packagepayload, toInventoryId: option?.id });
                                 }}
+                                removeAll={true}
                             />
                         </div>
 

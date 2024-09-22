@@ -927,6 +927,26 @@ const API = () => {
         `;
     };
 
+    const findReturnPackageBySku = (payload) => {
+        return gql`
+            query findReturnPackageBySku($sku: String!) {
+                findReturnPackageBySku(sku: $sku) {
+                    id
+                    sku
+                    type
+                    hubId
+                    courierId
+                    toInventoryId
+                    toMerchantId
+                    status
+                    createdAt
+                    lastModified
+                    count
+                }
+            }
+        `;
+    };
+
     const fetcOneInventory = (inventoryId) => {
         return gql`
         query findSingleInventory{
@@ -1894,6 +1914,7 @@ const API = () => {
         updateMerchant,
         findAllZones,
         deleteCourierSheet,
+        findReturnPackageBySku,
     };
 };
 export default API;

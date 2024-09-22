@@ -22,13 +22,14 @@ const InventoryPackages = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, returnPackageStatusContext, isAuth, dateformatter } = useContext(Contexthandlerscontext);
-    const { fetchPackages, useQueryGQL } = API();
+    const { fetchPackages, useQueryGQL, findReturnPackageBySku, useLazyQueryGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [packagepayload, setpackagepayload] = useState({
         ids: [],
         userId: '',
     });
+    const [findReturnPackageBySkuQuery] = useLazyQueryGQL(findReturnPackageBySku());
 
     const [filter, setfilter] = useState({
         limit: 20,
@@ -50,16 +51,38 @@ const InventoryPackages = (props) => {
     const [search, setSearch] = useState('');
 
     useEffect(() => {
-        const handleKeyDown = (e) => {
+        const handleKeyDown = async (e) => {
             // Ignore control keys and functional keys
             if (e.ctrlKey || e.altKey || e.metaKey || e.key === 'CapsLock' || e.key === 'Shift' || e.key === 'Tab' || e.key === 'Backspace' || e.key === 'Control' || e.key === 'Alt') {
                 return;
             }
 
             if (e.key === 'Enter') {
-                setfilter({ ...filter, sku: barcode.length === 0 ? undefined : barcode });
-                setSearch(barcode); // Update the search state with the scanned barcode
-                // setBarcode(''); // Clear the barcode state
+                const finalBarcode = barcode; // Add the last character (Enter) before clearing
+                setfilter({ ...filter, sku: finalBarcode.length === 0 ? undefined : finalBarcode });
+                setSearch(barcode); // Update the search state with the full scanned barcode
+                setBarcode(''); // Clear the barcode state
+
+                try {
+                    var { data } = await findReturnPackageBySkuQuery({
+                        variables: {
+                            sku: finalBarcode,
+                        },
+                    });
+                    if (data?.findReturnPackageBySku != null) {
+                        history.push('/returnpackageinfo?packageId=' + data?.findReturnPackageBySku?.id);
+                    }
+                } catch (e) {
+                    let errorMessage = 'An unexpected error occurred';
+                    if (e.graphQLErrors && e.graphQLErrors.length > 0) {
+                        errorMessage = e.graphQLErrors[0].message || errorMessage;
+                    } else if (e.networkError) {
+                        errorMessage = e.networkError.message || errorMessage;
+                    } else if (e.message) {
+                        errorMessage = e.message;
+                    }
+                    NotificationManager.warning(errorMessage, 'Warning!');
+                }
             } else {
                 setBarcode((prevBarcode) => prevBarcode + e.key);
             }

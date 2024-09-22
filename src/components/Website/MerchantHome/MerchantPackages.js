@@ -25,7 +25,7 @@ const MerchantPackages = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setchosenPackageContext, returnPackageStatusContext, isAuth, dateformatter } = useContext(Contexthandlerscontext);
-    const { fetchPackages, useQueryGQL } = API();
+    const { fetchPackages, useQueryGQL, findReturnPackageBySku, useLazyQueryGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [packagepayload, setpackagepayload] = useState({
@@ -49,6 +49,53 @@ const MerchantPackages = (props) => {
         setpageactive_context('/merchantpackages');
     }, []);
 
+    const [findReturnPackageBySkuQuery] = useLazyQueryGQL(findReturnPackageBySku());
+
+    const [barcode, setBarcode] = useState('');
+
+    useEffect(() => {
+        const handleKeyDown = async (e) => {
+            // Ignore control keys and functional keys
+            if (e.ctrlKey || e.altKey || e.metaKey || e.key === 'CapsLock' || e.key === 'Shift' || e.key === 'Tab' || e.key === 'Backspace' || e.key === 'Control' || e.key === 'Alt') {
+                return;
+            }
+
+            if (e.key === 'Enter') {
+                const finalBarcode = barcode; // Add the last character (Enter) before clearing
+                setBarcode(''); // Clear the barcode state
+
+                try {
+                    var { data } = await findReturnPackageBySkuQuery({
+                        variables: {
+                            sku: finalBarcode,
+                        },
+                    });
+                    if (data?.findReturnPackageBySku != null) {
+                        setchosenPackageContext(data?.findReturnPackageBySku);
+                        history.push('/merchantreturnpackageinfo?packageId=' + data?.findReturnPackageBySku?.id);
+                    }
+                } catch (e) {
+                    let errorMessage = 'An unexpected error occurred';
+                    if (e.graphQLErrors && e.graphQLErrors.length > 0) {
+                        errorMessage = e.graphQLErrors[0].message || errorMessage;
+                    } else if (e.networkError) {
+                        errorMessage = e.networkError.message || errorMessage;
+                    } else if (e.message) {
+                        errorMessage = e.message;
+                    }
+                    NotificationManager.warning(errorMessage, 'Warning!');
+                }
+            } else {
+                setBarcode((prevBarcode) => prevBarcode + e.key);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [barcode]);
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div class="row m-0 w-100 d-flex  justify-content-start mt-sm-2 pb-5 pb-md-0">
