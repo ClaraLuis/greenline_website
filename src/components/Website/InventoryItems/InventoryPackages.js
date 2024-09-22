@@ -183,13 +183,13 @@ const InventoryPackages = (props) => {
                                 {' '}
                                 <div class="col-lg-12 p-0 mb-3">
                                     <Pagination
-                                        beforeCursor={fetchPackagesQuery?.data?.PaginateReturnPackages?.cursor?.beforeCursor}
-                                        afterCursor={fetchPackagesQuery?.data?.PaginateReturnPackages?.cursor?.afterCursor}
+                                        beforeCursor={fetchPackagesQuery?.data?.paginateReturnPackages?.cursor?.beforeCursor}
+                                        afterCursor={fetchPackagesQuery?.data?.paginateReturnPackages?.cursor?.afterCursor}
                                         filter={filter}
                                         setfilter={setfilter}
                                     />
                                 </div>
-                                {fetchPackagesQuery?.data?.PaginateReturnPackages?.data?.length == 0 && (
+                                {fetchPackagesQuery?.data?.paginateReturnPackages?.data?.length == 0 && (
                                     <div style={{ height: '70vh' }} class="col-lg-12 p-0 w-100 allcentered align-items-center m-0 text-lightprimary">
                                         <div class="row m-0 w-100">
                                             <FaLayerGroup size={40} class=" col-lg-12" />
@@ -199,7 +199,7 @@ const InventoryPackages = (props) => {
                                         </div>
                                     </div>
                                 )}
-                                {fetchPackagesQuery?.data?.PaginateReturnPackages?.data?.map((item, index) => {
+                                {fetchPackagesQuery?.data?.paginateReturnPackages?.data?.map((item, index) => {
                                     return (
                                         <div className="col-lg-4 p-1">
                                             <div
@@ -255,8 +255,8 @@ const InventoryPackages = (props) => {
                                 })}
                                 <div class="col-lg-12 p-0">
                                     <Pagination
-                                        beforeCursor={fetchPackagesQuery?.data?.PaginateReturnPackages?.cursor?.beforeCursor}
-                                        afterCursor={fetchPackagesQuery?.data?.PaginateReturnPackages?.cursor?.afterCursor}
+                                        beforeCursor={fetchPackagesQuery?.data?.paginateReturnPackages?.cursor?.beforeCursor}
+                                        afterCursor={fetchPackagesQuery?.data?.paginateReturnPackages?.cursor?.afterCursor}
                                         filter={filter}
                                         setfilter={setfilter}
                                     />

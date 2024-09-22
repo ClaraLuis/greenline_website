@@ -1707,8 +1707,8 @@ const API = () => {
 
     const fetchPackages = (payload) => {
         return gql`
-            query PaginateReturnPackages($input: PaginateReturnPackageInput!) {
-                PaginateReturnPackages(input: $input) {
+            query paginateReturnPackages($input: PaginateReturnPackageInput!) {
+                paginateReturnPackages(input: $input) {
                     data {
                         id
                         sku

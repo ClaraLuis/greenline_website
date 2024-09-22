@@ -116,6 +116,8 @@ const Login = () => {
                                 NotificationManager.warning('Please Enter Your Password', 'Warning');
                             } else if (error?.code == 'auth/wrong-password') {
                                 NotificationManager.warning('Wrong Password', 'Warning');
+                            } else if (error?.code == 'auth/too-many-requests') {
+                                NotificationManager.warning('Too Many Attempts Try Later', 'Warning');
                             }
                         });
                 }

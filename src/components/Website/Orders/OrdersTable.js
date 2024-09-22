@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
@@ -7,6 +7,7 @@ import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
 import { FaEllipsisV, FaLayerGroup, FaShopify } from 'react-icons/fa';
 import { components } from 'react-select';
+import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 
 import { Dropdown, Modal } from 'react-bootstrap';
 
@@ -24,11 +25,14 @@ const { ValueContainer, Placeholder } = components;
 const OrdersTable = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { orderStatusEnumContext, dateformatter, orderTypeContext, setchosenOrderContext, isAuth } = useContext(Contexthandlerscontext);
+    const { orderStatusEnumContext, dateformatter, orderTypeContext, setchosenOrderContext, chosenOrderContext, isAuth } = useContext(Contexthandlerscontext);
     const { requestOrderReturn, useMutationGQL } = API();
     const { lang, langdetect } = useContext(LanguageContext);
 
     const [changestatusmodal, setchangestatusmodal] = useState(false);
+    const [itemScanned, setitemScanned] = useState([]);
+
+    const [fulfilllModal, setfulfilllModal] = useState(false);
     const [buttonLoading, setbuttonLoading] = useState(false);
     const [submit, setsubmit] = useState(false);
     const [returnOrderModal, setreturnOrderModal] = useState(false);
@@ -91,6 +95,53 @@ const OrdersTable = (props) => {
         freeShipping: requestReturnPayload?.freeShipping == 0 ? false : true,
         merchantId: isAuth([1]) ? requestReturnPayload?.item?.merchant?.id : undefined,
     });
+
+    const [search, setsearch] = useState('');
+    const [barcode, setBarcode] = useState('');
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            // Ignore control keys and functional keys
+            if (e.ctrlKey || e.altKey || e.metaKey || e.key === 'CapsLock' || e.key === 'Shift' || e.key === 'Tab' || e.key === 'Backspace' || e.key === 'Control' || e.key === 'Alt') {
+                return;
+            }
+
+            if (e.key === 'Enter') {
+                // Check if the modal is open and barcode is not empty
+                if (fulfilllModal && barcode) {
+                    const scannedSku = barcode.trim();
+                    const orderItems = chosenOrderContext?.orderItems || [];
+
+                    // Check if the scanned SKU exists in the order items
+                    const matchedItem = orderItems.find((item) => item.info.sku === scannedSku);
+
+                    if (matchedItem) {
+                        // If the item is not in the scanned items, add it
+                        if (!itemScanned.some((scanned) => scanned.info.sku === scannedSku)) {
+                            setitemScanned((prevScanned) => [...prevScanned, matchedItem]);
+                        } else {
+                            alert(`Item with SKU ${scannedSku} is already scanned.`);
+                        }
+                    } else {
+                        alert(`No item found with SKU ${scannedSku}`);
+                    }
+
+                    // Clear barcode after processing
+                    setBarcode('');
+                    setsearch('');
+                }
+            } else {
+                // Update barcode state as the user types
+                setBarcode((prevBarcode) => prevBarcode + e.key);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [barcode, fulfilllModal, chosenOrderContext, itemScanned]);
+
     return (
         <>
             {props?.fetchOrdersQuery?.loading && (
@@ -227,6 +278,16 @@ const OrdersTable = (props) => {
                                                                     class="py-2"
                                                                 >
                                                                     <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>View order</p>
+                                                                </Dropdown.Item>
+                                                                <Dropdown.Item
+                                                                    onClick={async (e) => {
+                                                                        e.stopPropagation();
+                                                                        await setchosenOrderContext(item);
+                                                                        setfulfilllModal(true);
+                                                                    }}
+                                                                    class="py-2"
+                                                                >
+                                                                    <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Fulfill Order</p>
                                                                 </Dropdown.Item>
                                                                 {props?.srcFrom == 'merchant' && item?.type == 'delivery' && (
                                                                     <Dropdown.Item
@@ -463,11 +524,11 @@ const OrdersTable = (props) => {
                                                             <span style={{ fontWeight: 600 }}>{item?.courier?.name}</span>
                                                         </div>
                                                     )}
-                                                    {outOfStock && props?.srcFrom == 'inventory' && (
+                                                    {/* {outOfStock && props?.srcFrom == 'inventory' && (
                                                         <div class="col-lg-6 p-0 d-flex align-items-center">
                                                             <div className={' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 mr-1 '}>{diffInDays} days late</div>
                                                         </div>
-                                                    )}
+                                                    )} */}
                                                     <div class="col-lg-6 p-0 d-flex justify-content-end">
                                                         <p className={' m-0 p-0 wordbreak  '}>{dateformatter(item?.createdAt)}</p>
                                                     </div>
@@ -720,6 +781,56 @@ const OrdersTable = (props) => {
                                 </div>
                             </>
                         ))}
+                    </div>
+                </Modal.Body>
+            </Modal>
+
+            <Modal
+                show={fulfilllModal}
+                onHide={() => {
+                    setfulfilllModal(false);
+                }}
+                centered
+                size={'md'}
+            >
+                <Modal.Header>
+                    <div className="row w-100 m-0 p-0">
+                        <div class="col-lg-6 pt-3 ">
+                            <div className="row w-100 m-0 p-0">Fulfill Order</div>
+                        </div>
+                        <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
+                            <div
+                                class={'close-modal-container'}
+                                onClick={() => {
+                                    setfulfilllModal(false);
+                                }}
+                            >
+                                <IoMdClose />
+                            </div>
+                        </div>{' '}
+                    </div>
+                </Modal.Header>
+                <Modal.Body>
+                    <div class="row m-0 w-100 py-2">
+                        {itemScanned?.map((item, index) => {
+                            return (
+                                <div class="co-lg-12 mb-3">
+                                    <div class="row m-0 w-100 d-flex align-items-center">
+                                        <div style={{ width: '55px', height: '50px', border: '1px solid #eee', borderRadius: '10px' }}>
+                                            <img src={item?.info?.imageUrl} style={{ width: '100%', height: '100%', borderRadius: '10px' }} />
+                                        </div>
+                                        <div class="ml-2">
+                                            <div class="col-lg-12 p-0" style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                {item?.info?.name}
+                                            </div>
+                                            <div class="col-lg-12 p-0" style={{ fontWeight: 500, fontSize: '13px', color: 'lightgray' }}>
+                                                {item?.info?.sku}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        })}
                     </div>
                 </Modal.Body>
             </Modal>

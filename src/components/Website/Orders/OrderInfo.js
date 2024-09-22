@@ -265,11 +265,11 @@ const OrderInfo = (props) => {
                                             )}
                                             <div class="col-lg-12 p-0 ">
                                                 <div class="row m-0 w-100 d-flex justify-content-end align-items-center mt-2">
-                                                    {queryParameters?.get('type') == 'inventory' && (
+                                                    {/* {queryParameters?.get('type') == 'inventory' && (
                                                         <div class="col-lg-6 p-0 d-flex align-item-center">
                                                             <div className={' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 mr-1 '}>{diffInDays} days late</div>
                                                         </div>
-                                                    )}
+                                                    )} */}
 
                                                     <div style={{ fontSize: '12px' }} class="col-lg-6 p-0 d-flex justify-content-end ">
                                                         <p className={' m-0 p-0 wordbreak  '}>{dateformatter(chosenOrderContext?.orderDate)}</p>
