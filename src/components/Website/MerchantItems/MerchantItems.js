@@ -955,6 +955,7 @@ keep data consistent.</span></p>
                                 <ItemsTable
                                     clickable={true}
                                     actiononclick={(item) => {
+                                        setselectedVariants([]);
                                         setvariantModal({ open: true, data: item?.itemVariants });
                                     }}
                                     card="col-lg-3"

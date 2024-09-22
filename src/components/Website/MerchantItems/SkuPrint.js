@@ -24,7 +24,7 @@ const SkuPrint = ({ skus }) => {
                 content={() => componentRef.current}
             />
             <div style={{ display: 'none' }} className="col-lg-12">
-                <div style={{ width: '5cm', height: '3cm' }} ref={componentRef} className="print-container row m-0 w-100">
+                <div style={{ width: '5cm', height: '3cm' }} ref={componentRef} className="print-container row m-0 w-100 pt-2">
                     {skus.map((item, index) => (
                         <Sku style={{ width: '5cm', height: '3cm' }} key={index} item={item?.item} />
                     ))}

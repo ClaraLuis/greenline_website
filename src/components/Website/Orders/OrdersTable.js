@@ -858,6 +858,7 @@ const OrdersTable = (props) => {
 
                                         NotificationManager.warning(errorMessage, 'Warning!');
                                     }
+                                    setbuttonLoading(false);
                                 }}
                             >
                                 {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
