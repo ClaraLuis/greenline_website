@@ -196,14 +196,24 @@ const Login = () => {
                                                 disabled={isValid}
                                                 name="email"
                                                 type="email"
-                                                class={'inputfeild'}
+                                                className="inputfeild" // Use className instead of class in React
                                                 value={email}
                                                 onChange={(event) => {
-                                                    setemail(event.target.value);
-                                                    setisValid(false); // Reset isValid when the email changes
-                                                    setinFirebase(false); // Also reset inFirebase
-                                                    setpassword(''); // Clear the password field
-                                                    setconfirmpassword(''); // Clear the confirm password field
+                                                    const input = event.target.value;
+
+                                                    // Regular expression to allow only English letters, numbers, and basic email characters
+                                                    const englishOnlyRegex = /^[a-zA-Z0-9@._-]*$/;
+
+                                                    // If the input is valid (only English characters and valid email symbols), update the state
+                                                    if (englishOnlyRegex.test(input)) {
+                                                        setemail(input);
+                                                        setisValid(false); // Reset isValid when the email changes
+                                                        setinFirebase(false); // Also reset inFirebase
+                                                        setpassword(''); // Clear the password field
+                                                        setconfirmpassword(''); // Clear the confirm password field
+                                                    } else {
+                                                        alert('Only English letters and valid email characters are allowed.');
+                                                    }
                                                 }}
                                             />
 
@@ -223,28 +233,45 @@ const Login = () => {
                                         </div>
                                         {isValid && (
                                             <>
-                                                <div class="col-lg-12 flex-column mb-4 p-0 p-md-0">
-                                                    <p class="font-15 font-weight-500 mb-1"> Password </p>
+                                                <div className="col-lg-12 flex-column mb-4 p-0 p-md-0">
+                                                    <p className="font-15 font-weight-500 mb-1"> Password </p>
                                                     <input
                                                         name="password"
                                                         type="password"
-                                                        class={'inputfeild'}
+                                                        className="inputfeild" // Use className in React
                                                         value={password}
                                                         onChange={(event) => {
-                                                            setpassword(event.target.value);
+                                                            const input = event.target.value;
+
+                                                            // Regular expression to allow only English letters, numbers, and basic symbols for password
+                                                            const validPasswordRegex = /^[a-zA-Z0-9!@#$%^&*()_+=-]*$/;
+
+                                                            if (validPasswordRegex.test(input)) {
+                                                                setpassword(input);
+                                                            } else {
+                                                                alert('Only English letters, numbers, and basic symbols are allowed.');
+                                                            }
                                                         }}
                                                     />
                                                 </div>
+
                                                 {!inFirebase && (
-                                                    <div class="col-lg-12 flex-column mb-4 p-0 p-md-0">
-                                                        <p class="font-15 font-weight-500 mb-1">Confirm Password </p>
+                                                    <div className="col-lg-12 flex-column mb-4 p-0 p-md-0">
+                                                        <p className="font-15 font-weight-500 mb-1">Confirm Password </p>
                                                         <input
-                                                            name="password"
+                                                            name="confirmpassword"
                                                             type="password"
-                                                            class={'inputfeild'}
+                                                            className="inputfeild"
                                                             value={confirmpassword}
                                                             onChange={(event) => {
-                                                                setconfirmpassword(event.target.value);
+                                                                const input = event.target.value;
+
+                                                                // Use the same regex to validate confirm password input
+                                                                if (validPasswordRegex.test(input)) {
+                                                                    setconfirmpassword(input);
+                                                                } else {
+                                                                    alert('Only English letters, numbers, and basic symbols are allowed.');
+                                                                }
                                                             }}
                                                         />
                                                     </div>
