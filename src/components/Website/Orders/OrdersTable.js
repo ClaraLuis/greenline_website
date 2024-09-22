@@ -291,16 +291,19 @@ const OrdersTable = (props) => {
                                                                 >
                                                                     <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>View order</p>
                                                                 </Dropdown.Item>
-                                                                <Dropdown.Item
-                                                                    onClick={async (e) => {
-                                                                        e.stopPropagation();
-                                                                        await setchosenOrderContext(item);
-                                                                        setfulfilllModal(true);
-                                                                    }}
-                                                                    class="py-2"
-                                                                >
-                                                                    <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Fulfill Order</p>
-                                                                </Dropdown.Item>
+                                                                {window.location.pathname == 'handpicked' && (
+                                                                    <Dropdown.Item
+                                                                        onClick={async (e) => {
+                                                                            e.stopPropagation();
+                                                                            await setchosenOrderContext(item);
+                                                                            setfulfilllModal(true);
+                                                                        }}
+                                                                        class="py-2"
+                                                                    >
+                                                                        <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Fulfill Order</p>
+                                                                    </Dropdown.Item>
+                                                                )}
+
                                                                 {props?.srcFrom == 'merchant' && item?.type == 'delivery' && (
                                                                     <Dropdown.Item
                                                                         onClick={() => {

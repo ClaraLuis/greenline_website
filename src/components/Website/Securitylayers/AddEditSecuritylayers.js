@@ -10,8 +10,10 @@ import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import API from '../../../API/API';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
+import Cookies from 'universal-cookie';
 
 const AddEditSecuritylayers = (props) => {
+    const cookies = new Cookies();
     const { lang, langdetect } = useContext(LanguageContext);
     const { useQueryGQL, fetchUsers, useMutationGQL, updateUserRoles, findRoles } = API();
 
@@ -42,8 +44,19 @@ const AddEditSecuritylayers = (props) => {
     useEffect(() => {
         if (findRolesQuery?.data?.findRoles) {
             const roles = _.groupBy(findRolesQuery?.data?.findRoles, 'type');
-            const rolestemp = _.map(roles, (roles, type) => ({ type, roles }));
-            setrolesarray(rolestemp);
+            const rolestemp = _.map(roles, (roles, type) => {
+                // Filter out 'editOrderStatus' from the 'roles' array under 'order' type
+                if (type === 'order' && cookies.get('merchantId')) {
+                    roles = roles.filter((role) => role.name !== 'editOrderStatus');
+                }
+                return { type, roles };
+            });
+
+            if (cookies.get('merchantId')) {
+                setrolesarray(rolestemp?.filter((e) => e.type == 'merchant' || e.type == 'order'));
+            } else {
+                setrolesarray(rolestemp);
+            }
         }
     }, [findRolesQuery?.data?.findRoles]);
 

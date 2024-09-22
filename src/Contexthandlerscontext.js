@@ -756,7 +756,7 @@ export const Contexthandlerscontext_provider = (props) => {
         { label: 'Assigned to Courier', value: 'assignedToCourier' },
         { label: 'On The Way', value: 'onTheWay' },
         { label: 'Completed', value: 'completed' },
-        { label: 'Canceled', value: 'canceled' },
+        { label: 'Cancelled ', value: 'cancelled ' },
         { label: 'Rescheduled', value: 'rescheduled' },
         { label: 'Returned', value: 'returned' },
         { label: 'Supplies Delivered', value: 'suppliesDelivered' },

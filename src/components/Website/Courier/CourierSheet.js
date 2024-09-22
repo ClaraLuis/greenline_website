@@ -909,14 +909,14 @@ const CourierSheet = (props) => {
                                         { label: 'Delivered', value: 'delivered' },
                                         { label: 'Postponed', value: 'postponed' },
                                         { label: 'Unreachable', value: 'unreachable' },
-                                        { label: 'Canceled', value: 'canceled' },
+                                        { label: 'Cancelled ', value: 'cancelled ' },
                                     ]}
                                     styles={defaultstyles}
                                     value={[
                                         { label: 'Delivered', value: 'delivered' },
                                         { label: 'Postponed', value: 'postponed' },
                                         { label: 'Unreachable', value: 'unreachable' },
-                                        { label: 'Canceled', value: 'canceled' },
+                                        { label: 'Cancelled ', value: 'cancelled ' },
                                     ].filter((option) => option.value == statuspayload?.status)}
                                     onChange={(option) => {
                                         setstatuspayload({ ...statuspayload, status: option.value, step: 1 });
@@ -927,7 +927,7 @@ const CourierSheet = (props) => {
                     )}
                     {statuspayload?.step == 1 && (
                         <div class="row m-0 w-100 py-2">
-                            {statuspayload?.status == 'canceled' && (
+                            {statuspayload?.status == 'cancelled ' && (
                                 <div class={'col-lg-12 mb-3'}>
                                     <label for="name" class={formstyles.form__label}>
                                         Shipping
@@ -1122,12 +1122,12 @@ const CourierSheet = (props) => {
                                                 </label>
                                                 <Select
                                                     options={[
-                                                        { label: 'Canceled', value: 'canceled' },
+                                                        { label: 'Cancelled ', value: 'cancelled ' },
                                                         { label: 'Returned', value: 'returned' },
                                                     ]}
                                                     styles={defaultstyles}
                                                     value={[
-                                                        { label: 'Canceled', value: 'canceled' },
+                                                        { label: 'Cancelled ', value: 'cancelled ' },
                                                         { label: 'Returned', value: 'returned' },
                                                     ].filter((option) => option.value == statuspayload?.returnStatus)}
                                                     onChange={(option) => {
