@@ -1044,6 +1044,16 @@ keep data consistent.</span></p>
                             <div className="row w-100 m-0 p-0">Import CSV</div>
                         </div>
                         <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
+                            <button
+                                style={{ height: '35px' }}
+                                class={generalstyles.roundbutton + '  mb-1 mx-2 '}
+                                disabled={buttonLoading}
+                                onClick={async () => {
+                                    handleDownload();
+                                }}
+                            >
+                                Download Template
+                            </button>
                             <div
                                 class={'close-modal-container'}
                                 onClick={() => {
@@ -1112,18 +1122,6 @@ keep data consistent.</span></p>
                             >
                                 {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
                                 {!buttonLoading && <>{'Import'}</>}
-                            </button>
-
-                            <button
-                                style={{ height: '35px' }}
-                                class={generalstyles.roundbutton + '  mb-1 mx-2 '}
-                                disabled={buttonLoading}
-                                onClick={async () => {
-                                    handleDownload();
-                                }}
-                            >
-                                {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                {!buttonLoading && <>{'Export'}</>}
                             </button>
                         </div>
 
