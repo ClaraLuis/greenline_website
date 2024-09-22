@@ -26,7 +26,7 @@ const OrdersTable = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { orderStatusEnumContext, dateformatter, orderTypeContext, setchosenOrderContext, chosenOrderContext, isAuth } = useContext(Contexthandlerscontext);
-    const { requestOrderReturn, useMutationGQL } = API();
+    const { requestOrderReturn, useMutationGQL, updateOrdersStatus } = API();
     const { lang, langdetect } = useContext(LanguageContext);
 
     const [changestatusmodal, setchangestatusmodal] = useState(false);
@@ -95,31 +95,41 @@ const OrdersTable = (props) => {
         freeShipping: requestReturnPayload?.freeShipping == 0 ? false : true,
         merchantId: isAuth([1]) ? requestReturnPayload?.item?.merchant?.id : undefined,
     });
+    const [updateOrdersStatusMutation] = useMutationGQL(updateOrdersStatus(), {
+        status: 'fulfilled',
+        sheetOrderId: chosenOrderContext?.id,
+    });
 
     const [search, setsearch] = useState('');
     const [barcode, setBarcode] = useState('');
     useEffect(() => {
+        setitemScanned(
+            chosenOrderContext?.orderItems?.map((item) => ({
+                ...item,
+                scannedCount: 0, // Adding a field to track scanned count
+            })) || [],
+        );
+    }, [chosenOrderContext]);
+
+    useEffect(() => {
         const handleKeyDown = (e) => {
-            // Ignore control keys and functional keys
             if (e.ctrlKey || e.altKey || e.metaKey || e.key === 'CapsLock' || e.key === 'Shift' || e.key === 'Tab' || e.key === 'Backspace' || e.key === 'Control' || e.key === 'Alt') {
                 return;
             }
 
             if (e.key === 'Enter') {
-                // Check if the modal is open and barcode is not empty
                 if (fulfilllModal && barcode) {
                     const scannedSku = barcode.trim();
-                    const orderItems = chosenOrderContext?.orderItems || [];
 
-                    // Check if the scanned SKU exists in the order items
-                    const matchedItem = orderItems.find((item) => item.info.sku === scannedSku);
+                    // Find the matched item in the scanned items
+                    const matchedItem = itemScanned.find((item) => item.info.sku === scannedSku);
 
                     if (matchedItem) {
-                        // If the item is not in the scanned items, add it
-                        if (!itemScanned.some((scanned) => scanned.info.sku === scannedSku)) {
-                            setitemScanned((prevScanned) => [...prevScanned, matchedItem]);
+                        // Increment the scanned count if it is not already equal to the required count
+                        if (matchedItem.scannedCount < matchedItem.count) {
+                            setitemScanned((prevScanned) => prevScanned.map((item) => (item.info.sku === scannedSku ? { ...item, scannedCount: item.scannedCount + 1 } : item)));
                         } else {
-                            alert(`Item with SKU ${scannedSku} is already scanned.`);
+                            alert(`Item with SKU ${scannedSku} has already been fully scanned.`);
                         }
                     } else {
                         alert(`No item found with SKU ${scannedSku}`);
@@ -127,7 +137,6 @@ const OrdersTable = (props) => {
 
                     // Clear barcode after processing
                     setBarcode('');
-                    setsearch('');
                 }
             } else {
                 // Update barcode state as the user types
@@ -140,7 +149,8 @@ const OrdersTable = (props) => {
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
         };
-    }, [barcode, fulfilllModal, chosenOrderContext, itemScanned]);
+    }, [barcode, fulfilllModal, itemScanned]);
+    const allItemsScanned = itemScanned.every((item) => item.scannedCount === item.count);
 
     return (
         <>
@@ -787,53 +797,74 @@ const OrdersTable = (props) => {
                 </Modal.Body>
             </Modal>
 
-            <Modal
-                show={fulfilllModal}
-                onHide={() => {
-                    setfulfilllModal(false);
-                }}
-                centered
-                size={'md'}
-            >
+            <Modal show={fulfilllModal} onHide={() => setfulfilllModal(false)} centered size={'md'}>
                 <Modal.Header>
                     <div className="row w-100 m-0 p-0">
-                        <div class="col-lg-6 pt-3 ">
+                        <div className="col-lg-6 pt-3">
                             <div className="row w-100 m-0 p-0">Fulfill Order</div>
                         </div>
-                        <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
-                            <div
-                                class={'close-modal-container'}
-                                onClick={() => {
-                                    setfulfilllModal(false);
-                                }}
-                            >
+                        <div className="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
+                            <div className={'close-modal-container'} onClick={() => setfulfilllModal(false)}>
                                 <IoMdClose />
                             </div>
-                        </div>{' '}
+                        </div>
                     </div>
                 </Modal.Header>
                 <Modal.Body>
-                    <div class="row m-0 w-100 py-2">
-                        {itemScanned?.map((item, index) => {
-                            return (
-                                <div class="co-lg-12 mb-3">
-                                    <div class="row m-0 w-100 d-flex align-items-center">
-                                        <div style={{ width: '55px', height: '50px', border: '1px solid #eee', borderRadius: '10px' }}>
-                                            <img src={item?.info?.imageUrl} style={{ width: '100%', height: '100%', borderRadius: '10px' }} />
+                    <div className="row m-0 w-100 py-2">
+                        {itemScanned?.map((item, index) => (
+                            <div className="col-lg-12 mb-3" key={index}>
+                                <div className="row m-0 w-100 d-flex align-items-center">
+                                    <div style={{ width: '55px', height: '50px', border: '1px solid #eee', borderRadius: '10px' }}>
+                                        <img src={item?.info?.imageUrl} style={{ width: '100%', height: '100%', borderRadius: '10px' }} alt={item?.info?.name} />
+                                    </div>
+                                    <div className="ml-2">
+                                        <div className="col-lg-12 p-0" style={{ fontWeight: 600, fontSize: '13px' }}>
+                                            {item?.info?.name}
                                         </div>
-                                        <div class="ml-2">
-                                            <div class="col-lg-12 p-0" style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                {item?.info?.name}
-                                            </div>
-                                            <div class="col-lg-12 p-0" style={{ fontWeight: 500, fontSize: '13px', color: 'lightgray' }}>
-                                                {item?.info?.sku}
-                                            </div>
+                                        <div className="col-lg-12 p-0" style={{ fontWeight: 500, fontSize: '13px', color: 'lightgray' }}>
+                                            {item?.info?.sku}
+                                        </div>
+                                        <div className="col-lg-12 p-0" style={{ fontWeight: 500, fontSize: '13px', color: 'green' }}>
+                                            Scanned: {item.scannedCount} / {item.count}
                                         </div>
                                     </div>
                                 </div>
-                            );
-                        })}
+                            </div>
+                        ))}
                     </div>
+
+                    {/* Show the fulfill button only when all items are fully scanned */}
+                    {allItemsScanned && (
+                        <div class="col-lg-12 p-0 allcentered py-2">
+                            <button
+                                class={generalstyles.roundbutton}
+                                style={{ height: '35px' }}
+                                onClick={async () => {
+                                    setbuttonLoading(true);
+                                    try {
+                                        const { data } = await updateOrdersStatusMutation();
+                                        NotificationManager.success('', 'Status changed successfully');
+                                        setfulfilllModal(false);
+                                    } catch (error) {
+                                        let errorMessage = 'An unexpected error occurred';
+                                        if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                            errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                        } else if (error.networkError) {
+                                            errorMessage = error.networkError.message || errorMessage;
+                                        } else if (error.message) {
+                                            errorMessage = error.message;
+                                        }
+
+                                        NotificationManager.warning(errorMessage, 'Warning!');
+                                    }
+                                }}
+                            >
+                                {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                {!buttonLoading && <span> Fulfill Order</span>}
+                            </button>
+                        </div>
+                    )}
                 </Modal.Body>
             </Modal>
         </>
