@@ -144,6 +144,18 @@ export const Contexthandlerscontext_provider = (props) => {
                         show: isAuth([1, 54]),
                     },
                     {
+                        name: 'Fulfilled',
+                        isselected: false,
+                        icon: (
+                            <i class={'allcentered'}>
+                                <LuPackageOpen size={18} />
+                            </i>
+                        ),
+                        path: '/fulfilled',
+                        permissionpage: [1],
+                        show: isAuth([1, 54]),
+                    },
+                    {
                         name: 'Hand Picked',
                         isselected: false,
                         icon: (
