@@ -76,31 +76,7 @@ const Waybill = ({ order }) => {
                         </div>
                         <div class="row allcentered w-100 m-0 p-1">
                             <div class="col-lg-12 p-0 mt-2">
-                                <div class="row m-0 w-100 d-flex">
-                                    <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4 col-md-4">
-                                        <div class="row m-0 w-100">
-                                            <div class="col-lg-12 p-0 allcentered text-center">
-                                                <span style={{ fontWeight: 400, fontSize: '11px' }}>Price</span>
-                                            </div>
-                                            <div class="col-lg-12 p-0 allcentered text-center">
-                                                <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                    {parseFloat(order?.price)} {order?.currency}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4 col-md-4">
-                                        <div class="row m-0 w-100">
-                                            <div class="col-lg-12 p-0 allcentered text-center">
-                                                <span style={{ fontWeight: 400, fontSize: '11px' }}>Shipping</span>
-                                            </div>
-                                            <div class="col-lg-12 p-0 allcentered text-center">
-                                                <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                    {parseFloat(order?.shippingPrice)} {order?.currency}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div class="row m-0 w-100 allcentered d-flex">
                                     <div style={{ fontWeight: 600, fontSize: '15px' }} className=" p-0 mb-2 allcentered col-lg-4 col-md-4">
                                         <div class="row m-0 w-100">
                                             <div class="col-lg-12 p-0 allcentered text-center">
@@ -108,7 +84,7 @@ const Waybill = ({ order }) => {
                                             </div>
                                             <div class="col-lg-12 p-0 allcentered text-center">
                                                 <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                    {parseFloat(order?.price) + parseFloat(order?.shippingPrice)} {order?.currency}
+                                                    {parseFloat(order?.price)} {order?.currency}
                                                 </span>
                                             </div>
                                         </div>
