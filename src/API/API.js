@@ -553,6 +553,10 @@ const API = () => {
                         description
                         createdAt
                         lastModified
+                        user {
+                            name
+                            email
+                        }
                     }
                     cursor
                 }

@@ -66,6 +66,47 @@ const Waybill = ({ order }) => {
                             </div>
                         </div>
                         <div style={{ borderBottom: '1px solid #eee' }} className=" row allcentered w-100 m-0 p-1">
+                            <div style={{ borderInlineEnd: '2px solid #eee' }} className="company-info p-1 col-lg-4 col-md-4">
+                                <div class="row m-0 w-100">
+                                    <div class="col-lg-12 p-0">
+                                        <label class={`${formstyles.checkbox} ${formstyles.checkbox_sub} ${formstyles.path}` + ' d-flex mb-0 p-1 '} style={{ background: 'transaprent' }}>
+                                            <input type="checkbox" class="mt-1 mb-1" checked={order?.canOpen == 0 ? false : true} />
+                                            <svg viewBox="0 0 21 21" class="h-100">
+                                                <path d="M5,10.75 L8.5,14.25 L19.4,2.3 C18.8333333,1.43333333 18.0333333,1 17,1 L4,1 C2.35,1 1,2.35 1,4 L1,17 C1,18.65 2.35,20 4,20 L17,20 C18.65,20 20,18.65 20,17 L20,7.99769186"></path>
+                                            </svg>
+                                            <p class={`${generalstyles.checkbox_label} ` + ' ml-2 mb-0 text-focus text-capitalize cursor-pointer font_14 ml-2 mr-2 wordbreak '}>CAN BE OPENED</p>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style={{ borderInlineEnd: '2px solid #eee' }} className="company-info p-1 col-lg-4 col-md-4">
+                                <div class="row m-0 w-100">
+                                    <div class="col-lg-12 p-0">
+                                        <label class={`${formstyles.checkbox} ${formstyles.checkbox_sub} ${formstyles.path}` + ' d-flex mb-0 p-1 '} style={{ background: 'transaprent' }}>
+                                            <input type="checkbox" class="mt-1 mb-1" checked={order?.deliveryPart == 0 ? false : true} />
+                                            <svg viewBox="0 0 21 21" class="h-100">
+                                                <path d="M5,10.75 L8.5,14.25 L19.4,2.3 C18.8333333,1.43333333 18.0333333,1 17,1 L4,1 C2.35,1 1,2.35 1,4 L1,17 C1,18.65 2.35,20 4,20 L17,20 C18.65,20 20,18.65 20,17 L20,7.99769186"></path>
+                                            </svg>
+                                            <p class={`${generalstyles.checkbox_label} ` + ' ml-2 mb-0 text-focus text-capitalize cursor-pointer font_14 ml-2 mr-2 wordbreak '}>PART OF SHIPPMENT</p>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="company-info p-1 col-lg-4 col-md-4">
+                                <div class="row m-0 w-100">
+                                    <div class="col-lg-12 p-0">
+                                        <label class={`${formstyles.checkbox} ${formstyles.checkbox_sub} ${formstyles.path}` + ' d-flex mb-0 p-1 '} style={{ background: 'transaprent' }}>
+                                            <input type="checkbox" class="mt-1 mb-1" checked={order?.fragile == 0 ? false : true} />
+                                            <svg viewBox="0 0 21 21" class="h-100">
+                                                <path d="M5,10.75 L8.5,14.25 L19.4,2.3 C18.8333333,1.43333333 18.0333333,1 17,1 L4,1 C2.35,1 1,2.35 1,4 L1,17 C1,18.65 2.35,20 4,20 L17,20 C18.65,20 20,18.65 20,17 L20,7.99769186"></path>
+                                            </svg>
+                                            <p class={`${generalstyles.checkbox_label} ` + ' ml-2 mb-0 text-focus text-capitalize cursor-pointer font_14 ml-2 mr-2 wordbreak '}>FRAGILE</p>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style={{ borderBottom: '1px solid #eee' }} className=" row allcentered w-100 m-0 p-1">
                             {order?.orderItems?.map((item, index) => {
                                 return (
                                     <div class="col-lg-12">

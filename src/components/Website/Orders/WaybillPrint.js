@@ -12,21 +12,6 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
 const WaybillPrint = ({ waybills }) => {
     const componentRef = useRef();
 
-    const generatePDF = () => {
-        const waybillElements = waybills.map((order) => {
-            const waybillContent = React.createElement(Waybill, { order });
-            const htmlContent = htmlToPdfmake(waybillContent, { window });
-
-            return htmlContent;
-        });
-
-        const docDefinition = {
-            content: waybillElements,
-        };
-
-        pdfMake.createPdf(docDefinition).download('waybills.pdf');
-    };
-
     return (
         <>
             <ReactToPrint
