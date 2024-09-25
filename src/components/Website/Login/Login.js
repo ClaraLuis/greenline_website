@@ -112,13 +112,8 @@ const Login = () => {
                             }
                         })
                         .catch((error) => {
-                            if (error?.code == 'auth/missing-password') {
-                                NotificationManager.warning('Please Enter Your Password', 'Warning');
-                            } else if (error?.code == 'auth/wrong-password') {
-                                NotificationManager.warning('Wrong Password', 'Warning');
-                            } else if (error?.code == 'auth/too-many-requests') {
-                                NotificationManager.warning('Too Many Attempts Try Later', 'Warning');
-                            }
+                            var message = getFirebaseAuthErrorMessage(error?.code);
+                            NotificationManager.warning(message, 'Warning');
                         });
                 }
                 setbuttonLoading(false);
@@ -142,6 +137,46 @@ const Login = () => {
 
         NotificationManager.warning(errorMessage, 'Warning!');
         console.error('Error:', error);
+    };
+    // Function to return user-friendly error messages
+    const getFirebaseAuthErrorMessage = (errorCode) => {
+        switch (errorCode) {
+            case 'auth/invalid-email':
+                return 'The email address is invalid.';
+            case 'auth/wrong-password':
+                return 'The password is incorrect.';
+            case 'auth/missing-password':
+                return 'Please Enter Your Password.';
+
+            case 'auth/user-not-found':
+                return 'No user found with this email.';
+            case 'auth/user-disabled':
+                return 'The user account is disabled.';
+            case 'auth/too-many-requests':
+                return 'Too many requests. Please try again later.';
+            case 'auth/email-already-in-use':
+                return 'This email is already in use by another account.';
+            case 'auth/weak-password':
+                return 'The password provided is too weak.';
+            case 'auth/network-request-failed':
+                return 'Network error. Please check your connection.';
+            case 'auth/requires-recent-login':
+                return 'Please sign in again to perform this operation.';
+            case 'auth/invalid-credential':
+                return 'The credentials are invalid or have expired.';
+            case 'auth/account-exists-with-different-credential':
+                return 'An account already exists with the same email but different credentials.';
+            case 'auth/operation-not-allowed':
+                return 'Email/password sign-in is disabled.';
+            case 'auth/credential-already-in-use':
+                return 'This credential is already associated with a different user.';
+            case 'auth/timeout':
+                return 'The operation timed out. Please try again.';
+            case 'auth/internal-error':
+                return 'An internal error occurred. Please try again later.';
+            default:
+                return 'An undefined error occurred. Please try again.';
+        }
     };
 
     useEffect(() => {
