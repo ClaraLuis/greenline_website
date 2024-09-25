@@ -123,3 +123,6 @@ dist/
 # @end expo-cli
 
 src/Auth/firebaseconfig.js
+
+## env
+.env

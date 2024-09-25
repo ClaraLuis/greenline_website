@@ -103,7 +103,7 @@ const authLink = setContext(async (_, { headers }) => {
 });
 
 const httpLink = new HttpLink({
-    uri: process.env.REACT_APP_API_GQL,
+    uri: process.env.DEV !== 'true' ? process.env.REACT_APP_API_GQL_LOCAL : process.env.REACT_APP_API_GQL,
     // uri: 'https://greenlineco.site/graphql',
 });
 
