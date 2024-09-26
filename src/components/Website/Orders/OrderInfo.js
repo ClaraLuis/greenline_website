@@ -6,6 +6,8 @@ import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
+import Cookies from 'universal-cookie';
+
 import { Modal } from 'react-bootstrap';
 import API from '../../../API/API.js';
 
@@ -25,6 +27,8 @@ import TimelineOppositeContent, { timelineOppositeContentClasses } from '@mui/la
 const OrderInfo = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
+    const cookies = new Cookies();
+
     const { setchosenOrderContext, chosenOrderContext, dateformatter, orderStatusEnumContext, orderTypeContext } = useContext(Contexthandlerscontext);
     const { useQueryGQL, useMutationGQL, fetchGovernorates, createMerchantDomesticShipping, useLazyQueryGQL, fetchTransactionHistory, fetchOrderHistory, findOneOrder } = API();
     const steps = ['Merchant Info', 'Shipping', 'Inventory Settings'];
@@ -475,7 +479,9 @@ const OrderInfo = (props) => {
                                                                     </TimelineSeparator>
                                                                     <TimelineContent style={{ fontWeight: 600, color: 'black', textTransform: 'capitalize' }}>
                                                                         {historyItem?.status.split(/(?=[A-Z])/).join(' ')} <br />
-                                                                        <span style={{ fontSize: '14px', fontWeight: 400 }}>{historyItem?.user?.name}</span>{' '}
+                                                                        {cookies.get('userInfo')?.type == 'employee' && (
+                                                                            <span style={{ fontSize: '14px', fontWeight: 400 }}>{historyItem?.user?.name}</span>
+                                                                        )}
                                                                     </TimelineContent>
                                                                 </TimelineItem>
                                                             );
@@ -530,7 +536,9 @@ const OrderInfo = (props) => {
                                                                             {historyItem?.status?.split(/(?=[A-Z])/).join(' ')}, {historyItem?.amount} {historyItem?.currency}
                                                                         </span>{' '}
                                                                         <br />
-                                                                        <span style={{ fontSize: '14px', fontWeight: 400 }}>{historyItem?.auditedBy?.name}</span>{' '}
+                                                                        {cookies.get('userInfo')?.type == 'employee' && (
+                                                                            <span style={{ fontSize: '14px', fontWeight: 400 }}>{historyItem?.auditedBy?.name}</span>
+                                                                        )}
                                                                     </TimelineContent>
                                                                 </TimelineItem>
                                                             );

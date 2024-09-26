@@ -167,33 +167,36 @@ const MerchantOrders = (props) => {
                             <AccordionItemPanel>
                                 <hr className="mt-2 mb-3" />
                                 <div class="row m-0 w-100">
-                                    <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                        <MultiSelect
-                                            title={'Merchants'}
-                                            filter={filterMerchants}
-                                            setfilter={setfilterMerchants}
-                                            options={fetchMerchantsQuery}
-                                            attr={'paginateMerchants'}
-                                            label={'name'}
-                                            value={'id'}
-                                            selected={filterorders?.merchantIds}
-                                            onClick={(option) => {
-                                                var tempArray = [...(filterorders?.merchantIds ?? [])];
+                                    {isAuth([1]) && (
+                                        <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                            <MultiSelect
+                                                title={'Merchants'}
+                                                filter={filterMerchants}
+                                                setfilter={setfilterMerchants}
+                                                options={fetchMerchantsQuery}
+                                                attr={'paginateMerchants'}
+                                                label={'name'}
+                                                value={'id'}
+                                                selected={filterorders?.merchantIds}
+                                                onClick={(option) => {
+                                                    var tempArray = [...(filterorders?.merchantIds ?? [])];
 
-                                                if (option == 'All') {
-                                                    tempArray = undefined;
-                                                } else {
-                                                    if (!tempArray?.includes(option?.id)) {
-                                                        tempArray.push(option?.id);
+                                                    if (option == 'All') {
+                                                        tempArray = undefined;
                                                     } else {
-                                                        tempArray.splice(tempArray?.indexOf(option?.id), 1);
+                                                        if (!tempArray?.includes(option?.id)) {
+                                                            tempArray.push(option?.id);
+                                                        } else {
+                                                            tempArray.splice(tempArray?.indexOf(option?.id), 1);
+                                                        }
                                                     }
-                                                }
 
-                                                setfilterorders({ ...filterorders, merchantIds: tempArray?.length != 0 ? tempArray : undefined });
-                                            }}
-                                        />
-                                    </div>
+                                                    setfilterorders({ ...filterorders, merchantIds: tempArray?.length != 0 ? tempArray : undefined });
+                                                }}
+                                            />
+                                        </div>
+                                    )}
+
                                     <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
                                         <MultiSelect
                                             title={'Status'}
@@ -260,31 +263,33 @@ const MerchantOrders = (props) => {
                                             }}
                                         />
                                     </div>
-                                    <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                        <MultiSelect
-                                            title={'Couriers'}
-                                            filter={filterCouriers}
-                                            setfilter={setfilterCouriers}
-                                            options={fetchCouriersQuery}
-                                            attr={'paginateCouriers'}
-                                            label={'name'}
-                                            value={'id'}
-                                            selected={filterorders?.courierIds}
-                                            onClick={(option) => {
-                                                var tempArray = [...(filterorders?.courierIds ?? [])];
-                                                if (option == 'All') {
-                                                    tempArray = undefined;
-                                                } else {
-                                                    if (!tempArray?.includes(option?.id)) {
-                                                        tempArray.push(option?.id);
+                                    {isAuth([1]) && (
+                                        <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                            <MultiSelect
+                                                title={'Couriers'}
+                                                filter={filterCouriers}
+                                                setfilter={setfilterCouriers}
+                                                options={fetchCouriersQuery}
+                                                attr={'paginateCouriers'}
+                                                label={'name'}
+                                                value={'id'}
+                                                selected={filterorders?.courierIds}
+                                                onClick={(option) => {
+                                                    var tempArray = [...(filterorders?.courierIds ?? [])];
+                                                    if (option == 'All') {
+                                                        tempArray = undefined;
                                                     } else {
-                                                        tempArray.splice(tempArray?.indexOf(option?.id), 1);
+                                                        if (!tempArray?.includes(option?.id)) {
+                                                            tempArray.push(option?.id);
+                                                        } else {
+                                                            tempArray.splice(tempArray?.indexOf(option?.id), 1);
+                                                        }
                                                     }
-                                                }
-                                                setfilterorders({ ...filterorders, courierIds: tempArray?.length != 0 ? tempArray : undefined });
-                                            }}
-                                        />
-                                    </div>
+                                                    setfilterorders({ ...filterorders, courierIds: tempArray?.length != 0 ? tempArray : undefined });
+                                                }}
+                                            />
+                                        </div>
+                                    )}
                                     <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
                                         <MultiSelect
                                             title={'Governorates'}
@@ -308,28 +313,30 @@ const MerchantOrders = (props) => {
                                             }}
                                         />
                                     </div>
-                                    <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                        <MultiSelect
-                                            title={'Manifest Status'}
-                                            options={courierSheetStatusesContext}
-                                            label={'label'}
-                                            value={'value'}
-                                            selected={filterorders?.manifestStatuses}
-                                            onClick={(option) => {
-                                                var tempArray = [...(filterorders?.manifestStatuses ?? [])];
-                                                if (option == 'All') {
-                                                    tempArray = undefined;
-                                                } else {
-                                                    if (!tempArray?.includes(option.value)) {
-                                                        tempArray.push(option.value);
+                                    {isAuth([1]) && (
+                                        <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                            <MultiSelect
+                                                title={'Manifest Status'}
+                                                options={courierSheetStatusesContext}
+                                                label={'label'}
+                                                value={'value'}
+                                                selected={filterorders?.manifestStatuses}
+                                                onClick={(option) => {
+                                                    var tempArray = [...(filterorders?.manifestStatuses ?? [])];
+                                                    if (option == 'All') {
+                                                        tempArray = undefined;
                                                     } else {
-                                                        tempArray.splice(tempArray?.indexOf(option?.value), 1);
+                                                        if (!tempArray?.includes(option.value)) {
+                                                            tempArray.push(option.value);
+                                                        } else {
+                                                            tempArray.splice(tempArray?.indexOf(option?.value), 1);
+                                                        }
                                                     }
-                                                }
-                                                setfilterorders({ ...filterorders, manifestStatuses: tempArray?.length != 0 ? tempArray : undefined });
-                                            }}
-                                        />
-                                    </div>
+                                                    setfilterorders({ ...filterorders, manifestStatuses: tempArray?.length != 0 ? tempArray : undefined });
+                                                }}
+                                            />
+                                        </div>
+                                    )}
                                     <div class=" col-lg-3 mb-md-2">
                                         <span>Date Range</span>
                                         <div class="mt-1" style={{ width: '100%' }}>
