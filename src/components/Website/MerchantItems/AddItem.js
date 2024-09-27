@@ -586,9 +586,16 @@ const AddItem = (props) => {
     }, [chosenItemContext]);
 
     const uploadImage = async (img) => {
+        const getoken = async () => {
+            var token = await cookies.get('accessToken');
+            return token;
+        };
+        var tokenasy = await getoken();
+
         const axiosheaders = {
             'Content-Type': 'multipart/form-data',
         };
+        axiosheaders['Authorization'] = 'Bearer ' + tokenasy;
         const formData = new FormData();
         formData.append('file', img);
         formData.append('isPublic', true);
@@ -596,7 +603,7 @@ const AddItem = (props) => {
         try {
             const response = await axios({
                 method: 'post',
-                url: (process.env.REACT_APP_DEV_MODE === 'true' ? process.env.REACT_APP_API_URL_LOCAL : process.env.REACT_APP_API_URL) + '/aws-bucket/file',
+                url: (process.env.REACT_APP_DEV_MODE === 'true' ? process.env.REACT_APP_API_URL_LOCAL : process.env.REACT_APP_API_URL) + 'aws-bucket/file',
                 data: formData,
                 headers: axiosheaders,
             });
@@ -914,6 +921,7 @@ const AddItem = (props) => {
                                                                                 const isHttpLink = /^https?:\/\//i.test(imageUrl);
 
                                                                                 if (!isHttpLink) {
+                                                                                    alert(imageUrl);
                                                                                     resp1 = await uploadImage(imageUrl);
                                                                                 } else {
                                                                                     resp1 = imageUrl;
@@ -942,97 +950,41 @@ const AddItem = (props) => {
                                                             variantOptionAttributes: await extractData(itemVariants),
                                                         });
 
-                                                        var itemtemp = {
-                                                            ...itempayload,
-                                                            variantNames: variantsList.map((e) => e.name) ?? undefined,
-                                                            variantOptions: updatedVariantOptions ?? undefined,
-                                                            variantOptionAttributes: await extractData(itemVariants),
-                                                        };
-                                                        const { imageUrl, variantOptionAttributes, ...itemWithoutImageUrls } = itemtemp;
-                                                        const itemWithoutVariantOptionImageUrls = {
-                                                            ...itemWithoutImageUrls,
-                                                            variantOptionAttributes: variantOptionAttributes.map(({ imageUrl, ...rest }) => rest),
-                                                        };
-
-                                                        let tempproductsarray = [];
-                                                        try {
-                                                            const importedItemsCookie = cookies.get('ImportedItems') ?? [];
-                                                            tempproductsarray = importedItemsCookie;
-                                                        } catch (error) {
-                                                            console.warn('Error parsing ImportedItems cookie:', error);
-                                                            tempproductsarray = [];
-                                                        }
-
                                                         // Hash the item without variant option image URLs
-                                                        const itemHash = sha256(JSON.stringify(itemWithoutVariantOptionImageUrls));
 
                                                         // Check if the hash already exists in the array
-                                                        const exist = tempproductsarray.includes(itemHash);
 
-                                                        if (exist) {
-                                                            if (window.confirm('This item was previously added. Are you sure you want to duplicate it?')) {
-                                                                try {
-                                                                    const { data } = await updateMerchantItemMutation();
+                                                        try {
+                                                            await updateMerchantItemMutation();
 
-                                                                    NotificationManager.success('Item added successfully!', 'Success!');
+                                                            NotificationManager.success('Item Updated successfully!', 'Success!');
 
-                                                                    if (importedDataContext?.length) {
-                                                                        // Add the new hash to the array
-                                                                        tempproductsarray.push(itemHash);
-
-                                                                        // Update the cookie with the new array of hashes
-                                                                        cookies.set('ImportedItems', JSON.stringify(tempproductsarray), {
-                                                                            expires: new Date(Date.now() + 2 * 60 * 60 * 1000),
-                                                                            path: '/',
-                                                                        });
-
-                                                                        if (itemIndex < importedDataContext.length - 1) {
-                                                                            setitemIndex(itemIndex + 1);
-                                                                        } else {
-                                                                            history.push('/merchantitems');
-                                                                        }
-                                                                    } else {
-                                                                        history.push('/merchantitems');
-                                                                    }
-
-                                                                    console.log('Mutation response:', data);
-                                                                } catch (error) {
-                                                                    handleMutationError(error);
-                                                                }
-                                                            }
-                                                        } else {
                                                             try {
-                                                                await updateMerchantItemMutation();
-
-                                                                NotificationManager.success('Item Updated successfully!', 'Success!');
-
-                                                                try {
-                                                                    var { data } = await findOneItemLazyQuery({
-                                                                        variables: {
-                                                                            input: {
-                                                                                id: parseInt(queryParameters?.get('id')),
-                                                                            },
+                                                                var { data } = await findOneItemLazyQuery({
+                                                                    variables: {
+                                                                        input: {
+                                                                            id: parseInt(queryParameters?.get('id')),
                                                                         },
-                                                                    });
-                                                                    if (data?.findOneItem) {
-                                                                        setchosenItemContext(data?.findOneItem);
-                                                                    }
-                                                                } catch (e) {
-                                                                    let errorMessage = 'An unexpected error occurred';
-                                                                    if (e.graphQLErrors && e.graphQLErrors.length > 0) {
-                                                                        errorMessage = e.graphQLErrors[0].message || errorMessage;
-                                                                    } else if (e.networkError) {
-                                                                        errorMessage = e.networkError.message || errorMessage;
-                                                                    } else if (e.message) {
-                                                                        errorMessage = e.message;
-                                                                    }
-                                                                    NotificationManager.warning(errorMessage, 'Warning!');
+                                                                    },
+                                                                });
+                                                                if (data?.findOneItem) {
+                                                                    setchosenItemContext(data?.findOneItem);
                                                                 }
-
-                                                                console.log('Mutation response:', data);
-                                                            } catch (error) {
-                                                                handleMutationError(error);
+                                                            } catch (e) {
+                                                                let errorMessage = 'An unexpected error occurred';
+                                                                if (e.graphQLErrors && e.graphQLErrors.length > 0) {
+                                                                    errorMessage = e.graphQLErrors[0].message || errorMessage;
+                                                                } else if (e.networkError) {
+                                                                    errorMessage = e.networkError.message || errorMessage;
+                                                                } else if (e.message) {
+                                                                    errorMessage = e.message;
+                                                                }
+                                                                NotificationManager.warning(errorMessage, 'Warning!');
                                                             }
+
+                                                            console.log('Mutation response:', data);
+                                                        } catch (error) {
+                                                            handleMutationError(error);
                                                         }
 
                                                         function handleMutationError(error) {
