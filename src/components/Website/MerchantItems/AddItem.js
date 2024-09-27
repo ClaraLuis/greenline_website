@@ -599,6 +599,7 @@ const AddItem = (props) => {
         const formData = new FormData();
         formData.append('file', img);
         formData.append('isPublic', true);
+        formData.append('merchantId', itempayload?.merchantId);
 
         try {
             const response = await axios({
@@ -608,8 +609,8 @@ const AddItem = (props) => {
                 headers: axiosheaders,
             });
 
-            console.log('resp:', response?.data?.key);
-            return response?.data?.key; // Return the key
+            console.log('resp:', response?.data?.url);
+            return response?.data?.url; // Return the key
         } catch (error) {
             console.log(error);
             NotificationManager.error('', 'Error');
@@ -921,7 +922,6 @@ const AddItem = (props) => {
                                                                                 const isHttpLink = /^https?:\/\//i.test(imageUrl);
 
                                                                                 if (!isHttpLink) {
-                                                                                    alert(imageUrl);
                                                                                     resp1 = await uploadImage(imageUrl);
                                                                                 } else {
                                                                                     resp1 = imageUrl;
