@@ -494,6 +494,23 @@ const API = () => {
         `;
     };
 
+    const paginateInventoryRentTransaction = (payload) => {
+        return gql`
+            query paginateInventoryRentTransaction($input: InventoryRentTransactionPageInput!) {
+                paginateInventoryRentTransaction(input: $input) {
+                    data {
+                        id
+                        merchantId
+                        quantity
+                        type
+                        createdAt
+                    }
+                    cursor
+                }
+            }
+        `;
+    };
+
     const fetchItemsInBox = () => {
         return gql`
             query paginateItemsInBox($input: ItemInBoxPageInput!) {
@@ -1374,18 +1391,18 @@ const API = () => {
         `;
     };
 
-    const sumInventoryRentTransaction = () => {
+    const inventoryRentSummary = () => {
         return gql`
-            query sumInventoryRentTransaction($input: InventoryRentTransactionPageInput!) {
-                sumInventoryRentTransaction(input: $input)
+            query inventoryRentSummary($input: InventoryRentSummaryInput!) {
+                inventoryRentSummary(input: $input)
             }
         `;
     };
 
-    const countInventoryRentTransaction = () => {
+    const merchantPaymentsSummary = () => {
         return gql`
-            query countInventoryRentTransaction($input: InventoryRentTransactionPageInput!) {
-                countInventoryRentTransaction(input: $input)
+            query merchantPaymentsSummary($input: MerchantPaymentsSummaryInput!) {
+                merchantPaymentsSummary(input: $input)
             }
         `;
     };
@@ -1901,8 +1918,8 @@ const API = () => {
         fetchRacks,
         paginateBoxes,
         paginateBallots,
-        sumInventoryRentTransaction,
-        countInventoryRentTransaction,
+        inventoryRentSummary,
+        merchantPaymentsSummary,
         fetchItemHistory,
         exportItem,
         importItem,
@@ -1985,6 +2002,7 @@ const API = () => {
         deleteCourierSheet,
         findReturnPackageBySku,
         findOneItem,
+        paginateInventoryRentTransaction,
     };
 };
 export default API;

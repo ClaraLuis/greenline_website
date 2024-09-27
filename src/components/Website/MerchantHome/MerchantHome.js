@@ -4,23 +4,21 @@ import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
-import Dropdown from 'react-bootstrap/Dropdown';
 import { components } from 'react-select';
 
 // Icons
-import API from '../../../API/API.js';
-import { FaEllipsisV } from 'react-icons/fa';
-import { IoMdClose } from 'react-icons/io';
-import Form from '../../Form.js';
 import { Modal } from 'react-bootstrap';
-import user from '../user.png';
+import { IoMdClose } from 'react-icons/io';
+import API from '../../../API/API.js';
+import Form from '../../Form.js';
+import Barchart from '../../graphs/Barchart.js';
 const { ValueContainer, Placeholder } = components;
 
 const MerchantHome = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, inventoryRentTypeContext, dateformatter } = useContext(Contexthandlerscontext);
-    const { createInventory, useMutationGQL } = API();
+    const { setpageactive_context, inventoryRentTypeContext } = useContext(Contexthandlerscontext);
+    const { createInventory, useMutationGQL, paginateInventoryRentTransaction, useQueryGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [buttonLoading, setbuttonLoading] = useState(false);
@@ -33,6 +31,7 @@ const MerchantHome = (props) => {
     });
     const [openModal, setopenModal] = useState(false);
     const [submit, setsubmit] = useState(false);
+    const [barchartaxis, setbarchartaxis] = useState({ xAxis: undefined, yAxis: undefined });
 
     const [addInventoryRent] = useMutationGQL(createInventory(), {
         merchantId: parseInt(inventoryRentPayload?.merchantId),
@@ -41,6 +40,30 @@ const MerchantHome = (props) => {
         pricePerUnit: inventoryRentPayload?.pricePerUnit,
         currency: inventoryRentPayload?.currency,
     });
+    const [filterTransactions, setfilterTransactions] = useState({
+        isAsc: true,
+        limit: 100,
+        afterCursor: undefined,
+        beforeCursor: undefined,
+        merchantId: 1,
+    });
+    const paginateInventoryRentTransactionQuery = useQueryGQL('cache-first', paginateInventoryRentTransaction(), filterTransactions);
+    const dateformatter = (date) => {
+        // const options = { month: 'short', day: };
+        const options = { month: 'long', day: 'numeric', hour: 'numeric', hour12: true };
+
+        return new Date(date).toLocaleDateString(undefined, options);
+    };
+    useEffect(() => {
+        var temp = [];
+        var tempvalues = [{ name: props?.type, data: [] }];
+        paginateInventoryRentTransactionQuery?.data?.paginateInventoryRentTransaction?.data?.map((item, index) => {
+            temp.push(dateformatter(item.createdAt));
+            tempvalues[0]?.data.push(item?.quantity);
+        });
+        setbarchartaxis({ xAxis: temp, yAxis: tempvalues });
+    }, [paginateInventoryRentTransactionQuery?.data]);
+
     useEffect(() => {
         setpageactive_context('/merchanthome');
     }, []);
@@ -62,6 +85,20 @@ const MerchantHome = (props) => {
                     >
                         Book a visit
                     </button>
+                </div>
+                <div class="col-lg-12 p-1 scrollmenuclasssubscrollbar">
+                    {barchartaxis?.xAxis && barchartaxis?.yAxis && (
+                        <div
+                            class="row m-0 w-100"
+                            style={{
+                                background: 'white',
+                                boxShadow: '0px 2px 6px -2px rgba(0,106,194,0.2)',
+                                borderRadius: '5px',
+                            }}
+                        >
+                            <Barchart xAxis={barchartaxis?.xAxis} yAxis={barchartaxis?.yAxis} />
+                        </div>
+                    )}
                 </div>
             </div>
             <Modal

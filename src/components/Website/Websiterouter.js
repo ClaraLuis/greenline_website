@@ -60,6 +60,7 @@ import UpdateMerchant from './AddMerchant/UpdateMerchant.js';
 import HubDetails from './Hubs/HubDetails.js';
 import InventorySettings from './MerchantHome/InventorySettings.js';
 import Fulfilled from './MerchantOrders/Fulfilled.js';
+import RentPage from './MerchantHome/RentPage.js';
 const App = (props) => {
     const history = useHistory();
     const location = useLocation();
@@ -294,6 +295,7 @@ const App = (props) => {
                                                                 <Route exact path="/addsheet" component={AddSheetNew} />
                                                                 <Route exact path="/arrivedathub" component={AddSheetNew} />
                                                                 <Route exact path="/facilities" component={AddSheetNew} />
+                                                                <Route exact path="/rentpage" component={RentPage} />
 
                                                                 <Route exact path="/financehome" component={FinanceHome} />
                                                                 <Route exact path="/additem" component={AddItem} />
