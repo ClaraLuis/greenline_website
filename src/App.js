@@ -102,8 +102,12 @@ const authLink = setContext(async (_, { headers }) => {
     };
 });
 
+console.log('DEV :::', process.env.REACT_APP_DEV_MODE);
+console.log('REACT_APP_API_GQL :::', process.env.REACT_APP_API_GQL);
+console.log('REACT_APP_API_GQL_LOCAL :::', process.env.REACT_APP_API_GQL_LOCAL);
+
 const httpLink = new HttpLink({
-    uri: process.env.DEV !== 'true' ? process.env.REACT_APP_API_GQL_LOCAL : process.env.REACT_APP_API_GQL,
+    uri: process.env.REACT_APP_DEV_MODE === 'true' ? process.env.REACT_APP_API_GQL_LOCAL : process.env.REACT_APP_API_GQL,
     // uri: 'https://greenlineco.site/graphql',
 });
 
