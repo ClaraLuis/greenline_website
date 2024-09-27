@@ -14,6 +14,7 @@ import { FaEllipsisV, FaLayerGroup } from 'react-icons/fa';
 import { NotificationManager } from 'react-notifications';
 import { useMutation } from 'react-query';
 import { Dropdown } from 'react-bootstrap';
+import Cookies from 'universal-cookie';
 
 import reviewsstyles from './reviews.module.css';
 import Select, { components } from 'react-select';
@@ -32,6 +33,8 @@ const { ValueContainer, Placeholder } = components;
 const UsersTable = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
+    const cookies = new Cookies();
+
     const { setpageactive_context, setpagetitle_context, dateformatter, isAuth } = useContext(Contexthandlerscontext);
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -119,7 +122,7 @@ const UsersTable = (props) => {
                                                             >
                                                                 <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>View</p>
                                                             </Dropdown.Item>
-                                                            {item?.type == 'merchant' && (
+                                                            {item?.type == 'merchant' && !cookies.get('merchantId') && (
                                                                 <Dropdown.Item
                                                                     onClick={() => {
                                                                         history.push('/updatemerchant?merchantId=' + item.merchantId);

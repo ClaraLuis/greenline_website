@@ -56,6 +56,7 @@ export const Contexthandlerscontext_provider = (props) => {
         var user = cookies.get('userInfo');
         var acceptedRoles = roles.filter((e) => user?.roles?.map((x) => x.roleId).includes(e));
         show = acceptedRoles?.length > 0;
+
         return show;
     };
 
@@ -199,6 +200,18 @@ export const Contexthandlerscontext_provider = (props) => {
                         show: isAuth([1]),
                     },
                     {
+                        name: 'Merchant Details',
+                        isselected: false,
+                        icon: (
+                            <i class={'allcentered'}>
+                                <CiShop size={18} />
+                            </i>
+                        ),
+                        path: '/updatemerchant?merchantId=' + cookies.get('merchantId'),
+                        permissionpage: [1],
+                        show: cookies.get('userInfo')?.type == 'merchant' && cookies.get('merchantId') != undefined,
+                    },
+                    {
                         name: 'Finance',
                         isselected: false,
                         icon: (
@@ -244,7 +257,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/fulfilled',
                         permissionpage: [1],
-                        show: isAuth([1, 52]),
+                        show: isAuth([1]),
                     },
                     {
                         name: 'Return Packages',

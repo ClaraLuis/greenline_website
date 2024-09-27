@@ -20,6 +20,7 @@ import Select from 'react-select';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
 import Inputfield from '../../Inputfield.js';
 import Decimal from 'decimal.js';
+import { IoChevronBackOutline } from 'react-icons/io5';
 
 const CourierSheet = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -285,7 +286,9 @@ const CourierSheet = (props) => {
             <>
                 {fetchCourierSheetQuery?.data?.CourierSheet?.sheetOrders?.map((item, index) => {
                     var tempsheetpayload = {};
+                    var tempsheetpayloadPreviousOrder = {};
                     var show = false;
+                    var previousOrder = undefined;
                     submitSheetPayload?.updateSheetOrderstemp?.map((i, ii) => {
                         if (item?.order?.id == i.orderId) {
                             tempsheetpayload = i;
@@ -302,6 +305,20 @@ const CourierSheet = (props) => {
                             }
                         }
                     });
+                    if (item?.order?.previousOrderId) {
+                        previousOrder = fetchCourierSheetQuery?.data?.CourierSheet?.sheetOrders?.filter((ii) => ii.orderId == item?.order?.previousOrderId)[0];
+                        submitSheetPayload?.updateSheetOrderstemp?.map((i, ii) => {
+                            if (item?.order?.previousOrderId == i.orderId) {
+                                tempsheetpayloadPreviousOrder = i;
+                            }
+                        });
+                    }
+                    if (item?.order?.type == 'return') {
+                        var orderexist = fetchCourierSheetQuery?.data?.CourierSheet?.sheetOrders?.filter((ii) => ii.order?.previousOrderId == item?.orderId)[0];
+                        if (orderexist) {
+                            show = false;
+                        }
+                    }
                     if (show) {
                         // alert(JSON.stringify(tempsheetpayload));
                         return (
@@ -629,9 +646,168 @@ const CourierSheet = (props) => {
                                             </div>
                                         </div>
                                     )}
+                                    {previousOrder && (
+                                        <>
+                                            <div className={' col-lg-12 p-0'}>
+                                                <hr class="mb-0" />
+                                            </div>
+                                            <div className={' col-lg-12 p-0'}>
+                                                <div className="row m-0 w-100">
+                                                    <div className="col-lg-7 p-0">
+                                                        <div className="row m-0 w-100">
+                                                            <div class="col-lg-12 p-0 d-flex justify-content-start mb-1 mt-3">
+                                                                <div className="row m-0 w-100 d-flex align-items-center justify-content-start">
+                                                                    <div style={{ background: '#eee', color: 'black' }} className={' wordbreak rounded-pill font-weight-600 allcentered '}>
+                                                                        # {previousOrder?.order?.id}
+                                                                    </div>
+
+                                                                    <div
+                                                                        style={{
+                                                                            color: 'white',
+                                                                            borderRadius: '15px',
+                                                                            fontSize: '11px',
+                                                                            background: 'var(--primary)',
+                                                                        }}
+                                                                        class="allcentered mx-2 p-1 px-2 text-capitalize"
+                                                                    >
+                                                                        {previousOrder?.order?.type?.split(/(?=[A-Z])/).join(' ')}
+                                                                    </div>
+                                                                    <div
+                                                                        onClick={(e) => {
+                                                                            e.stopPropagation();
+
+                                                                            setstatuspayload({
+                                                                                step: 0,
+                                                                                orderid: item.id,
+                                                                                status: '',
+                                                                                order: item?.order,
+                                                                                previousOrder: fetchCourierSheetQuery?.data?.CourierSheet?.sheetOrders?.filter(
+                                                                                    (ii) => ii.orderId == item?.order?.previousOrderId,
+                                                                                )[0]?.order,
+                                                                                fullDelivery: true,
+                                                                                fullReturn: true,
+                                                                                returnStatus: 'returned',
+                                                                            });
+
+                                                                            setchangestatusmodal(true);
+                                                                        }}
+                                                                        style={{ cursor: 'pointer' }}
+                                                                        className={
+                                                                            item.status == 'delivered' ||
+                                                                            item.status == 'partiallyDelivered' ||
+                                                                            item.status == 'returned' ||
+                                                                            item.status == 'partiallyReturned'
+                                                                                ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 text-capitalize '
+                                                                                : item?.status == 'cancelled' || item?.status == 'failedDeliveryAttempt'
+                                                                                ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 text-capitalize '
+                                                                                : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 text-capitalize '
+                                                                        }
+                                                                    >
+                                                                        <span>{tempsheetpayloadPreviousOrder?.orderStatus?.split(/(?=[A-Z])/).join(' ')}</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>{' '}
+                                                    </div>
+
+                                                    <div className="col-lg-5 p-0">
+                                                        <div className="row m-0 w-100">
+                                                            {type == 'finance' && (
+                                                                <div className="col-lg-12 p-0 mb-2 d-flex justify-content-end">
+                                                                    <div className="row m-0 w-100 d-flex justify-content-end">
+                                                                        <label className={`${formstyles.switch} mx-2 my-0`}>
+                                                                            <input
+                                                                                type="checkbox"
+                                                                                checked={!tempsheetpayloadPreviousOrder?.shippingCollected}
+                                                                                onChange={(e) => {
+                                                                                    e.stopPropagation();
+                                                                                    var temp = { ...submitSheetPayload };
+
+                                                                                    temp.updateSheetOrders.map((i, ii) => {
+                                                                                        if (i.sheetOrderId == previousOrder.id) {
+                                                                                            temp.updateSheetOrders[ii].shippingCollected = !temp.updateSheetOrders[ii].shippingCollected;
+                                                                                        }
+                                                                                    });
+
+                                                                                    temp.updateSheetOrderstemp.map((i, ii) => {
+                                                                                        if (i.sheetOrderId == previousOrder.id) {
+                                                                                            temp.updateSheetOrderstemp[ii].shippingCollected = !temp.updateSheetOrders[ii].shippingCollected;
+                                                                                        }
+                                                                                    });
+
+                                                                                    setsubmitSheetPayload({ ...temp });
+                                                                                }}
+                                                                            />
+                                                                            <span className={`${formstyles.slider} ${formstyles.round}`}></span>
+                                                                        </label>
+                                                                        <p className={`${generalstyles.checkbox_label} mb-0 text-focus text-capitalize cursor-pointer font_14 ml-1 mr-1 wordbreak`}>
+                                                                            Shipping on merchant
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {type == 'finance' && (
+                                                <div class="col-lg-12 p-3 mt-2">
+                                                    <div class="row m-0 w-100 d-flex">
+                                                        <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-3">
+                                                            <div class="row m-0 w-100">
+                                                                <div class="col-lg-12 p-0 allcentered text-center">
+                                                                    <span style={{ fontWeight: 400, fontSize: '11px' }}>Collected</span>
+                                                                </div>
+                                                                <div class="col-lg-12 p-0 allcentered text-center">
+                                                                    <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                        {previousOrder?.amountCollected ? parseFloat(item?.amountCollected) : 0} {previousOrder?.order?.currency}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-3">
+                                                            <div class="row m-0 w-100">
+                                                                <div class="col-lg-12 p-0 allcentered text-center">
+                                                                    <span style={{ fontWeight: 400, fontSize: '11px' }}>Price</span>
+                                                                </div>
+                                                                <div class="col-lg-12 p-0 allcentered text-center">
+                                                                    <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                        {parseFloat(previousOrder?.order?.price)} {previousOrder?.order?.currency}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-3">
+                                                            <div class="row m-0 w-100">
+                                                                <div class="col-lg-12 p-0 allcentered text-center">
+                                                                    <span style={{ fontWeight: 400, fontSize: '11px' }}>Shipping</span>
+                                                                </div>
+                                                                <div class="col-lg-12 p-0 allcentered text-center">
+                                                                    <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                        {parseFloat(previousOrder?.order?.shippingPrice)} {previousOrder?.order?.currency}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div style={{ fontWeight: 600, fontSize: '15px' }} className=" p-0 mb-2 allcentered col-lg-3">
+                                                            <div class="row m-0 w-100">
+                                                                <div class="col-lg-12 p-0 allcentered text-center">
+                                                                    <span style={{ fontWeight: 400, fontSize: '11px' }}>Total</span>
+                                                                </div>
+                                                                <div class="col-lg-12 p-0 allcentered text-center">
+                                                                    <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                        {parseFloat(previousOrder?.order?.price) + parseFloat(previousOrder?.order?.shippingPrice)} {previousOrder?.order?.currency}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </>
+                                    )}
 
                                     {tempsheetpayload?.expanded && (
-                                        // <AccordionItemPanel expanded={expandedItems.includes(index)}>
                                         <>
                                             <hr className="mt-2 mb-3" />
                                             <div class="col-lg-12 p-0">
@@ -639,8 +815,8 @@ const CourierSheet = (props) => {
                                                     <div className="col-lg-8 p-0">
                                                         <div className="row m-0 w-100">
                                                             {type == 'admin' && (
-                                                                <div class="col-lg-12 mb-2" style={{ fontWeight: 600 }}>
-                                                                    Not delivered
+                                                                <div class="col-lg-12 mb-2 text-capitalize" style={{ fontWeight: 600 }}>
+                                                                    {item?.order?.type} items
                                                                 </div>
                                                             )}
                                                             {item?.order?.orderItems?.map((subitem, subindex) => {
@@ -707,6 +883,98 @@ const CourierSheet = (props) => {
                                                                     </div>
                                                                 );
                                                             })}
+                                                            {previousOrder && (
+                                                                <>
+                                                                    <hr className="mt-2 mb-3" />
+                                                                    <div class="col-lg-12 p-0">
+                                                                        <div className="row m-0 w-100">
+                                                                            {type == 'admin' && (
+                                                                                <div class="col-lg-12 mb-2 text-capitalize" style={{ fontWeight: 600 }}>
+                                                                                    {previousOrder?.order?.type} items
+                                                                                </div>
+                                                                            )}
+                                                                            {previousOrder?.order?.orderItems?.map((subitem, subindex) => {
+                                                                                return (
+                                                                                    <div class={type == 'admin' ? 'col-lg-6 mb-2' : 'col-lg-12 p-0 mb-2'}>
+                                                                                        <div
+                                                                                            style={{ border: '1px solid #eee', borderRadius: '18px' }}
+                                                                                            class="row m-0 w-100 p-2 d-flex align-items-center"
+                                                                                        >
+                                                                                            {previousOrder?.order?.type == 'return' && (
+                                                                                                <div
+                                                                                                    style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }}
+                                                                                                    className=" p-1 px-2 mr-1 allcentered"
+                                                                                                >
+                                                                                                    {subitem?.partialCount != null ? parseFloat(subitem.partialCount) : parseFloat(subitem.count)}
+                                                                                                </div>
+                                                                                            )}
+                                                                                            {previousOrder?.order?.type != 'return' && (
+                                                                                                <div
+                                                                                                    style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }}
+                                                                                                    className=" p-1 px-2 mr-1 allcentered"
+                                                                                                >
+                                                                                                    {subitem?.partialCount != null ? parseFloat(subitem.count) - parseFloat(subitem.partialCount) : 0}
+                                                                                                </div>
+                                                                                            )}
+
+                                                                                            {type == 'admin' && (
+                                                                                                <div style={{ width: '40px', height: '40px', borderRadius: '7px', marginInlineEnd: '5px' }}>
+                                                                                                    <img
+                                                                                                        src={
+                                                                                                            subitem?.info?.imageUrl
+                                                                                                                ? subitem?.info?.imageUrl
+                                                                                                                : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'
+                                                                                                        }
+                                                                                                        style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
+                                                                                                    />
+                                                                                                </div>
+                                                                                            )}
+
+                                                                                            <div class="col-lg-5 d-flex align-items-center">
+                                                                                                <div className="row m-0 w-100">
+                                                                                                    <div
+                                                                                                        style={{ fontSize: '14px', fontWeight: 500 }}
+                                                                                                        className={' col-lg-12 p-0 wordbreak wordbreak1'}
+                                                                                                    >
+                                                                                                        {subitem?.info?.item?.name ?? '-'}
+                                                                                                    </div>
+                                                                                                    <div style={{ fontSize: '12px' }} className={' col-lg-12 p-0 wordbreak wordbreak1'}>
+                                                                                                        {subitem?.info?.name ?? '-'}
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class={type == 'admin' ? 'col-lg-4 ' : 'col-lg-6 '}>
+                                                                                                <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
+                                                                                                    {previousOrder?.order?.type != 'return' && (
+                                                                                                        <div style={{ fontWeight: 700 }} class="mx-2">
+                                                                                                            {parseFloat(
+                                                                                                                (subitem?.partialCount != null
+                                                                                                                    ? parseFloat(subitem.count) - parseFloat(subitem.partialCount)
+                                                                                                                    : 0) * parseFloat(subitem?.unitPrice),
+                                                                                                            )}{' '}
+                                                                                                            {previousOrder?.info?.currency}
+                                                                                                        </div>
+                                                                                                    )}
+                                                                                                    {previousOrder?.order?.type == 'return' && (
+                                                                                                        <div style={{ fontWeight: 700 }} class="mx-2">
+                                                                                                            {parseFloat(
+                                                                                                                (subitem?.partialCount != null
+                                                                                                                    ? parseFloat(subitem.partialCount)
+                                                                                                                    : parseFloat(subitem.count)) * parseFloat(subitem?.unitPrice),
+                                                                                                            )}{' '}
+                                                                                                            {previousOrder?.info?.currency}
+                                                                                                        </div>
+                                                                                                    )}
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                );
+                                                                            })}
+                                                                        </div>
+                                                                    </div>
+                                                                </>
+                                                            )}
                                                         </div>
                                                     </div>
                                                     <div class="col-lg-4 p-0">
@@ -881,9 +1149,25 @@ const CourierSheet = (props) => {
                 size={'md'}
             >
                 <Modal.Header>
-                    <div className="row w-100 m-0 p-0">
-                        <div class="col-lg-6 pt-3 ">
-                            <div className="row w-100 m-0 p-0">Update Order Status</div>
+                    <div className="row w-100 m-0 p-0 d-flex align-items-center">
+                        <div class="col-lg-6 p-0 ">
+                            <div className="row w-100 m-0 p-0 d-flex align-items-center">
+                                {statuspayload?.step != 0 && (
+                                    <div
+                                        style={{
+                                            width: '35px',
+                                            height: '35px',
+                                        }}
+                                        className="iconhover allcentered"
+                                        onClick={() => {
+                                            setstatuspayload({ step: statuspayload?.step - 1 });
+                                        }}
+                                    >
+                                        <IoChevronBackOutline size={20} />
+                                    </div>
+                                )}
+                                Update Order Status
+                            </div>
                         </div>
                         <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
                             <div
@@ -928,25 +1212,195 @@ const CourierSheet = (props) => {
                     {statuspayload?.step == 1 && (
                         <div class="row m-0 w-100 py-2">
                             {statuspayload?.status == 'cancelled ' && (
-                                <div class={'col-lg-12 mb-3'}>
-                                    <label for="name" class={formstyles.form__label}>
-                                        Shipping
-                                    </label>
-                                    <Select
-                                        options={[
-                                            { label: 'Collected', value: true },
-                                            { label: 'Not Collected', value: false },
-                                        ]}
-                                        styles={defaultstyles}
-                                        value={[
-                                            { label: 'Collected', value: true },
-                                            { label: 'Not Collected', value: false },
-                                        ].filter((option) => option.value == statuspayload?.shippingCollected)}
-                                        onChange={(option) => {
-                                            setstatuspayload({ ...statuspayload, shippingCollected: option.value });
-                                        }}
-                                    />
-                                </div>
+                                <>
+                                    <div class={'col-lg-12 mb-3'}>
+                                        <label for="name" class={formstyles.form__label}>
+                                            Shipping
+                                        </label>
+                                        <Select
+                                            options={[
+                                                { label: 'Collected', value: true },
+                                                { label: 'Not Collected', value: false },
+                                            ]}
+                                            styles={defaultstyles}
+                                            value={[
+                                                { label: 'Collected', value: true },
+                                                { label: 'Not Collected', value: false },
+                                            ].filter((option) => option.value == statuspayload?.shippingCollected)}
+                                            onChange={(option) => {
+                                                setstatuspayload({ ...statuspayload, shippingCollected: option.value });
+                                            }}
+                                        />
+                                    </div>
+                                    {statuspayload?.previousOrder && (
+                                        <div className="row m-0 w-100">
+                                            <div class={'col-lg-12 mb-3'}>
+                                                <label for="name" class={formstyles.form__label}>
+                                                    Status
+                                                </label>
+                                                <Select
+                                                    options={[
+                                                        { label: 'Cancelled ', value: 'cancelled ' },
+                                                        { label: 'Returned', value: 'returned' },
+                                                    ]}
+                                                    styles={defaultstyles}
+                                                    value={[
+                                                        { label: 'Cancelled ', value: 'cancelled ' },
+                                                        { label: 'Returned', value: 'returned' },
+                                                    ].filter((option) => option.value == statuspayload?.returnStatus)}
+                                                    onChange={(option) => {
+                                                        setstatuspayload({ ...statuspayload, returnStatus: option.value, step: 1 });
+                                                    }}
+                                                />
+                                            </div>
+                                            {statuspayload?.returnStatus == 'returned' && (
+                                                <>
+                                                    <div className="col-lg-12 mb-3 p-0">
+                                                        <div className="row m-0 w-100 d-flex align-items-center">
+                                                            <label className={`${formstyles.switch} mx-2 my-0`}>
+                                                                <input
+                                                                    type="checkbox"
+                                                                    checked={statuspayload?.fullReturn}
+                                                                    onChange={(e) => {
+                                                                        const newStatus = !statuspayload?.fullReturn;
+                                                                        const partialItemsReturnTemp = newStatus
+                                                                            ? []
+                                                                            : statuspayload?.previousOrder?.orderItems?.map((i) => ({
+                                                                                  id: i.id,
+                                                                                  partialCount: i.count,
+                                                                              })) || [];
+
+                                                                        setstatuspayload((prev) => ({
+                                                                            ...prev,
+                                                                            fullReturn: newStatus,
+                                                                            partialDilevery: !newStatus,
+                                                                            partialItemsReturn: newStatus ? undefined : partialItemsReturnTemp,
+                                                                        }));
+                                                                    }}
+                                                                />
+                                                                <span className={`${formstyles.slider} ${formstyles.round}`}></span>
+                                                            </label>
+                                                            <p className={`${generalstyles.checkbox_label} mb-0 text-focus text-capitalize cursor-pointer font_14 ml-1 mr-1 wordbreak`}>Full return</p>
+                                                        </div>
+                                                    </div>
+
+                                                    {statuspayload?.previousOrder?.orderItems?.map((subitem, subindex) => {
+                                                        const partialItem = statuspayload?.partialItemsReturn?.find((i) => i.id === subitem.id) || {};
+
+                                                        return (
+                                                            <div key={subindex} className="col-lg-12 p-0 mb-2">
+                                                                <div style={{ border: '1px solid #eee', borderRadius: '18px' }} className="row m-0 w-100 p-2 d-flex align-items-center">
+                                                                    <div style={{ width: '50px', height: '50px', borderRadius: '7px', marginInlineEnd: '5px' }}>
+                                                                        <img
+                                                                            src={
+                                                                                subitem?.info?.imageUrl
+                                                                                    ? subitem?.info?.imageUrl
+                                                                                    : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'
+                                                                            }
+                                                                            style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
+                                                                        />
+                                                                    </div>
+
+                                                                    <div className="col-lg-5 d-flex align-items-center">
+                                                                        <div className="row m-0 w-100">
+                                                                            <div style={{ fontSize: '14px', fontWeight: 500 }} className="col-lg-12 p-0 wordbreak wordbreak1">
+                                                                                {subitem?.info?.item?.name ?? '-'}
+                                                                            </div>
+                                                                            <div style={{ fontSize: '12px' }} className="col-lg-12 p-0 wordbreak wordbreak1">
+                                                                                {subitem?.info?.name ?? '-'}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div className="col-lg-5">
+                                                                        <div className="row m-0 w-100 d-flex align-items-center justify-content-end">
+                                                                            <div style={{ fontWeight: 700 }} className="mx-2">
+                                                                                {statuspayload?.fullReturn
+                                                                                    ? parseFloat(subitem?.count) * parseFloat(subitem?.unitPrice)
+                                                                                    : parseFloat(subitem.unitPrice) * parseFloat(partialItem?.partialCount ?? 0)}{' '}
+                                                                                {statuspayload?.info?.currency}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div className="col-lg-12 p-0 mt-2">
+                                                                        <div className="row m-0 w-100">
+                                                                            {statuspayload?.fullReturn && (
+                                                                                <div
+                                                                                    style={{
+                                                                                        border: '1px solid #eee',
+                                                                                        borderRadius: '8px',
+                                                                                        fontWeight: 700,
+                                                                                        background: 'var(--primary)',
+                                                                                        color: 'white',
+                                                                                        width: '35px',
+                                                                                    }}
+                                                                                    className="p-1 px-2 mr-1 allcentered"
+                                                                                >
+                                                                                    {parseFloat(subitem.count)}
+                                                                                </div>
+                                                                            )}
+                                                                            {!statuspayload?.fullReturn && (
+                                                                                <>
+                                                                                    {Array.from({ length: parseFloat(subitem.count) + 1 }, (_, i) => (
+                                                                                        <div
+                                                                                            key={i}
+                                                                                            onClick={() => {
+                                                                                                const partialItemsReturnTemp = [...(statuspayload?.partialItemsReturn || [])];
+                                                                                                const existingItemIndex = partialItemsReturnTemp?.findIndex((item) => item.id === subitem?.id);
+
+                                                                                                if (existingItemIndex !== -1) {
+                                                                                                    partialItemsReturnTemp[existingItemIndex].partialCount = i;
+                                                                                                } else {
+                                                                                                    partialItemsReturnTemp.push({ id: subitem?.id, partialCount: i });
+                                                                                                }
+
+                                                                                                setstatuspayload((prev) => ({
+                                                                                                    ...prev,
+                                                                                                    partialItemsReturn: partialItemsReturnTemp,
+                                                                                                }));
+                                                                                            }}
+                                                                                            style={{
+                                                                                                border: '1px solid #eee',
+                                                                                                borderRadius: '8px',
+                                                                                                fontWeight: 700,
+                                                                                                background: partialItem?.partialCount === i ? 'var(--primary)' : '',
+                                                                                                color: partialItem?.partialCount === i ? 'white' : '',
+                                                                                                width: '35px',
+                                                                                                cursor: 'pointer',
+                                                                                                transition: 'all 0.4s',
+                                                                                            }}
+                                                                                            className="p-1 px-2 mr-1 allcentered"
+                                                                                        >
+                                                                                            {i}
+                                                                                        </div>
+                                                                                    ))}
+                                                                                </>
+                                                                            )}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        );
+                                                    })}
+
+                                                    {!statuspayload?.previousOrder?.originalPrice && !statuspayload?.fullReturn && (
+                                                        <div className="col-lg-12 mb-3">
+                                                            <Inputfield
+                                                                placeholder={'Amount Received'}
+                                                                value={statuspayload?.amountCollectedReturn}
+                                                                onChange={(event) => {
+                                                                    setstatuspayload((prev) => ({ ...prev, amountCollectedReturn: event.target.value }));
+                                                                }}
+                                                                type={'number'}
+                                                            />
+                                                        </div>
+                                                    )}
+                                                </>
+                                            )}
+                                        </div>
+                                    )}
+                                </>
                             )}
                             {statuspayload?.status == 'postponed' && (
                                 <div class={'col-lg-12 mb-3'}>
@@ -1287,10 +1741,45 @@ const CourierSheet = (props) => {
                                     </div>
                                 </div>
                             )}
+                            {statuspayload?.status == 'unreachable' && (
+                                <div class={'col-lg-12 mb-3'}>
+                                    <label for="name" class={formstyles.form__label}>
+                                        Comment
+                                    </label>
+                                    <Select
+                                        options={[
+                                            { label: 'الرقم غلط', value: 'الرقم غلط' },
+                                            { label: 'العنوان غير واضح', value: 'العنوان غير واضح' },
+                                            { label: 'لم يتم الرد و تم ارسال رساله', value: 'لم يتم الرد و تم ارسال رساله' },
+                                            { label: 'مغلق و تم ارسال رسالة', value: 'مغلق و تم ارسال رسالة' },
+                                            { label: 'عدم الرد بعد تأجيل استلام الاوردر لاكثر من مره مع المندوب', value: 'عدم الرد بعد تأجيل استلام الاوردر لاكثر من مره مع المندوب' },
+                                            { label: 'يوجد خطأ فى سعر الاوردر فى انتظار رد من الراسل', value: 'يوجد خطأ فى سعر الاوردر فى انتظار رد من الراسل' },
+                                            { label: 'لا يوجد رد و تم الذهاب للعنوان و لا يوجد احد للاستلام', value: 'لا يوجد رد و تم الذهاب للعنوان و لا يوجد احد للاستلام' },
+                                        ]}
+                                        styles={defaultstyles}
+                                        value={[
+                                            { label: 'الرقم غلط', value: 'الرقم غلط' },
+                                            { label: 'العنوان غير واضح', value: 'العنوان غير واضح' },
+                                            { label: 'لم يتم الرد و تم ارسال رساله', value: 'لم يتم الرد و تم ارسال رساله' },
+                                            { label: 'مغلق و تم ارسال رسالة', value: 'مغلق و تم ارسال رسالة' },
+                                            { label: 'عدم الرد بعد تأجيل استلام الاوردر لاكثر من مره مع المندوب', value: 'عدم الرد بعد تأجيل استلام الاوردر لاكثر من مره مع المندوب' },
+                                            { label: 'يوجد خطأ فى سعر الاوردر فى انتظار رد من الراسل', value: 'يوجد خطأ فى سعر الاوردر فى انتظار رد من الراسل' },
+                                            { label: 'لا يوجد رد و تم الذهاب للعنوان و لا يوجد احد للاستلام', value: 'لا يوجد رد و تم الذهاب للعنوان و لا يوجد احد للاستلام' },
+                                        ].filter((option) => option.value == statuspayload?.description)}
+                                        onChange={(option) => {
+                                            setstatuspayload({ ...statuspayload, description: option.value, step: 1 });
+                                        }}
+                                    />
+                                </div>
+                            )}
 
                             <div class="col-lg-12 mb-3 allcentered">
                                 <button
                                     onClick={async () => {
+                                        if (!statuspayload?.order?.originalPrice && !statuspayload?.fullDelivery && !statuspayload?.amountCollected) {
+                                            NotificationManager.warning('Enter Amount Collected.', 'Warning!');
+                                            return;
+                                        }
                                         try {
                                             setupdateStatusButtonLoading(true);
                                             const { data } = await updateOrdersStatusMutation();

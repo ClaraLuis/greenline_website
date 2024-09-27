@@ -17,6 +17,7 @@ import { TbEdit } from 'react-icons/tb';
 import { useQuery } from 'react-query';
 import Form from '../../Form.js';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
+import { MdClose } from 'react-icons/md';
 
 const UpdateMerchant = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -214,12 +215,23 @@ const UpdateMerchant = (props) => {
                             <div class="col-lg-12 mb-1" style={{ color: 'grey', fontSize: '12px' }}>
                                 <div class="row m-0 w-100 d-flex align-items-center justify-content-between">
                                     <div> Main Info</div>
-                                    <TbEdit
-                                        onClick={() => {
-                                            setEdit({ ...edit, mainInfo: true });
-                                        }}
-                                        class="text-secondaryhover"
-                                    />
+
+                                    {edit.mainInfo && (
+                                        <MdClose
+                                            onClick={() => {
+                                                setEdit({ ...edit, mainInfo: false });
+                                            }}
+                                            class="text-secondaryhover"
+                                        />
+                                    )}
+                                    {!edit.mainInfo && (
+                                        <TbEdit
+                                            onClick={() => {
+                                                setEdit({ ...edit, mainInfo: true });
+                                            }}
+                                            class="text-secondaryhover"
+                                        />
+                                    )}
                                 </div>
                             </div>
                             {edit?.mainInfo && (
@@ -311,12 +323,22 @@ const UpdateMerchant = (props) => {
                             <div class="col-lg-12 mb-1" style={{ color: 'grey', fontSize: '12px' }}>
                                 <div class="row m-0 w-100 d-flex align-items-center justify-content-between">
                                     <div>Owner Info</div>
-                                    <TbEdit
-                                        onClick={() => {
-                                            setEdit({ ...edit, ownerInfo: true });
-                                        }}
-                                        class="text-secondaryhover"
-                                    />
+                                    {edit.ownerInfo && (
+                                        <MdClose
+                                            onClick={() => {
+                                                setEdit({ ...edit, ownerInfo: false });
+                                            }}
+                                            class="text-secondaryhover"
+                                        />
+                                    )}
+                                    {!edit.ownerInfo && (
+                                        <TbEdit
+                                            onClick={() => {
+                                                setEdit({ ...edit, ownerInfo: true });
+                                            }}
+                                            class="text-secondaryhover"
+                                        />
+                                    )}
                                 </div>
                             </div>
                             {edit.ownerInfo ? (
@@ -402,40 +424,59 @@ const UpdateMerchant = (props) => {
                                     </div>
                                 </div>
                             ) : (
-                                <div class={generalstyles.card + ' row m-0 w-100'} style={{ padding: '20px 40px' }}>
-                                    <div class="col-lg-12">
-                                        <div class="row m-0 w-100  ">
-                                            <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                                <label class={formstyles.form__label}>Owner Name</label>
-                                                <div>{merchantPayload.ownerName}</div>
+                                <>
+                                    {merchantPayload.ownerName && (
+                                        <div class={generalstyles.card + ' row m-0 w-100'} style={{ padding: '20px 40px' }}>
+                                            <div class="col-lg-12">
+                                                <div class="row m-0 w-100  ">
+                                                    <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                        <label class={formstyles.form__label}>Owner Name</label>
+                                                        <div>{merchantPayload.ownerName}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12">
+                                                <div class="row m-0 w-100  ">
+                                                    <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                        <label class={formstyles.form__label}>Owner Email</label>
+                                                        <div>{merchantPayload.ownerEmail}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12">
+                                                <div class="row m-0 w-100  ">
+                                                    <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                        <label class={formstyles.form__label}>Owner Phone</label>
+                                                        <div>{merchantPayload.ownerPhone}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12">
+                                                <div class="row m-0 w-100  ">
+                                                    <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                        <label class={formstyles.form__label}>Owner Birthdate</label>
+                                                        <div>{merchantPayload.ownerBirthdate}</div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-lg-12">
-                                        <div class="row m-0 w-100  ">
-                                            <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                                <label class={formstyles.form__label}>Owner Email</label>
-                                                <div>{merchantPayload.ownerEmail}</div>
+                                    )}
+                                    {!merchantPayload.ownerName && (
+                                        <div class={generalstyles.card + ' row m-0 w-100 allcentered'} style={{ padding: '20px 40px' }}>
+                                            <div class="col-lg-12 p-0 allcentered">
+                                                <button
+                                                    style={{ height: '35px' }}
+                                                    class={generalstyles.roundbutton + ' allcentered p-0'}
+                                                    onClick={async () => {
+                                                        setEdit({ ...edit, ownerInfo: true });
+                                                    }}
+                                                >
+                                                    <span>Add Owner</span>
+                                                </button>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-lg-12">
-                                        <div class="row m-0 w-100  ">
-                                            <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                                <label class={formstyles.form__label}>Owner Phone</label>
-                                                <div>{merchantPayload.ownerPhone}</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12">
-                                        <div class="row m-0 w-100  ">
-                                            <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                                <label class={formstyles.form__label}>Owner Birthdate</label>
-                                                <div>{merchantPayload.ownerBirthdate}</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                    )}
+                                </>
                             )}
                         </div>
                     </div>
@@ -446,12 +487,23 @@ const UpdateMerchant = (props) => {
                             <div class="col-lg-12 mb-1" style={{ color: 'grey', fontSize: '12px' }}>
                                 <div class="row m-0 w-100 d-flex align-items-center justify-content-between">
                                     <div>Address</div>
-                                    <TbEdit
-                                        onClick={() => {
-                                            setEdit({ ...edit, address: true });
-                                        }}
-                                        class="text-secondaryhover"
-                                    />
+
+                                    {edit.address && (
+                                        <MdClose
+                                            onClick={() => {
+                                                setEdit({ ...edit, address: false });
+                                            }}
+                                            class="text-secondaryhover"
+                                        />
+                                    )}
+                                    {!edit.address && (
+                                        <TbEdit
+                                            onClick={() => {
+                                                setEdit({ ...edit, address: true });
+                                            }}
+                                            class="text-secondaryhover"
+                                        />
+                                    )}
                                 </div>
                             </div>
                             {edit?.address && (
@@ -711,189 +763,240 @@ const UpdateMerchant = (props) => {
                                 </div>
                             )}
                             {!edit?.address && (
-                                <div class={generalstyles.card + ' row m-0 w-100'} style={{ padding: '20px 40px' }}>
-                                    <div class="col-lg-6">
-                                        <div class="row m-0 w-100  ">
-                                            <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                                <label class={formstyles.form__label}>Country</label>
-                                                <div>{merchantPayload?.address?.country}</div>
+                                <>
+                                    {merchantPayload.address && (
+                                        <div class={generalstyles.card + ' row m-0 w-100'} style={{ padding: '20px 40px' }}>
+                                            <div class="col-lg-6">
+                                                <div class="row m-0 w-100  ">
+                                                    <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                        <label class={formstyles.form__label}>Country</label>
+                                                        <div>{merchantPayload?.address?.country}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="row m-0 w-100  ">
+                                                    <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                        <label class={formstyles.form__label}>City</label>
+                                                        <div>{merchantPayload?.address?.city}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="row m-0 w-100  ">
+                                                    <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                        <label class={formstyles.form__label}>Building Number</label>
+                                                        <div>{merchantPayload?.address?.buildingNumber}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="row m-0 w-100  ">
+                                                    <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                        <label class={formstyles.form__label}>Apartment Floor</label>
+                                                        <div>{merchantPayload?.address?.apartmentFloor}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12">
+                                                <div class="row m-0 w-100  ">
+                                                    <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                        <label class={formstyles.form__label}>Street Address</label>
+                                                        <div>{merchantPayload?.address?.streetAddress}</div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="row m-0 w-100  ">
-                                            <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                                <label class={formstyles.form__label}>City</label>
-                                                <div>{merchantPayload?.address?.city}</div>
+                                    )}
+                                    {!merchantPayload.address && (
+                                        <div class={generalstyles.card + ' row m-0 w-100 allcentered'} style={{ padding: '20px 40px' }}>
+                                            <div class="col-lg-12 p-0 allcentered">
+                                                <button
+                                                    style={{ height: '35px' }}
+                                                    class={generalstyles.roundbutton + ' allcentered p-0'}
+                                                    onClick={async () => {
+                                                        setEdit({ ...edit, address: true });
+                                                    }}
+                                                >
+                                                    <span>Add Address</span>
+                                                </button>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="row m-0 w-100  ">
-                                            <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                                <label class={formstyles.form__label}>Building Number</label>
-                                                <div>{merchantPayload?.address?.buildingNumber}</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="row m-0 w-100  ">
-                                            <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                                <label class={formstyles.form__label}>Apartment Floor</label>
-                                                <div>{merchantPayload?.address?.apartmentFloor}</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12">
-                                        <div class="row m-0 w-100  ">
-                                            <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                                <label class={formstyles.form__label}>Street Address</label>
-                                                <div>{merchantPayload?.address?.streetAddress}</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                    )}
+                                </>
                             )}
                         </div>
                         <div class="col-lg-12">
                             <div class="col-lg-12 mb-1" style={{ color: 'grey', fontSize: '12px' }}>
                                 <div class="row m-0 w-100 d-flex align-items-center justify-content-between">
                                     <div>Billing Info</div>
-                                    <TbEdit
-                                        onClick={() => {
-                                            setEdit({ ...edit, billingInfo: true });
-                                        }}
-                                        class="text-secondaryhover"
-                                    />
+
+                                    {edit.billingInfo && (
+                                        <MdClose
+                                            onClick={() => {
+                                                setEdit({ ...edit, billingInfo: false });
+                                            }}
+                                            class="text-secondaryhover"
+                                        />
+                                    )}
+                                    {!edit.billingInfo && (
+                                        <TbEdit
+                                            onClick={() => {
+                                                setEdit({ ...edit, billingInfo: true });
+                                            }}
+                                            class="text-secondaryhover"
+                                        />
+                                    )}
                                 </div>
                             </div>
                             {edit.billingInfo ? (
-                                <div class={generalstyles.card + ' row m-0 w-100'} style={{ padding: '20px 40px' }}>
-                                    <div class="col-lg-12">
-                                        <div class="row m-0 w-100">
-                                            <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                                <label class={formstyles.form__label}>Bank Name</label>
-                                                <input
-                                                    type="text"
-                                                    class={formstyles.form__field}
-                                                    value={merchantPayload.bankName}
-                                                    onChange={(event) => {
-                                                        setmerchantPayload({ ...merchantPayload, bankName: event.target.value });
-                                                    }}
-                                                />
+                                <>
+                                    <div class={generalstyles.card + ' row m-0 w-100'} style={{ padding: '20px 40px' }}>
+                                        <div class="col-lg-12">
+                                            <div class="row m-0 w-100">
+                                                <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                    <label class={formstyles.form__label}>Bank Name</label>
+                                                    <input
+                                                        type="text"
+                                                        class={formstyles.form__field}
+                                                        value={merchantPayload.bankName}
+                                                        onChange={(event) => {
+                                                            setmerchantPayload({ ...merchantPayload, bankName: event.target.value });
+                                                        }}
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-lg-12">
-                                        <div class="row m-0 w-100">
-                                            <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                                <label class={formstyles.form__label}>Bank Number</label>
-                                                <input
-                                                    type="number"
-                                                    class={formstyles.form__field}
-                                                    value={merchantPayload.bankNumber}
-                                                    onChange={(event) => {
-                                                        setmerchantPayload({ ...merchantPayload, bankNumber: event.target.value });
-                                                    }}
-                                                />
+                                        <div class="col-lg-12">
+                                            <div class="row m-0 w-100">
+                                                <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                    <label class={formstyles.form__label}>Bank Number</label>
+                                                    <input
+                                                        type="number"
+                                                        class={formstyles.form__field}
+                                                        value={merchantPayload.bankNumber}
+                                                        onChange={(event) => {
+                                                            setmerchantPayload({ ...merchantPayload, bankNumber: event.target.value });
+                                                        }}
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="row m-0 w-100">
-                                            <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                                <label class={formstyles.form__label}>Tax Id</label>
-                                                <input
-                                                    type="number"
-                                                    class={formstyles.form__field}
-                                                    value={merchantPayload.taxId}
-                                                    onChange={(event) => {
-                                                        setmerchantPayload({ ...merchantPayload, taxId: event.target.value });
-                                                    }}
-                                                />
+                                        <div class="col-lg-6">
+                                            <div class="row m-0 w-100">
+                                                <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                    <label class={formstyles.form__label}>Tax Id</label>
+                                                    <input
+                                                        type="number"
+                                                        class={formstyles.form__field}
+                                                        value={merchantPayload.taxId}
+                                                        onChange={(event) => {
+                                                            setmerchantPayload({ ...merchantPayload, taxId: event.target.value });
+                                                        }}
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-lg-6 pl-0">
-                                        <label for="name" class={formstyles.form__label}>
-                                            Includes VAT
-                                        </label>
-                                        <Select
-                                            options={[
-                                                { label: 'Includes VAT', value: true },
-                                                { label: 'Does not include VAT', value: false },
-                                            ]}
-                                            styles={defaultstyles}
-                                            value={[
-                                                { label: 'Includes VAT', value: true },
-                                                { label: 'Does not include VAT', value: false },
-                                            ].filter((option) => option.value == merchantPayload.includesVat)}
-                                            onChange={(option) => {
-                                                setmerchantPayload({ ...merchantPayload, includesVat: option.value });
-                                            }}
-                                        />
-                                    </div>
-                                    <div class="col-lg-12 p-0 allcentered">
-                                        <button
-                                            style={{ height: '35px' }}
-                                            class={generalstyles.roundbutton + ' allcentered p-0'}
-                                            onClick={async () => {
-                                                setbuttonLoading(true);
-                                                try {
-                                                    const { data } = await updateMerchantBillingMutation();
-                                                    refetchfindOneMerchantQuery();
-                                                } catch (error) {
-                                                    let errorMessage = 'An unexpected error occurred';
-                                                    if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-                                                        errorMessage = error.graphQLErrors[0].message || errorMessage;
-                                                    } else if (error.networkError) {
-                                                        errorMessage = error.networkError.message || errorMessage;
-                                                    } else if (error.message) {
-                                                        errorMessage = error.message;
-                                                    }
+                                        <div class="col-lg-6 pl-0">
+                                            <label for="name" class={formstyles.form__label}>
+                                                Includes VAT
+                                            </label>
+                                            <Select
+                                                options={[
+                                                    { label: 'Includes VAT', value: true },
+                                                    { label: 'Does not include VAT', value: false },
+                                                ]}
+                                                styles={defaultstyles}
+                                                value={[
+                                                    { label: 'Includes VAT', value: true },
+                                                    { label: 'Does not include VAT', value: false },
+                                                ].filter((option) => option.value == merchantPayload.includesVat)}
+                                                onChange={(option) => {
+                                                    setmerchantPayload({ ...merchantPayload, includesVat: option.value });
+                                                }}
+                                            />
+                                        </div>
+                                        <div class="col-lg-12 p-0 allcentered">
+                                            <button
+                                                style={{ height: '35px' }}
+                                                class={generalstyles.roundbutton + ' allcentered p-0'}
+                                                onClick={async () => {
+                                                    setbuttonLoading(true);
+                                                    try {
+                                                        const { data } = await updateMerchantBillingMutation();
+                                                        refetchfindOneMerchantQuery();
+                                                    } catch (error) {
+                                                        let errorMessage = 'An unexpected error occurred';
+                                                        if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                                            errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                                        } else if (error.networkError) {
+                                                            errorMessage = error.networkError.message || errorMessage;
+                                                        } else if (error.message) {
+                                                            errorMessage = error.message;
+                                                        }
 
-                                                    NotificationManager.warning(errorMessage, 'Warning!');
-                                                    console.error('Error adding Inventory Rent:', error);
-                                                }
-                                                setbuttonLoading(false);
-                                            }}
-                                        >
-                                            {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                            {!buttonLoading && <span>Update</span>}
-                                        </button>
+                                                        NotificationManager.warning(errorMessage, 'Warning!');
+                                                        console.error('Error adding Inventory Rent:', error);
+                                                    }
+                                                    setbuttonLoading(false);
+                                                }}
+                                            >
+                                                {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                                {!buttonLoading && <span>Update</span>}
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
+                                </>
                             ) : (
-                                <div class={generalstyles.card + ' row m-0 w-100'} style={{ padding: '20px 40px' }}>
-                                    <div class="col-lg-12">
-                                        <div class="row m-0 w-100">
-                                            <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                                <label class={formstyles.form__label}>Bank Name</label>
-                                                <div>{merchantPayload.bankName}</div>
+                                <>
+                                    {merchantPayload.bankName && (
+                                        <div class={generalstyles.card + ' row m-0 w-100'} style={{ padding: '20px 40px' }}>
+                                            <div class="col-lg-12">
+                                                <div class="row m-0 w-100">
+                                                    <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                        <label class={formstyles.form__label}>Bank Name</label>
+                                                        <div>{merchantPayload.bankName}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12">
+                                                <div class="row m-0 w-100">
+                                                    <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                        <label class={formstyles.form__label}>Bank Number</label>
+                                                        <div>{merchantPayload.bankNumber}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="row m-0 w-100">
+                                                    <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                        <label class={formstyles.form__label}>Tax Id</label>
+                                                        <div>{merchantPayload.taxId}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 pl-0">
+                                                <label class={formstyles.form__label}>Includes VAT</label>
+                                                <div>{merchantPayload.includesVat ? 'Includes VAT' : 'Does not include VAT'}</div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-lg-12">
-                                        <div class="row m-0 w-100">
-                                            <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                                <label class={formstyles.form__label}>Bank Number</label>
-                                                <div>{merchantPayload.bankNumber}</div>
+                                    )}
+                                    {!merchantPayload.bankName && (
+                                        <div class={generalstyles.card + ' row m-0 w-100 allcentered'} style={{ padding: '20px 40px' }}>
+                                            <div class="col-lg-12 p-0 allcentered">
+                                                <button
+                                                    style={{ height: '35px' }}
+                                                    class={generalstyles.roundbutton + ' allcentered p-0'}
+                                                    onClick={async () => {
+                                                        setEdit({ ...edit, billingInfo: true });
+                                                    }}
+                                                >
+                                                    <span>Add Bank</span>
+                                                </button>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="row m-0 w-100">
-                                            <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                                <label class={formstyles.form__label}>Tax Id</label>
-                                                <div>{merchantPayload.taxId}</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 pl-0">
-                                        <label class={formstyles.form__label}>Includes VAT</label>
-                                        <div>{merchantPayload.includesVat ? 'Includes VAT' : 'Does not include VAT'}</div>
-                                    </div>
-                                </div>
+                                    )}
+                                </>
                             )}
                         </div>
                     </div>
