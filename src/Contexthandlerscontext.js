@@ -29,6 +29,7 @@ export const Contexthandlerscontext_provider = (props) => {
     const [value, setValue] = useState(0);
     const [UserInfoContext, setUserInfoContext] = useState({});
     const [chosenOrderContext, setchosenOrderContext] = useState({});
+    const [chosenItemContext, setchosenItemContext] = useState({});
     const [chosenPackageContext, setchosenPackageContext] = useState({});
     const [chosenHubContext, setchosenHubContext] = useState({});
     const cookies = new Cookies();
@@ -947,6 +948,8 @@ export const Contexthandlerscontext_provider = (props) => {
                 setchosenHubContext,
                 importedDataContext,
                 setimportedDataContext,
+                chosenItemContext,
+                setchosenItemContext,
             }}
         >
             {props.children}

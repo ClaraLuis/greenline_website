@@ -24,8 +24,8 @@ import SelectComponent from '../../SelectComponent.js';
 const AddItem = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, dateformatter, importedDataContext, isAuth } = useContext(Contexthandlerscontext);
-    const { fetchMerchantItems, useQueryGQL, useMutationGQL, fetchMerchants, addCompoundItem } = API();
+    const { setpageactive_context, setchosenItemContext, chosenItemContext, importedDataContext, isAuth } = useContext(Contexthandlerscontext);
+    const { fetchMerchantItems, useQueryGQL, useMutationGQL, fetchMerchants, addCompoundItem, updateMerchantItem, findOneItem, useLazyQueryGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const cookies = new Cookies();
@@ -54,6 +54,8 @@ const AddItem = (props) => {
     const [variantsList, setvariantsList] = useState([]);
     const [itemVariants, setitemVariants] = useState({});
     const [existWarning, setexistWarning] = useState(false);
+    const [findOneItemLazyQuery] = useLazyQueryGQL(findOneItem());
+
     const [addItemMutation] = useMutationGQL(addCompoundItem(), {
         merchantId: 1,
         items: [
@@ -68,6 +70,22 @@ const AddItem = (props) => {
                 variantOptionAttributes: itempayload?.variantOptionAttributes,
             },
         ],
+    });
+
+    const [updateMerchantItemMutation] = useMutationGQL(updateMerchantItem(), {
+        merchantId: 1,
+        item: {
+            id: parseInt(queryParameters?.get('id')),
+
+            name: itempayload?.name,
+            merchantSku: itempayload?.merchansku,
+            description: itempayload?.description,
+            imageUrl: itempayload?.imageUrl,
+            price: itempayload?.price,
+            variantNames: itempayload?.variantNames,
+            variantOptions: itempayload?.variantOptions,
+            variantOptionAttributes: itempayload?.variantOptionAttributes,
+        },
     });
 
     class VariantName {
@@ -291,7 +309,7 @@ const AddItem = (props) => {
         beforeCursor: undefined,
     });
 
-    const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filteMerchants);
+    const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filteMerchants);
 
     useEffect(() => {
         const itemVariantsTemp = createVariantOptions([], 0);
@@ -447,6 +465,125 @@ const AddItem = (props) => {
             setvariantsList(variantNames);
         }
     }, [importedDataContext, itemIndex]);
+    useEffect(async () => {
+        if (window.location.pathname == '/updateitem') {
+            if (JSON.stringify(chosenItemContext) == '{}') {
+                try {
+                    var { data } = await findOneItemLazyQuery({
+                        variables: {
+                            input: {
+                                id: parseInt(queryParameters?.get('id')),
+                            },
+                        },
+                    });
+                    if (data?.findOneItem) {
+                        setchosenItemContext(data?.findOneItem);
+                    }
+                } catch (e) {
+                    let errorMessage = 'An unexpected error occurred';
+                    if (e.graphQLErrors && e.graphQLErrors.length > 0) {
+                        errorMessage = e.graphQLErrors[0].message || errorMessage;
+                    } else if (e.networkError) {
+                        errorMessage = e.networkError.message || errorMessage;
+                    } else if (e.message) {
+                        errorMessage = e.message;
+                    }
+                    NotificationManager.warning(errorMessage, 'Warning!');
+                }
+            }
+            if (chosenItemContext?.itemVariants) {
+                const variantMap = new Map();
+
+                chosenItemContext.itemVariants.forEach((itemVariant) => {
+                    itemVariant.selectedOptions.forEach((option) => {
+                        const variantName = option.variantName.name;
+                        const variantOption = option.variantOption;
+                        if (variantMap.has(variantName)) {
+                            const existingOptions = variantMap.get(variantName);
+                            const optionExists = existingOptions.some((opt) => opt.value === variantOption.value);
+                            if (!optionExists) {
+                                existingOptions.push(new VariantOption(variantOption.value, variantOption.colorCode));
+                                variantMap.set(variantName, existingOptions);
+                            }
+                        } else {
+                            variantMap.set(variantName, [new VariantOption(variantOption.value, variantOption.colorCode)]);
+                        }
+                    });
+                });
+
+                const variantNamesArray = Array.from(variantMap, ([name, variantOptions]) => new VariantName(name, variantOptions));
+                setvariantsList(variantNamesArray);
+
+                // Prepare item payload
+                var itemtemp = {
+                    name: chosenItemContext?.name,
+                    description: chosenItemContext?.description,
+                    imageUrl: chosenItemContext?.imageUrl,
+                    imagepreview: chosenItemContext?.imageUrl,
+                    merchantId: chosenItemContext?.merchantId,
+                };
+                setitempayload(itemtemp);
+
+                // Setting variant price, SKU, and image URL
+                const itemVariantsTemp = createVariantOptions1([], 0, variantNamesArray); // Assuming this creates combinations
+                const itemVariantsObjects = [];
+
+                for (const combination of itemVariantsTemp) {
+                    itemVariantsObjects.push(new ItemVariant(combination));
+                }
+
+                // Map prices, SKUs, and image URLs
+                chosenItemContext.itemVariants.forEach((itemVariant) => {
+                    const { price, sku, imageUrl } = itemVariant;
+                    const matchingVariant = itemVariantsObjects.find((iv) => {
+                        return iv.variantOptions.every((opt, idx) => opt.value === itemVariant.selectedOptions[idx]?.variantOption.value);
+                    });
+                    if (matchingVariant) {
+                        matchingVariant.price = price;
+                        matchingVariant.merchantSku = sku;
+                        matchingVariant.imageUrlPrev = imageUrl;
+                        matchingVariant.imageUrl = imageUrl;
+                    }
+                });
+
+                // Group by the first variant option value
+                const groupedByFirstValue = itemVariantsObjects
+                    ?.filter((e) => e.variantOptions?.length > 0)
+                    .reduce((acc, item) => {
+                        const firstValue = item.variantOptions[0].value;
+                        const remainingOptions = item.variantOptions.slice(1);
+
+                        if (!acc[firstValue]) {
+                            acc[firstValue] = { variants: [] };
+                        }
+
+                        acc[firstValue].variants.push({ ...item, variantOptions: remainingOptions });
+                        return acc;
+                    }, {});
+
+                setitemVariants((prevItemVariants) => {
+                    const newKeys = Object.keys(groupedByFirstValue);
+                    const groupedByFirstValueTemp = groupedByFirstValue;
+
+                    for (const key of newKeys) {
+                        const oldList = prevItemVariants[key]?.variants;
+                        if (!oldList) continue;
+
+                        const newList = groupedByFirstValue[key].variants;
+                        newList.forEach((item, index) => {
+                            const similar = findSimilar(oldList, item);
+                            if (similar?.length) {
+                                groupedByFirstValueTemp[key].variants[index] = similar[0];
+                            }
+                        });
+                    }
+                    console.log('Item Variants:', groupedByFirstValueTemp); // Debug log
+
+                    return groupedByFirstValueTemp;
+                });
+            }
+        }
+    }, [chosenItemContext]);
 
     const uploadImage = async (img) => {
         const axiosheaders = {
@@ -694,6 +831,231 @@ const AddItem = (props) => {
                                                     Skip
                                                 </button>
                                             )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    {window.location.pathname == '/updateitem' && (
+                        <div class={' col-lg-12 p-0 mb-0'} style={{ fontWeight: 700, fontSize: '23px', position: 'sticky', top: 75, zIndex: 100 }}>
+                            <div class={generalstyles.card + ' row m-0 w-100 p-2 d-flex justify-content-between'}>
+                                <div class="col-lg-12 p-0">
+                                    <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
+                                        <div>
+                                            <button
+                                                style={{ height: '35px' }}
+                                                class={generalstyles.roundbutton + '  mb-1'}
+                                                onClick={async () => {
+                                                    setbuttonLoading(true);
+                                                    if (itempayload?.name?.length == 0) {
+                                                        NotificationManager.warning('Name Can not be empty', 'Warning');
+                                                    } else {
+                                                        // Assuming this code is inside an async function
+                                                        var tempOptions = [];
+                                                        var tempValues = [];
+                                                        var variantsTemp = [];
+                                                        options?.map((i, ii) => {
+                                                            var array = [];
+                                                            tempOptions.push(i.name);
+                                                            i?.values.map((m, mm) => {
+                                                                array.push({ value: m });
+                                                            });
+                                                            tempValues.push(array);
+                                                        });
+                                                        variants?.map((variant, varianIndex) => {
+                                                            var temp = {
+                                                                price: variant.price?.length == 0 ? null : variant.price,
+                                                                imageUrl: variant.imageUrl,
+                                                                merchantSku: variant.merchantSku,
+                                                            };
+                                                            variantsTemp.push(temp);
+                                                        });
+                                                        const itemVariantsTemp = createVariantOptions([], 0);
+                                                        const itemVariantsObjects = [];
+                                                        for (const combination of itemVariantsTemp) {
+                                                            itemVariantsObjects.push(new ItemVariant(combination));
+                                                        }
+
+                                                        // alert(JSON.stringify(variantsList));
+                                                        const updatedVariantOptions = variantsList.map((e) =>
+                                                            e.variantOptions.map((option) => ({
+                                                                value: option.value,
+                                                                colorCode: option.colorHex || '',
+                                                            })),
+                                                        );
+                                                        var resp = undefined;
+
+                                                        if (itempayload.image) {
+                                                            const isHttpLink = /^https?:\/\//i.test(itempayload.image);
+
+                                                            if (!isHttpLink) {
+                                                                resp = await uploadImage(itempayload.image);
+                                                            } else {
+                                                                resp = itempayload.image;
+                                                            }
+                                                        }
+                                                        // alert(resp);
+                                                        const extractData = async (data) => {
+                                                            const result = [];
+
+                                                            // Iterate over each key in the data object
+                                                            await Promise.all(
+                                                                Object.keys(data).map(async (key) => {
+                                                                    const variants = data[key].variants;
+
+                                                                    // Process each variant
+                                                                    await Promise.all(
+                                                                        variants.map(async (variant) => {
+                                                                            const { price, imageUrl, merchantSku } = variant;
+                                                                            let resp1 = undefined;
+
+                                                                            if (imageUrl) {
+                                                                                const isHttpLink = /^https?:\/\//i.test(imageUrl);
+
+                                                                                if (!isHttpLink) {
+                                                                                    resp1 = await uploadImage(imageUrl);
+                                                                                } else {
+                                                                                    resp1 = imageUrl;
+                                                                                }
+                                                                            }
+                                                                            if (price || merchantSku) {
+                                                                                result.push({
+                                                                                    price,
+                                                                                    imageUrl: resp1,
+                                                                                    merchantSku,
+                                                                                });
+                                                                            }
+                                                                        }),
+                                                                    );
+                                                                }),
+                                                            );
+
+                                                            return result;
+                                                        };
+
+                                                        await setitempayload({
+                                                            ...itempayload,
+                                                            imageUrl: resp,
+                                                            variantNames: variantsList.map((e) => e.name) ?? undefined,
+                                                            variantOptions: updatedVariantOptions ?? undefined,
+                                                            variantOptionAttributes: await extractData(itemVariants),
+                                                        });
+
+                                                        var itemtemp = {
+                                                            ...itempayload,
+                                                            variantNames: variantsList.map((e) => e.name) ?? undefined,
+                                                            variantOptions: updatedVariantOptions ?? undefined,
+                                                            variantOptionAttributes: await extractData(itemVariants),
+                                                        };
+                                                        const { imageUrl, variantOptionAttributes, ...itemWithoutImageUrls } = itemtemp;
+                                                        const itemWithoutVariantOptionImageUrls = {
+                                                            ...itemWithoutImageUrls,
+                                                            variantOptionAttributes: variantOptionAttributes.map(({ imageUrl, ...rest }) => rest),
+                                                        };
+
+                                                        let tempproductsarray = [];
+                                                        try {
+                                                            const importedItemsCookie = cookies.get('ImportedItems') ?? [];
+                                                            tempproductsarray = importedItemsCookie;
+                                                        } catch (error) {
+                                                            console.warn('Error parsing ImportedItems cookie:', error);
+                                                            tempproductsarray = [];
+                                                        }
+
+                                                        // Hash the item without variant option image URLs
+                                                        const itemHash = sha256(JSON.stringify(itemWithoutVariantOptionImageUrls));
+
+                                                        // Check if the hash already exists in the array
+                                                        const exist = tempproductsarray.includes(itemHash);
+
+                                                        if (exist) {
+                                                            if (window.confirm('This item was previously added. Are you sure you want to duplicate it?')) {
+                                                                try {
+                                                                    const { data } = await updateMerchantItemMutation();
+
+                                                                    NotificationManager.success('Item added successfully!', 'Success!');
+
+                                                                    if (importedDataContext?.length) {
+                                                                        // Add the new hash to the array
+                                                                        tempproductsarray.push(itemHash);
+
+                                                                        // Update the cookie with the new array of hashes
+                                                                        cookies.set('ImportedItems', JSON.stringify(tempproductsarray), {
+                                                                            expires: new Date(Date.now() + 2 * 60 * 60 * 1000),
+                                                                            path: '/',
+                                                                        });
+
+                                                                        if (itemIndex < importedDataContext.length - 1) {
+                                                                            setitemIndex(itemIndex + 1);
+                                                                        } else {
+                                                                            history.push('/merchantitems');
+                                                                        }
+                                                                    } else {
+                                                                        history.push('/merchantitems');
+                                                                    }
+
+                                                                    console.log('Mutation response:', data);
+                                                                } catch (error) {
+                                                                    handleMutationError(error);
+                                                                }
+                                                            }
+                                                        } else {
+                                                            try {
+                                                                await updateMerchantItemMutation();
+
+                                                                NotificationManager.success('Item Updated successfully!', 'Success!');
+
+                                                                try {
+                                                                    var { data } = await findOneItemLazyQuery({
+                                                                        variables: {
+                                                                            input: {
+                                                                                id: parseInt(queryParameters?.get('id')),
+                                                                            },
+                                                                        },
+                                                                    });
+                                                                    if (data?.findOneItem) {
+                                                                        setchosenItemContext(data?.findOneItem);
+                                                                    }
+                                                                } catch (e) {
+                                                                    let errorMessage = 'An unexpected error occurred';
+                                                                    if (e.graphQLErrors && e.graphQLErrors.length > 0) {
+                                                                        errorMessage = e.graphQLErrors[0].message || errorMessage;
+                                                                    } else if (e.networkError) {
+                                                                        errorMessage = e.networkError.message || errorMessage;
+                                                                    } else if (e.message) {
+                                                                        errorMessage = e.message;
+                                                                    }
+                                                                    NotificationManager.warning(errorMessage, 'Warning!');
+                                                                }
+
+                                                                console.log('Mutation response:', data);
+                                                            } catch (error) {
+                                                                handleMutationError(error);
+                                                            }
+                                                        }
+
+                                                        function handleMutationError(error) {
+                                                            let errorMessage = 'An unexpected error occurred';
+                                                            if (error.graphQLErrors?.length > 0) {
+                                                                errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                                            } else if (error.networkError) {
+                                                                errorMessage = error.networkError.message || errorMessage;
+                                                            } else if (error.message) {
+                                                                errorMessage = error.message;
+                                                            }
+
+                                                            NotificationManager.warning(errorMessage, 'Warning!');
+                                                            console.error('Mutation error:', error);
+                                                        }
+                                                    }
+                                                    setbuttonLoading(false);
+                                                }}
+                                                disabled={buttonLoading}
+                                            >
+                                                {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                                {!buttonLoading && <span>Update item</span>}
+                                            </button>
                                         </div>
                                     </div>
                                 </div>

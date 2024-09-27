@@ -5,7 +5,7 @@ import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
-import { FaCheck, FaLayerGroup, FaPlus } from 'react-icons/fa';
+import { FaCheck, FaEllipsisV, FaLayerGroup, FaPlus } from 'react-icons/fa';
 import { components } from 'react-select';
 
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
@@ -13,13 +13,14 @@ import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 import API from '../../../API/API.js';
 import ImportNewItem from '../InventoryItems/ImportNewItem.js';
 import { FiCheckCircle } from 'react-icons/fi';
+import { Dropdown } from 'react-bootstrap';
 
 const { ValueContainer, Placeholder } = components;
 
 const ItemsTable = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, dateformatter } = useContext(Contexthandlerscontext);
+    const { setchosenItemContext, setpagetitle_context, dateformatter } = useContext(Contexthandlerscontext);
     const { useQueryGQL } = API();
     const [importItemModel, setimportItemModel] = useState(false);
 
@@ -82,7 +83,41 @@ const ItemsTable = (props) => {
                                     }}
                                     class={generalstyles.card + ' p-3 row m-0 w-100'}
                                 >
-                                    {' '}
+                                    {props?.showEllipsis && (
+                                        <div className=" col-lg-12 p-0 mb-2 d-flex justify-content-end">
+                                            <Dropdown
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                }}
+                                            >
+                                                <Dropdown.Toggle>
+                                                    <div
+                                                        style={{
+                                                            color: 'var(--primary)',
+                                                            borderRadius: '10px',
+                                                            transition: 'all 0.4s',
+                                                        }}
+                                                        class="ml-3"
+                                                    >
+                                                        <FaEllipsisV />
+                                                    </div>
+                                                </Dropdown.Toggle>
+                                                <Dropdown.Menu>
+                                                    <Dropdown.Item
+                                                        onClick={async (e) => {
+                                                            e.stopPropagation();
+                                                            await setchosenItemContext(item);
+                                                            history.push(`/updateitem?id=` + item.id);
+                                                        }}
+                                                        class="py-2"
+                                                    >
+                                                        <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>View item</p>
+                                                    </Dropdown.Item>
+                                                </Dropdown.Menu>
+                                            </Dropdown>
+                                        </div>
+                                    )}
+
                                     {selected && !props?.selectBackground && (
                                         <div
                                             style={{

@@ -104,7 +104,7 @@ const CourierCollection = (props) => {
         beforeCursor: undefined,
     });
 
-    const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filteMerchants);
+    const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filteMerchants);
     const { refetch: refetchCourierCollectionTransactionsQuery } = useQueryGQL('', fetchCourierCollectionTransactions(), filterobj);
 
     const [transferMyCourierCollectionFundsutation] = useMutationGQL(transferMyCourierCollectionFunds(), {

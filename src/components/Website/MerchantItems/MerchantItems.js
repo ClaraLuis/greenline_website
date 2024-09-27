@@ -960,6 +960,7 @@ keep data consistent.</span></p>
                                     }}
                                     card="col-lg-3"
                                     items={fetchMerchantItemsQuery?.data?.paginateItems?.data}
+                                    showEllipsis={true}
                                 />
                             </div>
                             <div class="col-lg-12 p-0">

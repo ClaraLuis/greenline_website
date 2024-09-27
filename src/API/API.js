@@ -270,6 +270,7 @@ const API = () => {
             }
         `;
     };
+
     const addCourierSheet = () => {
         return gql`
             mutation createCourierSheet($input: CreateCourierSheetInput!) {
@@ -931,6 +932,52 @@ const API = () => {
         `;
     };
 
+    const findOneItem = (payload) => {
+        return gql`
+            query findOneItem($input: FindOneItemInput!) {
+                findOneItem(input: $input) {
+                    id
+                    name
+                    description
+                    currency
+                    imageUrl
+                    merchantId
+                    itemVariants {
+                        id
+                        sku
+                        name
+                        shopifyId
+                        merchantSku
+                        merchantId
+                        itemId
+                        isEnabled
+                        imageUrl
+                        price
+                        weight
+                        createdAt
+                        selectedOptions {
+                            id
+                            itemVariantId
+                            variantNameId
+                            variantOptionId
+                            createdAt
+                            lastModified
+                            variantOption {
+                                id
+                                value
+                                colorCode
+                            }
+                            variantName {
+                                id
+                                name
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+    };
+
     const findReturnPackageBySku = (payload) => {
         return gql`
             query findReturnPackageBySku($sku: String!) {
@@ -1092,6 +1139,7 @@ const API = () => {
                         description
                         currency
                         imageUrl
+                        merchantId
                         itemVariants {
                             id
                             sku
@@ -1105,6 +1153,23 @@ const API = () => {
                             price
                             weight
                             createdAt
+                            selectedOptions {
+                                id
+                                itemVariantId
+                                variantNameId
+                                variantOptionId
+                                createdAt
+                                lastModified
+                                variantOption {
+                                    id
+                                    value
+                                    colorCode
+                                }
+                                variantName {
+                                    id
+                                    name
+                                }
+                            }
                         }
                     }
                     cursor
@@ -1919,6 +1984,7 @@ const API = () => {
         findAllZones,
         deleteCourierSheet,
         findReturnPackageBySku,
+        findOneItem,
     };
 };
 export default API;
