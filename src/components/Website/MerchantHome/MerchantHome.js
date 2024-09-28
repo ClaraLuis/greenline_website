@@ -12,13 +12,15 @@ import { IoMdClose } from 'react-icons/io';
 import API from '../../../API/API.js';
 import Form from '../../Form.js';
 import Barchart from '../../graphs/Barchart.js';
+import Piechart from '../../graphs/Piechart.js';
+import Multilinechart from '../../graphs/Multilinechart.js';
 const { ValueContainer, Placeholder } = components;
 
 const MerchantHome = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, inventoryRentTypeContext } = useContext(Contexthandlerscontext);
-    const { createInventory, useMutationGQL, paginateInventoryRentTransaction, useQueryGQL } = API();
+    const { createInventory, useMutationGQL, paginateInventoryRentTransaction, useQueryGQL, ordersDeliverableSummary, graphOrders, mostSoldItems } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [buttonLoading, setbuttonLoading] = useState(false);
@@ -48,6 +50,20 @@ const MerchantHome = (props) => {
         merchantId: 1,
     });
     const paginateInventoryRentTransactionQuery = useQueryGQL('cache-first', paginateInventoryRentTransaction(), filterTransactions);
+
+    const [filterordersDeliverableSummary, setfilterordersDeliverableSummary] = useState({
+        merchantIds: [],
+        startDate: '2024-06-28T18:38:47.762Z',
+    });
+    const ordersDeliverableSummaryQuery = useQueryGQL('cache-first', ordersDeliverableSummary(), filterordersDeliverableSummary);
+
+    const [filtergraphOrders, setfiltergraphOrders] = useState({
+        startDate: '2024-01-28T18:38:47.762Z',
+    });
+    const graphOrdersQuery = useQueryGQL('cache-first', graphOrders(), filtergraphOrders);
+    const [filtermostSoldItems, setfiltermostSoldItems] = useState({});
+    const mostSoldItemsQuery = useQueryGQL('cache-first', mostSoldItems(), filtermostSoldItems);
+
     const dateformatter = (date) => {
         // const options = { month: 'short', day: };
         const options = { month: 'long', day: 'numeric', hour: 'numeric', hour12: true };
@@ -57,19 +73,61 @@ const MerchantHome = (props) => {
     useEffect(() => {
         var temp = [];
         var tempvalues = [{ name: props?.type, data: [] }];
-        paginateInventoryRentTransactionQuery?.data?.paginateInventoryRentTransaction?.data?.map((item, index) => {
-            temp.push(dateformatter(item.createdAt));
-            tempvalues[0]?.data.push(item?.quantity);
+        var tempvalues1 = [];
+        var total = 0;
+        ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data?.map((item, index) => {
+            temp.push(item.status);
+            tempvalues[0]?.data.push(parseFloat(item?.total));
         });
-        setbarchartaxis({ xAxis: temp, yAxis: tempvalues });
-    }, [paginateInventoryRentTransactionQuery?.data]);
 
+        ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data?.map((item, index) => {
+            total += parseFloat(item?.count);
+        });
+        ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data?.map((subitem, suindex) => {
+            tempvalues1.push(parseFloat((subitem?.count / total) * 100));
+        });
+        setbarchartaxis({ xAxis: temp, yAxis: tempvalues, yAxis1: tempvalues1, total: total });
+    }, [ordersDeliverableSummaryQuery?.data]);
+
+    const [chartData, setChartData] = useState([]);
+    const [xaxisCategories, setXaxisCategories] = useState([]);
+
+    useEffect(() => {
+        if (graphOrdersQuery?.data) {
+            let tempCategories = [];
+            let seriesData = {
+                Return: [],
+                Delivery: [],
+                Exchange: [],
+            };
+
+            Object.keys(graphOrdersQuery?.data?.graphOrders?.data).forEach((type) => {
+                graphOrdersQuery?.data?.graphOrders?.data[type].forEach((item) => {
+                    const dateFormatted = new Date(item.createdAt).toLocaleString();
+                    if (!tempCategories.includes(dateFormatted)) {
+                        tempCategories.push(dateFormatted);
+                    }
+
+                    const totalValue = parseFloat(item.total);
+                    seriesData[type].push(totalValue);
+                });
+            });
+
+            const finalSeries = Object.keys(seriesData).map((key) => ({
+                name: key,
+                data: seriesData[key],
+            }));
+
+            setChartData(finalSeries);
+            setXaxisCategories(tempCategories);
+        }
+    }, [graphOrdersQuery?.data]);
     useEffect(() => {
         setpageactive_context('/merchanthome');
     }, []);
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
-            <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
+            <div class="row m-0 w-100 d-flex align-items-start justify-content-start mt-sm-2 pb-5 pb-md-0">
                 <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
                     <p class=" p-0 m-0" style={{ fontSize: '27px' }}>
                         Dashboard
@@ -86,7 +144,7 @@ const MerchantHome = (props) => {
                         Book a visit
                     </button>
                 </div>
-                <div class="col-lg-12 p-1 scrollmenuclasssubscrollbar">
+                <div class="col-lg-7 p-1 scrollmenuclasssubscrollbar">
                     {barchartaxis?.xAxis && barchartaxis?.yAxis && (
                         <div
                             class="row m-0 w-100"
@@ -99,7 +157,75 @@ const MerchantHome = (props) => {
                             <Barchart xAxis={barchartaxis?.xAxis} yAxis={barchartaxis?.yAxis} />
                         </div>
                     )}
+                    {chartData && xaxisCategories && (
+                        <div
+                            class="row m-0 w-100 mt-3"
+                            style={{
+                                background: 'white',
+                                boxShadow: '0px 2px 6px -2px rgba(0,106,194,0.2)',
+                                borderRadius: '5px',
+                            }}
+                        >
+                            <Multilinechart chartData={chartData} xaxisCategories={xaxisCategories} />
+                        </div>
+                    )}
                 </div>
+                {barchartaxis?.xAxis && barchartaxis?.yAxis1 && (
+                    <div class="col-lg-5 p-1 pl-2">
+                        <div
+                            class="row m-0 w-100"
+                            style={{
+                                background: 'white',
+                                boxShadow: '0px 2px 6px -2px rgba(0,106,194,0.2)',
+                                borderRadius: '5px',
+                            }}
+                        >
+                            <Piechart xAxis={barchartaxis?.xAxis} yAxis={barchartaxis?.yAxis1} title={'Orders'} total={barchartaxis?.total} />
+                        </div>
+                        {mostSoldItemsQuery?.data && (
+                            <div
+                                class="row m-0 w-100 mt-3"
+                                style={{
+                                    background: 'white',
+                                    boxShadow: '0px 2px 6px -2px rgba(0,106,194,0.2)',
+                                    borderRadius: '5px',
+                                }}
+                            >
+                                <div class={'col-lg-12 my-2'} style={{ fontSize: '17px', fontWeight: 700 }}>
+                                    Most Sold Items
+                                </div>
+                                {mostSoldItemsQuery?.data?.mostSoldItems?.data.map((subitem, subindex) => {
+                                    return (
+                                        <div class={'col-lg-12 mb-2'}>
+                                            <div style={{ border: '1px solid #eee', borderRadius: '18px' }} class="row m-0 w-100 p-2">
+                                                <div style={{ width: '35px', height: '35px', borderRadius: '7px', marginInlineEnd: '5px' }}>
+                                                    <img
+                                                        src={
+                                                            subitem?.itemVariant?.imageUrl
+                                                                ? subitem?.itemVariant?.imageUrl
+                                                                : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'
+                                                        }
+                                                        style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
+                                                    />
+                                                </div>
+                                                <div class="col-lg-10 d-flex align-items-center">
+                                                    <div className="row m-0 w-100">
+                                                        <div style={{ fontSize: '14px', fontWeight: 500 }} className={' col-lg-12 p-0 wordbreak wordbreak1'}>
+                                                            {subitem?.itemVariant?.name ?? '-'}
+                                                        </div>
+                                                        <div style={{ fontSize: '12px' }} className={' col-lg-12 p-0 wordbreak wordbreak1'}>
+                                                            {subitem?.itemVariant?.sku ?? '-'}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
             <Modal
                 show={openModal}

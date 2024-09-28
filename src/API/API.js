@@ -1399,6 +1399,22 @@ const API = () => {
         `;
     };
 
+    const ordersDeliverableSummary = () => {
+        return gql`
+            query ordersDeliverableSummary($input: ChartOrdersInput!) {
+                ordersDeliverableSummary(input: $input)
+            }
+        `;
+    };
+
+    const graphOrders = () => {
+        return gql`
+            query graphOrders($input: GraphOrdersInput!) {
+                graphOrders(input: $input)
+            }
+        `;
+    };
+
     const merchantPaymentsSummary = () => {
         return gql`
             query merchantPaymentsSummary($input: MerchantPaymentsSummaryInput!) {
@@ -1424,6 +1440,28 @@ const API = () => {
             }
         `;
     };
+
+    const mostSoldItems = (payload) => {
+        return gql`
+            query mostSoldItems($input: MostSoldItemsInput!) {
+                mostSoldItems(input: $input) {
+                    data {
+                        itemVariantId
+                        soldCount
+                        itemVariant {
+                            id
+                            name
+                            imageUrl
+                            sku
+                        }
+                    }
+                    startDate
+                    endDate
+                }
+            }
+        `;
+    };
+
     const fetchCustomerAddresses = (payload) => {
         return gql`
             query findAddresses($input: MerchantCustomerAddressPaginationInput!) {
@@ -1921,6 +1959,7 @@ const API = () => {
         inventoryRentSummary,
         merchantPaymentsSummary,
         fetchItemHistory,
+        mostSoldItems,
         exportItem,
         importItem,
         fetcOneInventory,
@@ -2003,6 +2042,8 @@ const API = () => {
         findReturnPackageBySku,
         findOneItem,
         paginateInventoryRentTransaction,
+        ordersDeliverableSummary,
+        graphOrders,
     };
 };
 export default API;
