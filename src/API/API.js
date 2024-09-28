@@ -494,6 +494,23 @@ const API = () => {
         `;
     };
 
+    const paginateInventoryRentTransaction = (payload) => {
+        return gql`
+            query paginateInventoryRentTransaction($input: InventoryRentTransactionPageInput!) {
+                paginateInventoryRentTransaction(input: $input) {
+                    data {
+                        id
+                        merchantId
+                        quantity
+                        type
+                        createdAt
+                    }
+                    cursor
+                }
+            }
+        `;
+    };
+
     const fetchItemsInBox = () => {
         return gql`
             query paginateItemsInBox($input: ItemInBoxPageInput!) {
@@ -1374,18 +1391,34 @@ const API = () => {
         `;
     };
 
-    const sumInventoryRentTransaction = () => {
+    const inventoryRentSummary = () => {
         return gql`
-            query sumInventoryRentTransaction($input: InventoryRentTransactionPageInput!) {
-                sumInventoryRentTransaction(input: $input)
+            query inventoryRentSummary($input: InventoryRentSummaryInput!) {
+                inventoryRentSummary(input: $input)
             }
         `;
     };
 
-    const countInventoryRentTransaction = () => {
+    const ordersDeliverableSummary = () => {
         return gql`
-            query countInventoryRentTransaction($input: InventoryRentTransactionPageInput!) {
-                countInventoryRentTransaction(input: $input)
+            query ordersDeliverableSummary($input: ChartOrdersInput!) {
+                ordersDeliverableSummary(input: $input)
+            }
+        `;
+    };
+
+    const graphOrders = () => {
+        return gql`
+            query graphOrders($input: GraphOrdersInput!) {
+                graphOrders(input: $input)
+            }
+        `;
+    };
+
+    const merchantPaymentsSummary = () => {
+        return gql`
+            query merchantPaymentsSummary($input: MerchantPaymentsSummaryInput!) {
+                merchantPaymentsSummary(input: $input)
             }
         `;
     };
@@ -1407,6 +1440,28 @@ const API = () => {
             }
         `;
     };
+
+    const mostSoldItems = (payload) => {
+        return gql`
+            query mostSoldItems($input: MostSoldItemsInput!) {
+                mostSoldItems(input: $input) {
+                    data {
+                        itemVariantId
+                        soldCount
+                        itemVariant {
+                            id
+                            name
+                            imageUrl
+                            sku
+                        }
+                    }
+                    startDate
+                    endDate
+                }
+            }
+        `;
+    };
+
     const fetchCustomerAddresses = (payload) => {
         return gql`
             query findAddresses($input: MerchantCustomerAddressPaginationInput!) {
@@ -1901,9 +1956,10 @@ const API = () => {
         fetchRacks,
         paginateBoxes,
         paginateBallots,
-        sumInventoryRentTransaction,
-        countInventoryRentTransaction,
+        inventoryRentSummary,
+        merchantPaymentsSummary,
         fetchItemHistory,
+        mostSoldItems,
         exportItem,
         importItem,
         fetcOneInventory,
@@ -1985,6 +2041,9 @@ const API = () => {
         deleteCourierSheet,
         findReturnPackageBySku,
         findOneItem,
+        paginateInventoryRentTransaction,
+        ordersDeliverableSummary,
+        graphOrders,
     };
 };
 export default API;

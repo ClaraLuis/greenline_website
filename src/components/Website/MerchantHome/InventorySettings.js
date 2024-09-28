@@ -33,10 +33,9 @@ const InventorySettings = (props) => {
         fetchRacks,
         paginateBoxes,
         paginateBallots,
-        sumInventoryRentTransaction,
         removeMerchantAssignmentFromInventory,
         useMutationGQL,
-        countInventoryRentTransaction,
+        inventoryRentSummary,
         fetchMerchants,
     } = API();
     const [importItemModel, setimportItemModel] = useState(false);
@@ -47,7 +46,7 @@ const InventorySettings = (props) => {
     const [fetchBoxesQuery, setfetchBoxesQuery] = useState(null);
     const [sumInventoryRent, setsumInventoryRent] = useState(null);
     const [fetchBallotsQuery, setfetchBallotsQuery] = useState(null);
-    const [countInventoryRent, setcountInventoryRent] = useState(null);
+    const [inventoryRentSummaryData, setinventoryRentSummaryData] = useState(null);
 
     const [idsToBeRemoved, setidsToBeRemoved] = useState({
         rackIds: undefined,
@@ -59,7 +58,7 @@ const InventorySettings = (props) => {
 
     const [filterSentTransactionsObj, setfilterSentTransactionsObj] = useState({
         isAsc: true,
-        limit: 20,
+        limit: 3,
         afterCursor: undefined,
         beforeCursor: undefined,
         type: 'inventoryRent',
@@ -70,8 +69,7 @@ const InventorySettings = (props) => {
     const [fetchRacksLazyQuery] = useLazyQueryGQL(fetchRacks());
     const [paginateBoxesLazyQuery] = useLazyQueryGQL(paginateBoxes());
     const [paginateBallotsLazyQuery] = useLazyQueryGQL(paginateBallots());
-    const [sumInventoryRentTransactionLazyQuery] = useLazyQueryGQL(sumInventoryRentTransaction());
-    const [countInventoryRentTransactionLazyQuery] = useLazyQueryGQL(countInventoryRentTransaction());
+    const [inventoryRentSummaryLazyQuery] = useLazyQueryGQL(inventoryRentSummary());
 
     const [removeMerchantAssignmentFromInventoryMutation] = useMutationGQL(removeMerchantAssignmentFromInventory(), {
         rackIds: idsToBeRemoved?.rackIds,
@@ -132,27 +130,16 @@ const InventorySettings = (props) => {
                         });
                         setfetchBallotsQuery(data);
                     }
-                    var { data } = await sumInventoryRentTransactionLazyQuery({
-                        variables: {
-                            input: {
-                                merchantId: parseInt(queryParameters.get('merchantId')),
-                                afterDate: lastbill ?? undefined,
-                            },
-                        },
-                    });
-                    setsumInventoryRent(data?.sumInventoryRentTransaction);
-                    // setfetchBallotsQuery(data);
-                    // alert(JSON.stringify(data?.sumInventoryRentTransaction));
 
-                    var { data } = await countInventoryRentTransactionLazyQuery({
+                    var { data } = await inventoryRentSummaryLazyQuery({
                         variables: {
                             input: {
-                                merchantId: parseInt(queryParameters.get('merchantId')),
-                                afterDate: lastbill ?? undefined,
+                                // merchantId: parseInt(queryParameters.get('merchantId')),
+                                // afterDate: lastbill ?? undefined,
                             },
                         },
                     });
-                    setcountInventoryRent(data?.countInventoryRentTransaction);
+                    setinventoryRentSummaryData(data?.inventoryRentSummary?.data[0]);
                 }
             } catch (e) {
                 let errorMessage = 'An unexpected error occurred';
@@ -190,6 +177,15 @@ const InventorySettings = (props) => {
     });
 
     const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filteMerchants);
+    const getFirstDayOfNextMonth = () => {
+        const today = new Date();
+        const firstDayNextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+        const year = firstDayNextMonth.getFullYear();
+        const month = String(firstDayNextMonth.getMonth() + 1).padStart(2, '0'); // getMonth() is zero-based
+        const day = String(firstDayNextMonth.getDate()).padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
+    };
 
     return (
         <>
@@ -215,43 +211,48 @@ const InventorySettings = (props) => {
                 <>
                     <div class="col-lg-12 p-0">
                         <div class="row m-0 w-100">
-                            <div class="col-lg-4">
+                            <div class="col-lg-5">
                                 <div class={generalstyles.card + ' row m-0 p-3 w-100'}>
                                     <div style={{ fontSize: '17px' }} class="col-lg-12 mb-1">
-                                        Inventory Rent Transactions
+                                        Next Bill Payment <span style={{ color: 'grey', fontSize: '15px' }}>({getFirstDayOfNextMonth()})</span>
                                     </div>
                                     <div class="col-lg-12">
-                                        <span style={{ fontWeight: 800, fontSize: '23px' }}>{sumInventoryRent}</span>
+                                        <span style={{ fontWeight: 800, fontSize: '23px' }}>
+                                            {inventoryRentSummaryData?.sum} {inventoryRentSummaryData?.currency}{' '}
+                                        </span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-4">
+                            <div class="col-lg-5">
                                 <div class={generalstyles.card + ' row m-0 p-3 w-100'}>
                                     <div style={{ fontSize: '17px' }} class="col-lg-12 mb-1">
                                         Inventory Rent Count
                                     </div>
                                     <div class="col-lg-12">
-                                        <span style={{ fontWeight: 800, fontSize: '23px' }}>{countInventoryRent}</span>
+                                        <span style={{ fontWeight: 800, fontSize: '23px' }}>{inventoryRentSummaryData?.quantity}</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
-                        <div class={' col-lg-12 col-md-12 col-sm-12 p-0 d-flex align-items-center justify-content-start '}>
+                        <div class={' col-lg-6 col-md-6 col-sm-12 p-0 d-flex align-items-center justify-content-start '}>
                             <p class=" p-0 m-0 text-uppercase" style={{ fontSize: '15px' }}>
                                 <span style={{ color: 'var(--info)' }}>Transactions</span>
                             </p>
                         </div>
+                        <div class="col-lg-6 p-0 d-flex justify-content-end">
+                            <span
+                                onClick={() => {
+                                    history.push('/merchantpayments');
+                                }}
+                                style={{ height: '35px' }}
+                                class={generalstyles.roundbutton + '  allcentered'}
+                            >
+                                View all
+                            </span>
+                        </div>
                         <>
-                            <div class="col-lg-12 p-0">
-                                <Pagination
-                                    beforeCursor={fetchSenttTransactionsQuery?.data?.paginateFinancialTransaction?.cursor?.beforeCursor}
-                                    afterCursor={fetchSenttTransactionsQuery?.data?.paginateFinancialTransaction?.cursor?.afterCursor}
-                                    filter={filterSentTransactionsObj}
-                                    setfilter={setfilterSentTransactionsObj}
-                                />
-                            </div>
                             <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
                                 <TransactionsTable
                                     width={'50%'}

@@ -4,23 +4,28 @@ import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
-import Dropdown from 'react-bootstrap/Dropdown';
 import { components } from 'react-select';
+import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 
 // Icons
-import API from '../../../API/API.js';
-import { FaEllipsisV } from 'react-icons/fa';
-import { IoMdClose } from 'react-icons/io';
-import Form from '../../Form.js';
 import { Modal } from 'react-bootstrap';
-import user from '../user.png';
+import { IoMdClose } from 'react-icons/io';
+import API from '../../../API/API.js';
+import Form from '../../Form.js';
+import Barchart from '../../graphs/Barchart.js';
+import Piechart from '../../graphs/Piechart.js';
+import Multilinechart from '../../graphs/Multilinechart.js';
+import { DateRangePicker } from 'rsuite';
+import MultiSelect from '../../MultiSelect.js';
+import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
+
 const { ValueContainer, Placeholder } = components;
 
 const MerchantHome = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, inventoryRentTypeContext, dateformatter } = useContext(Contexthandlerscontext);
-    const { createInventory, useMutationGQL } = API();
+    const { setpageactive_context, inventoryRentTypeContext, isAuth } = useContext(Contexthandlerscontext);
+    const { createInventory, useMutationGQL, paginateInventoryRentTransaction, useQueryGQL, ordersDeliverableSummary, graphOrders, mostSoldItems, fetchMerchants } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [buttonLoading, setbuttonLoading] = useState(false);
@@ -33,6 +38,7 @@ const MerchantHome = (props) => {
     });
     const [openModal, setopenModal] = useState(false);
     const [submit, setsubmit] = useState(false);
+    const [barchartaxis, setbarchartaxis] = useState({ xAxis: undefined, yAxis: undefined });
 
     const [addInventoryRent] = useMutationGQL(createInventory(), {
         merchantId: parseInt(inventoryRentPayload?.merchantId),
@@ -41,12 +47,94 @@ const MerchantHome = (props) => {
         pricePerUnit: inventoryRentPayload?.pricePerUnit,
         currency: inventoryRentPayload?.currency,
     });
+    const [filterTransactions, setfilterTransactions] = useState({
+        isAsc: true,
+        limit: 100,
+        afterCursor: undefined,
+        beforeCursor: undefined,
+        merchantId: 1,
+    });
+    const paginateInventoryRentTransactionQuery = useQueryGQL('cache-first', paginateInventoryRentTransaction(), filterTransactions);
+
+    const [filterordersDeliverableSummary, setfilterordersDeliverableSummary] = useState({
+        merchantIds: [],
+        startDate: '2024-06-28T18:38:47.762Z',
+    });
+    const ordersDeliverableSummaryQuery = useQueryGQL('cache-first', ordersDeliverableSummary(), filterordersDeliverableSummary);
+
+    const [filtergraphOrders, setfiltergraphOrders] = useState({
+        startDate: '2024-01-28T18:38:47.762Z',
+    });
+    const graphOrdersQuery = useQueryGQL('cache-first', graphOrders(), filtergraphOrders);
+    const [filtermostSoldItems, setfiltermostSoldItems] = useState({});
+    const mostSoldItemsQuery = useQueryGQL('cache-first', mostSoldItems(), filtermostSoldItems);
+
+    const [filterMerchants, setfilterMerchants] = useState({
+        isAsc: true,
+        limit: 20,
+        afterCursor: undefined,
+        beforeCursor: undefined,
+    });
+    const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
+
+    useEffect(() => {
+        var temp = [];
+        var tempvalues = [{ name: props?.type, data: [] }];
+        var tempvalues1 = [];
+        var total = 0;
+        ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data?.map((item, index) => {
+            temp.push(item.status);
+            tempvalues[0]?.data.push(parseFloat(item?.total));
+        });
+
+        ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data?.map((item, index) => {
+            total += parseFloat(item?.count);
+        });
+        ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data?.map((subitem, suindex) => {
+            tempvalues1.push(parseFloat((subitem?.count / total) * 100));
+        });
+        setbarchartaxis({ xAxis: temp, yAxis: tempvalues, yAxis1: tempvalues1, total: total });
+    }, [ordersDeliverableSummaryQuery?.data]);
+
+    const [chartData, setChartData] = useState([]);
+    const [xaxisCategories, setXaxisCategories] = useState([]);
+
+    useEffect(() => {
+        if (graphOrdersQuery?.data) {
+            let tempCategories = [];
+            let seriesData = {
+                Return: [],
+                Delivery: [],
+                Exchange: [],
+            };
+
+            Object.keys(graphOrdersQuery?.data?.graphOrders?.data).forEach((type) => {
+                graphOrdersQuery?.data?.graphOrders?.data[type].forEach((item) => {
+                    const dateFormatted = new Date(item.createdAt).toLocaleString();
+                    if (!tempCategories.includes(dateFormatted)) {
+                        tempCategories.push(dateFormatted);
+                    }
+
+                    const totalValue = parseFloat(item.total);
+                    seriesData[type].push(totalValue);
+                });
+            });
+
+            const finalSeries = Object.keys(seriesData).map((key) => ({
+                name: key,
+                data: seriesData[key],
+            }));
+
+            setChartData(finalSeries);
+            setXaxisCategories(tempCategories);
+        }
+    }, [graphOrdersQuery?.data]);
     useEffect(() => {
         setpageactive_context('/merchanthome');
     }, []);
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
-            <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
+            <div class="row m-0 w-100 d-flex align-items-start justify-content-start mt-sm-2 pb-5 pb-md-0">
                 <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
                     <p class=" p-0 m-0" style={{ fontSize: '27px' }}>
                         Dashboard
@@ -63,6 +151,181 @@ const MerchantHome = (props) => {
                         Book a visit
                     </button>
                 </div>
+                <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>
+                    <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
+                        <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
+                            <AccordionItemHeading>
+                                <AccordionItemButton>
+                                    <div class="row m-0 w-100">
+                                        <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
+                                            <p class={generalstyles.cardTitle + '  m-0 p-0 '}>Filter:</p>
+                                        </div>
+                                        <div class="col-lg-4 col-md-4 col-sm-4 p-0 d-flex align-items-center justify-content-end">
+                                            <AccordionItemState>
+                                                {(state) => {
+                                                    if (state.expanded == true) {
+                                                        return (
+                                                            <i class="h-100 d-flex align-items-center justify-content-center">
+                                                                <BsChevronUp />
+                                                            </i>
+                                                        );
+                                                    } else {
+                                                        return (
+                                                            <i class="h-100 d-flex align-items-center justify-content-center">
+                                                                <BsChevronDown />
+                                                            </i>
+                                                        );
+                                                    }
+                                                }}
+                                            </AccordionItemState>
+                                        </div>
+                                    </div>
+                                </AccordionItemButton>
+                            </AccordionItemHeading>
+                            <AccordionItemPanel>
+                                <hr className="mt-2 mb-3" />
+                                <div class="row m-0 w-100">
+                                    {/* {isAuth([1]) && (
+                                        <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                            <MultiSelect
+                                                title={'Merchants'}
+                                                filter={filterMerchants}
+                                                setfilter={setfilterMerchants}
+                                                options={fetchMerchantsQuery}
+                                                attr={'paginateMerchants'}
+                                                label={'name'}
+                                                value={'id'}
+                                                selected={filterordersDeliverableSummary?.merchantIds}
+                                                onClick={(option) => {
+                                                    var tempArray = [...(filterordersDeliverableSummary?.merchantIds ?? [])];
+
+                                                    if (option == 'All') {
+                                                        tempArray = undefined;
+                                                    } else {
+                                                        if (!tempArray?.includes(option?.id)) {
+                                                            tempArray.push(option?.id);
+                                                        } else {
+                                                            tempArray.splice(tempArray?.indexOf(option?.id), 1);
+                                                        }
+                                                    }
+
+                                                    setfilterordersDeliverableSummary({ ...filterordersDeliverableSummary, merchantIds: tempArray?.length != 0 ? tempArray : undefined });
+                                                }}
+                                            />
+                                        </div>
+                                    )} */}
+
+                                    <div class=" col-lg-3 mb-md-2">
+                                        <span>Date Range</span>
+                                        <div class="mt-1" style={{ width: '100%' }}>
+                                            <DateRangePicker
+                                                onChange={(event) => {
+                                                    if (event != null) {
+                                                        setfilterordersDeliverableSummary({
+                                                            ...filterordersDeliverableSummary,
+                                                            startdDate: event[0],
+                                                            endDate: event[1],
+                                                        });
+                                                    }
+                                                }}
+                                                onClean={() => {
+                                                    setfilterordersDeliverableSummary({
+                                                        ...filterordersDeliverableSummary,
+                                                        startdDate: null,
+                                                        endDate: null,
+                                                    });
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </AccordionItemPanel>
+                        </AccordionItem>
+                    </Accordion>
+                </div>
+
+                <div class="col-lg-7 p-1 scrollmenuclasssubscrollbar">
+                    {barchartaxis?.xAxis && barchartaxis?.yAxis && (
+                        <div
+                            class="row m-0 w-100"
+                            style={{
+                                background: 'white',
+                                boxShadow: '0px 2px 6px -2px rgba(0,106,194,0.2)',
+                                borderRadius: '5px',
+                            }}
+                        >
+                            <Barchart xAxis={barchartaxis?.xAxis} yAxis={barchartaxis?.yAxis} />
+                        </div>
+                    )}
+                    {chartData && xaxisCategories && (
+                        <div
+                            class="row m-0 w-100 mt-3"
+                            style={{
+                                background: 'white',
+                                boxShadow: '0px 2px 6px -2px rgba(0,106,194,0.2)',
+                                borderRadius: '5px',
+                            }}
+                        >
+                            <Multilinechart chartData={chartData} xaxisCategories={xaxisCategories} />
+                        </div>
+                    )}
+                </div>
+                {barchartaxis?.xAxis && barchartaxis?.yAxis1 && (
+                    <div class="col-lg-5 p-1 pl-2">
+                        <div
+                            class="row m-0 w-100"
+                            style={{
+                                background: 'white',
+                                boxShadow: '0px 2px 6px -2px rgba(0,106,194,0.2)',
+                                borderRadius: '5px',
+                            }}
+                        >
+                            <Piechart xAxis={barchartaxis?.xAxis} yAxis={barchartaxis?.yAxis1} title={'Orders'} total={barchartaxis?.total} />
+                        </div>
+                        {mostSoldItemsQuery?.data && (
+                            <div
+                                class="row m-0 w-100 mt-3"
+                                style={{
+                                    background: 'white',
+                                    boxShadow: '0px 2px 6px -2px rgba(0,106,194,0.2)',
+                                    borderRadius: '5px',
+                                }}
+                            >
+                                <div class={'col-lg-12 my-2'} style={{ fontSize: '17px', fontWeight: 700 }}>
+                                    Most Sold Items
+                                </div>
+                                {mostSoldItemsQuery?.data?.mostSoldItems?.data.map((subitem, subindex) => {
+                                    return (
+                                        <div class={'col-lg-12 mb-2'}>
+                                            <div style={{ border: '1px solid #eee', borderRadius: '18px' }} class="row m-0 w-100 p-2">
+                                                <div style={{ width: '35px', height: '35px', borderRadius: '7px', marginInlineEnd: '5px' }}>
+                                                    <img
+                                                        src={
+                                                            subitem?.itemVariant?.imageUrl
+                                                                ? subitem?.itemVariant?.imageUrl
+                                                                : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'
+                                                        }
+                                                        style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
+                                                    />
+                                                </div>
+                                                <div class="col-lg-10 d-flex align-items-center">
+                                                    <div className="row m-0 w-100">
+                                                        <div style={{ fontSize: '14px', fontWeight: 500 }} className={' col-lg-12 p-0 wordbreak wordbreak1'}>
+                                                            {subitem?.itemVariant?.name ?? '-'}
+                                                        </div>
+                                                        <div style={{ fontSize: '12px' }} className={' col-lg-12 p-0 wordbreak wordbreak1'}>
+                                                            {subitem?.itemVariant?.sku ?? '-'}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
             <Modal
                 show={openModal}

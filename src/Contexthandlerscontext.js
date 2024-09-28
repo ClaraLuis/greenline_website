@@ -97,18 +97,18 @@ export const Contexthandlerscontext_provider = (props) => {
             {
                 maintitle: 'Warehouses',
                 subitems: [
-                    // {
-                    //     name: 'Inventory details',
-                    //     isselected: false,
-                    //     icon: (
-                    //         <i class={'allcentered'}>
-                    //             <MdOutlineInventory2 size={18} />
-                    //         </i>
-                    //     ),
-                    //     path: '/inventorydetails',
-                    //     permissionpage: [1],
-                    //     show: isAuth([1]),
-                    // },
+                    {
+                        name: 'Rent',
+                        isselected: false,
+                        icon: (
+                            <i class={'allcentered'}>
+                                <MdOutlineInventory2 size={18} />
+                            </i>
+                        ),
+                        path: '/rentpage',
+                        permissionpage: [1],
+                        show: isAuth([1]),
+                    },
                     {
                         name: 'Warehouses',
                         isselected: false,

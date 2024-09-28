@@ -1203,7 +1203,13 @@ const CourierSheet = (props) => {
                                         { label: 'Cancelled ', value: 'cancelled ' },
                                     ].filter((option) => option.value == statuspayload?.status)}
                                     onChange={(option) => {
-                                        setstatuspayload({ ...statuspayload, status: option.value, step: 1 });
+                                        setstatuspayload({
+                                            ...statuspayload,
+                                            status: option.value,
+                                            step: 1,
+
+                                            postponeDate: option.value == 'postponed' ? new Date().toISOString().split('T')[0] : undefined,
+                                        });
                                     }}
                                 />
                             </div>
