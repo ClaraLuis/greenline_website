@@ -14,6 +14,7 @@ import API from '../../../API/API.js';
 import ImportNewItem from '../InventoryItems/ImportNewItem.js';
 import { FiCheckCircle } from 'react-icons/fi';
 import { Dropdown } from 'react-bootstrap';
+import { TbEye } from 'react-icons/tb';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -84,37 +85,19 @@ const ItemsTable = (props) => {
                                     class={generalstyles.card + ' p-3 row m-0 w-100'}
                                 >
                                     {props?.showEllipsis && (
-                                        <div className=" col-lg-12 p-0 mb-2 d-flex justify-content-end">
-                                            <Dropdown
-                                                onClick={(e) => {
+                                        <div class={generalstyles.product_action}>
+                                            <a
+                                                class={generalstyles.buttonxs + ' allcentered'}
+                                                onClick={async (e) => {
                                                     e.stopPropagation();
+                                                    await setchosenItemContext(item);
+                                                    history.push(`/updateitem?id=` + item.id);
                                                 }}
                                             >
-                                                <Dropdown.Toggle>
-                                                    <div
-                                                        style={{
-                                                            color: 'var(--primary)',
-                                                            borderRadius: '10px',
-                                                            transition: 'all 0.4s',
-                                                        }}
-                                                        class="ml-3"
-                                                    >
-                                                        <FaEllipsisV />
-                                                    </div>
-                                                </Dropdown.Toggle>
-                                                <Dropdown.Menu>
-                                                    <Dropdown.Item
-                                                        onClick={async (e) => {
-                                                            e.stopPropagation();
-                                                            await setchosenItemContext(item);
-                                                            history.push(`/updateitem?id=` + item.id);
-                                                        }}
-                                                        class="py-2"
-                                                    >
-                                                        <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>View item</p>
-                                                    </Dropdown.Item>
-                                                </Dropdown.Menu>
-                                            </Dropdown>
+                                                <i>
+                                                    <TbEye color="white" size={17} />
+                                                </i>
+                                            </a>
                                         </div>
                                     )}
 
@@ -141,11 +124,11 @@ const ItemsTable = (props) => {
                                                         ? item?.imageUrl
                                                         : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'
                                                 }
-                                                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
+                                                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '0rem' }}
                                             />
                                         </div>
                                     </div>
-                                    <div class="col-lg-8 p-0 mt-2 wordbreak" style={{ fontWeight: 700, fontSize: '16px' }}>
+                                    <div class="col-lg-12 pl-0 pr-0 pb-0 wordbreak" style={{ fontWeight: 700, fontSize: '16px', paddingTop: '1.5rem' }}>
                                         {item?.name}
                                     </div>
                                     {/* {props?.clickable && (

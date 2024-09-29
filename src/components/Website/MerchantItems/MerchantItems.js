@@ -942,36 +942,36 @@ keep data consistent.</span></p>
                                 </div>
                             </div>
                         </div>
-                        <div class={generalstyles.card + ' row m-0 w-100'}>
-                            <div class="col-lg-12 p-0">
-                                <Pagination
-                                    beforeCursor={fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.beforeCursor}
-                                    afterCursor={fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.afterCursor}
-                                    filter={payload}
-                                    setfilter={setPayload}
-                                />
-                            </div>
-                            <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
-                                <ItemsTable
-                                    clickable={true}
-                                    actiononclick={(item) => {
-                                        setselectedVariants([]);
-                                        setvariantModal({ open: true, data: item?.itemVariants });
-                                    }}
-                                    card="col-lg-3"
-                                    items={fetchMerchantItemsQuery?.data?.paginateItems?.data}
-                                    showEllipsis={true}
-                                />
-                            </div>
-                            <div class="col-lg-12 p-0">
-                                <Pagination
-                                    beforeCursor={fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.beforeCursor}
-                                    afterCursor={fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.afterCursor}
-                                    filter={payload}
-                                    setfilter={setPayload}
-                                />
-                            </div>
+                        {/* <div class={generalstyles.card + ' row m-0 w-100'}> */}
+                        <div class="col-lg-12 p-0">
+                            <Pagination
+                                beforeCursor={fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.beforeCursor}
+                                afterCursor={fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.afterCursor}
+                                filter={payload}
+                                setfilter={setPayload}
+                            />
                         </div>
+                        <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                            <ItemsTable
+                                clickable={true}
+                                actiononclick={(item) => {
+                                    setselectedVariants([]);
+                                    setvariantModal({ open: true, data: item?.itemVariants });
+                                }}
+                                card="col-lg-3"
+                                items={fetchMerchantItemsQuery?.data?.paginateItems?.data}
+                                showEllipsis={true}
+                            />
+                        </div>
+                        <div class="col-lg-12 p-0">
+                            <Pagination
+                                beforeCursor={fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.beforeCursor}
+                                afterCursor={fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.afterCursor}
+                                filter={payload}
+                                setfilter={setPayload}
+                            />
+                        </div>
+                        {/* </div> */}
                     </>
                 )}
             </div>

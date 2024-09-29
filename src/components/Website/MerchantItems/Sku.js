@@ -11,7 +11,7 @@ const Sku = ({ item }) => {
 
     React.useEffect(() => {
         let canvas = document.createElement('canvas');
-        bwipjs.toCanvas(canvas, {
+        bwipjs?.toCanvas(canvas, {
             bcid: 'datamatrix', // Barcode type
             text: item?.sku, // Text to encode
             scale: 2, // 3x scaling factor
