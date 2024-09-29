@@ -319,7 +319,7 @@ const MerchantHome = (props) => {
                                 borderRadius: '5px',
                             }}
                         >
-                            <Piechart xAxis={barchartaxis?.xAxis} yAxis={barchartaxis?.yAxis1} title={'Orders'} total={barchartaxis?.total} />
+                            <Piechart height={mostSoldItemsQuery?.data ? '250' : 300} xAxis={barchartaxis?.xAxis} yAxis={barchartaxis?.yAxis1} title={'Orders'} total={barchartaxis?.total} />
                         </div>
                         {mostSoldItemsQuery?.data && (
                             <div

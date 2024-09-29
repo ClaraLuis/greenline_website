@@ -86,7 +86,7 @@ const Piechart = (props) => {
             <div className="app w-100 px-1">
                 <div className="row">
                     <div className="mixed-chart" style={{ width: '100%' }}>
-                        <Chart options={state.options} series={state.series} type={'pie'} width="100%" height="250" />
+                        <Chart options={state.options} series={state.series} type={'pie'} width="100%" height={props?.height} />
                     </div>
                 </div>
             </div>
