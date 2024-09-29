@@ -593,9 +593,10 @@ const AddItem = (props) => {
         var tokenasy = await getoken();
 
         const axiosheaders = {
-            'Content-Type': 'multipart/form-data',
+            Authorization:
+                'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InZrUHp4Y2kwdmNYUkhHNWY4Z2hDQU5XYVZybDIiLCJodWJJZCI6MSwiaW52ZW50b3J5SWQiOm51bGwsIm1lcmNoYW50SWQiOjEsInR5cGUiOiJjb3VyaWVyIiwicm9sZXMiOlsxXSwiaWF0IjoxNzA2ODE0NzQzLCJleHAiOjE4MDY4MTY1NDN9.tc_RflPAJD7CBcjPxKmM3ykOzdt0grVCDpiCTUpITps',
         };
-        axiosheaders['Authorization'] = 'Bearer ' + tokenasy;
+        // axiosheaders['Authorization'] = 'Bearer ' + tokenasy;
         const formData = new FormData();
         formData.append('file', img);
         formData.append('isPublic', true);
