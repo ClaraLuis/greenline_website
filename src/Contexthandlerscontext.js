@@ -186,7 +186,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/merchanthome',
                         permissionpage: [1],
-                        show: isAuth([1]),
+                        show: isAuth([1, 52]) || cookies.get('merchantId') != undefined,
                     },
                     {
                         name: 'Merchants',

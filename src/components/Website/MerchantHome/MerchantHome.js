@@ -57,7 +57,6 @@ const MerchantHome = (props) => {
     const paginateInventoryRentTransactionQuery = useQueryGQL('cache-first', paginateInventoryRentTransaction(), filterTransactions);
 
     const [filterordersDeliverableSummary, setfilterordersDeliverableSummary] = useState({
-        merchantIds: [],
         startDate: '2024-06-28T18:38:47.762Z',
     });
     const ordersDeliverableSummaryQuery = useQueryGQL('cache-first', ordersDeliverableSummary(), filterordersDeliverableSummary);
@@ -82,17 +81,57 @@ const MerchantHome = (props) => {
         var tempvalues = [{ name: props?.type, data: [] }];
         var tempvalues1 = [];
         var total = 0;
-        ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data?.map((item, index) => {
-            temp.push(item.status);
-            tempvalues[0]?.data.push(parseFloat(item?.total));
-        });
 
-        ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data?.map((item, index) => {
-            total += parseFloat(item?.count);
-        });
-        ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data?.map((subitem, suindex) => {
-            tempvalues1.push(parseFloat((subitem?.count / total) * 100));
-        });
+        if (filterordersDeliverableSummary?.merchantIds?.length) {
+            tempvalues1 = undefined;
+            {
+                Object.keys(ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data || {}).map((merchantId, index) => {
+                    const payments = ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data[merchantId];
+                    tempvalues = [];
+                    let groupedPayments = {};
+                    payments.forEach((payment) => {
+                        const { merchantId, status, total } = payment;
+
+                        if (!groupedPayments[merchantId]) {
+                            groupedPayments[merchantId] = {};
+                        }
+
+                        if (!groupedPayments[merchantId][status]) {
+                            groupedPayments[merchantId][status] = 0;
+                        }
+
+                        groupedPayments[merchantId][status] += parseFloat(total);
+
+                        if (!temp.includes(status)) {
+                            temp.push(status); // Track all unique statuses
+                        }
+                    });
+
+                    // Prepare data for grouped bar chart
+                    Object.keys(groupedPayments).forEach((merchantId) => {
+                        let merchantData = [];
+                        temp.forEach((status) => {
+                            merchantData.push(groupedPayments[merchantId][status] || 0);
+                        });
+
+                        tempvalues.push({ name: `Merchant ${merchantId}`, data: merchantData });
+                    });
+                });
+            }
+        } else {
+            ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data?.map((item, index) => {
+                temp.push(item.status);
+                tempvalues[0]?.data.push(parseFloat(item?.total));
+            });
+
+            ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data?.map((item, index) => {
+                total += parseFloat(item?.count);
+            });
+            ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data?.map((subitem, suindex) => {
+                tempvalues1.push(parseFloat((subitem?.count / total) * 100));
+            });
+        }
+
         setbarchartaxis({ xAxis: temp, yAxis: tempvalues, yAxis1: tempvalues1, total: total });
     }, [ordersDeliverableSummaryQuery?.data]);
 
@@ -185,7 +224,7 @@ const MerchantHome = (props) => {
                             <AccordionItemPanel>
                                 <hr className="mt-2 mb-3" />
                                 <div class="row m-0 w-100">
-                                    {/* {isAuth([1]) && (
+                                    {isAuth([1]) && (
                                         <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
                                             <MultiSelect
                                                 title={'Merchants'}
@@ -213,7 +252,7 @@ const MerchantHome = (props) => {
                                                 }}
                                             />
                                         </div>
-                                    )} */}
+                                    )}
 
                                     <div class=" col-lg-3 mb-md-2">
                                         <span>Date Range</span>
@@ -244,7 +283,7 @@ const MerchantHome = (props) => {
                     </Accordion>
                 </div>
 
-                <div class="col-lg-7 p-1 scrollmenuclasssubscrollbar">
+                <div class={barchartaxis?.xAxis && barchartaxis?.yAxis1?.length ? 'col-lg-7 p-1 scrollmenuclasssubscrollbar' : 'col-lg-12 p-1 scrollmenuclasssubscrollbar'}>
                     {barchartaxis?.xAxis && barchartaxis?.yAxis && (
                         <div
                             class="row m-0 w-100"
@@ -257,7 +296,7 @@ const MerchantHome = (props) => {
                             <Barchart xAxis={barchartaxis?.xAxis} yAxis={barchartaxis?.yAxis} />
                         </div>
                     )}
-                    {chartData && xaxisCategories && (
+                    {chartData && xaxisCategories && mostSoldItemsQuery?.data && (
                         <div
                             class="row m-0 w-100 mt-3"
                             style={{
@@ -324,6 +363,20 @@ const MerchantHome = (props) => {
                                 })}
                             </div>
                         )}
+                    </div>
+                )}
+                {chartData && xaxisCategories && !mostSoldItemsQuery?.data && (
+                    <div class="col-lg-12 p-1">
+                        <div
+                            class="row m-0 w-100 mt-1"
+                            style={{
+                                background: 'white',
+                                boxShadow: '0px 2px 6px -2px rgba(0,106,194,0.2)',
+                                borderRadius: '5px',
+                            }}
+                        >
+                            <Multilinechart chartData={chartData} xaxisCategories={xaxisCategories} />
+                        </div>
                     </div>
                 )}
             </div>
