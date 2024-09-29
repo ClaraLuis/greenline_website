@@ -155,7 +155,7 @@ const MerchantPayments = (props) => {
                         Export
                     </button>
                 </div>
-                <div style={{ borderRadius: '18px', background: 'white' }} class={' mb-3 col-lg-12 p-2'}>
+                <div style={{ borderRadius: '0.25rem', background: 'white' }} class={' mb-3 col-lg-12 p-2'}>
                     <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
                         <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
                             <AccordionItemHeading>

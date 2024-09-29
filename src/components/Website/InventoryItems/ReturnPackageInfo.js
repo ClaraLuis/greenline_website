@@ -90,7 +90,7 @@ const ReturnPackageInfo = (props) => {
                                         organizedData = organizeInventory(subitem?.inventory);
                                         return (
                                             <div class={'col-lg-12 mb-2'}>
-                                                <div style={{ border: '1px solid #eee', borderRadius: '18px' }} class="row m-0 w-100 d-flex align-items-center p-2">
+                                                <div style={{ border: '1px solid #eee', borderRadius: '0.25rem' }} class="row m-0 w-100 d-flex align-items-center p-2">
                                                     <div style={{ width: '35px', height: '35px', borderRadius: '7px', marginInlineEnd: '5px' }}>
                                                         <img
                                                             src={

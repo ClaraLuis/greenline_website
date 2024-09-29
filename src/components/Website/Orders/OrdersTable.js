@@ -449,7 +449,7 @@ const OrdersTable = (props) => {
                                                                     }
                                                                     return (
                                                                         <div class="col-lg-12 p-0 mb-1">
-                                                                            <div style={{ border: '1px solid #eee', borderRadius: '18px' }} class="row m-0 w-100 p-1 align-items-center">
+                                                                            <div style={{ border: '1px solid #eee', borderRadius: '0.25rem' }} class="row m-0 w-100 p-1 align-items-center">
                                                                                 <div style={{ width: '50px', height: '50px', borderRadius: '7px', marginInlineEnd: '10px' }}>
                                                                                     <img
                                                                                         src={

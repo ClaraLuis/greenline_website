@@ -223,7 +223,7 @@ textarea {
     padding: 0.3125rem 1.25rem;
     font-size: 13px;
     height: 38px;
-    border-radius: 18px;
+    border-radius: 0.25rem;
     transition: border-color 0.2s;
 }
 .form__fielddate {
@@ -232,7 +232,7 @@ textarea {
     border: 0.0625rem solid #eee;
     padding: 0.3125rem 1.25rem;
     height: 38px !important;
-    border-radius: 18px;
+    border-radius: 0.25rem;
     transition: border-color 0.2s;
 }
 .form__field::placeholder {
@@ -372,7 +372,7 @@ textarea {
     display: flex;
     align-items: center;
     width: 100%;
-    border-radius: 18px;
+    border-radius: 0.25rem;
     cursor: pointer;
     position: relative;
     white-space: nowrap;
@@ -566,7 +566,7 @@ textarea {
     box-sizing: border-box;
     border-top-left-radius: 0 !important;
     border-top-right-radius: 0 !important;
-    border-radius: 18px;
+    border-radius: 0.25rem;
     overflow-y: overlay;
     /* height: 0px !important; */
 }

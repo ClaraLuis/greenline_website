@@ -822,7 +822,7 @@ const CourierSheet = (props) => {
                                                             {item?.order?.orderItems?.map((subitem, subindex) => {
                                                                 return (
                                                                     <div class={type == 'admin' ? 'col-lg-6 mb-2' : 'col-lg-12 p-0 mb-2'}>
-                                                                        <div style={{ border: '1px solid #eee', borderRadius: '18px' }} class="row m-0 w-100 p-2 d-flex align-items-center">
+                                                                        <div style={{ border: '1px solid #eee', borderRadius: '0.25rem' }} class="row m-0 w-100 p-2 d-flex align-items-center">
                                                                             {item?.order?.type == 'return' && (
                                                                                 <div style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }} className=" p-1 px-2 mr-1 allcentered">
                                                                                     {subitem?.partialCount != null ? parseFloat(subitem.partialCount) : parseFloat(subitem.count)}
@@ -897,7 +897,7 @@ const CourierSheet = (props) => {
                                                                                 return (
                                                                                     <div class={type == 'admin' ? 'col-lg-6 mb-2' : 'col-lg-12 p-0 mb-2'}>
                                                                                         <div
-                                                                                            style={{ border: '1px solid #eee', borderRadius: '18px' }}
+                                                                                            style={{ border: '1px solid #eee', borderRadius: '0.25rem' }}
                                                                                             class="row m-0 w-100 p-2 d-flex align-items-center"
                                                                                         >
                                                                                             {previousOrder?.order?.type == 'return' && (
@@ -1295,7 +1295,7 @@ const CourierSheet = (props) => {
 
                                                         return (
                                                             <div key={subindex} className="col-lg-12 p-0 mb-2">
-                                                                <div style={{ border: '1px solid #eee', borderRadius: '18px' }} className="row m-0 w-100 p-2 d-flex align-items-center">
+                                                                <div style={{ border: '1px solid #eee', borderRadius: '0.25rem' }} className="row m-0 w-100 p-2 d-flex align-items-center">
                                                                     <div style={{ width: '50px', height: '50px', borderRadius: '7px', marginInlineEnd: '5px' }}>
                                                                         <img
                                                                             src={
@@ -1459,7 +1459,7 @@ const CourierSheet = (props) => {
                                             });
                                             return (
                                                 <div class={'col-lg-12 p-0 mb-2'}>
-                                                    <div style={{ border: '1px solid #eee', borderRadius: '18px' }} class="row m-0 w-100 p-2 d-flex align-items-center">
+                                                    <div style={{ border: '1px solid #eee', borderRadius: '0.25rem' }} class="row m-0 w-100 p-2 d-flex align-items-center">
                                                         <div style={{ width: '50px', height: '50px', borderRadius: '7px', marginInlineEnd: '5px' }}>
                                                             <img
                                                                 src={
@@ -1631,7 +1631,7 @@ const CourierSheet = (props) => {
 
                                                         return (
                                                             <div key={subindex} className="col-lg-12 p-0 mb-2">
-                                                                <div style={{ border: '1px solid #eee', borderRadius: '18px' }} className="row m-0 w-100 p-2 d-flex align-items-center">
+                                                                <div style={{ border: '1px solid #eee', borderRadius: '0.25rem' }} className="row m-0 w-100 p-2 d-flex align-items-center">
                                                                     <div style={{ width: '50px', height: '50px', borderRadius: '7px', marginInlineEnd: '5px' }}>
                                                                         <img
                                                                             src={
@@ -1742,7 +1742,7 @@ const CourierSheet = (props) => {
                                             )}
                                         </div>
                                     )}
-                                    <div style={{ border: '1px solid #eee', borderRadius: '18px' }} class="row m-0 w-100 p-2 d-flex align-items-center">
+                                    <div style={{ border: '1px solid #eee', borderRadius: '0.25rem' }} class="row m-0 w-100 p-2 d-flex align-items-center">
                                         Total: {total}
                                     </div>
                                 </div>

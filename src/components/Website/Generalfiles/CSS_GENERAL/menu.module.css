@@ -273,7 +273,7 @@ textarea {
     padding: 0.3125rem 1.25rem;
     font-size: 13px;
     height: 38px !important;
-    border-radius: 18px;
+    border-radius: 0.25rem;
     transition: border-color 0.2s;
 }
 .formfield::placeholder {

@@ -24,7 +24,7 @@ export const defaultstyles = {
         height: '1.4375em',
 
         border: '0.0625rem solid #eee',
-        borderRadius: '18px',
+        borderRadius: '0.25rem',
         backgroundColor: 'transparent',
         display: 'flex',
         cursor: 'pointer',

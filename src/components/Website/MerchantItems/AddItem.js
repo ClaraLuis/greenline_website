@@ -1166,7 +1166,7 @@ const AddItem = (props) => {
                                 Item Options
                             </div>
                             {variantsList.map((option, index) => (
-                                <div style={{ border: '1px solid #eee', borderRadius: '18px' }} class="p-2 mb-2 row m-0 w-100 d-flex align-items-center" key={index}>
+                                <div style={{ border: '1px solid #eee', borderRadius: '0.25rem' }} class="p-2 mb-2 row m-0 w-100 d-flex align-items-center" key={index}>
                                     <div style={{ position: 'relative' }} class={formstyles.form__field + ' col-lg-10'}>
                                         <input type="text" value={option.name} onChange={(event) => editOptionName(index, event.target.value)} />
 
@@ -1244,7 +1244,7 @@ const AddItem = (props) => {
                             {itemVariants?.length != 0 && (
                                 <div class="col-lg-12 p-3">
                                     {Object.entries(itemVariants).map(([color, variants], colorIndex) => (
-                                        <div key={colorIndex} style={{ border: '1px solid #eee', borderRadius: '18px', fontSize: '13px', cursor: 'pointer' }} className="p-3 mb-2">
+                                        <div key={colorIndex} style={{ border: '1px solid #eee', borderRadius: '0.25rem', fontSize: '13px', cursor: 'pointer' }} className="p-3 mb-2">
                                             <div class="col-lg-12 p-0">
                                                 <div class="row m-0 w-100">
                                                     <div className="col-lg-10 p-0" onClick={() => handleColorClick(color)}>

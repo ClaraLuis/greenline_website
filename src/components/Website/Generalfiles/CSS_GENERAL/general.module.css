@@ -466,7 +466,7 @@ button:focus {
     transition: all 0.3s;
     font-size: 13px;
     font-weight: 500;
-    border-radius: 18px;
+    border-radius: 0.25rem;
     height: 35px;
 }
 .roundbutton:hover {
@@ -792,7 +792,7 @@ button:focus {
 
 .filter_container {
     background: white;
-    border-radius: 18px;
+    border-radius: 0.25rem;
     box-shadow: #919eab4d 0 0 2px, #919eab1f 0 12px 24px -4px;
 }
 .card_header {

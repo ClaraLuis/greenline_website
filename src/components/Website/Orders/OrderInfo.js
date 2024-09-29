@@ -345,7 +345,7 @@ const OrderInfo = (props) => {
                                                 }
                                                 return (
                                                     <div class="col-lg-12 p-0 mb-1">
-                                                        <div style={{ border: '1px solid #eee', borderRadius: '18px' }} class="row m-0 w-100 p-1 align-items-center">
+                                                        <div style={{ border: '1px solid #eee', borderRadius: '0.25rem' }} class="row m-0 w-100 p-1 align-items-center">
                                                             <div class="mr-2">
                                                                 {orderItem?.partial && (
                                                                     <div style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }} class="row m-0 w-100 p-1 px-3">

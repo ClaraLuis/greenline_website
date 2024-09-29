@@ -4824,7 +4824,7 @@ hr {
     /* transition: all 0.5s ease-in-out; */
     position: relative;
     /* border: 0rem solid transparent; */
-    border-radius: 18px;
+    border-radius: 0.25rem;
     /* box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px; */
     box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
     /* box-shadow: rgba(0, 0, 0, 0.04) 0px 3px 5px; */
@@ -4845,7 +4845,7 @@ hr {
     background-color: rgb(255, 255, 255);
     color: rgb(17, 28, 45);
     transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-    border-radius: 18px;
+    border-radius: 0.25rem;
     background-image: none;
     position: absolute;
     overflow: hidden auto;
