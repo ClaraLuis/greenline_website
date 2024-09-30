@@ -100,41 +100,42 @@ const InventoryPackages = (props) => {
             <div class="row m-0 w-100 d-flex  justify-content-start mt-sm-2 pb-5 pb-md-0">
                 <div className={' col-lg-12 p-0 '}>
                     <div class="row m-0 w-100">
-                        <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>
-                            <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
-                                <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
-                                    <AccordionItemHeading>
-                                        <AccordionItemButton>
+                        <div class="col-lg-12 p-1 px-2">
+                            <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>
+                                <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
+                                    <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
+                                        <AccordionItemHeading>
+                                            <AccordionItemButton>
+                                                <div class="row m-0 w-100">
+                                                    <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
+                                                        <p class={generalstyles.cardTitle + '  m-0 p-0 '}>Filter:</p>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-4 col-sm-4 p-0 d-flex align-items-center justify-content-end">
+                                                        <AccordionItemState>
+                                                            {(state) => {
+                                                                if (state.expanded == true) {
+                                                                    return (
+                                                                        <i class="h-100 d-flex align-items-center justify-content-center">
+                                                                            <BsChevronUp />
+                                                                        </i>
+                                                                    );
+                                                                } else {
+                                                                    return (
+                                                                        <i class="h-100 d-flex align-items-center justify-content-center">
+                                                                            <BsChevronDown />
+                                                                        </i>
+                                                                    );
+                                                                }
+                                                            }}
+                                                        </AccordionItemState>
+                                                    </div>
+                                                </div>
+                                            </AccordionItemButton>
+                                        </AccordionItemHeading>
+                                        <AccordionItemPanel>
+                                            <hr className="mt-2 mb-3" />
                                             <div class="row m-0 w-100">
-                                                <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
-                                                    <p class={generalstyles.cardTitle + '  m-0 p-0 '}>Filter:</p>
-                                                </div>
-                                                <div class="col-lg-4 col-md-4 col-sm-4 p-0 d-flex align-items-center justify-content-end">
-                                                    <AccordionItemState>
-                                                        {(state) => {
-                                                            if (state.expanded == true) {
-                                                                return (
-                                                                    <i class="h-100 d-flex align-items-center justify-content-center">
-                                                                        <BsChevronUp />
-                                                                    </i>
-                                                                );
-                                                            } else {
-                                                                return (
-                                                                    <i class="h-100 d-flex align-items-center justify-content-center">
-                                                                        <BsChevronDown />
-                                                                    </i>
-                                                                );
-                                                            }
-                                                        }}
-                                                    </AccordionItemState>
-                                                </div>
-                                            </div>
-                                        </AccordionItemButton>
-                                    </AccordionItemHeading>
-                                    <AccordionItemPanel>
-                                        <hr className="mt-2 mb-3" />
-                                        <div class="row m-0 w-100">
-                                            {/* <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                                {/* <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
                                                 <label for="name" class={formstyles.form__label}>
                                                     Assigned
                                                 </label>
@@ -151,56 +152,61 @@ const InventoryPackages = (props) => {
                                                     }}
                                                 />
                                             </div> */}
-                                            <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                                <label for="name" class={formstyles.form__label}>
-                                                    Status
-                                                </label>
-                                                <Select
-                                                    options={[{ label: 'All', value: undefined }, ...returnPackageStatusContext]}
-                                                    styles={defaultstyles}
-                                                    value={[{ label: 'All', value: undefined }, ...returnPackageStatusContext].filter((option) => option.value == filter?.status)}
-                                                    onChange={(option) => {
-                                                        setfilter({ ...filter, status: option.value });
+                                                <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                                    <label for="name" class={formstyles.form__label}>
+                                                        Status
+                                                    </label>
+                                                    <Select
+                                                        options={[{ label: 'All', value: undefined }, ...returnPackageStatusContext]}
+                                                        styles={defaultstyles}
+                                                        value={[{ label: 'All', value: undefined }, ...returnPackageStatusContext].filter((option) => option.value == filter?.status)}
+                                                        onChange={(option) => {
+                                                            setfilter({ ...filter, status: option.value });
+                                                        }}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </AccordionItemPanel>
+                                    </AccordionItem>
+                                </Accordion>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-12 p-1 px-2">
+                            <div class={generalstyles.card + ' row m-0 w-100 my-2 p-2 px-2'}>
+                                <div class="col-lg-12 p-0 ">
+                                    <div class="row m-0 w-100 d-flex align-items-center">
+                                        <div class="col-lg-10">
+                                            <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
+                                                <input
+                                                    // disabled={props?.disabled}
+                                                    // type={props?.type}
+                                                    class={formstyles.form__field}
+                                                    value={search}
+                                                    placeholder={'Search by name or SKU'}
+                                                    onChange={(event) => {
+                                                        setBarcode(event.target.value);
+                                                        setSearch(event.target.value);
                                                     }}
                                                 />
                                             </div>
                                         </div>
-                                    </AccordionItemPanel>
-                                </AccordionItem>
-                            </Accordion>
-                        </div>
-                        <div class={generalstyles.card + ' row m-0 w-100 my-2 p-2 px-2'}>
-                            <div class="col-lg-12 p-0 ">
-                                <div class="row m-0 w-100 d-flex align-items-center">
-                                    <div class="col-lg-10">
-                                        <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
-                                            <input
-                                                // disabled={props?.disabled}
-                                                // type={props?.type}
-                                                class={formstyles.form__field}
-                                                value={search}
-                                                placeholder={'Search by name or SKU'}
-                                                onChange={(event) => {
-                                                    setBarcode(event.target.value);
-                                                    setSearch(event.target.value);
+                                        <div class="col-lg-2 allcenered">
+                                            <button
+                                                onClick={() => {
+                                                    setfilter({ ...filter, sku: search?.length == 0 ? undefined : search });
                                                 }}
-                                            />
+                                                style={{ height: '25px', minWidth: 'fit-content', marginInlineStart: '5px' }}
+                                                class={generalstyles.roundbutton + '  allcentered'}
+                                            >
+                                                search
+                                            </button>
                                         </div>
-                                    </div>
-                                    <div class="col-lg-2 allcenered">
-                                        <button
-                                            onClick={() => {
-                                                setfilter({ ...filter, sku: search?.length == 0 ? undefined : search });
-                                            }}
-                                            style={{ height: '25px', minWidth: 'fit-content', marginInlineStart: '5px' }}
-                                            class={generalstyles.roundbutton + '  allcentered'}
-                                        >
-                                            search
-                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                         {isAuth([61, 54, 1]) && (
                             <>
                                 {' '}
@@ -230,7 +236,7 @@ const InventoryPackages = (props) => {
                                                     history.push('/returnpackageinfo?packageId=' + item?.id);
                                                 }}
                                                 style={{ background: 'white', cursor: 'pointer' }}
-                                                class={' p-3 row m-0 w-100 card  d-flex align-items-center'}
+                                                class={generalstyles.card + ' p-3 row m-0 w-100   d-flex align-items-center'}
                                             >
                                                 <div className="col-lg-4 p-0">
                                                     <span style={{ fontSize: '12px', color: 'grey' }}># {item?.id}</span>

@@ -185,228 +185,227 @@ const InventoryItems = (props) => {
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
-                <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
-                    <div class="col-lg-12 p-0">
-                        <div class="row m-0 w-100 d-flex align-items-center">
-                            <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start '}>
-                                <p class=" p-0 m-0" style={{ fontSize: '15px' }}>
-                                    <span style={{ color: 'var(--info)' }}>Warehouses </span>
-                                </p>
+                <div class="col-lg-12 px-3">
+                    <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
+                        <div class="col-lg-12 p-0">
+                            <div class="row m-0 w-100 d-flex align-items-center">
+                                <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start '}>
+                                    <p class=" p-0 m-0" style={{ fontSize: '15px' }}>
+                                        <span style={{ color: 'var(--info)' }}>Warehouses </span>
+                                    </p>
+                                </div>
+                                {isAuth([1, 54, 4]) && (
+                                    <div class={' col-lg-6 col-md-6 col-sm-12 p-0 d-flex align-items-center justify-content-end mb-2 px-2 '}>
+                                        <button
+                                            style={{ height: '35px' }}
+                                            class={generalstyles.roundbutton + ''}
+                                            onClick={() => {
+                                                setopenInventoryModal(true);
+                                            }}
+                                        >
+                                            Add Warehouse
+                                        </button>
+                                    </div>
+                                )}
                             </div>
-                            {isAuth([1, 54, 4]) && (
-                                <div class={' col-lg-6 col-md-6 col-sm-12 p-0 d-flex align-items-center justify-content-end mb-2 px-2 '}>
-                                    <button
-                                        style={{ height: '35px' }}
-                                        class={generalstyles.roundbutton + ''}
-                                        onClick={() => {
-                                            setopenInventoryModal(true);
-                                        }}
-                                    >
-                                        Add Warehouse
-                                    </button>
+                        </div>
+                        <div class="col-lg-12 p-0 ">
+                            {fetchinventories?.loading && (
+                                <div style={{ height: '70vh' }} class="row w-100 allcentered m-0">
+                                    <CircularProgress color="var(--primary)" width="60px" height="60px" duration="1s" />
+                                </div>
+                            )}
+                            {isAuth([1, 54, 3]) && (
+                                <div style={{ width: '100px', overflowY: 'scroll', flexDirection: 'row', flexWrap: 'nowrap' }} class=" scrollmenuclasssubscrollbar row m-0 w-100">
+                                    <div class="d-flex align-items-center ">
+                                        {fetchinventories?.data?.paginateInventories?.cursor?.beforeCursor != null && (
+                                            <div
+                                                onClick={() => {
+                                                    setfilterInventories({ ...filterInventories, beforeCursor: fetchinventories?.data?.paginateInventories?.cursor?.beforeCursor, afterCursor: null });
+                                                }}
+                                                class={'text-secondaryhover'}
+                                            >
+                                                <MdArrowBackIos />
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {fetchinventories?.data?.paginateInventories?.data?.map((item, index) => {
+                                        return (
+                                            <div
+                                                onClick={() => {
+                                                    history.push('/inventorydetails?inventoryId=' + item?.id);
+                                                }}
+                                                style={{ fontSize: '13px', cursor: 'pointer' }}
+                                                class="card p-2 col-lg-2"
+                                            >
+                                                <div class="row m-0 w-100">
+                                                    <div class="col-lg-12 p-0 mb-1 " style={{ fontSize: '15px' }}>
+                                                        #{item?.id}
+                                                    </div>
+                                                    <div class="col-lg-12 p-0">
+                                                        <hr class="p-0 m-0" />
+                                                    </div>
+                                                    <div class="col-lg-12 p-0 mt-2">
+                                                        {/* <span>Name: </span> */}
+                                                        <span style={{ fontWeight: 600 }} class="text-capitalize">
+                                                            {' '}
+                                                            {item?.name}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                    <div class="d-flex align-items-center justify-content-end ">
+                                        {fetchinventories?.data?.paginateInventories?.cursor?.afterCursor != null && (
+                                            <div
+                                                onClick={() => {
+                                                    setfilterInventories({ ...filterInventories, afterCursor: fetchinventories?.data?.paginateInventories?.cursor?.afterCursor, beforeCursor: null });
+                                                }}
+                                                class={'text-secondaryhover'}
+                                            >
+                                                <MdArrowForwardIos />
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                             )}
                         </div>
                     </div>
-                    <div class="col-lg-12 p-0 ">
-                        {fetchinventories?.loading && (
-                            <div style={{ height: '70vh' }} class="row w-100 allcentered m-0">
-                                <CircularProgress color="var(--primary)" width="60px" height="60px" duration="1s" />
-                            </div>
-                        )}
-                        {isAuth([1, 54, 3]) && (
-                            <div style={{ width: '100px', overflowY: 'scroll', flexDirection: 'row', flexWrap: 'nowrap' }} class=" scrollmenuclasssubscrollbar row m-0 w-100">
-                                <div class="d-flex align-items-center ">
-                                    {fetchinventories?.data?.paginateInventories?.cursor?.beforeCursor != null && (
-                                        <div
-                                            onClick={() => {
-                                                setfilterInventories({ ...filterInventories, beforeCursor: fetchinventories?.data?.paginateInventories?.cursor?.beforeCursor, afterCursor: null });
-                                            }}
-                                            class={'text-secondaryhover'}
-                                        >
-                                            <MdArrowBackIos />
-                                        </div>
-                                    )}
-                                </div>
-
-                                {fetchinventories?.data?.paginateInventories?.data?.map((item, index) => {
-                                    return (
-                                        <div
-                                            onClick={() => {
-                                                history.push('/inventorydetails?inventoryId=' + item?.id);
-                                            }}
-                                            style={{ fontSize: '13px', cursor: 'pointer' }}
-                                            class="card p-2 col-lg-2"
-                                        >
-                                            <div class="row m-0 w-100">
-                                                <div class="col-lg-12 p-0 mb-1 " style={{ fontSize: '15px' }}>
-                                                    #{item?.id}
-                                                </div>
-                                                <div class="col-lg-12 p-0">
-                                                    <hr class="p-0 m-0" />
-                                                </div>
-                                                <div class="col-lg-12 p-0 mt-2">
-                                                    {/* <span>Name: </span> */}
-                                                    <span style={{ fontWeight: 600 }} class="text-capitalize">
-                                                        {' '}
-                                                        {item?.name}
-                                                    </span>
-                                                </div>
+                </div>
+                <div class="col-lg-12 px-3">
+                    <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>
+                        <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
+                            <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
+                                <AccordionItemHeading>
+                                    <AccordionItemButton>
+                                        <div class="row m-0 w-100">
+                                            <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
+                                                <p class={generalstyles.cardTitle + '  m-0 p-0 '}>Filter:</p>
+                                            </div>
+                                            <div class="col-lg-4 col-md-4 col-sm-4 p-0 d-flex align-items-center justify-content-end">
+                                                <AccordionItemState>
+                                                    {(state) => {
+                                                        if (state.expanded == true) {
+                                                            return (
+                                                                <i class="h-100 d-flex align-items-center justify-content-center">
+                                                                    <BsChevronUp />
+                                                                </i>
+                                                            );
+                                                        } else {
+                                                            return (
+                                                                <i class="h-100 d-flex align-items-center justify-content-center">
+                                                                    <BsChevronDown />
+                                                                </i>
+                                                            );
+                                                        }
+                                                    }}
+                                                </AccordionItemState>
                                             </div>
                                         </div>
-                                    );
-                                })}
-                                <div class="d-flex align-items-center justify-content-end ">
-                                    {fetchinventories?.data?.paginateInventories?.cursor?.afterCursor != null && (
-                                        <div
-                                            onClick={() => {
-                                                setfilterInventories({ ...filterInventories, afterCursor: fetchinventories?.data?.paginateInventories?.cursor?.afterCursor, beforeCursor: null });
-                                            }}
-                                            class={'text-secondaryhover'}
-                                        >
-                                            <MdArrowForwardIos />
+                                    </AccordionItemButton>
+                                </AccordionItemHeading>
+                                <AccordionItemPanel>
+                                    <hr className="mt-2 mb-3" />
+                                    <div class="row m-0 w-100">
+                                        <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                            <MultiSelect
+                                                title={'Merchants'}
+                                                filter={filterMerchants}
+                                                setfilter={setfilterMerchants}
+                                                options={fetchMerchantsQuery}
+                                                attr={'paginateMerchants'}
+                                                label={'name'}
+                                                value={'id'}
+                                                selected={filterItemInBox?.merchantIds}
+                                                onClick={(option) => {
+                                                    var tempArray = filterItemInBox?.merchantIds ?? [];
+
+                                                    if (option == 'All') {
+                                                        tempArray = undefined;
+                                                    } else {
+                                                        if (!tempArray?.includes(option?.id)) {
+                                                            tempArray.push(option?.id);
+                                                        } else {
+                                                            tempArray.splice(tempArray?.indexOf(option?.id), 1);
+                                                        }
+                                                    }
+
+                                                    setfilterItemInBox({ ...filterItemInBox, merchantIds: tempArray?.length != 0 ? tempArray : undefined });
+                                                }}
+                                            />
                                         </div>
-                                    )}
+                                    </div>
+                                </AccordionItemPanel>
+                            </AccordionItem>
+                        </Accordion>
+                    </div>
+                </div>
+                <div class={' row m-0 w-100 p-0 mb-2'}>
+                    <div class="col-lg-12 px-3">
+                        <div class={generalstyles.card + ' row m-0 w-100'}>
+                            <div class={' col-lg-6 col-md-6 col-sm-12 p-0 d-flex align-items-center justify-content-start mb-2 px-2 '}>
+                                <p class=" p-0 m-0" style={{ fontSize: '15px' }}>
+                                    <span style={{ color: 'var(--info)' }}>Items </span>
+                                </p>
+                            </div>
+                            <div class={' col-lg-6 col-md-6 col-sm-12 p-0 d-flex align-items-center justify-content-end mb-2 px-2 '}>
+                                <div className="row m-0 w-100 d-flex align-items-center justify-content-end">
+                                    <p class=" p-0 m-0" style={{ fontSize: '14px' }}>
+                                        <span
+                                            onClick={() => {
+                                                setimportItemPayload({
+                                                    itemVariantId: '',
+                                                    ownedByOneMerchant: true,
+                                                    ballotId: '',
+                                                    inventoryId: '',
+                                                    boxName: '',
+                                                    count: 0,
+                                                    minCount: 0,
+                                                });
+                                                setimportItemModel(true);
+                                            }}
+                                            style={{ height: '35px' }}
+                                            class={generalstyles.roundbutton + '  '}
+                                        >
+                                            Import new item
+                                        </span>
+                                    </p>
                                 </div>
                             </div>
-                        )}
-                    </div>
-                </div>
-                <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>
-                    <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
-                        <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
-                            <AccordionItemHeading>
-                                <AccordionItemButton>
-                                    <div class="row m-0 w-100">
-                                        <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
-                                            <p class={generalstyles.cardTitle + '  m-0 p-0 '}>Filter:</p>
-                                        </div>
-                                        <div class="col-lg-4 col-md-4 col-sm-4 p-0 d-flex align-items-center justify-content-end">
-                                            <AccordionItemState>
-                                                {(state) => {
-                                                    if (state.expanded == true) {
-                                                        return (
-                                                            <i class="h-100 d-flex align-items-center justify-content-center">
-                                                                <BsChevronUp />
-                                                            </i>
-                                                        );
-                                                    } else {
-                                                        return (
-                                                            <i class="h-100 d-flex align-items-center justify-content-center">
-                                                                <BsChevronDown />
-                                                            </i>
-                                                        );
-                                                    }
-                                                }}
-                                            </AccordionItemState>
-                                        </div>
-                                    </div>
-                                </AccordionItemButton>
-                            </AccordionItemHeading>
-                            <AccordionItemPanel>
-                                <hr className="mt-2 mb-3" />
-                                <div class="row m-0 w-100">
-                                    <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                        <MultiSelect
-                                            title={'Merchants'}
-                                            filter={filterMerchants}
-                                            setfilter={setfilterMerchants}
-                                            options={fetchMerchantsQuery}
-                                            attr={'paginateMerchants'}
-                                            label={'name'}
-                                            value={'id'}
-                                            selected={filterItemInBox?.merchantIds}
-                                            onClick={(option) => {
-                                                var tempArray = filterItemInBox?.merchantIds ?? [];
-
-                                                if (option == 'All') {
-                                                    tempArray = undefined;
-                                                } else {
-                                                    if (!tempArray?.includes(option?.id)) {
-                                                        tempArray.push(option?.id);
-                                                    } else {
-                                                        tempArray.splice(tempArray?.indexOf(option?.id), 1);
-                                                    }
-                                                }
-
-                                                setfilterItemInBox({ ...filterItemInBox, merchantIds: tempArray?.length != 0 ? tempArray : undefined });
-                                            }}
-                                        />
-                                    </div>
-                                </div>
-                            </AccordionItemPanel>
-                        </AccordionItem>
-                    </Accordion>
-                </div>
-                <div class={generalstyles.card + ' row m-0 w-100 p-2 pt-3 mb-2'}>
-                    <div class={' col-lg-6 col-md-6 col-sm-12 p-0 d-flex align-items-center justify-content-start mb-2 px-2 '}>
-                        <p class=" p-0 m-0" style={{ fontSize: '15px' }}>
-                            <span style={{ color: 'var(--info)' }}>Items </span>
-                        </p>
-                    </div>
-                    <div class={' col-lg-6 col-md-6 col-sm-12 p-0 d-flex align-items-center justify-content-end mb-2 px-2 '}>
-                        <div className="row m-0 w-100 d-flex align-items-center justify-content-end">
-                            {/* <p class=" p-0 m-0" style={{ fontSize: '14px' }}>
-                                <span
-                                    onClick={() => {
-                                        history.push('/hubitems');
-                                    }}
-                                    style={{ height: '35px' }}
-                                    class={generalstyles.roundbutton + '  mx-2'}
-                                >
-                                    View all
-                                </span>
-                            </p> */}
-                            <p class=" p-0 m-0" style={{ fontSize: '14px' }}>
-                                <span
-                                    onClick={() => {
-                                        setimportItemPayload({
-                                            itemVariantId: '',
-                                            ownedByOneMerchant: true,
-                                            ballotId: '',
-                                            inventoryId: '',
-                                            boxName: '',
-                                            count: 0,
-                                            minCount: 0,
-                                        });
-                                        setimportItemModel(true);
-                                    }}
-                                    style={{ height: '35px' }}
-                                    class={generalstyles.roundbutton + '  '}
-                                >
-                                    Import new item
-                                </span>
-                            </p>
                         </div>
                     </div>
-                    <div class={generalstyles.card + ' row m-0 w-100 my-2 p-2 px-2'}>
-                        <div class="col-lg-12 p-0 ">
-                            <div class="row m-0 w-100 d-flex align-items-center">
-                                <div class="col-lg-10">
-                                    <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
-                                        <input
-                                            // disabled={props?.disabled}
-                                            // type={props?.type}
-                                            class={formstyles.form__field}
-                                            value={search}
-                                            placeholder={'Search by name or SKU'}
-                                            onChange={(event) => {
-                                                setBarcode(event.target.value);
-                                                setSearch(event.target.value);
-                                            }}
-                                        />
+                    <div class="col-lg-12 px-3">
+                        <div class={generalstyles.card + ' row m-0 w-100 p-2'}>
+                            <div class="col-lg-12 p-0 ">
+                                <div class="row m-0 w-100 d-flex align-items-center">
+                                    <div class="col-lg-10">
+                                        <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
+                                            <input
+                                                // disabled={props?.disabled}
+                                                // type={props?.type}
+                                                class={formstyles.form__field}
+                                                value={search}
+                                                placeholder={'Search by name or SKU'}
+                                                onChange={(event) => {
+                                                    setBarcode(event.target.value);
+                                                    setSearch(event.target.value);
+                                                }}
+                                            />
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-lg-2 allcenered">
-                                    <button
-                                        onClick={() => {
-                                            setfilterItemInBox({ ...filterItemInBox, name: search?.length == 0 ? undefined : search });
-                                        }}
-                                        style={{ height: '25px', minWidth: 'fit-content', marginInlineStart: '5px' }}
-                                        class={generalstyles.roundbutton + '  allcentered'}
-                                    >
-                                        search
-                                    </button>
+                                    <div class="col-lg-2 allcenered">
+                                        <button
+                                            onClick={() => {
+                                                setfilterItemInBox({ ...filterItemInBox, name: search?.length == 0 ? undefined : search });
+                                            }}
+                                            style={{ height: '25px', minWidth: 'fit-content', marginInlineStart: '5px' }}
+                                            class={generalstyles.roundbutton + '  allcentered'}
+                                        >
+                                            search
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -420,7 +419,7 @@ const InventoryItems = (props) => {
                     </div>
                     {!fetchItemsInBoxQuery?.loading && fetchItemsInBoxQuery?.data?.paginateItemInBox && (
                         <>
-                            <div class="col-lg-12 p-0">
+                            <div class="col-lg-12 p-0 mb-2">
                                 <Pagination
                                     beforeCursor={fetchItemsInBoxQuery?.data?.paginateItemInBox?.cursor?.beforeCursor}
                                     afterCursor={fetchItemsInBoxQuery?.data?.paginateItemInBox?.cursor?.afterCursor}
@@ -430,8 +429,8 @@ const InventoryItems = (props) => {
                             </div>
                             {fetchItemsInBoxQuery?.data?.paginateItemInBox?.data?.map((element, arrayindex) => {
                                 return (
-                                    <div style={{ fontSize: '13px' }} class=" col-lg-4 p-2 mb-1">
-                                        <div class="row m-0 w-100 card">
+                                    <div style={{ fontSize: '13px' }} class=" col-lg-4 ">
+                                        <div class={generalstyles.card + ' row m-0 w-100 '}>
                                             <div class="col-lg-12 p-0">
                                                 <div class="row m-0 w-100 d-flex align-items-center">
                                                     <div class=" mr-2" style={{ width: '50px', height: '50px', borderRadius: '5px' }}>

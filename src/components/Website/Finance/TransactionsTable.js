@@ -131,45 +131,7 @@ const TransactionsTable = (props) => {
                                                     {item?.amount} {item?.currency}
                                                 </span>
                                             </div>
-                                            {/* <div className="col-lg-6 p-0 d-flex justify-content-end align-items-center">
-                                                <div class="row m-0 w-100 d-flex justify-content-end align-items-center">
-                                                    <div class="col-lg-12 p-0 d-flex justify-content-end align-items-center mb-1 ">
-                                                        {transactionStatusTypeContext?.map((i, ii) => {
-                                                            if (i.value == item.status) {
-                                                                return (
-                                                                    <div
-                                                                        style={{ cursor: item?.toAccount?.id == props?.accountId ? 'pointer' : '' }}
-                                                                        className={
-                                                                            item.status == 'completed'
-                                                                                ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 '
-                                                                                : item?.status == 'cancelled' ||
-                                                                                  item?.status == 'failed' ||
-                                                                                  item?.status == 'rejectedByReceiver' ||
-                                                                                  item?.status == 'cancelledBySender' ||
-                                                                                  item?.status == 'cancelledByReceiver' ||
-                                                                                  item?.status == 'rejectedBySender' ||
-                                                                                  item?.status == 'rejected'
-                                                                                ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600'
-                                                                                : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 '
-                                                                        }
-                                                                    >
-                                                                        <p className={' m-0 p-0 wordbreak '}>{i.label}</p>
-                                                                    </div>
-                                                                );
-                                                            }
-                                                        })}
-                                                    </div>
-                                                    <div class="col-lg-12 p-0 d-flex justify-content-end align-items-center ">
-                                                        <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered  '}>
-                                                            {transactionTypeContext?.map((i, ii) => {
-                                                                if (i.value == item?.type) {
-                                                                    return <span>{i.label}</span>;
-                                                                }
-                                                            })}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div> */}
+
                                             <div className="col-lg-9 p-0 d-flex justify-content-end align-items-center">
                                                 <div class="row m-0 w-100 d-flex justify-content-end align-items-center">
                                                     {transactionStatusTypeContext?.map((i, ii) => {

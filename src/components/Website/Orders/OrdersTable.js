@@ -214,7 +214,7 @@ const OrdersTable = (props) => {
                                         style={{ cursor: props?.clickable ? 'pointer' : '' }}
                                         className="col-lg-6 p-1"
                                     >
-                                        <div style={{ background: selected ? 'var(--secondary)' : 'white', transition: '0.4s' }} class={' p-3 row m-0 w-100 card'}>
+                                        <div style={{ background: selected ? 'var(--secondary)' : 'white', transition: '0.4s' }} class={generalstyles.card + ' p-3 row m-0 w-100 '}>
                                             <div className="col-lg-4 p-0">
                                                 <div class="row m-0 w-100 d-flex align-items-center">
                                                     <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">

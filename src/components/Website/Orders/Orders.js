@@ -112,259 +112,269 @@ const Orders = (props) => {
                         Orders
                     </p>
                 </div>
-                <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>
-                    <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
-                        <AccordionItem class={`${generalstyles.innercard} p-2`}>
-                            <AccordionItemHeading>
-                                <AccordionItemButton>
+                <div class="col-lg-12 px-1">
+                    <div class={generalstyles.filter_container + ' mb-2 col-lg-12 p-2'}>
+                        <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
+                            <AccordionItem class={`${generalstyles.innercard} p-2`}>
+                                <AccordionItemHeading>
+                                    <AccordionItemButton>
+                                        <div class="row m-0 w-100">
+                                            <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
+                                                <p class={`${generalstyles.cardTitle} m-0 p-0`}>Filter:</p>
+                                            </div>
+                                            <div class="col-lg-4 col-md-4 col-sm-4 p-0 d-flex align-items-center justify-content-end">
+                                                <AccordionItemState>
+                                                    {(state) => <i class="h-100 d-flex align-items-center justify-content-center">{state.expanded ? <BsChevronUp /> : <BsChevronDown />}</i>}
+                                                </AccordionItemState>
+                                            </div>
+                                        </div>
+                                    </AccordionItemButton>
+                                </AccordionItemHeading>
+                                <AccordionItemPanel>
+                                    <hr className="mt-2 mb-3" />
                                     <div class="row m-0 w-100">
-                                        <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
-                                            <p class={`${generalstyles.cardTitle} m-0 p-0`}>Filter:</p>
-                                        </div>
-                                        <div class="col-lg-4 col-md-4 col-sm-4 p-0 d-flex align-items-center justify-content-end">
-                                            <AccordionItemState>
-                                                {(state) => <i class="h-100 d-flex align-items-center justify-content-center">{state.expanded ? <BsChevronUp /> : <BsChevronDown />}</i>}
-                                            </AccordionItemState>
-                                        </div>
-                                    </div>
-                                </AccordionItemButton>
-                            </AccordionItemHeading>
-                            <AccordionItemPanel>
-                                <hr className="mt-2 mb-3" />
-                                <div class="row m-0 w-100">
-                                    <div class="col-lg-3" style={{ marginBottom: '15px' }}>
-                                        <MultiSelect
-                                            title="Merchants"
-                                            filter={filterMerchants}
-                                            setfilter={setfilterMerchants}
-                                            options={fetchMerchantsQuery}
-                                            attr="paginateMerchants"
-                                            label="name"
-                                            value="id"
-                                            selected={filterorders?.merchantIds}
-                                            onClick={(option) => {
-                                                const tempArray = [...(filterorders?.merchantIds ?? [])];
-
-                                                if (option === 'All') {
-                                                    setfilterorders({ ...filterorders, merchantIds: undefined });
-                                                } else {
-                                                    const index = tempArray.indexOf(option?.id);
-                                                    if (index === -1) {
-                                                        tempArray.push(option?.id);
-                                                    } else {
-                                                        tempArray.splice(index, 1);
-                                                    }
-
-                                                    setfilterorders({ ...filterorders, merchantIds: tempArray.length ? tempArray : undefined });
-                                                }
-                                            }}
-                                        />
-                                    </div>
-
-                                    <div class="col-lg-3 mb-md-2">
-                                        <span>Date Range</span>
-                                        <div class="mt-1" style={{ width: '100%' }}>
-                                            <DateRangePicker
-                                                onChange={(event) => {
-                                                    if (event != null) {
-                                                        setfilterorders({
-                                                            ...filterorders,
-                                                            fromDate: event[0],
-                                                            toDate: event[1],
-                                                        });
-                                                    }
-                                                }}
-                                                onClean={() => {
-                                                    setfilterorders({
-                                                        ...filterorders,
-                                                        fromDate: null,
-                                                        toDate: null,
-                                                    });
-                                                }}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    {window.location.pathname !== '/handpicked' && (
                                         <div class="col-lg-3" style={{ marginBottom: '15px' }}>
                                             <MultiSelect
-                                                title="Status"
-                                                options={orderStatusEnumContext}
-                                                label="label"
-                                                value="value"
-                                                selected={filterorders?.statuses}
+                                                title="Merchants"
+                                                filter={filterMerchants}
+                                                setfilter={setfilterMerchants}
+                                                options={fetchMerchantsQuery}
+                                                attr="paginateMerchants"
+                                                label="name"
+                                                value="id"
+                                                selected={filterorders?.merchantIds}
                                                 onClick={(option) => {
-                                                    const tempArray = [...(filterorders?.statuses ?? [])];
+                                                    const tempArray = [...(filterorders?.merchantIds ?? [])];
 
-                                                    if (option.value === 'All') {
-                                                        setfilterorders({ ...filterorders, statuses: undefined });
+                                                    if (option === 'All') {
+                                                        setfilterorders({ ...filterorders, merchantIds: undefined });
                                                     } else {
-                                                        const index = tempArray.indexOf(option.value);
+                                                        const index = tempArray.indexOf(option?.id);
                                                         if (index === -1) {
-                                                            tempArray.push(option.value);
+                                                            tempArray.push(option?.id);
                                                         } else {
                                                             tempArray.splice(index, 1);
                                                         }
 
-                                                        setfilterorders({ ...filterorders, statuses: tempArray.length ? tempArray : undefined });
+                                                        setfilterorders({ ...filterorders, merchantIds: tempArray.length ? tempArray : undefined });
                                                     }
                                                 }}
                                             />
                                         </div>
-                                    )}
 
-                                    <div class="col-lg-3" style={{ marginBottom: '15px' }}>
-                                        <SelectComponent
-                                            title="Inventory"
-                                            filter={filterInventories}
-                                            setfilter={setfilterInventories}
-                                            options={fetchinventories}
-                                            attr="paginateInventories"
-                                            label="name"
-                                            value="id"
-                                            payload={filterorders}
-                                            payloadAttr="inventoryId"
-                                            onClick={(option) => {
-                                                setfilterorders({
-                                                    ...filterorders,
-                                                    inventoryId: option ? option.id : undefined,
-                                                });
-                                            }}
-                                        />
-                                    </div>
+                                        <div class="col-lg-3 mb-md-2">
+                                            <span>Date Range</span>
+                                            <div class="mt-1" style={{ width: '100%' }}>
+                                                <DateRangePicker
+                                                    onChange={(event) => {
+                                                        if (event != null) {
+                                                            setfilterorders({
+                                                                ...filterorders,
+                                                                fromDate: event[0],
+                                                                toDate: event[1],
+                                                            });
+                                                        }
+                                                    }}
+                                                    onClean={() => {
+                                                        setfilterorders({
+                                                            ...filterorders,
+                                                            fromDate: null,
+                                                            toDate: null,
+                                                        });
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
 
-                                    <div class="col-lg-3">
-                                        <Inputfield
-                                            placeholder="Order Ids"
-                                            onKeyDown={(e) => {
-                                                if (e.key === 'Enter' && e.target.value?.length !== 0) {
-                                                    const orderId = parseInt(e.target.value);
-                                                    if (!filterorders?.orderIds?.includes(orderId)) {
-                                                        const tempArray = [...(filterorders?.orderIds ?? [])];
-                                                        tempArray.push(orderId);
-                                                        setfilterorders({ ...filterorders, orderIds: tempArray });
-                                                        e.target.value = '';
-                                                    } else {
-                                                        NotificationManager.warning('', 'Already exists');
+                                        {window.location.pathname !== '/handpicked' && (
+                                            <div class="col-lg-3" style={{ marginBottom: '15px' }}>
+                                                <MultiSelect
+                                                    title="Status"
+                                                    options={orderStatusEnumContext}
+                                                    label="label"
+                                                    value="value"
+                                                    selected={filterorders?.statuses}
+                                                    onClick={(option) => {
+                                                        const tempArray = [...(filterorders?.statuses ?? [])];
+
+                                                        if (option.value === 'All') {
+                                                            setfilterorders({ ...filterorders, statuses: undefined });
+                                                        } else {
+                                                            const index = tempArray.indexOf(option.value);
+                                                            if (index === -1) {
+                                                                tempArray.push(option.value);
+                                                            } else {
+                                                                tempArray.splice(index, 1);
+                                                            }
+
+                                                            setfilterorders({ ...filterorders, statuses: tempArray.length ? tempArray : undefined });
+                                                        }
+                                                    }}
+                                                />
+                                            </div>
+                                        )}
+
+                                        <div class="col-lg-3" style={{ marginBottom: '15px' }}>
+                                            <SelectComponent
+                                                title="Inventory"
+                                                filter={filterInventories}
+                                                setfilter={setfilterInventories}
+                                                options={fetchinventories}
+                                                attr="paginateInventories"
+                                                label="name"
+                                                value="id"
+                                                payload={filterorders}
+                                                payloadAttr="inventoryId"
+                                                onClick={(option) => {
+                                                    setfilterorders({
+                                                        ...filterorders,
+                                                        inventoryId: option ? option.id : undefined,
+                                                    });
+                                                }}
+                                            />
+                                        </div>
+
+                                        <div class="col-lg-3">
+                                            <Inputfield
+                                                placeholder="Order Ids"
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter' && e.target.value?.length !== 0) {
+                                                        const orderId = parseInt(e.target.value);
+                                                        if (!filterorders?.orderIds?.includes(orderId)) {
+                                                            const tempArray = [...(filterorders?.orderIds ?? [])];
+                                                            tempArray.push(orderId);
+                                                            setfilterorders({ ...filterorders, orderIds: tempArray });
+                                                            e.target.value = '';
+                                                        } else {
+                                                            NotificationManager.warning('', 'Already exists');
+                                                        }
                                                     }
-                                                }
-                                            }}
-                                            type="number"
-                                        />
-                                        <div class="col-lg-12 p-0">
-                                            <div class="row m-0 w-100 scrollmenuclasssubscrollbar" style={{ overflow: 'scroll', flexWrap: 'nowrap' }}>
-                                                {filterorders?.orderIds?.map((orderItem, orderIndex) => (
-                                                    <div
-                                                        key={orderIndex}
-                                                        style={{
-                                                            background: '#ECECEC',
-                                                            padding: '5px 10px',
-                                                            cursor: 'pointer',
-                                                            borderRadius: '8px',
-                                                            justifyContent: 'space-between',
-                                                            width: 'fit-content',
-                                                            fontSize: '11px',
-                                                            minWidth: 'fit-content',
-                                                        }}
-                                                        className="d-flex align-items-center mr-2 mb-1"
-                                                        onClick={() => {
-                                                            const tempArray = [...filterorders.orderIds];
-                                                            tempArray.splice(orderIndex, 1);
-                                                            setfilterorders({ ...filterorders, orderIds: tempArray.length ? tempArray : undefined });
-                                                        }}
-                                                    >
-                                                        {orderItem}
-                                                        <AiOutlineClose size={12} color="#6C757D" className="ml-2" />
-                                                    </div>
-                                                ))}
+                                                }}
+                                                type="number"
+                                            />
+                                            <div class="col-lg-12 p-0">
+                                                <div class="row m-0 w-100 scrollmenuclasssubscrollbar" style={{ overflow: 'scroll', flexWrap: 'nowrap' }}>
+                                                    {filterorders?.orderIds?.map((orderItem, orderIndex) => (
+                                                        <div
+                                                            key={orderIndex}
+                                                            style={{
+                                                                background: '#ECECEC',
+                                                                padding: '5px 10px',
+                                                                cursor: 'pointer',
+                                                                borderRadius: '8px',
+                                                                justifyContent: 'space-between',
+                                                                width: 'fit-content',
+                                                                fontSize: '11px',
+                                                                minWidth: 'fit-content',
+                                                            }}
+                                                            className="d-flex align-items-center mr-2 mb-1"
+                                                            onClick={() => {
+                                                                const tempArray = [...filterorders.orderIds];
+                                                                tempArray.splice(orderIndex, 1);
+                                                                setfilterorders({ ...filterorders, orderIds: tempArray.length ? tempArray : undefined });
+                                                            }}
+                                                        >
+                                                            {orderItem}
+                                                            <AiOutlineClose size={12} color="#6C757D" className="ml-2" />
+                                                        </div>
+                                                    ))}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </AccordionItemPanel>
-                        </AccordionItem>
-                    </Accordion>
+                                </AccordionItemPanel>
+                            </AccordionItem>
+                        </Accordion>
+                    </div>
                 </div>
-
-                <div class={generalstyles.card + ' row m-0 w-100 my-2 p-2 px-2'}>
-                    <div class="col-lg-12 p-0 ">
-                        <div class="row m-0 w-100 d-flex align-items-center">
-                            <div class="col-lg-10">
-                                <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
-                                    <input
-                                        // disabled={props?.disabled}
-                                        // type={props?.type}
-                                        class={formstyles.form__field}
-                                        value={search}
-                                        placeholder={'Search by name or SKU'}
-                                        onChange={(event) => {
-                                            setBarcode(event.target.value);
-                                            setSearch(event.target.value);
-                                        }}
-                                    />
+                <div class="col-lg-12 p-1">
+                    {' '}
+                    <div class={generalstyles.card + ' row m-0 w-100 my-2 p-2 px-2'}>
+                        <div class="col-lg-12 p-0 ">
+                            <div class="row m-0 w-100 d-flex align-items-center">
+                                <div class="col-lg-10">
+                                    <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
+                                        <input
+                                            // disabled={props?.disabled}
+                                            // type={props?.type}
+                                            class={formstyles.form__field}
+                                            value={search}
+                                            placeholder={'Search by name or SKU'}
+                                            onChange={(event) => {
+                                                setBarcode(event.target.value);
+                                                setSearch(event.target.value);
+                                            }}
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-lg-2 allcenered">
-                                <button
-                                    onClick={() => {
-                                        setfilterorders({ ...filterorders, name: search?.length == 0 ? undefined : search });
-                                    }}
-                                    style={{ height: '25px', minWidth: 'fit-content', marginInlineStart: '5px' }}
-                                    class={generalstyles.roundbutton + '  allcentered'}
-                                >
-                                    search
-                                </button>
+                                <div class="col-lg-2 allcenered">
+                                    <button
+                                        onClick={() => {
+                                            setfilterorders({ ...filterorders, name: search?.length == 0 ? undefined : search });
+                                        }}
+                                        style={{ height: '25px', minWidth: 'fit-content', marginInlineStart: '5px' }}
+                                        class={generalstyles.roundbutton + '  allcentered'}
+                                    >
+                                        search
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
                 {isAuth([1, 54]) && (
-                    <div class={generalstyles.card + ' row m-0 w-100'}>
-                        <div className="col-lg-6 p-0 d-flex justify-content-end ">
-                            <div
-                                onClick={() => {
-                                    var temp = [];
-                                    if (selectedOrders?.length != fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.length) {
-                                        fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.map((i, ii) => {
-                                            temp.push(i.id);
-                                        });
-                                    }
-                                    setSelectedOrders(temp);
-                                }}
-                                class="row m-0 w-100 d-flex align-items-center"
-                                style={{
-                                    cursor: 'pointer',
-                                    // color:
-                                    //     selectedOrders?.length == fetchOrdersInInventoryQuery?.data?.paginateOrders?.data?.length ? 'var(--success)' : '',
-                                }}
-                            >
-                                <div
-                                    style={{
-                                        width: '30px',
-                                        height: '30px',
-                                    }}
-                                    className="iconhover allcentered mr-1"
-                                >
-                                    {selectedOrders?.length != fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.length && (
-                                        <FiCircle
-                                            style={{ transition: 'all 0.4s' }}
-                                            color={selectedOrders?.length == fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.length ? 'var(--success)' : ''}
-                                            size={18}
-                                        />
-                                    )}
-                                    {selectedOrders?.length == fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.length && (
-                                        <FiCheckCircle
-                                            style={{ transition: 'all 0.4s' }}
-                                            color={selectedOrders?.length == fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.length ? 'var(--success)' : ''}
-                                            size={18}
-                                        />
-                                    )}
+                    <div class={' row m-0 w-100'}>
+                        <div class="col-lg-12 p-1">
+                            <div class={generalstyles.card + ' row m-0 w-100'}>
+                                <div className="col-lg-6 p-0 d-flex justify-content-end ">
+                                    <div
+                                        onClick={() => {
+                                            var temp = [];
+                                            if (selectedOrders?.length != fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.length) {
+                                                fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.map((i, ii) => {
+                                                    temp.push(i.id);
+                                                });
+                                            }
+                                            setSelectedOrders(temp);
+                                        }}
+                                        class="row m-0 w-100 d-flex align-items-center"
+                                        style={{
+                                            cursor: 'pointer',
+                                            // color:
+                                            //     selectedOrders?.length == fetchOrdersInInventoryQuery?.data?.paginateOrders?.data?.length ? 'var(--success)' : '',
+                                        }}
+                                    >
+                                        <div
+                                            style={{
+                                                width: '30px',
+                                                height: '30px',
+                                            }}
+                                            className="iconhover allcentered mr-1"
+                                        >
+                                            {selectedOrders?.length != fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.length && (
+                                                <FiCircle
+                                                    style={{ transition: 'all 0.4s' }}
+                                                    color={selectedOrders?.length == fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.length ? 'var(--success)' : ''}
+                                                    size={18}
+                                                />
+                                            )}
+                                            {selectedOrders?.length == fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.length && (
+                                                <FiCheckCircle
+                                                    style={{ transition: 'all 0.4s' }}
+                                                    color={selectedOrders?.length == fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.length ? 'var(--success)' : ''}
+                                                    size={18}
+                                                />
+                                            )}
+                                        </div>
+                                        {selectedOrders?.length != fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.length ? 'Select All' : 'Deselect All'}
+                                    </div>
                                 </div>
-                                {selectedOrders?.length != fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.length ? 'Select All' : 'Deselect All'}
+                                <div class="col-lg-6 d-flex justify-content-end"> {waybills?.length > 0 && <WaybillPrint waybills={waybills} />}</div>
                             </div>
                         </div>
-                        <div class="col-lg-6 d-flex justify-content-end"> {waybills?.length > 0 && <WaybillPrint waybills={waybills} />}</div>
-                        <div class="col-lg-12 p-0">
+
+                        <div class="col-lg-12 p-0 mb-2">
                             <Pagination
                                 beforeCursor={fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.cursor?.beforeCursor}
                                 afterCursor={fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.cursor?.afterCursor}
@@ -372,7 +382,7 @@ const Orders = (props) => {
                                 setfilter={setfilterorders}
                             />
                         </div>
-                        <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                        <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
                             <OrdersTable
                                 selectedOrders={selectedOrders}
                                 clickable={true}

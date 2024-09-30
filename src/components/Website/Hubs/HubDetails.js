@@ -49,9 +49,9 @@ const HubDetails = (props) => {
                     <div class="col-lg-12 p-0">
                         {chosenHubContext != undefined && (
                             <>
-                                <div class={generalstyles.card + ' row m-0 w-100 p-4'}>
-                                    <div style={{ cursor: props?.clickable ? 'pointer' : '' }} className="col-lg-12 p-0">
-                                        <div class={' row m-0 w-100 '}>
+                                <div class={' row m-0 w-100 px-4'}>
+                                    <div style={{ cursor: props?.clickable ? 'pointer' : '' }} className={' col-lg-12 p-1'}>
+                                        <div class={generalstyles.card + ' row m-0 w-100 '}>
                                             <div className="col-lg-12 p-0">
                                                 <div class="row m-0 w-100 d-flex align-items-center">
                                                     <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
@@ -94,20 +94,17 @@ const HubDetails = (props) => {
                                         </div>
                                     </div>
                                 </div>
-                                <div class={generalstyles.card + ' row m-0 w-100 p-4'}>
+                                <div class={' row m-0 w-100 px-4'}>
                                     <div style={{ cursor: props?.clickable ? 'pointer' : '' }} className="col-lg-12 p-0">
                                         <div class={' row m-0 w-100 '}>
-                                            <div className="col-lg-12 p-0">
+                                            <div className="col-lg-12 p-1 mb-2">
                                                 <div class="row m-0 w-100 d-flex align-items-center">
                                                     <span class="mr-1">Hub Users</span>{' '}
                                                 </div>
                                             </div>
 
-                                            <div className="col-lg-12 p-0 my-2">
-                                                <hr className="m-0" />
-                                            </div>
-                                            <div class="col-lg-12 p-0 ">
-                                                <div class="row m-0 w-100 d-flex align-items-center">
+                                            <div class="col-lg-12 p-1 ">
+                                                <div class={generalstyles.card + ' row m-0 w-100 d-flex align-items-center '}>
                                                     <div class="col-lg-11 p-0">
                                                         <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
                                                             <input
@@ -136,7 +133,7 @@ const HubDetails = (props) => {
                                                 </div>
                                             </div>
 
-                                            <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                                            <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
                                                 <UsersTable fetchusers={fetchusers} card="col-lg-4 p-1" />
                                             </div>
                                             <div class="col-lg-12 p-0">

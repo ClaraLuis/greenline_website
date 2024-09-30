@@ -3783,7 +3783,7 @@ hr {
     background-color: #fdede8 !important;
 }
 .rounded-pill {
-    border-radius: 25px !important;
+    border-radius: 0.25rem !important;
     font-size: 12px;
     padding: 3px 10px;
     width: fit-content;

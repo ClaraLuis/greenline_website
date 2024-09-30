@@ -110,27 +110,31 @@ const Merchants = (props) => {
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
                 <div class={' row m-0 w-100 mb-2 p-2 px-3'}>
-                    <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start mb-3'}>
-                        <p class=" p-0 m-0" style={{ fontSize: '23px' }}>
-                            <span style={{ color: 'var(--info)' }}>Merchants </span>
-                        </p>
-                    </div>
-                    <div class={' col-lg-6 col-md-6 col-sm-12 p-0 d-flex align-items-center justify-content-end mb-3 px-2 '}>
-                        <p class=" p-0 m-0" style={{ fontSize: '14px' }}>
-                            <span
-                                onClick={() => {
-                                    if (isAuth([48, 1, 52])) {
-                                        history.push('/addmerchant' + '?type=add' + '&step=0');
-                                    } else {
-                                        NotificationManager.warning('Not Authorized', 'Warning');
-                                    }
-                                }}
-                                class={generalstyles.roundbutton}
-                                // style={{ textDecoration: 'underline' }}
-                            >
-                                Add Merchant
-                            </span>
-                        </p>
+                    <div class="col-lg-12 p-1">
+                        <div class={generalstyles.card + ' row m-0 w-100 my-2 p-2 px-2'}>
+                            <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start '}>
+                                <p class=" p-0 m-0" style={{ fontSize: '23px' }}>
+                                    <span style={{ color: 'var(--info)' }}>Merchants </span>
+                                </p>
+                            </div>
+                            <div class={' col-lg-6 col-md-6 col-sm-12 p-0 d-flex align-items-center justify-content-end  px-2 '}>
+                                <p class=" p-0 m-0" style={{ fontSize: '14px' }}>
+                                    <span
+                                        onClick={() => {
+                                            if (isAuth([48, 1, 52])) {
+                                                history.push('/addmerchant' + '?type=add' + '&step=0');
+                                            } else {
+                                                NotificationManager.warning('Not Authorized', 'Warning');
+                                            }
+                                        }}
+                                        class={generalstyles.roundbutton}
+                                        // style={{ textDecoration: 'underline' }}
+                                    >
+                                        Add Merchant
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="col-lg-12 p-0 ">
@@ -139,31 +143,33 @@ const Merchants = (props) => {
                                 <CircularProgress color="var(--primary)" width="60px" height="60px" duration="1s" />
                             </div>
                         )}
-                        <div class={generalstyles.card + ' row m-0 w-100 my-2 p-2 px-2'}>
-                            <div class="col-lg-12 p-0 ">
-                                <div class="row m-0 w-100 d-flex align-items-center">
-                                    <div class="col-lg-10">
-                                        <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
-                                            <input
-                                                class={formstyles.form__field}
-                                                value={search}
-                                                placeholder={'Search by name'}
-                                                onChange={(event) => {
-                                                    setSearch(event.target.value);
-                                                }}
-                                            />
+                        <div class="col-lg-12 p-1">
+                            <div class={generalstyles.card + ' row m-0 w-100 my-2 p-2 px-2'}>
+                                <div class="col-lg-12 p-0 ">
+                                    <div class="row m-0 w-100 d-flex align-items-center">
+                                        <div class="col-lg-10">
+                                            <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
+                                                <input
+                                                    class={formstyles.form__field}
+                                                    value={search}
+                                                    placeholder={'Search by name'}
+                                                    onChange={(event) => {
+                                                        setSearch(event.target.value);
+                                                    }}
+                                                />
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-lg-2 allcenered">
-                                        <button
-                                            onClick={() => {
-                                                setfilterMerchants({ ...filterMerchants, name: search?.length == 0 ? undefined : search });
-                                            }}
-                                            style={{ height: '25px', minWidth: 'fit-content', marginInlineStart: '5px' }}
-                                            class={generalstyles.roundbutton + '  allcentered'}
-                                        >
-                                            search
-                                        </button>
+                                        <div class="col-lg-2 allcenered">
+                                            <button
+                                                onClick={() => {
+                                                    setfilterMerchants({ ...filterMerchants, name: search?.length == 0 ? undefined : search });
+                                                }}
+                                                style={{ height: '25px', minWidth: 'fit-content', marginInlineStart: '5px' }}
+                                                class={generalstyles.roundbutton + '  allcentered'}
+                                            >
+                                                search
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -179,10 +185,10 @@ const Merchants = (props) => {
                         <div style={{ minHeight: '60vh' }} class="row m-0 w-100 d-flex align-items-start align-content-start">
                             {fetchMerchantsQuery?.data?.paginateMerchants?.data?.map((item, index) => {
                                 return (
-                                    <div onClick={() => {}} style={{ fontSize: '13px' }} class=" col-lg-4 p-1 px-2 mb-2">
+                                    <div onClick={() => {}} style={{ fontSize: '13px' }} class=" col-lg-4 p-1">
                                         <div
                                             style={{ backgroundColor: 'white', border: chosenMerchantContext?.id == item?.id ? '1px solid var(--success)' : '' }}
-                                            class="row m-0 w-100 p-3 card d-flex align-items-center"
+                                            class={generalstyles.card + ' row m-0 w-100 p-3  d-flex align-items-center'}
                                         >
                                             <div class="col-lg-6 p-0 mb-1 ">
                                                 <div class="row m-0 w-100 d-flex align-items-center">

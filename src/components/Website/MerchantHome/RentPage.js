@@ -17,12 +17,13 @@ import TransactionsTable from '../Finance/TransactionsTable.js';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
 import SelectComponent from '../../SelectComponent.js';
+import { IoMdTime } from 'react-icons/io';
 const { ValueContainer, Placeholder } = components;
 
 const RentPage = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, inventoryRentTypeContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, dateformatter } = useContext(Contexthandlerscontext);
     const {
         useQueryGQL,
         paginateInventoryRentTransaction,
@@ -36,21 +37,8 @@ const RentPage = (props) => {
         inventoryRentSummary,
         fetchMerchants,
     } = API();
-    const [importItemModel, setimportItemModel] = useState(false);
-    const [inventorySettings, setinventorySettings] = useState({});
-    const [buttonLoading, setbuttonLoading] = useState(false);
 
-    const [fetchRacksQuery, setfetchRacksQuery] = useState(null);
-    const [fetchBoxesQuery, setfetchBoxesQuery] = useState(null);
-    const [sumInventoryRent, setsumInventoryRent] = useState(null);
-    const [fetchBallotsQuery, setfetchBallotsQuery] = useState(null);
     const [inventoryRentSummaryData, setinventoryRentSummaryData] = useState(null);
-
-    const [idsToBeRemoved, setidsToBeRemoved] = useState({
-        rackIds: undefined,
-        ballotIds: undefined,
-        boxIds: undefined,
-    });
 
     const { lang, langdetect } = useContext(LanguageContext);
 
@@ -154,32 +142,53 @@ const RentPage = (props) => {
                         </div>
                     </div>
                 </div>
-                <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
-                    <div class={' col-lg-6 col-md-6 col-sm-12 p-0 d-flex align-items-center justify-content-start '}>
-                        <p class=" p-0 m-0 text-uppercase" style={{ fontSize: '15px' }}>
-                            <span style={{ color: 'var(--info)' }}>Transactions</span>
-                        </p>
+                <div class={' row m-0 w-100 mb-2 p-2'}>
+                    <div class="col-lg-12 p-1">
+                        <div class={generalstyles.card + ' row m-0 w-100'}>
+                            <div class={' col-lg-6 col-md-6 col-sm-12 p-0 d-flex align-items-center justify-content-start '}>
+                                <p class=" p-0 m-0 text-uppercase" style={{ fontSize: '15px' }}>
+                                    <span style={{ color: 'var(--info)' }}>Transactions</span>
+                                </p>
+                            </div>
+                            <div class="col-lg-6 p-0 d-flex justify-content-end">
+                                <span
+                                    onClick={() => {
+                                        history.push('/merchantpayments');
+                                    }}
+                                    style={{ height: '35px' }}
+                                    class={generalstyles.roundbutton + '  allcentered'}
+                                >
+                                    View all
+                                </span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-lg-6 p-0 d-flex justify-content-end">
-                        <span
-                            onClick={() => {
-                                history.push('/merchantpayments');
-                            }}
-                            style={{ height: '35px' }}
-                            class={generalstyles.roundbutton + '  allcentered'}
-                        >
-                            View all
-                        </span>
-                    </div>
+
                     <>
-                        <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
-                            <TransactionsTable
-                                width={'50%'}
-                                query={paginateInventoryRentTransactionQuery}
-                                paginationAttr="paginateInventoryRentTransaction"
-                                srctype="courierCollection"
-                                // accountId={queryParameters.get('accountId')}
-                            />
+                        <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
+                            {paginateInventoryRentTransactionQuery?.data?.paginateInventoryRentTransaction?.data?.length != 0 && (
+                                <div class="row m-0 w-100">
+                                    {paginateInventoryRentTransactionQuery?.data?.paginateInventoryRentTransaction?.data?.map((item, index) => {
+                                        return (
+                                            <div style={{ fontSize: '13px', position: 'relative' }} className="p-1 col-lg-6 pb-0">
+                                                <div class={generalstyles.card + ' p-2 px-3 row m-0 w-100 allcentered'}>
+                                                    <div className="col-lg-12 p-0">
+                                                        <span style={{ fontWeight: 700, fontSize: '16px' }} class=" d-flex align-items-center">
+                                                            {item?.quantity}
+                                                        </span>
+                                                    </div>
+                                                    <div className="col-lg-12 p-0 mb-1 d-flex justify-content-end">
+                                                        <span class="d-flex align-items-center" style={{ fontWeight: 500, color: 'grey', fontSize: '12px' }}>
+                                                            <IoMdTime class="mr-1" />
+                                                            {dateformatter(item?.createdAt)}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
                         </div>
                     </>
                 </div>

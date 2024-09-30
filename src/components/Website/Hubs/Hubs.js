@@ -70,41 +70,42 @@ const Hubs = (props) => {
                         Hubs
                     </p>
                 </div>
-                <div class={generalstyles.card + ' row m-0 w-100'}>
-                    <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
-                        <p class=" p-0 m-0" style={{ fontSize: '24px' }}>
-                            <span style={{ color: 'var(--info)' }}> {fetchHubsQuery?.data?.paginateHubs?.data?.length} </span>
-                        </p>
-                    </div>
-                    {isAuth([1, 44]) && (
-                        <div class={' col-lg-6 col-md-6 col-sm-6 p-0 pr-3 pr-md-1 pr-sm-0 d-flex align-items-center justify-content-end pb-1 '}>
-                            <button
-                                style={{ height: '35px' }}
-                                class={generalstyles.roundbutton + '  mb-1'}
-                                onClick={() => {
-                                    setpayload({
-                                        functype: 'add',
-                                        id: 'add',
-                                        name: '',
-                                        type: '',
-                                        phone: '',
-                                        email: '',
-                                        birthdate: '',
-                                    });
-                                    setopenModal(true);
-                                }}
-                            >
-                                Add Hub
-                            </button>
+                <div class={' row m-0 w-100'}>
+                    <div class={' col-lg-12 p-1 '}>
+                        <div class={generalstyles.card + ' row m-0 w-100 d-flex align-items-center'}>
+                            <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
+                                <p class=" p-0 m-0" style={{ fontSize: '24px' }}>
+                                    <span style={{ color: 'var(--info)' }}> {fetchHubsQuery?.data?.paginateHubs?.data?.length} </span>
+                                </p>
+                            </div>
+                            {isAuth([1, 44]) && (
+                                <div class={' col-lg-6 col-md-6 col-sm-6 p-0 pr-3 pr-md-1 pr-sm-0 d-flex align-items-center justify-content-end pb-1 '}>
+                                    <button
+                                        style={{ height: '35px' }}
+                                        class={generalstyles.roundbutton + '  mb-1'}
+                                        onClick={() => {
+                                            setpayload({
+                                                functype: 'add',
+                                                id: 'add',
+                                                name: '',
+                                                type: '',
+                                                phone: '',
+                                                email: '',
+                                                birthdate: '',
+                                            });
+                                            setopenModal(true);
+                                        }}
+                                    >
+                                        Add Hub
+                                    </button>
+                                </div>
+                            )}
                         </div>
-                    )}
-
-                    <div class="col-lg-12 p-0">
-                        <hr class="mt-1" />
                     </div>
+
                     {isAuth([1, 43]) && (
                         <>
-                            <div class="col-lg-12 p-0">
+                            <div class="col-lg-12 p-0 mb-2">
                                 <Pagination
                                     beforeCursor={fetchHubsQuery?.data?.paginateHubs?.cursor?.beforeCursor}
                                     afterCursor={fetchHubsQuery?.data?.paginateHubs?.cursor?.afterCursor}

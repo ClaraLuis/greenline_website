@@ -71,40 +71,40 @@ const Users = (props) => {
                         Users
                     </p>
                 </div>
-                <div class={generalstyles.card + ' row m-0 w-100'}>
-                    <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
-                        <p class=" p-0 m-0" style={{ fontSize: '24px' }}>
-                            <span style={{ color: 'var(--info)' }}> {fetchusers?.data?.paginateUsers?.data?.length} </span>
-                        </p>
-                    </div>
-                    {isAuth([1, 44, 52]) && (
-                        <div class={' col-lg-6 col-md-6 col-sm-6 p-0 pr-3 pr-md-1 pr-sm-0 d-flex align-items-center justify-content-end pb-1 '}>
-                            <button
-                                style={{ height: '35px' }}
-                                class={generalstyles.roundbutton + '  mb-1'}
-                                onClick={() => {
-                                    setpayload({
-                                        functype: 'add',
-                                        id: 'add',
-                                        name: '',
-                                        type: '',
-                                        phone: '',
-                                        email: '',
-                                        birthdate: '',
-                                    });
-                                    setopenModal(true);
-                                }}
-                            >
-                                Add User
-                            </button>
+                <div class={' row m-0 w-100'}>
+                    <div class={' col-lg-12 p-1 '}>
+                        <div class={generalstyles.card + ' row m-0 w-100 d-flex align-items-center'}>
+                            <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
+                                <p class=" p-0 m-0" style={{ fontSize: '24px' }}>
+                                    <span style={{ color: 'var(--info)' }}> {fetchusers?.data?.paginateUsers?.data?.length} </span>
+                                </p>
+                            </div>
+                            {isAuth([1, 44, 52]) && (
+                                <div class={' col-lg-6 col-md-6 col-sm-6 p-0 pr-3 pr-md-1 pr-sm-0 d-flex align-items-center justify-content-end pb-1 '}>
+                                    <button
+                                        style={{ height: '35px' }}
+                                        class={generalstyles.roundbutton + '  mb-1'}
+                                        onClick={() => {
+                                            setpayload({
+                                                functype: 'add',
+                                                id: 'add',
+                                                name: '',
+                                                type: '',
+                                                phone: '',
+                                                email: '',
+                                                birthdate: '',
+                                            });
+                                            setopenModal(true);
+                                        }}
+                                    >
+                                        Add User
+                                    </button>
+                                </div>
+                            )}
                         </div>
-                    )}
-
-                    <div class="col-lg-12 p-0">
-                        <hr class="mt-1" />
                     </div>
-                    <div class="col-lg-12 p-0 ">
-                        <div class="row m-0 w-100 d-flex align-items-center">
+                    <div class={' col-lg-12 p-1 '}>
+                        <div class={generalstyles.card + ' row m-0 w-100 d-flex align-items-center'}>
                             <div class="col-lg-10">
                                 <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
                                     <input
@@ -134,7 +134,7 @@ const Users = (props) => {
                     </div>
                     {isAuth([1, 43, 52]) && (
                         <>
-                            <div class="col-lg-12 p-0">
+                            <div class="col-lg-12 p-0 mb-2">
                                 <Pagination
                                     beforeCursor={fetchusers?.data?.paginateUsers?.cursor?.beforeCursor}
                                     afterCursor={fetchusers?.data?.paginateUsers?.cursor?.afterCursor}
@@ -142,7 +142,7 @@ const Users = (props) => {
                                     setfilter={setfilterUsers}
                                 />
                             </div>
-                            <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                            <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
                                 <UsersTable fetchusers={fetchusers} card="col-lg-4 p-1" />
                             </div>
                         </>
