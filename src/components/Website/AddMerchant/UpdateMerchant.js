@@ -22,7 +22,7 @@ import { MdClose } from 'react-icons/md';
 const UpdateMerchant = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, isAuth, inventoryRentTypeContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, isAuth, dateformatter } = useContext(Contexthandlerscontext);
     const { useQueryGQL, useMutationGQL, fetchGovernorates, findOneMerchant, useLazyQueryGQL, fetchSimilarAddresses, fetchUsers, fetchMerchants, updateMerchant, fetchAllCountries, findAllZones } =
         API();
     const steps = ['Merchant Info', 'Shipping', 'Inventory Settings'];

@@ -221,8 +221,8 @@ const ImportNewItem = (props) => {
                                 </div>
                                 <div class="col-lg-2 p-1">
                                     <button
-                                        style={{ height: '30px' }}
-                                        class={generalstyles.roundbutton + ' p-0 allcentered'}
+                                        style={{ height: '35px' }}
+                                        class={generalstyles.roundbutton + ' p-0 allcentered bg-primary-light'}
                                         onClick={() => {
                                             if (search.length == 0) {
                                                 setmerchantFilter({ ...merchantFilter, name: undefined });

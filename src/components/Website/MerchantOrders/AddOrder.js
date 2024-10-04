@@ -5,7 +5,7 @@ import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
-import { FaPlus, FaWindowMinimize } from 'react-icons/fa';
+import { FaLayerGroup, FaPlus, FaWindowMinimize } from 'react-icons/fa';
 import { components } from 'react-select';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 
@@ -60,6 +60,8 @@ const AddOrder = (props) => {
     const [addCustomerModal, setaddCustomerModal] = useState(false);
     const [fetchSuggestions, setfetchSuggestions] = useState(false);
     const [similarAddresses, setsimilarAddresses] = useState([]);
+    const [fetchOrdersQuery, setfetchOrdersQuery] = useState({});
+
     const [cities, setCities] = useState([]);
     const [nameSuggestions, setnameSuggestions] = useState([]);
     const [cartItems, setcartItems] = useState([]);
@@ -96,7 +98,8 @@ const AddOrder = (props) => {
     const [loading, setloading] = useState(false);
     const [customerFound, setcustomerFound] = useState(false);
     const [customerData, setcustomerData] = useState({});
-    const [externalOrder, setexternalOrder] = useState(false);
+    const [externalOrder, setexternalOrder] = useState(null);
+    const [previousOrderType, setpreviousOrderType] = useState(undefined);
 
     const [customerDataSuggestions, setcustomerDataSuggestions] = useState({});
     const [addresspayload, setaddresspayload] = useState({
@@ -109,7 +112,9 @@ const AddOrder = (props) => {
         limit: 20,
         orderIds: undefined,
     });
-    const fetchOrdersQuery = useQueryGQL('', fetchOrders(), filterorders); //network only
+
+    const [fetchOrdersQueryLazyQuery] = useLazyQueryGQL(fetchOrders(), 'network-only');
+
     const fetchGovernoratesQuery = useQueryGQL('cache-and-network', fetchGovernorates());
     const findAllZonesQuery = useQueryGQL('cache-and-network', findAllZones());
 
@@ -327,9 +332,18 @@ const AddOrder = (props) => {
                     merchantId: merchantId,
                 },
             });
+
             setuserAddresses([...data?.paginateAddresses?.data]);
         }
     }, [orderpayload?.customerId]);
+    useEffect(async () => {
+        if (orderpayload?.ordertype == 'exchange' && previousOrderType != 'e') {
+            var { data } = await fetchOrdersQueryLazyQuery({
+                variables: { input: previousOrderType == 'd' ? filterorders : { ...filterorders, statuses: ['returned'] } },
+            });
+            setfetchOrdersQuery({ data: data });
+        }
+    }, [orderpayload?.ordertype, previousOrderType]);
 
     useEffect(() => {
         // alert(queryParameters.get('merchantId'));
@@ -474,16 +488,16 @@ const AddOrder = (props) => {
                             {(orderpayload?.address?.length == 0 || orderpayload?.address == undefined) && <div class="col-lg-12">* Choose customer address</div>}
                             {orderpayload?.returnOrderItems?.length == 0 && externalOrder && orderpayload?.ordertype == 'exchange' && <div class="col-lg-12">* Add return items</div>}
                             {!externalOrder && (orderpayload?.previousOrderId?.length == 0 || orderpayload?.previousOrderId == undefined) && orderpayload?.ordertype == 'exchange' && (
-                                <div class="col-lg-12">* Choose return order</div>
+                                <div class="col-lg-12">* Choose previous order</div>
                             )}
                         </div>
                     </div>
                 </div>
                 {tabs[0]?.isChecked && (
-                    <div className={' col-lg-8 p-0 '}>
+                    <div className={' col-lg-8 '}>
                         <div class="row m-0 w-100">
-                            <div class="col-lg-12 p-0 my-3 ">
-                                <div class="row m-0 w-100 d-flex align-items-center">
+                            <div class="col-lg-12 p-0 ">
+                                <div class={generalstyles.card + ' row m-0 w-100 d-flex align-items-center'}>
                                     <div class="col-lg-10 p-0">
                                         <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
                                             <input
@@ -500,8 +514,8 @@ const AddOrder = (props) => {
                                     </div>
                                     <div class="col-lg-2 p-1">
                                         <button
-                                            style={{ height: '30px' }}
-                                            class={generalstyles.roundbutton + ' p-0 allcentered'}
+                                            style={{ height: '35px' }}
+                                            class={generalstyles.roundbutton + ' p-0 allcentered bg-primary-light'}
                                             onClick={() => {
                                                 if (search.length == 0) {
                                                     setfilter({ ...filter, name: undefined });
@@ -558,7 +572,7 @@ const AddOrder = (props) => {
                     </div>
                 )}
                 {tabs[1]?.isChecked && (
-                    <div className={' col-lg-8 p-0 '}>
+                    <div className={' col-lg-8 '}>
                         <div class={generalstyles.card + ' row m-0 w-100 p-3'}>
                             <div class="col-lg-12 p-0 mt-3 ">
                                 <div class="row m-0 w-100 d-flex align-items-center">
@@ -1144,220 +1158,328 @@ const AddOrder = (props) => {
                     </div>
                 )}
                 {tabs[2]?.isChecked && (
-                    <div className={' col-lg-8 p-0 '}>
-                        <div class="row m-0 w-100">
-                            <div className="col-lg-12 p-0 d-flex justify-content-start my-2">
-                                <div className="row m-0 w-100 d-flex justify-content-start">
-                                    <label className={`${formstyles.switch} mx-2 my-0`}>
-                                        <input
-                                            type="checkbox"
-                                            checked={externalOrder}
-                                            onChange={() => {
+                    <div className={' col-lg-8 '}>
+                        {previousOrderType && (
+                            <div class="row m-0 w-100">
+                                <div class="col-lg-12 p-0 px-1 mt-2">
+                                    <div class="row m-0 w-100">
+                                        <button
+                                            class={previousOrderType == 'd' ? generalstyles.roundbutton : generalstyles.roundbutton + ' bg-info bg-infohover'}
+                                            onClick={async () => {
                                                 setorderpayload({ ...orderpayload, previousOrderId: undefined, returnOrderItems: [] });
-                                                setexternalOrder(!externalOrder);
+
+                                                setpreviousOrderType('d');
+                                                setexternalOrder(false);
                                             }}
-                                        />
-                                        <span className={`${formstyles.slider} ${formstyles.round}`}></span>
-                                    </label>
-                                    <p className={`${generalstyles.checkbox_label} mb-0 text-focus text-capitalize cursor-pointer font_14 ml-1 mr-1 wordbreak`}>External Order</p>
+                                        >
+                                            <span>Delivery Order</span>
+                                        </button>
+                                        <button
+                                            class={previousOrderType == 'r' ? generalstyles.roundbutton + '  mx-2' : generalstyles.roundbutton + ' bg-info bg-infohover mx-2'}
+                                            onClick={async () => {
+                                                setorderpayload({ ...orderpayload, previousOrderId: undefined, returnOrderItems: [] });
+
+                                                setpreviousOrderType('r');
+                                                setexternalOrder(false);
+                                            }}
+                                        >
+                                            <span>Return Order</span>
+                                        </button>
+                                        <button
+                                            class={previousOrderType == 'e' ? generalstyles.roundbutton : generalstyles.roundbutton + ' bg-info bg-infohover'}
+                                            onClick={async () => {
+                                                setorderpayload({ ...orderpayload, previousOrderId: undefined, returnOrderItems: [] });
+
+                                                setpreviousOrderType('e');
+                                                setexternalOrder(true);
+                                            }}
+                                        >
+                                            <span>External Order</span>
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                            {externalOrder && (
-                                <>
-                                    <div class="col-lg-12 p-0 my-3 ">
-                                        <div class="row m-0 w-100 d-flex align-items-center">
-                                            <div class="col-lg-10 p-0">
-                                                <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
-                                                    <input
-                                                        // disabled={props?.disabled}
-                                                        // type={props?.type}
-                                                        class={formstyles.form__field}
-                                                        value={search}
-                                                        placeholder={'Search by name, SKU '}
-                                                        onChange={() => {
-                                                            setsearch(event.target.value);
-                                                        }}
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2 p-1">
-                                                <button
-                                                    style={{ height: '30px' }}
-                                                    class={generalstyles.roundbutton + ' p-0 allcentered'}
-                                                    onClick={() => {
-                                                        if (search.length == 0) {
-                                                            setfilter({ ...filter, name: undefined });
-                                                        } else {
-                                                            setfilter({ ...filter, name: search });
-                                                        }
-                                                    }}
-                                                >
-                                                    search
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12 p-0 mb-3">
-                                        <Pagination
-                                            beforeCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.beforeCursor}
-                                            afterCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.afterCursor}
-                                            filter={filter}
-                                            setfilter={setfilter}
-                                        />
-                                    </div>
-                                    <ItemsTable
-                                        clickable={true}
-                                        selectedItems={orderpayload?.returnOrderItems}
-                                        actiononclick={(item) => {
-                                            var temp = { ...orderpayload };
-                                            var exist = false;
-                                            var chosenindex = null;
-                                            temp.returnOrderItems.map((i, ii) => {
-                                                if (i?.item?.sku == item?.sku) {
-                                                    exist = true;
-                                                    chosenindex = ii;
-                                                }
-                                            });
-                                            if (!exist) {
-                                                temp.returnOrderItems.push({ item: item, count: 1 });
-                                            } else {
-                                                temp.returnOrderItems[chosenindex].count = parseInt(temp.returnOrderItems[chosenindex].count) + 1;
-                                            }
-                                            setorderpayload({ ...temp });
-                                        }}
-                                        card="col-lg-4 px-1"
-                                        items={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.data}
-                                    />
-                                    <div class="col-lg-12 p-0">
-                                        <Pagination
-                                            beforeCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.beforeCursor}
-                                            afterCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.afterCursor}
-                                            filter={filter}
-                                            setfilter={setfilter}
-                                        />
-                                    </div>
-                                </>
-                            )}
-                            {!externalOrder && (
-                                <>
-                                    <div class="col-lg-12 p-0 my-3 ">
-                                        <div class="row m-0 w-100 d-flex align-items-center">
-                                            <div class="col-lg-10 p-0">
-                                                <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
-                                                    <input
-                                                        // disabled={props?.disabled}
-                                                        // type={props?.type}
-                                                        class={formstyles.form__field}
-                                                        value={search}
-                                                        placeholder={'Search by name, SKU '}
-                                                        onChange={() => {
-                                                            setsearch(event.target.value);
-                                                        }}
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2 p-1">
-                                                <button
-                                                    style={{ height: '30px' }}
-                                                    class={generalstyles.roundbutton + ' p-0 allcentered'}
-                                                    onClick={() => {
-                                                        if (search.length == 0) {
-                                                            setfilter({ ...filter, name: undefined });
-                                                        } else {
-                                                            setfilter({ ...filter, name: search });
-                                                        }
-                                                    }}
-                                                >
-                                                    search
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12 p-0 mb-3">
-                                        <Pagination
-                                            beforeCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.beforeCursor}
-                                            afterCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.afterCursor}
-                                            filter={filterorders}
-                                            setfilter={setfilterorders}
-                                        />
-                                    </div>
-                                    {fetchOrdersQuery?.data?.paginateOrders?.data?.map((item, index) => {
-                                        var selected = false;
-                                        if (item.id == orderpayload?.previousOrderId) {
-                                            selected = true;
-                                        }
-                                        // sheetpayload?.orders?.map((orderitem, orderindex) => {
-                                        //     if (orderitem?.id == item?.id) {
-                                        //         selected = true;
-                                        //     }
-                                        // });
-                                        return (
-                                            <>
-                                                <div className="col-lg-6 ">
-                                                    <div
-                                                        onClick={() => {
-                                                            setorderpayload({ ...orderpayload, previousOrderId: item.id, previousorder: item });
-                                                        }}
-                                                        style={{ background: selected ? 'var(--secondary)' : '', transition: 'all 0.4s', cursor: 'pointer' }}
-                                                        class={generalstyles.card + ' p-3 row m-0 w-100 allcentered '}
-                                                    >
-                                                        <div className="col-lg-6 p-0">
-                                                            <span style={{ fontWeight: 700 }}># {item?.id}</span>
-                                                        </div>
-                                                        <div className="col-lg-6 p-0 d-flex justify-content-end align-items-center">
-                                                            <div
-                                                                className={
-                                                                    item.status == 'delivered'
-                                                                        ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered  '
-                                                                        : item?.status == 'postponed' || item?.status == 'failedDeliveryAttempt'
-                                                                        ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 allcentered '
-                                                                        : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered '
-                                                                }
-                                                            >
-                                                                {orderStatusEnumContext?.map((i, ii) => {
-                                                                    if (i.value == item?.status) {
-                                                                        return <span>{i.label}</span>;
-                                                                    }
-                                                                })}
-                                                            </div>
-                                                        </div>
-                                                        <div className="col-lg-12 p-0 my-2">
-                                                            <hr className="m-0" />
-                                                        </div>
-                                                        <div className="col-lg-12 p-0 mb-2">
-                                                            <span style={{ fontWeight: 600, fontSize: '16px' }}>{item?.merchant?.name}</span>
-                                                        </div>
-                                                        <div className="col-lg-12 p-0 mb-1 d-flex align-items-center">
-                                                            <MdOutlineLocationOn class="mr-1" />
-                                                            <span style={{ fontWeight: 400 }}>
-                                                                {item?.address?.city}, {item?.address?.country}
-                                                            </span>
-                                                        </div>
-                                                        <div className="col-lg-12 p-0 ">
-                                                            <span style={{ fontWeight: 600 }}>
-                                                                {item?.address?.streetAddress}, {item?.address?.buildingNumber}, {item?.address?.apartmentFloor}
-                                                            </span>
-                                                        </div>
+
+                                {externalOrder && (
+                                    <>
+                                        <div class="col-lg-12 p-0 my-3 ">
+                                            <div class={generalstyles.card + ' row m-0 w-100 d-flex align-items-center'}>
+                                                <div class="col-lg-10 p-0">
+                                                    <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
+                                                        <input
+                                                            // disabled={props?.disabled}
+                                                            // type={props?.type}
+                                                            class={formstyles.form__field}
+                                                            value={search}
+                                                            placeholder={'Search by name, SKU '}
+                                                            onChange={() => {
+                                                                setsearch(event.target.value);
+                                                            }}
+                                                        />
                                                     </div>
                                                 </div>
-                                            </>
-                                        );
-                                    })}
-                                    <div class="col-lg-12 p-0">
-                                        <Pagination
-                                            beforeCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.beforeCursor}
-                                            afterCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.afterCursor}
-                                            filter={filterorders}
-                                            setfilter={setfilterorders}
+                                                <div class="col-lg-2 p-1">
+                                                    <button
+                                                        style={{ height: '35px' }}
+                                                        class={generalstyles.roundbutton + ' p-0 allcentered bg-primary-light'}
+                                                        onClick={() => {
+                                                            if (search.length == 0) {
+                                                                setfilter({ ...filter, name: undefined });
+                                                            } else {
+                                                                setfilter({ ...filter, name: search });
+                                                            }
+                                                        }}
+                                                    >
+                                                        search
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12 p-0 mb-3">
+                                            <Pagination
+                                                beforeCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.beforeCursor}
+                                                afterCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.afterCursor}
+                                                filter={filter}
+                                                setfilter={setfilter}
+                                            />
+                                        </div>
+                                        <ItemsTable
+                                            clickable={true}
+                                            selectedItems={orderpayload?.returnOrderItems}
+                                            actiononclick={(item) => {
+                                                var temp = { ...orderpayload };
+                                                var exist = false;
+                                                var chosenindex = null;
+                                                temp.returnOrderItems.map((i, ii) => {
+                                                    if (i?.item?.sku == item?.sku) {
+                                                        exist = true;
+                                                        chosenindex = ii;
+                                                    }
+                                                });
+                                                if (!exist) {
+                                                    temp.returnOrderItems.push({ item: item, count: 1 });
+                                                } else {
+                                                    temp.returnOrderItems[chosenindex].count = parseInt(temp.returnOrderItems[chosenindex].count) + 1;
+                                                }
+                                                setorderpayload({ ...temp });
+                                            }}
+                                            card="col-lg-4 px-1"
+                                            items={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.data}
                                         />
-                                    </div>
+                                        <div class="col-lg-12 p-0">
+                                            <Pagination
+                                                beforeCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.beforeCursor}
+                                                afterCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.afterCursor}
+                                                filter={filter}
+                                                setfilter={setfilter}
+                                            />
+                                        </div>
+                                    </>
+                                )}
+                                {!externalOrder && (
+                                    <>
+                                        <div class="col-lg-12 p-0 my-3 ">
+                                            <div class={generalstyles.card + ' row m-0 w-100 d-flex align-items-center'}>
+                                                <div class="col-lg-10 p-0">
+                                                    <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
+                                                        <input
+                                                            // disabled={props?.disabled}
+                                                            // type={props?.type}
+                                                            class={formstyles.form__field}
+                                                            value={search}
+                                                            placeholder={'Search by name, SKU '}
+                                                            onChange={() => {
+                                                                setsearch(event.target.value);
+                                                            }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-2 p-1">
+                                                    <button
+                                                        style={{ height: '35px' }}
+                                                        class={generalstyles.roundbutton + ' p-0 allcentered bg-primary-light'}
+                                                        onClick={() => {
+                                                            if (search.length == 0) {
+                                                                setfilter({ ...filter, name: undefined });
+                                                            } else {
+                                                                setfilter({ ...filter, name: search });
+                                                            }
+                                                        }}
+                                                    >
+                                                        search
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12 p-0 mb-3">
+                                            <Pagination
+                                                beforeCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.beforeCursor}
+                                                afterCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.afterCursor}
+                                                filter={filterorders}
+                                                setfilter={setfilterorders}
+                                            />
+                                        </div>
+                                        {fetchOrdersQuery?.data?.paginateOrders?.data?.length == 0 && (
+                                            <div style={{ height: '70vh' }} class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
+                                                <div class="row m-0 w-100">
+                                                    <FaLayerGroup size={40} class=" col-lg-12" />
+                                                    <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
+                                                        No Orders
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {fetchOrdersQuery?.data?.paginateOrders?.data?.map((item, index) => {
+                                            var selected = false;
+                                            if (item.id == orderpayload?.previousOrderId) {
+                                                selected = true;
+                                            }
+                                            // sheetpayload?.orders?.map((orderitem, orderindex) => {
+                                            //     if (orderitem?.id == item?.id) {
+                                            //         selected = true;
+                                            //     }
+                                            // });
+                                            return (
+                                                <>
+                                                    <div className="col-lg-6 ">
+                                                        <div
+                                                            onClick={() => {
+                                                                setorderpayload({ ...orderpayload, previousOrderId: item.id, previousorder: item });
+                                                            }}
+                                                            style={{ background: selected ? 'var(--secondary)' : '', transition: 'all 0.4s', cursor: 'pointer' }}
+                                                            class={generalstyles.card + ' p-3 row m-0 w-100 allcentered '}
+                                                        >
+                                                            <div className="col-lg-6 p-0">
+                                                                <span style={{ fontWeight: 700 }}># {item?.id}</span>
+                                                            </div>
+                                                            <div className="col-lg-6 p-0 d-flex justify-content-end align-items-center">
+                                                                <div
+                                                                    className={
+                                                                        item.status == 'delivered'
+                                                                            ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered  '
+                                                                            : item?.status == 'postponed' || item?.status == 'failedDeliveryAttempt'
+                                                                            ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 allcentered '
+                                                                            : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered '
+                                                                    }
+                                                                >
+                                                                    {orderStatusEnumContext?.map((i, ii) => {
+                                                                        if (i.value == item?.status) {
+                                                                            return <span>{i.label}</span>;
+                                                                        }
+                                                                    })}
+                                                                </div>
+                                                            </div>
+                                                            <div className="col-lg-12 p-0 my-2">
+                                                                <hr className="m-0" />
+                                                            </div>
+                                                            <div className="col-lg-12 p-0 mb-2">
+                                                                <span style={{ fontWeight: 600, fontSize: '16px' }}>{item?.merchant?.name}</span>
+                                                            </div>
+                                                            <div className="col-lg-12 p-0 mb-1 d-flex align-items-center">
+                                                                <MdOutlineLocationOn class="mr-1" />
+                                                                <span style={{ fontWeight: 400 }}>
+                                                                    {item?.address?.city}, {item?.address?.country}
+                                                                </span>
+                                                            </div>
+                                                            <div className="col-lg-12 p-0 ">
+                                                                <span style={{ fontWeight: 600 }}>
+                                                                    {item?.address?.streetAddress}, {item?.address?.buildingNumber}, {item?.address?.apartmentFloor}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </>
+                                            );
+                                        })}
+                                        <div class="col-lg-12 p-0">
+                                            <Pagination
+                                                beforeCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.beforeCursor}
+                                                afterCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.afterCursor}
+                                                filter={filterorders}
+                                                setfilter={setfilterorders}
+                                            />
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                        )}
+                        {!previousOrderType && (
+                            <div class="row m-0 w-100 pt-4 allcentered">
+                                <>
+                                    <button
+                                        style={{ width: '45%', height: 'fit-content', minHeight: '140px', textAlign: 'start' }}
+                                        class={generalstyles.roundbutton + ' m-3 py-4 bg-info bg-infohover'}
+                                        onClick={async () => {
+                                            setorderpayload({ ...orderpayload, previousOrderId: undefined, returnOrderItems: [] });
+
+                                            setpreviousOrderType('d');
+                                            setexternalOrder(false);
+                                        }}
+                                    >
+                                        <div class="col-lg-12 d-flex align-items-center justify-content-start">
+                                            <div class="row m-0 w-100">
+                                                <div class="col-lg-12 mb-2 d-flex align-items-center justify-content-start">
+                                                    <span style={{ fontSize: '18px', fontWeight: 700 }}>Delivery Order</span>
+                                                </div>
+                                                <div class="col-lg-12 d-flex align-items-center justify-content-start">
+                                                    <span style={{ fontSize: '12px', color: 'grey' }}>
+                                                        Initiate a return order from the selected delivery, automatically linking it to your current exchange order.
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </button>
+                                    <button
+                                        style={{ width: '45%', height: 'fit-content', minHeight: '140px', textAlign: 'start' }}
+                                        class={generalstyles.roundbutton + ' m-3 py-4 bg-info bg-infohover'}
+                                        onClick={async () => {
+                                            setorderpayload({ ...orderpayload, previousOrderId: undefined, returnOrderItems: [] });
+
+                                            setpreviousOrderType('r');
+                                            setexternalOrder(false);
+                                        }}
+                                    >
+                                        <div class="col-lg-12 d-flex align-items-center justify-content-start">
+                                            <div class="row m-0 w-100">
+                                                <div class="col-lg-12 mb-2 d-flex align-items-center justify-content-start">
+                                                    <span style={{ fontSize: '18px', fontWeight: 700 }}>Return Order</span>
+                                                </div>
+                                                <div class="col-lg-12 d-flex align-items-center justify-content-start">
+                                                    <span style={{ fontSize: '12px', color: 'grey' }}>Choose an unlinked return order to connect with your current exchange order.</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </button>
+
+                                    <button
+                                        style={{ width: '45%', height: 'fit-content', minHeight: '140px', textAlign: 'start' }}
+                                        class={generalstyles.roundbutton + ' m-3 py-4 bg-info bg-infohover'}
+                                        onClick={async () => {
+                                            setorderpayload({ ...orderpayload, previousOrderId: undefined, returnOrderItems: [] });
+
+                                            setpreviousOrderType('e');
+                                            setexternalOrder(true);
+                                        }}
+                                    >
+                                        <div class="col-lg-12 d-flex align-items-center justify-content-start">
+                                            <div class="row m-0 w-100">
+                                                <div class="col-lg-12 mb-2 d-flex align-items-center justify-content-start">
+                                                    <span style={{ fontSize: '18px', fontWeight: 700 }}>External Order</span>
+                                                </div>
+                                                <div class="col-lg-12 d-flex align-items-center justify-content-start">
+                                                    <span style={{ fontSize: '12px', color: 'grey' }}>
+                                                        Create a new external return order without an existing delivery in the system, linking it to the current exchange order.
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </button>
                                 </>
-                            )}
-                        </div>
+                            </div>
+                        )}
                     </div>
                 )}
                 <div class="col-lg-4 mb-3 px-1">
-                    <div class={generalstyles.card + ' row m-0 w-100 p-2 py-3'}>
+                    <div class={generalstyles.card + ' row m-0 w-100 p-2 py-4'}>
                         <p class={generalstyles.cardTitle + '  m-0 p-2 pt-0 '} style={{ fontWeight: 600 }}>
                             Order Details
                         </p>

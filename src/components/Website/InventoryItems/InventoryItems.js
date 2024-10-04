@@ -400,8 +400,8 @@ const InventoryItems = (props) => {
                                             onClick={() => {
                                                 setfilterItemInBox({ ...filterItemInBox, name: search?.length == 0 ? undefined : search });
                                             }}
-                                            style={{ height: '25px', minWidth: 'fit-content', marginInlineStart: '5px' }}
-                                            class={generalstyles.roundbutton + '  allcentered'}
+                                            style={{ height: '35px', marginInlineStart: '5px' }}
+                                            class={generalstyles.roundbutton + '  allcentered bg-primary-light'}
                                         >
                                             search
                                         </button>

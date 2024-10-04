@@ -108,7 +108,7 @@
     --secondary: #c3dfd0;
     --success: #00cc66;
     --info: #0c3d33;
-    --infohover: #20674c;
+    --infohover: #26815e;
     --warning: #f7b924;
     --danger: #d92550;
     --dangerhover: #84122d;
@@ -3811,9 +3811,17 @@ hr {
 
     background: white !important;
 }
+.bg-primary-light {
+    background-color: var(--infohover) !important;
+    transition: all 0.4s;
+}
+.bg-primary-light:hover {
+    background-color: var(--primary) !important;
+    /* transition: all 0.4s; */
+}
 .bg-infohover:hover {
     /* border-color: var(--infohover) !important ; */
-    background: var(--infohover) !important;
+    background: black !important;
     color: white !important ;
     transition: all 0.4s;
 }
