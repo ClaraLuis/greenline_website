@@ -340,7 +340,7 @@ const CourierSheet = (props) => {
                                 className={type == 'admin' ? 'col-lg-12 ' : 'col-lg-6 '}
                                 key={index}
                             >
-                                <AccordionItem uuid={index} style={{}} className={generalstyles.filter_container + ' col-lg-12 p-4 mb-3'}>
+                                <AccordionItem uuid={index} style={{}} className={generalstyles.card + ' col-lg-12 p-4 mb-3'}>
                                     <div id={'id' + JSON.stringify(item.id)} className={' col-lg-12 p-0'}>
                                         <div className="row m-0 w-100">
                                             <div className="col-lg-7 p-0">
@@ -405,7 +405,7 @@ const CourierSheet = (props) => {
                                                             <div
                                                                 style={{
                                                                     color: 'white',
-                                                                    borderRadius: '15px',
+                                                                    borderRadius: '0.25rem',
                                                                     fontSize: '11px',
                                                                     background: 'var(--primary)',
                                                                 }}
@@ -562,7 +562,7 @@ const CourierSheet = (props) => {
                                                                         <div
                                                                             style={{
                                                                                 color: 'white',
-                                                                                borderRadius: '15px',
+                                                                                borderRadius: '0.25rem',
                                                                                 fontSize: '11px',
                                                                                 background:
                                                                                     type == 'admin'
@@ -664,7 +664,7 @@ const CourierSheet = (props) => {
                                                                     <div
                                                                         style={{
                                                                             color: 'white',
-                                                                            borderRadius: '15px',
+                                                                            borderRadius: '0.25rem',
                                                                             fontSize: '11px',
                                                                             background: 'var(--primary)',
                                                                         }}

@@ -110,7 +110,7 @@ const MerchantPayment = (props) => {
                                         setfilter={setfilterobj}
                                     />
                                 </div>
-                                <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                                <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
                                     <TransactionsTable
                                         width={'40%'}
                                         query={fetchMerchantPaymentTransactionsQuery}

@@ -62,7 +62,7 @@ const CourierHome = (props) => {
                         Dashboard
                     </p>
                 </div>
-                <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>
+                <div class={generalstyles.card + ' mb-3 col-lg-12 p-2'}>
                     <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
                         <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
                             <AccordionItemHeading>
@@ -128,7 +128,7 @@ const CourierHome = (props) => {
                 </div>
 
                 <div class={generalstyles.card + ' row m-0 w-100'}>
-                    <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                    <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
                         <SheetsTable />
                     </div>
                 </div>

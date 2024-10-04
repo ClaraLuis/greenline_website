@@ -583,7 +583,7 @@ const OrderInfo = (props) => {
                     <div class="row m-0 w-100 py-2">
                         {Object.values(inventoryModal?.items).map((rackData) => (
                             <>
-                                <div class="row m-0 w-100 p-2" style={{ border: '1px solid #eee', borderRadius: '15px', fontSize: '12px' }}>
+                                <div class="row m-0 w-100 p-2" style={{ border: '1px solid #eee', borderRadius: '0.25rem', fontSize: '12px' }}>
                                     <div class="col-lg-12 p-0" style={{ fontWeight: 700 }}>
                                         Rack {rackData.rack.name}
                                     </div>
@@ -595,7 +595,7 @@ const OrderInfo = (props) => {
                                             {Object.entries(rackData.ballots).map(([level, ballots]) => {
                                                 return (
                                                     <div class="col-lg-12 p-0 mb-2">
-                                                        <div class="row m-0 w-100 d-flex align-items-center p-2" style={{ border: '1px solid #eee', borderRadius: '15px', fontSize: '12px' }}>
+                                                        <div class="row m-0 w-100 d-flex align-items-center p-2" style={{ border: '1px solid #eee', borderRadius: '0.25rem', fontSize: '12px' }}>
                                                             Level {level}:
                                                             {Object.values(ballots).map((ballotData) => {
                                                                 return (

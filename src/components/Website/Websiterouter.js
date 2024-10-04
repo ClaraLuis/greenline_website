@@ -237,7 +237,7 @@ const App = (props) => {
     return (
         <div class="row m-0 w-100">
             <Router>
-                <div class="row m-0 p-4 w-100 d-flex " style={{ maxHeight: '100vh' }}>
+                <div class="row m-0 pl-4  w-100 d-flex " style={{ maxHeight: '100vh', paddingRight: 0 }}>
                     {user?.roles?.length != 0 && (
                         <>
                             <div style={{ width: hidesidenav_context ? '4%' : '18%', transition: 'all 0.4s' }}>

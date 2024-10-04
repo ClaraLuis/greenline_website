@@ -92,7 +92,7 @@ const FinanceSheets = (props) => {
                         <span style={{ color: 'var(--info)' }}>Manifests</span>
                     </p>
                 </div>
-                <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>
+                <div class={generalstyles.card + ' mb-3 col-lg-12 p-2'}>
                     <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
                         <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
                             <AccordionItemHeading>
@@ -172,7 +172,7 @@ const FinanceSheets = (props) => {
                 </div>
                 {isAuth([1, 34, 53, 51]) && (
                     <>
-                        <div class="col-lg-12 p-0">
+                        <div class="col-lg-12 p-0 mb-2">
                             <Pagination
                                 beforeCursor={fetchSheetsQuery?.data?.paginateCourierSheets?.cursor?.beforeCursor}
                                 afterCursor={fetchSheetsQuery?.data?.paginateCourierSheets?.cursor?.afterCursor}
@@ -192,8 +192,6 @@ const FinanceSheets = (props) => {
                         </div>
                     </>
                 )}
-
-                {/* </div> */}
             </div>
         </div>
     );

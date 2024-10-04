@@ -95,7 +95,7 @@ const BookVisit = (props) => {
                                     });
                                     return (
                                         <>
-                                            <div className="col-lg-6 p-1">
+                                            <div className="col-lg-6 ">
                                                 <div class={generalstyles.card + ' p-3 row m-0 w-100 allcentered'}>
                                                     <div className="col-lg-6 p-0">
                                                         <span style={{ fontSize: '12px', color: 'grey' }}># {item?.id}</span>
@@ -183,7 +183,7 @@ const BookVisit = (props) => {
                                                 {sheetpayload?.orders?.map((item, index) => {
                                                     return (
                                                         <div class={' col-lg-12 p-0'}>
-                                                            <div class={generalstyles.filter_container + ' p-2 row m-0 mb-2 w-100 allcentered'}>
+                                                            <div class={generalstyles.card + ' p-2 row m-0 mb-2 w-100 allcentered'}>
                                                                 <div style={{ fontWeight: 700, fontSize: '16px' }} class="col-lg-10 p-0 mb-2">
                                                                     # {item?.id}
                                                                 </div>

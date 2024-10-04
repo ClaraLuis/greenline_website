@@ -880,70 +880,81 @@ keep data consistent.</span></p>
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
-                <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
-                    <p class=" p-0 m-0" style={{ fontSize: '27px' }}>
-                        Merchant Items
-                    </p>
-                </div>
-                {isAuth([1, 52, 13]) && (
-                    <div class={' col-lg-6 col-md-6 col-sm-6 p-0 pr-3 pr-md-1 pr-sm-0 d-flex align-items-center justify-content-end pb-1 '}>
-                        <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
-                            <button
-                                style={{ height: '35px' }}
-                                class={generalstyles.roundbutton + '  mb-1 mx-2'}
-                                onClick={() => {
-                                    history.push('/additem');
-                                }}
-                            >
-                                Add Single Item
-                            </button>
-                            <button
-                                style={{ height: '35px' }}
-                                class={generalstyles.roundbutton + '  mb-1 '}
-                                onClick={() => {
-                                    setimportModal(true);
-                                }}
-                            >
-                                Import CSV
-                            </button>
+                <div class="col-lg-12 p-0">
+                    <div class="row  m-0 w-100 px-3">
+                        <div class="col-lg-12 p-0">
+                            <div class={generalstyles.card + ' row m-0 w-100'}>
+                                <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
+                                    <p class=" p-0 m-0" style={{ fontSize: '27px' }}>
+                                        Merchant Items
+                                    </p>
+                                </div>
+                                {isAuth([1, 52, 13]) && (
+                                    <div class={' col-lg-6 col-md-6 col-sm-6 p-0 pr-3 pr-md-1 pr-sm-0 d-flex align-items-center justify-content-end pb-1 '}>
+                                        <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
+                                            <button
+                                                style={{ height: '35px' }}
+                                                class={generalstyles.roundbutton + '  mb-1 mx-2'}
+                                                onClick={() => {
+                                                    history.push('/additem');
+                                                }}
+                                            >
+                                                Add Single Item
+                                            </button>
+                                            <button
+                                                style={{ height: '35px' }}
+                                                class={generalstyles.roundbutton + '  mb-1 '}
+                                                onClick={() => {
+                                                    setimportModal(true);
+                                                }}
+                                            >
+                                                Import CSV
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                         </div>
+                        {cookies.get('merchantId') == undefined && <MerchantSelect fiter={payload} setFilter={setPayload} />}
                     </div>
-                )}
-                {cookies.get('merchantId') == undefined && <MerchantSelect fiter={payload} setFilter={setPayload} />}
+                </div>
+
                 {isAuth([1, 52, 12]) && (
                     <>
-                        <div class={generalstyles.card + ' row m-0 w-100 mb-4 p-2 px-2'}>
-                            <div class="col-lg-6">
-                                <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
-                                    <input
-                                        // disabled={props?.disabled}
-                                        // type={props?.type}
-                                        class={formstyles.form__field}
-                                        value={payload?.name}
-                                        placeholder={'Search by name '}
-                                        onChange={() => {
-                                            setPayload({ ...payload, name: event.target.value });
-                                        }}
-                                    />
+                        <div class="col-lg-12 px-3">
+                            <div class={generalstyles.card + ' row m-0 w-100 mb-4 p-2 px-2'}>
+                                <div class="col-lg-6">
+                                    <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
+                                        <input
+                                            // disabled={props?.disabled}
+                                            // type={props?.type}
+                                            class={formstyles.form__field}
+                                            value={payload?.name}
+                                            placeholder={'Search by name '}
+                                            onChange={() => {
+                                                setPayload({ ...payload, name: event.target.value });
+                                            }}
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-lg-6 ">
-                                <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
-                                    <input
-                                        // disabled={props?.disabled}
-                                        // type={props?.type}
-                                        class={formstyles.form__field}
-                                        value={payload?.sku}
-                                        placeholder={'Search by SKU'}
-                                        onChange={() => {
-                                            setPayload({ ...payload, sku: event.target.value });
-                                        }}
-                                    />
+                                <div class="col-lg-6 ">
+                                    <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
+                                        <input
+                                            // disabled={props?.disabled}
+                                            // type={props?.type}
+                                            class={formstyles.form__field}
+                                            value={payload?.sku}
+                                            placeholder={'Search by SKU'}
+                                            onChange={() => {
+                                                setPayload({ ...payload, sku: event.target.value });
+                                            }}
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         {/* <div class={generalstyles.card + ' row m-0 w-100'}> */}
-                        <div class="col-lg-12 p-0">
+                        <div class="col-lg-12 mb-2 p-0">
                             <Pagination
                                 beforeCursor={fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.beforeCursor}
                                 afterCursor={fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.afterCursor}
@@ -951,7 +962,7 @@ keep data consistent.</span></p>
                                 setfilter={setPayload}
                             />
                         </div>
-                        <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                        <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
                             <ItemsTable
                                 clickable={true}
                                 actiononclick={(item) => {
@@ -1127,7 +1138,7 @@ keep data consistent.</span></p>
                             </button>
                         </div>
 
-                        <div class={generalstyles.filter_container + ' my-3 col-lg-12 p-2'}>
+                        <div class={generalstyles.card + ' my-3 col-lg-12 p-2'}>
                             <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
                                 <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
                                     <AccordionItemHeading>

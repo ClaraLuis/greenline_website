@@ -253,7 +253,7 @@ const InventorySettings = (props) => {
                             </span>
                         </div>
                         <>
-                            <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                            <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
                                 <TransactionsTable
                                     width={'50%'}
                                     query={fetchSenttTransactionsQuery}
@@ -470,7 +470,7 @@ const InventorySettings = (props) => {
                                                         className="row m-0 w-100 p-2"
                                                         style={{
                                                             border: '1px solid #eee',
-                                                            borderRadius: '15px',
+                                                            borderRadius: '0.25rem',
                                                             fontSize: '12px',
                                                             background: isSelected ? 'var(--secondary)' : 'transparent',
                                                         }}
@@ -521,7 +521,7 @@ const InventorySettings = (props) => {
                                                         className="row m-0 w-100 p-2"
                                                         style={{
                                                             border: '1px solid #eee',
-                                                            borderRadius: '15px',
+                                                            borderRadius: '0.25rem',
                                                             fontSize: '12px',
                                                             background: isSelected ? 'var(--secondary)' : 'transparent',
                                                         }}
@@ -572,7 +572,7 @@ const InventorySettings = (props) => {
                                                         className="row m-0 w-100 p-2"
                                                         style={{
                                                             border: '1px solid #eee',
-                                                            borderRadius: '15px',
+                                                            borderRadius: '0.25rem',
                                                             fontSize: '12px',
                                                             background: isSelected ? 'var(--secondary)' : 'transparent',
                                                         }}

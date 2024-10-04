@@ -246,7 +246,7 @@ const UpdateShipping = (props) => {
             </div>
             {!fetchGovernoratesQuery?.loading && (
                 <div class={generalstyles.card + ' row m-0 w-100'}>
-                    <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                    <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
                         <table style={{}} className={'table'}>
                             <thead>
                                 <th style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}></th>

@@ -44,20 +44,18 @@ const ItemsTable = (props) => {
                     <CircularProgress color="var(--primary)" width="60px" height="60px" duration="1s" />
                 </div>
             )}
-            {!props?.fetchMerchantItemVariantsQuery?.loading && props?.fetchMerchantItemVariantsQuery?.data != undefined && (
-                <>
-                    {props?.items?.length == 0 && (
-                        <div style={{ height: '70vh' }} class="col-lg-12 p-0 w-100 allcentered align-items-center m-0 text-lightprimary">
-                            <div class="row m-0 w-100">
-                                <FaLayerGroup size={40} class=" col-lg-12" />
-                                <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
-                                    No Items
-                                </div>
+            <>
+                {props?.items?.length == 0 && (
+                    <div style={{ height: '70vh' }} class="col-lg-12 p-0 w-100 allcentered align-items-center m-0 text-lightprimary">
+                        <div class="row m-0 w-100">
+                            <FaLayerGroup size={40} class=" col-lg-12" />
+                            <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
+                                No Items
                             </div>
                         </div>
-                    )}
-                </>
-            )}
+                    </div>
+                )}
+            </>
             {props?.items?.length != 0 && (
                 <div class="row m-0 w-100">
                     {props?.items?.map((item, index) => {

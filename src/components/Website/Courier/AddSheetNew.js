@@ -225,56 +225,60 @@ const AddSheetNew = (props) => {
                         </div>
                     )}
 
-                    <div class="col-lg-10 p-0 ">
-                        <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
-                            <input
-                                type="number"
-                                class={formstyles.form__field}
-                                value={search}
-                                placeholder={'Search by order ID'}
-                                onChange={(event) => {
-                                    setsearch(event.target.value);
-                                }}
-                            />
+                    <div class="col-lg-12 px-2">
+                        <div class={generalstyles.card + ' row w-100'}>
+                            <div class="col-lg-10 p-0 ">
+                                <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
+                                    <input
+                                        type="number"
+                                        class={formstyles.form__field}
+                                        value={search}
+                                        placeholder={'Search by order ID'}
+                                        onChange={(event) => {
+                                            setsearch(event.target.value);
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                            <div class="col-lg-2 p-0 allcentered">
+                                <button
+                                    style={{ height: '30px', minWidth: '80%' }}
+                                    class={generalstyles.roundbutton + ' allcentered p-0'}
+                                    onClick={() => {
+                                        var temp = { ...sheetpayload };
+                                        var exist = false;
+                                        temp.orderIds.map((i, ii) => {
+                                            if (i == search) {
+                                                exist = true;
+                                            }
+                                        });
+                                        temp?.orderIdsOld?.map((i, ii) => {
+                                            if (i == search) {
+                                                exist = true;
+                                            }
+                                        });
+                                        if (!exist) {
+                                            if (search?.length != 0 && !isNaN(parseInt(search))) {
+                                                temp.orderIds.push(parseInt(search));
+                                            } else {
+                                                NotificationManager.warning('Order has to be numbers', 'Warning!');
+                                            }
+                                        } else {
+                                            NotificationManager.warning('Order already added', 'Warning!');
+                                        }
+                                        setsheetpayload({ ...temp });
+                                        setsearch('');
+                                    }}
+                                >
+                                    Add order
+                                </button>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-lg-2 p-0 allcentered">
-                        <button
-                            style={{ height: '30px', minWidth: '80%' }}
-                            class={generalstyles.roundbutton + ' allcentered p-0'}
-                            onClick={() => {
-                                var temp = { ...sheetpayload };
-                                var exist = false;
-                                temp.orderIds.map((i, ii) => {
-                                    if (i == search) {
-                                        exist = true;
-                                    }
-                                });
-                                temp?.orderIdsOld?.map((i, ii) => {
-                                    if (i == search) {
-                                        exist = true;
-                                    }
-                                });
-                                if (!exist) {
-                                    if (search?.length != 0 && !isNaN(parseInt(search))) {
-                                        temp.orderIds.push(parseInt(search));
-                                    } else {
-                                        NotificationManager.warning('Order has to be numbers', 'Warning!');
-                                    }
-                                } else {
-                                    NotificationManager.warning('Order already added', 'Warning!');
-                                }
-                                setsheetpayload({ ...temp });
-                                setsearch('');
-                            }}
-                        >
-                            Add order
-                        </button>
-                    </div>
 
-                    <div class="col-lg-12 mt-3 p-0">
-                        <div class={generalstyles.card + ' row m-0 w-100 p-2 py-3 scrollmenuclasssubscrollbar'} style={{ overflow: 'scroll' }}>
-                            <div class="col-lg-12">
+                    <div class="col-lg-12  p-0">
+                        <div class={' row m-0 w-100 scrollmenuclasssubscrollbar'} style={{ overflow: 'scroll' }}>
+                            <div class="col-lg-12 p-0">
                                 <>
                                     <div class="col-lg-12 pb-2 px-0 " style={{ fontSize: '17px', fontWeight: 700 }}>
                                         Orders ({sheetpayload?.orderIds?.length})
@@ -285,7 +289,7 @@ const AddSheetNew = (props) => {
                                                 {sheetpayload?.orderIdsOld?.map((item, index) => {
                                                     return (
                                                         <div class={' col-lg-3 '}>
-                                                            <div class={generalstyles.filter_container + ' p-2 row m-0 mb-3 w-100 allcentered'}>
+                                                            <div class={generalstyles.card + ' p-2 row m-0 mb-3 w-100 allcentered'}>
                                                                 <div style={{ fontWeight: 700 }} class="col-lg-10 p-0 mb-2">
                                                                     # {item}
                                                                 </div>
@@ -302,7 +306,7 @@ const AddSheetNew = (props) => {
                                                 {sheetpayload?.orderIds?.map((item, index) => {
                                                     return (
                                                         <div class={' col-lg-3 '}>
-                                                            <div class={generalstyles.filter_container + ' p-2 row m-0 mb-3 w-100 allcentered'}>
+                                                            <div class={generalstyles.card + ' p-2 row m-0 mb-3 w-100 allcentered'}>
                                                                 <div style={{ fontWeight: 700 }} class="col-lg-10 p-0 mb-2">
                                                                     # {item}
                                                                 </div>

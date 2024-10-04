@@ -100,8 +100,8 @@ const InventoryPackages = (props) => {
             <div class="row m-0 w-100 d-flex  justify-content-start mt-sm-2 pb-5 pb-md-0">
                 <div className={' col-lg-12 p-0 '}>
                     <div class="row m-0 w-100">
-                        <div class="col-lg-12 p-1 px-2">
-                            <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>
+                        <div class="col-lg-12 p-0 px-2">
+                            <div class={generalstyles.card + ' mb-3 col-lg-12 p-2'}>
                                 <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
                                     <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
                                         <AccordionItemHeading>
@@ -172,7 +172,7 @@ const InventoryPackages = (props) => {
                             </div>
                         </div>
 
-                        <div class="col-lg-12 p-1 px-2">
+                        <div class="col-lg-12 p-0 px-2">
                             <div class={generalstyles.card + ' row m-0 w-100 my-2 p-2 px-2'}>
                                 <div class="col-lg-12 p-0 ">
                                     <div class="row m-0 w-100 d-flex align-items-center">
@@ -230,7 +230,7 @@ const InventoryPackages = (props) => {
                                 )}
                                 {fetchPackagesQuery?.data?.paginateReturnPackages?.data?.map((item, index) => {
                                     return (
-                                        <div className="col-lg-4 p-1">
+                                        <div className="col-lg-4">
                                             <div
                                                 onClick={() => {
                                                     history.push('/returnpackageinfo?packageId=' + item?.id);

@@ -113,13 +113,13 @@ const TransactionsTable = (props) => {
                                 });
                                 return (
                                     <div
-                                        style={{ fontSize: '13px', cursor: props?.allowSelect ? 'pointer' : '', width: props?.width, position: 'relative' }}
+                                        style={{ fontSize: '13px', cursor: props?.allowSelect ? 'pointer' : '', position: 'relative', padding: 'auto' }}
                                         onClick={() => {
                                             if (props?.allowSelect) {
                                                 handleSelect(item);
                                             }
                                         }}
-                                        className="p-1 pb-0"
+                                        className={props?.width == '50%' ? 'col-lg-6' : props?.width == '40%' ? 'col-lg-5' : 'col-lg-6'}
                                     >
                                         <div
                                             style={{ background: props?.allowSelect && selected ? 'var(--secondary)' : '', transition: 'all 0.4s' }}

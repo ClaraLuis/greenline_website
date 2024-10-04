@@ -244,7 +244,7 @@ const ImportNewItem = (props) => {
                                 setfilter={setmerchantFilter}
                             />
                         </div>
-                        <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                        <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
                             <ItemsTable
                                 card="col-lg-3"
                                 clickable={true}
@@ -359,7 +359,7 @@ const ImportNewItem = (props) => {
 
                                             return (
                                                 <div class="col-lg-6 mb-2">
-                                                    <div class="row m-0 w-100 p-2" style={{ border: '1px solid #eee', borderRadius: '15px', fontSize: '12px' }}>
+                                                    <div class="row m-0 w-100 p-2" style={{ border: '1px solid #eee', borderRadius: '0.25rem', fontSize: '12px' }}>
                                                         <div class="col-lg-12 p-0">
                                                             <div class="row m-0 w-100 d-flex align-items-center">
                                                                 <div class="col-lg-6 p-0" style={{ fontWeight: 700 }}>
@@ -551,7 +551,7 @@ const ImportNewItem = (props) => {
                                 {fetchRacksQuery?.data?.paginateRacks?.data?.map((item, index) => {
                                     return (
                                         <div class="col-lg-6 mb-2">
-                                            <div class="row m-0 w-100 p-2" style={{ border: '1px solid #eee', borderRadius: '15px', fontSize: '12px' }}>
+                                            <div class="row m-0 w-100 p-2" style={{ border: '1px solid #eee', borderRadius: '0.25rem', fontSize: '12px' }}>
                                                 <div class="col-lg-12 p-0" style={{ fontWeight: 700 }}>
                                                     Rack {item.name}
                                                 </div>

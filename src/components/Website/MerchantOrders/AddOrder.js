@@ -1293,7 +1293,7 @@ const AddOrder = (props) => {
                                         // });
                                         return (
                                             <>
-                                                <div className="col-lg-6 p-1">
+                                                <div className="col-lg-6 ">
                                                     <div
                                                         onClick={() => {
                                                             setorderpayload({ ...orderpayload, previousOrderId: item.id, previousorder: item });
@@ -1363,7 +1363,7 @@ const AddOrder = (props) => {
                         </p>
 
                         <div class="col-lg-12">
-                            <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-1'}>
+                            <div class={generalstyles.card + ' mb-3 col-lg-12 p-1'}>
                                 <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
                                     <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
                                         <AccordionItemHeading>
@@ -1399,7 +1399,7 @@ const AddOrder = (props) => {
                                             {orderpayload?.items?.map((item, index) => {
                                                 return (
                                                     <div class={' col-lg-12 p-0'}>
-                                                        <div class={generalstyles.filter_container + ' p-1 row m-0 mb-2 w-100 allcentered'}>
+                                                        <div class={generalstyles.card + ' p-1 row m-0 mb-2 w-100 allcentered'}>
                                                             <div class="col-lg-2 mr-2 p-0">
                                                                 <div style={{ width: '100%', height: '35px' }}>
                                                                     <img
@@ -1495,7 +1495,7 @@ const AddOrder = (props) => {
                         />
                         {orderpayload?.ordertype == 'exchange' && externalOrder && (
                             <div class="col-lg-12 mt-2">
-                                <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-1'}>
+                                <div class={generalstyles.card + ' mb-3 col-lg-12 p-1'}>
                                     <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
                                         <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
                                             <AccordionItemHeading>
@@ -1534,7 +1534,7 @@ const AddOrder = (props) => {
                                                 {orderpayload?.returnOrderItems?.map((item, index) => {
                                                     return (
                                                         <div class={' col-lg-12 p-0'}>
-                                                            <div class={generalstyles.filter_container + ' p-1 row m-0 mb-2 w-100 allcentered'}>
+                                                            <div class={generalstyles.card + ' p-1 row m-0 mb-2 w-100 allcentered'}>
                                                                 <div class="col-lg-2 mr-2 p-0">
                                                                     <div style={{ width: '100%', height: '35px' }}>
                                                                         <img
@@ -1603,7 +1603,7 @@ const AddOrder = (props) => {
                         )}
                         {orderpayload?.ordertype == 'exchange' && !externalOrder && (
                             <div class="col-lg-12 mt-2">
-                                <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>
+                                <div class={generalstyles.card + ' mb-3 col-lg-12 p-2'}>
                                     <div class="row m-0 w-100">
                                         <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
                                             <p class={generalstyles.cardTitle + '  m-0 p-0 '}>

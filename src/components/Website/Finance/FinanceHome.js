@@ -131,7 +131,7 @@ const FinanceHome = (props) => {
          </AccordionItem>
      </Accordion>
  </div> */}
-                    {/* <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-2'}>
+                    {/* <div class={generalstyles.card + ' row m-0 w-100'}>
      <div class="col-lg-12 p-0 ">
          <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
              <input
@@ -153,7 +153,7 @@ const FinanceHome = (props) => {
                                 <span style={{ color: 'var(--info)' }}>Financial Accounts</span>
                             </p>
                         </div>
-                        <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                        <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
                             <AccountsTable />
                         </div>
                     </div>
@@ -164,7 +164,7 @@ const FinanceHome = (props) => {
                                 <span style={{ color: 'var(--info)' }}>Orders History</span>
                             </p>
                         </div>
-                        <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                        <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
                             <OrdersTable />
                         </div>
                     </div>
@@ -175,7 +175,7 @@ const FinanceHome = (props) => {
                                 <span style={{ color: 'var(--info)' }}>Expenses</span>
                             </p>
                         </div>
-                        <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                        <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
                             <ExpensesTable />
                         </div>
                     </div>

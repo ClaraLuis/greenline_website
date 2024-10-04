@@ -134,7 +134,7 @@ const HubDetails = (props) => {
                                             </div>
 
                                             <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
-                                                <UsersTable fetchusers={fetchusers} card="col-lg-4 p-1" />
+                                                <UsersTable fetchusers={fetchusers} card="col-lg-4" />
                                             </div>
                                             <div class="col-lg-12 p-0">
                                                 <Pagination

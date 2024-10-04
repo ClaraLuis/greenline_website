@@ -113,7 +113,7 @@ const Hubs = (props) => {
                                     setfilter={setfilterHubs}
                                 />
                             </div>
-                            <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                            <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
                                 <HubsTable fetchHubsQuery={fetchHubsQuery} />
                             </div>
                         </>

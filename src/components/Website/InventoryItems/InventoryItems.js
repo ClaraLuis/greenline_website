@@ -275,7 +275,7 @@ const InventoryItems = (props) => {
                     </div>
                 </div>
                 <div class="col-lg-12 px-3">
-                    <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>
+                    <div class={generalstyles.card + ' mb-3 col-lg-12 p-2'}>
                         <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
                             <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
                                 <AccordionItemHeading>

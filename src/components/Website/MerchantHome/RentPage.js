@@ -143,7 +143,7 @@ const RentPage = (props) => {
                     </div>
                 </div>
                 <div class={' row m-0 w-100 mb-2 p-2'}>
-                    <div class="col-lg-12 p-1">
+                    <div class="col-lg-12 p-0 px-1">
                         <div class={generalstyles.card + ' row m-0 w-100'}>
                             <div class={' col-lg-6 col-md-6 col-sm-12 p-0 d-flex align-items-center justify-content-start '}>
                                 <p class=" p-0 m-0 text-uppercase" style={{ fontSize: '15px' }}>

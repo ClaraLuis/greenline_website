@@ -65,9 +65,9 @@ const InventoryReturns = (props) => {
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div class="row m-0 w-100 d-flex  justify-content-start mt-sm-2 pb-5 pb-md-0">
-                <div className={' col-lg-8 p-0 '}>
+                <div className={' col-lg-8 '}>
                     <div class="row m-0 w-100">
-                        <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>
+                        <div class={generalstyles.card + ' mb-3 col-lg-12 p-2'}>
                             <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
                                 <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
                                     <AccordionItemHeading>
@@ -164,7 +164,7 @@ const InventoryReturns = (props) => {
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4 mb-3 px-1">
+                <div class="col-lg-4 mb-3 ">
                     <div class={generalstyles.card + ' row m-0 w-100 p-2 py-3'}>
                         <div class="col-lg-12">
                             {packagepayload?.ids?.length != 0 && (
@@ -177,7 +177,7 @@ const InventoryReturns = (props) => {
                                             {packagepayload?.ids?.map((item, index) => {
                                                 return (
                                                     <div class={' col-lg-12 p-0'}>
-                                                        <div class={generalstyles.filter_container + ' py-2 row m-0 mb-2 w-100 allcentered'}>
+                                                        <div class={generalstyles.card + ' py-2 row m-0 mb-2 w-100 allcentered'}>
                                                             <div class="col-lg-2 mr-2 p-0">
                                                                 <div style={{ width: '100%', height: '40px' }}>
                                                                     <img

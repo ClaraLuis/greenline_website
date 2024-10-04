@@ -134,7 +134,7 @@ const FinancialAccountInfo = (props) => {
                     </p>
                 </div>
 
-                <div className="col-lg-5 p-1">
+                <div className="col-lg-5">
                     <div class={generalstyles.card + ' p-3 row m-0 w-100 allcentered'}>
                         <div className="col-lg-6 p-0">
                             <span style={{ fontWeight: 700, fontSize: '16px' }}># {accountItem?.id}</span>
@@ -224,7 +224,7 @@ const FinancialAccountInfo = (props) => {
                                                 setfilter={setfilterSentTransactionsObj}
                                             />
                                         </div>
-                                        <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                                        <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
                                             <TransactionsTable
                                                 width={'50%'}
                                                 query={fetchSenttTransactionsQuery}

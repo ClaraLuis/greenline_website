@@ -20,7 +20,7 @@
     top: 20px;
     left: 20px;
     bottom: 20px;
-    border-radius: 13px;
+    border-radius: 0.25rem;
     height: calc(100% - 40px);
     overflow-x: hidden;
 }
@@ -230,11 +230,11 @@
     left: -33px !important;
     height: 100% !important;
     z-index: -1 !important;
-    border-radius: 0px 24px 24px 0px !important;
+    /* border-radius: 0px 24px 24px 0px !important; */
     transition: all 0.3s ease-in-out 0s !important;
     width: 0px !important;
     background-color: var(--secondary);
-    width: calc(100% + 24px) !important;
+    width: calc(100% + 60px) !important;
 }
 .vertical_nav_menu_trans .sidenav_active {
     border-top-right-radius: 10px;

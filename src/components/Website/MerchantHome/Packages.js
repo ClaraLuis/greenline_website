@@ -69,9 +69,9 @@ const Packages = (props) => {
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div class="row m-0 w-100 d-flex  justify-content-start mt-sm-2 pb-5 pb-md-0">
-                <div className={' col-lg-8 p-0 '}>
+                <div className={' col-lg-8'}>
                     <div class="row m-0 w-100">
-                        <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>
+                        <div class={generalstyles.card + ' mb-3 col-lg-12 p-2'}>
                             <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
                                 <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
                                     <AccordionItemHeading>
@@ -218,11 +218,11 @@ const Packages = (props) => {
                                         setpackagepayload({ ...temp });
                                     }}
                                     style={{ cursor: 'pointer' }}
-                                    className="col-lg-6 p-1"
+                                    className="col-lg-6 "
                                 >
                                     <div
                                         style={{ background: selected ? 'var(--secondary)' : 'white', transition: 'all 0.4s', cursor: 'pointer' }}
-                                        class={' p-3 row m-0 w-100 card  d-flex align-items-center'}
+                                        class={generalstyles.card + ' p-3 row  w-100   d-flex align-items-center'}
                                     >
                                         <div className="col-lg-2 p-0">
                                             <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
@@ -287,13 +287,13 @@ const Packages = (props) => {
                                             SKU:{' '}
                                            
                                         </div> */}
-                                        <div class="col-lg-6 p-0">
-                                            <span style={{ fontWeight: 600 }} class="text-capitalize">
+                                        <div class="col-lg-8 p-0">
+                                            <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
                                                 {item?.sku}
                                             </span>
                                         </div>
-                                        <div class="col-lg-6 p-0 d-flex justify-content-end">
-                                            <span style={{ fontWeight: 600 }} class="text-capitalize">
+                                        <div class="col-lg-4 p-0 d-flex justify-content-end">
+                                            <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
                                                 {item?.count} items
                                             </span>
                                         </div>
@@ -314,7 +314,7 @@ const Packages = (props) => {
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4 mb-3 px-1">
+                <div class="col-lg-4 mb-3">
                     <div class={generalstyles.card + ' row m-0 w-100 p-2 py-3'}>
                         <div class="col-lg-12">
                             {packagepayload?.ids?.length != 0 && (

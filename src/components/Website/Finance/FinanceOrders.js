@@ -52,7 +52,7 @@ const FinanceOrders = (props) => {
                         Add Invoice
                     </button>
                 </div>
-                <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>
+                <div class={generalstyles.card + ' mb-3 col-lg-12 p-2'}>
                     <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
                         <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
                             <AccordionItemHeading>
@@ -116,7 +116,7 @@ const FinanceOrders = (props) => {
                         </AccordionItem>
                     </Accordion>
                 </div>
-                {/* <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-2'}>
+                {/* <div class={generalstyles.card + ' row m-0 w-100'}>
                     <div class="col-lg-12 p-0 ">
                         <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
                             <input
@@ -138,7 +138,7 @@ const FinanceOrders = (props) => {
                             <span style={{ color: 'var(--info)' }}>Financial Accounts</span>
                         </p>
                     </div> */}
-                    <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                    <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
                         <OrdersTable />
                     </div>
                 </div>

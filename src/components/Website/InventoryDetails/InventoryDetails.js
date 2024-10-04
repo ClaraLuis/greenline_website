@@ -180,7 +180,7 @@ const InventoryDetails = (props) => {
                                         });
 
                                         return (
-                                            <AccordionItem style={{ borderRadius: '14px', padding: '15px' }} class={`${generalstyles.filter_container}` + ' mb-3 w-100'}>
+                                            <AccordionItem style={{ borderRadius: '14px', padding: '15px' }} class={`${generalstyles.card}` + ' mb-3 w-100'}>
                                                 <AccordionItemHeading>
                                                     <AccordionItemButton>
                                                         <div className="col-lg-12 p-0" style={{ fontWeight: 700 }}>

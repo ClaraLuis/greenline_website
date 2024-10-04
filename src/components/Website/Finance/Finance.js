@@ -54,7 +54,7 @@ const Finance = (props) => {
 
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
-            <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>
+            <div class={generalstyles.card + ' mb-3 col-lg-12 p-2'}>
                 <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
                     <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
                         <AccordionItemHeading>
@@ -196,28 +196,33 @@ const Finance = (props) => {
                         </div>
                     </div>
                 )}
-                <div className={generalstyles.card + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                <div className={' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
                     <div class="row m-0 w-100">
-                        <div class={' col-lg-6 col-md-6 col-sm-12 d-flex align-items-center justify-content-start '}>
-                            <p class=" p-0 m-0 text-uppercase" style={{ fontSize: '15px' }}>
-                                <span style={{ color: 'var(--info)' }}>Transactions</span>
-                            </p>
+                        <div class="col-lg-12 px-1">
+                            <div class={generalstyles.card + ' row m-0 w-100'}>
+                                <div class={' col-lg-6 col-md-6 col-sm-12 d-flex align-items-center justify-content-start '}>
+                                    <p class=" p-0 m-0 text-uppercase" style={{ fontSize: '15px' }}>
+                                        <span style={{ color: 'var(--info)' }}>Transactions</span>
+                                    </p>
+                                </div>
+                                <div class="col-lg-6  d-flex justify-content-end">
+                                    <span
+                                        onClick={() => {
+                                            history.push('/merchantpayments');
+                                        }}
+                                        style={{ height: '35px' }}
+                                        class={generalstyles.roundbutton + '  allcentered'}
+                                    >
+                                        View all
+                                    </span>
+                                </div>
+                            </div>{' '}
                         </div>
-                        <div class="col-lg-6  d-flex justify-content-end">
-                            <span
-                                onClick={() => {
-                                    history.push('/merchantpayments');
-                                }}
-                                style={{ height: '35px' }}
-                                class={generalstyles.roundbutton + '  allcentered'}
-                            >
-                                View all
-                            </span>
-                        </div>
+
                         <TransactionsTable width={'50%'} query={fetchMerchantPaymentTransactionsQuery} paginationAttr="paginateMerchantPaymentTransactions" srctype="all" />
                     </div>
                 </div>
-                {/* <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-2'}>
+                {/* <div class={generalstyles.card + ' row m-0 w-100'}>
                     <div class="col-lg-12 p-0 ">
                         <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
                             <input
@@ -239,7 +244,7 @@ const Finance = (props) => {
                             <span style={{ color: 'var(--info)' }}>Past Transactions</span>
                         </p>
                     </div>
-                    <div   className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                    <div   className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
                         <TransactionsTable />
                     </div>
                 </div>
@@ -250,7 +255,7 @@ const Finance = (props) => {
                             <span style={{ color: 'var(--info)' }}>Awaiting Transactions</span>
                         </p>
                     </div>
-                    <div   className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                    <div   className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
                         <TransactionsTable />
                     </div>
                 </div>
@@ -261,7 +266,7 @@ const Finance = (props) => {
                             <span style={{ color: 'var(--info)' }}>Invoices</span>
                         </p>
                     </div>
-                    <div   className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                    <div   className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
                         <TransactionsTable />
                     </div>
                 </div> */}

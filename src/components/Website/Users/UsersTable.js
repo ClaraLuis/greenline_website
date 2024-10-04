@@ -82,11 +82,11 @@ const UsersTable = (props) => {
                                 return (
                                     <div className={props?.card}>
                                         <div class={generalstyles.card + ' p-3 row m-0 w-100 allcentered'}>
-                                            <div className="col-lg-6 p-0  text-capitalize mb-2">
+                                            <div className="col-lg-8 p-0  text-capitalize mb-2">
                                                 <span style={{ fontWeight: 700 }}>{item?.name}</span>
                                             </div>
 
-                                            <div className="col-lg-6 p-0 mb-2 d-flex justify-content-end">
+                                            <div className="col-lg-4 p-0 mb-2 d-flex justify-content-end">
                                                 {item?.id?.length != 7 && isAuth([1, 46, 52]) && (
                                                     <Dropdown>
                                                         <Dropdown.Toggle>
@@ -190,7 +190,7 @@ const UsersTable = (props) => {
                                                 <span style={{ fontWeight: 600 }} class="d-flex align-items-center text-capitalize">
                                                     <TbUserPentagon class="mr-1" />
                                                     {item?.type?.split(/(?=[A-Z])/).join(' ')}
-                                                    {item?.employee?.type?.split(/(?=[A-Z])/).join(' ')}
+                                                    {item?.employee?.type ? ',' : ''} {item?.employee?.type?.split(/(?=[A-Z])/).join(' ')}
                                                 </span>
                                             </div>
                                             <div className="col-lg-12 p-0 ">

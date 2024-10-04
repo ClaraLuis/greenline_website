@@ -28,12 +28,6 @@ const AccountsTable = (props) => {
 
     const { lang, langdetect } = useContext(LanguageContext);
 
-    const [itemsarray, setitemsarray] = useState([
-        { id: '1', name: 'Account 1', type: 'hub', user: 'User 1', merchant: 'Merchant 1', balance: '1000' },
-        { id: '2', name: 'Account 2', type: 'merchant', user: 'User 1', merchant: 'Merchant 1', balance: '3000' },
-        { id: '3', name: 'Account 3', type: 'bank', user: 'User 1', merchant: 'Merchant 2', balance: '40000' },
-    ]);
-
     return (
         <>
             {props?.fetchFinancialAccountsQuery?.loading && (
@@ -59,7 +53,7 @@ const AccountsTable = (props) => {
                 <div class="row m-0 w-100">
                     {props?.fetchFinancialAccountsQuery?.data?.paginateFinancialAccounts?.data?.map((item, index) => {
                         return (
-                            <div className="col-lg-4 p-1">
+                            <div className="col-lg-4">
                                 <div class={generalstyles.card + ' p-3 row m-0 w-100 allcentered'}>
                                     <div className="col-lg-6 p-0">
                                         <span style={{ fontSize: '12px', color: 'grey' }}># {item?.id}</span>
@@ -112,13 +106,13 @@ const AccountsTable = (props) => {
                                             {item?.name}
                                         </span>
                                     </div>
-                                    <div className="col-lg-7 p-0 mb-2">
+                                    <div className="col-lg-6 p-0 mb-2">
                                         <span class="d-flex align-items-center" style={{ fontWeight: 600 }}>
                                             <FaMoneyBill class="mr-1" />
                                             {item?.balance}
                                         </span>
                                     </div>
-                                    <div className="col-lg-5 p-0 mb-2 d-flex justify-content-end">
+                                    <div className="col-lg-6 p-0 mb-2 d-flex justify-content-end">
                                         <span class="d-flex align-items-center" style={{ fontWeight: 500, color: 'grey', fontSize: '12px' }}>
                                             <IoMdTime class="mr-1" />
                                             {dateformatter(item?.createdAt)}

@@ -100,7 +100,7 @@ const AddInvoice = (props) => {
                                     </div>
                                 </div>
                                 {search?.length != 0 && (
-                                    <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                                    <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
                                         <OrdersTable
                                             clickable={true}
                                             actiononclick={(item) => {

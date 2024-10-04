@@ -64,16 +64,16 @@ const SheetsTable = (props) => {
                     {props?.fetchSheetsQuery?.data?.paginateCourierSheets?.data?.map((item, index) => {
                         return (
                             <div
-                                className="col-lg-4 p-1"
+                                className="col-lg-4"
                                 // style={{ cursor: props?.clickable ? 'pointer' : '' }}
                             >
-                                <div style={{ background: 'white' }} class={' p-3 row m-0 w-100 card'}>
+                                <div style={{ background: 'white' }} class={generalstyles.card + '  row  w-100 '}>
                                     <div class="col-lg-12 p-0">
                                         <div class="row m-0 w-100 d-flex align-items-end">
                                             <div className="col-lg-4 p-0">
                                                 <span style={{ fontSize: '12px', color: 'grey' }}># {item?.id}</span>
                                                 <br />
-                                                <span style={{ fontWeight: 600 }} class="text-capitalize">
+                                                <span style={{ fontWeight: 600, fontSize: '12px' }} class="text-capitalize">
                                                     {item?.userInfo?.name}{' '}
                                                 </span>
                                             </div>

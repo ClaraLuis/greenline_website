@@ -38,7 +38,7 @@ const MerchantSelect = (props) => {
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
             {isAuth([1]) && (
-                <div style={{ borderRadius: '0.25rem', background: 'white' }} class={' mb-3 col-lg-12 p-2'}>
+                <div style={{ borderRadius: '0.25rem', background: 'white' }} class={generalstyles.card + '  col-lg-12 '}>
                     <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
                         <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
                             <AccordionItemHeading>

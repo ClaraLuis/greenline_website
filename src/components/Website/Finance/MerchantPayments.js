@@ -131,238 +131,253 @@ const MerchantPayments = (props) => {
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
-                <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
-                    <p class=" p-0 m-0" style={{ fontSize: '27px' }}>
-                        Merchant Payments
-                    </p>
+                <div class="col-lg-12 p-0 px-1">
+                    <div class={generalstyles.card + ' row m-0 w-100'}>
+                        <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
+                            <p class=" p-0 m-0" style={{ fontSize: '27px' }}>
+                                Merchant Payments
+                            </p>
+                        </div>
+                        <div class="col-lg-6 co-mf-6 p-0 d-flex justify-content-end">
+                            <button
+                                style={{ height: '35px' }}
+                                class={generalstyles.roundbutton + '  mb-1 mx-1'}
+                                onClick={() => {
+                                    const merchantTransactions = fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data;
+
+                                    const exportData = merchantTransactions.map((transaction) => ({
+                                        ...transaction,
+                                        fromAccount: transaction.fromAccount?.name,
+                                        toAccount: transaction.toAccount?.name,
+                                    }));
+
+                                    exportToExcel(exportData, 'merchantTransactions');
+                                }}
+                            >
+                                Export
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-lg-6 co-mf-6 p-0 d-flex justify-content-end">
-                    <button
-                        style={{ height: '35px' }}
-                        class={generalstyles.roundbutton + '  mb-1 mx-1'}
-                        onClick={() => {
-                            const merchantTransactions = fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data;
-
-                            const exportData = merchantTransactions.map((transaction) => ({
-                                ...transaction,
-                                fromAccount: transaction.fromAccount?.name,
-                                toAccount: transaction.toAccount?.name,
-                            }));
-
-                            exportToExcel(exportData, 'merchantTransactions');
-                        }}
-                    >
-                        Export
-                    </button>
-                </div>
-                <div style={{ borderRadius: '0.25rem', background: 'white' }} class={' mb-3 col-lg-12 p-2'}>
-                    <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
-                        <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
-                            <AccordionItemHeading>
-                                <AccordionItemButton>
-                                    <div class="row m-0 w-100">
-                                        <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
-                                            <p class={generalstyles.cardTitle + '  m-0 p-0 '}>Filter:</p>
-                                        </div>
-                                        <div class="col-lg-4 col-md-4 col-sm-4 p-0 d-flex align-items-center justify-content-end">
-                                            <AccordionItemState>
-                                                {(state) => {
-                                                    if (state.expanded == true) {
-                                                        return (
-                                                            <i class="h-100 d-flex align-items-center justify-content-center">
-                                                                <BsChevronUp />
-                                                            </i>
-                                                        );
-                                                    } else {
-                                                        return (
-                                                            <i class="h-100 d-flex align-items-center justify-content-center">
-                                                                <BsChevronDown />
-                                                            </i>
-                                                        );
-                                                    }
-                                                }}
-                                            </AccordionItemState>
-                                        </div>
-                                    </div>
-                                </AccordionItemButton>
-                            </AccordionItemHeading>
-                            <AccordionItemPanel>
-                                <hr className="mt-2 mb-3" />
-                                <div class="row m-0 w-100">
-                                    <div class={'col-lg-2'} style={{ marginBottom: '15px' }}>
-                                        <SelectComponent
-                                            title={'Merchant'}
-                                            filter={filteMerchants}
-                                            setfilter={setfilteMerchants}
-                                            options={fetchMerchantsQuery}
-                                            attr={'paginateMerchants'}
-                                            label={'name'}
-                                            value={'id'}
-                                            onClick={(option) => {
-                                                var temp = filterobj?.merchantIds ?? [];
-
-                                                if (option != undefined) {
-                                                    var exist = false;
-                                                    filterobj?.merchantIds?.map((i, ii) => {
-                                                        if (i == option?.id) {
-                                                            exist = true;
-                                                        }
-                                                    });
-                                                    if (!exist) {
-                                                        chosenMerchantsArray.push(option);
-                                                        temp.push(option?.id);
-                                                    }
-                                                } else {
-                                                    temp = undefined;
-                                                    setchosenMerchantsArray([]);
-                                                }
-
-                                                setfilterobj({ ...filterobj, merchantIds: temp });
-                                            }}
-                                        />
-                                    </div>
-                                    <div class={'col-lg-2'} style={{ marginBottom: '15px' }}>
-                                        <label for="name" class={formstyles.form__label}>
-                                            Status
-                                        </label>
-                                        <Select
-                                            options={[
-                                                { label: 'All', value: undefined },
-                                                { label: 'Processing', value: true },
-                                                { label: 'Completed', value: false },
-                                            ]}
-                                            styles={defaultstyles}
-                                            defaultValue={[
-                                                { label: 'All', value: undefined },
-                                                { label: 'Processing', value: true },
-                                                { label: 'Completed', value: false },
-                                            ].filter((option) => option?.id == filterobj?.processing)}
-                                            onChange={(option) => {
-                                                setfilterobj({ ...filterobj, processing: option.value });
-                                            }}
-                                        />
-                                    </div>
-                                    <div class=" col-lg-3 mb-md-2">
-                                        <span>Date Range</span>
-                                        <div class="mt-1" style={{ width: '100%' }}>
-                                            <DateRangePicker
-                                                // disabledDate={allowedMaxDays(30)}
-                                                // value={[filterorders?.fromDate, filterorders?.toDate]}
-                                                onChange={(event) => {
-                                                    if (event != null) {
-                                                        const start = event[0];
-                                                        const startdate = new Date(start);
-                                                        const year1 = startdate.getFullYear();
-                                                        const month1 = startdate.getMonth() + 1; // Months are zero-indexed
-                                                        const day1 = startdate.getDate();
-
-                                                        const end = event[1];
-                                                        const enddate = new Date(end);
-                                                        const year2 = enddate.getFullYear();
-                                                        const month2 = enddate.getMonth() + 1; // Months are zero-indexed
-                                                        const day2 = enddate.getDate();
-
-                                                        setfilterobj({ ...filterobj, fromDate: event[0], toDate: event[1] });
-                                                    }
-                                                }}
-                                                onClean={() => {
-                                                    setfilterobj({ ...filterobj, fromDate: null, toDate: null });
-                                                }}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12">
+                <div class="col-lg-12 p-0 px-1">
+                    <div class="row m-0 w-100">
+                        <div style={{ borderRadius: '0.25rem', background: 'white' }} class={generalstyles.card + ' col-lg-12'}>
+                            <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
+                                <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
+                                    <AccordionItemHeading>
+                                        <AccordionItemButton>
+                                            <div class="row m-0 w-100">
+                                                <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
+                                                    <p class={generalstyles.cardTitle + '  m-0 p-0 '}>Filter:</p>
+                                                </div>
+                                                <div class="col-lg-4 col-md-4 col-sm-4 p-0 d-flex align-items-center justify-content-end">
+                                                    <AccordionItemState>
+                                                        {(state) => {
+                                                            if (state.expanded == true) {
+                                                                return (
+                                                                    <i class="h-100 d-flex align-items-center justify-content-center">
+                                                                        <BsChevronUp />
+                                                                    </i>
+                                                                );
+                                                            } else {
+                                                                return (
+                                                                    <i class="h-100 d-flex align-items-center justify-content-center">
+                                                                        <BsChevronDown />
+                                                                    </i>
+                                                                );
+                                                            }
+                                                        }}
+                                                    </AccordionItemState>
+                                                </div>
+                                            </div>
+                                        </AccordionItemButton>
+                                    </AccordionItemHeading>
+                                    <AccordionItemPanel>
+                                        <hr className="mt-2 mb-3" />
                                         <div class="row m-0 w-100">
-                                            {chosenMerchantsArray?.map((item, index) => {
-                                                return (
-                                                    <div
-                                                        style={{
-                                                            background: '#ECECEC',
-                                                            padding: '5px 10px',
-                                                            cursor: 'pointer',
-                                                            borderRadius: '8px',
-                                                            justifyContent: 'space-between',
-                                                            width: 'fit-content',
-                                                            fontSize: '11px',
-                                                            minWidth: 'fit-content',
+                                            <div class={'col-lg-2'} style={{ marginBottom: '15px' }}>
+                                                <SelectComponent
+                                                    title={'Merchant'}
+                                                    filter={filteMerchants}
+                                                    setfilter={setfilteMerchants}
+                                                    options={fetchMerchantsQuery}
+                                                    attr={'paginateMerchants'}
+                                                    label={'name'}
+                                                    value={'id'}
+                                                    onClick={(option) => {
+                                                        var temp = filterobj?.merchantIds ?? [];
+
+                                                        if (option != undefined) {
+                                                            var exist = false;
+                                                            filterobj?.merchantIds?.map((i, ii) => {
+                                                                if (i == option?.id) {
+                                                                    exist = true;
+                                                                }
+                                                            });
+                                                            if (!exist) {
+                                                                chosenMerchantsArray.push(option);
+                                                                temp.push(option?.id);
+                                                            }
+                                                        } else {
+                                                            temp = undefined;
+                                                            setchosenMerchantsArray([]);
+                                                        }
+
+                                                        setfilterobj({ ...filterobj, merchantIds: temp });
+                                                    }}
+                                                />
+                                            </div>
+                                            <div class={'col-lg-2'} style={{ marginBottom: '15px' }}>
+                                                <label for="name" class={formstyles.form__label}>
+                                                    Status
+                                                </label>
+                                                <Select
+                                                    options={[
+                                                        { label: 'All', value: undefined },
+                                                        { label: 'Processing', value: true },
+                                                        { label: 'Completed', value: false },
+                                                    ]}
+                                                    styles={defaultstyles}
+                                                    defaultValue={[
+                                                        { label: 'All', value: undefined },
+                                                        { label: 'Processing', value: true },
+                                                        { label: 'Completed', value: false },
+                                                    ].filter((option) => option?.id == filterobj?.processing)}
+                                                    onChange={(option) => {
+                                                        setfilterobj({ ...filterobj, processing: option.value });
+                                                    }}
+                                                />
+                                            </div>
+                                            <div class=" col-lg-3 mb-md-2">
+                                                <span>Date Range</span>
+                                                <div class="mt-1" style={{ width: '100%' }}>
+                                                    <DateRangePicker
+                                                        // disabledDate={allowedMaxDays(30)}
+                                                        // value={[filterorders?.fromDate, filterorders?.toDate]}
+                                                        onChange={(event) => {
+                                                            if (event != null) {
+                                                                const start = event[0];
+                                                                const startdate = new Date(start);
+                                                                const year1 = startdate.getFullYear();
+                                                                const month1 = startdate.getMonth() + 1; // Months are zero-indexed
+                                                                const day1 = startdate.getDate();
+
+                                                                const end = event[1];
+                                                                const enddate = new Date(end);
+                                                                const year2 = enddate.getFullYear();
+                                                                const month2 = enddate.getMonth() + 1; // Months are zero-indexed
+                                                                const day2 = enddate.getDate();
+
+                                                                setfilterobj({ ...filterobj, fromDate: event[0], toDate: event[1] });
+                                                            }
                                                         }}
-                                                        className="d-flex align-items-center mr-2 mb-1"
-                                                        onClick={() => {
-                                                            var temp = [...filterobj?.merchantIds];
-                                                            chosenMerchantsArray.splice(index, 1);
-                                                            temp.splice(index, 1);
-                                                            setfilterobj({ ...filterobj, merchantIds: temp });
+                                                        onClean={() => {
+                                                            setfilterobj({ ...filterobj, fromDate: null, toDate: null });
                                                         }}
-                                                    >
-                                                        {item?.name}
-                                                        <AiOutlineClose size={12} color="#6C757D" className="ml-2" />
-                                                    </div>
-                                                );
-                                            })}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12">
+                                                <div class="row m-0 w-100">
+                                                    {chosenMerchantsArray?.map((item, index) => {
+                                                        return (
+                                                            <div
+                                                                style={{
+                                                                    background: '#ECECEC',
+                                                                    padding: '5px 10px',
+                                                                    cursor: 'pointer',
+                                                                    borderRadius: '8px',
+                                                                    justifyContent: 'space-between',
+                                                                    width: 'fit-content',
+                                                                    fontSize: '11px',
+                                                                    minWidth: 'fit-content',
+                                                                }}
+                                                                className="d-flex align-items-center mr-2 mb-1"
+                                                                onClick={() => {
+                                                                    var temp = [...filterobj?.merchantIds];
+                                                                    chosenMerchantsArray.splice(index, 1);
+                                                                    temp.splice(index, 1);
+                                                                    setfilterobj({ ...filterobj, merchantIds: temp });
+                                                                }}
+                                                            >
+                                                                {item?.name}
+                                                                <AiOutlineClose size={12} color="#6C757D" className="ml-2" />
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                            </AccordionItemPanel>
-                        </AccordionItem>
-                    </Accordion>
+                                    </AccordionItemPanel>
+                                </AccordionItem>
+                            </Accordion>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-lg-12 p-0 ">
                     <div class="row m-0 w-100">
                         <div class="col-lg-9 p-0">
                             {isAuth([1, 51, 19, 60]) && (
-                                <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
-                                    <div className="col-lg-6 p-0 d-flex justify-content-end ">
-                                        <div
-                                            onClick={() => {
-                                                var temp = [];
-                                                if (selectedArray?.length != fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data?.length) {
-                                                    fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data?.map((i, ii) => {
-                                                        temp.push(i.id);
-                                                    });
-                                                }
-                                                setselectedArray(temp);
-                                            }}
-                                            class="row m-0 w-100 d-flex align-items-center"
-                                            style={{
-                                                cursor: 'pointer',
-                                                // color:
-                                                //     selectedArray?.length == fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data?.length ? 'var(--success)' : '',
-                                            }}
-                                        >
-                                            <div
-                                                style={{
-                                                    width: '30px',
-                                                    height: '30px',
-                                                }}
-                                                className="iconhover allcentered mr-1"
-                                            >
-                                                {selectedArray?.length != fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data?.length && (
-                                                    <FiCircle
-                                                        style={{ transition: 'all 0.4s' }}
-                                                        color={
-                                                            selectedArray?.length == fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data?.length
-                                                                ? 'var(--success)'
-                                                                : ''
+                                <div class={' row m-0 w-100 mb-2 p-0 px-0'}>
+                                    <div class="col-lg-12 p-0 px-1">
+                                        <div class={generalstyles.card + ' row m-0 w-100'}>
+                                            <div className="col-lg-6 p-0 d-flex justify-content-end ">
+                                                <div
+                                                    onClick={() => {
+                                                        var temp = [];
+                                                        if (selectedArray?.length != fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data?.length) {
+                                                            fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data?.map((i, ii) => {
+                                                                temp.push(i.id);
+                                                            });
                                                         }
-                                                        size={18}
-                                                    />
-                                                )}
-                                                {selectedArray?.length == fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data?.length && (
-                                                    <FiCheckCircle
-                                                        style={{ transition: 'all 0.4s' }}
-                                                        color={
-                                                            selectedArray?.length == fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data?.length
-                                                                ? 'var(--success)'
-                                                                : ''
-                                                        }
-                                                        size={18}
-                                                    />
-                                                )}
+                                                        setselectedArray(temp);
+                                                    }}
+                                                    class="row m-0 w-100 d-flex align-items-center"
+                                                    style={{
+                                                        cursor: 'pointer',
+                                                        // color:
+                                                        //     selectedArray?.length == fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data?.length ? 'var(--success)' : '',
+                                                    }}
+                                                >
+                                                    <div
+                                                        style={{
+                                                            width: '30px',
+                                                            height: '30px',
+                                                        }}
+                                                        className="iconhover allcentered mr-1"
+                                                    >
+                                                        {selectedArray?.length != fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data?.length && (
+                                                            <FiCircle
+                                                                style={{ transition: 'all 0.4s' }}
+                                                                color={
+                                                                    selectedArray?.length == fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data?.length
+                                                                        ? 'var(--success)'
+                                                                        : ''
+                                                                }
+                                                                size={18}
+                                                            />
+                                                        )}
+                                                        {selectedArray?.length == fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data?.length && (
+                                                            <FiCheckCircle
+                                                                style={{ transition: 'all 0.4s' }}
+                                                                color={
+                                                                    selectedArray?.length == fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data?.length
+                                                                        ? 'var(--success)'
+                                                                        : ''
+                                                                }
+                                                                size={18}
+                                                            />
+                                                        )}
+                                                    </div>
+                                                    {selectedArray?.length != fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data?.length
+                                                        ? 'Select All'
+                                                        : 'Deselect All'}
+                                                </div>
                                             </div>
-                                            {selectedArray?.length != fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data?.length ? 'Select All' : 'Deselect All'}
                                         </div>
                                     </div>
-                                    <div class="col-lg-6 p-0">
+
+                                    <div class="col-lg-12 p-0 mb-3">
                                         <Pagination
                                             beforeCursor={fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.cursor?.beforeCursor}
                                             afterCursor={fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.cursor?.afterCursor}
@@ -370,7 +385,7 @@ const MerchantPayments = (props) => {
                                             setfilter={setfilterobj}
                                         />
                                     </div>
-                                    <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                                    <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
                                         <TransactionsTable
                                             width={'50%'}
                                             query={fetchMerchantPaymentTransactionsQuery}
@@ -388,7 +403,7 @@ const MerchantPayments = (props) => {
                                 </div>
                             )}
                         </div>
-                        <div class="col-lg-3 ">
+                        <div class="col-lg-3 pr-1 ">
                             <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
                                 <div class="col-lg-12 p-0 mb-3">
                                     <span style={{ fontWeight: 600 }}>Total: </span>
@@ -444,7 +459,7 @@ const MerchantPayments = (props) => {
                             <span style={{ color: 'var(--info)' }}>Transactions</span>
                         </p>
                     </div>
-                    <div   className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                    <div   className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
                         <TransactionsTable />
                     </div>
                 </div> */}

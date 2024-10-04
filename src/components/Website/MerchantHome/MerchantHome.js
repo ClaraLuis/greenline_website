@@ -190,8 +190,8 @@ const MerchantHome = (props) => {
                         Book a visit
                     </button>
                 </div>
-                <div class="col-lg-12 p-1">
-                    <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>
+                <div class="col-lg-12 ">
+                    <div class={generalstyles.card + ' mb-3 col-lg-12 p-2'}>
                         <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
                             <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
                                 <AccordionItemHeading>
@@ -285,42 +285,21 @@ const MerchantHome = (props) => {
                     </div>
                 </div>
 
-                <div class={barchartaxis?.xAxis && barchartaxis?.yAxis1?.length ? 'col-lg-7 p-1 scrollmenuclasssubscrollbar' : 'col-lg-12 p-1 scrollmenuclasssubscrollbar'}>
+                <div class={barchartaxis?.xAxis && barchartaxis?.yAxis1?.length ? 'col-lg-7 scrollmenuclasssubscrollbar' : 'col-lg-12 p-1 scrollmenuclasssubscrollbar'}>
                     {barchartaxis?.xAxis && barchartaxis?.yAxis && (
-                        <div
-                            class="row m-0 w-100"
-                            style={{
-                                background: 'white',
-                                boxShadow: '0px 2px 6px -2px rgba(0,106,194,0.2)',
-                                borderRadius: '5px',
-                            }}
-                        >
+                        <div class={generalstyles.card + ' row m-0 w-100 '}>
                             <Barchart xAxis={barchartaxis?.xAxis} yAxis={barchartaxis?.yAxis} />
                         </div>
                     )}
                     {chartData && xaxisCategories && mostSoldItemsQuery?.data && (
-                        <div
-                            class="row m-0 w-100 mt-3"
-                            style={{
-                                background: 'white',
-                                boxShadow: '0px 2px 6px -2px rgba(0,106,194,0.2)',
-                                borderRadius: '5px',
-                            }}
-                        >
+                        <div class={generalstyles.card + ' row m-0 w-100 '}>
                             <Multilinechart chartData={chartData} xaxisCategories={xaxisCategories} />
                         </div>
                     )}
                 </div>
                 {barchartaxis?.xAxis && barchartaxis?.yAxis1 && (
-                    <div class="col-lg-5 p-1 pl-2">
-                        <div
-                            class="row m-0 w-100"
-                            style={{
-                                background: 'white',
-                                boxShadow: '0px 2px 6px -2px rgba(0,106,194,0.2)',
-                                borderRadius: '5px',
-                            }}
-                        >
+                    <div class="col-lg-5 ">
+                        <div class={generalstyles.card + ' row m-0 w-100 '}>
                             <Piechart height={mostSoldItemsQuery?.data ? '250' : 300} xAxis={barchartaxis?.xAxis} yAxis={barchartaxis?.yAxis1} title={'Orders'} total={barchartaxis?.total} />
                         </div>
                         {mostSoldItemsQuery?.data && (
@@ -368,15 +347,8 @@ const MerchantHome = (props) => {
                     </div>
                 )}
                 {chartData && xaxisCategories && !mostSoldItemsQuery?.data && (
-                    <div class="col-lg-12 p-1">
-                        <div
-                            class="row m-0 w-100 mt-1"
-                            style={{
-                                background: 'white',
-                                boxShadow: '0px 2px 6px -2px rgba(0,106,194,0.2)',
-                                borderRadius: '5px',
-                            }}
-                        >
+                    <div class="col-lg-12 ">
+                        <div class={generalstyles.card + ' row m-0 w-100 '}>
                             <Multilinechart chartData={chartData} xaxisCategories={xaxisCategories} />
                         </div>
                     </div>

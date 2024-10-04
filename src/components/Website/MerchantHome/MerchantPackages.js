@@ -101,41 +101,42 @@ const MerchantPackages = (props) => {
             <div class="row m-0 w-100 d-flex  justify-content-start mt-sm-2 pb-5 pb-md-0">
                 <div className={' col-lg-12 p-0 '}>
                     <div class="row m-0 w-100">
-                        <div class={generalstyles.filter_container + ' mb-3 col-lg-12 p-2'}>
-                            <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
-                                <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
-                                    <AccordionItemHeading>
-                                        <AccordionItemButton>
+                        <div class="col-lg-12 p-0 px-2">
+                            <div class={generalstyles.card + ' mb-3 col-lg-12 p-2'}>
+                                <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
+                                    <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
+                                        <AccordionItemHeading>
+                                            <AccordionItemButton>
+                                                <div class="row m-0 w-100">
+                                                    <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
+                                                        <p class={generalstyles.cardTitle + '  m-0 p-0 '}>Filter:</p>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-4 col-sm-4 p-0 d-flex align-items-center justify-content-end">
+                                                        <AccordionItemState>
+                                                            {(state) => {
+                                                                if (state.expanded == true) {
+                                                                    return (
+                                                                        <i class="h-100 d-flex align-items-center justify-content-center">
+                                                                            <BsChevronUp />
+                                                                        </i>
+                                                                    );
+                                                                } else {
+                                                                    return (
+                                                                        <i class="h-100 d-flex align-items-center justify-content-center">
+                                                                            <BsChevronDown />
+                                                                        </i>
+                                                                    );
+                                                                }
+                                                            }}
+                                                        </AccordionItemState>
+                                                    </div>
+                                                </div>
+                                            </AccordionItemButton>
+                                        </AccordionItemHeading>
+                                        <AccordionItemPanel>
+                                            <hr className="mt-2 mb-3" />
                                             <div class="row m-0 w-100">
-                                                <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
-                                                    <p class={generalstyles.cardTitle + '  m-0 p-0 '}>Filter:</p>
-                                                </div>
-                                                <div class="col-lg-4 col-md-4 col-sm-4 p-0 d-flex align-items-center justify-content-end">
-                                                    <AccordionItemState>
-                                                        {(state) => {
-                                                            if (state.expanded == true) {
-                                                                return (
-                                                                    <i class="h-100 d-flex align-items-center justify-content-center">
-                                                                        <BsChevronUp />
-                                                                    </i>
-                                                                );
-                                                            } else {
-                                                                return (
-                                                                    <i class="h-100 d-flex align-items-center justify-content-center">
-                                                                        <BsChevronDown />
-                                                                    </i>
-                                                                );
-                                                            }
-                                                        }}
-                                                    </AccordionItemState>
-                                                </div>
-                                            </div>
-                                        </AccordionItemButton>
-                                    </AccordionItemHeading>
-                                    <AccordionItemPanel>
-                                        <hr className="mt-2 mb-3" />
-                                        <div class="row m-0 w-100">
-                                            {/* <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                                {/* <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
                                                 <label for="name" class={formstyles.form__label}>
                                                     Assigned
                                                 </label>
@@ -152,23 +153,24 @@ const MerchantPackages = (props) => {
                                                     }}
                                                 />
                                             </div> */}
-                                            <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                                <label for="name" class={formstyles.form__label}>
-                                                    Status
-                                                </label>
-                                                <Select
-                                                    options={[{ label: 'All', value: undefined }, ...returnPackageStatusContext]}
-                                                    styles={defaultstyles}
-                                                    value={[{ label: 'All', value: undefined }, ...returnPackageStatusContext].filter((option) => option.value == filter?.status)}
-                                                    onChange={(option) => {
-                                                        setfilter({ ...filter, status: option.value });
-                                                    }}
-                                                />
+                                                <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                                    <label for="name" class={formstyles.form__label}>
+                                                        Status
+                                                    </label>
+                                                    <Select
+                                                        options={[{ label: 'All', value: undefined }, ...returnPackageStatusContext]}
+                                                        styles={defaultstyles}
+                                                        value={[{ label: 'All', value: undefined }, ...returnPackageStatusContext].filter((option) => option.value == filter?.status)}
+                                                        onChange={(option) => {
+                                                            setfilter({ ...filter, status: option.value });
+                                                        }}
+                                                    />
+                                                </div>
                                             </div>
-                                        </div>
-                                    </AccordionItemPanel>
-                                </AccordionItem>
-                            </Accordion>
+                                        </AccordionItemPanel>
+                                    </AccordionItem>
+                                </Accordion>
+                            </div>
                         </div>
                         {isAuth([61, 52, 1]) && (
                             <>
@@ -192,14 +194,14 @@ const MerchantPackages = (props) => {
                                 )}
                                 {fetchPackagesQuery?.data?.paginateReturnPackages?.data?.map((item, index) => {
                                     return (
-                                        <div className="col-lg-4 p-1">
+                                        <div className="col-lg-4">
                                             <div
                                                 onClick={() => {
                                                     history.push('/merchantreturnpackageinfo?packageId=' + item.id);
                                                     setchosenPackageContext(item);
                                                 }}
                                                 style={{ background: 'white', cursor: 'pointer' }}
-                                                class={' p-3 row m-0 w-100 card  d-flex align-items-center'}
+                                                class={generalstyles.card + '  row m-0 w-100   d-flex align-items-center'}
                                             >
                                                 <div className="col-lg-4 p-0">
                                                     <span style={{ fontSize: '12px', color: 'grey' }}># {item?.id}</span>

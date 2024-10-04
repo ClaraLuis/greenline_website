@@ -94,27 +94,31 @@ const FinancialAccounts = (props) => {
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
-                <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
-                    <p class=" p-0 m-0" style={{ fontSize: '27px' }}>
-                        Financial Accounts
-                    </p>
-                </div>
-                <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-end pb-2 '}>
-                    {isAuth([1, 51, 20]) && (
-                        <button
-                            style={{ height: '35px' }}
-                            class={generalstyles.roundbutton + '  mb-1 mx-1'}
-                            onClick={() => {
-                                setopenModal(true);
-                            }}
-                        >
-                            Add Account
-                        </button>
-                    )}
+                <div class="col-lg-12 px-2">
+                    <div class={generalstyles.card + ' m-0 row w-100 '}>
+                        <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
+                            <p class=" p-0 m-0" style={{ fontSize: '27px' }}>
+                                Financial Accounts
+                            </p>
+                        </div>
+                        <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-end pb-2 '}>
+                            {isAuth([1, 51, 20]) && (
+                                <button
+                                    style={{ height: '35px' }}
+                                    class={generalstyles.roundbutton + '  mb-1 mx-1'}
+                                    onClick={() => {
+                                        setopenModal(true);
+                                    }}
+                                >
+                                    Add Account
+                                </button>
+                            )}
+                        </div>
+                    </div>
                 </div>
                 {isAuth([1, 51, 19]) && (
-                    <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
-                        <div class="col-lg-12 p-0">
+                    <div class={' row m-0 w-100'}>
+                        <div class="col-lg-12 p-0 mb-3">
                             <Pagination
                                 beforeCursor={fetchFinancialAccountsQuery?.data?.paginateFinancialAccounts?.cursor?.beforeCursor}
                                 afterCursor={fetchFinancialAccountsQuery?.data?.paginateFinancialAccounts?.cursor?.afterCursor}
@@ -122,7 +126,7 @@ const FinancialAccounts = (props) => {
                                 setfilter={setfilterobj}
                             />
                         </div>
-                        <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                        <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
                             <AccountsTable
                                 clickable={true}
                                 fetchFinancialAccountsQuery={fetchFinancialAccountsQuery}
@@ -149,7 +153,7 @@ const FinancialAccounts = (props) => {
                             <span style={{ color: 'var(--info)' }}>Transactions</span>
                         </p>
                     </div>
-                    <div   className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-2 '}>
+                    <div   className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
                         <TransactionsTable />
                     </div>
                 </div> */}
