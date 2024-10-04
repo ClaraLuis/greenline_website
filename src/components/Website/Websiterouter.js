@@ -203,7 +203,9 @@ const App = (props) => {
                                 {cookies.get('userInfo')?.type == 'merchant' && (
                                     <Dropdown.Item
                                         onClick={async () => {
-                                            window.open('/webtoken', '_self');
+                                            // window.open('/webtoken', '_self');
+                                            // navigate('/webtoken');
+                                            window.location.href = '/webtoken';
                                         }}
                                     >
                                         <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>

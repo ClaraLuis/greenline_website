@@ -3806,15 +3806,16 @@ hr {
     color: var(--infohover) !important ;
 }
 .bg-info {
-    border-color: var(--info) !important ;
+    /* border-color: white !important ; */
     color: var(--info) !important ;
 
-    background: transparent !important;
+    background: white !important;
 }
 .bg-infohover:hover {
-    border-color: var(--infohover) !important ;
-    background: transparent !important;
-    color: var(--infohover) !important ;
+    /* border-color: var(--infohover) !important ; */
+    background: var(--infohover) !important;
+    color: white !important ;
+    transition: all 0.4s;
 }
 .text-danger:hover {
     color: var(--dangerhover) !important;
