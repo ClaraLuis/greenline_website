@@ -457,8 +457,8 @@ const MerchantOrders = (props) => {
                         </div>
                         <div class="col-lg-2 p-0 allcentered">
                             <button
-                                style={{ height: '30px', minWidth: '80%' }}
-                                class={generalstyles.roundbutton + ' allcentered p-0'}
+                                style={{ height: '35px', minWidth: '80%' }}
+                                class={generalstyles.roundbutton + ' allcentered p-0 bg-primary-light'}
                                 onClick={() => {
                                     setfilterorders({ ...filterorders, name: search });
                                 }}

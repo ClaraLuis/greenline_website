@@ -83,6 +83,7 @@ const AddOrder = (props) => {
         returnAmount: undefined,
         includevat: 0,
         previousOrderId: undefined,
+        returnOrderId: undefined,
         // currency: 'EGP',
     });
     const [tabs, settabs] = useState([
@@ -165,6 +166,7 @@ const AddOrder = (props) => {
         returnAmount: orderpayload?.returnAmount,
         returnOrderItems: orderpayload?.returnOrderItems?.length == 0 ? undefined : orderpayload?.returnOrderItems,
         previousOrderId: orderpayload?.previousOrderId?.length == 0 ? undefined : orderpayload?.previousOrderId,
+        returnOrderId: orderpayload?.returnOrderId?.length == 0 ? undefined : orderpayload?.returnOrderId,
         // currency: 'EGP',
         orderItems: cartItems,
         // shippingPrice: '0.0',
@@ -422,7 +424,9 @@ const AddOrder = (props) => {
                                                     orderpayload?.address == undefined)) ||
                                             (index == 2 &&
                                                 ((orderpayload?.returnOrderItems?.length == 0 && externalOrder) ||
-                                                    (!externalOrder && (orderpayload?.previousOrderId?.length == 0 || orderpayload?.previousOrderId == undefined))))) && (
+                                                    !previousOrderType ||
+                                                    (!externalOrder && previousOrderType == 'd' && (orderpayload?.previousOrderId?.length == 0 || orderpayload?.previousOrderId == undefined)) ||
+                                                    (!externalOrder && previousOrderType == 'r' && (orderpayload?.returnOrderId?.length == 0 || orderpayload?.returnOrderId == undefined))))) && (
                                             <RiErrorWarningFill color="var(--danger)" size={20} class="ml-2" />
                                         )}
                                     </div>
@@ -487,9 +491,14 @@ const AddOrder = (props) => {
                             {(orderpayload?.customerId?.length == 0 || orderpayload?.customerId == undefined) && <div class="col-lg-12">* Choose customer</div>}
                             {(orderpayload?.address?.length == 0 || orderpayload?.address == undefined) && <div class="col-lg-12">* Choose customer address</div>}
                             {orderpayload?.returnOrderItems?.length == 0 && externalOrder && orderpayload?.ordertype == 'exchange' && <div class="col-lg-12">* Add return items</div>}
-                            {!externalOrder && (orderpayload?.previousOrderId?.length == 0 || orderpayload?.previousOrderId == undefined) && orderpayload?.ordertype == 'exchange' && (
-                                <div class="col-lg-12">* Choose previous order</div>
-                            )}
+                            {!externalOrder &&
+                                previousOrderType == 'd' &&
+                                (orderpayload?.previousOrderId?.length == 0 || orderpayload?.previousOrderId == undefined) &&
+                                orderpayload?.ordertype == 'exchange' && <div class="col-lg-12">* Choose previous order</div>}
+                            {!externalOrder &&
+                                previousOrderType == 'r' &&
+                                (orderpayload?.returnOrderId?.length == 0 || orderpayload?.returnOrderId == undefined) &&
+                                orderpayload?.ordertype == 'exchange' && <div class="col-lg-12">* Choose return order</div>}
                         </div>
                     </div>
                 </div>
@@ -1166,7 +1175,7 @@ const AddOrder = (props) => {
                                         <button
                                             class={previousOrderType == 'd' ? generalstyles.roundbutton : generalstyles.roundbutton + ' bg-info bg-infohover'}
                                             onClick={async () => {
-                                                setorderpayload({ ...orderpayload, previousOrderId: undefined, returnOrderItems: [] });
+                                                setorderpayload({ ...orderpayload, previousOrderId: undefined, returnOrderId: undefined, returnOrderItems: [] });
 
                                                 setpreviousOrderType('d');
                                                 setexternalOrder(false);
@@ -1177,7 +1186,7 @@ const AddOrder = (props) => {
                                         <button
                                             class={previousOrderType == 'r' ? generalstyles.roundbutton + '  mx-2' : generalstyles.roundbutton + ' bg-info bg-infohover mx-2'}
                                             onClick={async () => {
-                                                setorderpayload({ ...orderpayload, previousOrderId: undefined, returnOrderItems: [] });
+                                                setorderpayload({ ...orderpayload, previousOrderId: undefined, returnOrderId: undefined, returnOrderItems: [] });
 
                                                 setpreviousOrderType('r');
                                                 setexternalOrder(false);
@@ -1188,7 +1197,7 @@ const AddOrder = (props) => {
                                         <button
                                             class={previousOrderType == 'e' ? generalstyles.roundbutton : generalstyles.roundbutton + ' bg-info bg-infohover'}
                                             onClick={async () => {
-                                                setorderpayload({ ...orderpayload, previousOrderId: undefined, returnOrderItems: [] });
+                                                setorderpayload({ ...orderpayload, previousOrderId: undefined, returnOrderId: undefined, returnOrderItems: [] });
 
                                                 setpreviousOrderType('e');
                                                 setexternalOrder(true);
@@ -1330,9 +1339,16 @@ const AddOrder = (props) => {
                                         )}
                                         {fetchOrdersQuery?.data?.paginateOrders?.data?.map((item, index) => {
                                             var selected = false;
-                                            if (item.id == orderpayload?.previousOrderId) {
-                                                selected = true;
+                                            if (previousOrderType == 'd') {
+                                                if (item.id == orderpayload?.previousOrderId) {
+                                                    selected = true;
+                                                }
+                                            } else {
+                                                if (item.id == orderpayload?.returnOrderId) {
+                                                    selected = true;
+                                                }
                                             }
+
                                             // sheetpayload?.orders?.map((orderitem, orderindex) => {
                                             //     if (orderitem?.id == item?.id) {
                                             //         selected = true;
@@ -1343,7 +1359,11 @@ const AddOrder = (props) => {
                                                     <div className="col-lg-6 ">
                                                         <div
                                                             onClick={() => {
-                                                                setorderpayload({ ...orderpayload, previousOrderId: item.id, previousorder: item });
+                                                                if (previousOrderType == 'd') {
+                                                                    setorderpayload({ ...orderpayload, previousOrderId: item.id, previousorder: item });
+                                                                } else {
+                                                                    setorderpayload({ ...orderpayload, returnOrderId: item.id, previousorder: item });
+                                                                }
                                                             }}
                                                             style={{ background: selected ? 'var(--secondary)' : '', transition: 'all 0.4s', cursor: 'pointer' }}
                                                             class={generalstyles.card + ' p-3 row m-0 w-100 allcentered '}
@@ -1409,7 +1429,7 @@ const AddOrder = (props) => {
                                         style={{ width: '45%', height: 'fit-content', minHeight: '140px', textAlign: 'start' }}
                                         class={generalstyles.roundbutton + ' m-3 py-4 bg-info bg-infohover'}
                                         onClick={async () => {
-                                            setorderpayload({ ...orderpayload, previousOrderId: undefined, returnOrderItems: [] });
+                                            setorderpayload({ ...orderpayload, previousOrderId: undefined, returnOrderId: undefined, returnOrderItems: [] });
 
                                             setpreviousOrderType('d');
                                             setexternalOrder(false);
@@ -1432,7 +1452,7 @@ const AddOrder = (props) => {
                                         style={{ width: '45%', height: 'fit-content', minHeight: '140px', textAlign: 'start' }}
                                         class={generalstyles.roundbutton + ' m-3 py-4 bg-info bg-infohover'}
                                         onClick={async () => {
-                                            setorderpayload({ ...orderpayload, previousOrderId: undefined, returnOrderItems: [] });
+                                            setorderpayload({ ...orderpayload, previousOrderId: undefined, returnOrderId: undefined, returnOrderItems: [] });
 
                                             setpreviousOrderType('r');
                                             setexternalOrder(false);
@@ -1454,7 +1474,7 @@ const AddOrder = (props) => {
                                         style={{ width: '45%', height: 'fit-content', minHeight: '140px', textAlign: 'start' }}
                                         class={generalstyles.roundbutton + ' m-3 py-4 bg-info bg-infohover'}
                                         onClick={async () => {
-                                            setorderpayload({ ...orderpayload, previousOrderId: undefined, returnOrderItems: [] });
+                                            setorderpayload({ ...orderpayload, previousOrderId: undefined, returnOrderId: undefined, returnOrderItems: [] });
 
                                             setpreviousOrderType('e');
                                             setexternalOrder(true);
@@ -1729,8 +1749,11 @@ const AddOrder = (props) => {
                                     <div class="row m-0 w-100">
                                         <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
                                             <p class={generalstyles.cardTitle + '  m-0 p-0 '}>
-                                                {orderpayload?.previousOrderId?.length != 0 && orderpayload?.previousOrderId != undefined
+                                                {orderpayload?.previousOrderId?.length != 0 && orderpayload?.previousOrderId != undefined && previousOrderType == 'd'
                                                     ? 'Chosen order ID: #' + orderpayload?.previousOrderId
+                                                    : 'No order chosen yet'}
+                                                {orderpayload?.returnOrderId?.length != 0 && orderpayload?.returnOrderId != undefined && previousOrderType == 'r'
+                                                    ? 'Chosen order ID: #' + orderpayload?.returnOrderId
                                                     : 'No order chosen yet'}
                                             </p>
                                         </div>
