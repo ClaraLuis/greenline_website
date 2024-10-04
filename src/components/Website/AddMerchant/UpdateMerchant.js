@@ -219,6 +219,11 @@ const UpdateMerchant = (props) => {
                 {isAuth([1]) && (
                     <div class="col-lg-12 ">
                         <div class={generalstyles.card + ' row m-0 w-100'}>
+                            <div class="col-lg-12 p-0 mb-2" style={{ color: 'grey', fontSize: '18px', fontWeight: 700 }}>
+                                <div class="row m-0 w-100 d-flex align-items-center justify-content-between">
+                                    <div>Webtoken</div>
+                                </div>
+                            </div>
                             <div style={{ background: '#f6f8fa', padding: '1rem' }} class="col-lg-12 ">
                                 {merchantPayload?.webToken ?? 'No token'}
                             </div>
@@ -364,49 +369,20 @@ const UpdateMerchant = (props) => {
                                             size={'lg'}
                                             submit={submit}
                                             setsubmit={setsubmit}
-                                            attr={
-                                                isAuth([1])
-                                                    ? [
-                                                          {
-                                                              title: 'Merchant',
-                                                              filter: filterMerchants,
-                                                              setfilter: setfilterMerchants,
-                                                              options: fetchMerchantsQuery,
-                                                              optionsAttr: 'paginateMerchants',
-                                                              label: 'name',
-                                                              value: 'id',
-                                                              size: '12',
-                                                              attr: 'merchantId',
-                                                              type: 'fetchSelect',
-                                                          },
-                                                          {
-                                                              title: 'User',
-                                                              filter: filterUsers,
-                                                              setfilter: setfilterUsers,
-                                                              options: fetchusers,
-                                                              optionsAttr: 'paginateUsers',
-                                                              label: 'name',
-                                                              value: 'id',
-                                                              size: '12',
-                                                              attr: 'ownerId',
-                                                              type: 'fetchSelect',
-                                                          },
-                                                      ]
-                                                    : [
-                                                          {
-                                                              title: 'User',
-                                                              filter: filterUsers,
-                                                              setfilter: setfilterUsers,
-                                                              options: fetchusers,
-                                                              optionsAttr: 'paginateUsers',
-                                                              label: 'name',
-                                                              value: 'id',
-                                                              size: '12',
-                                                              attr: 'ownerID',
-                                                              type: 'fetchSelect',
-                                                          },
-                                                      ]
-                                            }
+                                            attr={[
+                                                {
+                                                    title: 'User',
+                                                    filter: filterUsers,
+                                                    setfilter: setfilterUsers,
+                                                    options: fetchusers,
+                                                    optionsAttr: 'paginateUsers',
+                                                    label: 'name',
+                                                    value: 'id',
+                                                    size: '12',
+                                                    attr: 'ownerID',
+                                                    type: 'fetchSelect',
+                                                },
+                                            ]}
                                             payload={merchantPayload}
                                             setpayload={setmerchantPayload}
                                         />

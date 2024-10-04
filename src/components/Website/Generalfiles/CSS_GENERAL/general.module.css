@@ -211,7 +211,7 @@ button:focus {
     border: none;
     padding: 1.5rem !important;
     margin-bottom: 1.5rem !important;
-    overflow: hidden;
+    /* overflow: hidden; */
     position: relative;
 }
 
@@ -458,7 +458,8 @@ button:focus {
     min-width: 120px;
     cursor: pointer;
     box-shadow: 0 2px 6px -2px rgba(0, 106, 194, 0.2);
-    background-color: var(--primary);
+    /* background-color: var(--primary); */
+    background-color: #216f51;
     /* border: 1px solid var(--primary); */
     color: #fff;
     border-radius: 0px;
@@ -845,16 +846,17 @@ button:focus {
     position: sticky;
     z-index: 1100;
     top: 0px;
-    left: auto;
+    /* left: auto; */
     right: 0px;
     color: rgba(0, 0, 0, 0.87);
     box-shadow: rgba(37, 83, 185, 0.1) 0px 2px 6px;
-    background: rgb(255, 255, 255);
+    /* background: var(--infohover); */
+    background: #142c25;
     -webkit-box-pack: center;
     justify-content: center;
     backdrop-filter: blur(4px);
     min-height: 70px;
-    border-radius: 0.25rem;
+    /* border-radius: 0.25rem; */
 }
 
 @keyframes heartbeat {

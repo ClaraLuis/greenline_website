@@ -62,7 +62,7 @@ import InventorySettings from './MerchantHome/InventorySettings.js';
 import Fulfilled from './MerchantOrders/Fulfilled.js';
 import RentPage from './MerchantHome/RentPage.js';
 import WebToken from './WebToken/WebToken.js';
-import { TbLogout } from 'react-icons/tb';
+import { TbApi, TbLogout } from 'react-icons/tb';
 const App = (props) => {
     const history = useHistory();
     const location = useLocation();
@@ -96,7 +96,7 @@ const App = (props) => {
                 <div class="row m-0 w-100">
                     <div class="col-lg-6 p-0 px-2  ">
                         <div class="row m-0 w-100">
-                            {/* <div
+                            <div
                                 onClick={() => {
                                     sethidesidenav_context(!hidesidenav_context);
                                 }}
@@ -104,9 +104,9 @@ const App = (props) => {
                             >
                                 <div
                                     id="app-title"
-                                    class="allcentered p-0"
+                                    class="allcentered p-0 mx-3"
                                     style={{
-                                        backgroundColor: 'var(--secondary)',
+                                        // backgroundColor: 'var(--secondary)',
                                         borderRadius: '5px',
                                         zIndex: 100000,
                                         transition: 'all 0.4s',
@@ -115,9 +115,9 @@ const App = (props) => {
                                         cursor: 'pointer',
                                     }}
                                 >
-                                    <FiMenu size={15} color={'var(--primary)'} />
+                                    <FiMenu size={20} color={'white'} />
                                 </div>
-                            </div> */}
+                            </div>
                         </div>
                     </div>
                     <div class="col-lg-6 d-flex justify-content-end align-items-center ">
@@ -126,7 +126,7 @@ const App = (props) => {
                                 <div
                                     style={{
                                         // background: !isOpen1 ? 'var(--secondary)' : 'var(--primary)',
-                                        color: 'var(--primary)',
+                                        color: 'white',
                                         borderRadius: '10px',
                                         transition: 'all 0.4s',
                                     }}
@@ -169,7 +169,8 @@ const App = (props) => {
                             <Dropdown.Toggle>
                                 <div
                                     style={{
-                                        background: !isOpen ? 'var(--secondary)' : 'var(--primary)',
+                                        // background: !isOpen ? 'var(--secondary)' : 'var(--primary)',
+                                        // background: 'white',
                                         color: isOpen ? 'white' : 'var(--primary)',
                                         borderRadius: '20px',
                                         transition: 'all 0.4s',
@@ -179,7 +180,7 @@ const App = (props) => {
                                     <div style={{ width: '31px', height: '31px', marginInlineEnd: '10px' }}>
                                         <img src={userImage} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                                     </div>
-                                    <IoSettingsOutline size={18} style={{ marginInlineEnd: '5px' }} />
+                                    <IoSettingsOutline size={18} style={{ marginInline: '15px' }} color="white" />
                                 </div>
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
@@ -209,8 +210,8 @@ const App = (props) => {
                                         }}
                                     >
                                         <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>
-                                            <IoSettingsOutline size={15} style={{ marginInlineEnd: '10px' }} />
-                                            Settings
+                                            <TbApi size={15} style={{ marginInlineEnd: '10px' }} />
+                                            Web API Settings
                                         </p>
                                     </Dropdown.Item>
                                 )}
@@ -254,7 +255,7 @@ const App = (props) => {
     return (
         <div class="row m-0 w-100">
             <Router>
-                <div class="row m-0 pl-4  w-100 d-flex " style={{ maxHeight: '100vh', paddingRight: 0 }}>
+                <div class="row m-0 w-100 d-flex " style={{ maxHeight: '100vh', paddingRight: 0 }}>
                     {user?.roles?.length != 0 && (
                         <>
                             <div style={{ width: hidesidenav_context ? '4%' : '18%', transition: 'all 0.4s' }}>
@@ -262,7 +263,7 @@ const App = (props) => {
                                     <Sidenav />
                                 </div>
                             </div>
-                            <div class="px-3" style={{ width: hidesidenav_context ? '96%' : '82%', transition: 'all 0.4s' }}>
+                            <div class="px-0" style={{ width: hidesidenav_context ? '96%' : '82%', transition: 'all 0.4s' }}>
                                 <div class={generalstyles.app_container + ' w-100 '}>
                                     <div class="row m-0 w-100">
                                         <div class={`${generalstyles.app_main}` + '  app_main  '}>
