@@ -117,6 +117,14 @@ const API = () => {
         `;
     };
 
+    const createMerchantToken = () => {
+        return gql`
+            mutation createMerchantToken($merchantId: Int!) {
+                createMerchantToken(merchantId: $merchantId)
+            }
+        `;
+    };
+
     const updateInventoryRent = () => {
         return gql`
             mutation updateInventoryRent($input: UpdateInventoryRentInput!) {
@@ -919,6 +927,8 @@ const API = () => {
                         createdAt
                         lastModified
                     }
+                    webToken
+                    webTokenExpiration
                     shopifyShop
                     currency
                     includesVat
@@ -2039,6 +2049,7 @@ const API = () => {
         updateMerchant,
         findAllZones,
         deleteCourierSheet,
+        createMerchantToken,
         findReturnPackageBySku,
         findOneItem,
         paginateInventoryRentTransaction,

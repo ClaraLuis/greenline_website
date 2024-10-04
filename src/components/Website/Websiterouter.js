@@ -61,6 +61,8 @@ import HubDetails from './Hubs/HubDetails.js';
 import InventorySettings from './MerchantHome/InventorySettings.js';
 import Fulfilled from './MerchantOrders/Fulfilled.js';
 import RentPage from './MerchantHome/RentPage.js';
+import WebToken from './WebToken/WebToken.js';
+import { TbLogout } from 'react-icons/tb';
 const App = (props) => {
     const history = useHistory();
     const location = useLocation();
@@ -198,6 +200,19 @@ const App = (props) => {
                                         <hr class="p-0 m-0" />
                                     </div>
                                 </div>
+                                {cookies.get('userInfo')?.type == 'merchant' && (
+                                    <Dropdown.Item
+                                        onClick={async () => {
+                                            window.open('/webtoken', '_self');
+                                        }}
+                                    >
+                                        <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>
+                                            <IoSettingsOutline size={15} style={{ marginInlineEnd: '10px' }} />
+                                            Settings
+                                        </p>
+                                    </Dropdown.Item>
+                                )}
+
                                 <Dropdown.Item
                                     onClick={async () => {
                                         await signOut(getAuth());
@@ -209,7 +224,7 @@ const App = (props) => {
                                     }}
                                 >
                                     <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>
-                                        <IoSettingsOutline size={15} style={{ marginInlineEnd: '10px' }} />
+                                        <TbLogout size={15} style={{ marginInlineEnd: '10px' }} />
                                         Logout
                                     </p>
                                 </Dropdown.Item>
@@ -287,6 +302,7 @@ const App = (props) => {
                                                                 <Route exact path="/hubdetails" component={HubDetails} />
                                                                 <Route exact path="/inventorysettings" component={InventorySettings} />
                                                                 <Route exact path="/fulfilled" component={Fulfilled} />
+                                                                <Route exact path="/webtoken" component={WebToken} />
 
                                                                 <Route exact path="/courierhome" component={CourierHome} />
                                                                 <Route exact path="/couriersheets" component={CourierSheets} />

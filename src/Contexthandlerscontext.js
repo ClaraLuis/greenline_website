@@ -7,7 +7,7 @@ import API from './API/API';
 
 import { useHistory } from 'react-router-dom';
 import { LuPackageOpen } from 'react-icons/lu';
-
+import { RxTokens } from 'react-icons/rx';
 import { NotificationManager } from 'react-notifications';
 import Cookies from 'universal-cookie';
 import { MdOutlineHub, MdOutlineInventory2, MdSwitchAccount } from 'react-icons/md';
@@ -188,6 +188,18 @@ export const Contexthandlerscontext_provider = (props) => {
                         permissionpage: [1],
                         show: isAuth([1, 52]) || cookies.get('merchantId') != undefined,
                     },
+                    // {
+                    //     name: 'Webtoken',
+                    //     isselected: false,
+                    //     icon: (
+                    //         <i class={'allcentered'}>
+                    //             <RxTokens size={18} />
+                    //         </i>
+                    //     ),
+                    //     path: '/webtoken',
+                    //     permissionpage: [1],
+                    //     show: isAuth([1, 52]),
+                    // },
                     {
                         name: 'Merchants',
                         isselected: false,
