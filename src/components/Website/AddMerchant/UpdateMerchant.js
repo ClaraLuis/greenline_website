@@ -223,9 +223,13 @@ const UpdateMerchant = (props) => {
                                 {merchantPayload?.webToken ?? 'No token'}
                             </div>
                             {merchantPayload?.webTokenExpiration && (
-                                <div className="col-lg-12 d-flex justify-content-end mt-2">
-                                    <span>Days left until expiration: </span> {calculateDaysLeft(merchantPayload?.webTokenExpiration)}
-                                </div>
+                                <>
+                                    <div className="col-lg-12 d-flex justify-content-end mt-2">Expires in {calculateDaysLeft(merchantPayload?.webTokenExpiration)} Days</div>
+
+                                    <div className="col-lg-12 d-flex justify-content-end mt-1" style={{ color: 'grey', fontSize: '12px' }}>
+                                        {dateformatter(merchantPayload?.webTokenExpiration)}
+                                    </div>
+                                </>
                             )}
                         </div>
                     </div>
