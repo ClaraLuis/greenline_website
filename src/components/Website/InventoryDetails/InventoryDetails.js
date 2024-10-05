@@ -98,6 +98,7 @@ const InventoryDetails = (props) => {
     const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
     useEffect(() => {
         setpageactive_context('/inventorydetails');
+        setpagetitle_context('Hubs');
     }, []);
 
     useEffect(() => {

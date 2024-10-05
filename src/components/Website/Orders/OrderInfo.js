@@ -23,19 +23,51 @@ import TimelineItem from '@mui/lab/TimelineItem';
 import TimelineSeparator from '@mui/lab/TimelineSeparator';
 
 import TimelineOppositeContent, { timelineOppositeContentClasses } from '@mui/lab/TimelineOppositeContent';
+import { TbPlus, TbTrash } from 'react-icons/tb';
+import { NotificationManager } from 'react-notifications';
+import Pagination from '../../Pagination.js';
+import ItemsTable from '../MerchantItems/ItemsTable.js';
+import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
+import Form from '../../Form.js';
 
 const OrderInfo = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const cookies = new Cookies();
 
-    const { setchosenOrderContext, chosenOrderContext, dateformatter, orderStatusEnumContext, orderTypeContext } = useContext(Contexthandlerscontext);
-    const { useQueryGQL, useMutationGQL, fetchGovernorates, createMerchantDomesticShipping, useLazyQueryGQL, fetchTransactionHistory, fetchOrderHistory, findOneOrder } = API();
+    const { setchosenOrderContext, chosenOrderContext, dateformatter, orderStatusEnumContext, orderTypeContext, setpagetitle_context, isAuth } = useContext(Contexthandlerscontext);
+    const {
+        useQueryGQL,
+        useMutationGQL,
+        fetchGovernorates,
+        removeOrderItems,
+        addOrderItems,
+        useLazyQueryGQL,
+        fetchTransactionHistory,
+        fetchOrderHistory,
+        findOneOrder,
+        fetchMerchantItemVariants,
+        requestOrderReturn,
+    } = API();
     const steps = ['Merchant Info', 'Shipping', 'Inventory Settings'];
     const [inventoryModal, setinventoryModal] = useState({ open: false, items: [] });
     const [outOfStock, setoutOfStock] = useState(false);
     const [diffInDays, setdiffInDays] = useState(0);
+    const [orderItemIds, setorderItemIds] = useState([]);
     const [historyType, sethistoryType] = useState('order');
+    const [buttonLoading, setbuttonLoading] = useState(false);
+    const [returnOrderModal, setreturnOrderModal] = useState(false);
+    const [submit, setsubmit] = useState(false);
+
+    const [itemsModal, setitemsModal] = useState({ open: false, items: [], itemstobeadded: [] });
+    const [filter, setfilter] = useState({
+        limit: 20,
+        isAsc: true,
+        afterCursor: '',
+        beforeCursor: '',
+        name: undefined,
+        merchantId: chosenOrderContext?.merchant?.id,
+    });
 
     const dateformatterDayAndMonth = (date) => {
         const d = new Date(date);
@@ -98,24 +130,40 @@ const OrderInfo = (props) => {
 
         return racks;
     };
+    const [requestReturnPayload, setrequestReturnPayload] = useState({
+        orderId: '',
+        orderDate: '',
+        returnAmount: '',
+        freeShipping: true,
+        originalPrice: true,
+    });
+
+    const [requestOrderReturnMutation] = useMutationGQL(requestOrderReturn(), {
+        orderId: queryParameters.get('orderId'),
+        orderDate: requestReturnPayload?.orderDate,
+        returnAmount: requestReturnPayload?.originalPrice ? undefined : requestReturnPayload?.returnAmount,
+        freeShipping: requestReturnPayload?.freeShipping == 0 ? false : true,
+        merchantId: isAuth([1]) ? requestReturnPayload?.item?.merchant?.id : undefined,
+    });
+    const fetchOrder = async () => {
+        if (queryParameters.get('orderId')) {
+            var { data } = await fetchOneOrderLazyQuery({
+                variables: {
+                    id: parseInt(queryParameters.get('orderId')),
+                },
+            });
+            setchosenOrderContext(data?.findOneOrder);
+            console.log(data);
+        }
+    };
+    useEffect(() => {
+        setpagetitle_context('Merchant');
+    }, []);
 
     useEffect(() => {
         if (JSON.stringify(chosenOrderContext) == '{}') {
-            // const fetchOrder = async () => {
-            //     if (queryParameters.get('orderId')) {
-            //         var { data } = await fetchOneOrderLazyQuery({
-            //             variables: {
-            //                 id: parseInt(queryParameters.get('orderId')),
-            //             },
-            //         });
-            //         // Handle the data or set state here
-            //         setchosenOrderContext(data?.findOneOrder);
-            //         // alert('1');
-            //         console.log(data);
-            //     }
-            // };
-            // fetchOrder();
-            history.push(queryParameters?.get('type') == 'inventory' ? '/orders' : 'merchantorders');
+            fetchOrder();
+            // history.push(queryParameters?.get('type') == 'inventory' ? '/orders' : 'merchantorders');
         }
 
         chosenOrderContext?.orderItems?.map((orderitem, orderindex) => {
@@ -139,421 +187,548 @@ const OrderInfo = (props) => {
         // Convert milliseconds to days
         setdiffInDays(Math.floor(diffInMs / (1000 * 60 * 60 * 24)));
     }, [chosenOrderContext]);
+    const [removeOrderItemsMutation] = useMutationGQL(removeOrderItems(), {
+        orderId: parseInt(queryParameters?.get('orderId')),
+        orderItemIds: orderItemIds,
+    });
+
+    const [addOrderItemsMutation] = useMutationGQL(addOrderItems(), {
+        orderId: parseInt(queryParameters?.get('orderId')),
+        orderItems: itemsModal?.itemstobeadded[0] ?? undefined,
+        keepCurrentPrice: true,
+    });
+
+    const fetchMerchantItemVariantsQuery = useQueryGQL('', fetchMerchantItemVariants(), filter);
 
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div className="col-lg-12 p-0" style={{ minHeight: '100vh' }}>
                 <div class={' row m-0 w-100 allcentered'}>
-                    <div class="col-lg-6">
-                        {chosenOrderContext != undefined && (
-                            <>
-                                <div class={generalstyles.card + ' row m-0 w-100 p-4'}>
-                                    <div style={{ cursor: props?.clickable ? 'pointer' : '' }} className="col-lg-12 p-0">
-                                        <div class={' row m-0 w-100 '}>
-                                            <div className="col-lg-4 p-0">
-                                                <div class="row m-0 w-100 d-flex align-items-center">
-                                                    <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
-                                                        # {chosenOrderContext?.id}
-                                                    </span>{' '}
-                                                    <span style={{ fontWeight: 600 }} class="text-capitalize">
-                                                        {chosenOrderContext?.merchant?.name}
-                                                    </span>
+                    <div class="col-lg-12">
+                        <div class="row m-0 w-100">
+                            {chosenOrderContext != undefined && (
+                                <>
+                                    <div class="col-lg-12 d-flex justify-content-end mb-3">
+                                        {chosenOrderContext?.type == 'delivery' && (
+                                            <button
+                                                style={{ height: '35px' }}
+                                                class={generalstyles.roundbutton}
+                                                onClick={() => {
+                                                    if (chosenOrderContext?.status == 'delivered' || chosenOrderContext?.status == 'partiallyDelivered') {
+                                                        setrequestReturnPayload({ ...requestReturnPayload, chosenOrderContext });
+                                                        setreturnOrderModal(true);
+                                                    } else {
+                                                        NotificationManager.warning('Order is not yet delivered', 'Warning!');
+                                                    }
+                                                }}
+                                            >
+                                                <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Request Return</p>
+                                            </button>
+                                        )}
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class={generalstyles.card + ' row m-0 w-100 p-4'}>
+                                            <div class="col-lg-12 p-0 mb-3">
+                                                <div class="row m-0 w-100 allcentered">
+                                                    <button
+                                                        onClick={() => sethistoryType('order')}
+                                                        style={{ fontWeight: historyType == 'order' ? 800 : 400, width: '40%' }}
+                                                        class={generalstyles.roundbutton + ' allcentered p-0 mr-2'}
+                                                    >
+                                                        Order History
+                                                    </button>
+                                                    <button
+                                                        onClick={() => sethistoryType('payment')}
+                                                        style={{ fontWeight: historyType == 'payment' ? 800 : 400, width: '40%' }}
+                                                        class={generalstyles.roundbutton + ' allcentered p-0 '}
+                                                    >
+                                                        Transaction History
+                                                    </button>
                                                 </div>
                                             </div>
-                                            <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
-                                                <div class="row m-0 w-100  d-flex justify-content-end align-items-center">
-                                                    {outOfStock && queryParameters?.get('type') == 'inventory' && (
-                                                        <div className={'mr-1 wordbreak text-danger bg-light-danger rounded-pill font-weight-600 '}>Out Of Stock</div>
-                                                    )}
-
-                                                    <div
-                                                        // onClick={() => {
-                                                        //     setchangestatusmodal(true);
-                                                        // }}
-                                                        // style={{ cursor: 'pointer' }}
-                                                        className={
-                                                            chosenOrderContext?.status == 'delivered'
-                                                                ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 '
-                                                                : chosenOrderContext?.status == 'postponed' || chosenOrderContext?.status == 'failedDeliveryAttempt'
-                                                                ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 '
-                                                                : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 '
-                                                        }
-                                                    >
-                                                        {orderStatusEnumContext?.map((i, ii) => {
-                                                            if (i.value == chosenOrderContext?.status) {
-                                                                return <span>{i.label}</span>;
-                                                            }
-                                                        })}
-                                                    </div>
-                                                    <div
-                                                        // onClick={() => {
-                                                        //     setchangestatusmodal(true);
-                                                        // }}
-                                                        style={{ color: 'white' }}
-                                                        className={'ml-1 wordbreak bg-primary rounded-pill font-weight-600 '}
-                                                    >
-                                                        {orderTypeContext?.map((i, ii) => {
-                                                            if (i.value == chosenOrderContext?.type) {
-                                                                return <span>{i.label}</span>;
-                                                            }
-                                                        })}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="col-lg-12 p-0 my-2">
-                                                <hr className="m-0" />
-                                            </div>
-                                            {queryParameters?.get('type') != 'inventory' && (
+                                            {historyType == 'order' && (
                                                 <>
-                                                    <div class="col-lg-12 p-0 mb-2 text-capitalize">
-                                                        <span style={{ fontWeight: 600 }}>{chosenOrderContext?.merchantCustomer?.customerName}</span>
-                                                    </div>
-                                                    <div className="col-lg-12 p-0 mb-1 d-flex align-items-center">
-                                                        <MdOutlineLocationOn class="mr-1" />
-                                                        <span style={{ fontWeight: 400, fontSize: '13px' }}>
-                                                            {chosenOrderContext?.address?.city}, {chosenOrderContext?.address?.country}
-                                                        </span>
-                                                    </div>
-                                                    <div className="col-lg-12 p-0 ">
-                                                        <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                            {chosenOrderContext?.address?.streetAddress}, {chosenOrderContext?.address?.buildingNumber}, {chosenOrderContext?.address?.apartmentFloor}
-                                                        </span>
-                                                    </div>
-                                                    <div className="col-lg-12 p-0 mt-3 mb-2">
-                                                        <div
-                                                            style={{ maxWidth: '100%', flexDirection: 'row', flexWrap: 'nowrap', overflow: 'scroll' }}
-                                                            class="row m-0 w-100 scrollmenuclasssubscrollbar"
-                                                        ></div>
-                                                    </div>
-                                                    <div class="col-lg-12 p-0 mt-2">
-                                                        <div class="row m-0 w-100 d-flex">
-                                                            <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4">
-                                                                <div class="row m-0 w-100">
-                                                                    <div class="col-lg-12 p-0 allcentered text-center">
-                                                                        <span style={{ fontWeight: 400, fontSize: '11px' }}>Price</span>
-                                                                    </div>
-                                                                    <div class="col-lg-12 p-0 allcentered text-center">
-                                                                        <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                            {parseFloat(chosenOrderContext?.price)} {chosenOrderContext?.currency}
-                                                                        </span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4">
-                                                                <div class="row m-0 w-100">
-                                                                    <div class="col-lg-12 p-0 allcentered text-center">
-                                                                        <span style={{ fontWeight: 400, fontSize: '11px' }}>Shipping</span>
-                                                                    </div>
-                                                                    <div class="col-lg-12 p-0 allcentered text-center">
-                                                                        <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                            {parseFloat(chosenOrderContext?.shippingPrice)} {chosenOrderContext?.currency}
-                                                                        </span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div style={{ fontWeight: 600, fontSize: '15px' }} className=" p-0 mb-2 allcentered col-lg-4">
-                                                                <div class="row m-0 w-100">
-                                                                    <div class="col-lg-12 p-0 allcentered text-center">
-                                                                        <span style={{ fontWeight: 400, fontSize: '11px' }}>Total</span>
-                                                                    </div>
-                                                                    <div class="col-lg-12 p-0 allcentered text-center">
-                                                                        <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                            {parseFloat(chosenOrderContext?.price) + parseFloat(chosenOrderContext?.shippingPrice)} {chosenOrderContext?.currency}
-                                                                        </span>
-                                                                    </div>
+                                                    {fetchOrderHistoryQuery?.data?.paginateOrderHistory?.data?.length == 0 && (
+                                                        <div class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
+                                                            <div class="row m-0 w-100">
+                                                                <FaLayerGroup size={30} class=" col-lg-12 mb-2" />
+                                                                <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
+                                                                    No History Yet
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    )}
+                                                    {fetchOrderHistoryQuery?.data?.paginateOrderHistory?.data?.length != 0 && (
+                                                        <div style={{ overflowY: 'scroll', height: '200px' }} class={' row m-0 w-100 p-0 pb-4 py-3 scrollmenuclasssubscrollbar'}>
+                                                            <Timeline
+                                                                style={{ width: '100%' }}
+                                                                sx={{
+                                                                    [`& .${timelineOppositeContentClasses.root}`]: {
+                                                                        flex: 0.2,
+                                                                    },
+                                                                }}
+                                                            >
+                                                                {fetchOrderHistoryQuery?.data?.paginateOrderHistory?.data?.map((historyItem, historyIndex) => {
+                                                                    return (
+                                                                        <TimelineItem>
+                                                                            <TimelineOppositeContent style={{ fontSize: '13px' }}>
+                                                                                <span style={{ fontSize: '13px', color: 'black', fontWeight: 600 }}>
+                                                                                    {dateformatterDayAndMonth(historyItem?.createdAt)}
+                                                                                </span>
+                                                                                <br />
+                                                                                {dateformatterTime(historyItem?.createdAt)}
+                                                                            </TimelineOppositeContent>
+                                                                            <TimelineSeparator>
+                                                                                <TimelineDot style={{ background: 'var(--primary)' }} />
+                                                                                {historyIndex < fetchOrderHistoryQuery?.data?.paginateOrderHistory?.data?.length - 1 && (
+                                                                                    <TimelineConnector style={{ background: 'var(--primary)' }} />
+                                                                                )}
+                                                                            </TimelineSeparator>
+                                                                            <TimelineContent style={{ fontWeight: 600, color: 'black', textTransform: 'capitalize' }}>
+                                                                                {historyItem?.status.split(/(?=[A-Z])/).join(' ')} <br />
+                                                                                {cookies.get('userInfo')?.type == 'employee' && (
+                                                                                    <span style={{ fontSize: '14px', fontWeight: 400 }}>{historyItem?.user?.name}</span>
+                                                                                )}
+                                                                            </TimelineContent>
+                                                                        </TimelineItem>
+                                                                    );
+                                                                })}
+                                                            </Timeline>
+                                                        </div>
+                                                    )}
                                                 </>
                                             )}
-                                            <div class="col-lg-12 p-0 ">
-                                                <div class="row m-0 w-100 d-flex justify-content-end align-items-center mt-2">
-                                                    {/* {queryParameters?.get('type') == 'inventory' && (
+                                            {historyType == 'payment' && (
+                                                <>
+                                                    {fetchTransactionHistoryQuery?.data?.paginateOrderTransactionsHistory?.data?.length == 0 && (
+                                                        <div class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
+                                                            <div class="row m-0 w-100">
+                                                                <FaLayerGroup size={30} class=" col-lg-12 mb-2" />
+                                                                <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
+                                                                    No History Yet
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                    {fetchTransactionHistoryQuery?.data?.paginateOrderTransactionsHistory?.data?.length != 0 && (
+                                                        <div style={{ overflowY: 'scroll', height: '200px' }} class={' row m-0 w-100 p-2 pb-4 py-3 scrollmenuclasssubscrollbar'}>
+                                                            <Timeline
+                                                                style={{ width: '100%' }}
+                                                                sx={{
+                                                                    [`& .${timelineOppositeContentClasses.root}`]: {
+                                                                        flex: 0.2,
+                                                                    },
+                                                                }}
+                                                            >
+                                                                {fetchTransactionHistoryQuery?.data?.paginateOrderTransactionsHistory?.data?.map((historyItem, historyIndex) => {
+                                                                    return (
+                                                                        <TimelineItem>
+                                                                            <TimelineOppositeContent style={{ fontSize: '13px' }}>
+                                                                                <span style={{ fontSize: '13px', color: 'black', fontWeight: 600 }}>
+                                                                                    {dateformatterDayAndMonth(historyItem?.createdAt)}
+                                                                                </span>
+                                                                                <br />
+                                                                                {dateformatterTime(historyItem?.createdAt)}
+                                                                            </TimelineOppositeContent>
+                                                                            <TimelineSeparator>
+                                                                                <TimelineDot style={{ background: 'var(--primary)' }} />
+                                                                                {historyIndex < fetchTransactionHistoryQuery?.data?.paginateOrderTransactionsHistory?.data?.length - 1 && (
+                                                                                    <TimelineConnector style={{ background: 'var(--primary)' }} />
+                                                                                )}
+                                                                            </TimelineSeparator>
+                                                                            <TimelineContent>
+                                                                                <span style={{ fontWeight: 600, color: 'black', textTransform: 'capitalize' }}>
+                                                                                    {historyItem?.type?.split(/(?=[A-Z])/).join(' ')}
+                                                                                </span>
+                                                                                <br />
+                                                                                <span style={{ fontSize: '14px', fontWeight: 400 }}>
+                                                                                    {historyItem?.status?.split(/(?=[A-Z])/).join(' ')}, {historyItem?.amount} {historyItem?.currency}
+                                                                                </span>{' '}
+                                                                                <br />
+                                                                                {cookies.get('userInfo')?.type == 'employee' && (
+                                                                                    <span style={{ fontSize: '14px', fontWeight: 400 }}>{historyItem?.auditedBy?.name}</span>
+                                                                                )}
+                                                                            </TimelineContent>
+                                                                        </TimelineItem>
+                                                                    );
+                                                                })}
+                                                            </Timeline>
+                                                        </div>
+                                                    )}
+                                                </>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-8">
+                                        <div class={generalstyles.card + ' row m-0 w-100 p-4'}>
+                                            <div class="col-lg-12 p-0">
+                                                <div class="row m-0 w-100 d-flex justify-content-between">
+                                                    <span style={{ fontWeight: 600 }} class="text-capitalize">
+                                                        Order Items:
+                                                    </span>
+                                                    <div
+                                                        style={{ width: '30px', height: '30px' }}
+                                                        class="iconhover allcentered"
+                                                        onClick={async () => {
+                                                            setitemsModal({ open: true, items: [], itemstobeadded: [] });
+                                                        }}
+                                                    >
+                                                        <TbPlus />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="col-lg-12 p-0 mt-2">
+                                                <div style={{ maxHeight: '40vh', overflow: 'scroll' }} class="row m-0 w-100 scrollmenuclasssubscrollbar">
+                                                    {chosenOrderContext?.orderItems?.map((orderItem, orderIndex) => {
+                                                        var organizedData = [];
+                                                        if (queryParameters?.get('type') == 'inventory') {
+                                                            organizedData = organizeInventory(orderItem?.inventory);
+                                                        }
+                                                        return (
+                                                            <div class="col-lg-12 p-0 mb-1">
+                                                                <div style={{ border: '1px solid #eee', borderRadius: '0.25rem' }} class="row m-0 w-100 p-1 align-items-center">
+                                                                    <div class="mr-2">
+                                                                        {orderItem?.partial && (
+                                                                            <div style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }} class="row m-0 w-100 p-1 px-3">
+                                                                                {orderItem?.partialCount}/{orderItem?.count}
+                                                                            </div>
+                                                                        )}
+                                                                        {!orderItem?.partial && (
+                                                                            <div style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }} class="row m-0 w-100 p-1 px-3">
+                                                                                {orderItem?.count}
+                                                                            </div>
+                                                                        )}
+                                                                    </div>
+                                                                    <div style={{ width: '50px', height: '50px', borderRadius: '7px', marginInlineEnd: '10px' }}>
+                                                                        <img
+                                                                            src={
+                                                                                orderItem?.info?.imageUrl
+                                                                                    ? orderItem?.info?.imageUrl
+                                                                                    : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'
+                                                                            }
+                                                                            style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
+                                                                        />
+                                                                    </div>
+                                                                    <div class="col-lg-4 d-flex align-items-center">
+                                                                        {queryParameters?.get('type') == 'inventory' && (
+                                                                            <div className="row m-0 w-100">
+                                                                                <div style={{ fontSize: '14px', fontWeight: 600 }} className={' col-lg-12 p-0'}>
+                                                                                    {orderItem?.info?.chosenOrderContext?.name}
+                                                                                </div>
+                                                                                <div style={{ fontSize: '13px' }} className={' col-lg-12 p-0'}>
+                                                                                    {orderItem?.info?.name}
+                                                                                </div>
+                                                                                <div style={{ color: 'lightgray', fontSize: '13px' }} className="col-lg-12 p-0">
+                                                                                    {orderItem?.info?.sku}
+                                                                                </div>
+                                                                            </div>
+                                                                        )}
+                                                                    </div>
+                                                                    <div class="col-lg-6 ">
+                                                                        <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
+                                                                            <div class="mr-2">
+                                                                                {orderItem?.partial && (
+                                                                                    <div style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }} class="row m-0 w-100 p-1 px-3">
+                                                                                        {parseFloat(parseFloat(orderItem?.partialCount) * parseFloat(orderItem?.unitPrice)).toFixed(2)}{' '}
+                                                                                        {chosenOrderContext?.currency}
+                                                                                    </div>
+                                                                                )}
+                                                                                {!orderItem?.partial && (
+                                                                                    <div style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }} class="row m-0 w-100 p-1 px-3">
+                                                                                        {parseFloat(parseFloat(orderItem?.count) * parseFloat(orderItem?.unitPrice)).toFixed(2)}{' '}
+                                                                                        {chosenOrderContext?.currency}
+                                                                                    </div>
+                                                                                )}
+                                                                            </div>
+                                                                            {queryParameters?.get('type') == 'inventory' && (
+                                                                                <div
+                                                                                    onClick={() => {
+                                                                                        if (orderItem?.countInInventory != 0) {
+                                                                                            // alert(JSON.stringify(orderItem?.inventory));
+
+                                                                                            setinventoryModal({ open: true, items: organizedData });
+                                                                                        }
+                                                                                    }}
+                                                                                    style={{ width: '30px', height: '30px' }}
+                                                                                    class={
+                                                                                        orderItem?.countInInventory == 0 ? 'allcentered iconhover text-danger' : 'allcentered iconhover text-success'
+                                                                                    }
+                                                                                >
+                                                                                    <MdOutlineInventory2 size={20} />
+                                                                                </div>
+                                                                            )}
+                                                                            <div
+                                                                                style={{ width: '30px', height: '30px' }}
+                                                                                class="iconhover allcentered"
+                                                                                onClick={async () => {
+                                                                                    if (!buttonLoading) {
+                                                                                        var temp = [...orderItemIds];
+                                                                                        temp.push(orderItem.id);
+                                                                                        await setorderItemIds([...temp]);
+                                                                                        setbuttonLoading(true);
+                                                                                        try {
+                                                                                            const { data } = await removeOrderItemsMutation();
+                                                                                            fetchOrder();
+                                                                                        } catch (error) {
+                                                                                            let errorMessage = 'An unexpected error occurred';
+                                                                                            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                                                                                errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                                                                            } else if (error.networkError) {
+                                                                                                errorMessage = error.networkError.message || errorMessage;
+                                                                                            } else if (error.message) {
+                                                                                                errorMessage = error.message;
+                                                                                            }
+
+                                                                                            NotificationManager.warning(errorMessage, 'Warning!');
+                                                                                            console.error('Error adding Inventory Rent:', error);
+                                                                                        }
+                                                                                        setbuttonLoading(false);
+                                                                                    }
+                                                                                }}
+                                                                            >
+                                                                                <TbTrash color="var(--danger)" />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div style={{ minHeight: '140px' }} class={generalstyles.card + ' row m-0 w-100 p-4'}>
+                                            <div style={{ cursor: props?.clickable ? 'pointer' : '' }} className="col-lg-12 p-0">
+                                                <div class={' row m-0 w-100 '}>
+                                                    <div className="col-lg-4 p-0">
+                                                        <div class="row m-0 w-100 d-flex align-items-center">
+                                                            <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
+                                                                # {chosenOrderContext?.id}
+                                                            </span>{' '}
+                                                            <span style={{ fontWeight: 600 }} class="text-capitalize">
+                                                                {chosenOrderContext?.merchant?.name}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
+                                                        <div class="row m-0 w-100  d-flex justify-content-end align-items-center">
+                                                            {outOfStock && queryParameters?.get('type') == 'inventory' && (
+                                                                <div className={'mr-1 wordbreak text-danger bg-light-danger rounded-pill font-weight-600 '}>Out Of Stock</div>
+                                                            )}
+
+                                                            <div
+                                                                // onClick={() => {
+                                                                //     setchangestatusmodal(true);
+                                                                // }}
+                                                                // style={{ cursor: 'pointer' }}
+                                                                className={
+                                                                    chosenOrderContext?.status == 'delivered'
+                                                                        ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 '
+                                                                        : chosenOrderContext?.status == 'postponed' || chosenOrderContext?.status == 'failedDeliveryAttempt'
+                                                                        ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 '
+                                                                        : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 '
+                                                                }
+                                                            >
+                                                                {orderStatusEnumContext?.map((i, ii) => {
+                                                                    if (i.value == chosenOrderContext?.status) {
+                                                                        return <span>{i.label}</span>;
+                                                                    }
+                                                                })}
+                                                            </div>
+                                                            <div
+                                                                // onClick={() => {
+                                                                //     setchangestatusmodal(true);
+                                                                // }}
+                                                                style={{ color: 'white' }}
+                                                                className={'ml-1 wordbreak bg-primary rounded-pill font-weight-600 '}
+                                                            >
+                                                                {orderTypeContext?.map((i, ii) => {
+                                                                    if (i.value == chosenOrderContext?.type) {
+                                                                        return <span>{i.label}</span>;
+                                                                    }
+                                                                })}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="col-lg-12 p-0 my-2">
+                                                        <hr className="m-0" />
+                                                    </div>
+
+                                                    <div class="col-lg-12 p-0 ">
+                                                        <div class="row m-0 w-100 d-flex justify-content-end align-items-center mt-2">
+                                                            {/* {queryParameters?.get('type') == 'inventory' && (
                                                         <div class="col-lg-6 p-0 d-flex align-item-center">
                                                             <div className={' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 mr-1 '}>{diffInDays} days late</div>
                                                         </div>
                                                     )} */}
 
-                                                    <div style={{ fontSize: '12px' }} class="col-lg-6 p-0 d-flex justify-content-end ">
-                                                        <p className={' m-0 p-0 wordbreak  '}>{dateformatter(chosenOrderContext?.orderDate)}</p>
+                                                            <div style={{ fontSize: '12px' }} class="col-lg-6 p-0 d-flex justify-content-end ">
+                                                                <p className={' m-0 p-0 wordbreak  '}>{dateformatter(chosenOrderContext?.orderDate)}</p>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class={generalstyles.card + ' row m-0 w-100 p-4'}>
-                                    <div className="col-lg-12 p-0 mb-2 text-capitalize">
-                                        <span style={{ fontWeight: 600 }}>{chosenOrderContext?.merchantCustomer?.customerName}</span>
-                                    </div>
-                                    <div className="col-lg-12 p-0 mb-1 d-flex align-items-center">
-                                        <MdOutlineLocationOn className="mr-1" />
-                                        <span style={{ fontWeight: 400, fontSize: '13px' }}>
-                                            {chosenOrderContext?.address?.city}, {chosenOrderContext?.address?.country}
-                                        </span>
-                                    </div>
-                                    <div className="col-lg-12 p-0 ">
-                                        <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                            {chosenOrderContext?.address?.streetAddress}, {chosenOrderContext?.address?.buildingNumber}, {chosenOrderContext?.address?.apartmentFloor}
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class={generalstyles.card + ' row m-0 w-100 p-4'}>
-                                    <div className="col-lg-12 p-0 mt-2">
-                                        <div className="row m-0 w-100 d-flex align-items-center">
-                                            <div className="col-lg-4 p-0">
-                                                <div className="text-capitalize" style={{ fontWeight: 600 }}>
-                                                    Can Be Opened
-                                                </div>
-                                                <div className="text-capitalize">{chosenOrderContext?.canBeOpened == 1 ? 'Yes' : 'No'}</div>
+                                    <div class="col-lg-4">
+                                        <div style={{ minHeight: '140px' }} class={generalstyles.card + ' row m-0 w-100 p-4'}>
+                                            <div className="col-lg-12 p-0 mb-2 text-capitalize">
+                                                <span style={{ fontWeight: 600 }}>{chosenOrderContext?.merchantCustomer?.customerName}</span>
                                             </div>
-                                            <div className="col-lg-4 p-0">
-                                                <div className="text-capitalize" style={{ fontWeight: 600 }}>
-                                                    Fragile
-                                                </div>
-                                                <div className="text-capitalize">{chosenOrderContext?.fragile == 1 ? 'Yes' : 'No'}</div>
+                                            <div className="col-lg-12 p-0 mb-1 d-flex align-items-center">
+                                                <MdOutlineLocationOn className="mr-1" />
+                                                <span style={{ fontWeight: 400, fontSize: '13px' }}>
+                                                    {chosenOrderContext?.address?.city}, {chosenOrderContext?.address?.country}
+                                                </span>
                                             </div>
-                                            <div className="col-lg-4 p-0">
-                                                <div className="text-capitalize" style={{ fontWeight: 600 }}>
-                                                    Fragile
-                                                </div>
-                                                <div className="text-capitalize">{chosenOrderContext?.deliveryPart == 1 ? 'Yes' : 'No'}</div>
-                                            </div>
-                                            <div className="col-lg-4 p-0 mt-2">
-                                                <div className="text-capitalize" style={{ fontWeight: 600 }}>
-                                                    Payment Method
-                                                </div>
-                                                <div className="text-capitalize">{chosenOrderContext?.paymentType}</div>
-                                            </div>
-                                            <div className="col-lg-4 p-0 mt-2">
-                                                <div className="text-capitalize" style={{ fontWeight: 600 }}>
-                                                    Order Type
-                                                </div>
-                                                <div className="text-capitalize">{chosenOrderContext?.type}</div>
+                                            <div className="col-lg-12 p-0 ">
+                                                <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                    {chosenOrderContext?.address?.streetAddress}, {chosenOrderContext?.address?.buildingNumber}, {chosenOrderContext?.address?.apartmentFloor}
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class={generalstyles.card + ' row m-0 w-100 p-4'}>
-                                    <div className="col-lg-12 p-0 mt-2">
-                                        <div style={{ maxHeight: '40vh', overflow: 'scroll' }} class="row m-0 w-100 scrollmenuclasssubscrollbar">
-                                            {chosenOrderContext?.orderItems?.map((orderItem, orderIndex) => {
-                                                var organizedData = [];
-                                                if (queryParameters?.get('type') == 'inventory') {
-                                                    organizedData = organizeInventory(orderItem?.inventory);
-                                                }
-                                                return (
-                                                    <div class="col-lg-12 p-0 mb-1">
-                                                        <div style={{ border: '1px solid #eee', borderRadius: '0.25rem' }} class="row m-0 w-100 p-1 align-items-center">
-                                                            <div class="mr-2">
-                                                                {orderItem?.partial && (
-                                                                    <div style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }} class="row m-0 w-100 p-1 px-3">
-                                                                        {orderItem?.partialCount}/{orderItem?.count}
-                                                                    </div>
-                                                                )}
-                                                                {!orderItem?.partial && (
-                                                                    <div style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }} class="row m-0 w-100 p-1 px-3">
-                                                                        {orderItem?.count}
-                                                                    </div>
-                                                                )}
-                                                            </div>
-                                                            <div style={{ width: '50px', height: '50px', borderRadius: '7px', marginInlineEnd: '10px' }}>
-                                                                <img
-                                                                    src={
-                                                                        orderItem?.info?.imageUrl
-                                                                            ? orderItem?.info?.imageUrl
-                                                                            : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'
-                                                                    }
-                                                                    style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
-                                                                />
-                                                            </div>
-                                                            <div class="col-lg-4 d-flex align-items-center">
-                                                                {queryParameters?.get('type') == 'inventory' && (
-                                                                    <div className="row m-0 w-100">
-                                                                        <div style={{ fontSize: '14px', fontWeight: 600 }} className={' col-lg-12 p-0'}>
-                                                                            {orderItem?.info?.chosenOrderContext?.name}
-                                                                        </div>
-                                                                        <div style={{ fontSize: '13px' }} className={' col-lg-12 p-0'}>
-                                                                            {orderItem?.info?.name}
-                                                                        </div>
-                                                                        <div style={{ color: 'lightgray', fontSize: '13px' }} className="col-lg-12 p-0">
-                                                                            {orderItem?.info?.sku}
-                                                                        </div>
-                                                                    </div>
-                                                                )}
-                                                            </div>
-                                                            <div class="col-lg-5 ">
-                                                                <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
-                                                                    <div class="mr-2">
-                                                                        {orderItem?.partial && (
-                                                                            <div style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }} class="row m-0 w-100 p-1 px-3">
-                                                                                {parseFloat(parseFloat(orderItem?.partialCount) * parseFloat(orderItem?.unitPrice)).toFixed(2)}{' '}
-                                                                                {chosenOrderContext?.currency}
-                                                                            </div>
-                                                                        )}
-                                                                        {!orderItem?.partial && (
-                                                                            <div style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }} class="row m-0 w-100 p-1 px-3">
-                                                                                {parseFloat(parseFloat(orderItem?.count) * parseFloat(orderItem?.unitPrice)).toFixed(2)} {chosenOrderContext?.currency}
-                                                                            </div>
-                                                                        )}
-                                                                    </div>
-                                                                    {queryParameters?.get('type') == 'inventory' && (
-                                                                        <div
-                                                                            onClick={() => {
-                                                                                if (orderItem?.countInInventory != 0) {
-                                                                                    // alert(JSON.stringify(orderItem?.inventory));
 
-                                                                                    setinventoryModal({ open: true, items: organizedData });
-                                                                                }
-                                                                            }}
-                                                                            style={{ width: '30px', height: '30px' }}
-                                                                            class={orderItem?.countInInventory == 0 ? 'allcentered iconhover text-danger' : 'allcentered iconhover text-success'}
-                                                                        >
-                                                                            <MdOutlineInventory2 size={20} />
-                                                                        </div>
-                                                                    )}
-                                                                </div>
-                                                            </div>
+                                    <div class="col-lg-4">
+                                        <div style={{ minHeight: '140px' }} class={generalstyles.card + ' row m-0 w-100 p-4'}>
+                                            <div style={{ fontSize: '12px' }} className="col-lg-12 p-0 mt-2">
+                                                <div className="row m-0 w-100 d-flex align-items-center">
+                                                    <div className="col-lg-4 p-0">
+                                                        <div className="text-capitalize" style={{ fontWeight: 600 }}>
+                                                            Can Be Opened
                                                         </div>
+                                                        <div className="text-capitalize">{chosenOrderContext?.canBeOpened == 1 ? 'Yes' : 'No'}</div>
                                                     </div>
-                                                );
-                                            })}
+                                                    <div className="col-lg-4 p-0">
+                                                        <div className="text-capitalize" style={{ fontWeight: 600 }}>
+                                                            Fragile
+                                                        </div>
+                                                        <div className="text-capitalize">{chosenOrderContext?.fragile == 1 ? 'Yes' : 'No'}</div>
+                                                    </div>
+                                                    <div className="col-lg-4 p-0">
+                                                        <div className="text-capitalize" style={{ fontWeight: 600 }}>
+                                                            Fragile
+                                                        </div>
+                                                        <div className="text-capitalize">{chosenOrderContext?.deliveryPart == 1 ? 'Yes' : 'No'}</div>
+                                                    </div>
+                                                    <div className="col-lg-4 p-0 mt-2">
+                                                        <div className="text-capitalize" style={{ fontWeight: 600 }}>
+                                                            Payment Method
+                                                        </div>
+                                                        <div className="text-capitalize">{chosenOrderContext?.paymentType}</div>
+                                                    </div>
+                                                    <div className="col-lg-4 p-0 mt-2">
+                                                        <div className="text-capitalize" style={{ fontWeight: 600 }}>
+                                                            Order Type
+                                                        </div>
+                                                        <div className="text-capitalize">{chosenOrderContext?.type}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class={generalstyles.card + ' row m-0 w-100 p-4'}>
-                                    <div class="col-lg-12 p-0 mb-3">
-                                        <div class="row m-0 w-100 allcentered">
-                                            <button
-                                                onClick={() => sethistoryType('order')}
-                                                style={{ fontWeight: historyType == 'order' ? 800 : 400, width: '40%' }}
-                                                class={generalstyles.roundbutton + ' allcentered p-0 mr-2'}
-                                            >
-                                                Order History
-                                            </button>
-                                            <button
-                                                onClick={() => sethistoryType('payment')}
-                                                style={{ fontWeight: historyType == 'payment' ? 800 : 400, width: '40%' }}
-                                                class={generalstyles.roundbutton + ' allcentered p-0 '}
-                                            >
-                                                Transaction History
-                                            </button>
-                                        </div>
-                                    </div>
-                                    {historyType == 'order' && (
-                                        <>
-                                            {fetchOrderHistoryQuery?.data?.paginateOrderHistory?.data?.length == 0 && (
-                                                <div class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
-                                                    <div class="row m-0 w-100">
-                                                        <FaLayerGroup size={30} class=" col-lg-12 mb-2" />
-                                                        <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
-                                                            No History Yet
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )}
-                                            {fetchOrderHistoryQuery?.data?.paginateOrderHistory?.data?.length != 0 && (
-                                                <div style={{ overflowY: 'scroll' }} class={' row m-0 w-100 p-0 pb-4 py-3 scrollmenuclasssubscrollbar'}>
-                                                    <Timeline
-                                                        style={{ width: '100%' }}
-                                                        sx={{
-                                                            [`& .${timelineOppositeContentClasses.root}`]: {
-                                                                flex: 0.2,
-                                                            },
-                                                        }}
-                                                    >
-                                                        {fetchOrderHistoryQuery?.data?.paginateOrderHistory?.data?.map((historyItem, historyIndex) => {
-                                                            return (
-                                                                <TimelineItem>
-                                                                    <TimelineOppositeContent style={{ fontSize: '13px' }}>
-                                                                        <span style={{ fontSize: '13px', color: 'black', fontWeight: 600 }}>{dateformatterDayAndMonth(historyItem?.createdAt)}</span>
-                                                                        <br />
-                                                                        {dateformatterTime(historyItem?.createdAt)}
-                                                                    </TimelineOppositeContent>
-                                                                    <TimelineSeparator>
-                                                                        <TimelineDot style={{ background: 'var(--primary)' }} />
-                                                                        {historyIndex < fetchOrderHistoryQuery?.data?.paginateOrderHistory?.data?.length - 1 && (
-                                                                            <TimelineConnector style={{ background: 'var(--primary)' }} />
-                                                                        )}
-                                                                    </TimelineSeparator>
-                                                                    <TimelineContent style={{ fontWeight: 600, color: 'black', textTransform: 'capitalize' }}>
-                                                                        {historyItem?.status.split(/(?=[A-Z])/).join(' ')} <br />
-                                                                        {cookies.get('userInfo')?.type == 'employee' && (
-                                                                            <span style={{ fontSize: '14px', fontWeight: 400 }}>{historyItem?.user?.name}</span>
-                                                                        )}
-                                                                    </TimelineContent>
-                                                                </TimelineItem>
-                                                            );
-                                                        })}
-                                                    </Timeline>
-                                                </div>
-                                            )}
-                                        </>
-                                    )}
-                                    {historyType == 'payment' && (
-                                        <>
-                                            {fetchTransactionHistoryQuery?.data?.paginateOrderTransactionsHistory?.data?.length == 0 && (
-                                                <div class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
-                                                    <div class="row m-0 w-100">
-                                                        <FaLayerGroup size={30} class=" col-lg-12 mb-2" />
-                                                        <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
-                                                            No History Yet
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )}
-                                            {fetchTransactionHistoryQuery?.data?.paginateOrderTransactionsHistory?.data?.length != 0 && (
-                                                <div style={{ overflowY: 'scroll' }} class={' row m-0 w-100 p-2 pb-4 py-3 scrollmenuclasssubscrollbar'}>
-                                                    <Timeline
-                                                        style={{ width: '100%' }}
-                                                        sx={{
-                                                            [`& .${timelineOppositeContentClasses.root}`]: {
-                                                                flex: 0.2,
-                                                            },
-                                                        }}
-                                                    >
-                                                        {fetchTransactionHistoryQuery?.data?.paginateOrderTransactionsHistory?.data?.map((historyItem, historyIndex) => {
-                                                            return (
-                                                                <TimelineItem>
-                                                                    <TimelineOppositeContent style={{ fontSize: '13px' }}>
-                                                                        <span style={{ fontSize: '13px', color: 'black', fontWeight: 600 }}>{dateformatterDayAndMonth(historyItem?.createdAt)}</span>
-                                                                        <br />
-                                                                        {dateformatterTime(historyItem?.createdAt)}
-                                                                    </TimelineOppositeContent>
-                                                                    <TimelineSeparator>
-                                                                        <TimelineDot style={{ background: 'var(--primary)' }} />
-                                                                        {historyIndex < fetchTransactionHistoryQuery?.data?.paginateOrderTransactionsHistory?.data?.length - 1 && (
-                                                                            <TimelineConnector style={{ background: 'var(--primary)' }} />
-                                                                        )}
-                                                                    </TimelineSeparator>
-                                                                    <TimelineContent>
-                                                                        <span style={{ fontWeight: 600, color: 'black', textTransform: 'capitalize' }}>
-                                                                            {historyItem?.type?.split(/(?=[A-Z])/).join(' ')}
-                                                                        </span>
-                                                                        <br />
-                                                                        <span style={{ fontSize: '14px', fontWeight: 400 }}>
-                                                                            {historyItem?.status?.split(/(?=[A-Z])/).join(' ')}, {historyItem?.amount} {historyItem?.currency}
-                                                                        </span>{' '}
-                                                                        <br />
-                                                                        {cookies.get('userInfo')?.type == 'employee' && (
-                                                                            <span style={{ fontSize: '14px', fontWeight: 400 }}>{historyItem?.auditedBy?.name}</span>
-                                                                        )}
-                                                                    </TimelineContent>
-                                                                </TimelineItem>
-                                                            );
-                                                        })}
-                                                    </Timeline>
-                                                </div>
-                                            )}
-                                        </>
-                                    )}
-                                </div>
-                            </>
-                        )}
+                                </>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
+            <Modal
+                show={itemsModal.open}
+                onHide={() => {
+                    setitemsModal({ open: false, items: [], itemstobeadded: [] });
+                }}
+                centered
+                size={'lg'}
+            >
+                <Modal.Header>
+                    <div className="row w-100 m-0 p-0">
+                        <div class="col-lg-6 pt-3 ">
+                            <div className="row w-100 m-0 p-0">Items</div>
+                        </div>
+                        <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
+                            <div
+                                class={'close-modal-container'}
+                                onClick={() => {
+                                    setitemsModal({ open: false, items: [], itemstobeadded: [] });
+                                }}
+                            >
+                                <IoMdClose />
+                            </div>
+                        </div>{' '}
+                    </div>
+                </Modal.Header>
+                <Modal.Body>
+                    <div class="row m-0 w-100 py-2">
+                        <div class="col-lg-6 p-0 mb-3">
+                            <button
+                                class={generalstyles.roundbutton}
+                                onClick={async () => {
+                                    setbuttonLoading(true);
+                                    try {
+                                        var temp = [];
+                                        await itemsModal?.items?.map((item, index) => {
+                                            temp.push({ itemVariantId: item?.item?.id, count: item?.count });
+                                        });
+                                        await setitemsModal({ ...itemsModal, itemstobeadded: temp, open: false });
+                                        await addOrderItemsMutation();
+                                    } catch (error) {
+                                        let errorMessage = 'An unexpected error occurred';
+                                        if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                            errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                        } else if (error.networkError) {
+                                            errorMessage = error.networkError.message || errorMessage;
+                                        } else if (error.message) {
+                                            errorMessage = error.message;
+                                        }
+
+                                        NotificationManager.warning(errorMessage, 'Warning!');
+                                        console.error('Error adding Merchant:', error);
+                                    }
+                                    setbuttonLoading(false);
+                                }}
+                            >
+                                {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                {!buttonLoading && <span>Add Items</span>}
+                            </button>
+                        </div>
+                        <div class="col-lg-6 p-0 mb-3">
+                            <Pagination
+                                beforeCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.beforeCursor}
+                                afterCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.afterCursor}
+                                filter={filter}
+                                setfilter={setfilter}
+                            />
+                        </div>
+                        <ItemsTable
+                            clickable={true}
+                            selectedItems={itemsModal?.items ?? []}
+                            actiononclick={(item) => {
+                                var temp = { ...itemsModal };
+                                var exist = false;
+                                var chosenindex = null;
+                                temp.items.map((i, ii) => {
+                                    if (i?.item?.sku == item?.sku) {
+                                        exist = true;
+                                        chosenindex = ii;
+                                    }
+                                });
+                                if (!exist) {
+                                    temp.items = [{ item: item, count: 1 }];
+                                } else {
+                                    temp.items[chosenindex].count = parseInt(temp.items[chosenindex].count) + 1;
+                                }
+                                setitemsModal({ ...temp });
+                            }}
+                            card="col-lg-4 px-1"
+                            items={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.data}
+                        />
+                    </div>
+                </Modal.Body>
+            </Modal>
             <Modal
                 show={inventoryModal.open}
                 onHide={() => {
@@ -623,6 +798,120 @@ const OrderInfo = (props) => {
                                 </div>
                             </>
                         ))}
+                    </div>
+                </Modal.Body>
+            </Modal>
+            <Modal
+                show={returnOrderModal}
+                onHide={() => {
+                    setreturnOrderModal(false);
+                }}
+                centered
+                size={'md'}
+            >
+                <Modal.Header>
+                    <div className="row w-100 m-0 p-0">
+                        <div class="col-lg-6 pt-3 ">
+                            <div className="row w-100 m-0 p-0">Request Return</div>
+                        </div>
+                        <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
+                            <div
+                                class={'close-modal-container'}
+                                onClick={() => {
+                                    setreturnOrderModal(false);
+                                }}
+                            >
+                                <IoMdClose />
+                            </div>
+                        </div>{' '}
+                    </div>
+                </Modal.Header>
+                <Modal.Body>
+                    <div class="row m-0 w-100 py-2">
+                        <Form
+                            size={'md'}
+                            submit={submit}
+                            setsubmit={setsubmit}
+                            attr={
+                                !requestReturnPayload?.originalPrice
+                                    ? [
+                                          {
+                                              name: 'Order Date',
+                                              attr: 'orderDate',
+                                              type: 'date',
+                                              size: '12',
+                                          },
+                                          {
+                                              name: 'Original Price',
+                                              attr: 'originalPrice',
+                                              type: 'switch',
+                                              size: '12',
+                                          },
+                                          {
+                                              name: 'Return Amount',
+                                              attr: 'returnAmount',
+                                              type: 'number',
+                                              size: '12',
+                                          },
+                                          {
+                                              name: 'Free Shipping',
+                                              attr: 'freeShipping',
+                                              type: 'switch',
+                                              size: '12',
+                                          },
+                                      ]
+                                    : [
+                                          {
+                                              name: 'Order Date',
+                                              attr: 'orderDate',
+                                              type: 'date',
+                                              size: '12',
+                                          },
+                                          {
+                                              name: 'Original Price',
+                                              attr: 'originalPrice',
+                                              type: 'switch',
+                                              size: '12',
+                                          },
+
+                                          {
+                                              name: 'Free Shipping',
+                                              attr: 'freeShipping',
+                                              type: 'switch',
+                                              size: '12',
+                                          },
+                                      ]
+                            }
+                            payload={requestReturnPayload}
+                            setpayload={setrequestReturnPayload}
+                            button1disabled={buttonLoading}
+                            button1class={generalstyles.roundbutton + '  mr-2 '}
+                            button1placeholder={'Request Return'}
+                            button1onClick={async () => {
+                                setbuttonLoading(true);
+
+                                try {
+                                    const data = await requestOrderReturnMutation();
+                                    setTimeout(() => {
+                                        findOneOrder();
+                                        NotificationManager.success('Request Return submmited', 'success!');
+                                        setreturnOrderModal(false);
+                                    }, 1000);
+                                } catch (error) {
+                                    let errorMessage = 'An unexpected error occurred';
+                                    if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                        errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                    } else if (error.networkError) {
+                                        errorMessage = error.networkError.message || errorMessage;
+                                    } else if (error.message) {
+                                        errorMessage = error.message;
+                                    }
+
+                                    NotificationManager.warning(errorMessage, 'Warning!');
+                                }
+                                setbuttonLoading(false);
+                            }}
+                        />
                     </div>
                 </Modal.Body>
             </Modal>

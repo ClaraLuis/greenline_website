@@ -133,6 +133,22 @@ const API = () => {
         `;
     };
 
+    const removeOrderItems = () => {
+        return gql`
+            mutation removeOrderItems($input: RemoveOrderItemsInput!) {
+                removeOrderItems(input: $input)
+            }
+        `;
+    };
+
+    const addOrderItems = () => {
+        return gql`
+            mutation addOrderItems($input: AddOrderItemsInput!) {
+                addOrderItems(input: $input)
+            }
+        `;
+    };
+
     const updateMerchantDomesticShipping = () => {
         return gql`
             mutation updateMerchantDomesticShipping($input: UpdateMerchantDomesticShippingInput!) {
@@ -1106,7 +1122,6 @@ const API = () => {
                     unitPrice
                     unitDiscount
                     partialCount
-                    countInInventory
                     info {
                         name
                         imageUrl
@@ -2023,6 +2038,8 @@ const API = () => {
         updateMerchantDomesticShipping,
         createInventoryRent,
         updateInventoryRent,
+        removeOrderItems,
+        addOrderItems,
         fetchHubs,
         fetchOrderHistory,
         paginateReturnPackageHistory,
