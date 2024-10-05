@@ -149,6 +149,14 @@ const API = () => {
         `;
     };
 
+    const changeOrderCustomerInfo = () => {
+        return gql`
+            mutation changeOrderCustomerInfo($input: ChangeOrderCustomerInfoInput!) {
+                changeOrderCustomerInfo(input: $input)
+            }
+        `;
+    };
+
     const updateMerchantDomesticShipping = () => {
         return gql`
             mutation updateMerchantDomesticShipping($input: UpdateMerchantDomesticShippingInput!) {
@@ -2040,6 +2048,7 @@ const API = () => {
         updateInventoryRent,
         removeOrderItems,
         addOrderItems,
+        changeOrderCustomerInfo,
         fetchHubs,
         fetchOrderHistory,
         paginateReturnPackageHistory,

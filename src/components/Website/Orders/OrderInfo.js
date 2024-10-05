@@ -13,7 +13,7 @@ import API from '../../../API/API.js';
 
 import { FaLayerGroup } from 'react-icons/fa';
 import { IoMdClose } from 'react-icons/io';
-import { MdOutlineInventory2, MdOutlineLocationOn } from 'react-icons/md';
+import { MdClose, MdOutlineInventory2, MdOutlineLocationOn } from 'react-icons/md';
 
 import Timeline from '@mui/lab/Timeline';
 import TimelineConnector from '@mui/lab/TimelineConnector';
@@ -23,12 +23,14 @@ import TimelineItem from '@mui/lab/TimelineItem';
 import TimelineSeparator from '@mui/lab/TimelineSeparator';
 
 import TimelineOppositeContent, { timelineOppositeContentClasses } from '@mui/lab/TimelineOppositeContent';
-import { TbPlus, TbTrash } from 'react-icons/tb';
+import { TbEdit, TbPlus, TbTrash } from 'react-icons/tb';
 import { NotificationManager } from 'react-notifications';
 import Pagination from '../../Pagination.js';
 import ItemsTable from '../MerchantItems/ItemsTable.js';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
 import Form from '../../Form.js';
+import DynamicInputfield from '../DynamicInputfield/DynamicInputfield.js';
+import Inputfield from '../../Inputfield.js';
 
 const OrderInfo = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -48,6 +50,9 @@ const OrderInfo = (props) => {
         findOneOrder,
         fetchMerchantItemVariants,
         requestOrderReturn,
+        changeOrderCustomerInfo,
+        fetchCustomerNameSuggestions,
+        fetchCustomer,
     } = API();
     const steps = ['Merchant Info', 'Shipping', 'Inventory Settings'];
     const [inventoryModal, setinventoryModal] = useState({ open: false, items: [] });
@@ -58,6 +63,45 @@ const OrderInfo = (props) => {
     const [buttonLoading, setbuttonLoading] = useState(false);
     const [returnOrderModal, setreturnOrderModal] = useState(false);
     const [submit, setsubmit] = useState(false);
+    const [newCustomer, setnewCustomer] = useState(false);
+    const [openModal, setopenModal] = useState(false);
+    const [loading, setloading] = useState(false);
+    const [nameSuggestions, setnameSuggestions] = useState([]);
+    const [customerData, setcustomerData] = useState({});
+    const [customerDataSuggestions, setcustomerDataSuggestions] = useState({});
+    const [customerFound, setcustomerFound] = useState(false);
+    const [fetchSuggestions, setfetchSuggestions] = useState(false);
+    const [fetching, setfetching] = useState(false);
+    const [editCustomer, seteditCustomer] = useState(false);
+
+    const [orderpayload, setorderpayload] = useState({
+        functype: 'add',
+        items: [],
+        returnOrderItems: [],
+        user: '',
+        address: '',
+        ordertype: 'delivery',
+        paymenttype: 'cash',
+        shippingprice: '',
+        canbeoppened: 1,
+        fragile: 0,
+        partialdelivery: 1,
+        original: 1,
+        returnoriginal: 1,
+        price: undefined,
+        returnAmount: undefined,
+        includevat: 0,
+        previousOrderId: undefined,
+        returnOrderId: undefined,
+        // currency: 'EGP',
+    });
+    const [filterCustomerPayload, setfilterCustomerPayload] = useState({
+        phone: '',
+        email: '',
+        myCustomers: true,
+        limit: 20,
+        merchantId: chosenOrderContext?.merchant?.id,
+    });
 
     const [itemsModal, setitemsModal] = useState({ open: false, items: [], itemstobeadded: [] });
     const [filter, setfilter] = useState({
@@ -88,6 +132,8 @@ const OrderInfo = (props) => {
     const fetchOrderHistoryQuery = useQueryGQL('', fetchOrderHistory(), filterordershistory);
 
     const [fetchOneOrderLazyQuery] = useLazyQueryGQL(findOneOrder());
+    const [checkCustomerNameSuggestions] = useLazyQueryGQL(fetchCustomerNameSuggestions());
+    const [checkCustomer] = useLazyQueryGQL(fetchCustomer());
 
     const fetchTransactionHistoryQuery = useQueryGQL('', fetchTransactionHistory(), filterordershistory);
 
@@ -198,7 +244,82 @@ const OrderInfo = (props) => {
         keepCurrentPrice: true,
     });
 
+    const [changeOrderCustomerInfoMutation] = useMutationGQL(changeOrderCustomerInfo(), {
+        orderId: parseInt(queryParameters?.get('orderId')),
+        mercahantCustomerId: orderpayload?.customerId,
+    });
+
     const fetchMerchantItemVariantsQuery = useQueryGQL('', fetchMerchantItemVariants(), filter);
+    useEffect(async () => {
+        setnewCustomer(false);
+        var customerFound = false;
+        if (customerData?.findCustomer?.data?.length != 0) {
+            if (customerData?.findCustomer?.data[0]) {
+                setorderpayload({
+                    ...orderpayload,
+                    customerId: customerData?.findCustomer?.data[0]?.details?.id,
+                    email: customerData?.findCustomer?.data[0]?.email,
+                    user: customerData?.findCustomer?.data[0]?.details?.customerName,
+                });
+                setcustomerFound(true);
+
+                customerFound = true;
+            }
+        }
+        if (customerData?.findCustomer?.data?.length == 0 && !fetchSuggestions) {
+            setorderpayload({ ...orderpayload, user: '', customerId: '' });
+            await setfilterCustomerPayload({ ...filterCustomerPayload, myCustomers: false });
+            try {
+                var { data, loading } = await checkCustomerNameSuggestions({
+                    variables: {
+                        input: {
+                            phone: filterCustomerPayload?.phone,
+                            email: filterCustomerPayload?.email,
+                            myCustomers: false,
+                            limit: filterCustomerPayload?.limit,
+                            merchantId: chosenOrderContext?.merchant?.id,
+                        },
+                        merchantId: chosenOrderContext?.merchant?.id,
+                    },
+                });
+                setloading(loading);
+                setfetchSuggestions(true);
+                setcustomerFound(false);
+                setcustomerDataSuggestions({ ...data });
+            } catch (error) {
+                let errorMessage = 'An unexpected error occurred';
+                if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                    errorMessage = error.graphQLErrors[0].message || errorMessage;
+                } else if (error.networkError) {
+                    errorMessage = error.networkError.message || errorMessage;
+                } else if (error.message) {
+                    errorMessage = error.message;
+                }
+
+                NotificationManager.warning(errorMessage, 'Warning!');
+                console.error('Error adding Merchant:', error);
+            }
+        }
+    }, [customerData, customerDataSuggestions]);
+    useEffect(() => {
+        var nameSuggestions = [];
+        if (customerDataSuggestions?.findCustomer?.data?.length != 0 && customerDataSuggestions?.findCustomer?.data[0]?.nameSuggestions?.length != 0) {
+            if (customerDataSuggestions?.findCustomer?.data[0]) {
+                setorderpayload({
+                    ...orderpayload,
+                    customerId: customerDataSuggestions?.findCustomer?.data[0]?.details?.id,
+                    email: customerDataSuggestions?.findCustomer?.data[0]?.email,
+                });
+                nameSuggestions = [...customerDataSuggestions?.findCustomer?.data[0]?.nameSuggestions];
+                setnewCustomer(false);
+            }
+        } else {
+            setnewCustomer(true);
+        }
+        setcustomerFound(false);
+
+        setnameSuggestions([...nameSuggestions]);
+    }, [customerDataSuggestions]);
 
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
@@ -574,22 +695,288 @@ const OrderInfo = (props) => {
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
-                                        <div style={{ minHeight: '140px' }} class={generalstyles.card + ' row m-0 w-100 p-4'}>
-                                            <div className="col-lg-12 p-0 mb-2 text-capitalize">
-                                                <span style={{ fontWeight: 600 }}>{chosenOrderContext?.merchantCustomer?.customerName}</span>
+                                        {!editCustomer && (
+                                            <div style={{ minHeight: '140px' }} class={generalstyles.card + ' row m-0 w-100 p-4'}>
+                                                <div className="col-lg-6 p-0 mb-2 text-capitalize">
+                                                    <span style={{ fontWeight: 600 }}>{chosenOrderContext?.merchantCustomer?.customerName}</span>
+                                                </div>
+                                                <div className="col-lg-6 p-0 mb-2 text-capitalize d-flex justify-content-end">
+                                                    <div
+                                                        style={{ height: '30px', width: '30px' }}
+                                                        class="iconhover allcentered"
+                                                        onClick={() => {
+                                                            seteditCustomer(true);
+                                                        }}
+                                                    >
+                                                        <TbEdit />
+                                                    </div>
+                                                </div>
+                                                <div className="col-lg-12 p-0 mb-1 d-flex align-items-center">
+                                                    <MdOutlineLocationOn className="mr-1" />
+                                                    <span style={{ fontWeight: 400, fontSize: '13px' }}>
+                                                        {chosenOrderContext?.address?.city}, {chosenOrderContext?.address?.country}
+                                                    </span>
+                                                </div>
+                                                <div className="col-lg-12 p-0 ">
+                                                    <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                        {chosenOrderContext?.address?.streetAddress}, {chosenOrderContext?.address?.buildingNumber}, {chosenOrderContext?.address?.apartmentFloor}
+                                                    </span>
+                                                </div>
                                             </div>
-                                            <div className="col-lg-12 p-0 mb-1 d-flex align-items-center">
-                                                <MdOutlineLocationOn className="mr-1" />
-                                                <span style={{ fontWeight: 400, fontSize: '13px' }}>
-                                                    {chosenOrderContext?.address?.city}, {chosenOrderContext?.address?.country}
-                                                </span>
+                                        )}
+
+                                        {editCustomer && (
+                                            <div class={generalstyles.card + ' row m-0 w-100 p-3'}>
+                                                <div class="col-lg-12 p-0 mt-3 ">
+                                                    <div
+                                                        style={{ height: '30px', width: '30px', position: 'absolute', right: 0, zIndex: 1000, top: -10 }}
+                                                        class="iconhover allcentered"
+                                                        onClick={() => {
+                                                            seteditCustomer(false);
+                                                        }}
+                                                    >
+                                                        <MdClose />
+                                                    </div>
+                                                    <div class="row m-0 w-100 d-flex align-items-center">
+                                                        <div class={'col-lg-12'}>
+                                                            <label style={{ fontSize: '1.8vh' }} class="m-0 mb-2">
+                                                                Phone
+                                                            </label>
+                                                            <Inputfield
+                                                                hideLabel={true}
+                                                                placeholder={'phone'}
+                                                                value={filterCustomerPayload?.phone}
+                                                                onChange={(event) => {
+                                                                    setcustomerFound(false);
+                                                                    setopenModal(false);
+                                                                    setnewCustomer(false);
+                                                                    setnameSuggestions([]);
+                                                                    setfilterCustomerPayload({ ...filterCustomerPayload, phone: event.target.value, myCustomers: true });
+                                                                    setorderpayload({ ...orderpayload, phone: event.target.value });
+                                                                }}
+                                                                type={'number'}
+                                                            />
+                                                        </div>
+
+                                                        <div class={'col-lg-12 '}>
+                                                            <label style={{ fontSize: '1.8vh' }} class="m-0 mb-2">
+                                                                Email
+                                                            </label>
+                                                            <Inputfield
+                                                                hideLabel={true}
+                                                                placeholder={'email'}
+                                                                value={orderpayload?.email}
+                                                                onChange={(event) => {
+                                                                    setcustomerFound(false);
+                                                                    setopenModal(false);
+                                                                    setnewCustomer(false);
+                                                                    setnameSuggestions([]);
+                                                                    setfilterCustomerPayload({ ...filterCustomerPayload, email: event.target.value, myCustomers: true });
+                                                                    setorderpayload({ ...orderpayload, email: event.target.value });
+                                                                }}
+                                                                type={'text'}
+                                                            />
+                                                        </div>
+                                                        <div class="col-lg-12 p-0 ">
+                                                            <button
+                                                                onClick={async () => {
+                                                                    if (filterCustomerPayload?.phone?.length != 0 || filterCustomerPayload?.email?.length != 0) {
+                                                                        try {
+                                                                            setfetchSuggestions(false);
+                                                                            setcustomerFound(false);
+                                                                            setfetching(true);
+                                                                            var { data } = await checkCustomer({
+                                                                                variables: {
+                                                                                    input: {
+                                                                                        phone: filterCustomerPayload?.phone,
+                                                                                        email: filterCustomerPayload?.email,
+                                                                                        myCustomers: true,
+                                                                                        limit: filterCustomerPayload?.limit,
+                                                                                        merchantId: chosenOrderContext?.merchant?.id,
+                                                                                    },
+                                                                                    merchantId: chosenOrderContext?.merchant?.id,
+                                                                                },
+                                                                            });
+                                                                            setcustomerData({ ...data });
+                                                                            setfetching(false);
+                                                                        } catch (error) {
+                                                                            let errorMessage = 'An unexpected error occurred';
+                                                                            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                                                                errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                                                            } else if (error.networkError) {
+                                                                                errorMessage = error.networkError.message || errorMessage;
+                                                                            } else if (error.message) {
+                                                                                errorMessage = error.message;
+                                                                            }
+
+                                                                            NotificationManager.warning(errorMessage, 'Warning!');
+                                                                            console.error(':', error);
+                                                                        }
+                                                                    } else {
+                                                                        NotificationManager.warning('', 'Please fill email or phone');
+                                                                    }
+                                                                }}
+                                                                class={generalstyles.roundbutton + '  mx-2'}
+                                                                disabled={loading || fetching}
+                                                            >
+                                                                {!loading && <>Search</>}
+                                                                {loading && <CircularProgress color="var(--primary)" width="20px" height="20px" duration="1s" />}
+
+                                                                {/* Search */}
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {fetching && (
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 mt-4 allcentered">
+                                                        <CircularProgress color="var(--primary)" width="100px" height="100px" duration="1s" />
+                                                    </div>
+                                                )}
+                                                {!fetching && (
+                                                    <>
+                                                        {!customerFound && newCustomer && (
+                                                            <div class="col-lg-12 col-md-12 col-sm-12 mt-4">
+                                                                <>
+                                                                    <div class={'col-lg-12 '}>
+                                                                        <label style={{ fontSize: '1.8vh' }} class="m-0 mb-2">
+                                                                            Customer Name
+                                                                        </label>
+                                                                        <Inputfield
+                                                                            hideLabel={true}
+                                                                            placeholder={'name'}
+                                                                            value={orderpayload?.user}
+                                                                            onChange={(event) => {
+                                                                                setorderpayload({ ...orderpayload, user: event.target.value });
+                                                                            }}
+                                                                            type={'text'}
+                                                                        />
+                                                                    </div>
+                                                                    <button
+                                                                        onClick={() => {
+                                                                            handleAddCustomer();
+                                                                        }}
+                                                                        style={{ height: '35px' }}
+                                                                        class={generalstyles.roundbutton + '  mb-1 ,t-2'}
+                                                                    >
+                                                                        Create customer
+                                                                    </button>
+                                                                </>
+                                                            </div>
+                                                        )}
+                                                        {customerFound && (
+                                                            <div class="col-lg-12 col-md-12 p-0 col-sm-12 mt-4">
+                                                                <div class="col-lg-12">
+                                                                    <div class="row m-0 w-100">
+                                                                        {customerData?.findCustomer?.data?.map((item, index) => {
+                                                                            return (
+                                                                                <div class="col-lg-12">
+                                                                                    <div
+                                                                                        onClick={() => {
+                                                                                            setorderpayload({ ...orderpayload, customerId: item?.details?.id, user: item?.details?.customerName });
+                                                                                        }}
+                                                                                        style={{
+                                                                                            border: orderpayload?.customerId == item?.id ? '1px solid var(--primary)' : '',
+                                                                                        }}
+                                                                                        class={generalstyles.card + ' row m-0 p-2 w-100'}
+                                                                                    >
+                                                                                        <div class="col-lg-12">
+                                                                                            Name: <span style={{ fontWeight: 600 }}>{item?.details?.customerName}</span>
+                                                                                        </div>
+                                                                                        <div class="col-lg-12">
+                                                                                            Email: <span style={{ fontWeight: 600 }}>{item?.email}</span>
+                                                                                        </div>
+                                                                                        <div class="col-lg-12">
+                                                                                            Phone Number: <span style={{ fontWeight: 600 }}>{item?.phone}</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            );
+                                                                        })}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                        {nameSuggestions?.length != 0 && !customerFound && (
+                                                            <div class="col-lg-12 col-md-12 col-sm-12 mt-4">
+                                                                <div class="col-lg-12 col-md-12 col-sm-12 p-0">
+                                                                    <label style={{ fontSize: '1.8vh' }} class="m-0 mb-2">
+                                                                        Customer Name
+                                                                    </label>
+                                                                    <DynamicInputfield
+                                                                        options={nameSuggestions}
+                                                                        payload={orderpayload}
+                                                                        setpayload={setorderpayload}
+                                                                        attribute={'user'}
+                                                                        optionLabel={'customerName'}
+                                                                        optionValue={'customerName'}
+                                                                    />
+                                                                </div>
+                                                                <button
+                                                                    onClick={async () => {
+                                                                        setbuttonLoading(true);
+                                                                        try {
+                                                                            await linkCustomerMutation();
+                                                                            setcustomerFound(true);
+                                                                        } catch (error) {
+                                                                            let errorMessage = 'An unexpected error occurred';
+                                                                            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                                                                errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                                                            } else if (error.networkError) {
+                                                                                errorMessage = error.networkError.message || errorMessage;
+                                                                            } else if (error.message) {
+                                                                                errorMessage = error.message;
+                                                                            }
+
+                                                                            NotificationManager.warning(errorMessage, 'Warning!');
+                                                                            console.error('Error adding Merchant:', error);
+                                                                        }
+                                                                        setbuttonLoading(false);
+                                                                    }}
+                                                                    style={{ height: '35px' }}
+                                                                    class={generalstyles.roundbutton + '  mb-1 mt-2'}
+                                                                    disabled={buttonLoading}
+                                                                >
+                                                                    {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                                                    {!buttonLoading && <span>Create customer</span>}
+                                                                </button>
+                                                            </div>
+                                                        )}
+                                                        {orderpayload?.customerId && (
+                                                            <div class="col-lg-12 allcentered">
+                                                                <button
+                                                                    class={generalstyles.roundbutton}
+                                                                    onClick={async () => {
+                                                                        setbuttonLoading(true);
+                                                                        try {
+                                                                            await changeOrderCustomerInfoMutation();
+                                                                            setTimeout(() => {
+                                                                                findOneOrder();
+                                                                            }, 1000);
+                                                                        } catch (error) {
+                                                                            let errorMessage = 'An unexpected error occurred';
+                                                                            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                                                                errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                                                            } else if (error.networkError) {
+                                                                                errorMessage = error.networkError.message || errorMessage;
+                                                                            } else if (error.message) {
+                                                                                errorMessage = error.message;
+                                                                            }
+
+                                                                            NotificationManager.warning(errorMessage, 'Warning!');
+                                                                            console.error('Error adding Merchant:', error);
+                                                                        }
+                                                                        setbuttonLoading(false);
+                                                                    }}
+                                                                >
+                                                                    {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                                                    {!buttonLoading && <span>Update Customers</span>}
+                                                                </button>
+                                                            </div>
+                                                        )}
+                                                    </>
+                                                )}
                                             </div>
-                                            <div className="col-lg-12 p-0 ">
-                                                <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                    {chosenOrderContext?.address?.streetAddress}, {chosenOrderContext?.address?.buildingNumber}, {chosenOrderContext?.address?.apartmentFloor}
-                                                </span>
-                                            </div>
-                                        </div>
+                                        )}
                                     </div>
 
                                     <div class="col-lg-4">
