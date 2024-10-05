@@ -45,6 +45,7 @@ const InventoryPackages = (props) => {
 
     useEffect(() => {
         setpageactive_context('/inventorypackages');
+        setpagetitle_context('Warehouses');
     }, []);
 
     const [barcode, setBarcode] = useState('');

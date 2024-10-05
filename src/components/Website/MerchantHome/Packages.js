@@ -64,6 +64,7 @@ const Packages = (props) => {
 
     useEffect(() => {
         setpageactive_context('/packages');
+        setpagetitle_context('Hubs');
     }, []);
 
     return (

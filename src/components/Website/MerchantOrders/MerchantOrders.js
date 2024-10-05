@@ -35,7 +35,7 @@ const MerchantOrders = (props) => {
     let history = useHistory();
     const cookies = new Cookies();
 
-    const { setpageactive_context, orderStatusEnumContext, orderTypeContext, paymentTypeContext, isAuth, courierSheetStatusesContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, orderStatusEnumContext, orderTypeContext, paymentTypeContext, isAuth, courierSheetStatusesContext, setpagetitle_context } = useContext(Contexthandlerscontext);
     const { fetchMerchants, useQueryGQL, useLazyQueryGQL, fetchOrders, fetchCouriers, fetchGovernorates } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -69,6 +69,7 @@ const MerchantOrders = (props) => {
     const fetchCouriersQuery = useQueryGQL('cache-first', fetchCouriers(), filterCouriers);
     useEffect(async () => {
         setpageactive_context('/merchantorders');
+        setpagetitle_context('Merchant');
         var { data } = await fetchOrdersLazyQuey1({
             variables: { input: filterorders },
         });

@@ -25,12 +25,13 @@ const { ValueContainer, Placeholder } = components;
 const FinanceHome = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, isAuth, dateformatter } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, isAuth, setpagetitle_context } = useContext(Contexthandlerscontext);
 
     const { lang, langdetect } = useContext(LanguageContext);
 
     useEffect(() => {
         setpageactive_context('/financehome');
+        setpagetitle_context('Finance');
     }, []);
 
     return (

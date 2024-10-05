@@ -52,6 +52,7 @@ const AddInvoice = (props) => {
 
     useEffect(() => {
         setpageactive_context('/couriersheets');
+        setpagetitle_context('Courier');
     }, []);
 
     return (

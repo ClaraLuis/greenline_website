@@ -106,6 +106,7 @@ const AddSheet = (props) => {
     };
     useEffect(() => {
         setpageactive_context('/addsheet');
+        setpagetitle_context('Courier');
     }, []);
     useEffect(async () => {
         if (queryParameters.get('sheetId')) {

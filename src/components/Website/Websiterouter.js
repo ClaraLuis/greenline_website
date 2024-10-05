@@ -258,12 +258,12 @@ const App = (props) => {
                 <div class="row m-0 w-100 d-flex " style={{ maxHeight: '100vh', paddingRight: 0 }}>
                     {user?.roles?.length != 0 && (
                         <>
-                            <div style={{ width: hidesidenav_context ? '4%' : '18%', transition: 'all 0.4s' }}>
-                                <div class={sidenavstyles.app_sidebar} style={{ width: hidesidenav_context ? '4%' : '18%', transition: 'all 0.4s' }}>
+                            <div style={{ width: hidesidenav_context ? '4%' : '20%', transition: 'all 0.4s' }}>
+                                <div class={sidenavstyles.app_sidebar} style={{ width: hidesidenav_context ? '4%' : '20%', transition: 'all 0.4s' }}>
                                     <Sidenav />
                                 </div>
                             </div>
-                            <div class="px-0" style={{ width: hidesidenav_context ? '96%' : '82%', transition: 'all 0.4s' }}>
+                            <div class="px-0" style={{ width: hidesidenav_context ? '96%' : '80%', transition: 'all 0.4s' }}>
                                 <div class={generalstyles.app_container + ' w-100 '}>
                                     <div class="row m-0 w-100">
                                         <div class={`${generalstyles.app_main}` + '  app_main  '}>

@@ -35,6 +35,7 @@ const WebToken = (props) => {
 
     useEffect(() => {
         setpageactive_context('/webtoken');
+        setpagetitle_context('Merchant');
     }, []);
     const [findOneMerchantQuery] = useLazyQueryGQL(findOneMerchant());
     const fetchMerchatFun = async () => {
@@ -90,7 +91,8 @@ const WebToken = (props) => {
                                         style={{ height: '35px' }}
                                         class={generalstyles.roundbutton + ' d-flex align-items-center bg-info bg-infohover'}
                                         onClick={async () => {
-                                            history.push('/docs');
+                                            // history.push('/docs');
+                                            window.open('/docs' + '_self');
                                         }}
                                     >
                                         <IoDocumentTextOutline class="mr-1" />

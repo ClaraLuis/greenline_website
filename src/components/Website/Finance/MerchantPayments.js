@@ -33,7 +33,7 @@ import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js'
 const MerchantPayments = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, isAuth, financialAccountTypeContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, isAuth, setpagetitle_context } = useContext(Contexthandlerscontext);
     const {
         useQueryGQL,
         fetchMerchants,
@@ -77,6 +77,8 @@ const MerchantPayments = (props) => {
 
     useEffect(() => {
         setpageactive_context('/merchantpayments');
+        setpagetitle_context('Finance');
+
         setfilterobj({
             isAsc: true,
             limit: 20,

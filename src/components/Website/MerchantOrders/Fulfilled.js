@@ -62,6 +62,7 @@ const Fulfilled = (props) => {
     };
     useEffect(() => {
         setpageactive_context('/fulfilled');
+        setpagetitle_context('Merchant');
     }, []);
 
     return (

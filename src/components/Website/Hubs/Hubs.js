@@ -60,6 +60,7 @@ const Hubs = (props) => {
     const fetchHubsQuery = useQueryGQL('', fetchHubs(), filterHubs);
     useEffect(() => {
         setpageactive_context('/hubs');
+        setpagetitle_context('Settings');
     }, []);
 
     return (

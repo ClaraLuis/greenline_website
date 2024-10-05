@@ -65,6 +65,7 @@ const MerchanReturns = (props) => {
 
     useEffect(() => {
         setpageactive_context('/merchantreturns');
+        setpagetitle_context('Hubs');
     }, []);
 
     return (

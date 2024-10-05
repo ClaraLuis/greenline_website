@@ -9,13 +9,14 @@ import { useHistory } from 'react-router-dom';
 import { LuPackageOpen } from 'react-icons/lu';
 import { RxTokens } from 'react-icons/rx';
 import { NotificationManager } from 'react-notifications';
+import { IoSettingsOutline } from 'react-icons/io5';
 import Cookies from 'universal-cookie';
 import { MdOutlineHub, MdOutlineInventory2, MdSwitchAccount } from 'react-icons/md';
 import { BiSolidCoinStack, BiSolidSpreadsheet, BiTransfer } from 'react-icons/bi';
 import { CiBoxes, CiShop } from 'react-icons/ci';
 import { IoMdHome } from 'react-icons/io';
 import { FaMap } from 'react-icons/fa';
-import { TbArrowsExchange, TbPackages } from 'react-icons/tb';
+import { TbArrowsExchange, TbBuilding, TbBuildingStore, TbBuildingWarehouse, TbMoneybag, TbPackages, TbTruckDelivery } from 'react-icons/tb';
 export const Contexthandlerscontext = React.createContext();
 export const Contexthandlerscontext_provider = (props) => {
     let history = useHistory();
@@ -32,6 +33,7 @@ export const Contexthandlerscontext_provider = (props) => {
     const [chosenItemContext, setchosenItemContext] = useState({});
     const [chosenPackageContext, setchosenPackageContext] = useState({});
     const [chosenHubContext, setchosenHubContext] = useState({});
+    // const [pagetitle_context, setchosenHubContext] = useState({});
     const cookies = new Cookies();
 
     const setpageactive_context = (route) => {
@@ -66,6 +68,11 @@ export const Contexthandlerscontext_provider = (props) => {
     useEffect(() => {
         var pagesarr = [
             {
+                icon: (
+                    <i class={'allcentered'}>
+                        <IoSettingsOutline size={18} />
+                    </i>
+                ),
                 maintitle: 'Settings',
                 subitems: [
                     {
@@ -95,6 +102,11 @@ export const Contexthandlerscontext_provider = (props) => {
                 ],
             },
             {
+                icon: (
+                    <i class={'allcentered'}>
+                        <TbBuildingWarehouse size={18} />
+                    </i>
+                ),
                 maintitle: 'Warehouses',
                 subitems: [
                     {
@@ -173,6 +185,11 @@ export const Contexthandlerscontext_provider = (props) => {
                 ],
             },
             {
+                icon: (
+                    <i class={'allcentered'}>
+                        <TbBuildingStore size={18} />
+                    </i>
+                ),
                 maintitle: 'Merchant',
                 path: '/merchants',
                 subitems: [
@@ -299,6 +316,11 @@ export const Contexthandlerscontext_provider = (props) => {
                 ],
             },
             {
+                icon: (
+                    <i class={'allcentered'}>
+                        <TbBuilding size={18} />
+                    </i>
+                ),
                 maintitle: 'Hubs',
                 // path: '/hubs',
                 subitems: [
@@ -365,6 +387,11 @@ export const Contexthandlerscontext_provider = (props) => {
                 ],
             },
             {
+                icon: (
+                    <i class={'allcentered'}>
+                        <TbTruckDelivery size={18} />
+                    </i>
+                ),
                 maintitle: 'Courier',
                 subitems: [
                     {
@@ -418,6 +445,11 @@ export const Contexthandlerscontext_provider = (props) => {
                 ],
             },
             {
+                icon: (
+                    <i class={'allcentered'}>
+                        <TbMoneybag size={18} />
+                    </i>
+                ),
                 maintitle: 'Finance',
                 subitems: [
                     {

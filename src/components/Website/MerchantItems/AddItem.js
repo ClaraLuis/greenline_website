@@ -24,7 +24,7 @@ import SelectComponent from '../../SelectComponent.js';
 const AddItem = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setchosenItemContext, chosenItemContext, importedDataContext, isAuth } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setchosenItemContext, chosenItemContext, importedDataContext, isAuth, setpagetitle_context } = useContext(Contexthandlerscontext);
     const { fetchMerchantItems, useQueryGQL, useMutationGQL, fetchMerchants, addCompoundItem, updateMerchantItem, findOneItem, useLazyQueryGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -49,6 +49,7 @@ const AddItem = (props) => {
 
     useEffect(() => {
         setpageactive_context('/merchantitems');
+        setpagetitle_context('Merchant');
     }, []);
     // const variantsList = [];
     const [variantsList, setvariantsList] = useState([]);

@@ -121,6 +121,7 @@ const AddSheetNew = (props) => {
     };
     useEffect(() => {
         setpageactive_context(window.location.pathname);
+        setpagetitle_context(window.location.pathname == '/addsheet' ? 'Courier' : 'Hubs');
     }, []);
     const [fetchCourierSheetLazyQuery] = useLazyQueryGQL(fetchCourierSheet());
 

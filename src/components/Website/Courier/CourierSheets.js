@@ -51,7 +51,7 @@ const CourierSheets = (props) => {
     const fetchCouriersQuery = useQueryGQL('cache-first', fetchCouriers(), filterCouriers);
     useEffect(() => {
         setpageactive_context('/couriersheets');
-        // refetchCourierSheets();
+        setpagetitle_context('Courier');
     }, []);
 
     const exportToExcel = (data, fileName) => {

@@ -33,7 +33,7 @@ const { ValueContainer, Placeholder } = components;
 const FinanceTransactions = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, isAuth, dateformatter, orderTypeContext, transactionStatusTypeContext, transactionTypeContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, isAuth, dateformatter, setpagetitle_context, transactionStatusTypeContext, transactionTypeContext } = useContext(Contexthandlerscontext);
     const { fetchUsers, useQueryGQL, sendAnyFinancialTransaction, useMutationGQL, fetchTransactions, fetchFinancialAccounts, sendMyFinancialTransaction } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -87,6 +87,7 @@ const FinanceTransactions = (props) => {
     // const fetchusers = [];
     useEffect(() => {
         setpageactive_context('/financetransactions');
+        setpagetitle_context('Finance');
     }, []);
     const [sendAnyFinancialTransactionMutation] = useMutationGQL(sendAnyFinancialTransaction(), {
         type: transactionpayload?.type,

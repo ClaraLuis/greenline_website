@@ -49,6 +49,7 @@ const CourierSheet = (props) => {
 
     useEffect(() => {
         setpageactive_context('/CourierSheet');
+        setpagetitle_context('Courier');
         if (queryParameters.get('id')) {
             setsheetID(queryParameters.get('id'));
         }

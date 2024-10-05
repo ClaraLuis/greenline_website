@@ -789,6 +789,7 @@ keep data consistent.</span></p>
     const [uploadExcelFileMutation] = useMutationNoInputGQL(uploadExcelFile(), { base64File: csvFile });
     useEffect(() => {
         setpageactive_context('/merchantitems');
+        setpagetitle_context('Merchant');
         refetchItems();
     }, []);
 

@@ -50,6 +50,7 @@ const Finance = (props) => {
 
     useEffect(() => {
         setpageactive_context('/merchantfinance');
+        setpagetitle_context('Merchant');
     }, []);
 
     return (

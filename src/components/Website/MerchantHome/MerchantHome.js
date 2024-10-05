@@ -24,7 +24,7 @@ const { ValueContainer, Placeholder } = components;
 const MerchantHome = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, inventoryRentTypeContext, isAuth } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, inventoryRentTypeContext, isAuth, setpagetitle_context } = useContext(Contexthandlerscontext);
     const { createInventory, useMutationGQL, paginateInventoryRentTransaction, useQueryGQL, ordersDeliverableSummary, graphOrders, mostSoldItems, fetchMerchants } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -170,6 +170,7 @@ const MerchantHome = (props) => {
     }, [graphOrdersQuery?.data]);
     useEffect(() => {
         setpageactive_context('/merchanthome');
+        setpagetitle_context('Merchant');
     }, []);
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">

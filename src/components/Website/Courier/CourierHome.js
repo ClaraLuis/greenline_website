@@ -52,6 +52,7 @@ const CourierHome = (props) => {
 
     useEffect(() => {
         setpageactive_context('/courierhome');
+        setpagetitle_context('Courier');
     }, []);
 
     return (

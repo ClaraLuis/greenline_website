@@ -24,7 +24,7 @@ import { FaLayerGroup } from 'react-icons/fa';
 const MerchantPackages = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setchosenPackageContext, returnPackageStatusContext, isAuth, dateformatter } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setchosenPackageContext, returnPackageStatusContext, isAuth, dateformatter, setpagetitle_context } = useContext(Contexthandlerscontext);
     const { fetchPackages, useQueryGQL, findReturnPackageBySku, useLazyQueryGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -47,6 +47,7 @@ const MerchantPackages = (props) => {
 
     useEffect(() => {
         setpageactive_context('/merchantpackages');
+        setpagetitle_context('Merchant');
     }, []);
 
     const [findReturnPackageBySkuQuery] = useLazyQueryGQL(findReturnPackageBySku());

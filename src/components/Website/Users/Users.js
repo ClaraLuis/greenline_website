@@ -61,6 +61,7 @@ const Users = (props) => {
     const fetchusers = useQueryGQL('', fetchUsers(), filterUsers);
     useEffect(() => {
         setpageactive_context('/users');
+        setpagetitle_context('Settings');
     }, []);
 
     return (

@@ -28,7 +28,7 @@ const { ValueContainer, Placeholder } = components;
 const Merchants = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, inventoryRentTypeContext, chosenMerchantContext, isAuth } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, inventoryRentTypeContext, chosenMerchantContext, isAuth, setpagetitle_context } = useContext(Contexthandlerscontext);
     const { useQueryGQL, useMutationGQL, addMerchant, fetchMerchants, fetchItemHistory, exportItem, createInventoryRent, updateInventoryRent } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -101,6 +101,7 @@ const Merchants = (props) => {
     };
     useEffect(() => {
         setpageactive_context('/merchants');
+        setpagetitle_context('Merchant');
     }, []);
     const formatDate = (isoDate) => {
         return isoDate.split('T')[0];

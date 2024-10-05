@@ -71,6 +71,7 @@ const Orders = (props) => {
     useEffect(() => {
         // alert();
         setpageactive_context(window.location.pathname);
+        setpagetitle_context('Warehouses');
         if (window.location.pathname == '/handpicked') {
             setfilterorders({ ...filterorders, statuses: ['handPicked'] });
         }

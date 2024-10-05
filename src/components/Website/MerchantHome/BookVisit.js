@@ -64,6 +64,7 @@ const BookVisit = (props) => {
     const fetchOrdersQuery = useQueryGQL('', fetchOrders(), filterorders);
     useEffect(() => {
         setpageactive_context('/couriersheets');
+        setpagetitle_context('Courier');
     }, []);
 
     return (

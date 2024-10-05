@@ -114,6 +114,9 @@ const UpdateMerchant = (props) => {
     });
     const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
     useEffect(async () => {
+        setpageactive_context('/updatemerchant?merchantId=' + queryParameters?.get('merchantId'));
+        setpagetitle_context('Merchant');
+
         try {
             var { data } = await findOneMerchantQuery({
                 variables: {

@@ -54,6 +54,8 @@ const RentPage = (props) => {
 
     useEffect(async () => {
         setpageactive_context('/rentpage');
+        setpagetitle_context('Warehouses');
+
         try {
             var { data } = await inventoryRentSummaryLazyQuery({
                 variables: {

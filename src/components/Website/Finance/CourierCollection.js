@@ -27,7 +27,7 @@ import TransactionsTable from './TransactionsTable.js';
 const CourierCollection = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, isAuth, financialAccountTypeContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, isAuth, setpagetitle_context } = useContext(Contexthandlerscontext);
     const {
         useQueryGQL,
         calculateFinancialTransactionsTotal,
@@ -89,6 +89,7 @@ const CourierCollection = (props) => {
 
     useEffect(() => {
         setpageactive_context('/couriercollections');
+        setpagetitle_context('Finance');
         setfilterobj({
             isAsc: true,
             limit: 20,

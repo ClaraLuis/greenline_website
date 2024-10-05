@@ -31,6 +31,7 @@ const FinanceOrders = (props) => {
 
     useEffect(() => {
         setpageactive_context('/financeorders');
+        setpagetitle_context('Finance');
     }, []);
 
     return (

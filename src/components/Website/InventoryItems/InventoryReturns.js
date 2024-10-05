@@ -60,6 +60,7 @@ const InventoryReturns = (props) => {
 
     useEffect(() => {
         setpageactive_context('/inventoryreturns');
+        setpagetitle_context('Hubs');
     }, []);
 
     return (

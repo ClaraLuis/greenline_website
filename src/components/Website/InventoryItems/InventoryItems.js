@@ -30,7 +30,7 @@ const { ValueContainer, Placeholder } = components;
 const InventoryItems = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, dateformatter, isAuth } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, dateformatter, isAuth, setpagetitle_context } = useContext(Contexthandlerscontext);
     const { fetchUsers, useQueryGQL, fetchInventories, useMutationGQL, addInventory, fetchItemsInBox, fetchMerchants, importNew, fetchItemHistory, exportItem, importItem, useLazyQueryGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -151,6 +151,7 @@ const InventoryItems = (props) => {
     const refetchItemHistory = refetch;
     useEffect(() => {
         setpageactive_context('/inventoryitems');
+        setpagetitle_context('Warehouses');
     }, []);
     const [barcode, setBarcode] = useState('');
     useEffect(() => {

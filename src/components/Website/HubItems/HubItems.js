@@ -62,6 +62,7 @@ const HubItems = (props) => {
 
     useEffect(() => {
         setpageactive_context('/hubitems');
+        setpagetitle_context('Hubs');
     }, []);
 
     return (

@@ -22,7 +22,8 @@ import TimelineOppositeContent, { timelineOppositeContentClasses } from '@mui/la
 const MerchantReturnPackageInfo = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, chosenPackageContext, setchosenPackageContext, dateformatter, setchosenOrderContext, returnPackageStatusContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, chosenPackageContext, setchosenPackageContext, dateformatter, setchosenOrderContext, returnPackageStatusContext, setpagetitle_context } =
+        useContext(Contexthandlerscontext);
     const { useQueryGQL, fetchPackages, fetchGovernorates, fetchMerchantItemReturns, updateMerchantDomesticShipping, findOneReturnPackage, useLazyQueryGQL, paginateReturnPackageHistory } = API();
     const steps = ['Merchant Info', 'Shipping', 'Inventory Settings'];
     const [inventoryModal, setinventoryModal] = useState({ open: false, items: [] });
@@ -31,6 +32,7 @@ const MerchantReturnPackageInfo = (props) => {
 
     useEffect(() => {
         setpageactive_context('/packages');
+        setpagetitle_context('Hubs');
     }, []);
 
     const [filter, setfilter] = useState({

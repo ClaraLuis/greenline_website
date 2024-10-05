@@ -76,6 +76,7 @@ const FinanceSheets = (props) => {
     // const fetchusers = [];
     useEffect(() => {
         setpageactive_context('/financesheets');
+        setpagetitle_context('Finance');
     }, []);
 
     return (
