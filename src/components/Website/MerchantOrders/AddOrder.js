@@ -392,6 +392,31 @@ const AddOrder = (props) => {
             // alert(JSON.stringify());
         }
     }, [merchantId, addresspayload?.city, orderpayload?.address, orderpayload?.ordertype]);
+    useEffect(() => {
+        if (queryParameters.get('order')) {
+            setorderpayload({
+                functype: 'add',
+                items: [],
+                returnOrderItems: [],
+                user: '',
+                address: '',
+                ordertype: 'exchange',
+                paymenttype: 'cash',
+                shippingprice: '',
+                canbeoppened: 1,
+                fragile: 0,
+                partialdelivery: 1,
+                original: 1,
+                returnoriginal: 1,
+                price: undefined,
+                returnAmount: undefined,
+                includevat: 0,
+                previousOrderId: undefined,
+                returnOrderId: parseInt(queryParameters.get('order')),
+            });
+            setpreviousOrderType('r');
+        }
+    }, []);
 
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
@@ -1749,12 +1774,16 @@ const AddOrder = (props) => {
                                     <div class="row m-0 w-100">
                                         <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
                                             <p class={generalstyles.cardTitle + '  m-0 p-0 '}>
-                                                {orderpayload?.previousOrderId?.length != 0 && orderpayload?.previousOrderId != undefined && previousOrderType == 'd'
-                                                    ? 'Chosen order ID: #' + orderpayload?.previousOrderId
-                                                    : 'No order chosen yet'}
-                                                {orderpayload?.returnOrderId?.length != 0 && orderpayload?.returnOrderId != undefined && previousOrderType == 'r'
-                                                    ? 'Chosen order ID: #' + orderpayload?.returnOrderId
-                                                    : 'No order chosen yet'}
+                                                {previousOrderType == 'd'
+                                                    ? orderpayload?.previousOrderId?.length != 0 && orderpayload?.previousOrderId != undefined
+                                                        ? 'Chosen order ID: #' + orderpayload?.previousOrderId
+                                                        : 'No order chosen yet'
+                                                    : ''}
+                                                {previousOrderType == 'r'
+                                                    ? orderpayload?.returnOrderId?.length != 0 && orderpayload?.returnOrderId != undefined
+                                                        ? 'Chosen order ID: #' + orderpayload?.returnOrderId
+                                                        : 'No order chosen yet'
+                                                    : ''}
                                             </p>
                                         </div>
                                         <div class="col-lg-4 col-md-4 col-sm-4 p-0 d-flex align-items-center justify-content-end">

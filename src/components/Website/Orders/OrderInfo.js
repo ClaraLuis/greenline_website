@@ -346,6 +346,17 @@ const OrderInfo = (props) => {
                                                 <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Request Return</p>
                                             </button>
                                         )}
+                                        {chosenOrderContext?.type == 'return' && (
+                                            <button
+                                                style={{ height: '35px' }}
+                                                class={generalstyles.roundbutton}
+                                                onClick={() => {
+                                                    history.push('/addorder?merchantId=' + chosenOrderContext?.merchant?.id + '&order=' + chosenOrderContext?.id);
+                                                }}
+                                            >
+                                                <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Request Exchange</p>
+                                            </button>
+                                        )}
                                     </div>
                                     <div class="col-lg-4">
                                         <div class={generalstyles.card + ' row m-0 w-100 p-4'}>
