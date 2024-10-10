@@ -170,7 +170,7 @@ const MerchantReturnPackageInfo = (props) => {
                             {paginateReturnPackageHistoryQuery?.data?.paginateReturnPackageHistory?.data?.length == 0 && (
                                 <div class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
                                     <div class="row m-0 w-100">
-                                        <FaLayerGroup size={30} class=" col-lg-12 mb-2" />
+                                        <FaLayerGroup size={22} class=" col-lg-12 mb-2" />
                                         <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
                                             No History Yet
                                         </div>

@@ -660,6 +660,27 @@ const API = () => {
         `;
     };
 
+    const paginateOrderLogs = () => {
+        return gql`
+            query paginateOrderLogs($input: PaginateOrderLogInput!) {
+                paginateOrderLogs(input: $input) {
+                    data {
+                        id
+                        orderId
+                        status
+                        userId
+                        type
+                        createdAt
+                        user {
+                            name
+                        }
+                    }
+                    cursor
+                }
+            }
+        `;
+    };
+
     const fetchOrders = () => {
         return gql`
             query findOrders($input: PaginateOrdersInput!) {
@@ -2061,6 +2082,7 @@ const API = () => {
         findMerchantDomesticShippings,
         requestOrderReturn,
         fetchTransactionHistory,
+        paginateOrderLogs,
         createHub,
         assignMerchantToInventory,
         removeMerchantAssignmentFromInventory,

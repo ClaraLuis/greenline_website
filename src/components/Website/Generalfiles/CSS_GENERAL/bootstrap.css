@@ -5105,3 +5105,6 @@ ul {
         page-break-inside: avoid;
     }
 }
+.css-1wnygn3-MuiTimeline-root .MuiTimelineOppositeContent-root {
+    flex: 0.38 !important;
+}

@@ -41,7 +41,7 @@ const OrderInfo = (props) => {
     const {
         useQueryGQL,
         useMutationGQL,
-        fetchGovernorates,
+        paginateOrderLogs,
         removeOrderItems,
         addOrderItems,
         useLazyQueryGQL,
@@ -73,6 +73,7 @@ const OrderInfo = (props) => {
     const [fetchSuggestions, setfetchSuggestions] = useState(false);
     const [fetching, setfetching] = useState(false);
     const [editCustomer, seteditCustomer] = useState(false);
+    const [orderLogsModal, setorderLogsModal] = useState(false);
 
     const [orderpayload, setorderpayload] = useState({
         functype: 'add',
@@ -128,6 +129,10 @@ const OrderInfo = (props) => {
         limit: 20,
         orderId: parseInt(queryParameters?.get('orderId')),
     });
+    const [filterOrderLogs, setfilterOrderLogs] = useState({
+        limit: 20,
+        orderId: parseInt(queryParameters?.get('orderId')),
+    });
 
     const fetchOrderHistoryQuery = useQueryGQL('', fetchOrderHistory(), filterordershistory);
 
@@ -136,6 +141,7 @@ const OrderInfo = (props) => {
     const [checkCustomer] = useLazyQueryGQL(fetchCustomer());
 
     const fetchTransactionHistoryQuery = useQueryGQL('', fetchTransactionHistory(), filterordershistory);
+    const paginateOrderLogsQuery = useQueryGQL('', paginateOrderLogs(), filterOrderLogs);
 
     const organizeInventory = (inventory) => {
         const racks = {};
@@ -330,6 +336,15 @@ const OrderInfo = (props) => {
                             {chosenOrderContext != undefined && (
                                 <>
                                     <div class="col-lg-12 d-flex justify-content-end mb-3">
+                                        <button
+                                            style={{ height: '35px' }}
+                                            class={generalstyles.roundbutton + ' mx-2 allcentered'}
+                                            onClick={() => {
+                                                setorderLogsModal(true);
+                                            }}
+                                        >
+                                            <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Order Logs</p>
+                                        </button>
                                         {chosenOrderContext?.type == 'delivery' && (
                                             <button
                                                 style={{ height: '35px' }}
@@ -358,8 +373,8 @@ const OrderInfo = (props) => {
                                             </button>
                                         )}
                                     </div>
-                                    <div class="col-lg-4">
-                                        <div class={generalstyles.card + ' row m-0 w-100 p-4'}>
+                                    <div class="col-lg-5">
+                                        <div class={generalstyles.card + ' row m-0 w-100'}>
                                             <div class="col-lg-12 p-0 mb-3">
                                                 <div class="row m-0 w-100 allcentered">
                                                     <button
@@ -383,7 +398,7 @@ const OrderInfo = (props) => {
                                                     {fetchOrderHistoryQuery?.data?.paginateOrderHistory?.data?.length == 0 && (
                                                         <div class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
                                                             <div class="row m-0 w-100">
-                                                                <FaLayerGroup size={30} class=" col-lg-12 mb-2" />
+                                                                <FaLayerGroup size={22} class=" col-lg-12 mb-2" />
                                                                 <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
                                                                     No History Yet
                                                                 </div>
@@ -435,7 +450,7 @@ const OrderInfo = (props) => {
                                                     {fetchTransactionHistoryQuery?.data?.paginateOrderTransactionsHistory?.data?.length == 0 && (
                                                         <div class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
                                                             <div class="row m-0 w-100">
-                                                                <FaLayerGroup size={30} class=" col-lg-12 mb-2" />
+                                                                <FaLayerGroup size={22} class=" col-lg-12 mb-2" />
                                                                 <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
                                                                     No History Yet
                                                                 </div>
@@ -491,7 +506,7 @@ const OrderInfo = (props) => {
                                             )}
                                         </div>
                                     </div>
-                                    <div class="col-lg-8">
+                                    <div class="col-lg-7">
                                         <div class={generalstyles.card + ' row m-0 w-100 p-4'}>
                                             <div class="col-lg-12 p-0">
                                                 <div class="row m-0 w-100 d-flex justify-content-between">
@@ -1310,6 +1325,78 @@ const OrderInfo = (props) => {
                                 setbuttonLoading(false);
                             }}
                         />
+                    </div>
+                </Modal.Body>
+            </Modal>
+            <Modal
+                show={orderLogsModal}
+                onHide={() => {
+                    setorderLogsModal(false);
+                }}
+                centered
+                size={'md'}
+            >
+                <Modal.Header>
+                    <div className="row w-100 m-0 p-0">
+                        <div class="col-lg-6 pt-3 ">
+                            <div className="row w-100 m-0 p-0">Order Logs</div>
+                        </div>
+                        <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
+                            <div
+                                class={'close-modal-container'}
+                                onClick={() => {
+                                    setorderLogsModal(false);
+                                }}
+                            >
+                                <IoMdClose />
+                            </div>
+                        </div>{' '}
+                    </div>
+                </Modal.Header>
+                <Modal.Body>
+                    <div class="row m-0 w-100 py-2">
+                        {paginateOrderLogsQuery?.data?.paginateOrderHistory?.data?.length == 0 && (
+                            <div class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
+                                <div class="row m-0 w-100">
+                                    <FaLayerGroup size={22} class=" col-lg-12 mb-2" />
+                                    <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
+                                        No Logs Yet
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        {paginateOrderLogsQuery?.data?.paginateOrderLogs?.data?.length != 0 && (
+                            <div style={{ overflowY: 'scroll', height: '200px' }} class={' row m-0 w-100 p-0 pb-4 py-3 scrollmenuclasssubscrollbar'}>
+                                <Timeline
+                                    style={{ width: '100%' }}
+                                    sx={{
+                                        [`& .${timelineOppositeContentClasses.root}`]: {
+                                            flex: 0.2,
+                                        },
+                                    }}
+                                >
+                                    {paginateOrderLogsQuery?.data?.paginateOrderLogs?.data?.map((historyItem, historyIndex) => {
+                                        return (
+                                            <TimelineItem>
+                                                <TimelineOppositeContent style={{ fontSize: '13px' }}>
+                                                    <span style={{ fontSize: '13px', color: 'black', fontWeight: 600 }}>{dateformatterDayAndMonth(historyItem?.createdAt)}</span>
+                                                    <br />
+                                                    {dateformatterTime(historyItem?.createdAt)}
+                                                </TimelineOppositeContent>
+                                                <TimelineSeparator>
+                                                    <TimelineDot style={{ background: 'var(--primary)' }} />
+                                                    {historyIndex < paginateOrderLogsQuery?.data?.paginateOrderLogs?.data?.length - 1 && <TimelineConnector style={{ background: 'var(--primary)' }} />}
+                                                </TimelineSeparator>
+                                                <TimelineContent style={{ fontWeight: 600, color: 'black', textTransform: 'capitalize' }}>
+                                                    {historyItem?.status.split(/(?=[A-Z])/).join(' ')} <br />
+                                                    {cookies.get('userInfo')?.type == 'employee' && <span style={{ fontSize: '14px', fontWeight: 400 }}>{historyItem?.user?.name}</span>}
+                                                </TimelineContent>
+                                            </TimelineItem>
+                                        );
+                                    })}
+                                </Timeline>
+                            </div>
+                        )}
                     </div>
                 </Modal.Body>
             </Modal>

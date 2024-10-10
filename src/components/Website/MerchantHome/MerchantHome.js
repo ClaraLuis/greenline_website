@@ -175,21 +175,25 @@ const MerchantHome = (props) => {
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div class="row m-0 w-100 d-flex align-items-start justify-content-start mt-sm-2 pb-5 pb-md-0">
-                <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
-                    <p class=" p-0 m-0" style={{ fontSize: '27px' }}>
-                        Dashboard
-                    </p>
-                </div>
-                <div class={' col-lg-6 col-md-6 col-sm-6 p-0 pr-3 pr-md-1 pr-sm-0 d-flex align-items-center justify-content-end pb-1 '}>
-                    <button
-                        style={{ height: '35px' }}
-                        class={generalstyles.roundbutton + '  mb-1 mx-2'}
-                        onClick={() => {
-                            history.push('/bookvisit');
-                        }}
-                    >
-                        Book a visit
-                    </button>
+                <div class="col-lg-12">
+                    <div class={generalstyles.card + ' row m-0 w-100'}>
+                        <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
+                            <p class=" p-0 m-0" style={{ fontSize: '27px' }}>
+                                Dashboard
+                            </p>
+                        </div>
+                        <div class={' col-lg-6 col-md-6 col-sm-6 p-0 pr-3 pr-md-1 pr-sm-0 d-flex align-items-center justify-content-end pb-1 '}>
+                            <button
+                                style={{ height: '35px' }}
+                                class={generalstyles.roundbutton + '  mb-1 mx-2'}
+                                onClick={() => {
+                                    history.push('/bookvisit');
+                                }}
+                            >
+                                Book a visit
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-lg-12 ">
                     <div class={generalstyles.card + ' mb-3 col-lg-12 p-2'}>
