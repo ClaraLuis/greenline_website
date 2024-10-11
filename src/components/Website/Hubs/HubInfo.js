@@ -33,7 +33,7 @@ const HubInfo = (props) => {
     const [createHubMutation] = useMutationGQL(createHub(), {
         name: props?.payload?.name,
         governorateId: props?.payload?.governorateId,
-        location: { long: props?.payload?.longitude, lat: props?.payload?.latitude },
+        location: { long: 0.0, lat: 0.0 },
     });
 
     const fetchGovernoratesQuery = useQueryGQL('', fetchGovernorates());
@@ -112,8 +112,8 @@ const HubInfo = (props) => {
                                         optionValue: 'id',
                                         optionLabel: 'name',
                                     },
-                                    { name: 'Longitude', attr: 'longitude', size: '6', type: 'number' },
-                                    { name: 'Latitude', attr: 'latitude', size: '6', type: 'number' },
+                                    // { name: 'Longitude', attr: 'longitude', size: '6', type: 'number' },
+                                    // { name: 'Latitude', attr: 'latitude', size: '6', type: 'number' },
                                 ]}
                                 payload={props?.payload}
                                 setpayload={props?.setpayload}

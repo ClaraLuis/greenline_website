@@ -113,42 +113,47 @@ const InventoryDetails = (props) => {
     const middlePadding = '15px';
     const innerPadding = '15px';
 
-    const middleBorderRadius = '12px';
-    const innerBorderRadius = '10px';
+    const middleBorderRadius = '0.25rem';
+    const innerBorderRadius = '0.25rem';
 
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
-                <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
-                    <p class=" p-0 m-0" style={{ fontSize: '27px' }}>
-                        Inventory Details
-                    </p>
-                </div>
-                <div class="col-lg-6 d-flex justify-content-end ">
-                    {(racks?.length != 0 || ballots?.length != 0 || boxes?.length != 0) && (
-                        <div class="row m-0 w-100 d-flex justify-content-end">
-                            <button
-                                style={{ height: '35px' }}
-                                class={generalstyles.roundbutton + '  mb-1 mx-2'}
-                                onClick={() => {
-                                    setmerchantModal({ open: true, type: 1, modalType: 'assign' });
-                                }}
-                            >
-                                Assign to merchant
-                            </button>
-                            <button
-                                style={{ height: '35px' }}
-                                class={generalstyles.roundbutton + '  mb-1 bg-danger bg-dangerhover'}
-                                onClick={() => {
-                                    setmerchantModal({ open: true, type: 2, modalType: 'deassign' });
-                                }}
-                            >
-                                Deassign to merchant
-                            </button>
+                <div class="col-lg-12 px-3">
+                    <div class={generalstyles.card + ' row m-0 w-100 d-flex align-items-center'}>
+                        <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
+                            <p class=" p-0 m-0" style={{ fontSize: '27px' }}>
+                                Inventory Details
+                            </p>
                         </div>
-                    )}
+                        <div class="col-lg-6 d-flex justify-content-end ">
+                            {(racks?.length != 0 || ballots?.length != 0 || boxes?.length != 0) && (
+                                <div class="row m-0 w-100 d-flex justify-content-end">
+                                    <button
+                                        style={{ height: '35px' }}
+                                        class={generalstyles.roundbutton + '  mx-2'}
+                                        onClick={() => {
+                                            setmerchantModal({ open: true, type: 1, modalType: 'assign' });
+                                        }}
+                                    >
+                                        Assign to merchant
+                                    </button>
+                                    <button
+                                        style={{ height: '35px' }}
+                                        class={generalstyles.roundbutton + '  bg-danger bg-dangerhover'}
+                                        onClick={() => {
+                                            setmerchantModal({ open: true, type: 2, modalType: 'deassign' });
+                                        }}
+                                    >
+                                        Deassign to merchant
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
                 </div>
-                <div class={generalstyles.card + ' row m-0 w-100'} style={{ padding: '15px' }}>
+
+                <div class={' row m-0 w-100'}>
                     {fetcOneInventoryQuery?.loading && (
                         <div style={{ height: '70vh' }} class="row w-100 allcentered m-0">
                             <CircularProgress color="var(--primary)" width="60px" height="60px" duration="1s" />
@@ -166,7 +171,7 @@ const InventoryDetails = (props) => {
                                     </div>
                                 </div>
                             )}
-                            <div class={'col-lg-12 p-0'}>
+                            <div class={'col-lg-12 px-3'}>
                                 <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
                                     {fetcOneInventoryQuery?.data?.findOneInventory?.racks?.map((item, index) => {
                                         // var ballotsCount = 0;
@@ -181,7 +186,7 @@ const InventoryDetails = (props) => {
                                         });
 
                                         return (
-                                            <AccordionItem style={{ borderRadius: '14px', padding: '15px' }} class={`${generalstyles.card}` + ' mb-3 w-100'}>
+                                            <AccordionItem class={`${generalstyles.card}` + ' w-100'}>
                                                 <AccordionItemHeading>
                                                     <AccordionItemButton>
                                                         <div className="col-lg-12 p-0" style={{ fontWeight: 700 }}>
@@ -333,6 +338,7 @@ const InventoryDetails = (props) => {
                                                                                     )}
                                                                                 </div>
                                                                             </div>
+
                                                                             <div className="col-lg-12 mb-3 mt-2 p-0">
                                                                                 <div
                                                                                     className="row m-0 w-100 scrollmenuclasssubscrollbar"
@@ -343,9 +349,11 @@ const InventoryDetails = (props) => {
                                                                                         fontSize: '12px',
                                                                                         overflowX: 'scroll',
                                                                                         flexWrap: 'nowrap',
-                                                                                        background: '#f4f4f4',
+                                                                                        background: '#EBF0F4',
                                                                                     }}
                                                                                 >
+                                                                                    {level?.ballots?.length == 0 && <div class="text-danger">Empty</div>}
+
                                                                                     {level?.ballots?.map((ballot, ballotindex) => (
                                                                                         <div className="col-lg-9 p-0" key={ballot.id}>
                                                                                             <div
@@ -428,7 +436,7 @@ const InventoryDetails = (props) => {
                                                                                                             fontSize: '12px',
                                                                                                             overflowX: 'scroll',
                                                                                                             flexWrap: 'nowrap',
-                                                                                                            background: '#f4f4f4',
+                                                                                                            background: '#EBF0F4',
                                                                                                         }}
                                                                                                     >
                                                                                                         {ballot?.boxes?.map((box, boxindex) => {

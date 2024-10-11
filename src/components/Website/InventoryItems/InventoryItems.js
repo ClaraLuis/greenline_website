@@ -90,7 +90,7 @@ const InventoryItems = (props) => {
 
     const [addInvrntoryMutation] = useMutationGQL(addInventory(), {
         name: inventoryPayload?.name,
-        location: { long: inventoryPayload?.long, lat: inventoryPayload?.lat },
+        location: { long: 0.0, lat: 0.0 },
         numberOfRacks: parseInt(inventoryPayload?.numberOfRacks),
         rackLevel: parseInt(inventoryPayload?.rackLevel),
         ballotPerRack: parseInt(inventoryPayload?.ballotPerRack),
@@ -565,7 +565,7 @@ const InventoryItems = (props) => {
                             </div>
                         </div>
 
-                        <div class="col-lg-6">
+                        {/* <div class="col-lg-6">
                             <div class="row m-0 w-100  ">
                                 <div class={`${formstyles.form__group} ${formstyles.field}`}>
                                     <label class={formstyles.form__label}>Location (long)</label>
@@ -595,7 +595,7 @@ const InventoryItems = (props) => {
                                     />
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
 
                         <div class="col-lg-6">
                             <div class="row m-0 w-100  ">
