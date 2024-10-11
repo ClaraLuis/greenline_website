@@ -161,7 +161,7 @@ const Fulfilled = (props) => {
                                 class={generalstyles.roundbutton}
                             >
                                 {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                {!buttonLoading && <span>Update Orders</span>}
+                                {!buttonLoading && <span>Dispatch Orders</span>}
                             </button>
                         </div>
                     </div>
