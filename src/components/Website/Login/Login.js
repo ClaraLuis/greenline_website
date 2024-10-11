@@ -300,6 +300,7 @@ const Login = () => {
                                                             value={confirmpassword}
                                                             onChange={(event) => {
                                                                 const input = event.target.value;
+                                                                const validPasswordRegex = /^[a-zA-Z0-9!@#$%^&*()_+=-]*$/;
 
                                                                 // Use the same regex to validate confirm password input
                                                                 if (validPasswordRegex.test(input)) {

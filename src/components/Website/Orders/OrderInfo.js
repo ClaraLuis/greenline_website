@@ -1355,7 +1355,7 @@ const OrderInfo = (props) => {
                 </Modal.Header>
                 <Modal.Body>
                     <div class="row m-0 w-100 py-2">
-                        {paginateOrderLogsQuery?.data?.paginateOrderHistory?.data?.length == 0 && (
+                        {paginateOrderLogsQuery?.data?.paginateOrderLogs?.data?.length == 0 && (
                             <div class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
                                 <div class="row m-0 w-100">
                                     <FaLayerGroup size={22} class=" col-lg-12 mb-2" />

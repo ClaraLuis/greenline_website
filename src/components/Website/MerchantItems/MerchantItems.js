@@ -955,7 +955,7 @@ keep data consistent.</span></p>
                             </div>
                         </div>
                         {/* <div class={generalstyles.card + ' row m-0 w-100'}> */}
-                        <div class="col-lg-12 mb-2 p-0">
+                        <div class="col-lg-12 mb-2 p-0 mb-3">
                             <Pagination
                                 beforeCursor={fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.beforeCursor}
                                 afterCursor={fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.afterCursor}
@@ -963,7 +963,7 @@ keep data consistent.</span></p>
                                 setfilter={setPayload}
                             />
                         </div>
-                        <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
+                        <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar px-1 '}>
                             <ItemsTable
                                 clickable={true}
                                 actiononclick={(item) => {
