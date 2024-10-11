@@ -813,6 +813,7 @@ const API = () => {
                             info {
                                 name
                                 imageUrl
+                                sku
                                 item {
                                     name
                                 }
@@ -1154,6 +1155,7 @@ const API = () => {
                     info {
                         name
                         imageUrl
+                        sku
                         item {
                             name
                         }
@@ -1323,6 +1325,7 @@ const API = () => {
                             info {
                                 name
                                 imageUrl
+                                sku
                                 item {
                                     name
                                 }
