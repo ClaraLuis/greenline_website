@@ -27,6 +27,7 @@ import { NotificationManager } from 'react-notifications';
 import { AiOutlineClose } from 'react-icons/ai';
 import { FiCheckCircle, FiCircle } from 'react-icons/fi';
 import WaybillPrint from './WaybillPrint.js';
+import FulfillModal from './FulfillModal.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -39,6 +40,8 @@ const Orders = (props) => {
     const { fetchMerchants, useQueryGQL, fetchOrdersInInventory, fetchInventories } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
+    const [fulfilllModal, setfulfilllModal] = useState(false);
+    const [ordersToBeFulfilled, setordersToBeFulfilled] = useState([]);
 
     const [merchantModal, setmerchantModal] = useState(false);
     const [search, setSearch] = useState('');
@@ -65,8 +68,23 @@ const Orders = (props) => {
         beforeCursor: undefined,
     });
     const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
-    const handleSelectOrder = (orderId) => {
-        setSelectedOrders((prevSelected) => (prevSelected.includes(orderId) ? prevSelected.filter((id) => id !== orderId) : [...prevSelected, orderId]));
+    const handleSelectOrder = (order) => {
+        setSelectedOrders((prevSelected) => (prevSelected.includes(order.id) ? prevSelected.filter((id) => id !== order.id) : [...prevSelected, order.id]));
+        var temp = [...ordersToBeFulfilled];
+        var exist = false;
+        var indexexist = null;
+        temp?.map((item, index) => {
+            if (order.id == item.id) {
+                exist = true;
+                indexexist = index;
+            }
+        });
+        if (exist) {
+            temp.splice(indexexist, 1);
+        } else {
+            temp.push(order);
+        }
+        setordersToBeFulfilled(temp);
     };
     useEffect(() => {
         // alert();
@@ -336,11 +354,14 @@ const Orders = (props) => {
                                     <div
                                         onClick={() => {
                                             var temp = [];
+                                            var temp1 = [];
                                             if (selectedOrders?.length != fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.length) {
                                                 fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.map((i, ii) => {
                                                     temp.push(i.id);
+                                                    temp1.push(i);
                                                 });
                                             }
+                                            setordersToBeFulfilled(temp1);
                                             setSelectedOrders(temp);
                                         }}
                                         class="row m-0 w-100 d-flex align-items-center"
@@ -375,7 +396,21 @@ const Orders = (props) => {
                                         {selectedOrders?.length != fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.length ? 'Select All' : 'Deselect All'}
                                     </div>
                                 </div>
-                                <div class="col-lg-6 d-flex justify-content-end"> {waybills?.length > 0 && <WaybillPrint waybills={waybills} />}</div>
+                                <div class="col-lg-6 d-flex justify-content-end">
+                                    {' '}
+                                    {waybills?.length > 0 && <WaybillPrint waybills={waybills} />}
+                                    {selectedOrders?.length != 0 && (
+                                        <button
+                                            style={{ height: '35px' }}
+                                            class={generalstyles.roundbutton + '  mx-2'}
+                                            onClick={() => {
+                                                setfulfilllModal(true);
+                                            }}
+                                        >
+                                            Fulfill orders
+                                        </button>
+                                    )}
+                                </div>
                             </div>
                         </div>
 
@@ -391,7 +426,7 @@ const Orders = (props) => {
                             <OrdersTable
                                 selectedOrders={selectedOrders}
                                 clickable={true}
-                                actiononclick={(order) => handleSelectOrder(order.id)}
+                                actiononclick={(order) => handleSelectOrder(order)}
                                 fetchOrdersQuery={fetchOrdersInInventoryQuery}
                                 attr={'paginateOrdersInInventory'}
                                 srcFrom="inventory"
@@ -452,6 +487,7 @@ const Orders = (props) => {
                     </div>
                 </Modal.Body>
             </Modal>
+            <FulfillModal fulfilllModal={fulfilllModal} setfulfilllModal={setfulfilllModal} ordersToBeFulfilled={ordersToBeFulfilled} />
         </div>
     );
 };

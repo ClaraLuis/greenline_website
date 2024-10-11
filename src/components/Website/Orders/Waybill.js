@@ -4,8 +4,22 @@ import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 import logo from '../Generalfiles/images/logo.png';
 import Barcode from 'react-barcode';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext';
+import bwipjs from 'bwip-js';
 const Waybill = ({ order }) => {
     const { dateformatter } = useContext(Contexthandlerscontext);
+    const codeGenerate = (sku) => {
+        let canvas = document.createElement('canvas');
+        bwipjs?.toCanvas(canvas, {
+            bcid: 'datamatrix', // Barcode type
+            text: JSON.stringify(sku), // Text to encode
+            // scale: 2, // 3x scaling factor
+            height: 15, // Bar height, in millimeters
+            width: 15, // Bar height, in millimeters
+            includetext: true, // Show human-readable text
+            textxalign: 'center', // Always good to set this
+        });
+        return canvas.toDataURL('image/png');
+    };
     return (
         <div style={{ fontSize: '12px' }} className="print-item waybill p-1 col-lg-12">
             <div class="row m-0 w-100  h-100">
@@ -97,14 +111,22 @@ const Waybill = ({ order }) => {
                 <div class="col-lg-2 col-md-2 p-0 h-100">
                     <div class="row m-0 w-100 h-100">
                         <div className="col-lg-12 allcentered " style={{ height: '50%', borderBottom: '1px solid #eee' }}>
-                            <div style={{ transform: 'rotate(270deg)' }}>
-                                <Barcode value={order?.id} width={2} height={40} fontSize={12} background="transparent" style={{ background: 'transparent', transform: 'rotate(90deg)' }} />
+                            <div class="row m-0 w-100">
+                                <div class="col-lg-12 p-0 allcentered">
+                                    <img src={codeGenerate(order?.id)} alt={`data matrix from ${order?.id}`} />
+                                </div>
+
+                                <div class="col-lg-12 mt-1 allcentered">{order?.id}</div>
                             </div>
                         </div>
                         <div className="col-lg-12 allcentered " style={{ height: '50%', borderBottom: '1px solid #eee' }}>
                             {order?.otherId && (
-                                <div style={{ transform: 'rotate(270deg)' }}>
-                                    <Barcode value={order?.otherId} width={2} height={40} fontSize={12} background="transparent" style={{ background: 'transparent', transform: 'rotate(90deg)' }} />
+                                <div class="row m-0 w-100">
+                                    <div class="col-lg-12 p-0 allcentered">
+                                        <img src={codeGenerate(order?.otherId)} alt={`data matrix from ${order?.otherId}`} />
+                                    </div>
+
+                                    <div class="col-lg-12 mt-1 allcentered">{order?.otherId}</div>
                                 </div>
                             )}
                         </div>
