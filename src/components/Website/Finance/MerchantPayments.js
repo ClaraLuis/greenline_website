@@ -133,7 +133,7 @@ const MerchantPayments = (props) => {
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
-                <div class="col-lg-12 p-0 px-1">
+                <div class="col-lg-12 px-3">
                     <div class={generalstyles.card + ' row m-0 w-100'}>
                         <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
                             <p class=" p-0 m-0" style={{ fontSize: '27px' }}>
@@ -161,7 +161,7 @@ const MerchantPayments = (props) => {
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-12 p-0 px-1">
+                <div class="col-lg-12 px-3">
                     <div class="row m-0 w-100">
                         <div style={{ borderRadius: '0.25rem', background: 'white' }} class={generalstyles.card + ' col-lg-12'}>
                             <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
@@ -321,7 +321,7 @@ const MerchantPayments = (props) => {
                         <div class="col-lg-9 p-0">
                             {isAuth([1, 51, 19, 60]) && (
                                 <div class={' row m-0 w-100 mb-2 p-0 px-0'}>
-                                    <div class="col-lg-12 p-0 px-1">
+                                    <div class="col-lg-12 px-3">
                                         <div class={generalstyles.card + ' row m-0 w-100'}>
                                             <div className="col-lg-6 p-0 d-flex justify-content-end ">
                                                 <div

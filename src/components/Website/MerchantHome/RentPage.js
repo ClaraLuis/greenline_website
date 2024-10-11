@@ -98,8 +98,9 @@ const RentPage = (props) => {
     };
 
     return (
-        <>
-            {/* {!queryParameters.get('merchantId') && (
+        <div class="row m-0 w-100 p-md-2 pt-2">
+            <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
+                {/* {!queryParameters.get('merchantId') && (
                 <div class="col-lg-12 p-0">
                     <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
                         <SelectComponent
@@ -117,85 +118,86 @@ const RentPage = (props) => {
                     </div>
                 </div>
             )} */}
-            <>
-                <div class="col-lg-12 p-0">
-                    <div class="row m-0 w-100">
-                        <div class="col-lg-5">
-                            <div class={generalstyles.card + ' row m-0 p-3 w-100'}>
-                                <div style={{ fontSize: '17px' }} class="col-lg-12 mb-1">
-                                    Next Bill Payment <span style={{ color: 'grey', fontSize: '15px' }}>({getFirstDayOfNextMonth()})</span>
+                <>
+                    <div class="col-lg-12 px-3">
+                        <div class="row m-0 w-100">
+                            <div class="col-lg-5">
+                                <div class={generalstyles.card + ' row m-0 p-3 w-100'}>
+                                    <div style={{ fontSize: '17px' }} class="col-lg-12 mb-1">
+                                        Next Bill Payment <span style={{ color: 'grey', fontSize: '15px' }}>({getFirstDayOfNextMonth()})</span>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <span style={{ fontWeight: 800, fontSize: '23px' }}>
+                                            {inventoryRentSummaryData?.sum} {inventoryRentSummaryData?.currency}{' '}
+                                        </span>
+                                    </div>
                                 </div>
-                                <div class="col-lg-12">
-                                    <span style={{ fontWeight: 800, fontSize: '23px' }}>
-                                        {inventoryRentSummaryData?.sum} {inventoryRentSummaryData?.currency}{' '}
+                            </div>
+                            <div class="col-lg-5">
+                                <div class={generalstyles.card + ' row m-0 p-3 w-100'}>
+                                    <div style={{ fontSize: '17px' }} class="col-lg-12 mb-1">
+                                        Inventory Rent Count
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <span style={{ fontWeight: 800, fontSize: '23px' }}>{inventoryRentSummaryData?.quantity}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class={' row m-0 w-100 mb-2 p-2'}>
+                        <div class="col-lg-12 px-3">
+                            <div class={generalstyles.card + ' row m-0 w-100'}>
+                                <div class={' col-lg-6 col-md-6 col-sm-12 p-0 d-flex align-items-center justify-content-start '}>
+                                    <p class=" p-0 m-0 text-uppercase" style={{ fontSize: '15px' }}>
+                                        <span style={{ color: 'var(--info)' }}>Transactions</span>
+                                    </p>
+                                </div>
+                                <div class="col-lg-6 p-0 d-flex justify-content-end">
+                                    <span
+                                        onClick={() => {
+                                            history.push('/merchantpayments');
+                                        }}
+                                        style={{ height: '35px' }}
+                                        class={generalstyles.roundbutton + '  allcentered'}
+                                    >
+                                        View all
                                     </span>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-5">
-                            <div class={generalstyles.card + ' row m-0 p-3 w-100'}>
-                                <div style={{ fontSize: '17px' }} class="col-lg-12 mb-1">
-                                    Inventory Rent Count
-                                </div>
-                                <div class="col-lg-12">
-                                    <span style={{ fontWeight: 800, fontSize: '23px' }}>{inventoryRentSummaryData?.quantity}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class={' row m-0 w-100 mb-2 p-2'}>
-                    <div class="col-lg-12 p-0 px-1">
-                        <div class={generalstyles.card + ' row m-0 w-100'}>
-                            <div class={' col-lg-6 col-md-6 col-sm-12 p-0 d-flex align-items-center justify-content-start '}>
-                                <p class=" p-0 m-0 text-uppercase" style={{ fontSize: '15px' }}>
-                                    <span style={{ color: 'var(--info)' }}>Transactions</span>
-                                </p>
-                            </div>
-                            <div class="col-lg-6 p-0 d-flex justify-content-end">
-                                <span
-                                    onClick={() => {
-                                        history.push('/merchantpayments');
-                                    }}
-                                    style={{ height: '35px' }}
-                                    class={generalstyles.roundbutton + '  allcentered'}
-                                >
-                                    View all
-                                </span>
-                            </div>
-                        </div>
-                    </div>
 
-                    <>
-                        <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
-                            {paginateInventoryRentTransactionQuery?.data?.paginateInventoryRentTransaction?.data?.length != 0 && (
-                                <div class="row m-0 w-100">
-                                    {paginateInventoryRentTransactionQuery?.data?.paginateInventoryRentTransaction?.data?.map((item, index) => {
-                                        return (
-                                            <div style={{ fontSize: '13px', position: 'relative' }} className="p-1 col-lg-6 pb-0">
-                                                <div class={generalstyles.card + ' p-2 px-3 row m-0 w-100 allcentered'}>
-                                                    <div className="col-lg-12 p-0">
-                                                        <span style={{ fontWeight: 700, fontSize: '16px' }} class=" d-flex align-items-center">
-                                                            {item?.quantity}
-                                                        </span>
-                                                    </div>
-                                                    <div className="col-lg-12 p-0 mb-1 d-flex justify-content-end">
-                                                        <span class="d-flex align-items-center" style={{ fontWeight: 500, color: 'grey', fontSize: '12px' }}>
-                                                            <IoMdTime class="mr-1" />
-                                                            {dateformatter(item?.createdAt)}
-                                                        </span>
+                        <>
+                            <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
+                                {paginateInventoryRentTransactionQuery?.data?.paginateInventoryRentTransaction?.data?.length != 0 && (
+                                    <div class="row m-0 w-100">
+                                        {paginateInventoryRentTransactionQuery?.data?.paginateInventoryRentTransaction?.data?.map((item, index) => {
+                                            return (
+                                                <div style={{ fontSize: '13px', position: 'relative' }} className="p-1 col-lg-6 pb-0">
+                                                    <div class={generalstyles.card + ' p-2 px-3 row m-0 w-100 allcentered'}>
+                                                        <div className="col-lg-12 p-0">
+                                                            <span style={{ fontWeight: 700, fontSize: '16px' }} class=" d-flex align-items-center">
+                                                                {item?.quantity}
+                                                            </span>
+                                                        </div>
+                                                        <div className="col-lg-12 p-0 mb-1 d-flex justify-content-end">
+                                                            <span class="d-flex align-items-center" style={{ fontWeight: 500, color: 'grey', fontSize: '12px' }}>
+                                                                <IoMdTime class="mr-1" />
+                                                                {dateformatter(item?.createdAt)}
+                                                            </span>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            )}
-                        </div>
-                    </>
-                </div>
-            </>
-        </>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                            </div>
+                        </>
+                    </div>
+                </>
+            </div>
+        </div>
     );
 };
 export default RentPage;

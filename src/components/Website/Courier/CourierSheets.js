@@ -63,7 +63,7 @@ const CourierSheets = (props) => {
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
-                <div class="col-lg-12 p-0">
+                <div class="col-lg-12 px-3">
                     <div class={generalstyles.card + ' row m-0 w-100'}>
                         <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
                             <p class=" p-0 m-0" style={{ fontSize: '27px' }}>
@@ -105,7 +105,7 @@ const CourierSheets = (props) => {
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-12 p-0 ">
+                <div class="col-lg-12 px-3">
                     <div class={generalstyles.card + ' mb-3 col-lg-12 p-2'}>
                         <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
                             <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
@@ -185,28 +185,30 @@ const CourierSheets = (props) => {
                         </Accordion>
                     </div>
                 </div>
-                {isAuth([1, 34, 53]) && (
-                    <>
-                        <div class="col-lg-12 p-0 mb-2">
-                            <Pagination
-                                beforeCursor={fetchSheetsQuery?.data?.paginateCourierSheets?.cursor?.beforeCursor}
-                                afterCursor={fetchSheetsQuery?.data?.paginateCourierSheets?.cursor?.afterCursor}
-                                filter={filter}
-                                setfilter={setfilter}
-                            />
-                        </div>
-                        <div class={' row m-0 w-100'}>
-                            <SheetsTable
-                                clickable={true}
-                                refetchCourierSheets={refetchCourierSheets}
-                                fetchSheetsQuery={fetchSheetsQuery}
-                                onClick={(item) => {
-                                    history.push('/couriersheet?id=' + item?.id + '&type=admin');
-                                }}
-                            />
-                        </div>
-                    </>
-                )}
+                <div class="col-lg-12 px-3">
+                    {isAuth([1, 34, 53]) && (
+                        <>
+                            <div class="col-lg-12 p-0 mb-3">
+                                <Pagination
+                                    beforeCursor={fetchSheetsQuery?.data?.paginateCourierSheets?.cursor?.beforeCursor}
+                                    afterCursor={fetchSheetsQuery?.data?.paginateCourierSheets?.cursor?.afterCursor}
+                                    filter={filter}
+                                    setfilter={setfilter}
+                                />
+                            </div>
+                            <div class={' row m-0 w-100'}>
+                                <SheetsTable
+                                    clickable={true}
+                                    refetchCourierSheets={refetchCourierSheets}
+                                    fetchSheetsQuery={fetchSheetsQuery}
+                                    onClick={(item) => {
+                                        history.push('/couriersheet?id=' + item?.id + '&type=admin');
+                                    }}
+                                />
+                            </div>
+                        </>
+                    )}
+                </div>
             </div>
         </div>
     );

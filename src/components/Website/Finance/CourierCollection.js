@@ -151,7 +151,7 @@ const CourierCollection = (props) => {
                         Courier Collections
                     </p>
                 </div>
-                <div class="col-lg-12 p-0 px-1">
+                <div class="col-lg-12 px-3">
                     <div style={{ borderRadius: '0.25rem', background: 'white' }} class={generalstyles.card + ' col-lg-12'}>
                         <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
                             <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
@@ -286,7 +286,7 @@ const CourierCollection = (props) => {
                         <div class="col-lg-9 p-0">
                             {isAuth([1, 51, 19]) && (
                                 <div class={' row m-0 w-100 mb-2 p-0 px-0'}>
-                                    <div class="col-lg-12 p-0 px-1">
+                                    <div class="col-lg-12 px-3">
                                         <div class={generalstyles.card + ' row m-0 w-100'}>
                                             <div className="col-lg-6 p-0 d-flex justify-content-end ">
                                                 <div

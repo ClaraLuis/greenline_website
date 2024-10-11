@@ -304,7 +304,8 @@ const App = (props) => {
                                                                 <Route exact path="/updatemerchant" component={UpdateMerchant} />
                                                                 <Route exact path="/hubdetails" component={HubDetails} />
                                                                 <Route exact path="/inventorysettings" component={InventorySettings} />
-                                                                <Route exact path="/fulfilled" component={Fulfilled} />
+                                                                <Route exact path="/fulfilled" component={AddSheetNew} />
+                                                                <Route exact path="/sortfacilities" component={AddSheetNew} />
                                                                 <Route exact path="/webtoken" component={WebToken} />
 
                                                                 <Route exact path="/courierhome" component={CourierHome} />
@@ -313,7 +314,7 @@ const App = (props) => {
                                                                 <Route exact path="/orderinfo" component={OrderInfo} />
                                                                 <Route exact path="/addsheet" component={AddSheetNew} />
                                                                 <Route exact path="/arrivedathub" component={AddSheetNew} />
-                                                                <Route exact path="/facilities" component={AddSheetNew} />
+                                                                <Route exact path="/dispatched" component={AddSheetNew} />
                                                                 <Route exact path="/rentpage" component={RentPage} />
 
                                                                 <Route exact path="/financehome" component={FinanceHome} />

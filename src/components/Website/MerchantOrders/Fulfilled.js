@@ -38,7 +38,7 @@ const Fulfilled = (props) => {
 
     const [filterorders, setfilterorders] = useState({
         limit: 20,
-        statuses: ['fulfilled'],
+        statuses: window.location.pathname == '/fulfilled' ? ['fulfilled'] : ['dispatched'],
     });
     const fetchOrdersQuery = useQueryGQL('', fetchOrders(), filterorders);
     const { refetch: refetchOrders } = useQueryGQL('', fetchOrders(), filterorders);
@@ -61,8 +61,8 @@ const Fulfilled = (props) => {
         setSelectedOrders((prevSelected) => (prevSelected.includes(orderId) ? prevSelected.filter((id) => id !== orderId) : [...prevSelected, orderId]));
     };
     useEffect(() => {
-        setpageactive_context('/fulfilled');
-        setpagetitle_context('Merchant');
+        setpageactive_context(window.location.pathname);
+        setpagetitle_context('Warehouses');
     }, []);
 
     return (

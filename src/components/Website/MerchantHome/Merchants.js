@@ -110,8 +110,8 @@ const Merchants = (props) => {
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
-                <div class={' row m-0 w-100 mb-2 p-2 px-3'}>
-                    <div class="col-lg-12 p-0 px-1">
+                <div class={' row m-0 w-100 '}>
+                    <div class="col-lg-12 px-3">
                         <div class={generalstyles.card + ' row m-0 w-100 my-2 p-2 px-2'}>
                             <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start '}>
                                 <p class=" p-0 m-0" style={{ fontSize: '23px' }}>
@@ -144,7 +144,7 @@ const Merchants = (props) => {
                                 <CircularProgress color="var(--primary)" width="60px" height="60px" duration="1s" />
                             </div>
                         )}
-                        <div class="col-lg-12 p-0 px-1">
+                        <div class="col-lg-12 px-3">
                             <div class={generalstyles.card + ' row m-0 w-100 my-2 p-2 px-2'}>
                                 <div class="col-lg-12 p-0 ">
                                     <div class="row m-0 w-100 d-flex align-items-center">

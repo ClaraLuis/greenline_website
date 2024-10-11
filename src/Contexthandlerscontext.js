@@ -87,18 +87,6 @@ export const Contexthandlerscontext_provider = (props) => {
                         permissionpage: [1],
                         show: isAuth([1, 43, 44, 45, 46, 52]),
                     },
-                    {
-                        name: 'Hubs',
-                        isselected: false,
-                        icon: (
-                            <i class={'allcentered'}>
-                                <MdOutlineHub size={18} />
-                            </i>
-                        ),
-                        path: '/hubs',
-                        permissionpage: [1],
-                        show: isAuth([1]),
-                    },
                 ],
             },
             {
@@ -191,6 +179,30 @@ export const Contexthandlerscontext_provider = (props) => {
                             </i>
                         ),
                         path: '/fulfilled',
+                        permissionpage: [1],
+                        show: isAuth([1]),
+                    },
+                    {
+                        name: 'Dispatched',
+                        isselected: false,
+                        icon: (
+                            <i class={'allcentered'}>
+                                <LuPackageOpen size={18} />
+                            </i>
+                        ),
+                        path: '/dispatched',
+                        permissionpage: [1],
+                        show: isAuth([1, 53, 36]),
+                    },
+                    {
+                        name: 'Arrived at sort facilities',
+                        isselected: false,
+                        icon: (
+                            <i class={'allcentered'}>
+                                <LuPackageOpen size={18} />
+                            </i>
+                        ),
+                        path: '/sortfacilities',
                         permissionpage: [1],
                         show: isAuth([1]),
                     },
@@ -326,6 +338,18 @@ export const Contexthandlerscontext_provider = (props) => {
                 // path: '/hubs',
                 subitems: [
                     {
+                        name: 'Hubs',
+                        isselected: false,
+                        icon: (
+                            <i class={'allcentered'}>
+                                <MdOutlineHub size={18} />
+                            </i>
+                        ),
+                        path: '/hubs',
+                        permissionpage: [1],
+                        show: isAuth([1]),
+                    },
+                    {
                         name: 'Item Returns',
                         isselected: false,
                         icon: (
@@ -370,18 +394,6 @@ export const Contexthandlerscontext_provider = (props) => {
                             </i>
                         ),
                         path: '/arrivedathub',
-                        permissionpage: [1],
-                        show: isAuth([1, 53, 36]),
-                    },
-                    {
-                        name: 'Facilities',
-                        isselected: false,
-                        icon: (
-                            <i class={'allcentered'}>
-                                <LuPackageOpen size={18} />
-                            </i>
-                        ),
-                        path: '/facilities',
                         permissionpage: [1],
                         show: isAuth([1, 53, 36]),
                     },

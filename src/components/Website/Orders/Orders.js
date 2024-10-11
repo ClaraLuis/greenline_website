@@ -108,7 +108,7 @@ const Orders = (props) => {
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
-                <div class="col-lg-12 p-0 px-1">
+                <div class="col-lg-12 px-3">
                     <div class={generalstyles.card + ' row m-0 w-100'}>
                         <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
                             <p class=" p-0 m-0" style={{ fontSize: '27px' }}>
@@ -117,7 +117,7 @@ const Orders = (props) => {
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-12 p-0 px-1">
+                <div class="col-lg-12 px-3">
                     <div class={generalstyles.card + ' mb-2 col-lg-12 p-2'}>
                         <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
                             <AccordionItem class={`${generalstyles.innercard} p-2`}>
@@ -292,7 +292,7 @@ const Orders = (props) => {
                         </Accordion>
                     </div>
                 </div>
-                <div class="col-lg-12 p-0 px-1">
+                <div class="col-lg-12 px-3">
                     {' '}
                     <div class={generalstyles.card + ' row m-0 w-100 my-2 p-2 px-2'}>
                         <div class="col-lg-12 p-0 ">
@@ -330,7 +330,7 @@ const Orders = (props) => {
 
                 {isAuth([1, 54]) && (
                     <div class={' row m-0 w-100'}>
-                        <div class="col-lg-12 p-0 px-1">
+                        <div class="col-lg-12 px-3">
                             <div class={generalstyles.card + ' row m-0 w-100'}>
                                 <div className="col-lg-6 p-0 d-flex justify-content-end ">
                                     <div

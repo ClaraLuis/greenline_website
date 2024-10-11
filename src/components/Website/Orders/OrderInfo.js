@@ -246,7 +246,7 @@ const OrderInfo = (props) => {
 
     const [addOrderItemsMutation] = useMutationGQL(addOrderItems(), {
         orderId: parseInt(queryParameters?.get('orderId')),
-        orderItems: itemsModal?.itemstobeadded[0] ?? undefined,
+        orderItems: itemsModal?.itemstobeadded ?? undefined,
         keepCurrentPrice: true,
     });
 
@@ -374,7 +374,7 @@ const OrderInfo = (props) => {
                                         )}
                                     </div>
                                     <div class="col-lg-5">
-                                        <div class={generalstyles.card + ' row m-0 w-100'}>
+                                        <div style={{ minHeight: '400px', maxHeight: '400px' }} class={generalstyles.card + ' row m-0 w-100 d-flex align-items-start'}>
                                             <div class="col-lg-12 p-0 mb-3">
                                                 <div class="row m-0 w-100 allcentered">
                                                     <button
@@ -507,7 +507,7 @@ const OrderInfo = (props) => {
                                         </div>
                                     </div>
                                     <div class="col-lg-7">
-                                        <div class={generalstyles.card + ' row m-0 w-100 p-4'}>
+                                        <div style={{ minHeight: '400px', maxHeight: '400px' }} class={generalstyles.card + ' row m-0 w-100 d-flex align-items-start align-content-start'}>
                                             <div class="col-lg-12 p-0">
                                                 <div class="row m-0 w-100 d-flex justify-content-between">
                                                     <span style={{ fontWeight: 600 }} class="text-capitalize">
@@ -556,7 +556,7 @@ const OrderInfo = (props) => {
                                                                             style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
                                                                         />
                                                                     </div>
-                                                                    <div class="col-lg-4 d-flex align-items-center">
+                                                                    <div class="col-lg-3 d-flex align-items-center">
                                                                         {queryParameters?.get('type') == 'inventory' && (
                                                                             <div className="row m-0 w-100">
                                                                                 <div style={{ fontSize: '14px', fontWeight: 600 }} className={' col-lg-12 p-0'}>
@@ -615,6 +615,7 @@ const OrderInfo = (props) => {
                                                                                         setbuttonLoading(true);
                                                                                         try {
                                                                                             const { data } = await removeOrderItemsMutation();
+                                                                                            NotificationManager.success('Success!', '');
                                                                                             fetchOrder();
                                                                                         } catch (error) {
                                                                                             let errorMessage = 'An unexpected error occurred';
@@ -1088,6 +1089,8 @@ const OrderInfo = (props) => {
                                         });
                                         await setitemsModal({ ...itemsModal, itemstobeadded: temp, open: false });
                                         await addOrderItemsMutation();
+                                        NotificationManager.success('Success!', '');
+                                        fetchOrder();
                                     } catch (error) {
                                         let errorMessage = 'An unexpected error occurred';
                                         if (error.graphQLErrors && error.graphQLErrors.length > 0) {
@@ -1130,7 +1133,7 @@ const OrderInfo = (props) => {
                                     }
                                 });
                                 if (!exist) {
-                                    temp.items = [{ item: item, count: 1 }];
+                                    temp.items.push({ item: item, count: 1 });
                                 } else {
                                     temp.items[chosenindex].count = parseInt(temp.items[chosenindex].count) + 1;
                                 }

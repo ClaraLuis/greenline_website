@@ -5073,7 +5073,7 @@ ul {
 }
 
 .rs-input-group {
-    border-radius: 18px !important;
+    border-radius: 0.25rem !important;
     position: relative;
     display: -ms-flexbox;
     display: flex;
@@ -5088,7 +5088,7 @@ ul {
 }
 
 .rs-input-group.rs-input-group-inside .rs-input {
-    border-radius: 18px !important;
+    border-radius: 0.25rem !important;
 }
 
 @media print {
