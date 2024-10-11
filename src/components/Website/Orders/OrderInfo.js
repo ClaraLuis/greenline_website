@@ -335,46 +335,114 @@ const OrderInfo = (props) => {
                         <div class="row m-0 w-100">
                             {chosenOrderContext != undefined && (
                                 <>
-                                    <div class="col-lg-12 d-flex justify-content-end mb-3">
-                                        <button
-                                            style={{ height: '35px' }}
-                                            class={generalstyles.roundbutton + ' mx-2 allcentered'}
-                                            onClick={() => {
-                                                setorderLogsModal(true);
-                                            }}
-                                        >
-                                            <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Order Logs</p>
-                                        </button>
-                                        {chosenOrderContext?.type == 'delivery' && (
-                                            <button
-                                                style={{ height: '35px' }}
-                                                class={generalstyles.roundbutton}
-                                                onClick={() => {
-                                                    if (chosenOrderContext?.status == 'delivered' || chosenOrderContext?.status == 'partiallyDelivered') {
-                                                        setrequestReturnPayload({ ...requestReturnPayload, chosenOrderContext });
-                                                        setreturnOrderModal(true);
-                                                    } else {
-                                                        NotificationManager.warning('Order is not yet delivered', 'Warning!');
-                                                    }
-                                                }}
-                                            >
-                                                <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Request Return</p>
-                                            </button>
-                                        )}
-                                        {chosenOrderContext?.type == 'return' && (
-                                            <button
-                                                style={{ height: '35px' }}
-                                                class={generalstyles.roundbutton}
-                                                onClick={() => {
-                                                    history.push('/addorder?merchantId=' + chosenOrderContext?.merchant?.id + '&order=' + chosenOrderContext?.id);
-                                                }}
-                                            >
-                                                <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Request Exchange</p>
-                                            </button>
-                                        )}
+                                    <div class="col-lg-12">
+                                        <div class={generalstyles.card + ' row m-0 w-100'}>
+                                            <div class="col-lg-6">
+                                                <div class="row m-0 w-100 d-flex align-items-center">
+                                                    <div class="col-lg-12 p-0">
+                                                        <p class=" p-0 m-0" style={{ fontSize: '23px' }}>
+                                                            <span style={{ color: 'var(--info)' }}>{chosenOrderContext?.merchant?.name}</span>
+                                                        </p>
+                                                    </div>
+                                                    <div class="col-lg-12 p-0">
+                                                        <p style={{ fontSize: '12px' }} className={' m-0 p-0 wordbreak  '}>
+                                                            {dateformatter(chosenOrderContext?.orderDate)}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 d-flex justify-content-end mb-3">
+                                                <button
+                                                    style={{ height: '35px' }}
+                                                    class={generalstyles.roundbutton + ' mx-2 allcentered'}
+                                                    onClick={() => {
+                                                        setorderLogsModal(true);
+                                                    }}
+                                                >
+                                                    <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Order Logs</p>
+                                                </button>
+                                                {chosenOrderContext?.type == 'delivery' && (
+                                                    <button
+                                                        style={{ height: '35px' }}
+                                                        class={generalstyles.roundbutton}
+                                                        onClick={() => {
+                                                            if (chosenOrderContext?.status == 'delivered' || chosenOrderContext?.status == 'partiallyDelivered') {
+                                                                setrequestReturnPayload({ ...requestReturnPayload, chosenOrderContext });
+                                                                setreturnOrderModal(true);
+                                                            } else {
+                                                                NotificationManager.warning('Order is not yet delivered', 'Warning!');
+                                                            }
+                                                        }}
+                                                    >
+                                                        <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Request Return</p>
+                                                    </button>
+                                                )}
+                                                {chosenOrderContext?.type == 'return' && (
+                                                    <button
+                                                        style={{ height: '35px' }}
+                                                        class={generalstyles.roundbutton}
+                                                        onClick={() => {
+                                                            history.push('/addorder?merchantId=' + chosenOrderContext?.merchant?.id + '&order=' + chosenOrderContext?.id);
+                                                        }}
+                                                    >
+                                                        <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Attach Exhange Order</p>
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="col-lg-5">
-                                        <div style={{ minHeight: '400px', maxHeight: '400px' }} class={generalstyles.card + ' row m-0 w-100 d-flex align-items-start'}>
+                                        <div style={{ minHeight: '400px', maxHeight: '400px' }} class={generalstyles.card + ' row m-0 w-100 d-flex align-content-start'}>
+                                            <div className="col-lg-4 p-0">
+                                                <div class="row m-0 w-100 d-flex align-items-center">
+                                                    <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
+                                                        # {chosenOrderContext?.id}
+                                                    </span>{' '}
+                                                </div>
+                                            </div>
+                                            <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
+                                                <div class="row m-0 w-100  d-flex justify-content-end align-items-center">
+                                                    {outOfStock && queryParameters?.get('type') == 'inventory' && (
+                                                        <div className={'mr-1 wordbreak text-danger bg-light-danger rounded-pill font-weight-600 '}>Out Of Stock</div>
+                                                    )}
+
+                                                    <div
+                                                        // onClick={() => {
+                                                        //     setchangestatusmodal(true);
+                                                        // }}
+                                                        // style={{ cursor: 'pointer' }}
+                                                        className={
+                                                            chosenOrderContext?.status == 'delivered'
+                                                                ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 '
+                                                                : chosenOrderContext?.status == 'postponed' || chosenOrderContext?.status == 'failedDeliveryAttempt'
+                                                                ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 '
+                                                                : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 '
+                                                        }
+                                                    >
+                                                        {orderStatusEnumContext?.map((i, ii) => {
+                                                            if (i.value == chosenOrderContext?.status) {
+                                                                return <span>{i.label}</span>;
+                                                            }
+                                                        })}
+                                                    </div>
+                                                    <div
+                                                        // onClick={() => {
+                                                        //     setchangestatusmodal(true);
+                                                        // }}
+                                                        style={{ color: 'white' }}
+                                                        className={'ml-1 wordbreak bg-primary rounded-pill font-weight-600 '}
+                                                    >
+                                                        {orderTypeContext?.map((i, ii) => {
+                                                            if (i.value == chosenOrderContext?.type) {
+                                                                return <span>{i.label}</span>;
+                                                            }
+                                                        })}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 p-0">
+                                                <hr />
+                                            </div>
                                             <div class="col-lg-12 p-0 mb-3">
                                                 <div class="row m-0 w-100 allcentered">
                                                     <button
@@ -396,7 +464,7 @@ const OrderInfo = (props) => {
                                             {historyType == 'order' && (
                                                 <>
                                                     {fetchOrderHistoryQuery?.data?.paginateOrderHistory?.data?.length == 0 && (
-                                                        <div class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
+                                                        <div class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary mt-5">
                                                             <div class="row m-0 w-100">
                                                                 <FaLayerGroup size={22} class=" col-lg-12 mb-2" />
                                                                 <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
@@ -406,7 +474,7 @@ const OrderInfo = (props) => {
                                                         </div>
                                                     )}
                                                     {fetchOrderHistoryQuery?.data?.paginateOrderHistory?.data?.length != 0 && (
-                                                        <div style={{ overflowY: 'scroll', height: '200px' }} class={' row m-0 w-100 p-0 pb-4 py-3 scrollmenuclasssubscrollbar'}>
+                                                        <div style={{ overflowY: 'scroll', height: '250px' }} class={' row m-0 w-100 p-0 pb-4 py-3 scrollmenuclasssubscrollbar'}>
                                                             <Timeline
                                                                 style={{ width: '100%' }}
                                                                 sx={{
@@ -448,7 +516,7 @@ const OrderInfo = (props) => {
                                             {historyType == 'payment' && (
                                                 <>
                                                     {fetchTransactionHistoryQuery?.data?.paginateOrderTransactionsHistory?.data?.length == 0 && (
-                                                        <div class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
+                                                        <div class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary mt-5">
                                                             <div class="row m-0 w-100">
                                                                 <FaLayerGroup size={22} class=" col-lg-12 mb-2" />
                                                                 <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
@@ -534,14 +602,14 @@ const OrderInfo = (props) => {
                                                         return (
                                                             <div class="col-lg-12 p-0 mb-1">
                                                                 <div style={{ border: '1px solid #eee', borderRadius: '0.25rem' }} class="row m-0 w-100 p-1 align-items-center">
-                                                                    <div class="mr-2">
+                                                                    <div class="allcentered">
                                                                         {orderItem?.partial && (
-                                                                            <div style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }} class="row m-0 w-100 p-1 px-3">
+                                                                            <div style={{ borderRadius: '8px', fontWeight: 700 }} class="row m-0 w-100 p-3 ">
                                                                                 {orderItem?.partialCount}/{orderItem?.count}
                                                                             </div>
                                                                         )}
                                                                         {!orderItem?.partial && (
-                                                                            <div style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }} class="row m-0 w-100 p-1 px-3">
+                                                                            <div style={{ borderRadius: '8px', fontWeight: 700 }} class="row m-0 w-100 p-3 ">
                                                                                 {orderItem?.count}
                                                                             </div>
                                                                         )}
@@ -556,7 +624,7 @@ const OrderInfo = (props) => {
                                                                             style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
                                                                         />
                                                                     </div>
-                                                                    <div class="col-lg-3 d-flex align-items-center">
+                                                                    <div class="col-lg-4 d-flex align-items-center">
                                                                         {queryParameters?.get('type') == 'inventory' && (
                                                                             <div className="row m-0 w-100">
                                                                                 <div style={{ fontSize: '14px', fontWeight: 600 }} className={' col-lg-12 p-0'}>
@@ -571,7 +639,7 @@ const OrderInfo = (props) => {
                                                                             </div>
                                                                         )}
                                                                     </div>
-                                                                    <div class="col-lg-6 ">
+                                                                    <div class="col-lg-5">
                                                                         <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
                                                                             <div class="mr-2">
                                                                                 {orderItem?.partial && (
@@ -648,72 +716,45 @@ const OrderInfo = (props) => {
                                     </div>
                                     <div class="col-lg-4">
                                         <div style={{ minHeight: '140px' }} class={generalstyles.card + ' row m-0 w-100 p-4'}>
-                                            <div style={{ cursor: props?.clickable ? 'pointer' : '' }} className="col-lg-12 p-0">
-                                                <div class={' row m-0 w-100 '}>
-                                                    <div className="col-lg-4 p-0">
-                                                        <div class="row m-0 w-100 d-flex align-items-center">
-                                                            <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
-                                                                # {chosenOrderContext?.id}
-                                                            </span>{' '}
-                                                            <span style={{ fontWeight: 600 }} class="text-capitalize">
-                                                                {chosenOrderContext?.merchant?.name}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
-                                                        <div class="row m-0 w-100  d-flex justify-content-end align-items-center">
-                                                            {outOfStock && queryParameters?.get('type') == 'inventory' && (
-                                                                <div className={'mr-1 wordbreak text-danger bg-light-danger rounded-pill font-weight-600 '}>Out Of Stock</div>
-                                                            )}
-
-                                                            <div
-                                                                // onClick={() => {
-                                                                //     setchangestatusmodal(true);
-                                                                // }}
-                                                                // style={{ cursor: 'pointer' }}
-                                                                className={
-                                                                    chosenOrderContext?.status == 'delivered'
-                                                                        ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 '
-                                                                        : chosenOrderContext?.status == 'postponed' || chosenOrderContext?.status == 'failedDeliveryAttempt'
-                                                                        ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 '
-                                                                        : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 '
-                                                                }
-                                                            >
-                                                                {orderStatusEnumContext?.map((i, ii) => {
-                                                                    if (i.value == chosenOrderContext?.status) {
-                                                                        return <span>{i.label}</span>;
-                                                                    }
-                                                                })}
+                                            <div style={{ cursor: props?.clickable ? 'pointer' : '' }} className="col-lg-12 p-0 allcentered">
+                                                <div class={' row m-0 w-100 allcentered '}>
+                                                    <div class="col-lg-12 p-0 mt-2">
+                                                        <div class="row m-0 w-100 d-flex">
+                                                            <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4">
+                                                                <div class="row m-0 w-100">
+                                                                    <div class="col-lg-12 p-0 allcentered text-center">
+                                                                        <span style={{ fontWeight: 400, fontSize: '11px' }}>Price</span>
+                                                                    </div>
+                                                                    <div class="col-lg-12 p-0 allcentered text-center">
+                                                                        <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                            {parseFloat(chosenOrderContext?.price)} {chosenOrderContext?.currency}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
                                                             </div>
-                                                            <div
-                                                                // onClick={() => {
-                                                                //     setchangestatusmodal(true);
-                                                                // }}
-                                                                style={{ color: 'white' }}
-                                                                className={'ml-1 wordbreak bg-primary rounded-pill font-weight-600 '}
-                                                            >
-                                                                {orderTypeContext?.map((i, ii) => {
-                                                                    if (i.value == chosenOrderContext?.type) {
-                                                                        return <span>{i.label}</span>;
-                                                                    }
-                                                                })}
+                                                            <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4">
+                                                                <div class="row m-0 w-100">
+                                                                    <div class="col-lg-12 p-0 allcentered text-center">
+                                                                        <span style={{ fontWeight: 400, fontSize: '11px' }}>Shipping</span>
+                                                                    </div>
+                                                                    <div class="col-lg-12 p-0 allcentered text-center">
+                                                                        <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                            {parseFloat(chosenOrderContext?.shippingPrice)} {chosenOrderContext?.currency}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-lg-12 p-0 my-2">
-                                                        <hr className="m-0" />
-                                                    </div>
-
-                                                    <div class="col-lg-12 p-0 ">
-                                                        <div class="row m-0 w-100 d-flex justify-content-end align-items-center mt-2">
-                                                            {/* {queryParameters?.get('type') == 'inventory' && (
-                                                        <div class="col-lg-6 p-0 d-flex align-item-center">
-                                                            <div className={' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 mr-1 '}>{diffInDays} days late</div>
-                                                        </div>
-                                                    )} */}
-
-                                                            <div style={{ fontSize: '12px' }} class="col-lg-6 p-0 d-flex justify-content-end ">
-                                                                <p className={' m-0 p-0 wordbreak  '}>{dateformatter(chosenOrderContext?.orderDate)}</p>
+                                                            <div style={{ fontWeight: 600, fontSize: '15px' }} className=" p-0 mb-2 allcentered col-lg-4">
+                                                                <div class="row m-0 w-100">
+                                                                    <div class="col-lg-12 p-0 allcentered text-center">
+                                                                        <span style={{ fontWeight: 400, fontSize: '11px' }}>Total</span>
+                                                                    </div>
+                                                                    <div class="col-lg-12 p-0 allcentered text-center">
+                                                                        <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                            {parseFloat(chosenOrderContext?.price) + parseFloat(chosenOrderContext?.shippingPrice)} {chosenOrderContext?.currency}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>

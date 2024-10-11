@@ -341,7 +341,9 @@ const AddOrder = (props) => {
     useEffect(async () => {
         if (orderpayload?.ordertype == 'exchange' && previousOrderType != 'e') {
             var { data } = await fetchOrdersQueryLazyQuery({
-                variables: { input: previousOrderType == 'd' ? filterorders : { ...filterorders, statuses: ['returned'] } },
+                variables: {
+                    input: previousOrderType == 'd' ? filterorders : { ...filterorders, statuses: undefined, notStatuses: ['returned', 'partiallyReturned', 'assignedToCourier'], types: ['return'] },
+                },
             });
             setfetchOrdersQuery({ data: data });
         }
