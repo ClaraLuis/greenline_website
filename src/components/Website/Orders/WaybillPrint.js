@@ -141,7 +141,7 @@ const WaybillPrint = ({ waybills }) => {
                 className="col-lg-12"
             >
                 {currentWaybill && (
-                    <div ref={componentRef} style={{ width: '55vw', height: '100%' }}>
+                    <div ref={componentRef} style={{ width: '45vw', height: '100%' }}>
                         <Waybill order={currentWaybill} />
                     </div>
                 )}
