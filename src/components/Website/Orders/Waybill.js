@@ -13,25 +13,28 @@ const Waybill = ({ order }) => {
             bcid: 'datamatrix', // Barcode type
             text: JSON.stringify(sku), // Text to encode
             // scale: 2, // 3x scaling factor
-            height: 15, // Bar height, in millimeters
-            width: 15, // Bar height, in millimeters
+            height: 10, // Bar height, in millimeters
+            width: 10, // Bar height, in millimeters
             includetext: true, // Show human-readable text
             textxalign: 'center', // Always good to set this
         });
         return canvas.toDataURL('image/png');
     };
     return (
-        <div style={{ fontSize: '12px' }} className="print-item waybill p-1 col-lg-12">
+        <div style={{ fontSize: '8px' }} className="print-item waybill p-1 col-lg-12">
             <div class="row m-0 w-100  h-100">
                 <div style={{ borderInlineEnd: '1px solid #eee' }} class="col-lg-10 col-md-10">
                     <div class="row m-0 w-100 d-flex justify-content-center">
                         <div style={{ borderBottom: '1px solid #eee' }} className=" row w-100 m-0 p-1">
                             <div style={{ borderInlineEnd: '2px solid #eee' }} className="company-info p-1 col-lg-4 col-md-4">
                                 <h1 className="company-name">
-                                    <img src={logo} style={{ objectFit: 'contain', width: '180px' }} />
+                                    <img src={logo} style={{ objectFit: 'contain', width: '80px' }} />
                                 </h1>
                                 <div className="company-address">
-                                    <span>Phone Number: +20100077400</span>
+                                    <span>+201000774094</span>
+                                </div>
+                                <div className="company-address">
+                                    <span>ship-me@greenlineco.com</span>
                                 </div>
                             </div>
                             <div style={{ borderInlineEnd: '2px solid #eee' }} className="company-info p-2 col-lg-4 col-md-4">
@@ -115,7 +118,7 @@ const Waybill = ({ order }) => {
                             {order?.orderItems?.map((item, index) => {
                                 return (
                                     <div class="col-lg-12 p-0">
-                                        ({item?.count}) <span style={{ fontWeight: 600 }}>{item?.info?.item?.name}, </span> <span style={{ fontSize: '11px' }}>{item?.info?.sku} </span>
+                                        ({item?.count}) <span style={{ fontWeight: 600 }}>{item?.info?.item?.name}, </span> <span style={{ fontSize: '8px' }}>{item?.info?.sku} </span>
                                     </div>
                                 );
                             })}
@@ -123,13 +126,13 @@ const Waybill = ({ order }) => {
                         <div class="row allcentered w-100 m-0 p-1">
                             <div class="col-lg-12 p-0 mt-2">
                                 <div class="row m-0 w-100  d-flex">
-                                    <div style={{ fontWeight: 600, fontSize: '15px' }} className=" p-0 mb-2  col-lg-4 col-md-4">
+                                    <div style={{ fontWeight: 600, fontSize: '10px' }} className=" p-0 mb-2  col-lg-4 col-md-4">
                                         <div class="row m-0 w-100">
                                             <div class="col-lg-12 p-0 ">
-                                                <span style={{ fontWeight: 400, fontSize: '11px' }}>Total</span>
+                                                <span style={{ fontWeight: 400, fontSize: '7px' }}>Total</span>
                                             </div>
                                             <div class="col-lg-12 p-0 ">
-                                                <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                <span style={{ fontWeight: 600, fontSize: '10px' }}>
                                                     {parseFloat(order?.price)} {order?.currency}
                                                 </span>
                                             </div>
@@ -152,13 +155,13 @@ const Waybill = ({ order }) => {
                             </div>
                         </div>
                         <div className="col-lg-12 allcentered " style={{ height: '50%', borderBottom: '1px solid #eee' }}>
-                            {order?.otherId && (
+                            {order?.shopifyName && (
                                 <div class="row m-0 w-100">
                                     <div class="col-lg-12 p-0 allcentered">
-                                        <img src={codeGenerate(order?.otherId)} alt={`data matrix from ${order?.otherId}`} />
+                                        <img src={codeGenerate(order?.shopifyName)} alt={`data matrix from ${order?.shopifyName}`} />
                                     </div>
 
-                                    <div class="col-lg-12 mt-1 allcentered">{order?.otherId}</div>
+                                    <div class="col-lg-12 mt-1 allcentered">{order?.shopifyName}</div>
                                 </div>
                             )}
                         </div>

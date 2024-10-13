@@ -81,12 +81,6 @@ const WaybillPrint = ({ waybills }) => {
 
                 useCORS: true, // Handle cross-origin images
 
-                // Set width and height to the A4 size (in pixels)
-
-                width: 794, // Approx 210mm at 96 DPI
-
-                height: 1123, // Approx 297mm at 96 DPI
-
                 scrollY: -window.scrollY, // Correct scrolling issue during capture
             });
 
@@ -141,7 +135,7 @@ const WaybillPrint = ({ waybills }) => {
                 className="col-lg-12"
             >
                 {currentWaybill && (
-                    <div ref={componentRef} style={{ width: '45vw', height: '100%' }}>
+                    <div ref={componentRef} style={{ height: '100%' }}>
                         <Waybill order={currentWaybill} />
                     </div>
                 )}

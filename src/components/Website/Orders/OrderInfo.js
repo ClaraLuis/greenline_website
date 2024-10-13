@@ -53,6 +53,7 @@ const OrderInfo = (props) => {
         changeOrderCustomerInfo,
         fetchCustomerNameSuggestions,
         fetchCustomer,
+        changeOrderPrice,
     } = API();
     const steps = ['Merchant Info', 'Shipping', 'Inventory Settings'];
     const [inventoryModal, setinventoryModal] = useState({ open: false, items: [] });
@@ -73,7 +74,7 @@ const OrderInfo = (props) => {
     const [fetchSuggestions, setfetchSuggestions] = useState(false);
     const [fetching, setfetching] = useState(false);
     const [editCustomer, seteditCustomer] = useState(false);
-    const [orderLogsModal, setorderLogsModal] = useState(false);
+    const [orderLogsModal, setorderLogsModal] = useState({ open: false });
 
     const [orderpayload, setorderpayload] = useState({
         functype: 'add',
@@ -255,6 +256,11 @@ const OrderInfo = (props) => {
         mercahantCustomerId: orderpayload?.customerId,
     });
 
+    const [changeOrderPriceMutation] = useMutationGQL(changeOrderPrice(), {
+        orderId: parseInt(queryParameters?.get('orderId')),
+        price: orderpayload?.newprice,
+    });
+
     const fetchMerchantItemVariantsQuery = useQueryGQL('', fetchMerchantItemVariants(), filter);
     useEffect(async () => {
         setnewCustomer(false);
@@ -354,9 +360,18 @@ const OrderInfo = (props) => {
                                             <div class="col-lg-6 d-flex justify-content-end mb-3">
                                                 <button
                                                     style={{ height: '35px' }}
+                                                    class={generalstyles.roundbutton + '  allcentered'}
+                                                    onClick={async () => {
+                                                        await setorderLogsModal({ open: true, type: 'price' });
+                                                    }}
+                                                >
+                                                    <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Change order price</p>
+                                                </button>
+                                                <button
+                                                    style={{ height: '35px' }}
                                                     class={generalstyles.roundbutton + ' mx-2 allcentered'}
-                                                    onClick={() => {
-                                                        setorderLogsModal(true);
+                                                    onClick={async () => {
+                                                        await setorderLogsModal({ open: true, type: 'logs' });
                                                     }}
                                                 >
                                                     <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Order Logs</p>
@@ -683,8 +698,12 @@ const OrderInfo = (props) => {
                                                                                         setbuttonLoading(true);
                                                                                         try {
                                                                                             const { data } = await removeOrderItemsMutation();
-                                                                                            NotificationManager.success('Success!', '');
-                                                                                            fetchOrder();
+                                                                                            if (data?.removeOrderItems?.success == true) {
+                                                                                                NotificationManager.success('Success!', '');
+                                                                                                fetchOrder();
+                                                                                            } else {
+                                                                                                NotificationManager.warning(data?.removeOrderItems?.message, 'Warning!');
+                                                                                            }
                                                                                         } catch (error) {
                                                                                             let errorMessage = 'An unexpected error occurred';
                                                                                             if (error.graphQLErrors && error.graphQLErrors.length > 0) {
@@ -1016,10 +1035,15 @@ const OrderInfo = (props) => {
                                                                     onClick={async () => {
                                                                         setbuttonLoading(true);
                                                                         try {
-                                                                            await changeOrderCustomerInfoMutation();
-                                                                            setTimeout(() => {
-                                                                                findOneOrder();
-                                                                            }, 1000);
+                                                                            var { data } = await changeOrderCustomerInfoMutation();
+                                                                            if (data?.changeOrderCustomerInfo?.success == true) {
+                                                                                setTimeout(() => {
+                                                                                    NotificationManager.success('Success!', '');
+                                                                                    findOneOrder();
+                                                                                }, 1000);
+                                                                            } else {
+                                                                                NotificationManager.warning(data?.changeOrderCustomerInfo?.message, 'Warning!');
+                                                                            }
                                                                         } catch (error) {
                                                                             let errorMessage = 'An unexpected error occurred';
                                                                             if (error.graphQLErrors && error.graphQLErrors.length > 0) {
@@ -1129,9 +1153,13 @@ const OrderInfo = (props) => {
                                             temp.push({ itemVariantId: item?.item?.id, count: item?.count });
                                         });
                                         await setitemsModal({ ...itemsModal, itemstobeadded: temp, open: false });
-                                        await addOrderItemsMutation();
-                                        NotificationManager.success('Success!', '');
-                                        fetchOrder();
+                                        const { data } = await addOrderItemsMutation();
+                                        if (data?.addOrderItems?.success == true) {
+                                            NotificationManager.success('Success!', '');
+                                            fetchOrder();
+                                        } else {
+                                            NotificationManager.warning(data?.addOrderItems?.message, 'Warning!');
+                                        }
                                     } catch (error) {
                                         let errorMessage = 'An unexpected error occurred';
                                         if (error.graphQLErrors && error.graphQLErrors.length > 0) {
@@ -1349,11 +1377,15 @@ const OrderInfo = (props) => {
 
                                 try {
                                     const data = await requestOrderReturnMutation();
-                                    setTimeout(() => {
-                                        findOneOrder();
-                                        NotificationManager.success('Request Return submmited', 'success!');
-                                        setreturnOrderModal(false);
-                                    }, 1000);
+                                    if (data?.equestOrderReturn?.success == true) {
+                                        setTimeout(() => {
+                                            findOneOrder();
+                                            NotificationManager.success('Request Return submmited', 'success!');
+                                            setreturnOrderModal(false);
+                                        }, 1000);
+                                    } else {
+                                        NotificationManager.warning(data?.equestOrderReturn?.message, 'Warning!');
+                                    }
                                 } catch (error) {
                                     let errorMessage = 'An unexpected error occurred';
                                     if (error.graphQLErrors && error.graphQLErrors.length > 0) {
@@ -1373,9 +1405,9 @@ const OrderInfo = (props) => {
                 </Modal.Body>
             </Modal>
             <Modal
-                show={orderLogsModal}
+                show={orderLogsModal.open}
                 onHide={() => {
-                    setorderLogsModal(false);
+                    setorderLogsModal({ open: false, type: '' });
                 }}
                 centered
                 size={'md'}
@@ -1383,13 +1415,14 @@ const OrderInfo = (props) => {
                 <Modal.Header>
                     <div className="row w-100 m-0 p-0">
                         <div class="col-lg-6 pt-3 ">
-                            <div className="row w-100 m-0 p-0">Order Logs</div>
+                            {orderLogsModal.type == 'logs' && <div className="row w-100 m-0 p-0">Order Logs</div>}
+                            {orderLogsModal.type == 'price' && <div className="row w-100 m-0 p-0">Change Order Price</div>}
                         </div>
                         <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
                             <div
                                 class={'close-modal-container'}
                                 onClick={() => {
-                                    setorderLogsModal(false);
+                                    setorderLogsModal({ open: false, type: '' });
                                 }}
                             >
                                 <IoMdClose />
@@ -1398,50 +1431,118 @@ const OrderInfo = (props) => {
                     </div>
                 </Modal.Header>
                 <Modal.Body>
-                    <div class="row m-0 w-100 py-2">
-                        {paginateOrderLogsQuery?.data?.paginateOrderLogs?.data?.length == 0 && (
-                            <div class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
-                                <div class="row m-0 w-100">
-                                    <FaLayerGroup size={22} class=" col-lg-12 mb-2" />
-                                    <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
-                                        No Logs Yet
+                    {orderLogsModal.type == 'logs' && (
+                        <div class="row m-0 w-100 py-2">
+                            {paginateOrderLogsQuery?.data?.paginateOrderLogs?.data?.length == 0 && (
+                                <div class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
+                                    <div class="row m-0 w-100">
+                                        <FaLayerGroup size={22} class=" col-lg-12 mb-2" />
+                                        <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
+                                            No Logs Yet
+                                        </div>
                                     </div>
                                 </div>
+                            )}
+                            {paginateOrderLogsQuery?.data?.paginateOrderLogs?.data?.length != 0 && (
+                                <div style={{ overflowY: 'scroll', height: '200px' }} class={' row m-0 w-100 p-0 pb-4 py-3 scrollmenuclasssubscrollbar'}>
+                                    <Timeline
+                                        style={{ width: '100%' }}
+                                        sx={{
+                                            [`& .${timelineOppositeContentClasses.root}`]: {
+                                                flex: 0.2,
+                                            },
+                                        }}
+                                    >
+                                        {paginateOrderLogsQuery?.data?.paginateOrderLogs?.data?.map((historyItem, historyIndex) => {
+                                            return (
+                                                <TimelineItem>
+                                                    <TimelineOppositeContent style={{ fontSize: '13px' }}>
+                                                        <span style={{ fontSize: '13px', color: 'black', fontWeight: 600 }}>{dateformatterDayAndMonth(historyItem?.createdAt)}</span>
+                                                        <br />
+                                                        {dateformatterTime(historyItem?.createdAt)}
+                                                    </TimelineOppositeContent>
+                                                    <TimelineSeparator>
+                                                        <TimelineDot style={{ background: 'var(--primary)' }} />
+                                                        {historyIndex < paginateOrderLogsQuery?.data?.paginateOrderLogs?.data?.length - 1 && (
+                                                            <TimelineConnector style={{ background: 'var(--primary)' }} />
+                                                        )}
+                                                    </TimelineSeparator>
+                                                    <TimelineContent style={{ fontWeight: 600, color: 'black', textTransform: 'capitalize' }}>
+                                                        {historyItem?.status.split(/(?=[A-Z])/).join(' ')} <br />
+                                                        {cookies.get('userInfo')?.type == 'employee' && <span style={{ fontSize: '14px', fontWeight: 400 }}>{historyItem?.user?.name}</span>}
+                                                    </TimelineContent>
+                                                </TimelineItem>
+                                            );
+                                        })}
+                                    </Timeline>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                    {orderLogsModal.type == 'price' && (
+                        <div class="row m-0 w-100 py-2">
+                            <div class="col-lg-12 p-0 allcentered text-center mb-2 ">
+                                <span style={{ fontWeight: 700, color: 'red', fontSize: '11px' }}>
+                                    Disclaimer:{' '}
+                                    <span style={{ fontWeight: 500 }}>
+                                        Please be aware that by proceeding with this order, the price will be adjusted from the original amount to the input price you have specified
+                                    </span>{' '}
+                                </span>
                             </div>
-                        )}
-                        {paginateOrderLogsQuery?.data?.paginateOrderLogs?.data?.length != 0 && (
-                            <div style={{ overflowY: 'scroll', height: '200px' }} class={' row m-0 w-100 p-0 pb-4 py-3 scrollmenuclasssubscrollbar'}>
-                                <Timeline
-                                    style={{ width: '100%' }}
-                                    sx={{
-                                        [`& .${timelineOppositeContentClasses.root}`]: {
-                                            flex: 0.2,
-                                        },
+                            <div class={'col-lg-12 p-0 mb-2'}>
+                                <label style={{ fontSize: '1.8vh' }} class="m-0 mb-2">
+                                    New Price
+                                </label>
+                                <Inputfield
+                                    hideLabel={true}
+                                    placeholder={'price'}
+                                    value={orderpayload?.newprice}
+                                    onChange={(event) => {
+                                        setorderpayload({ ...orderpayload, newprice: event.target.value });
                                     }}
-                                >
-                                    {paginateOrderLogsQuery?.data?.paginateOrderLogs?.data?.map((historyItem, historyIndex) => {
-                                        return (
-                                            <TimelineItem>
-                                                <TimelineOppositeContent style={{ fontSize: '13px' }}>
-                                                    <span style={{ fontSize: '13px', color: 'black', fontWeight: 600 }}>{dateformatterDayAndMonth(historyItem?.createdAt)}</span>
-                                                    <br />
-                                                    {dateformatterTime(historyItem?.createdAt)}
-                                                </TimelineOppositeContent>
-                                                <TimelineSeparator>
-                                                    <TimelineDot style={{ background: 'var(--primary)' }} />
-                                                    {historyIndex < paginateOrderLogsQuery?.data?.paginateOrderLogs?.data?.length - 1 && <TimelineConnector style={{ background: 'var(--primary)' }} />}
-                                                </TimelineSeparator>
-                                                <TimelineContent style={{ fontWeight: 600, color: 'black', textTransform: 'capitalize' }}>
-                                                    {historyItem?.status.split(/(?=[A-Z])/).join(' ')} <br />
-                                                    {cookies.get('userInfo')?.type == 'employee' && <span style={{ fontSize: '14px', fontWeight: 400 }}>{historyItem?.user?.name}</span>}
-                                                </TimelineContent>
-                                            </TimelineItem>
-                                        );
-                                    })}
-                                </Timeline>
+                                    type={'number'}
+                                />
                             </div>
-                        )}
-                    </div>
+                            <div class="col-lg-12 p-0 allcentered">
+                                <button
+                                    class={generalstyles.roundbutton}
+                                    onClick={async () => {
+                                        setbuttonLoading(true);
+                                        try {
+                                            var { data } = await changeOrderPriceMutation();
+                                            if (data?.changeOrderPrice?.success == true) {
+                                                setTimeout(() => {
+                                                    NotificationManager.success('Success!', '');
+                                                    findOneOrder();
+                                                    setorderLogsModal({ open: false });
+                                                    setorderpayload({ ...orderpayload, newprice: '' });
+                                                }, 1000);
+                                            } else {
+                                                NotificationManager.warning(data?.changeOrderPrice?.message, 'Warning!');
+                                            }
+                                        } catch (error) {
+                                            let errorMessage = 'An unexpected error occurred';
+                                            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                                errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                            } else if (error.networkError) {
+                                                errorMessage = error.networkError.message || errorMessage;
+                                            } else if (error.message) {
+                                                errorMessage = error.message;
+                                            }
+
+                                            NotificationManager.warning(errorMessage, 'Warning!');
+                                            console.error('Error adding Merchant:', error);
+                                        }
+                                        setbuttonLoading(false);
+                                    }}
+                                    disabled={buttonLoading}
+                                >
+                                    {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                    {!buttonLoading && <span>Change order price</span>}
+                                </button>
+                            </div>
+                        </div>
+                    )}
                 </Modal.Body>
             </Modal>
         </div>

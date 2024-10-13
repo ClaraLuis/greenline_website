@@ -606,7 +606,7 @@ const AddItem = (props) => {
         try {
             const response = await axios({
                 method: 'post',
-                url: (process.env.REACT_APP_DEV_MODE === 'true' ? process.env.REACT_APP_API_URL_LOCAL : process.env.REACT_APP_API_URL) + 'aws-bucket/file',
+                url: (process.env.REACT_APP_DEV_MODE === 'true' ? process.env.REACT_APP_API_URL_LOCAL : process.env.REACT_APP_API_URL) + 'api/aws-bucket/file',
                 data: formData,
                 headers: axiosheaders,
             });

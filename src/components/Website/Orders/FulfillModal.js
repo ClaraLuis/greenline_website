@@ -135,41 +135,41 @@ const FulfillModal = (props) => {
                     </div>
 
                     {/* Show the fulfill button only when all items are fully scanned */}
-                    {allItemsScanned && (
-                        <div class="col-lg-12 p-0 allcentered py-2">
-                            <button
-                                class={generalstyles.roundbutton}
-                                style={{ height: '35px' }}
-                                onClick={async () => {
-                                    setbuttonLoading(true);
-                                    try {
-                                        const { data } = await updateOrdersStatusMutation();
-                                        NotificationManager.success('', 'Status changed successfully');
-                                        if (index < props?.ordersToBeFulfilled?.length - 1) {
-                                            setindex(index + 1);
-                                        } else {
-                                            props?.setfulfilllModal(false);
-                                        }
-                                    } catch (error) {
-                                        let errorMessage = 'An unexpected error occurred';
-                                        if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-                                            errorMessage = error.graphQLErrors[0].message || errorMessage;
-                                        } else if (error.networkError) {
-                                            errorMessage = error.networkError.message || errorMessage;
-                                        } else if (error.message) {
-                                            errorMessage = error.message;
-                                        }
 
-                                        NotificationManager.warning(errorMessage, 'Warning!');
+                    <div class="col-lg-12 p-0 allcentered py-2">
+                        <button
+                            class={generalstyles.roundbutton}
+                            style={{ height: '35px' }}
+                            onClick={async () => {
+                                setbuttonLoading(true);
+                                try {
+                                    const { data } = await updateOrdersStatusMutation();
+                                    NotificationManager.success('', 'Status changed successfully');
+                                    if (index < props?.ordersToBeFulfilled?.length - 1) {
+                                        setindex(index + 1);
+                                    } else {
+                                        props?.setfulfilllModal(false);
                                     }
-                                    setbuttonLoading(false);
-                                }}
-                            >
-                                {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                {!buttonLoading && <span> Fulfill Order</span>}
-                            </button>
-                        </div>
-                    )}
+                                } catch (error) {
+                                    let errorMessage = 'An unexpected error occurred';
+                                    if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                        errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                    } else if (error.networkError) {
+                                        errorMessage = error.networkError.message || errorMessage;
+                                    } else if (error.message) {
+                                        errorMessage = error.message;
+                                    }
+
+                                    NotificationManager.warning(errorMessage, 'Warning!');
+                                }
+                                setbuttonLoading(false);
+                            }}
+                            disabled={!allItemsScanned || buttonLoading}
+                        >
+                            {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                            {!buttonLoading && <span> Fulfill Order</span>}
+                        </button>
+                    </div>
                 </Modal.Body>
             </Modal>
         </>

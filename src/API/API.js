@@ -357,6 +357,13 @@ const API = () => {
             }
         `;
     };
+    const changeOrderPrice = () => {
+        return gql`
+            mutation changeOrderPrice($input: ChangeOrderPriceInput!) {
+                changeOrderPrice(input: $input)
+            }
+        `;
+    };
 
     const sendAnyFinancialTransaction = () => {
         return gql`
@@ -2049,6 +2056,7 @@ const API = () => {
         fetchTransactions,
         createFinancialAccount,
         updateFinancialAccount,
+        changeOrderPrice,
         sendAnyFinancialTransaction,
         sendMyFinancialTransaction,
         updateAnyFinancialTransaction,

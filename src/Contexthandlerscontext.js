@@ -147,7 +147,7 @@ export const Contexthandlerscontext_provider = (props) => {
                     },
 
                     {
-                        name: 'Hand Picked',
+                        name: 'Fulfill',
                         isselected: false,
                         icon: (
                             <i class={'allcentered'}>
@@ -171,7 +171,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         show: isAuth([1, 54]),
                     },
                     {
-                        name: 'Fulfilled',
+                        name: 'Dispatch',
                         isselected: false,
                         icon: (
                             <i class={'allcentered'}>
@@ -183,7 +183,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         show: isAuth([1]),
                     },
                     {
-                        name: 'Dispatched',
+                        name: 'Receive At Sort Facilities',
                         isselected: false,
                         icon: (
                             <i class={'allcentered'}>
@@ -195,7 +195,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         show: isAuth([1, 53, 36]),
                     },
                     {
-                        name: 'Arrived at sort facilities',
+                        name: 'Transfer',
                         isselected: false,
                         icon: (
                             <i class={'allcentered'}>
@@ -386,7 +386,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         show: isAuth([1]),
                     },
                     {
-                        name: 'Transfers',
+                        name: 'Receive At Hub',
                         isselected: false,
                         icon: (
                             <i class={'allcentered'}>
