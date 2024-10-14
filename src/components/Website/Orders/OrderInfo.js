@@ -31,6 +31,7 @@ import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js'
 import Form from '../../Form.js';
 import DynamicInputfield from '../DynamicInputfield/DynamicInputfield.js';
 import Inputfield from '../../Inputfield.js';
+import WaybillPrint from './WaybillPrint.js';
 
 const OrderInfo = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -343,7 +344,7 @@ const OrderInfo = (props) => {
                                 <>
                                     <div class="col-lg-12">
                                         <div class={generalstyles.card + ' row m-0 w-100'}>
-                                            <div class="col-lg-6">
+                                            <div class="col-lg-4">
                                                 <div class="row m-0 w-100 d-flex align-items-center">
                                                     <div class="col-lg-12 p-0">
                                                         <p class=" p-0 m-0" style={{ fontSize: '23px' }}>
@@ -357,10 +358,12 @@ const OrderInfo = (props) => {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-6 d-flex justify-content-end mb-3">
+                                            <div class="col-lg-8 d-flex justify-content-end mb-3">
+                                                <WaybillPrint waybills={[chosenOrderContext]} />
+
                                                 <button
                                                     style={{ height: '35px' }}
-                                                    class={generalstyles.roundbutton + '  allcentered'}
+                                                    class={generalstyles.roundbutton + '  allcentered mx-1 ml-2'}
                                                     onClick={async () => {
                                                         await setorderLogsModal({ open: true, type: 'price' });
                                                     }}
@@ -369,7 +372,7 @@ const OrderInfo = (props) => {
                                                 </button>
                                                 <button
                                                     style={{ height: '35px' }}
-                                                    class={generalstyles.roundbutton + ' mx-2 allcentered'}
+                                                    class={generalstyles.roundbutton + ' mx-1 allcentered'}
                                                     onClick={async () => {
                                                         await setorderLogsModal({ open: true, type: 'logs' });
                                                     }}
@@ -379,7 +382,7 @@ const OrderInfo = (props) => {
                                                 {chosenOrderContext?.type == 'delivery' && (
                                                     <button
                                                         style={{ height: '35px' }}
-                                                        class={generalstyles.roundbutton}
+                                                        class={generalstyles.roundbutton + ' allcentered mx-1'}
                                                         onClick={() => {
                                                             if (chosenOrderContext?.status == 'delivered' || chosenOrderContext?.status == 'partiallyDelivered') {
                                                                 setrequestReturnPayload({ ...requestReturnPayload, chosenOrderContext });
@@ -395,7 +398,7 @@ const OrderInfo = (props) => {
                                                 {chosenOrderContext?.type == 'return' && (
                                                     <button
                                                         style={{ height: '35px' }}
-                                                        class={generalstyles.roundbutton}
+                                                        class={generalstyles.roundbutton + ' allcenetered mx-1'}
                                                         onClick={() => {
                                                             history.push('/addorder?merchantId=' + chosenOrderContext?.merchant?.id + '&order=' + chosenOrderContext?.id);
                                                         }}

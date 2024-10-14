@@ -39,30 +39,38 @@ const HubInfo = (props) => {
     const fetchGovernoratesQuery = useQueryGQL('', fetchGovernorates());
 
     const handlecreateHub = async () => {
-        setbuttonLoading(true);
+        if (props?.payload?.name?.length) {
+            if (props?.payload?.governorateId) {
+                setbuttonLoading(true);
 
-        try {
-            var { data } = await createHubMutation();
-            if (data?.createHub?.success) {
-                props?.setopenModal(false);
-                props?.refetchHubs();
+                try {
+                    var { data } = await createHubMutation();
+                    if (data?.createHub?.success) {
+                        props?.setopenModal(false);
+                        props?.refetchHubs();
+                    } else {
+                        NotificationManager.warning(data?.createHub?.message, 'Warning!');
+                    }
+                } catch (error) {
+                    let errorMessage = 'An unexpected error occurred';
+                    if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                        errorMessage = error.graphQLErrors[0].message || errorMessage;
+                    } else if (error.networkError) {
+                        errorMessage = error.networkError.message || errorMessage;
+                    } else if (error.message) {
+                        errorMessage = error.message;
+                    }
+
+                    NotificationManager.warning(errorMessage, 'Warning!');
+                    console.error('Error adding user:', error);
+                }
+                setbuttonLoading(false);
             } else {
-                NotificationManager.warning(data?.createHub?.message, 'Warning!');
+                NotificationManager.warning('Choose Governorate', 'Warning!');
             }
-        } catch (error) {
-            let errorMessage = 'An unexpected error occurred';
-            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-                errorMessage = error.graphQLErrors[0].message || errorMessage;
-            } else if (error.networkError) {
-                errorMessage = error.networkError.message || errorMessage;
-            } else if (error.message) {
-                errorMessage = error.message;
-            }
-
-            NotificationManager.warning(errorMessage, 'Warning!');
-            console.error('Error adding user:', error);
+        } else {
+            NotificationManager.warning('Enter a hub name', 'Warning!');
         }
-        setbuttonLoading(false);
     };
 
     return (
@@ -102,7 +110,6 @@ const HubInfo = (props) => {
                                 setsubmit={setsubmit}
                                 attr={[
                                     { name: 'Name', attr: 'name', size: '6' },
-
                                     {
                                         name: 'City',
                                         attr: 'governorateId',

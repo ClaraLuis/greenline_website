@@ -30,6 +30,7 @@ const UpdateMerchant = (props) => {
     const { lang, langdetect } = useContext(LanguageContext);
     const [similarAddresses, setsimilarAddresses] = useState([]);
     const [issimilarAddresses, setissimilarAddresses] = useState(false);
+    const [cities, setCities] = useState([]);
 
     const [addresspayload, setaddresspayload] = useState({
         city: '',
@@ -106,13 +107,11 @@ const UpdateMerchant = (props) => {
         merchantId: merchantPayload?.merchantId ?? undefined,
     });
     const fetchusers = useQueryGQL('', fetchUsers(), filterUsers);
-    const [filterMerchants, setfilterMerchants] = useState({
-        isAsc: true,
-        limit: 20,
-        afterCursor: undefined,
-        beforeCursor: undefined,
-    });
-    const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
+
+    useEffect(() => {
+        const cities = fetchAllCountriesQuery?.data?.data?.data.filter((item) => item.country == addresspayload?.country)[0]?.cities.map((city) => ({ label: city, value: city }));
+        setCities(cities);
+    }, [addresspayload?.country]);
     useEffect(async () => {
         setpageactive_context('/updatemerchant?merchantId=' + queryParameters?.get('merchantId'));
         setpagetitle_context('Merchant');

@@ -48,6 +48,7 @@ const AddMerchant = (props) => {
     const [buttonLoading, setbuttonLoading] = useState(false);
     const { lang, langdetect } = useContext(LanguageContext);
     const [similarAddresses, setsimilarAddresses] = useState([]);
+    const [cities, setCities] = useState([]);
 
     const [governoratesItems, setgovernoratesItems] = useState([
         {
@@ -145,6 +146,10 @@ const AddMerchant = (props) => {
         { label: 'Exchange', value: 'exchange' },
         { label: 'Return', value: 'return' },
     ]);
+    useEffect(() => {
+        const cities = fetchAllCountriesQuery?.data?.data?.data.filter((item) => item.country == addresspayload?.country)[0]?.cities.map((city) => ({ label: city, value: city }));
+        setCities(cities);
+    }, [addresspayload?.country]);
     useEffect(() => {
         if (fetchGovernoratesQuery?.data) {
             var temp = [];

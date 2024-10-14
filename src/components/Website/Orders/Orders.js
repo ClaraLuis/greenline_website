@@ -399,7 +399,7 @@ const Orders = (props) => {
                                 <div class="col-lg-6 d-flex justify-content-end">
                                     {' '}
                                     {waybills?.length > 0 && <WaybillPrint waybills={waybills} />}
-                                    {selectedOrders?.length != 0 && (
+                                    {/* {selectedOrders?.length != 0 && (
                                         <button
                                             style={{ height: '35px' }}
                                             class={generalstyles.roundbutton + '  mx-2'}
@@ -409,7 +409,7 @@ const Orders = (props) => {
                                         >
                                             Fulfill orders
                                         </button>
-                                    )}
+                                    )} */}
                                 </div>
                             </div>
                         </div>

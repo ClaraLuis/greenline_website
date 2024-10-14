@@ -23,23 +23,37 @@ const MultiSelect = (props) => {
     const [filteredData, setFilteredData] = useState([]); // Add filteredData state
 
     useEffect(() => {
-        if (props?.options?.data && !props?.options?.loading) {
-            let newData = props?.attr === 'findAllDomesticGovernorates' ? props?.options?.data[props?.attr] || [] : props?.options?.data[props?.attr]?.data || [];
+        if (props?.attr) {
+            if (props?.options?.data && !props?.options?.loading) {
+                let newData = props?.attr === 'findAllDomesticGovernorates' ? props?.options?.data[props?.attr] || [] : props?.options?.data[props?.attr]?.data || [];
 
-            // Combine current data and new data, then filter out duplicates
+                // Combine current data and new data, then filter out duplicates
+                const mergedData = [...data, ...newData];
+                const uniqueData = Array.from(new Set(mergedData.map((item) => item[props?.value]))).map((id) => {
+                    return mergedData.find((item) => item[props?.value] === id);
+                });
+
+                setData(uniqueData); // Update data state with unique items
+
+                // Handle filtering
+                if (props?.filter?.name) {
+                    const filtered = uniqueData.filter((item) => item[props?.label].toLowerCase().includes(props?.filter?.name.toLowerCase()));
+                    setFilteredData(filtered);
+                } else {
+                    setFilteredData(uniqueData); // Update filteredData with unique items
+                }
+            }
+        } else {
+            const newData = props?.options || [];
             const mergedData = [...data, ...newData];
-            const uniqueData = Array.from(new Set(mergedData.map((item) => item[props?.value]))).map((id) => {
-                return mergedData.find((item) => item[props?.value] === id);
-            });
-
-            setData(uniqueData); // Update data state with unique items
-
-            // Handle filtering
+            setData(mergedData);
             if (props?.filter?.name) {
-                const filtered = uniqueData.filter((item) => item[props?.label].toLowerCase().includes(props?.filter?.name.toLowerCase()));
+                const filtered = newData.filter((item) => item[props?.label].toLowerCase().includes(props?.filter?.name.toLowerCase()));
+
                 setFilteredData(filtered);
             } else {
-                setFilteredData(uniqueData); // Update filteredData with unique items
+                setData(mergedData);
+                setFilteredData(mergedData); // Update filteredData as well
             }
         }
     }, [props?.filter, props?.options?.data, props?.options?.loading]);
@@ -78,11 +92,13 @@ const MultiSelect = (props) => {
         const value = event.target.value;
         setsearch(value);
 
+        // setplaceholder(value);
         if (value) {
             const filtered = data.filter((item) => item[props?.label].toLowerCase().includes(value.toLowerCase()));
+
             setFilteredData(filtered);
         } else {
-            setFilteredData(data); // Reset to original data if search is cleared
+            setFilteredData(data);
         }
     };
 

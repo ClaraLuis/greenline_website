@@ -171,7 +171,7 @@ const App = (props) => {
                                     style={{
                                         // background: !isOpen ? 'var(--secondary)' : 'var(--primary)',
                                         // background: 'white',
-                                        color: isOpen ? 'white' : 'var(--primary)',
+                                        color: 'white',
                                         borderRadius: '20px',
                                         transition: 'all 0.4s',
                                     }}
@@ -180,7 +180,8 @@ const App = (props) => {
                                     <div style={{ width: '31px', height: '31px', marginInlineEnd: '10px' }}>
                                         <img src={userImage} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                                     </div>
-                                    <IoSettingsOutline size={18} style={{ marginInline: '15px' }} color="white" />
+                                    {user?.name}
+                                    <IoSettingsOutline size={18} style={{ marginInline: '10px' }} color="white" />
                                 </div>
                             </Dropdown.Toggle>
                             <Dropdown.Menu>

@@ -498,7 +498,7 @@ const OrdersTable = (props) => {
                                                         </div>
                                                     )} */}
                                                     <div class="col-lg-6 p-0 d-flex justify-content-end">
-                                                        <p className={' m-0 p-0 wordbreak  '}>{dateformatter(item?.createdAt)}</p>
+                                                        <p className={' m-0 p-0 wordbreak  '}>{dateformatter(item?.createdAt != item.orderDate && item.orderDate ? item.orderDate : item.createdAt)}</p>
                                                     </div>
                                                 </div>
                                             </div>
