@@ -16,7 +16,7 @@ const SkuPrint = ({ skus }) => {
         <>
             <ReactToPrint
                 trigger={() => (
-                    <button style={{ height: '35px' }} className={generalstyles.roundbutton + ' mb-1'}>
+                    <button style={{ height: '35px' }} className={generalstyles.roundbutton + ' '}>
                         {' '}
                         Print SKUs
                     </button>

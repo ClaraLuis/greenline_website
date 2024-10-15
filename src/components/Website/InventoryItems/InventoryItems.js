@@ -24,6 +24,7 @@ import ImportNewItem from './ImportNewItem.js';
 import ItemInfo from './ItemInfo.js';
 import MultiSelect from '../../MultiSelect.js';
 import { CiExport, CiImport } from 'react-icons/ci';
+import SkuPrint from '../MerchantItems/SkuPrint.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -34,6 +35,7 @@ const InventoryItems = (props) => {
     const { fetchUsers, useQueryGQL, fetchInventories, useMutationGQL, addInventory, fetchItemsInBox, fetchMerchants, importNew, fetchItemHistory, exportItem, importItem, useLazyQueryGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
+    const [selectedVariants, setselectedVariants] = useState([]);
 
     const [openModal, setopenModal] = useState(false);
     const [search, setSearch] = useState('');
@@ -353,26 +355,26 @@ const InventoryItems = (props) => {
                             </div>
                             <div class={' col-lg-6 col-md-6 col-sm-12 p-0 d-flex align-items-center justify-content-end mb-2 px-2 '}>
                                 <div className="row m-0 w-100 d-flex align-items-center justify-content-end">
-                                    <p class=" p-0 m-0" style={{ fontSize: '14px' }}>
-                                        <span
-                                            onClick={() => {
-                                                setimportItemPayload({
-                                                    itemVariantId: '',
-                                                    ownedByOneMerchant: true,
-                                                    ballotId: '',
-                                                    inventoryId: '',
-                                                    boxName: '',
-                                                    count: 0,
-                                                    minCount: 0,
-                                                });
-                                                setimportItemModel(true);
-                                            }}
-                                            style={{ height: '35px' }}
-                                            class={generalstyles.roundbutton + '  '}
-                                        >
-                                            Import new item
-                                        </span>
-                                    </p>
+                                    {selectedVariants?.length > 0 && <SkuPrint skus={selectedVariants} />}
+
+                                    <button
+                                        onClick={() => {
+                                            setimportItemPayload({
+                                                itemVariantId: '',
+                                                ownedByOneMerchant: true,
+                                                ballotId: '',
+                                                inventoryId: '',
+                                                boxName: '',
+                                                count: 0,
+                                                minCount: 0,
+                                            });
+                                            setimportItemModel(true);
+                                        }}
+                                        style={{ height: '35px' }}
+                                        class={generalstyles.roundbutton + ' mx-2 '}
+                                    >
+                                        Import new item
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -429,9 +431,43 @@ const InventoryItems = (props) => {
                                 />
                             </div>
                             {fetchItemsInBoxQuery?.data?.paginateItemInBox?.data?.map((element, arrayindex) => {
+                                var selected = false;
+                                var count = 0;
+                                selectedVariants?.map((i) => {
+                                    if (i.item.sku == element.itemVariant.sku) {
+                                        selected = true;
+                                        count = i?.count;
+                                    }
+                                });
                                 return (
                                     <div style={{ fontSize: '13px' }} class=" col-lg-4 ">
-                                        <div class={generalstyles.card + ' row m-0 w-100 '}>
+                                        <div
+                                            onClick={() => {
+                                                var temp = [...selectedVariants];
+                                                var exist = false;
+                                                var chosenindex = null;
+                                                temp.map((i, ii) => {
+                                                    if (i?.item?.sku == element?.itemVariant.sku) {
+                                                        exist = true;
+                                                        chosenindex = ii;
+                                                    }
+                                                });
+                                                if (!exist) {
+                                                    temp.push({ item: element.itemVariant });
+                                                } else {
+                                                    temp.splice(chosenindex, 1);
+                                                }
+                                                // alert(JSON.stringify(temp));
+                                                setselectedVariants([...temp]);
+                                            }}
+                                            style={{
+                                                cursor: 'pointer',
+
+                                                backgroundColor: selected ? 'var(--secondary)' : '',
+                                                transition: 'all 0.4s',
+                                            }}
+                                            class={generalstyles.card + ' row m-0 w-100 '}
+                                        >
                                             <div class="col-lg-12 p-0">
                                                 <div class="row m-0 w-100 d-flex align-items-center">
                                                     <div class=" mr-2" style={{ width: '50px', height: '50px', borderRadius: '5px' }}>

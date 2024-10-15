@@ -18,11 +18,15 @@ import Multilinechart from '../../graphs/Multilinechart.js';
 import { DateRangePicker } from 'rsuite';
 import MultiSelect from '../../MultiSelect.js';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
+import { FaLayerGroup } from 'react-icons/fa';
 
 const { ValueContainer, Placeholder } = components;
 
 const MerchantHome = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
+    const today = new Date();
+    const thirtyDaysAgo = new Date(today);
+    thirtyDaysAgo.setDate(today.getDate() - 30);
     let history = useHistory();
     const { setpageactive_context, inventoryRentTypeContext, isAuth, setpagetitle_context } = useContext(Contexthandlerscontext);
     const { createInventory, useMutationGQL, paginateInventoryRentTransaction, useQueryGQL, ordersDeliverableSummary, graphOrders, mostSoldItems, fetchMerchants } = API();
@@ -62,8 +66,10 @@ const MerchantHome = (props) => {
     const ordersDeliverableSummaryQuery = useQueryGQL('cache-first', ordersDeliverableSummary(), filterordersDeliverableSummary);
 
     const [filtergraphOrders, setfiltergraphOrders] = useState({
-        startDate: '2024-01-28T18:38:47.762Z',
+        startDate: thirtyDaysAgo.toISOString(), // Set startDate to 30 days ago
+        endDate: today.toISOString(), // Set endDate to today
     });
+
     const graphOrdersQuery = useQueryGQL('cache-first', graphOrders(), filtergraphOrders);
     const [filtermostSoldItems, setfiltermostSoldItems] = useState({});
     const mostSoldItemsQuery = useQueryGQL('cache-first', mostSoldItems(), filtermostSoldItems);
@@ -308,17 +314,21 @@ const MerchantHome = (props) => {
                             <Piechart height={mostSoldItemsQuery?.data ? '250' : 300} xAxis={barchartaxis?.xAxis} yAxis={barchartaxis?.yAxis1} title={'Orders'} total={barchartaxis?.total} />
                         </div>
                         {mostSoldItemsQuery?.data && (
-                            <div
-                                class="row m-0 w-100 mt-3"
-                                style={{
-                                    background: 'white',
-                                    boxShadow: '0px 2px 6px -2px rgba(0,106,194,0.2)',
-                                    borderRadius: '5px',
-                                }}
-                            >
+                            <div class={generalstyles.card + ' row m-0 w-100 '}>
                                 <div class={'col-lg-12 my-2'} style={{ fontSize: '17px', fontWeight: 700 }}>
                                     Most Sold Items
                                 </div>
+                                {mostSoldItemsQuery?.data?.mostSoldItems?.data?.length == 0 && (
+                                    <div style={{ height: '42vh' }} class="col-lg-12 p-0 w-100 allcentered align-items-center m-0 text-lightprimary">
+                                        <div class="row m-0 w-100">
+                                            <FaLayerGroup size={35} class=" col-lg-12" />
+                                            <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
+                                                No Items
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
                                 {mostSoldItemsQuery?.data?.mostSoldItems?.data.map((subitem, subindex) => {
                                     return (
                                         <div class={'col-lg-12 mb-2'}>
