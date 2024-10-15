@@ -15,6 +15,7 @@ import { NotificationManager } from 'react-notifications';
 import { useMutation } from 'react-query';
 import { Dropdown } from 'react-bootstrap';
 import Cookies from 'universal-cookie';
+import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 
 import reviewsstyles from './reviews.module.css';
 import Select, { components } from 'react-select';
@@ -132,6 +133,25 @@ const UsersTable = (props) => {
                                                                     <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>View Merchant</p>
                                                                 </Dropdown.Item>
                                                             )}
+                                                            <Dropdown.Item
+                                                                onClick={() => {
+                                                                    const auth = getAuth();
+                                                                    sendPasswordResetEmail(auth, item.email)
+                                                                        .then(() => {
+                                                                            NotificationManager.success('Password reset email sent!', 'Success');
+                                                                        })
+                                                                        .catch((error) => {
+                                                                            const errorCode = error.code;
+                                                                            const errorMessage = error.message;
+                                                                            NotificationManager.warning(errorMessage, 'Warning');
+
+                                                                            // ..
+                                                                        });
+                                                                }}
+                                                                class="py-2"
+                                                            >
+                                                                <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Change Password</p>
+                                                            </Dropdown.Item>
 
                                                             <Dropdown.Item
                                                                 onClick={() => {

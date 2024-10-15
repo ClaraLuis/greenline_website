@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail, getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail, getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import React, { useContext, useEffect, useState } from 'react';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
 import { NotificationManager } from 'react-notifications';
@@ -14,6 +14,7 @@ import logo from '../Generalfiles/images/logo.png';
 import loginstyles from './login.module.css';
 import { BiEdit } from 'react-icons/bi';
 import { TbEdit } from 'react-icons/tb';
+
 const Login = () => {
     const auth = getAuth();
     const { isValidEmailMutation, useMutationGQL, useQueryGQL, useLazyQueryGQL } = API();
@@ -206,8 +207,8 @@ const Login = () => {
 
     return (
         <div style={{ width: '100%', height: '100vh', background: '#eef2f6' }} class="row m-0 w-100 d-flex allcentered mt-md-0  p-md-0">
-            <div class={loginstyles.rightcontainer + ' col-lg-4 pb-3'}>
-                <div class="row m-0 w-100">
+            <div class={' col-lg-4 pb-3'}>
+                <div class={loginstyles.rightcontainer + ' row m-0 w-100 p-3'}>
                     <div class="col-lg-12 p-0 allcentered  ">
                         <div style={{ cursor: 'pointer' }} class={loginstyles.logo + ' p-0 '}>
                             <img src={logo} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
@@ -336,6 +337,27 @@ const Login = () => {
                             </div>
                         </div>
                     )}
+                </div>
+                <div class="col-lg-12 d-flex justify-content-end pt-3">
+                    <span
+                        class="text-primaryhover"
+                        onClick={() => {
+                            const auth = getAuth();
+                            sendPasswordResetEmail(auth, email)
+                                .then(() => {
+                                    NotificationManager.success('Password reset email sent!', 'Success');
+                                })
+                                .catch((error) => {
+                                    const errorCode = error.code;
+                                    const errorMessage = error.message;
+                                    NotificationManager.warning(errorMessage, 'Warning');
+
+                                    // ..
+                                });
+                        }}
+                    >
+                        forgot password?
+                    </span>
                 </div>
             </div>
         </div>
