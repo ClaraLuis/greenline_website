@@ -67,6 +67,7 @@ const OrderInfo = (props) => {
     const [submit, setsubmit] = useState(false);
     const [newCustomer, setnewCustomer] = useState(false);
     const [openModal, setopenModal] = useState(false);
+    const [newPrice, setnewPrice] = useState(null);
     const [loading, setloading] = useState(false);
     const [nameSuggestions, setnameSuggestions] = useState([]);
     const [customerData, setcustomerData] = useState({});
@@ -259,10 +260,98 @@ const OrderInfo = (props) => {
 
     const [changeOrderPriceMutation] = useMutationGQL(changeOrderPrice(), {
         orderId: parseInt(queryParameters?.get('orderId')),
-        price: orderpayload?.newprice,
+        price: newPrice,
     });
 
     const fetchMerchantItemVariantsQuery = useQueryGQL('', fetchMerchantItemVariants(), filter);
+    const changePriceFunc = async () => {
+        setbuttonLoading(true);
+        try {
+            var { data } = await changeOrderPriceMutation();
+            if (data?.changeOrderPrice?.success == true) {
+                await fetchOrder();
+
+                NotificationManager.success('Success!', '');
+                setorderLogsModal({ open: false });
+                setnewPrice(null);
+            } else {
+                NotificationManager.warning(data?.changeOrderPrice?.message, 'Warning!');
+            }
+        } catch (error) {
+            let errorMessage = 'An unexpected error occurred';
+            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                errorMessage = error.graphQLErrors[0].message || errorMessage;
+            } else if (error.networkError) {
+                errorMessage = error.networkError.message || errorMessage;
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+
+            NotificationManager.warning(errorMessage, 'Warning!');
+            console.error('Error adding Merchant:', error);
+        }
+        setbuttonLoading(false);
+    };
+    const addOrderItemsFunc = async () => {
+        setbuttonLoading(true);
+        try {
+            var temp = [];
+            await itemsModal?.items?.map((item, index) => {
+                temp.push({ itemVariantId: item?.item?.id, count: item?.count });
+            });
+            await setitemsModal({ ...itemsModal, itemstobeadded: temp, open: false });
+            const { data } = await addOrderItemsMutation();
+            if (data?.addOrderItems?.success == true) {
+                NotificationManager.success('Success!', '');
+                fetchOrder();
+            } else {
+                NotificationManager.warning(data?.addOrderItems?.message, 'Warning!');
+            }
+        } catch (error) {
+            let errorMessage = 'An unexpected error occurred';
+            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                errorMessage = error.graphQLErrors[0].message || errorMessage;
+            } else if (error.networkError) {
+                errorMessage = error.networkError.message || errorMessage;
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+
+            NotificationManager.warning(errorMessage, 'Warning!');
+            console.error('Error adding Merchant:', error);
+        }
+        setbuttonLoading(false);
+    };
+    const removeOrderItemsFunc = async () => {
+        if (window.confirm('Are you sure you want to delete this item?')) {
+            var temp = [...orderItemIds];
+            temp.push(orderItem.id);
+            await setorderItemIds([...temp]);
+            setbuttonLoading(true);
+            try {
+                const { data } = await removeOrderItemsMutation();
+                if (data?.removeOrderItems?.success == true) {
+                    NotificationManager.success('Success!', '');
+                    fetchOrder();
+                } else {
+                    NotificationManager.warning(data?.removeOrderItems?.message, 'Warning!');
+                }
+            } catch (error) {
+                let errorMessage = 'An unexpected error occurred';
+                if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                    errorMessage = error.graphQLErrors[0].message || errorMessage;
+                } else if (error.networkError) {
+                    errorMessage = error.networkError.message || errorMessage;
+                } else if (error.message) {
+                    errorMessage = error.message;
+                }
+
+                NotificationManager.warning(errorMessage, 'Warning!');
+                console.error('Error adding Inventory Rent:', error);
+            }
+            setbuttonLoading(false);
+        }
+    };
     useEffect(async () => {
         setnewCustomer(false);
         var customerFound = false;
@@ -695,32 +784,11 @@ const OrderInfo = (props) => {
                                                                                 class="iconhover allcentered"
                                                                                 onClick={async () => {
                                                                                     if (!buttonLoading) {
-                                                                                        var temp = [...orderItemIds];
-                                                                                        temp.push(orderItem.id);
-                                                                                        await setorderItemIds([...temp]);
-                                                                                        setbuttonLoading(true);
-                                                                                        try {
-                                                                                            const { data } = await removeOrderItemsMutation();
-                                                                                            if (data?.removeOrderItems?.success == true) {
-                                                                                                NotificationManager.success('Success!', '');
-                                                                                                fetchOrder();
-                                                                                            } else {
-                                                                                                NotificationManager.warning(data?.removeOrderItems?.message, 'Warning!');
-                                                                                            }
-                                                                                        } catch (error) {
-                                                                                            let errorMessage = 'An unexpected error occurred';
-                                                                                            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-                                                                                                errorMessage = error.graphQLErrors[0].message || errorMessage;
-                                                                                            } else if (error.networkError) {
-                                                                                                errorMessage = error.networkError.message || errorMessage;
-                                                                                            } else if (error.message) {
-                                                                                                errorMessage = error.message;
-                                                                                            }
-
-                                                                                            NotificationManager.warning(errorMessage, 'Warning!');
-                                                                                            console.error('Error adding Inventory Rent:', error);
+                                                                                        if (chosenOrderContext?.originalPrice == false) {
+                                                                                            setorderLogsModal({ open: true, type: 'price', func: 'removeitems' });
+                                                                                            return;
                                                                                         }
-                                                                                        setbuttonLoading(false);
+                                                                                        removeOrderItemsFunc();
                                                                                     }
                                                                                 }}
                                                                             >
@@ -1149,34 +1217,11 @@ const OrderInfo = (props) => {
                             <button
                                 class={generalstyles.roundbutton}
                                 onClick={async () => {
-                                    setbuttonLoading(true);
-                                    try {
-                                        var temp = [];
-                                        await itemsModal?.items?.map((item, index) => {
-                                            temp.push({ itemVariantId: item?.item?.id, count: item?.count });
-                                        });
-                                        await setitemsModal({ ...itemsModal, itemstobeadded: temp, open: false });
-                                        const { data } = await addOrderItemsMutation();
-                                        if (data?.addOrderItems?.success == true) {
-                                            NotificationManager.success('Success!', '');
-                                            fetchOrder();
-                                        } else {
-                                            NotificationManager.warning(data?.addOrderItems?.message, 'Warning!');
-                                        }
-                                    } catch (error) {
-                                        let errorMessage = 'An unexpected error occurred';
-                                        if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-                                            errorMessage = error.graphQLErrors[0].message || errorMessage;
-                                        } else if (error.networkError) {
-                                            errorMessage = error.networkError.message || errorMessage;
-                                        } else if (error.message) {
-                                            errorMessage = error.message;
-                                        }
-
-                                        NotificationManager.warning(errorMessage, 'Warning!');
-                                        console.error('Error adding Merchant:', error);
+                                    if (chosenOrderContext?.originalPrice == false) {
+                                        setorderLogsModal({ open: true, type: 'price', func: 'additems' });
+                                        return;
                                     }
-                                    setbuttonLoading(false);
+                                    addOrderItemsFunc();
                                 }}
                             >
                                 {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
@@ -1419,7 +1464,8 @@ const OrderInfo = (props) => {
                     <div className="row w-100 m-0 p-0">
                         <div class="col-lg-6 pt-3 ">
                             {orderLogsModal.type == 'logs' && <div className="row w-100 m-0 p-0">Order Logs</div>}
-                            {orderLogsModal.type == 'price' && <div className="row w-100 m-0 p-0">Change Order Price</div>}
+                            {orderLogsModal.type == 'price' && !orderLogsModal?.func && <div className="row w-100 m-0 p-0">Change Order Price</div>}
+                            {orderLogsModal.type == 'price' && orderLogsModal?.func && <div className="row w-100 m-0 p-0">Enter New Order Price</div>}
                         </div>
                         <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
                             <div
@@ -1484,14 +1530,17 @@ const OrderInfo = (props) => {
                     )}
                     {orderLogsModal.type == 'price' && (
                         <div class="row m-0 w-100 py-2">
-                            <div class="col-lg-12 p-0 allcentered text-center mb-2 ">
-                                <span style={{ fontWeight: 700, color: 'red', fontSize: '11px' }}>
-                                    Disclaimer:{' '}
-                                    <span style={{ fontWeight: 500 }}>
-                                        Please be aware that by proceeding with this order, the price will be adjusted from the original amount to the input price you have specified
-                                    </span>{' '}
-                                </span>
-                            </div>
+                            {chosenOrderContext?.originalPrice == true && (
+                                <div class="col-lg-12 p-0 allcentered text-center mb-2 ">
+                                    <span style={{ fontWeight: 700, color: 'red', fontSize: '11px' }}>
+                                        Disclaimer:{' '}
+                                        <span style={{ fontWeight: 500 }}>
+                                            Please be aware that by proceeding with this order, the price will be adjusted from the original amount to the input price you have specified
+                                        </span>{' '}
+                                    </span>
+                                </div>
+                            )}
+
                             <div class={'col-lg-12 p-0 mb-2'}>
                                 <label style={{ fontSize: '1.8vh' }} class="m-0 mb-2">
                                     New Price
@@ -1499,9 +1548,9 @@ const OrderInfo = (props) => {
                                 <Inputfield
                                     hideLabel={true}
                                     placeholder={'price'}
-                                    value={orderpayload?.newprice}
+                                    value={newPrice}
                                     onChange={(event) => {
-                                        setorderpayload({ ...orderpayload, newprice: event.target.value });
+                                        setnewPrice(event.target.value);
                                     }}
                                     type={'number'}
                                 />
@@ -1510,38 +1559,20 @@ const OrderInfo = (props) => {
                                 <button
                                     class={generalstyles.roundbutton}
                                     onClick={async () => {
-                                        setbuttonLoading(true);
-                                        try {
-                                            var { data } = await changeOrderPriceMutation();
-                                            if (data?.changeOrderPrice?.success == true) {
-                                                setTimeout(() => {
-                                                    NotificationManager.success('Success!', '');
-                                                    findOneOrder();
-                                                    setorderLogsModal({ open: false });
-                                                    setorderpayload({ ...orderpayload, newprice: '' });
-                                                }, 1000);
-                                            } else {
-                                                NotificationManager.warning(data?.changeOrderPrice?.message, 'Warning!');
-                                            }
-                                        } catch (error) {
-                                            let errorMessage = 'An unexpected error occurred';
-                                            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-                                                errorMessage = error.graphQLErrors[0].message || errorMessage;
-                                            } else if (error.networkError) {
-                                                errorMessage = error.networkError.message || errorMessage;
-                                            } else if (error.message) {
-                                                errorMessage = error.message;
-                                            }
-
-                                            NotificationManager.warning(errorMessage, 'Warning!');
-                                            console.error('Error adding Merchant:', error);
+                                        if (orderLogsModal?.func == 'removeitems') {
+                                            await removeOrderItemsFunc();
+                                            await changePriceFunc();
+                                        } else if (orderLogsModal?.func == 'additems') {
+                                            await addOrderItemsFunc();
+                                            await changePriceFunc();
+                                        } else {
+                                            await changePriceFunc();
                                         }
-                                        setbuttonLoading(false);
                                     }}
                                     disabled={buttonLoading}
                                 >
                                     {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                    {!buttonLoading && <span>Change order price</span>}
+                                    {!buttonLoading && <span>{orderLogsModal?.func == 'removeitems' ? 'Remove items' : orderLogsModal?.func == 'additems' ? 'Add items' : 'Change order price'}</span>}
                                 </button>
                             </div>
                         </div>

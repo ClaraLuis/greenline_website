@@ -697,6 +697,7 @@ const API = () => {
                         type
                         createdAt
                         shippingPrice
+                        originalPrice
                         merchant {
                             id
                             name
@@ -1145,6 +1146,7 @@ const API = () => {
                 currency
                 otherId
                 shopifyName
+                originalPrice
                 merchantCustomer {
                     customerName
                     customer {

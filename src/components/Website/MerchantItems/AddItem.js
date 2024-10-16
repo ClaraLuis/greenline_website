@@ -240,18 +240,24 @@ const AddItem = (props) => {
     };
 
     const handlePriceChange = (color, variantIndex, event) => {
-        const newPrice = event.target.value;
-        setitemVariants((prevItemVariants) => {
-            const updatedVariants = { ...prevItemVariants };
-            const colorVariants = updatedVariants[color]?.variants || [];
-            if (colorVariants[variantIndex]) {
-                colorVariants[variantIndex].price = newPrice;
-            }
-            return {
-                ...updatedVariants,
-                [color]: { ...updatedVariants[color], variants: colorVariants },
-            };
-        });
+        const value = event.target.value;
+
+        // Allow only digits and commas
+        if (/^[0-9,]*$/.test(value)) {
+            const cleanedValue = value.replace(/,/g, ''); // Remove commas for numeric storage
+            const numberValue = cleanedValue ? parseFloat(cleanedValue) : 0; // Convert to number or default to 0
+            setitemVariants((prevItemVariants) => {
+                const updatedVariants = { ...prevItemVariants };
+                const colorVariants = updatedVariants[color]?.variants || [];
+                if (colorVariants[variantIndex]) {
+                    colorVariants[variantIndex].price = numberValue;
+                }
+                return {
+                    ...updatedVariants,
+                    [color]: { ...updatedVariants[color], variants: colorVariants },
+                };
+            });
+        }
     };
 
     // Handle image URL change
@@ -619,6 +625,49 @@ const AddItem = (props) => {
             throw error; // Throw error so you can handle it in the calling function if needed
         }
     };
+    const handleValidations = () => {
+        if (!itempayload?.name) {
+            NotificationManager.warning('Name cannot be empty', 'Warning');
+            return false;
+        }
+        if (!itempayload?.image) {
+            NotificationManager.warning('Main image cannot be empty', 'Warning');
+            return false;
+        }
+        if (isAuth([1]) && !itempayload?.merchantId) {
+            NotificationManager.warning('Merchant must be selected', 'Warning');
+            return false;
+        }
+        const prices = variants.map((variant) => variant.price).filter(Boolean);
+        if (prices.length === 0 && !itempayload?.price) {
+            NotificationManager.warning('Please provide a default price or prices for each variant', 'Warning');
+            return false;
+        }
+        const invalidOptions = variantsList.filter((option) => !option.variantOptions || option.variantOptions.length === 0);
+        if (invalidOptions.length > 0) {
+            NotificationManager.warning('Each variant option must have at least one value', 'Warning');
+            return false;
+        }
+        const optionsWithoutValues = variantsList.filter((option) => option.variantOptions.length === 0);
+        if (optionsWithoutValues.length > 0) {
+            NotificationManager.warning('Each variant name must have at least one value', 'Warning');
+            return false;
+        }
+        return true;
+    };
+    const handleMutationError = (error) => {
+        let errorMessage = 'An unexpected error occurred';
+        if (error.graphQLErrors?.length > 0) {
+            errorMessage = error.graphQLErrors[0].message || errorMessage;
+        } else if (error.networkError) {
+            errorMessage = error.networkError.message || errorMessage;
+        } else if (error.message) {
+            errorMessage = error.message;
+        }
+        NotificationManager.warning(errorMessage, 'Warning!');
+        console.error('Mutation error:', error);
+    };
+
     return (
         <div class="row m-0 w-100 p-md-2 pt-2 d-flex justify-content-center">
             <div class="col-lg-7 p-0">
@@ -640,152 +689,122 @@ const AddItem = (props) => {
                                                 class={generalstyles.roundbutton + '  mb-1'}
                                                 onClick={async () => {
                                                     setbuttonLoading(true);
-                                                    if (itempayload?.name?.length == 0) {
-                                                        NotificationManager.warning('Name Can not be empty', 'Warning');
-                                                    } else {
-                                                        // Assuming this code is inside an async function
-                                                        var tempOptions = [];
-                                                        var tempValues = [];
-                                                        var variantsTemp = [];
-                                                        options?.map((i, ii) => {
-                                                            var array = [];
-                                                            tempOptions.push(i.name);
-                                                            i?.values.map((m, mm) => {
-                                                                array.push({ value: m });
-                                                            });
-                                                            tempValues.push(array);
-                                                        });
-                                                        variants?.map((variant, varianIndex) => {
-                                                            var temp = {
-                                                                price: variant.price?.length == 0 ? null : variant.price,
-                                                                imageUrl: variant.imageUrl,
-                                                                merchantSku: variant.merchantSku,
-                                                            };
-                                                            variantsTemp.push(temp);
-                                                        });
-                                                        const itemVariantsTemp = createVariantOptions([], 0);
-                                                        const itemVariantsObjects = [];
-                                                        for (const combination of itemVariantsTemp) {
-                                                            itemVariantsObjects.push(new ItemVariant(combination));
-                                                        }
+                                                    handleValidations();
 
-                                                        // alert(JSON.stringify(variantsList));
-                                                        const updatedVariantOptions = variantsList.map((e) =>
-                                                            e.variantOptions.map((option) => ({
-                                                                value: option.value,
-                                                                colorCode: option.colorHex || '',
-                                                            })),
-                                                        );
-                                                        var resp = undefined;
+                                                    var tempOptions = [];
+                                                    var tempValues = [];
+                                                    var variantsTemp = [];
+                                                    options?.map((i, ii) => {
+                                                        var array = [];
+                                                        tempOptions.push(i.name);
+                                                        i?.values.map((m, mm) => {
+                                                            array.push({ value: m });
+                                                        });
+                                                        tempValues.push(array);
+                                                    });
+                                                    variants?.map((variant, varianIndex) => {
+                                                        var temp = {
+                                                            price: variant.price?.length == 0 ? null : variant.price,
+                                                            imageUrl: variant.imageUrl,
+                                                            merchantSku: variant.merchantSku,
+                                                        };
+                                                        variantsTemp.push(temp);
+                                                    });
+                                                    const itemVariantsTemp = createVariantOptions([], 0);
+                                                    const itemVariantsObjects = [];
+                                                    for (const combination of itemVariantsTemp) {
+                                                        itemVariantsObjects.push(new ItemVariant(combination));
+                                                    }
+
+                                                    // alert(JSON.stringify(variantsList));
+                                                    const updatedVariantOptions = variantsList.map((e) =>
+                                                        e.variantOptions.map((option) => ({
+                                                            value: option.value,
+                                                            colorCode: option.colorHex || '',
+                                                        })),
+                                                    );
+                                                    var resp = undefined;
+                                                    if (!itempayload.imageUrl) {
                                                         if (itempayload.image) {
                                                             resp = await uploadImage(itempayload.image);
                                                         }
-                                                        // alert(resp);
-                                                        const extractData = async (data) => {
-                                                            const result = [];
+                                                    } else {
+                                                        resp = itempayload.imageUrl;
+                                                    }
+                                                    const extractData = async (data) => {
+                                                        const result = [];
+                                                        await Promise.all(
+                                                            Object.keys(data).map(async (key) => {
+                                                                const variants = data[key].variants;
 
-                                                            // Iterate over each key in the data object
-                                                            await Promise.all(
-                                                                Object.keys(data).map(async (key) => {
-                                                                    const variants = data[key].variants;
-
-                                                                    // Process each variant
-                                                                    await Promise.all(
-                                                                        variants.map(async (variant) => {
-                                                                            const { price, imageUrl, merchantSku } = variant;
-                                                                            let resp1 = undefined;
-                                                                            if (imageUrl) {
-                                                                                resp1 = await uploadImage(imageUrl);
-                                                                            }
-
-                                                                            if (price || merchantSku) {
-                                                                                result.push({
-                                                                                    price,
-                                                                                    imageUrl: resp1,
-                                                                                    merchantSku,
-                                                                                });
-                                                                            }
-                                                                        }),
-                                                                    );
-                                                                }),
-                                                            );
-
-                                                            return result;
-                                                        };
-
-                                                        await setitempayload({
-                                                            ...itempayload,
-                                                            imageUrl: resp,
-                                                            variantNames: variantsList.map((e) => e.name) ?? undefined,
-                                                            variantOptions: updatedVariantOptions ?? undefined,
-                                                            variantOptionAttributes: await extractData(itemVariants),
-                                                        });
-
-                                                        var itemtemp = {
-                                                            ...itempayload,
-                                                            variantNames: variantsList.map((e) => e.name) ?? undefined,
-                                                            variantOptions: updatedVariantOptions ?? undefined,
-                                                            variantOptionAttributes: await extractData(itemVariants),
-                                                        };
-                                                        const { imageUrl, variantOptionAttributes, ...itemWithoutImageUrls } = itemtemp;
-                                                        const itemWithoutVariantOptionImageUrls = {
-                                                            ...itemWithoutImageUrls,
-                                                            variantOptionAttributes: variantOptionAttributes.map(({ imageUrl, ...rest }) => rest),
-                                                        };
-
-                                                        let tempproductsarray = [];
-                                                        try {
-                                                            const importedItemsCookie = cookies.get('ImportedItems') ?? [];
-                                                            tempproductsarray = importedItemsCookie;
-                                                        } catch (error) {
-                                                            console.warn('Error parsing ImportedItems cookie:', error);
-                                                            tempproductsarray = [];
-                                                        }
-
-                                                        // Hash the item without variant option image URLs
-                                                        const itemHash = sha256(JSON.stringify(itemWithoutVariantOptionImageUrls));
-
-                                                        // Check if the hash already exists in the array
-                                                        const exist = tempproductsarray.includes(itemHash);
-
-                                                        if (exist) {
-                                                            if (window.confirm('This item was previously added. Are you sure you want to duplicate it?')) {
-                                                                try {
-                                                                    const { data } = await addItemMutation();
-
-                                                                    NotificationManager.success('Item added successfully!', 'Success!');
-
-                                                                    if (importedDataContext?.length) {
-                                                                        // Add the new hash to the array
-                                                                        tempproductsarray.push(itemHash);
-
-                                                                        // Update the cookie with the new array of hashes
-                                                                        cookies.set('ImportedItems', JSON.stringify(tempproductsarray), {
-                                                                            expires: new Date(Date.now() + 2 * 60 * 60 * 1000),
-                                                                            path: '/',
-                                                                        });
-
-                                                                        if (itemIndex < importedDataContext.length - 1) {
-                                                                            setitemIndex(itemIndex + 1);
-                                                                        } else {
-                                                                            history.push('/merchantitems');
+                                                                // Process each variant
+                                                                await Promise.all(
+                                                                    variants.map(async (variant) => {
+                                                                        const { price, imageUrl, merchantSku } = variant;
+                                                                        let resp1 = undefined;
+                                                                        if (imageUrl) {
+                                                                            resp1 = await uploadImage(imageUrl);
                                                                         }
-                                                                    } else {
-                                                                        history.push('/merchantitems');
-                                                                    }
 
-                                                                    console.log('Mutation response:', data);
-                                                                } catch (error) {
-                                                                    handleMutationError(error);
-                                                                }
-                                                            }
-                                                        } else {
+                                                                        if (price || merchantSku) {
+                                                                            result.push({
+                                                                                price,
+                                                                                imageUrl: resp1,
+                                                                                merchantSku,
+                                                                            });
+                                                                        }
+                                                                    }),
+                                                                );
+                                                            }),
+                                                        );
+
+                                                        return result;
+                                                    };
+
+                                                    await setitempayload({
+                                                        ...itempayload,
+                                                        imageUrl: resp,
+                                                        variantNames: variantsList.map((e) => e.name) ?? undefined,
+                                                        variantOptions: updatedVariantOptions ?? undefined,
+                                                        variantOptionAttributes: await extractData(itemVariants),
+                                                    });
+
+                                                    var itemtemp = {
+                                                        ...itempayload,
+                                                        variantNames: variantsList.map((e) => e.name) ?? undefined,
+                                                        variantOptions: updatedVariantOptions ?? undefined,
+                                                        variantOptionAttributes: await extractData(itemVariants),
+                                                    };
+                                                    const { imageUrl, variantOptionAttributes, ...itemWithoutImageUrls } = itemtemp;
+                                                    const itemWithoutVariantOptionImageUrls = {
+                                                        ...itemWithoutImageUrls,
+                                                        variantOptionAttributes: variantOptionAttributes.map(({ imageUrl, ...rest }) => rest),
+                                                    };
+
+                                                    let tempproductsarray = [];
+                                                    try {
+                                                        const importedItemsCookie = cookies.get('ImportedItems') ?? [];
+                                                        tempproductsarray = importedItemsCookie;
+                                                    } catch (error) {
+                                                        console.warn('Error parsing ImportedItems cookie:', error);
+                                                        tempproductsarray = [];
+                                                    }
+
+                                                    // Hash the item without variant option image URLs
+                                                    const itemHash = sha256(JSON.stringify(itemWithoutVariantOptionImageUrls));
+
+                                                    // Check if the hash already exists in the array
+                                                    const exist = tempproductsarray.includes(itemHash);
+
+                                                    if (exist) {
+                                                        if (window.confirm('This item was previously added. Are you sure you want to duplicate it?')) {
                                                             try {
                                                                 const { data } = await addItemMutation();
 
                                                                 NotificationManager.success('Item added successfully!', 'Success!');
 
                                                                 if (importedDataContext?.length) {
+                                                                    // Add the new hash to the array
                                                                     tempproductsarray.push(itemHash);
 
                                                                     // Update the cookie with the new array of hashes
@@ -808,21 +827,36 @@ const AddItem = (props) => {
                                                                 handleMutationError(error);
                                                             }
                                                         }
+                                                    } else {
+                                                        try {
+                                                            const { data } = await addItemMutation();
 
-                                                        function handleMutationError(error) {
-                                                            let errorMessage = 'An unexpected error occurred';
-                                                            if (error.graphQLErrors?.length > 0) {
-                                                                errorMessage = error.graphQLErrors[0].message || errorMessage;
-                                                            } else if (error.networkError) {
-                                                                errorMessage = error.networkError.message || errorMessage;
-                                                            } else if (error.message) {
-                                                                errorMessage = error.message;
+                                                            NotificationManager.success('Item added successfully!', 'Success!');
+
+                                                            if (importedDataContext?.length) {
+                                                                tempproductsarray.push(itemHash);
+
+                                                                // Update the cookie with the new array of hashes
+                                                                cookies.set('ImportedItems', JSON.stringify(tempproductsarray), {
+                                                                    expires: new Date(Date.now() + 2 * 60 * 60 * 1000),
+                                                                    path: '/',
+                                                                });
+
+                                                                if (itemIndex < importedDataContext.length - 1) {
+                                                                    setitemIndex(itemIndex + 1);
+                                                                } else {
+                                                                    history.push('/merchantitems');
+                                                                }
+                                                            } else {
+                                                                history.push('/merchantitems');
                                                             }
 
-                                                            NotificationManager.warning(errorMessage, 'Warning!');
-                                                            console.error('Mutation error:', error);
+                                                            console.log('Mutation response:', data);
+                                                        } catch (error) {
+                                                            handleMutationError(error);
                                                         }
                                                     }
+
                                                     setbuttonLoading(false);
                                                 }}
                                                 disabled={buttonLoading}
@@ -858,152 +892,126 @@ const AddItem = (props) => {
                                                 class={generalstyles.roundbutton + '  mb-1'}
                                                 onClick={async () => {
                                                     setbuttonLoading(true);
-                                                    if (itempayload?.name?.length == 0) {
-                                                        NotificationManager.warning('Name Can not be empty', 'Warning');
-                                                    } else {
-                                                        // Assuming this code is inside an async function
-                                                        var tempOptions = [];
-                                                        var tempValues = [];
-                                                        var variantsTemp = [];
-                                                        options?.map((i, ii) => {
-                                                            var array = [];
-                                                            tempOptions.push(i.name);
-                                                            i?.values.map((m, mm) => {
-                                                                array.push({ value: m });
-                                                            });
-                                                            tempValues.push(array);
-                                                        });
-                                                        variants?.map((variant, varianIndex) => {
-                                                            var temp = {
-                                                                price: variant.price?.length == 0 ? null : variant.price,
-                                                                imageUrl: variant.imageUrl,
-                                                                merchantSku: variant.merchantSku,
-                                                            };
-                                                            variantsTemp.push(temp);
-                                                        });
-                                                        const itemVariantsTemp = createVariantOptions([], 0);
-                                                        const itemVariantsObjects = [];
-                                                        for (const combination of itemVariantsTemp) {
-                                                            itemVariantsObjects.push(new ItemVariant(combination));
-                                                        }
+                                                    handleValidations();
 
-                                                        // alert(JSON.stringify(variantsList));
-                                                        const updatedVariantOptions = variantsList.map((e) =>
-                                                            e.variantOptions.map((option) => ({
-                                                                value: option.value,
-                                                                colorCode: option.colorHex || '',
-                                                            })),
-                                                        );
-                                                        var resp = undefined;
+                                                    // Assuming this code is inside an async function
+                                                    var tempOptions = [];
+                                                    var tempValues = [];
+                                                    var variantsTemp = [];
+                                                    options?.map((i, ii) => {
+                                                        var array = [];
+                                                        tempOptions.push(i.name);
+                                                        i?.values.map((m, mm) => {
+                                                            array.push({ value: m });
+                                                        });
+                                                        tempValues.push(array);
+                                                    });
+                                                    variants?.map((variant, varianIndex) => {
+                                                        var temp = {
+                                                            price: variant.price?.length == 0 ? null : variant.price,
+                                                            imageUrl: variant.imageUrl,
+                                                            merchantSku: variant.merchantSku,
+                                                        };
+                                                        variantsTemp.push(temp);
+                                                    });
+                                                    const itemVariantsTemp = createVariantOptions([], 0);
+                                                    const itemVariantsObjects = [];
+                                                    for (const combination of itemVariantsTemp) {
+                                                        itemVariantsObjects.push(new ItemVariant(combination));
+                                                    }
+
+                                                    // alert(JSON.stringify(variantsList));
+                                                    const updatedVariantOptions = variantsList.map((e) =>
+                                                        e.variantOptions.map((option) => ({
+                                                            value: option.value,
+                                                            colorCode: option.colorHex || '',
+                                                        })),
+                                                    );
+                                                    var resp = undefined;
+                                                    if (!itempayload.imageUrl) {
                                                         if (itempayload.image) {
                                                             resp = await uploadImage(itempayload.image);
                                                         }
-                                                        // alert(resp);
-                                                        const extractData = async (data) => {
-                                                            const result = [];
+                                                    } else {
+                                                        resp = itempayload.imageUrl;
+                                                    }
+                                                    // alert(resp);
+                                                    const extractData = async (data) => {
+                                                        const result = [];
 
-                                                            // Iterate over each key in the data object
-                                                            await Promise.all(
-                                                                Object.keys(data).map(async (key) => {
-                                                                    const variants = data[key].variants;
+                                                        // Iterate over each key in the data object
+                                                        await Promise.all(
+                                                            Object.keys(data).map(async (key) => {
+                                                                const variants = data[key].variants;
 
-                                                                    // Process each variant
-                                                                    await Promise.all(
-                                                                        variants.map(async (variant) => {
-                                                                            const { price, imageUrl, merchantSku } = variant;
-                                                                            let resp1 = undefined;
-                                                                            if (imageUrl) {
-                                                                                resp1 = await uploadImage(imageUrl);
-                                                                            }
-
-                                                                            if (price || merchantSku) {
-                                                                                result.push({
-                                                                                    price,
-                                                                                    imageUrl: resp1,
-                                                                                    merchantSku,
-                                                                                });
-                                                                            }
-                                                                        }),
-                                                                    );
-                                                                }),
-                                                            );
-
-                                                            return result;
-                                                        };
-
-                                                        await setitempayload({
-                                                            ...itempayload,
-                                                            imageUrl: resp,
-                                                            variantNames: variantsList.map((e) => e.name) ?? undefined,
-                                                            variantOptions: updatedVariantOptions ?? undefined,
-                                                            variantOptionAttributes: await extractData(itemVariants),
-                                                        });
-
-                                                        var itemtemp = {
-                                                            ...itempayload,
-                                                            variantNames: variantsList.map((e) => e.name) ?? undefined,
-                                                            variantOptions: updatedVariantOptions ?? undefined,
-                                                            variantOptionAttributes: await extractData(itemVariants),
-                                                        };
-                                                        const { imageUrl, variantOptionAttributes, ...itemWithoutImageUrls } = itemtemp;
-                                                        const itemWithoutVariantOptionImageUrls = {
-                                                            ...itemWithoutImageUrls,
-                                                            variantOptionAttributes: variantOptionAttributes.map(({ imageUrl, ...rest }) => rest),
-                                                        };
-
-                                                        let tempproductsarray = [];
-                                                        try {
-                                                            const importedItemsCookie = cookies.get('ImportedItems') ?? [];
-                                                            tempproductsarray = importedItemsCookie;
-                                                        } catch (error) {
-                                                            console.warn('Error parsing ImportedItems cookie:', error);
-                                                            tempproductsarray = [];
-                                                        }
-
-                                                        // Hash the item without variant option image URLs
-                                                        const itemHash = sha256(JSON.stringify(itemWithoutVariantOptionImageUrls));
-
-                                                        // Check if the hash already exists in the array
-                                                        const exist = tempproductsarray.includes(itemHash);
-
-                                                        if (exist) {
-                                                            if (window.confirm('This item was previously added. Are you sure you want to duplicate it?')) {
-                                                                try {
-                                                                    const { data } = await addItemMutation();
-
-                                                                    NotificationManager.success('Item added successfully!', 'Success!');
-
-                                                                    if (importedDataContext?.length) {
-                                                                        // Add the new hash to the array
-                                                                        tempproductsarray.push(itemHash);
-
-                                                                        // Update the cookie with the new array of hashes
-                                                                        cookies.set('ImportedItems', JSON.stringify(tempproductsarray), {
-                                                                            expires: new Date(Date.now() + 2 * 60 * 60 * 1000),
-                                                                            path: '/',
-                                                                        });
-
-                                                                        if (itemIndex < importedDataContext.length - 1) {
-                                                                            setitemIndex(itemIndex + 1);
-                                                                        } else {
-                                                                            history.push('/merchantitems');
+                                                                // Process each variant
+                                                                await Promise.all(
+                                                                    variants.map(async (variant) => {
+                                                                        const { price, imageUrl, merchantSku } = variant;
+                                                                        let resp1 = undefined;
+                                                                        if (imageUrl) {
+                                                                            resp1 = await uploadImage(imageUrl);
                                                                         }
-                                                                    } else {
-                                                                        history.push('/merchantitems');
-                                                                    }
 
-                                                                    console.log('Mutation response:', data);
-                                                                } catch (error) {
-                                                                    handleMutationError(error);
-                                                                }
-                                                            }
-                                                        } else {
+                                                                        if (price || merchantSku) {
+                                                                            result.push({
+                                                                                price,
+                                                                                imageUrl: resp1,
+                                                                                merchantSku,
+                                                                            });
+                                                                        }
+                                                                    }),
+                                                                );
+                                                            }),
+                                                        );
+
+                                                        return result;
+                                                    };
+
+                                                    await setitempayload({
+                                                        ...itempayload,
+                                                        imageUrl: resp,
+                                                        variantNames: variantsList.map((e) => e.name) ?? undefined,
+                                                        variantOptions: updatedVariantOptions ?? undefined,
+                                                        variantOptionAttributes: await extractData(itemVariants),
+                                                    });
+
+                                                    var itemtemp = {
+                                                        ...itempayload,
+                                                        variantNames: variantsList.map((e) => e.name) ?? undefined,
+                                                        variantOptions: updatedVariantOptions ?? undefined,
+                                                        variantOptionAttributes: await extractData(itemVariants),
+                                                    };
+                                                    const { imageUrl, variantOptionAttributes, ...itemWithoutImageUrls } = itemtemp;
+                                                    const itemWithoutVariantOptionImageUrls = {
+                                                        ...itemWithoutImageUrls,
+                                                        variantOptionAttributes: variantOptionAttributes.map(({ imageUrl, ...rest }) => rest),
+                                                    };
+
+                                                    let tempproductsarray = [];
+                                                    try {
+                                                        const importedItemsCookie = cookies.get('ImportedItems') ?? [];
+                                                        tempproductsarray = importedItemsCookie;
+                                                    } catch (error) {
+                                                        console.warn('Error parsing ImportedItems cookie:', error);
+                                                        tempproductsarray = [];
+                                                    }
+
+                                                    // Hash the item without variant option image URLs
+                                                    const itemHash = sha256(JSON.stringify(itemWithoutVariantOptionImageUrls));
+
+                                                    // Check if the hash already exists in the array
+                                                    const exist = tempproductsarray.includes(itemHash);
+
+                                                    if (exist) {
+                                                        if (window.confirm('This item was previously added. Are you sure you want to duplicate it?')) {
                                                             try {
                                                                 const { data } = await addItemMutation();
 
                                                                 NotificationManager.success('Item added successfully!', 'Success!');
 
                                                                 if (importedDataContext?.length) {
+                                                                    // Add the new hash to the array
                                                                     tempproductsarray.push(itemHash);
 
                                                                     // Update the cookie with the new array of hashes
@@ -1026,21 +1034,36 @@ const AddItem = (props) => {
                                                                 handleMutationError(error);
                                                             }
                                                         }
+                                                    } else {
+                                                        try {
+                                                            const { data } = await addItemMutation();
 
-                                                        function handleMutationError(error) {
-                                                            let errorMessage = 'An unexpected error occurred';
-                                                            if (error.graphQLErrors?.length > 0) {
-                                                                errorMessage = error.graphQLErrors[0].message || errorMessage;
-                                                            } else if (error.networkError) {
-                                                                errorMessage = error.networkError.message || errorMessage;
-                                                            } else if (error.message) {
-                                                                errorMessage = error.message;
+                                                            NotificationManager.success('Item added successfully!', 'Success!');
+
+                                                            if (importedDataContext?.length) {
+                                                                tempproductsarray.push(itemHash);
+
+                                                                // Update the cookie with the new array of hashes
+                                                                cookies.set('ImportedItems', JSON.stringify(tempproductsarray), {
+                                                                    expires: new Date(Date.now() + 2 * 60 * 60 * 1000),
+                                                                    path: '/',
+                                                                });
+
+                                                                if (itemIndex < importedDataContext.length - 1) {
+                                                                    setitemIndex(itemIndex + 1);
+                                                                } else {
+                                                                    history.push('/merchantitems');
+                                                                }
+                                                            } else {
+                                                                history.push('/merchantitems');
                                                             }
 
-                                                            NotificationManager.warning(errorMessage, 'Warning!');
-                                                            console.error('Mutation error:', error);
+                                                            console.log('Mutation response:', data);
+                                                        } catch (error) {
+                                                            handleMutationError(error);
                                                         }
                                                     }
+
                                                     setbuttonLoading(false);
                                                 }}
                                                 disabled={buttonLoading}
@@ -1065,44 +1088,41 @@ const AddItem = (props) => {
                                                 class={generalstyles.roundbutton + '  mb-1'}
                                                 onClick={async () => {
                                                     setbuttonLoading(true);
-                                                    if (itempayload?.name?.length == 0) {
-                                                        NotificationManager.warning('Name Can not be empty', 'Warning');
-                                                    } else {
-                                                        // Assuming this code is inside an async function
-                                                        var tempOptions = [];
-                                                        var tempValues = [];
-                                                        var variantsTemp = [];
-                                                        options?.map((i, ii) => {
-                                                            var array = [];
-                                                            tempOptions.push(i.name);
-                                                            i?.values.map((m, mm) => {
-                                                                array.push({ value: m });
-                                                            });
-                                                            tempValues.push(array);
+                                                    handleValidations();
+                                                    var tempOptions = [];
+                                                    var tempValues = [];
+                                                    var variantsTemp = [];
+                                                    options?.map((i, ii) => {
+                                                        var array = [];
+                                                        tempOptions.push(i.name);
+                                                        i?.values.map((m, mm) => {
+                                                            array.push({ value: m });
                                                         });
-                                                        variants?.map((variant, varianIndex) => {
-                                                            var temp = {
-                                                                price: variant.price?.length == 0 ? null : variant.price,
-                                                                imageUrl: variant.imageUrl,
-                                                                merchantSku: variant.merchantSku,
-                                                            };
-                                                            variantsTemp.push(temp);
-                                                        });
-                                                        const itemVariantsTemp = createVariantOptions([], 0);
-                                                        const itemVariantsObjects = [];
-                                                        for (const combination of itemVariantsTemp) {
-                                                            itemVariantsObjects.push(new ItemVariant(combination));
-                                                        }
+                                                        tempValues.push(array);
+                                                    });
+                                                    variants?.map((variant, varianIndex) => {
+                                                        var temp = {
+                                                            price: variant.price?.length == 0 ? null : variant.price,
+                                                            imageUrl: variant.imageUrl,
+                                                            merchantSku: variant.merchantSku,
+                                                        };
+                                                        variantsTemp.push(temp);
+                                                    });
+                                                    const itemVariantsTemp = createVariantOptions([], 0);
+                                                    const itemVariantsObjects = [];
+                                                    for (const combination of itemVariantsTemp) {
+                                                        itemVariantsObjects.push(new ItemVariant(combination));
+                                                    }
 
-                                                        // alert(JSON.stringify(variantsList));
-                                                        const updatedVariantOptions = variantsList.map((e) =>
-                                                            e.variantOptions.map((option) => ({
-                                                                value: option.value,
-                                                                colorCode: option.colorHex || '',
-                                                            })),
-                                                        );
-                                                        var resp = undefined;
-
+                                                    // alert(JSON.stringify(variantsList));
+                                                    const updatedVariantOptions = variantsList.map((e) =>
+                                                        e.variantOptions.map((option) => ({
+                                                            value: option.value,
+                                                            colorCode: option.colorHex || '',
+                                                        })),
+                                                    );
+                                                    var resp = undefined;
+                                                    if (!itempayload.imageUrl) {
                                                         if (itempayload.image) {
                                                             const isHttpLink = /^https?:\/\//i.test(itempayload.image);
 
@@ -1112,104 +1132,88 @@ const AddItem = (props) => {
                                                                 resp = itempayload.image;
                                                             }
                                                         }
-                                                        // alert(resp);
-                                                        const extractData = async (data) => {
-                                                            const result = [];
+                                                    } else {
+                                                        resp = itempayload.imageUrl;
+                                                    }
 
-                                                            // Iterate over each key in the data object
-                                                            await Promise.all(
-                                                                Object.keys(data).map(async (key) => {
-                                                                    const variants = data[key].variants;
+                                                    // alert(resp);
+                                                    const extractData = async (data) => {
+                                                        const result = [];
 
-                                                                    // Process each variant
-                                                                    await Promise.all(
-                                                                        variants.map(async (variant) => {
-                                                                            const { price, imageUrl, merchantSku } = variant;
-                                                                            let resp1 = undefined;
+                                                        await Promise.all(
+                                                            Object.keys(data).map(async (key) => {
+                                                                const variants = data[key].variants;
 
-                                                                            if (imageUrl) {
-                                                                                const isHttpLink = /^https?:\/\//i.test(imageUrl);
+                                                                await Promise.all(
+                                                                    variants.map(async (variant) => {
+                                                                        const { price, imageUrl, merchantSku } = variant;
+                                                                        let resp1 = undefined;
 
-                                                                                if (!isHttpLink) {
-                                                                                    resp1 = await uploadImage(imageUrl);
-                                                                                } else {
-                                                                                    resp1 = imageUrl;
-                                                                                }
+                                                                        if (imageUrl) {
+                                                                            const isHttpLink = /^https?:\/\//i.test(imageUrl);
+
+                                                                            if (!isHttpLink) {
+                                                                                resp1 = await uploadImage(imageUrl);
+                                                                            } else {
+                                                                                resp1 = imageUrl;
                                                                             }
-                                                                            if (price || merchantSku) {
-                                                                                result.push({
-                                                                                    price,
-                                                                                    imageUrl: resp1,
-                                                                                    merchantSku,
-                                                                                });
-                                                                            }
-                                                                        }),
-                                                                    );
-                                                                }),
-                                                            );
+                                                                        }
+                                                                        if (price || merchantSku) {
+                                                                            result.push({
+                                                                                price,
+                                                                                imageUrl: resp1,
+                                                                                merchantSku,
+                                                                            });
+                                                                        }
+                                                                    }),
+                                                                );
+                                                            }),
+                                                        );
 
-                                                            return result;
-                                                        };
+                                                        return result;
+                                                    };
 
-                                                        await setitempayload({
-                                                            ...itempayload,
-                                                            imageUrl: resp,
-                                                            variantNames: variantsList.map((e) => e.name) ?? undefined,
-                                                            variantOptions: updatedVariantOptions ?? undefined,
-                                                            variantOptionAttributes: await extractData(itemVariants),
-                                                        });
+                                                    await setitempayload({
+                                                        ...itempayload,
+                                                        imageUrl: resp,
+                                                        variantNames: variantsList.map((e) => e.name) ?? undefined,
+                                                        variantOptions: updatedVariantOptions ?? undefined,
+                                                        variantOptionAttributes: await extractData(itemVariants),
+                                                    });
 
-                                                        // Hash the item without variant option image URLs
+                                                    try {
+                                                        await updateMerchantItemMutation();
 
-                                                        // Check if the hash already exists in the array
+                                                        NotificationManager.success('Item Updated successfully!', 'Success!');
 
                                                         try {
-                                                            await updateMerchantItemMutation();
-
-                                                            NotificationManager.success('Item Updated successfully!', 'Success!');
-
-                                                            try {
-                                                                var { data } = await findOneItemLazyQuery({
-                                                                    variables: {
-                                                                        input: {
-                                                                            id: parseInt(queryParameters?.get('id')),
-                                                                        },
+                                                            var { data } = await findOneItemLazyQuery({
+                                                                variables: {
+                                                                    input: {
+                                                                        id: parseInt(queryParameters?.get('id')),
                                                                     },
-                                                                });
-                                                                if (data?.findOneItem) {
-                                                                    setchosenItemContext(data?.findOneItem);
-                                                                }
-                                                            } catch (e) {
-                                                                let errorMessage = 'An unexpected error occurred';
-                                                                if (e.graphQLErrors && e.graphQLErrors.length > 0) {
-                                                                    errorMessage = e.graphQLErrors[0].message || errorMessage;
-                                                                } else if (e.networkError) {
-                                                                    errorMessage = e.networkError.message || errorMessage;
-                                                                } else if (e.message) {
-                                                                    errorMessage = e.message;
-                                                                }
-                                                                NotificationManager.warning(errorMessage, 'Warning!');
+                                                                },
+                                                            });
+                                                            if (data?.findOneItem) {
+                                                                setchosenItemContext(data?.findOneItem);
                                                             }
-
-                                                            console.log('Mutation response:', data);
-                                                        } catch (error) {
-                                                            handleMutationError(error);
-                                                        }
-
-                                                        function handleMutationError(error) {
+                                                        } catch (e) {
                                                             let errorMessage = 'An unexpected error occurred';
-                                                            if (error.graphQLErrors?.length > 0) {
-                                                                errorMessage = error.graphQLErrors[0].message || errorMessage;
-                                                            } else if (error.networkError) {
-                                                                errorMessage = error.networkError.message || errorMessage;
-                                                            } else if (error.message) {
-                                                                errorMessage = error.message;
+                                                            if (e.graphQLErrors && e.graphQLErrors.length > 0) {
+                                                                errorMessage = e.graphQLErrors[0].message || errorMessage;
+                                                            } else if (e.networkError) {
+                                                                errorMessage = e.networkError.message || errorMessage;
+                                                            } else if (e.message) {
+                                                                errorMessage = e.message;
                                                             }
-
                                                             NotificationManager.warning(errorMessage, 'Warning!');
-                                                            console.error('Mutation error:', error);
                                                         }
+
+                                                        console.log('Mutation response:', data);
+                                                    } catch (error) {
+                                                        handleMutationError(error);
                                                     }
+
                                                     setbuttonLoading(false);
                                                 }}
                                                 disabled={buttonLoading}
@@ -1340,11 +1344,19 @@ const AddItem = (props) => {
                                     <div class={`${formstyles.form__group} ${formstyles.field}`}>
                                         <label class={formstyles.form__label}>Price</label>
                                         <input
-                                            type={'number'}
+                                            type="text"
                                             class={formstyles.form__field}
-                                            value={itempayload.price}
+                                            value={itempayload?.price ? parseInt(itempayload.price).toLocaleString('en-US', { minimumFractionDigits: 0 }) : ''}
                                             onChange={(event) => {
-                                                setitempayload({ ...itempayload, price: event.target.value });
+                                                const value = event.target.value;
+
+                                                // Allow only digits and commas
+                                                if (/^[0-9,]*$/.test(value)) {
+                                                    const cleanedValue = value.replace(/,/g, ''); // Remove commas for numeric storage
+                                                    const numberValue = cleanedValue ? parseFloat(cleanedValue) : 0; // Convert to number or default to 0
+
+                                                    setitempayload({ ...itempayload, price: numberValue }); // Update the state with the numeric value
+                                                }
                                             }}
                                         />
                                     </div>
@@ -1509,7 +1521,7 @@ const AddItem = (props) => {
                                                             <input
                                                                 className={formstyles.form__field + ' col-lg-3 mx-1 ml-4'}
                                                                 type="text"
-                                                                value={variant.price}
+                                                                value={variant.price ? parseFloat(variant.price).toLocaleString('en-US', { minimumFractionDigits: 0 }) : ''}
                                                                 onChange={(event) => handlePriceChange(color, variantIdx, event)}
                                                                 placeholder="Enter price"
                                                             />
