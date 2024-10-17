@@ -245,12 +245,14 @@ const OrderInfo = (props) => {
     const [removeOrderItemsMutation] = useMutationGQL(removeOrderItems(), {
         orderId: parseInt(queryParameters?.get('orderId')),
         orderItemIds: orderItemIds,
+        newPrice: newPrice?.length ? newPrice : undefined,
     });
 
     const [addOrderItemsMutation] = useMutationGQL(addOrderItems(), {
         orderId: parseInt(queryParameters?.get('orderId')),
         orderItems: itemsModal?.itemstobeadded ?? undefined,
         keepCurrentPrice: true,
+        newPrice: newPrice?.length ? newPrice : undefined,
     });
 
     const [changeOrderCustomerInfoMutation] = useMutationGQL(changeOrderCustomerInfo(), {
@@ -303,6 +305,8 @@ const OrderInfo = (props) => {
             const { data } = await addOrderItemsMutation();
             if (data?.addOrderItems?.success == true) {
                 NotificationManager.success('Success!', '');
+                setorderLogsModal({ open: false });
+                setnewPrice('');
                 fetchOrder();
             } else {
                 NotificationManager.warning(data?.addOrderItems?.message, 'Warning!');
@@ -324,14 +328,13 @@ const OrderInfo = (props) => {
     };
     const removeOrderItemsFunc = async () => {
         if (window.confirm('Are you sure you want to delete this item?')) {
-            var temp = [...orderItemIds];
-            temp.push(orderItem.id);
-            await setorderItemIds([...temp]);
             setbuttonLoading(true);
             try {
                 const { data } = await removeOrderItemsMutation();
                 if (data?.removeOrderItems?.success == true) {
                     NotificationManager.success('Success!', '');
+                    setnewPrice('');
+                    setorderLogsModal({ open: false });
                     fetchOrder();
                 } else {
                     NotificationManager.warning(data?.removeOrderItems?.message, 'Warning!');
@@ -784,6 +787,9 @@ const OrderInfo = (props) => {
                                                                                 class="iconhover allcentered"
                                                                                 onClick={async () => {
                                                                                     if (!buttonLoading) {
+                                                                                        var temp = [...orderItemIds];
+                                                                                        temp.push(orderItem.id);
+                                                                                        await setorderItemIds([...temp]);
                                                                                         if (chosenOrderContext?.originalPrice == false) {
                                                                                             setorderLogsModal({ open: true, type: 'price', func: 'removeitems' });
                                                                                             return;
@@ -1561,10 +1567,10 @@ const OrderInfo = (props) => {
                                     onClick={async () => {
                                         if (orderLogsModal?.func == 'removeitems') {
                                             await removeOrderItemsFunc();
-                                            await changePriceFunc();
+                                            // await changePriceFunc();
                                         } else if (orderLogsModal?.func == 'additems') {
                                             await addOrderItemsFunc();
-                                            await changePriceFunc();
+                                            // await changePriceFunc();
                                         } else {
                                             await changePriceFunc();
                                         }
