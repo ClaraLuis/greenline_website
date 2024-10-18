@@ -14,7 +14,7 @@ import API from '../../../API/API.js';
 import ImportNewItem from '../InventoryItems/ImportNewItem.js';
 import { FiCheckCircle } from 'react-icons/fi';
 import { Dropdown } from 'react-bootstrap';
-import { TbEye } from 'react-icons/tb';
+import { TbEdit, TbEye } from 'react-icons/tb';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -83,9 +83,21 @@ const ItemsTable = (props) => {
                                     class={generalstyles.card + ' p-3 row m-0 w-100'}
                                 >
                                     {props?.showEllipsis && (
-                                        <div class={generalstyles.product_action}>
+                                        <div class={generalstyles.product_action + ' row m-0'}>
                                             <a
                                                 class={generalstyles.buttonxs + ' allcentered'}
+                                                onClick={async (e) => {
+                                                    e.stopPropagation();
+                                                    await setchosenItemContext(item);
+                                                    history.push(`/itemdetails?id=` + item.id);
+                                                }}
+                                            >
+                                                <i>
+                                                    <TbEye color="white" size={17} />
+                                                </i>
+                                            </a>
+                                            <a
+                                                class={generalstyles.buttonxs + ' allcentered ml-2'}
                                                 onClick={async (e) => {
                                                     e.stopPropagation();
                                                     await setchosenItemContext(item);
@@ -93,7 +105,7 @@ const ItemsTable = (props) => {
                                                 }}
                                             >
                                                 <i>
-                                                    <TbEye color="white" size={17} />
+                                                    <TbEdit color="white" size={17} />
                                                 </i>
                                             </a>
                                         </div>

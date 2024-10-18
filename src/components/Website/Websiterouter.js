@@ -63,6 +63,7 @@ import Fulfilled from './MerchantOrders/Fulfilled.js';
 import RentPage from './MerchantHome/RentPage.js';
 import WebToken from './WebToken/WebToken.js';
 import { TbApi, TbLogout } from 'react-icons/tb';
+import ItemDetails from './MerchantItems/ItemDetails.js';
 const App = (props) => {
     const history = useHistory();
     const location = useLocation();
@@ -285,7 +286,7 @@ const App = (props) => {
                                                                     exact
                                                                     path="/"
                                                                     render={(props) => {
-                                                                        return <Redirect to={'/merchantitems'} />;
+                                                                        return <Redirect to={cookies.get('userInfo')?.type == 'merchant' ? '/merchanthome' : '/merchantorders'} />;
                                                                     }}
                                                                 />
 
@@ -321,6 +322,7 @@ const App = (props) => {
                                                                 <Route exact path="/financehome" component={FinanceHome} />
                                                                 <Route exact path="/additem" component={AddItem} />
                                                                 <Route exact path="/updateitem" component={AddItem} />
+                                                                <Route exact path="/itemdetails" component={ItemDetails} />
                                                                 <Route exact path="/financesheets" component={FinanceSheets} />
                                                                 <Route exact path="/expenses" component={Expenses} />
                                                                 <Route exact path="/merchantpayment" component={MerchantPayment} />

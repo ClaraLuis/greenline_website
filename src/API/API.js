@@ -1036,6 +1036,7 @@ const API = () => {
                         price
                         weight
                         createdAt
+
                         selectedOptions {
                             id
                             itemVariantId

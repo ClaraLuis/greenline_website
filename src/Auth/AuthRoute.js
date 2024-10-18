@@ -56,9 +56,9 @@ const AuthRoute = (props) => {
                 cookies.set('merchantId', requestLoginData?.data?.signIn?.user?.merchantId);
             }
             setloggedincontext(true);
-            // if (window.location.pathname == '/login') {
-            //     history.push('/users');
-            // }
+            if (window.location.pathname == '/login') {
+                history.push('/');
+            }
         } catch (error) {
             signOut(getAuth());
             const cookies = new Cookies();
