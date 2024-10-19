@@ -206,25 +206,29 @@ const CourierSheet = (props) => {
             setExpandedItems([...expandedItems, index]);
         }
     };
+
     useEffect(() => {
         var temp = {
             id: fetchCourierSheetQuery?.data?.CourierSheet?.id,
             orderCount: fetchCourierSheetQuery?.data?.CourierSheet?.orderCount,
-            orderTotal: 0,
+            orderTotal: new Decimal(0), // Start with Decimal for total
             orderCurrency: '',
             updateSheetOrders: [],
             updateSheetOrderstemp: [],
         };
-        var total = 0;
+        var total = new Decimal(0); // Initialize with Decimal
         var currency = '';
+
         fetchCourierSheetQuery?.data?.CourierSheet?.sheetOrders?.map((item, index) => {
-            total += parseFloat(item?.order?.price) + parseFloat(item?.order?.shippingPrice);
+            // Calculate total using Decimal for precision
+            total = total.plus(new Decimal(item?.order?.price || 0)).plus(new Decimal(item?.order?.shippingPrice || 0));
             currency = item?.order?.currency;
+
             temp.updateSheetOrderstemp.push({
                 sheetOrderId: item?.id,
                 expanded: type == 'admin' ? (item?.adminPass ? false : true) : false,
                 status: type == 'admin' ? (item?.adminPass ? 'adminAccepted' : 'adminRejected') : item?.financePass ? 'financeAccepted' : 'financeRejected',
-                shippingCollected: item?.shippingCollected == 'collected' ? true : false,
+                shippingCollected: item?.shippingCollected === 'collected',
                 description: '',
                 price: item?.order?.price,
                 shippingPrice: item?.order?.shippingPrice,
@@ -232,17 +236,19 @@ const CourierSheet = (props) => {
                 amountCollected: item?.amountCollected,
                 orderId: item?.order?.id,
             });
+
             if (!(item?.adminPass && type == 'admin') && !(item?.financePass && type == 'finance')) {
                 temp.updateSheetOrders.push({
                     sheetOrderId: item?.id,
                     status: type == 'admin' ? (item?.adminPass ? 'adminAccepted' : 'adminRejected') : item?.financePass ? 'financeAccepted' : 'financeRejected',
-                    shippingCollected: item?.shippingCollected == 'collected' ? true : false,
+                    shippingCollected: item?.shippingCollected === 'collected',
                     description: '',
                     orderId: item?.order?.id,
                 });
             }
         });
-        temp.orderTotal = total;
+
+        temp.orderTotal = total.toNumber(); // Convert total back to number for storing
         temp.orderCurrency = currency;
         temp.status = fetchCourierSheetQuery?.data?.CourierSheet?.status;
         temp.orderCount = fetchCourierSheetQuery?.data?.CourierSheet?.orderCount;
@@ -252,6 +258,7 @@ const CourierSheet = (props) => {
 
         setsubmitSheetPayload({ ...temp });
     }, [fetchCourierSheetQuery?.data]);
+
     useEffect(() => {
         const fetchData = async () => {
             if (sheetID) {
@@ -594,52 +601,52 @@ const CourierSheet = (props) => {
                                         </div>
                                     </div>
                                     {type == 'finance' && (
-                                        <div class="col-lg-12 p-3 mt-2">
-                                            <div class="row m-0 w-100 d-flex">
+                                        <div className="col-lg-12 p-3 mt-2">
+                                            <div className="row m-0 w-100 d-flex">
                                                 <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-3">
-                                                    <div class="row m-0 w-100">
-                                                        <div class="col-lg-12 p-0 allcentered text-center">
+                                                    <div className="row m-0 w-100">
+                                                        <div className="col-lg-12 p-0 allcentered text-center">
                                                             <span style={{ fontWeight: 400, fontSize: '11px' }}>Collected</span>
                                                         </div>
-                                                        <div class="col-lg-12 p-0 allcentered text-center">
+                                                        <div className="col-lg-12 p-0 allcentered text-center">
                                                             <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                {item?.amountCollected ? parseFloat(item?.amountCollected) : 0} {item?.order?.currency}
+                                                                {item?.amountCollected ? new Decimal(item?.amountCollected).toFixed(2) : '0.00'} {item?.order?.currency}
                                                             </span>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-3">
-                                                    <div class="row m-0 w-100">
-                                                        <div class="col-lg-12 p-0 allcentered text-center">
+                                                    <div className="row m-0 w-100">
+                                                        <div className="col-lg-12 p-0 allcentered text-center">
                                                             <span style={{ fontWeight: 400, fontSize: '11px' }}>Price</span>
                                                         </div>
-                                                        <div class="col-lg-12 p-0 allcentered text-center">
+                                                        <div className="col-lg-12 p-0 allcentered text-center">
                                                             <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                {parseFloat(item?.order?.price)} {item?.order?.currency}
+                                                                {new Decimal(item?.order?.price || 0).toFixed(2)} {item?.order?.currency}
                                                             </span>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-3">
-                                                    <div class="row m-0 w-100">
-                                                        <div class="col-lg-12 p-0 allcentered text-center">
+                                                    <div className="row m-0 w-100">
+                                                        <div className="col-lg-12 p-0 allcentered text-center">
                                                             <span style={{ fontWeight: 400, fontSize: '11px' }}>Shipping</span>
                                                         </div>
-                                                        <div class="col-lg-12 p-0 allcentered text-center">
+                                                        <div className="col-lg-12 p-0 allcentered text-center">
                                                             <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                {parseFloat(item?.order?.shippingPrice)} {item?.order?.currency}
+                                                                {new Decimal(item?.order?.shippingPrice || 0).toFixed(2)} {item?.order?.currency}
                                                             </span>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div style={{ fontWeight: 600, fontSize: '15px' }} className=" p-0 mb-2 allcentered col-lg-3">
-                                                    <div class="row m-0 w-100">
-                                                        <div class="col-lg-12 p-0 allcentered text-center">
+                                                <div style={{ fontWeight: 600, fontSize: '15px' }} className="p-0 mb-2 allcentered col-lg-3">
+                                                    <div className="row m-0 w-100">
+                                                        <div className="col-lg-12 p-0 allcentered text-center">
                                                             <span style={{ fontWeight: 400, fontSize: '11px' }}>Total</span>
                                                         </div>
-                                                        <div class="col-lg-12 p-0 allcentered text-center">
+                                                        <div className="col-lg-12 p-0 allcentered text-center">
                                                             <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                {parseFloat(item?.order?.price) + parseFloat(item?.order?.shippingPrice)} {item?.order?.currency}
+                                                                {new Decimal(item?.order?.price || 0).plus(new Decimal(item?.order?.shippingPrice || 0)).toFixed(2)} {item?.order?.currency}
                                                             </span>
                                                         </div>
                                                     </div>
@@ -647,6 +654,7 @@ const CourierSheet = (props) => {
                                             </div>
                                         </div>
                                     )}
+
                                     {previousOrder && (
                                         <>
                                             <div className={' col-lg-12 p-0'}>
@@ -752,52 +760,54 @@ const CourierSheet = (props) => {
                                                 </div>
                                             </div>
                                             {type == 'finance' && (
-                                                <div class="col-lg-12 p-3 mt-2">
-                                                    <div class="row m-0 w-100 d-flex">
+                                                <div className="col-lg-12 p-3 mt-2">
+                                                    <div className="row m-0 w-100 d-flex">
                                                         <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-3">
-                                                            <div class="row m-0 w-100">
-                                                                <div class="col-lg-12 p-0 allcentered text-center">
+                                                            <div className="row m-0 w-100">
+                                                                <div className="col-lg-12 p-0 allcentered text-center">
                                                                     <span style={{ fontWeight: 400, fontSize: '11px' }}>Collected</span>
                                                                 </div>
-                                                                <div class="col-lg-12 p-0 allcentered text-center">
+                                                                <div className="col-lg-12 p-0 allcentered text-center">
                                                                     <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                        {previousOrder?.amountCollected ? parseFloat(item?.amountCollected) : 0} {previousOrder?.order?.currency}
+                                                                        {previousOrder?.amountCollected ? new Decimal(previousOrder?.amountCollected).toFixed(2) : '0.00'}{' '}
+                                                                        {previousOrder?.order?.currency}
                                                                     </span>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-3">
-                                                            <div class="row m-0 w-100">
-                                                                <div class="col-lg-12 p-0 allcentered text-center">
+                                                            <div className="row m-0 w-100">
+                                                                <div className="col-lg-12 p-0 allcentered text-center">
                                                                     <span style={{ fontWeight: 400, fontSize: '11px' }}>Price</span>
                                                                 </div>
-                                                                <div class="col-lg-12 p-0 allcentered text-center">
+                                                                <div className="col-lg-12 p-0 allcentered text-center">
                                                                     <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                        {parseFloat(previousOrder?.order?.price)} {previousOrder?.order?.currency}
+                                                                        {new Decimal(previousOrder?.order?.price || 0).toFixed(2)} {previousOrder?.order?.currency}
                                                                     </span>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-3">
-                                                            <div class="row m-0 w-100">
-                                                                <div class="col-lg-12 p-0 allcentered text-center">
+                                                            <div className="row m-0 w-100">
+                                                                <div className="col-lg-12 p-0 allcentered text-center">
                                                                     <span style={{ fontWeight: 400, fontSize: '11px' }}>Shipping</span>
                                                                 </div>
-                                                                <div class="col-lg-12 p-0 allcentered text-center">
+                                                                <div className="col-lg-12 p-0 allcentered text-center">
                                                                     <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                        {parseFloat(previousOrder?.order?.shippingPrice)} {previousOrder?.order?.currency}
+                                                                        {new Decimal(previousOrder?.order?.shippingPrice || 0).toFixed(2)} {previousOrder?.order?.currency}
                                                                     </span>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div style={{ fontWeight: 600, fontSize: '15px' }} className=" p-0 mb-2 allcentered col-lg-3">
-                                                            <div class="row m-0 w-100">
-                                                                <div class="col-lg-12 p-0 allcentered text-center">
+                                                        <div style={{ fontWeight: 600, fontSize: '15px' }} className="p-0 mb-2 allcentered col-lg-3">
+                                                            <div className="row m-0 w-100">
+                                                                <div className="col-lg-12 p-0 allcentered text-center">
                                                                     <span style={{ fontWeight: 400, fontSize: '11px' }}>Total</span>
                                                                 </div>
-                                                                <div class="col-lg-12 p-0 allcentered text-center">
+                                                                <div className="col-lg-12 p-0 allcentered text-center">
                                                                     <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                        {parseFloat(previousOrder?.order?.price) + parseFloat(previousOrder?.order?.shippingPrice)} {previousOrder?.order?.currency}
+                                                                        {new Decimal(previousOrder?.order?.price || 0).plus(new Decimal(previousOrder?.order?.shippingPrice || 0)).toFixed(2)}{' '}
+                                                                        {previousOrder?.order?.currency}
                                                                     </span>
                                                                 </div>
                                                             </div>
@@ -822,16 +832,20 @@ const CourierSheet = (props) => {
                                                             )}
                                                             {item?.order?.orderItems?.map((subitem, subindex) => {
                                                                 return (
-                                                                    <div class={type == 'admin' ? 'col-lg-6 mb-2' : 'col-lg-12 p-0 mb-2'}>
-                                                                        <div style={{ border: '1px solid #eee', borderRadius: '0.25rem' }} class="row m-0 w-100 p-2 d-flex align-items-center">
+                                                                    <div className={type == 'admin' ? 'col-lg-6 mb-2' : 'col-lg-12 p-0 mb-2'} key={subindex}>
+                                                                        <div style={{ border: '1px solid #eee', borderRadius: '0.25rem' }} className="row m-0 w-100 p-2 d-flex align-items-center">
                                                                             {item?.order?.type == 'return' && (
-                                                                                <div style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }} className=" p-1 px-2 mr-1 allcentered">
-                                                                                    {subitem?.partialCount != null ? parseFloat(subitem.partialCount) : parseFloat(subitem.count)}
+                                                                                <div style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }} className="p-1 px-2 mr-1 allcentered">
+                                                                                    {subitem?.partialCount != null
+                                                                                        ? new Decimal(subitem.partialCount).toFixed(2)
+                                                                                        : new Decimal(subitem.count).toFixed(2)}
                                                                                 </div>
                                                                             )}
                                                                             {item?.order?.type != 'return' && (
-                                                                                <div style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }} className=" p-1 px-2 mr-1 allcentered">
-                                                                                    {subitem?.partialCount != null ? parseFloat(subitem.count) - parseFloat(subitem.partialCount) : 0}
+                                                                                <div style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }} className="p-1 px-2 mr-1 allcentered">
+                                                                                    {subitem?.partialCount != null
+                                                                                        ? new Decimal(subitem.count).minus(new Decimal(subitem.partialCount)).toFixed(2)
+                                                                                        : '0.00'}
                                                                                 </div>
                                                                             )}
 
@@ -848,33 +862,35 @@ const CourierSheet = (props) => {
                                                                                 </div>
                                                                             )}
 
-                                                                            <div class="col-lg-5 d-flex align-items-center">
+                                                                            <div className="col-lg-5 d-flex align-items-center">
                                                                                 <div className="row m-0 w-100">
-                                                                                    <div style={{ fontSize: '14px', fontWeight: 500 }} className={' col-lg-12 p-0 wordbreak wordbreak1'}>
+                                                                                    <div style={{ fontSize: '14px', fontWeight: 500 }} className={'col-lg-12 p-0 wordbreak wordbreak1'}>
                                                                                         {subitem?.info?.item?.name ?? '-'}
                                                                                     </div>
-                                                                                    <div style={{ fontSize: '12px' }} className={' col-lg-12 p-0 wordbreak wordbreak1'}>
+                                                                                    <div style={{ fontSize: '12px' }} className={'col-lg-12 p-0 wordbreak wordbreak1'}>
                                                                                         {subitem?.info?.name ?? '-'}
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                            <div class={type == 'admin' ? 'col-lg-4 ' : 'col-lg-6 '}>
-                                                                                <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
+                                                                            <div className={type == 'admin' ? 'col-lg-4' : 'col-lg-6'}>
+                                                                                <div className="row m-0 w-100 d-flex align-items-center justify-content-end">
                                                                                     {item?.order?.type != 'return' && (
-                                                                                        <div style={{ fontWeight: 700 }} class="mx-2">
-                                                                                            {parseFloat(
-                                                                                                (subitem?.partialCount != null ? parseFloat(subitem.count) - parseFloat(subitem.partialCount) : 0) *
-                                                                                                    parseFloat(subitem?.unitPrice),
-                                                                                            )}{' '}
+                                                                                        <div style={{ fontWeight: 700 }} className="mx-2">
+                                                                                            {new Decimal(
+                                                                                                subitem?.partialCount != null
+                                                                                                    ? new Decimal(subitem.count).minus(new Decimal(subitem.partialCount))
+                                                                                                    : new Decimal(0),
+                                                                                            )
+                                                                                                .times(new Decimal(subitem?.unitPrice))
+                                                                                                .toFixed(2)}{' '}
                                                                                             {item?.info?.currency}
                                                                                         </div>
                                                                                     )}
                                                                                     {item?.order?.type == 'return' && (
-                                                                                        <div style={{ fontWeight: 700 }} class="mx-2">
-                                                                                            {parseFloat(
-                                                                                                (subitem?.partialCount != null ? parseFloat(subitem.partialCount) : parseFloat(subitem.count)) *
-                                                                                                    parseFloat(subitem?.unitPrice),
-                                                                                            )}{' '}
+                                                                                        <div style={{ fontWeight: 700 }} className="mx-2">
+                                                                                            {new Decimal(subitem?.partialCount != null ? new Decimal(subitem.partialCount) : new Decimal(subitem.count))
+                                                                                                .times(new Decimal(subitem?.unitPrice))
+                                                                                                .toFixed(2)}{' '}
                                                                                             {item?.info?.currency}
                                                                                         </div>
                                                                                     )}
@@ -884,6 +900,7 @@ const CourierSheet = (props) => {
                                                                     </div>
                                                                 );
                                                             })}
+
                                                             {previousOrder && (
                                                                 <>
                                                                     <hr className="mt-2 mb-3" />
@@ -896,25 +913,29 @@ const CourierSheet = (props) => {
                                                                             )}
                                                                             {previousOrder?.order?.orderItems?.map((subitem, subindex) => {
                                                                                 return (
-                                                                                    <div class={type == 'admin' ? 'col-lg-6 mb-2' : 'col-lg-12 p-0 mb-2'}>
+                                                                                    <div className={type == 'admin' ? 'col-lg-6 mb-2' : 'col-lg-12 p-0 mb-2'} key={subindex}>
                                                                                         <div
                                                                                             style={{ border: '1px solid #eee', borderRadius: '0.25rem' }}
-                                                                                            class="row m-0 w-100 p-2 d-flex align-items-center"
+                                                                                            className="row m-0 w-100 p-2 d-flex align-items-center"
                                                                                         >
                                                                                             {previousOrder?.order?.type == 'return' && (
                                                                                                 <div
                                                                                                     style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }}
-                                                                                                    className=" p-1 px-2 mr-1 allcentered"
+                                                                                                    className="p-1 px-2 mr-1 allcentered"
                                                                                                 >
-                                                                                                    {subitem?.partialCount != null ? parseFloat(subitem.partialCount) : parseFloat(subitem.count)}
+                                                                                                    {subitem?.partialCount != null
+                                                                                                        ? new Decimal(subitem.partialCount).toFixed(2)
+                                                                                                        : new Decimal(subitem.count).toFixed(2)}
                                                                                                 </div>
                                                                                             )}
                                                                                             {previousOrder?.order?.type != 'return' && (
                                                                                                 <div
                                                                                                     style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }}
-                                                                                                    className=" p-1 px-2 mr-1 allcentered"
+                                                                                                    className="p-1 px-2 mr-1 allcentered"
                                                                                                 >
-                                                                                                    {subitem?.partialCount != null ? parseFloat(subitem.count) - parseFloat(subitem.partialCount) : 0}
+                                                                                                    {subitem?.partialCount != null
+                                                                                                        ? new Decimal(subitem.count).minus(new Decimal(subitem.partialCount)).toFixed(2)
+                                                                                                        : '0.00'}
                                                                                                 </div>
                                                                                             )}
 
@@ -931,38 +952,39 @@ const CourierSheet = (props) => {
                                                                                                 </div>
                                                                                             )}
 
-                                                                                            <div class="col-lg-5 d-flex align-items-center">
+                                                                                            <div className="col-lg-5 d-flex align-items-center">
                                                                                                 <div className="row m-0 w-100">
-                                                                                                    <div
-                                                                                                        style={{ fontSize: '14px', fontWeight: 500 }}
-                                                                                                        className={' col-lg-12 p-0 wordbreak wordbreak1'}
-                                                                                                    >
+                                                                                                    <div style={{ fontSize: '14px', fontWeight: 500 }} className={'col-lg-12 p-0 wordbreak wordbreak1'}>
                                                                                                         {subitem?.info?.item?.name ?? '-'}
                                                                                                     </div>
-                                                                                                    <div style={{ fontSize: '12px' }} className={' col-lg-12 p-0 wordbreak wordbreak1'}>
+                                                                                                    <div style={{ fontSize: '12px' }} className={'col-lg-12 p-0 wordbreak wordbreak1'}>
                                                                                                         {subitem?.info?.name ?? '-'}
                                                                                                     </div>
                                                                                                 </div>
                                                                                             </div>
-                                                                                            <div class={type == 'admin' ? 'col-lg-4 ' : 'col-lg-6 '}>
-                                                                                                <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
+                                                                                            <div className={type == 'admin' ? 'col-lg-4' : 'col-lg-6'}>
+                                                                                                <div className="row m-0 w-100 d-flex align-items-center justify-content-end">
                                                                                                     {previousOrder?.order?.type != 'return' && (
-                                                                                                        <div style={{ fontWeight: 700 }} class="mx-2">
-                                                                                                            {parseFloat(
-                                                                                                                (subitem?.partialCount != null
-                                                                                                                    ? parseFloat(subitem.count) - parseFloat(subitem.partialCount)
-                                                                                                                    : 0) * parseFloat(subitem?.unitPrice),
-                                                                                                            )}{' '}
+                                                                                                        <div style={{ fontWeight: 700 }} className="mx-2">
+                                                                                                            {new Decimal(
+                                                                                                                subitem?.partialCount != null
+                                                                                                                    ? new Decimal(subitem.count).minus(new Decimal(subitem.partialCount))
+                                                                                                                    : new Decimal(0),
+                                                                                                            )
+                                                                                                                .times(new Decimal(subitem?.unitPrice))
+                                                                                                                .toFixed(2)}{' '}
                                                                                                             {previousOrder?.info?.currency}
                                                                                                         </div>
                                                                                                     )}
                                                                                                     {previousOrder?.order?.type == 'return' && (
-                                                                                                        <div style={{ fontWeight: 700 }} class="mx-2">
-                                                                                                            {parseFloat(
-                                                                                                                (subitem?.partialCount != null
-                                                                                                                    ? parseFloat(subitem.partialCount)
-                                                                                                                    : parseFloat(subitem.count)) * parseFloat(subitem?.unitPrice),
-                                                                                                            )}{' '}
+                                                                                                        <div style={{ fontWeight: 700 }} className="mx-2">
+                                                                                                            {new Decimal(
+                                                                                                                subitem?.partialCount != null
+                                                                                                                    ? new Decimal(subitem.partialCount)
+                                                                                                                    : new Decimal(subitem.count),
+                                                                                                            )
+                                                                                                                .times(new Decimal(subitem?.unitPrice))
+                                                                                                                .toFixed(2)}{' '}
                                                                                                             {previousOrder?.info?.currency}
                                                                                                         </div>
                                                                                                     )}
@@ -1017,7 +1039,7 @@ const CourierSheet = (props) => {
                                                 </div>
                                                 {type == 'admin' && (
                                                     <div className="col-lg-12 p-0 d-flex justify-content-end mb-2 px-3" style={{ fontWeight: 600, fontSize: '15px' }}>
-                                                        Total: {parseFloat(item?.order?.price) + parseFloat(item?.order?.shippingPrice)} {item?.order?.currency}
+                                                        Total: {new Decimal(item?.order?.price ?? 0).plus(new Decimal(item?.order?.shippingPrice ?? 0)).toFixed(2)} {item?.order?.currency}
                                                     </div>
                                                 )}
                                             </div>
@@ -1113,8 +1135,9 @@ const CourierSheet = (props) => {
                                         <span class="px-2" style={{ borderInlineStart: '1px solid rgba(238, 238, 238, 0.6)' }}>
                                             {submitSheetPayload?.updateSheetOrderstemp
                                                 ?.filter((item) => item.status == 'adminAccepted' || item.status == 'financeAccepted')
-                                                .map((e) => parseFloat(e?.amountCollected ?? '0') + (e?.shippingCollected ? parseFloat(e?.shippingPrice ?? '0') : 0))
-                                                .reduce((sum, current) => sum + current, 0)}{' '}
+                                                .map((e) => new Decimal(e?.amountCollected ?? '0').plus(e?.shippingCollected ? new Decimal(e?.shippingPrice ?? '0') : 0))
+                                                .reduce((sum, current) => sum.plus(current), new Decimal(0))
+                                                .toFixed(2)}{' '}
                                             {submitSheetPayload?.orderCurrency}
                                         </span>
                                     )}
@@ -1323,8 +1346,8 @@ const CourierSheet = (props) => {
                                                                         <div className="row m-0 w-100 d-flex align-items-center justify-content-end">
                                                                             <div style={{ fontWeight: 700 }} className="mx-2">
                                                                                 {statuspayload?.fullReturn
-                                                                                    ? parseFloat(subitem?.count) * parseFloat(subitem?.unitPrice)
-                                                                                    : parseFloat(subitem.unitPrice) * parseFloat(partialItem?.partialCount ?? 0)}{' '}
+                                                                                    ? new Decimal(subitem?.count).mul(new Decimal(subitem?.unitPrice))
+                                                                                    : new Decimal(subitem?.unitPrice).mul(new Decimal(partialItem?.partialCount ?? 0))}{' '}
                                                                                 {statuspayload?.info?.currency}
                                                                             </div>
                                                                         </div>
@@ -1344,12 +1367,12 @@ const CourierSheet = (props) => {
                                                                                     }}
                                                                                     className="p-1 px-2 mr-1 allcentered"
                                                                                 >
-                                                                                    {parseFloat(subitem.count)}
+                                                                                    {new Decimal(subitem.count).toFixed(2)}
                                                                                 </div>
                                                                             )}
                                                                             {!statuspayload?.fullReturn && (
                                                                                 <>
-                                                                                    {Array.from({ length: parseFloat(subitem.count) + 1 }, (_, i) => (
+                                                                                    {Array.from({ length: new Decimal(subitem.count).plus(1).toNumber() }, (_, i) => (
                                                                                         <div
                                                                                             key={i}
                                                                                             onClick={() => {
@@ -1482,12 +1505,12 @@ const CourierSheet = (props) => {
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class={'col-lg-5 '}>
+                                                        <div class={'col-lg-5'}>
                                                             <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
                                                                 <div style={{ fontWeight: 700 }} class="mx-2">
                                                                     {statuspayload?.fullDelivery
-                                                                        ? parseFloat(subitem?.count) * parseFloat(subitem?.unitPrice)
-                                                                        : parseFloat(subitem.unitPrice) * parseFloat(partialItem?.partialCount)}{' '}
+                                                                        ? new Decimal(subitem?.count).times(new Decimal(subitem?.unitPrice)).toFixed(2)
+                                                                        : new Decimal(subitem.unitPrice).times(new Decimal(partialItem?.partialCount ?? 0)).toFixed(2)}{' '}
                                                                     {statuspayload?.info?.currency}
                                                                 </div>
                                                             </div>
@@ -1505,19 +1528,24 @@ const CourierSheet = (props) => {
                                                                             color: 'white',
                                                                             width: '35px',
                                                                         }}
-                                                                        className=" p-1 px-2 mr-1 allcentered"
+                                                                        className="p-1 px-2 mr-1 allcentered"
                                                                     >
-                                                                        {parseFloat(subitem.count)}
+                                                                        {new Decimal(subitem.count).toFixed(2)} {/* Using Decimal here */}
                                                                     </div>
                                                                 )}
                                                                 {!statuspayload?.fullDelivery && (
                                                                     <>
-                                                                        {Array.from({ length: parseFloat(subitem.count) + 1 }, (_, i) => (
+                                                                        {Array.from({ length: new Decimal(subitem.count).plus(1).toNumber() }, (_, i) => (
                                                                             <div
                                                                                 onClick={() => {
-                                                                                    var partialItemsTemp = [...statuspayload?.partialItems] ?? [];
-                                                                                    const existingItemIndex = partialItemsTemp?.findIndex((i) => i.id === subitem?.id);
-                                                                                    partialItemsTemp[existingItemIndex].partialCount = i;
+                                                                                    var partialItemsTemp = [...(statuspayload?.partialItems || [])]; // Use an empty array if partialItems is undefined
+                                                                                    const existingItemIndex = partialItemsTemp.findIndex((item) => item.id === subitem?.id);
+
+                                                                                    // Only update if the existing item is found
+                                                                                    if (existingItemIndex !== -1) {
+                                                                                        partialItemsTemp[existingItemIndex].partialCount = i;
+                                                                                    }
+
                                                                                     setstatuspayload({ ...statuspayload, partialItems: partialItemsTemp });
                                                                                 }}
                                                                                 key={i}
@@ -1525,8 +1553,8 @@ const CourierSheet = (props) => {
                                                                                     border: '1px solid #eee',
                                                                                     borderRadius: '8px',
                                                                                     fontWeight: 700,
-                                                                                    background: partialItem.partialCount == i ? 'var(--primary)' : '',
-                                                                                    color: partialItem.partialCount == i ? 'white' : '',
+                                                                                    background: partialItem.partialCount === i ? 'var(--primary)' : '',
+                                                                                    color: partialItem.partialCount === i ? 'white' : '',
                                                                                     width: '35px',
                                                                                     cursor: 'pointer',
                                                                                     transition: 'all 0.4s',
@@ -1659,8 +1687,8 @@ const CourierSheet = (props) => {
                                                                         <div className="row m-0 w-100 d-flex align-items-center justify-content-end">
                                                                             <div style={{ fontWeight: 700 }} className="mx-2">
                                                                                 {statuspayload?.fullReturn
-                                                                                    ? parseFloat(subitem?.count) * parseFloat(subitem?.unitPrice)
-                                                                                    : parseFloat(subitem.unitPrice) * parseFloat(partialItem?.partialCount ?? 0)}{' '}
+                                                                                    ? new Decimal(subitem?.count).times(new Decimal(subitem?.unitPrice)).toFixed(2) // Using Decimal here
+                                                                                    : new Decimal(subitem.unitPrice).times(new Decimal(partialItem?.partialCount ?? 0)).toFixed(2)}{' '}
                                                                                 {statuspayload?.info?.currency}
                                                                             </div>
                                                                         </div>
@@ -1680,44 +1708,50 @@ const CourierSheet = (props) => {
                                                                                     }}
                                                                                     className="p-1 px-2 mr-1 allcentered"
                                                                                 >
-                                                                                    {parseFloat(subitem.count)}
+                                                                                    {new Decimal(subitem.count).toFixed(2)} {/* Using Decimal for full return */}
                                                                                 </div>
                                                                             )}
                                                                             {!statuspayload?.fullReturn && (
                                                                                 <>
-                                                                                    {Array.from({ length: parseFloat(subitem.count) + 1 }, (_, i) => (
-                                                                                        <div
-                                                                                            key={i}
-                                                                                            onClick={() => {
-                                                                                                const partialItemsReturnTemp = [...(statuspayload?.partialItemsReturn || [])];
-                                                                                                const existingItemIndex = partialItemsReturnTemp?.findIndex((item) => item.id === subitem?.id);
+                                                                                    {Array.from(
+                                                                                        { length: new Decimal(subitem.count).plus(1).toNumber() },
+                                                                                        (
+                                                                                            _,
+                                                                                            i, // Using Decimal for the count
+                                                                                        ) => (
+                                                                                            <div
+                                                                                                key={i}
+                                                                                                onClick={() => {
+                                                                                                    const partialItemsReturnTemp = [...(statuspayload?.partialItemsReturn || [])];
+                                                                                                    const existingItemIndex = partialItemsReturnTemp?.findIndex((item) => item.id === subitem?.id);
 
-                                                                                                if (existingItemIndex !== -1) {
-                                                                                                    partialItemsReturnTemp[existingItemIndex].partialCount = i;
-                                                                                                } else {
-                                                                                                    partialItemsReturnTemp.push({ id: subitem?.id, partialCount: i });
-                                                                                                }
+                                                                                                    if (existingItemIndex !== -1) {
+                                                                                                        partialItemsReturnTemp[existingItemIndex].partialCount = i;
+                                                                                                    } else {
+                                                                                                        partialItemsReturnTemp.push({ id: subitem?.id, partialCount: i });
+                                                                                                    }
 
-                                                                                                setstatuspayload((prev) => ({
-                                                                                                    ...prev,
-                                                                                                    partialItemsReturn: partialItemsReturnTemp,
-                                                                                                }));
-                                                                                            }}
-                                                                                            style={{
-                                                                                                border: '1px solid #eee',
-                                                                                                borderRadius: '8px',
-                                                                                                fontWeight: 700,
-                                                                                                background: partialItem?.partialCount === i ? 'var(--primary)' : '',
-                                                                                                color: partialItem?.partialCount === i ? 'white' : '',
-                                                                                                width: '35px',
-                                                                                                cursor: 'pointer',
-                                                                                                transition: 'all 0.4s',
-                                                                                            }}
-                                                                                            className="p-1 px-2 mr-1 allcentered"
-                                                                                        >
-                                                                                            {i}
-                                                                                        </div>
-                                                                                    ))}
+                                                                                                    setstatuspayload((prev) => ({
+                                                                                                        ...prev,
+                                                                                                        partialItemsReturn: partialItemsReturnTemp,
+                                                                                                    }));
+                                                                                                }}
+                                                                                                style={{
+                                                                                                    border: '1px solid #eee',
+                                                                                                    borderRadius: '8px',
+                                                                                                    fontWeight: 700,
+                                                                                                    background: partialItem?.partialCount === i ? 'var(--primary)' : '',
+                                                                                                    color: partialItem?.partialCount === i ? 'white' : '',
+                                                                                                    width: '35px',
+                                                                                                    cursor: 'pointer',
+                                                                                                    transition: 'all 0.4s',
+                                                                                                }}
+                                                                                                className="p-1 px-2 mr-1 allcentered"
+                                                                                            >
+                                                                                                {i}
+                                                                                            </div>
+                                                                                        ),
+                                                                                    )}
                                                                                 </>
                                                                             )}
                                                                         </div>

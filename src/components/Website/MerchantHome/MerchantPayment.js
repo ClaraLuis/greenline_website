@@ -8,6 +8,7 @@ import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
 import { AiOutlineClose } from 'react-icons/ai';
+import Decimal from 'decimal.js';
 
 import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 import { Modal } from 'react-bootstrap';
@@ -73,22 +74,22 @@ const MerchantPayment = (props) => {
     }, []);
 
     useEffect(() => {
-        var totalTemp = 0;
-        if (selectedArray?.length == 0) {
-            fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data?.map((item, index) => {
-                totalTemp += parseFloat(item?.amount);
+        let totalTemp = new Decimal(0); // Initialize totalTemp as a Decimal
+
+        if (selectedArray?.length === 0) {
+            fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data?.forEach((item) => {
+                totalTemp = totalTemp.plus(new Decimal(item?.amount || 0)); // Use Decimal for summing amounts
             });
         } else {
             fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data.forEach((item) => {
-                if (selectedArray.length === 0 || selectedArray.includes(item.id)) {
-                    totalTemp += parseFloat(item?.amount);
+                if (selectedArray.includes(item.id)) {
+                    totalTemp = totalTemp.plus(new Decimal(item?.amount || 0)); // Use Decimal for summing amounts
                 }
             });
         }
 
-        setTotal(totalTemp);
+        setTotal(totalTemp.toNumber()); // Convert Decimal to number before setting state
     }, [fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data, selectedArray]);
-
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">

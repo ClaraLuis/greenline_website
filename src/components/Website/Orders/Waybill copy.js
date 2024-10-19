@@ -4,6 +4,8 @@ import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 import logo from '../Generalfiles/images/logo.png';
 import Barcode from 'react-barcode';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext';
+import Decimal from 'decimal.js';
+
 const Waybill = ({ order }) => {
     const { dateformatter } = useContext(Contexthandlerscontext);
     return (
@@ -115,41 +117,42 @@ const Waybill = ({ order }) => {
                                 );
                             })}
                         </div>
-                        <div class="row allcentered w-100 m-0 p-1">
-                            <div class="col-lg-12 p-0 mt-2">
-                                <div class="row m-0 w-100 d-flex">
+
+                        <div className="row allcentered w-100 m-0 p-1">
+                            <div className="col-lg-12 p-0 mt-2">
+                                <div className="row m-0 w-100 d-flex">
                                     <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4 col-md-4">
-                                        <div class="row m-0 w-100">
-                                            <div class="col-lg-12 p-0 allcentered text-center">
+                                        <div className="row m-0 w-100">
+                                            <div className="col-lg-12 p-0 allcentered text-center">
                                                 <span style={{ fontWeight: 400, fontSize: '11px' }}>Price</span>
                                             </div>
-                                            <div class="col-lg-12 p-0 allcentered text-center">
+                                            <div className="col-lg-12 p-0 allcentered text-center">
                                                 <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                    {parseFloat(order?.price)} {order?.currency}
+                                                    {new Decimal(order?.price || 0).toFixed(2)} {order?.currency}
                                                 </span>
                                             </div>
                                         </div>
                                     </div>
                                     <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4 col-md-4">
-                                        <div class="row m-0 w-100">
-                                            <div class="col-lg-12 p-0 allcentered text-center">
+                                        <div className="row m-0 w-100">
+                                            <div className="col-lg-12 p-0 allcentered text-center">
                                                 <span style={{ fontWeight: 400, fontSize: '11px' }}>Shipping</span>
                                             </div>
-                                            <div class="col-lg-12 p-0 allcentered text-center">
+                                            <div className="col-lg-12 p-0 allcentered text-center">
                                                 <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                    {parseFloat(order?.shippingPrice)} {order?.currency}
+                                                    {new Decimal(order?.shippingPrice || 0).toFixed(2)} {order?.currency}
                                                 </span>
                                             </div>
                                         </div>
                                     </div>
-                                    <div style={{ fontWeight: 600, fontSize: '15px' }} className=" p-0 mb-2 allcentered col-lg-4 col-md-4">
-                                        <div class="row m-0 w-100">
-                                            <div class="col-lg-12 p-0 allcentered text-center">
+                                    <div style={{ fontWeight: 600, fontSize: '15px' }} className="p-0 mb-2 allcentered col-lg-4 col-md-4">
+                                        <div className="row m-0 w-100">
+                                            <div className="col-lg-12 p-0 allcentered text-center">
                                                 <span style={{ fontWeight: 400, fontSize: '11px' }}>Total</span>
                                             </div>
-                                            <div class="col-lg-12 p-0 allcentered text-center">
+                                            <div className="col-lg-12 p-0 allcentered text-center">
                                                 <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                    {parseFloat(order?.price) + parseFloat(order?.shippingPrice)} {order?.currency}
+                                                    {new Decimal(order?.price || 0).plus(new Decimal(order?.shippingPrice || 0)).toFixed(2)} {order?.currency}
                                                 </span>
                                             </div>
                                         </div>

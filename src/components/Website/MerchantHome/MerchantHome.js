@@ -19,7 +19,7 @@ import { DateRangePicker } from 'rsuite';
 import MultiSelect from '../../MultiSelect.js';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import { FaLayerGroup } from 'react-icons/fa';
-
+import Decimal from 'decimal.js';
 const { ValueContainer, Placeholder } = components;
 
 const MerchantHome = (props) => {
@@ -83,62 +83,62 @@ const MerchantHome = (props) => {
     const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
 
     useEffect(() => {
-        var temp = [];
-        var tempvalues = [{ name: props?.type, data: [] }];
-        var tempvalues1 = [];
-        var total = 0;
+        const temp = [];
+        const tempvalues = [{ name: props?.type, data: [] }];
+        let tempvalues1 = [];
+        let total = new Decimal(0); // Initialize total as a Decimal
 
         if (filterordersDeliverableSummary?.merchantIds?.length) {
             tempvalues1 = undefined;
-            {
-                Object.keys(ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data || {}).map((merchantId, index) => {
-                    const payments = ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data[merchantId];
-                    tempvalues = [];
-                    let groupedPayments = {};
-                    payments.forEach((payment) => {
-                        const { merchantId, status, total } = payment;
 
-                        if (!groupedPayments[merchantId]) {
-                            groupedPayments[merchantId] = {};
-                        }
+            Object.keys(ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data || {}).forEach((merchantId) => {
+                const payments = ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data[merchantId];
+                const groupedPayments = {};
 
-                        if (!groupedPayments[merchantId][status]) {
-                            groupedPayments[merchantId][status] = 0;
-                        }
+                payments.forEach((payment) => {
+                    const { merchantId, status, total: paymentTotal } = payment;
 
-                        groupedPayments[merchantId][status] += parseFloat(total);
+                    if (!groupedPayments[merchantId]) {
+                        groupedPayments[merchantId] = {};
+                    }
 
-                        if (!temp.includes(status)) {
-                            temp.push(status); // Track all unique statuses
-                        }
-                    });
+                    if (!groupedPayments[merchantId][status]) {
+                        groupedPayments[merchantId][status] = new Decimal(0); // Use Decimal for accurate counting
+                    }
 
-                    // Prepare data for grouped bar chart
-                    Object.keys(groupedPayments).forEach((merchantId) => {
-                        let merchantData = [];
-                        temp.forEach((status) => {
-                            merchantData.push(groupedPayments[merchantId][status] || 0);
-                        });
+                    groupedPayments[merchantId][status] = groupedPayments[merchantId][status].plus(new Decimal(paymentTotal)); // Accumulate totals
 
-                        tempvalues.push({ name: `Merchant ${merchantId}`, data: merchantData });
-                    });
+                    if (!temp.includes(status)) {
+                        temp.push(status); // Track all unique statuses
+                    }
                 });
-            }
+
+                // Prepare data for grouped bar chart
+                Object.keys(groupedPayments).forEach((merchantId) => {
+                    const merchantData = [];
+                    temp.forEach((status) => {
+                        merchantData.push(groupedPayments[merchantId][status].toNumber() || 0); // Convert Decimal to number
+                    });
+
+                    tempvalues.push({ name: `Merchant ${merchantId}`, data: merchantData });
+                });
+            });
         } else {
-            ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data?.map((item, index) => {
+            ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data.forEach((item) => {
                 temp.push(item.status);
-                tempvalues[0]?.data.push(parseFloat(item?.total));
+                tempvalues[0].data.push(new Decimal(item?.total || 0).toNumber()); // Convert Decimal to number
             });
 
-            ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data?.map((item, index) => {
-                total += parseFloat(item?.count);
+            ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data.forEach((item) => {
+                total = total.plus(new Decimal(item?.count || 0)); // Accumulate total with Decimal
             });
-            ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data?.map((subitem, suindex) => {
-                tempvalues1.push(parseFloat((subitem?.count / total) * 100));
+
+            ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data.forEach((subitem) => {
+                tempvalues1.push(new Decimal(subitem?.count || 0).div(total).times(100).toNumber()); // Calculate percentage
             });
         }
 
-        setbarchartaxis({ xAxis: temp, yAxis: tempvalues, yAxis1: tempvalues1, total: total });
+        setbarchartaxis({ xAxis: temp, yAxis: tempvalues, yAxis1: tempvalues1, total: total.toNumber() }); // Set total as a number
     }, [ordersDeliverableSummaryQuery?.data]);
 
     const [chartData, setChartData] = useState([]);
@@ -146,8 +146,8 @@ const MerchantHome = (props) => {
 
     useEffect(() => {
         if (graphOrdersQuery?.data) {
-            let tempCategories = [];
-            let seriesData = {
+            const tempCategories = [];
+            const seriesData = {
                 Return: [],
                 Delivery: [],
                 Exchange: [],
@@ -160,8 +160,8 @@ const MerchantHome = (props) => {
                         tempCategories.push(dateFormatted);
                     }
 
-                    const totalValue = parseFloat(item.total);
-                    seriesData[type].push(totalValue);
+                    const totalValue = new Decimal(item.total || 0); // Use Decimal for total value
+                    seriesData[type].push(totalValue.toNumber()); // Convert Decimal to number
                 });
             });
 

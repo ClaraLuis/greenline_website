@@ -32,6 +32,7 @@ import Form from '../../Form.js';
 import DynamicInputfield from '../DynamicInputfield/DynamicInputfield.js';
 import Inputfield from '../../Inputfield.js';
 import WaybillPrint from './WaybillPrint.js';
+import Decimal from 'decimal.js';
 
 const OrderInfo = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -776,34 +777,34 @@ const OrderInfo = (props) => {
                                                                             </div>
                                                                         )}
                                                                     </div>
-                                                                    <div class="col-lg-5">
-                                                                        <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
-                                                                            <div class="mr-2">
-                                                                                {orderItem?.partial && (
-                                                                                    <div style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }} class="row m-0 w-100 p-1 px-3">
-                                                                                        {parseFloat(parseFloat(orderItem?.partialCount) * parseFloat(orderItem?.unitPrice)).toFixed(2)}{' '}
+
+                                                                    <div className="col-lg-5">
+                                                                        <div className="row m-0 w-100 d-flex align-items-center justify-content-end">
+                                                                            <div className="mr-2">
+                                                                                {orderItem?.partial ? (
+                                                                                    <div style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }} className="row m-0 w-100 p-1 px-3">
+                                                                                        {new Decimal(orderItem?.partialCount).times(new Decimal(orderItem?.unitPrice)).toFixed(2)}{' '}
                                                                                         {chosenOrderContext?.currency}
                                                                                     </div>
-                                                                                )}
-                                                                                {!orderItem?.partial && (
-                                                                                    <div style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }} class="row m-0 w-100 p-1 px-3">
-                                                                                        {parseFloat(parseFloat(orderItem?.count) * parseFloat(orderItem?.unitPrice)).toFixed(2)}{' '}
+                                                                                ) : (
+                                                                                    <div style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }} className="row m-0 w-100 p-1 px-3">
+                                                                                        {new Decimal(orderItem?.count).times(new Decimal(orderItem?.unitPrice)).toFixed(2)}{' '}
                                                                                         {chosenOrderContext?.currency}
                                                                                     </div>
                                                                                 )}
                                                                             </div>
-                                                                            {queryParameters?.get('type') == 'inventory' && (
+                                                                            {queryParameters?.get('type') === 'inventory' && (
                                                                                 <div
                                                                                     onClick={() => {
-                                                                                        if (orderItem?.countInInventory != 0) {
+                                                                                        if (orderItem?.countInInventory !== 0) {
+                                                                                            // Uncomment if you need to debug the inventory
                                                                                             // alert(JSON.stringify(orderItem?.inventory));
-
                                                                                             setinventoryModal({ open: true, items: organizedData });
                                                                                         }
                                                                                     }}
                                                                                     style={{ width: '30px', height: '30px' }}
-                                                                                    class={
-                                                                                        orderItem?.countInInventory == 0 ? 'allcentered iconhover text-danger' : 'allcentered iconhover text-success'
+                                                                                    className={
+                                                                                        orderItem?.countInInventory === 0 ? 'allcentered iconhover text-danger' : 'allcentered iconhover text-success'
                                                                                     }
                                                                                 >
                                                                                     <MdOutlineInventory2 size={20} />
@@ -811,13 +812,12 @@ const OrderInfo = (props) => {
                                                                             )}
                                                                             <div
                                                                                 style={{ width: '30px', height: '30px' }}
-                                                                                class="iconhover allcentered"
+                                                                                className="iconhover allcentered"
                                                                                 onClick={async () => {
                                                                                     if (!buttonLoading) {
-                                                                                        var temp = [...orderItemIds];
-                                                                                        temp.push(orderItem.id);
-                                                                                        await setorderItemIds([...temp]);
-                                                                                        if (chosenOrderContext?.originalPrice == false) {
+                                                                                        const temp = [...orderItemIds, orderItem.id];
+                                                                                        await setorderItemIds(temp);
+                                                                                        if (!chosenOrderContext?.originalPrice) {
                                                                                             setorderLogsModal({ open: true, type: 'price', func: 'removeitems' });
                                                                                             return;
                                                                                         }
@@ -842,39 +842,40 @@ const OrderInfo = (props) => {
                                             <div style={{ cursor: props?.clickable ? 'pointer' : '' }} className="col-lg-12 p-0 allcentered">
                                                 <div class={' row m-0 w-100 allcentered '}>
                                                     <div class="col-lg-12 p-0 mt-2">
-                                                        <div class="row m-0 w-100 d-flex">
+                                                        <div className="row m-0 w-100 d-flex">
                                                             <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4">
-                                                                <div class="row m-0 w-100">
-                                                                    <div class="col-lg-12 p-0 allcentered text-center">
+                                                                <div className="row m-0 w-100">
+                                                                    <div className="col-lg-12 p-0 allcentered text-center">
                                                                         <span style={{ fontWeight: 400, fontSize: '11px' }}>Price</span>
                                                                     </div>
-                                                                    <div class="col-lg-12 p-0 allcentered text-center">
+                                                                    <div className="col-lg-12 p-0 allcentered text-center">
                                                                         <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                            {parseFloat(chosenOrderContext?.price)} {chosenOrderContext?.currency}
+                                                                            {new Decimal(chosenOrderContext?.price).toFixed(2)} {chosenOrderContext?.currency}
                                                                         </span>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                             <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4">
-                                                                <div class="row m-0 w-100">
-                                                                    <div class="col-lg-12 p-0 allcentered text-center">
+                                                                <div className="row m-0 w-100">
+                                                                    <div className="col-lg-12 p-0 allcentered text-center">
                                                                         <span style={{ fontWeight: 400, fontSize: '11px' }}>Shipping</span>
                                                                     </div>
-                                                                    <div class="col-lg-12 p-0 allcentered text-center">
+                                                                    <div className="col-lg-12 p-0 allcentered text-center">
                                                                         <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                            {parseFloat(chosenOrderContext?.shippingPrice)} {chosenOrderContext?.currency}
+                                                                            {new Decimal(chosenOrderContext?.shippingPrice).toFixed(2)} {chosenOrderContext?.currency}
                                                                         </span>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div style={{ fontWeight: 600, fontSize: '15px' }} className=" p-0 mb-2 allcentered col-lg-4">
-                                                                <div class="row m-0 w-100">
-                                                                    <div class="col-lg-12 p-0 allcentered text-center">
+                                                            <div style={{ fontWeight: 600, fontSize: '15px' }} className="p-0 mb-2 allcentered col-lg-4">
+                                                                <div className="row m-0 w-100">
+                                                                    <div className="col-lg-12 p-0 allcentered text-center">
                                                                         <span style={{ fontWeight: 400, fontSize: '11px' }}>Total</span>
                                                                     </div>
-                                                                    <div class="col-lg-12 p-0 allcentered text-center">
+                                                                    <div className="col-lg-12 p-0 allcentered text-center">
                                                                         <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                            {parseFloat(chosenOrderContext?.price) + parseFloat(chosenOrderContext?.shippingPrice)} {chosenOrderContext?.currency}
+                                                                            {new Decimal(chosenOrderContext?.price || 0).plus(new Decimal(chosenOrderContext?.shippingPrice || 0)).toFixed(2)}{' '}
+                                                                            {chosenOrderContext?.currency}
                                                                         </span>
                                                                     </div>
                                                                 </div>

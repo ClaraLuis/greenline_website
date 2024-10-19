@@ -64,6 +64,7 @@ import RentPage from './MerchantHome/RentPage.js';
 import WebToken from './WebToken/WebToken.js';
 import { TbApi, TbLogout } from 'react-icons/tb';
 import ItemDetails from './MerchantItems/ItemDetails.js';
+import UserRoles from './Users/UserRoles.js';
 const App = (props) => {
     const history = useHistory();
     const location = useLocation();
@@ -291,6 +292,8 @@ const App = (props) => {
                                                                 />
 
                                                                 <Route exact path="/users" component={Users} />
+                                                                <Route exact path="/userroles" component={UserRoles} />
+
                                                                 <Route exact path="/hubs" component={Hubs} />
                                                                 <Route exact path="/inventorydetails" component={InventoryDetails} />
                                                                 <Route exact path="/inventoryitems" component={InventoryItems} />

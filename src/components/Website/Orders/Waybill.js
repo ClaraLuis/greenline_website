@@ -5,6 +5,8 @@ import logo from '../Generalfiles/images/logo.png';
 import Barcode from 'react-barcode';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext';
 import bwipjs from 'bwip-js';
+import Decimal from 'decimal.js';
+
 const Waybill = ({ order }) => {
     const { dateformatter } = useContext(Contexthandlerscontext);
     const codeGenerate = (sku) => {
@@ -123,17 +125,18 @@ const Waybill = ({ order }) => {
                                 );
                             })}
                         </div>
-                        <div class="row allcentered w-100 m-0 p-1">
-                            <div class="col-lg-12 p-0 mt-2">
-                                <div class="row m-0 w-100  d-flex">
-                                    <div style={{ fontWeight: 600, fontSize: '10px' }} className=" p-0 mb-2  col-lg-4 col-md-4">
-                                        <div class="row m-0 w-100">
-                                            <div class="col-lg-12 p-0 ">
+
+                        <div className="row allcentered w-100 m-0 p-1">
+                            <div className="col-lg-12 p-0 mt-2">
+                                <div className="row m-0 w-100 d-flex">
+                                    <div style={{ fontWeight: 600, fontSize: '10px' }} className="p-0 mb-2 col-lg-4 col-md-4">
+                                        <div className="row m-0 w-100">
+                                            <div className="col-lg-12 p-0">
                                                 <span style={{ fontWeight: 400, fontSize: '7px' }}>Total</span>
                                             </div>
-                                            <div class="col-lg-12 p-0 ">
+                                            <div className="col-lg-12 p-0">
                                                 <span style={{ fontWeight: 600, fontSize: '10px' }}>
-                                                    {parseFloat(order?.price)} {order?.currency}
+                                                    {new Decimal(order?.price || 0).toFixed(2)} {order?.currency}
                                                 </span>
                                             </div>
                                         </div>

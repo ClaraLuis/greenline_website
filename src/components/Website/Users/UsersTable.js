@@ -165,6 +165,7 @@ const UsersTable = (props) => {
                                                                         modaltype: 'roles',
                                                                     });
                                                                     setopenModal(true);
+                                                                    // history.push('/userroles?id=' + item?.id);
                                                                 }}
                                                                 class="py-2"
                                                             >

@@ -23,7 +23,7 @@ import Pagination from '../../Pagination.js';
 import SelectComponent from '../../SelectComponent.js';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 import TransactionsTable from './TransactionsTable.js';
-
+import Decimal from 'decimal.js';
 const CourierCollection = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
@@ -122,21 +122,23 @@ const CourierCollection = (props) => {
     });
 
     useEffect(() => {
-        var totalTemp = 0;
-        if (selectedArray?.length == 0) {
-            fetchCourierCollectionTransactionsQuery?.data?.paginateCourierCollectionTransactions?.data?.map((item, index) => {
-                totalTemp += parseFloat(item?.amount);
+        let totalTemp = new Decimal(0); // Initialize totalTemp as a Decimal
+
+        if (selectedArray?.length === 0) {
+            fetchCourierCollectionTransactionsQuery?.data?.paginateCourierCollectionTransactions?.data?.forEach((item) => {
+                totalTemp = totalTemp.plus(new Decimal(item?.amount ?? 0)); // Using Decimal for accurate addition
             });
         } else {
             fetchCourierCollectionTransactionsQuery?.data?.paginateCourierCollectionTransactions?.data.forEach((item) => {
-                if (selectedArray.length === 0 || selectedArray.includes(item.id)) {
-                    totalTemp += parseFloat(item?.amount);
+                if (selectedArray.includes(item.id)) {
+                    totalTemp = totalTemp.plus(new Decimal(item?.amount ?? 0)); // Using Decimal for accurate addition
                 }
             });
         }
 
-        setTotal(totalTemp);
+        setTotal(totalTemp.toNumber()); // Convert Decimal to number for setting state
     }, [fetchCourierCollectionTransactionsQuery?.data?.paginateCourierCollectionTransactions?.data, selectedArray]);
+
     useEffect(() => {
         if (fetchCourierCollectionTransactionsQuery1?.data?.paginateCourierCollectionTransactions?.data?.length > 0) {
             sethasTransactions(true);

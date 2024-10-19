@@ -20,6 +20,7 @@ import { NotificationManager } from 'react-notifications';
 import Cookies from 'universal-cookie';
 import API from '../../../API/API.js';
 import SelectComponent from '../../SelectComponent.js';
+import Decimal from 'decimal.js';
 
 const AddItem = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -245,12 +246,13 @@ const AddItem = (props) => {
         // Allow only digits and commas
         if (/^[0-9,]*$/.test(value)) {
             const cleanedValue = value.replace(/,/g, ''); // Remove commas for numeric storage
-            const numberValue = cleanedValue ? parseFloat(cleanedValue) : 0; // Convert to number or default to 0
+            const numberValue = cleanedValue ? new Decimal(cleanedValue) : new Decimal(0); // Convert to Decimal or default to 0
+
             setitemVariants((prevItemVariants) => {
                 const updatedVariants = { ...prevItemVariants };
                 const colorVariants = updatedVariants[color]?.variants || [];
                 if (colorVariants[variantIndex]) {
-                    colorVariants[variantIndex].price = numberValue;
+                    colorVariants[variantIndex].price = numberValue.toNumber(); // Store the number value as a regular number
                 }
                 return {
                     ...updatedVariants,
@@ -1339,23 +1341,23 @@ const AddItem = (props) => {
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-6">
-                                <div class="row m-0 w-100  ">
-                                    <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                        <label class={formstyles.form__label}>Price</label>
+                            <div className="col-lg-6">
+                                <div className="row m-0 w-100">
+                                    <div className={`${formstyles.form__group} ${formstyles.field}`}>
+                                        <label className={formstyles.form__label}>Price</label>
                                         <input
                                             type="text"
-                                            class={formstyles.form__field}
-                                            value={itempayload?.price ? parseInt(itempayload.price).toLocaleString('en-US', { minimumFractionDigits: 0 }) : ''}
+                                            className={formstyles.form__field}
+                                            value={itempayload?.price ? new Decimal(itempayload.price).toLocaleString('en-US', { minimumFractionDigits: 0 }) : ''}
                                             onChange={(event) => {
                                                 const value = event.target.value;
 
                                                 // Allow only digits and commas
                                                 if (/^[0-9,]*$/.test(value)) {
                                                     const cleanedValue = value.replace(/,/g, ''); // Remove commas for numeric storage
-                                                    const numberValue = cleanedValue ? parseFloat(cleanedValue) : 0; // Convert to number or default to 0
+                                                    const numberValue = cleanedValue ? new Decimal(cleanedValue) : new Decimal(0); // Convert to Decimal or default to 0
 
-                                                    setitempayload({ ...itempayload, price: numberValue }); // Update the state with the numeric value
+                                                    setitempayload({ ...itempayload, price: numberValue }); // Update the state with the Decimal value
                                                 }
                                             }}
                                         />
@@ -1519,9 +1521,9 @@ const AddItem = (props) => {
                                                             </div>
 
                                                             <input
-                                                                className={formstyles.form__field + ' col-lg-3 mx-1 ml-4'}
+                                                                className={`${formstyles.form__field} col-lg-3 mx-1 ml-4`}
                                                                 type="text"
-                                                                value={variant.price ? parseFloat(variant.price).toLocaleString('en-US', { minimumFractionDigits: 0 }) : ''}
+                                                                value={variant.price ? new Decimal(variant.price).toLocaleString('en-US', { minimumFractionDigits: 0 }) : ''}
                                                                 onChange={(event) => handlePriceChange(color, variantIdx, event)}
                                                                 placeholder="Enter price"
                                                             />

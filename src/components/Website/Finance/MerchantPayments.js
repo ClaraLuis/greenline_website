@@ -29,6 +29,7 @@ import { FiCheckCircle, FiCircle } from 'react-icons/fi';
 import SelectComponent from '../../SelectComponent.js';
 import * as XLSX from 'xlsx';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
+import Decimal from 'decimal.js';
 
 const MerchantPayments = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -108,20 +109,21 @@ const MerchantPayments = (props) => {
     });
 
     useEffect(() => {
-        var totalTemp = 0;
-        if (selectedArray?.length == 0) {
-            fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data?.map((item, index) => {
-                totalTemp += parseFloat(item?.amount);
+        let totalTemp = new Decimal(0); // Initialize totalTemp as a Decimal
+
+        if (selectedArray?.length === 0) {
+            fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data?.forEach((item) => {
+                totalTemp = totalTemp.plus(new Decimal(item?.amount ?? 0)); // Using Decimal for accurate addition
             });
         } else {
             fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data.forEach((item) => {
-                if (selectedArray.length === 0 || selectedArray.includes(item.id)) {
-                    totalTemp += parseFloat(item?.amount);
+                if (selectedArray.includes(item.id)) {
+                    totalTemp = totalTemp.plus(new Decimal(item?.amount ?? 0)); // Using Decimal for accurate addition
                 }
             });
         }
 
-        setTotal(totalTemp);
+        setTotal(totalTemp.toNumber()); // Convert Decimal to number for setting state
     }, [fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data, selectedArray]);
 
     const exportToExcel = (data, fileName) => {

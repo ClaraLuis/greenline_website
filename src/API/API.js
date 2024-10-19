@@ -1022,6 +1022,43 @@ const API = () => {
         `;
     };
 
+    const findOneUser = (payload) => {
+        return gql`
+            query findOneUser($id: Int!) {
+                findOneUser(id: $id) {
+                    id
+                    type
+                    hubId
+                    merchantId
+                    inventoryId
+                    name
+                    email
+                    phone
+                    birthdate
+                    refreshToken
+                    createdAt
+                    lastModified
+                    deletedAt
+                    hub {
+                        name
+                    }
+
+                    merchant {
+                        name
+                    }
+                    userRoles {
+                        roleId
+                        role {
+                            type
+                            name
+                            id
+                        }
+                    }
+                }
+            }
+        `;
+    };
+
     const findOneItem = (payload) => {
         return gql`
             query findOneItem($input: FindOneItemInput!) {
@@ -2132,6 +2169,7 @@ const API = () => {
         paginateInventoryRentTransaction,
         ordersDeliverableSummary,
         graphOrders,
+        findOneUser,
     };
 };
 export default API;

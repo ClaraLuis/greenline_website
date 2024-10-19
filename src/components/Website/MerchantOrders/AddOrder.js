@@ -25,6 +25,7 @@ import Pagination from '../../Pagination.js';
 import DynamicInputfield from '../DynamicInputfield/DynamicInputfield.js';
 import ItemsTable from '../MerchantItems/ItemsTable.js';
 import AddCustomer from './AddCustomer.js';
+import Decimal from 'decimal.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -1918,46 +1919,54 @@ const AddOrder = (props) => {
                                         </div>
                                         <div class="col-lg-12 p-0 allcentered text-center">
                                             <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                {parseFloat(
-                                                    orderpayload?.ordertype == 'exchange'
-                                                        ? (orderpayload?.original == 1
-                                                              ? parseFloat(
-                                                                    orderpayload?.items?.reduce((acc, orderItem) => {
-                                                                        const count = parseInt(orderItem?.count);
-                                                                        const price = parseFloat(orderItem?.item?.price);
-                                                                        return acc + count * price;
-                                                                    }, 0),
-                                                                )?.toFixed(2)
+                                                {new Decimal(
+                                                    orderpayload?.ordertype === 'exchange'
+                                                        ? (orderpayload?.original === 1
+                                                              ? new Decimal(
+                                                                    orderpayload?.items
+                                                                        ?.reduce((acc, orderItem) => {
+                                                                            const count = parseInt(orderItem?.count);
+                                                                            const price = new Decimal(orderItem?.item?.price);
+                                                                            return acc.plus(price.times(count)); // Use Decimal for multiplication
+                                                                        }, new Decimal(0))
+                                                                        .toFixed(2),
+                                                                )
                                                               : orderpayload?.price
-                                                              ? parseFloat(orderpayload?.price)
-                                                              : 0) -
-                                                              (orderpayload?.returnoriginal == 1
+                                                              ? new Decimal(orderpayload?.price)
+                                                              : new Decimal(0)
+                                                          ).minus(
+                                                              orderpayload?.returnoriginal === 1
                                                                   ? externalOrder
-                                                                      ? parseFloat(
-                                                                            orderpayload?.returnOrderItems?.reduce((acc, orderItem) => {
-                                                                                const count = parseInt(orderItem?.count);
-                                                                                const price = parseFloat(orderItem?.item?.price);
-                                                                                return acc + count * price;
-                                                                            }, 0),
-                                                                        )?.toFixed(2)
+                                                                      ? new Decimal(
+                                                                            orderpayload?.returnOrderItems
+                                                                                ?.reduce((acc, orderItem) => {
+                                                                                    const count = parseInt(orderItem?.count);
+                                                                                    const price = new Decimal(orderItem?.item?.price);
+                                                                                    return acc.plus(price.times(count)); // Use Decimal for multiplication
+                                                                                }, new Decimal(0))
+                                                                                .toFixed(2),
+                                                                        )
                                                                       : orderpayload?.previousorder?.price
-                                                                      ? parseFloat(orderpayload?.previousorder?.price)
-                                                                      : 0
+                                                                      ? new Decimal(orderpayload?.previousorder?.price)
+                                                                      : new Decimal(0)
                                                                   : orderpayload?.returnAmount
-                                                                  ? parseFloat(orderpayload?.returnAmount)
-                                                                  : 0)
-                                                        : orderpayload?.original == 1
-                                                        ? parseFloat(
-                                                              orderpayload?.items?.reduce((acc, orderItem) => {
-                                                                  const count = parseInt(orderItem?.count);
-                                                                  const price = parseFloat(orderItem?.item?.price);
-                                                                  return acc + count * price;
-                                                              }, 0),
-                                                          )?.toFixed(2)
+                                                                  ? new Decimal(orderpayload?.returnAmount)
+                                                                  : new Decimal(0),
+                                                          )
+                                                        : orderpayload?.original === 1
+                                                        ? new Decimal(
+                                                              orderpayload?.items
+                                                                  ?.reduce((acc, orderItem) => {
+                                                                      const count = parseInt(orderItem?.count);
+                                                                      const price = new Decimal(orderItem?.item?.price);
+                                                                      return acc.plus(price.times(count)); // Use Decimal for multiplication
+                                                                  }, new Decimal(0))
+                                                                  .toFixed(2),
+                                                          )
                                                         : orderpayload?.price
-                                                        ? parseFloat(orderpayload?.price)
-                                                        : 0,
-                                                )?.toFixed(2)}
+                                                        ? new Decimal(orderpayload?.price)
+                                                        : new Decimal(0),
+                                                ).toFixed(2)}
                                             </span>
                                         </div>
                                     </div>
@@ -1979,46 +1988,57 @@ const AddOrder = (props) => {
                                         </div>
                                         <div class="col-lg-12 p-0 allcentered text-center">
                                             <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                {parseFloat(
-                                                    orderpayload?.ordertype == 'exchange'
-                                                        ? (orderpayload?.original == 1
-                                                              ? parseFloat(
-                                                                    orderpayload?.items?.reduce((acc, orderItem) => {
-                                                                        const count = parseInt(orderItem?.count);
-                                                                        const price = parseFloat(orderItem?.item?.price);
-                                                                        return acc + count * price;
-                                                                    }, 0),
-                                                                )?.toFixed(2)
+                                                {new Decimal(
+                                                    orderpayload?.ordertype === 'exchange'
+                                                        ? (orderpayload?.original === 1
+                                                              ? new Decimal(
+                                                                    orderpayload?.items
+                                                                        ?.reduce((acc, orderItem) => {
+                                                                            const count = parseInt(orderItem?.count);
+                                                                            const price = new Decimal(orderItem?.item?.price);
+                                                                            return acc.plus(price.times(count)); // Use Decimal for multiplication
+                                                                        }, new Decimal(0))
+                                                                        .toFixed(2), // Start with a Decimal of 0
+                                                                )
                                                               : orderpayload?.price
-                                                              ? parseFloat(orderpayload?.price)
-                                                              : 0) -
-                                                              (orderpayload?.returnoriginal == 1
+                                                              ? new Decimal(orderpayload?.price)
+                                                              : new Decimal(0)
+                                                          ).minus(
+                                                              orderpayload?.returnoriginal === 1
                                                                   ? externalOrder
-                                                                      ? parseFloat(
-                                                                            orderpayload?.returnOrderItems?.reduce((acc, orderItem) => {
-                                                                                const count = parseInt(orderItem?.count);
-                                                                                const price = parseFloat(orderItem?.item?.price);
-                                                                                return acc + count * price;
-                                                                            }, 0),
-                                                                        )?.toFixed(2)
+                                                                      ? new Decimal(
+                                                                            orderpayload?.returnOrderItems
+                                                                                ?.reduce((acc, orderItem) => {
+                                                                                    const count = parseInt(orderItem?.count);
+                                                                                    const price = new Decimal(orderItem?.item?.price);
+                                                                                    return acc.plus(price.times(count)); // Use Decimal for multiplication
+                                                                                }, new Decimal(0))
+                                                                                .toFixed(2), // Start with a Decimal of 0
+                                                                        )
                                                                       : orderpayload?.previousorder?.price
-                                                                      ? parseFloat(orderpayload?.previousorder?.price)
-                                                                      : 0
+                                                                      ? new Decimal(orderpayload?.previousorder?.price)
+                                                                      : new Decimal(0)
                                                                   : orderpayload?.returnAmount
-                                                                  ? parseFloat(orderpayload?.returnAmount)
-                                                                  : 0)
-                                                        : orderpayload?.original == 1
-                                                        ? parseFloat(
-                                                              orderpayload?.items?.reduce((acc, orderItem) => {
-                                                                  const count = parseInt(orderItem?.count);
-                                                                  const price = parseFloat(orderItem?.item?.price);
-                                                                  return acc + count * price;
-                                                              }, 0),
-                                                          )?.toFixed(2)
+                                                                  ? new Decimal(orderpayload?.returnAmount)
+                                                                  : new Decimal(0),
+                                                          )
+                                                        : orderpayload?.original === 1
+                                                        ? new Decimal(
+                                                              orderpayload?.items
+                                                                  ?.reduce((acc, orderItem) => {
+                                                                      const count = parseInt(orderItem?.count);
+                                                                      const price = new Decimal(orderItem?.item?.price);
+                                                                      return acc.plus(price.times(count)); // Use Decimal for multiplication
+                                                                  }, new Decimal(0))
+                                                                  .toFixed(2), // Start with a Decimal of 0
+                                                          )
                                                         : orderpayload?.price
-                                                        ? parseFloat(orderpayload?.price)
-                                                        : 0,
-                                                )?.toFixed(2) + parseFloat(orderpayload?.ordertype == 'freeShipping' ? 0 : shipping)}
+                                                        ? new Decimal(orderpayload?.price)
+                                                        : new Decimal(0),
+                                                )
+                                                    .plus(new Decimal(orderpayload?.ordertype === 'freeShipping' ? 0 : shipping))
+                                                    .toFixed(2)}{' '}
+                                                {/* Adding shipping costs */}
                                             </span>
                                         </div>
                                     </div>

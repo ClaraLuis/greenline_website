@@ -1,6 +1,6 @@
 import React, { Component, useEffect, useState } from 'react';
 import Chart from 'react-apexcharts';
-
+import Decimal from 'decimal.js';
 const Piechart = (props) => {
     const [state, setstate] = useState(undefined);
 
@@ -46,7 +46,10 @@ const Piechart = (props) => {
                 tooltip: {
                     y: {
                         formatter: function (value, { series, seriesIndex, dataPointIndex, w }) {
-                            return Math.round((parseFloat(value) / 100) * props?.total) + ' ' + props?.title;
+                            const totalValue = new Decimal(props?.total || 0);
+                            const calculatedValue = new Decimal(value).dividedBy(100).times(totalValue);
+
+                            return `${calculatedValue.toDecimalPlaces(0).toString()} ${props?.title}`;
                         },
                     },
                 },
