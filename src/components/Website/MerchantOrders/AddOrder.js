@@ -576,23 +576,65 @@ const AddOrder = (props) => {
                             <ItemsTable
                                 clickable={true}
                                 selectedItems={orderpayload?.items}
-                                actiononclick={(item) => {
+                                addToCount={(item) => {
                                     var temp = { ...orderpayload };
                                     var exist = false;
                                     var chosenindex = null;
+
                                     temp.items.map((i, ii) => {
                                         if (i?.item?.sku == item?.sku) {
                                             exist = true;
                                             chosenindex = ii;
                                         }
                                     });
+
                                     if (!exist) {
                                         temp.items.push({ item: item, count: 1 });
                                     } else {
                                         temp.items[chosenindex].count = parseInt(temp.items[chosenindex].count) + 1;
                                     }
+
                                     setorderpayload({ ...temp });
                                 }}
+                                subtractFromCount={(item) => {
+                                    var temp = { ...orderpayload };
+                                    var exist = false;
+                                    var chosenindex = null;
+
+                                    temp.items.map((i, ii) => {
+                                        if (i?.item?.sku == item?.sku) {
+                                            exist = true;
+                                            chosenindex = ii;
+                                        }
+                                    });
+
+                                    if (exist) {
+                                        if (temp.items[chosenindex].count > 1) {
+                                            temp.items[chosenindex].count = parseInt(temp.items[chosenindex].count) - 1;
+                                        } else {
+                                            temp.items.splice(chosenindex, 1); // Remove item if count is 1
+                                        }
+                                    }
+
+                                    setorderpayload({ ...temp });
+                                }}
+                                // actiononclick={(item) => {
+                                //     var temp = { ...orderpayload };
+                                //     var exist = false;
+                                //     var chosenindex = null;
+                                //     temp.items.map((i, ii) => {
+                                //         if (i?.item?.sku == item?.sku) {
+                                //             exist = true;
+                                //             chosenindex = ii;
+                                //         }
+                                //     });
+                                //     if (!exist) {
+                                //         temp.items.push({ item: item, count: 1 });
+                                //     } else {
+                                //         temp.items[chosenindex].count = parseInt(temp.items[chosenindex].count) + 1;
+                                //     }
+                                //     setorderpayload({ ...temp });
+                                // }}
                                 card="col-lg-4 px-1"
                                 items={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.data}
                             />
@@ -1281,23 +1323,65 @@ const AddOrder = (props) => {
                                         <ItemsTable
                                             clickable={true}
                                             selectedItems={orderpayload?.returnOrderItems}
-                                            actiononclick={(item) => {
+                                            addToCount={(item) => {
                                                 var temp = { ...orderpayload };
                                                 var exist = false;
                                                 var chosenindex = null;
+
                                                 temp.returnOrderItems.map((i, ii) => {
                                                     if (i?.item?.sku == item?.sku) {
                                                         exist = true;
                                                         chosenindex = ii;
                                                     }
                                                 });
+
                                                 if (!exist) {
                                                     temp.returnOrderItems.push({ item: item, count: 1 });
                                                 } else {
                                                     temp.returnOrderItems[chosenindex].count = parseInt(temp.returnOrderItems[chosenindex].count) + 1;
                                                 }
+
                                                 setorderpayload({ ...temp });
                                             }}
+                                            subtractFromCount={(item) => {
+                                                var temp = { ...orderpayload };
+                                                var exist = false;
+                                                var chosenindex = null;
+
+                                                temp.returnOrderItems.map((i, ii) => {
+                                                    if (i?.item?.sku == item?.sku) {
+                                                        exist = true;
+                                                        chosenindex = ii;
+                                                    }
+                                                });
+
+                                                if (exist) {
+                                                    if (temp.returnOrderItems[chosenindex].count > 1) {
+                                                        temp.returnOrderItems[chosenindex].count = parseInt(temp.returnOrderItems[chosenindex].count) - 1;
+                                                    } else {
+                                                        temp.returnOrderItems.splice(chosenindex, 1); // Remove item if count is 1
+                                                    }
+                                                }
+
+                                                setorderpayload({ ...temp });
+                                            }}
+                                            // actiononclick={(item) => {
+                                            //     var temp = { ...orderpayload };
+                                            //     var exist = false;
+                                            //     var chosenindex = null;
+                                            //     temp.returnOrderItems.map((i, ii) => {
+                                            //         if (i?.item?.sku == item?.sku) {
+                                            //             exist = true;
+                                            //             chosenindex = ii;
+                                            //         }
+                                            //     });
+                                            //     if (!exist) {
+                                            //         temp.returnOrderItems.push({ item: item, count: 1 });
+                                            //     } else {
+                                            //         temp.returnOrderItems[chosenindex].count = parseInt(temp.returnOrderItems[chosenindex].count) + 1;
+                                            //     }
+                                            //     setorderpayload({ ...temp });
+                                            // }}
                                             card="col-lg-4 px-1"
                                             items={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.data}
                                         />
@@ -1568,7 +1652,7 @@ const AddOrder = (props) => {
                                             {orderpayload?.items?.map((item, index) => {
                                                 return (
                                                     <div class={' col-lg-12 p-0'}>
-                                                        <div class={generalstyles.card + ' p-1 row m-0 mb-2 w-100 allcentered'}>
+                                                        <div class={' p-1 row m-0 mb-2 w-100 allcentered'}>
                                                             <div class="col-lg-2 mr-2 p-0">
                                                                 <div style={{ width: '100%', height: '35px' }}>
                                                                     <img
@@ -1703,7 +1787,7 @@ const AddOrder = (props) => {
                                                 {orderpayload?.returnOrderItems?.map((item, index) => {
                                                     return (
                                                         <div class={' col-lg-12 p-0'}>
-                                                            <div class={generalstyles.card + ' p-1 row m-0 mb-2 w-100 allcentered'}>
+                                                            <div class={' p-1 row m-0 mb-2 w-100 allcentered'}>
                                                                 <div class="col-lg-2 mr-2 p-0">
                                                                     <div style={{ width: '100%', height: '35px' }}>
                                                                         <img

@@ -99,11 +99,11 @@ const ItemDetails = (props) => {
                             <div class="col-lg-12 p-0 mb-3">
                                 <div
                                     style={{
-                                        height: '475px',
+                                        height: '600px',
                                         width: '100%',
                                     }}
                                 >
-                                    <img src={chosenvariant?.imageUrl} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                                    <img src={chosenvariant?.imageUrl} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                 </div>
                             </div>
                             <div class="col-lg-12 p-0">
@@ -141,6 +141,10 @@ const ItemDetails = (props) => {
                             <div class="col-lg-12 mb-3 ">
                                 <span style={{ fontSize: '18px', fontWeight: 700 }}>{'Price: '}</span>
                                 <span style={{ fontSize: '18px', fontWeight: 700 }}>{chosenvariant?.price} EGP</span>
+                            </div>
+                            <div class="col-lg-12 mb-3">
+                                {chosenvariant?.stockCount <= 0 && <div className={'mr-1 wordbreak text-danger bg-light-danger rounded-pill font-weight-600 '}>Out Of Stock</div>}
+                                {chosenvariant?.stockCount > 0 && <div className={'mr-1 wordbreak text-success bg-light-success rounded-pill font-weight-600 '}>InStock</div>}
                             </div>
                             <div class="col-lg-12 mb-3 ">
                                 <span style={{ fontSize: '15px', color: '#98a6ad' }}>{chosenItemContext?.description}</span>

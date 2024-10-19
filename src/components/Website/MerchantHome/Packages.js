@@ -24,6 +24,7 @@ import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, Ac
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
+import { TbTruckDelivery } from 'react-icons/tb';
 
 const Packages = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -293,11 +294,21 @@ const Packages = (props) => {
                                                 {item?.sku}
                                             </span>
                                         </div>
+
                                         <div class="col-lg-4 p-0 d-flex justify-content-end">
                                             <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
                                                 {item?.count} items
                                             </span>
                                         </div>
+                                        {item?.courier && (
+                                            <div className="col-lg-12 p-0 mb-2 d-flex align-items-center">
+                                                <TbTruckDelivery size={20} class="mr-1" />
+
+                                                <span style={{ fontWeight: 600 }} class="text-capitalize">
+                                                    {item?.courier?.name}
+                                                </span>
+                                            </div>
+                                        )}
                                         <div class="col-lg-12 p-0 d-flex justify-content-end" style={{ fontSize: '12px', color: 'grey' }}>
                                             {dateformatter(item?.createdAt)}
                                         </div>

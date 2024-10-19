@@ -614,6 +614,15 @@ const API = () => {
                             name
                             email
                         }
+                        inventory {
+                            name
+                        }
+                        fromHub {
+                            name
+                        }
+                        toHub {
+                            name
+                        }
                     }
                     cursor
                 }
@@ -1036,7 +1045,7 @@ const API = () => {
                         price
                         weight
                         createdAt
-
+                        stockCount
                         selectedOptions {
                             id
                             itemVariantId
@@ -1196,8 +1205,8 @@ const API = () => {
     `;
 
     const findOneReturnPackage = () => gql`
-        query findOneReturnPackage($id: Int!) {
-            findOneReturnPackage(input: $id) {
+        query findReturnPackageById($id: Int!) {
+            findReturnPackageById(input: $id) {
                 id
                 sku
                 type
@@ -1207,6 +1216,9 @@ const API = () => {
                 toMerchantId
                 status
                 count
+                courier {
+                    name
+                }
                 createdAt
             }
         }
@@ -1934,6 +1946,9 @@ const API = () => {
                         toMerchantId
                         status
                         count
+                        courier {
+                            name
+                        }
                         createdAt
                     }
                     cursor

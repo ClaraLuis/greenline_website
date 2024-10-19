@@ -611,8 +611,35 @@ const OrderInfo = (props) => {
                                                                             </TimelineSeparator>
                                                                             <TimelineContent style={{ fontWeight: 600, color: 'black', textTransform: 'capitalize' }}>
                                                                                 {historyItem?.status.split(/(?=[A-Z])/).join(' ')} <br />
+                                                                                {historyItem?.description && (
+                                                                                    <>
+                                                                                        <span style={{ fontSize: '13px', fontWeight: 400 }}>{historyItem?.description}</span>
+                                                                                        <br />
+                                                                                    </>
+                                                                                )}
+                                                                                {historyItem?.inventory && (
+                                                                                    <>
+                                                                                        <span style={{ fontSize: '10px', fontWeight: 400 }}>Inventory </span>
+                                                                                        <span style={{ fontSize: '10px', fontWeight: 600 }}>{historyItem?.inventory?.name}</span>
+                                                                                        <br />
+                                                                                    </>
+                                                                                )}
+                                                                                {historyItem?.fromHub && (
+                                                                                    <>
+                                                                                        <span style={{ fontSize: '10px', fontWeight: 400 }}>From Hub </span>
+                                                                                        <span style={{ fontSize: '10px', fontWeight: 600 }}>{historyItem?.fromHub?.name}</span>
+                                                                                        <br />
+                                                                                    </>
+                                                                                )}
+                                                                                {historyItem?.toHub && (
+                                                                                    <>
+                                                                                        <span style={{ fontSize: '10px', fontWeight: 400 }}>To Hub </span>
+                                                                                        <span style={{ fontSize: '10px', fontWeight: 600 }}>{historyItem?.toHub?.name}</span>
+                                                                                        <br />
+                                                                                    </>
+                                                                                )}
                                                                                 {cookies.get('userInfo')?.type == 'employee' && (
-                                                                                    <span style={{ fontSize: '14px', fontWeight: 400 }}>{historyItem?.user?.name}</span>
+                                                                                    <span style={{ fontSize: '12px', fontWeight: 400 }}>{historyItem?.user?.name}</span>
                                                                                 )}
                                                                             </TimelineContent>
                                                                         </TimelineItem>

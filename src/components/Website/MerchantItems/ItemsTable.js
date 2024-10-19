@@ -14,7 +14,7 @@ import API from '../../../API/API.js';
 import ImportNewItem from '../InventoryItems/ImportNewItem.js';
 import { FiCheckCircle } from 'react-icons/fi';
 import { Dropdown } from 'react-bootstrap';
-import { TbEdit, TbEye } from 'react-icons/tb';
+import { TbEdit, TbEye, TbMinus, TbPlus } from 'react-icons/tb';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -111,19 +111,46 @@ const ItemsTable = (props) => {
                                         </div>
                                     )}
 
-                                    {selected && !props?.selectBackground && (
-                                        <div
-                                            style={{
-                                                position: 'absolute',
-                                                top: 10,
-                                                right: 20,
-                                                zIndex: 100,
-                                                color: 'white',
-                                            }}
-                                            class={generalstyles.cart_button}
-                                        >
-                                            {/* <FaCheck color="white" /> */}
-                                            {count}
+                                    {props?.addToCount && (
+                                        // <div
+                                        //     style={{
+                                        //         position: 'absolute',
+                                        //         top: 10,
+                                        //         right: 20,
+                                        //         zIndex: 100,
+                                        //         color: 'white',
+                                        //     }}
+                                        //     class={generalstyles.cart_button}
+                                        // >
+                                        //     {/* <FaCheck color="white" /> */}
+                                        //     {count}
+                                        // </div>
+                                        <div class={generalstyles.product_action + ' row m-0'}>
+                                            <a
+                                                class={generalstyles.buttonxs + ' allcentered'}
+                                                onClick={async (e) => {
+                                                    e.stopPropagation();
+                                                    props?.addToCount(item);
+                                                }}
+                                            >
+                                                <i>
+                                                    <TbPlus color="white" size={17} />
+                                                </i>
+                                            </a>
+                                            <a class={generalstyles.buttonxs + ' allcentered'} style={{ background: 'white', fontSize: '16px' }}>
+                                                <i>{count}</i>
+                                            </a>
+                                            <a
+                                                class={generalstyles.buttonxs + ' allcentered bg-danger bg-dangerhover '}
+                                                onClick={async (e) => {
+                                                    e.stopPropagation();
+                                                    props?.subtractFromCount(item);
+                                                }}
+                                            >
+                                                <i>
+                                                    <TbMinus color="white" size={17} />
+                                                </i>
+                                            </a>
                                         </div>
                                     )}
                                     <div class="col-lg-12 p-0">

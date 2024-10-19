@@ -239,7 +239,7 @@ button:focus {
     border-radius: 0.15rem;
     font-size: 0.75rem;
     /* padding: 0.2rem 0.6rem; */
-    padding-inline: 0.9rem;
+    padding-inline: 0.7rem;
     padding-top: 0.45rem;
     padding-bottom: 0.45rem;
     background-color: #1abc9c;
@@ -247,7 +247,7 @@ button:focus {
     transition: all 0.4s;
 }
 .buttonxs:hover {
-    background-color: #15967d !important;
+    background-color: #15967d;
 }
 
 .card_header {

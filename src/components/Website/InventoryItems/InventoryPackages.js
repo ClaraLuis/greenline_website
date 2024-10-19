@@ -17,6 +17,7 @@ import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, Ac
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import { FaLayerGroup } from 'react-icons/fa';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
+import { TbTruckDelivery } from 'react-icons/tb';
 
 const InventoryPackages = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -275,6 +276,15 @@ const InventoryPackages = (props) => {
                                                         {item?.sku}
                                                     </span>
                                                 </div>
+                                                {item?.courier && (
+                                                    <div className="col-lg-12 p-0 mb-2 d-flex align-items-center">
+                                                        <TbTruckDelivery size={20} class="mr-1" />
+
+                                                        <span style={{ fontWeight: 600 }} class="text-capitalize">
+                                                            {item?.courier?.name}
+                                                        </span>
+                                                    </div>
+                                                )}
 
                                                 <div class="col-lg-12 p-0 d-flex justify-content-end" style={{ fontSize: '12px', color: 'grey' }}>
                                                     {dateformatter(item?.createdAt)}

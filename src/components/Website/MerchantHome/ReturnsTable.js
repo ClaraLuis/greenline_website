@@ -70,7 +70,7 @@ const ReturnsTable = (props) => {
                                 <div
                                     style={{
                                         cursor: props?.clickable ? 'pointer' : '',
-                                        background: selected ? 'var(--secondary)' : '',
+                                        background: props?.background ? props?.background : selected ? 'var(--secondary)' : '',
                                         transition: 'all 0.4s',
                                     }}
                                     onClick={() => {

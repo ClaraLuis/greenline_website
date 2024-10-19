@@ -19,6 +19,7 @@ import TimelineItem from '@mui/lab/TimelineItem';
 import TimelineSeparator from '@mui/lab/TimelineSeparator';
 
 import TimelineOppositeContent, { timelineOppositeContentClasses } from '@mui/lab/TimelineOppositeContent';
+import { TbTruckDelivery } from 'react-icons/tb';
 const MerchantReturnPackageInfo = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
@@ -72,7 +73,7 @@ const MerchantReturnPackageInfo = (props) => {
                         },
                     });
                     // Handle the data or set state here
-                    setchosenPackageContext(data?.findOneReturnPackage);
+                    setchosenPackageContext(data?.findReturnPackageById);
                     // alert('1');
                     console.log(data);
                 }
@@ -85,14 +86,14 @@ const MerchantReturnPackageInfo = (props) => {
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div className="col-lg-12 p-0" style={{ minHeight: '100vh' }}>
                 <div class={' row m-0 w-100 '}>
-                    <div class="col-lg-7">
+                    <div class="col-lg-6">
                         <div class="col-lg-12 mb-1" style={{ color: 'grey', fontSize: '12px' }}>
                             <div class="row m-0 w-100 d-flex align-items-center justify-content-between">
                                 <div>Main Info</div>
                             </div>
                         </div>
                         <div class="col-lg-12 mb-2 p-0">
-                            <div style={{ background: 'white' }} class={' p-3 row m-0 w-100 card  d-flex align-items-center'}>
+                            <div style={{ background: 'white' }} class={generalstyles.card + ' row m-0 w-100   d-flex align-items-center'}>
                                 <div className="col-lg-4 p-0">
                                     <span style={{ fontSize: '12px', color: 'grey' }}># {chosenPackageContext?.id}</span>
                                 </div>
@@ -111,13 +112,9 @@ const MerchantReturnPackageInfo = (props) => {
                                                 }
                                             })}
                                         </div>
-                                        {/* <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered mx-1 '}>
-                                                    {returnPackageTypeContext?.map((i, ii) => {
-                                                        if (i.value == chosenPackageContext?.type) {
-                                                            return <span>{i.label}</span>;
-                                                        }
-                                                    })}
-                                                </div> */}
+                                        <div style={{ color: 'white' }} className={' wordbreak  bg-primary rounded-pill font-weight-600 allcentered mx-1 '}>
+                                            {chosenPackageContext?.type?.split(/(?=[A-Z])/).join(' ')}
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="col-lg-12 p-0 my-2">
@@ -129,6 +126,15 @@ const MerchantReturnPackageInfo = (props) => {
                                         {chosenPackageContext?.sku}
                                     </span>
                                 </div>
+                                {chosenPackageContext?.courier && (
+                                    <div className="col-lg-12 p-0 mb-2 d-flex align-items-center">
+                                        <TbTruckDelivery size={20} class="mr-1" />
+
+                                        <span style={{ fontWeight: 600 }} class="text-capitalize">
+                                            {chosenPackageContext?.courier?.name}
+                                        </span>
+                                    </div>
+                                )}
 
                                 <div class="col-lg-12 p-0 d-flex justify-content-end" style={{ fontSize: '12px', color: 'grey' }}>
                                     {dateformatter(chosenPackageContext?.createdAt)}
@@ -143,6 +149,7 @@ const MerchantReturnPackageInfo = (props) => {
                         <div class={generalstyles.card + ' row m-0 w-100 p-4'}>
                             <ReturnsTable
                                 clickable={true}
+                                background="#F0F5F9"
                                 actiononclick={async (item) => {
                                     await setchosenOrderContext(item);
                                     history.push('/orderinfo?orderId=' + item.id);
@@ -160,7 +167,7 @@ const MerchantReturnPackageInfo = (props) => {
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-5">
+                    <div class="col-lg-6">
                         <div class="col-lg-12 mb-1" style={{ color: 'grey', fontSize: '12px' }}>
                             <div class="row m-0 w-100 d-flex align-items-center justify-content-between">
                                 <div>History</div>
