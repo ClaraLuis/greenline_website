@@ -200,8 +200,15 @@ const AddEditSecuritylayers = (props) => {
                                 setbuttonLoading(true);
                                 try {
                                     const { data } = await updateUserRolesMutation();
-                                    props?.setopenModal(false);
-                                    props?.setchangerolesmodal(false);
+                                    if (props?.setopenModal) {
+                                        props?.setopenModal(false);
+                                    }
+                                    if (props?.setchangerolesmodal) {
+                                        props?.setchangerolesmodal(false);
+                                    }
+                                    if (props?.fetchUserInfo) {
+                                        props?.fetchUserInfo();
+                                    }
                                     refetchUsers();
                                 } catch (error) {
                                     const errorMessage = error.graphQLErrors?.[0]?.message || error.networkError?.message || error.message || 'An unexpected error occurred';

@@ -155,17 +155,17 @@ const UsersTable = (props) => {
 
                                                             <Dropdown.Item
                                                                 onClick={() => {
-                                                                    var temp = { ...item };
-                                                                    temp.functype = 'edit';
-                                                                    setpayload({
-                                                                        ...temp,
-                                                                        employeeType: item?.employee?.type,
-                                                                        salary: item?.employee?.salary,
-                                                                        commission: item?.employee?.commission,
-                                                                        modaltype: 'roles',
-                                                                    });
-                                                                    setopenModal(true);
-                                                                    // history.push('/userroles?id=' + item?.id);
+                                                                    //     var temp = { ...item };
+                                                                    //     temp.functype = 'edit';
+                                                                    //     setpayload({
+                                                                    //         ...temp,
+                                                                    //         employeeType: item?.employee?.type,
+                                                                    //         salary: item?.employee?.salary,
+                                                                    //         commission: item?.employee?.commission,
+                                                                    //         modaltype: 'roles',
+                                                                    //     });
+                                                                    //     setopenModal(true);
+                                                                    history.push('/userroles?id=' + item?.id);
                                                                 }}
                                                                 class="py-2"
                                                             >

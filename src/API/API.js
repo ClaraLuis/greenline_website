@@ -1024,7 +1024,7 @@ const API = () => {
 
     const findOneUser = (payload) => {
         return gql`
-            query findOneUser($id: Int!) {
+            query findOneUser($id: String!) {
                 findOneUser(id: $id) {
                     id
                     type
