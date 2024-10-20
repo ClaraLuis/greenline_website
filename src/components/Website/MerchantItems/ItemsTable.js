@@ -125,7 +125,7 @@ const ItemsTable = (props) => {
                                         //     {/* <FaCheck color="white" /> */}
                                         //     {count}
                                         // </div>
-                                        <div class={generalstyles.product_action + ' row m-0'}>
+                                        <div style={{ right: 0, position: 'absolute', zIndex: 100 }} class={' row m-0'}>
                                             <a
                                                 class={generalstyles.buttonxs + ' allcentered'}
                                                 onClick={async (e) => {

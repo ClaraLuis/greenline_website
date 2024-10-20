@@ -1273,21 +1273,46 @@ const OrderInfo = (props) => {
                         <ItemsTable
                             clickable={true}
                             selectedItems={itemsModal?.items ?? []}
-                            actiononclick={(item) => {
+                            addToCount={(item) => {
                                 var temp = { ...itemsModal };
                                 var exist = false;
                                 var chosenindex = null;
+
                                 temp.items.map((i, ii) => {
                                     if (i?.item?.sku == item?.sku) {
                                         exist = true;
                                         chosenindex = ii;
                                     }
                                 });
+
                                 if (!exist) {
                                     temp.items.push({ item: item, count: 1 });
                                 } else {
                                     temp.items[chosenindex].count = parseInt(temp.items[chosenindex].count) + 1;
                                 }
+
+                                setitemsModal({ ...temp });
+                            }}
+                            subtractFromCount={(item) => {
+                                var temp = { ...itemsModal };
+                                var exist = false;
+                                var chosenindex = null;
+
+                                temp.items.map((i, ii) => {
+                                    if (i?.item?.sku == item?.sku) {
+                                        exist = true;
+                                        chosenindex = ii;
+                                    }
+                                });
+
+                                if (exist) {
+                                    if (temp.items[chosenindex].count > 1) {
+                                        temp.items[chosenindex].count = parseInt(temp.items[chosenindex].count) - 1;
+                                    } else {
+                                        temp.items.splice(chosenindex, 1); // Remove item if count is 1
+                                    }
+                                }
+
                                 setitemsModal({ ...temp });
                             }}
                             card="col-lg-4 px-1"
