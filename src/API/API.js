@@ -1609,6 +1609,7 @@ const API = () => {
                         details(merchantId: $merchantId) {
                             id
                             customerName
+                            customerId
                         }
                     }
                     cursor

@@ -610,7 +610,7 @@ export const Contexthandlerscontext_provider = (props) => {
         { label: 'Picked Up', value: 'pickedUp' },
         { label: 'Arrived At Sort Facilities', value: 'arrivedAtSortFacilities' },
         { label: 'Arrived At Hub', value: 'arrivedAtHub' },
-        { label: 'Transferred', value: 'transferred' },
+        { label: 'Transferring', value: 'transferring' }, // updated to match the enum
         { label: 'Assigned To Courier', value: 'assignedToCourier' },
         { label: 'Delivered', value: 'delivered' },
         { label: 'Partially Delivered', value: 'partiallyDelivered' },
@@ -635,7 +635,6 @@ export const Contexthandlerscontext_provider = (props) => {
         { label: 'Not Collected', value: 'notCollected' },
         { label: 'Dismissed', value: 'dismissed' },
     ];
-
     const transactionStatusTypeContext = [
         { label: 'Pending Sender', value: 'pendingSender' },
         { label: 'Pending Receiver', value: 'pendingReceiver' },
@@ -686,10 +685,14 @@ export const Contexthandlerscontext_provider = (props) => {
 
     const expenseTypeContext = [
         { label: 'Salary', value: 'salary' },
+        { label: 'Salary Bonus', value: 'salaryBonus' },
+        { label: 'Salary Overtime', value: 'salaryOvertime' },
         { label: 'Rent', value: 'rent' },
         { label: 'Utilities', value: 'utilities' },
         { label: 'Office Supplies', value: 'officeSupplies' },
         { label: 'Vehicle Maintenance', value: 'vehicleMaintenance' },
+        { label: 'Postal Fees', value: 'postalFees' },
+        { label: 'Courier Commission', value: 'courierComission' },
         { label: 'Fuel', value: 'fuel' },
         { label: 'Insurance', value: 'insurance' },
         { label: 'Equipment Purchase', value: 'equipmentPurchase' },
@@ -854,6 +857,7 @@ export const Contexthandlerscontext_provider = (props) => {
         { label: 'Assigned To Courier', value: 'assignedToCourier' },
         { label: 'Transferring', value: 'transferring' },
         { label: 'Delivered', value: 'delivered' },
+        { label: 'Restocked', value: 'restocked' },
     ];
 
     const roleTypeContext = [

@@ -363,7 +363,7 @@ const OrderInfo = (props) => {
             if (customerData?.findCustomer?.data[0]) {
                 setorderpayload({
                     ...orderpayload,
-                    customerId: customerData?.findCustomer?.data[0]?.details?.id,
+                    customerId: customerData?.findCustomer?.data[0]?.details?.customerId,
                     email: customerData?.findCustomer?.data[0]?.email,
                     user: customerData?.findCustomer?.data[0]?.details?.customerName,
                 });
@@ -413,7 +413,7 @@ const OrderInfo = (props) => {
             if (customerDataSuggestions?.findCustomer?.data[0]) {
                 setorderpayload({
                     ...orderpayload,
-                    customerId: customerDataSuggestions?.findCustomer?.data[0]?.details?.id,
+                    customerId: customerDataSuggestions?.findCustomer?.data[0]?.details?.customerId,
                     email: customerDataSuggestions?.findCustomer?.data[0]?.email,
                 });
                 nameSuggestions = [...customerDataSuggestions?.findCustomer?.data[0]?.nameSuggestions];

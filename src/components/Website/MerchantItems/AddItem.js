@@ -1293,6 +1293,7 @@ const AddItem = (props) => {
                                         filter={filteMerchants}
                                         setfilter={setfilteMerchants}
                                         options={fetchMerchantsQuery}
+                                        disabled={window.location.pathname == '/updateitem'}
                                         attr={'paginateMerchants'}
                                         label={'name'}
                                         value={'id'}

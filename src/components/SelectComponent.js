@@ -127,10 +127,12 @@ const SelectComponent = (props) => {
                     </label>
                     <div
                         onClick={() => {
-                            setIsFocused(true);
-                            setshowmenu(true);
+                            if (props?.disabled != true) {
+                                setIsFocused(true);
+                                setshowmenu(true);
+                            }
                         }}
-                        style={{ cursor: 'pointer' }}
+                        style={{ cursor: props?.disabled == true ? 'not-allowed' : 'pointer' }}
                         className={cardstyles.formfield}
                     >
                         {placeholder}
