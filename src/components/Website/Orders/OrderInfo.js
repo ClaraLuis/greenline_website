@@ -433,7 +433,7 @@ const OrderInfo = (props) => {
                 <div class={' row m-0 w-100 allcentered'}>
                     <div class="col-lg-12">
                         <div class="row m-0 w-100">
-                            {chosenOrderContext != undefined && (
+                            {chosenOrderContext != undefined && chosenOrderContext && JSON.stringify(chosenOrderContext) != '{}' && (
                                 <>
                                     <div class="col-lg-12">
                                         <div class={generalstyles.card + ' row m-0 w-100'}>

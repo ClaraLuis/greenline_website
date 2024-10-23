@@ -762,6 +762,26 @@ const API = () => {
                         canOpen
                         fragile
                         deliveryPart
+                        sheetOrder {
+                            id
+                            sheetId
+                            orderId
+                            adminPass
+                            financePass
+                            shippingCollected
+                            amountCollected
+                            transactionId
+                            createdAt
+                            lastModified
+                            sheet {
+                                status
+                                user {
+                                    name
+                                    email
+                                    id
+                                }
+                            }
+                        }
                     }
                     cursor
                 }
@@ -794,6 +814,26 @@ const API = () => {
                         canOpen
                         fragile
                         deliveryPart
+                        sheetOrder {
+                            id
+                            sheetId
+                            orderId
+                            adminPass
+                            financePass
+                            shippingCollected
+                            amountCollected
+                            transactionId
+                            createdAt
+                            lastModified
+                            sheet {
+                                status
+                                user {
+                                    name
+                                    email
+                                    id
+                                }
+                            }
+                        }
                         orderDate
                         createdAt
                         lastModified
@@ -1237,6 +1277,26 @@ const API = () => {
                 canOpen
                 fragile
                 deliveryPart
+                sheetOrder {
+                    id
+                    sheetId
+                    orderId
+                    adminPass
+                    financePass
+                    shippingCollected
+                    amountCollected
+                    transactionId
+                    createdAt
+                    lastModified
+                    sheet {
+                        status
+                        user {
+                            name
+                            email
+                            id
+                        }
+                    }
+                }
             }
         }
     `;

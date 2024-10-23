@@ -335,8 +335,9 @@ const AddOrder = (props) => {
                     merchantId: merchantId,
                 },
             });
-
-            setuserAddresses([...data?.paginateAddresses?.data]);
+            if (data?.paginateAddresses?.data) {
+                setuserAddresses([...data?.paginateAddresses?.data]);
+            }
         }
     }, [orderpayload?.customerId]);
     useEffect(async () => {
@@ -391,7 +392,9 @@ const AddOrder = (props) => {
                     },
                 },
             });
-            setShipping(data?.findSingleMerchantDomesticShipping?.domesticShipping?.total);
+            if (data?.findSingleMerchantDomesticShipping?.domesticShipping?.total) {
+                setShipping(data?.findSingleMerchantDomesticShipping?.domesticShipping?.total);
+            }
             // alert(JSON.stringify());
         }
     }, [merchantId, addresspayload?.city, orderpayload?.address, orderpayload?.ordertype]);
@@ -1006,7 +1009,9 @@ const AddOrder = (props) => {
                                                                                 },
                                                                             });
 
-                                                                            setuserAddresses([...data?.paginateAddresses?.data]);
+                                                                            if (data?.paginateAddresses?.data) {
+                                                                                setuserAddresses([...data?.paginateAddresses?.data]);
+                                                                            }
                                                                         }
                                                                     } catch (e) {
                                                                         let errorMessage = 'An unexpected error occurred';
@@ -1066,7 +1071,9 @@ const AddOrder = (props) => {
                                                                                                         merchantId: merchantId,
                                                                                                     },
                                                                                                 });
-                                                                                                setuserAddresses([...data?.paginateAddresses?.data]);
+                                                                                                if (data?.paginateAddresses?.data) {
+                                                                                                    setuserAddresses([...data?.paginateAddresses?.data]);
+                                                                                                }
                                                                                             }
                                                                                         } catch (e) {
                                                                                             if (
@@ -1139,7 +1146,9 @@ const AddOrder = (props) => {
                                                                                                         merchantId: merchantId,
                                                                                                     },
                                                                                                 });
-                                                                                                setuserAddresses([...data?.paginateAddresses?.data]);
+                                                                                                if (data?.paginateAddresses?.data) {
+                                                                                                    setuserAddresses([...data?.paginateAddresses?.data]);
+                                                                                                }
                                                                                             }
                                                                                         } catch (e) {
                                                                                             if (
