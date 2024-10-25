@@ -768,10 +768,8 @@ keep data consistent.</span></p>
 
     const { lang, langdetect } = useContext(LanguageContext);
     const cookies = new Cookies();
-    const [variantModal, setvariantModal] = useState(true);
     const [importModal, setimportModal] = useState(false);
     const [csvFile, setcsvFile] = useState(null);
-    const [selectedVariants, setselectedVariants] = useState([]);
     const [buttonLoading, setbuttonLoading] = useState(false);
 
     const [payload, setPayload] = useState({
@@ -964,16 +962,7 @@ keep data consistent.</span></p>
                             />
                         </div>
                         <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar px-1 '}>
-                            <ItemsTable
-                                clickable={true}
-                                actiononclick={(item) => {
-                                    setselectedVariants([]);
-                                    setvariantModal({ open: true, data: item?.itemVariants });
-                                }}
-                                card="col-lg-3"
-                                items={fetchMerchantItemsQuery?.data?.paginateItems?.data}
-                                showEllipsis={true}
-                            />
+                            <ItemsTable card="col-lg-3" items={fetchMerchantItemsQuery?.data?.paginateItems?.data} showEllipsis={true} />
                         </div>
                         <div class="col-lg-12 p-0">
                             <Pagination
@@ -988,62 +977,6 @@ keep data consistent.</span></p>
                 )}
             </div>
 
-            <Modal
-                show={variantModal?.open}
-                onHide={() => {
-                    setvariantModal({ open: false, data: [] });
-                }}
-                centered
-                size={'lg'}
-            >
-                <Modal.Header>
-                    <div className="row w-100 m-0 p-0">
-                        <div class="col-lg-6 pt-3 ">
-                            <div className="row w-100 m-0 p-0">Item Variants</div>
-                        </div>
-                        <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
-                            <div
-                                class={'close-modal-container'}
-                                onClick={() => {
-                                    setvariantModal({ open: false, data: [] });
-                                }}
-                            >
-                                <IoMdClose />
-                            </div>
-                        </div>{' '}
-                    </div>
-                </Modal.Header>
-                <Modal.Body>
-                    <div class="row m-0 w-100 py-2">
-                        <div class="col-lg-12 d-flex justify-content-end">{selectedVariants?.length > 0 && <SkuPrint skus={selectedVariants} />}</div>
-                        <ItemsTable
-                            clickable={true}
-                            selectBackground={true}
-                            selectedItems={selectedVariants}
-                            actiononclick={(item) => {
-                                var temp = [...selectedVariants];
-                                var exist = false;
-                                var chosenindex = null;
-                                temp.map((i, ii) => {
-                                    if (i?.item?.sku == item?.sku) {
-                                        exist = true;
-                                        chosenindex = ii;
-                                    }
-                                });
-                                if (!exist) {
-                                    temp.push({ item: item });
-                                } else {
-                                    temp.splice(chosenindex, 1);
-                                }
-                                // alert(JSON.stringify(temp));
-                                setselectedVariants([...temp]);
-                            }}
-                            card="col-lg-3"
-                            items={variantModal.data}
-                        />
-                    </div>
-                </Modal.Body>
-            </Modal>
             <Modal
                 show={importModal}
                 onHide={() => {
