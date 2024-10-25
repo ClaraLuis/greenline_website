@@ -952,7 +952,9 @@ const API = () => {
                         hub {
                             name
                         }
-
+                        inventory {
+                            name
+                        }
                         merchant {
                             name
                         }

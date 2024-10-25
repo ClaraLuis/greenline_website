@@ -19,7 +19,7 @@ import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 
 import reviewsstyles from './reviews.module.css';
 import Select, { components } from 'react-select';
-import { TbUserPentagon } from 'react-icons/tb';
+import { TbBuilding, TbBuildingWarehouse, TbUserPentagon } from 'react-icons/tb';
 // Icons
 import API from '../../../API/API.js';
 import UserInfo from './UserInfo.js';
@@ -214,6 +214,23 @@ const UsersTable = (props) => {
                                                     {item?.employee?.type ? ',' : ''} {item?.employee?.type?.split(/(?=[A-Z])/).join(' ')}
                                                 </span>
                                             </div>
+                                            {item?.hub && (
+                                                <div className="col-lg-12 p-0 mb-1">
+                                                    <span style={{ fontWeight: 600 }} class="d-flex align-items-center text-capitalize">
+                                                        <TbBuilding class="mr-1" />
+                                                        {item?.hub?.name}
+                                                    </span>
+                                                </div>
+                                            )}
+                                            {item?.inventory && (
+                                                <div className="col-lg-12 p-0 mb-1">
+                                                    <span style={{ fontWeight: 600 }} class="d-flex align-items-center text-capitalize">
+                                                        <TbBuildingWarehouse class="mr-1" />
+                                                        {item?.inventory?.name}
+                                                    </span>
+                                                </div>
+                                            )}
+
                                             <div className="col-lg-12 p-0 ">
                                                 <span style={{ fontWeight: 600 }} class="d-flex align-items-center">
                                                     <MdOutlinePhone class="mr-1" />
