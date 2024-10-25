@@ -78,7 +78,7 @@ const UsersTable = (props) => {
                         </div>
                     )}
                     {props?.fetchusers?.data?.length != 0 && (
-                        <div class="row m-0 w-100">
+                        <div style={{ minHeight: '70vh' }} class="row m-0 w-100">
                             {props?.fetchusers?.data?.paginateUsers?.data?.map((item, index) => {
                                 return (
                                     <div className={props?.card}>
