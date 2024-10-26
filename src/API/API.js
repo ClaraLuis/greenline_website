@@ -1125,6 +1125,7 @@ const API = () => {
                         weight
                         createdAt
                         stockCount
+                        fullName
                         selectedOptions {
                             id
                             itemVariantId
@@ -1347,6 +1348,7 @@ const API = () => {
                             price
                             weight
                             createdAt
+                            fullName
                             selectedOptions {
                                 id
                                 itemVariantId
@@ -1385,6 +1387,7 @@ const API = () => {
                         imageUrl
                         price
                         weight
+                        fullName
                         createdAt
                         lastModified
                     }

@@ -166,7 +166,7 @@ const ItemsTable = (props) => {
                                         </div>
                                     </div>
                                     <div class="col-lg-12 pl-0 pr-0 pb-0 wordbreak" style={{ fontWeight: 700, fontSize: '16px', paddingTop: '1.5rem' }}>
-                                        {item?.name}
+                                        {item?.fullName ?? item?.name}
                                     </div>
                                     {/* {props?.clickable && (
                                         <div class="col-lg-4 d-flex justify-content-end mt-2 p-0">
