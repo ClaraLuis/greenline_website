@@ -566,6 +566,7 @@ const API = () => {
                             imageUrl
                             id
                             sku
+                            fullName
                             item {
                                 name
                             }
@@ -1634,6 +1635,7 @@ const API = () => {
                             name
                             imageUrl
                             sku
+                            fullName
                         }
                     }
                     startDate

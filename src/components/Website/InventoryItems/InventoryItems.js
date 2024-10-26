@@ -482,7 +482,7 @@ const InventoryItems = (props) => {
                                                     </div>
                                                     <div class="col-lg-9 p-0 ">
                                                         <div class="col-lg-12 p-0 " style={{ fontSize: '14px', fontWeight: 600 }}>
-                                                            {element?.itemVariant?.item?.name}
+                                                            {element?.itemVariant?.fullName}
                                                         </div>
                                                         <div class="col-lg-12 p-0 " style={{ fontSize: '11px', fontWeight: 600, color: 'grey' }}>
                                                             {element?.itemVariant?.sku}
