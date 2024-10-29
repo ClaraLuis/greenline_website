@@ -1051,6 +1051,10 @@ const API = () => {
                         streetAddress
                         buildingNumber
                         apartmentFloor
+                        zone {
+                            name
+                            id
+                        }
                     }
                     owner {
                         id

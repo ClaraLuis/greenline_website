@@ -120,7 +120,7 @@ const AddMerchant = (props) => {
                       streetAddress: addresspayload?.streetAddress,
                       zoneId: addresspayload?.zone,
                       governorateId:
-                          addresspayload?.country == 'Egypt' ? fetchGovernoratesQuery?.data?.findAllDomesticGovernorates?.filter((item) => item.name == addresspayload?.city)[0]?.id : undefined,
+                          addresspayload?.country == 'Egypt' ? fetchGovernoratesQuery?.data?.findAllDomesticGovernorates?.filter((item) => item?.name == addresspayload?.city)[0]?.id : undefined,
                   }
                 : undefined,
         addressId: merchantPayload?.addressId,
@@ -156,7 +156,7 @@ const AddMerchant = (props) => {
             fetchGovernoratesQuery?.data?.findAllDomesticGovernorates?.map((item, index) => {
                 orderTypes?.map((orderType, orderTypeIndex) => {
                     temp.push({
-                        name: item.name,
+                        name: item?.name,
                         id: item.id,
                         shipping: 50,
                         base: 20,
@@ -410,7 +410,7 @@ const AddMerchant = (props) => {
                         </Box>
                         <Typography sx={{ mt: 2, mb: 1 }}>
                             <div className="col-lg-12 p-0" style={{ minHeight: '100vh' }}>
-                                {activeStep === 0 && (
+                                {activeStep === 0 && merchantPayload && (
                                     <div class={' row m-0 w-100 allcentered'}>
                                         <div class="col-lg-12 p-0 mb-2 allcentered">
                                             <div class="col-lg-6">
