@@ -21,6 +21,7 @@ import Cookies from 'universal-cookie';
 import API from '../../../API/API.js';
 import SelectComponent from '../../SelectComponent.js';
 import Decimal from 'decimal.js';
+import FilesPopup from '../FilesPopup.js';
 
 const AddItem = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -32,6 +33,8 @@ const AddItem = (props) => {
     const cookies = new Cookies();
     const [buttonLoading, setbuttonLoading] = useState(false);
     const [itemIndex, setitemIndex] = useState(0);
+    const [modelfrom, setmodelfrom] = useState('');
+    const [indexes, setindexes] = useState({ color: 0, variant: 0 });
     const [itempayload, setitempayload] = useState({
         functype: 'add',
         merchansku: '',
@@ -56,6 +59,8 @@ const AddItem = (props) => {
     const [variantsList, setvariantsList] = useState([]);
     const [itemVariants, setitemVariants] = useState({});
     const [existWarning, setexistWarning] = useState(false);
+    const [openModal, setopenModal] = useState(false);
+
     const [findOneItemLazyQuery] = useLazyQueryGQL(findOneItem());
 
     const [addItemMutation] = useMutationGQL(addCompoundItem(), {
@@ -265,18 +270,22 @@ const AddItem = (props) => {
     // Handle image URL change
     const handleImageChange = (color, variantIndex, event) => {
         const newImageUrl = event?.target?.files[0];
-        setitemVariants((prevItemVariants) => {
-            const updatedVariants = { ...prevItemVariants };
-            const colorVariants = updatedVariants[color]?.variants || [];
-            if (colorVariants[variantIndex] && event?.target?.files[0]) {
-                colorVariants[variantIndex].imageUrl = newImageUrl;
-                colorVariants[variantIndex].imageUrlPrev = URL.createObjectURL(event?.target?.files[0]);
-            }
-            return {
-                ...updatedVariants,
-                [color]: { ...updatedVariants[color], variants: colorVariants },
-            };
-        });
+        // setitemVariants((prevItemVariants) => {
+        //     const updatedVariants = { ...prevItemVariants };
+        //     const colorVariants = updatedVariants[color]?.variants || [];
+        //     if (colorVariants[variantIndex] && event?.target?.files[0]) {
+        //         colorVariants[variantIndex].imageUrl = newImageUrl;
+        //         colorVariants[variantIndex].imageUrlPrev = URL.createObjectURL(event?.target?.files[0]);
+        //     }
+        //     return {
+        //         ...updatedVariants,
+        //         [color]: { ...updatedVariants[color], variants: colorVariants },
+        //     };
+        // });
+        // setcolorIndex(color);
+        setindexes({ color: color, variant: variantIndex });
+        setmodelfrom('variant');
+        setopenModal(true);
     };
 
     const handleMerchantSkuChange = (color, variantIndex, event) => {
@@ -1236,25 +1245,35 @@ const AddItem = (props) => {
                             </div>
                             <div class="col-lg-12 mb-3">
                                 <div class="row m-0 w-100  ">
-                                    <div class={generalstyles.avatar_upload + ' text-center justify-content-center align-items-center m-auto '}>
+                                    <div
+                                        onClick={() => {
+                                            setmodelfrom('main');
+
+                                            setopenModal(true);
+                                        }}
+                                        class={generalstyles.avatar_upload + ' text-center justify-content-center align-items-center m-auto '}
+                                    >
                                         <div class={generalstyles.avatar_edit}>
-                                            <input
+                                            {/* <input
                                                 type="file"
                                                 accept="image/*"
                                                 name="updatecompanybanner"
                                                 id="updatecompanybanner"
                                                 hidden
-                                                onChange={(event) => {
-                                                    var temp = { ...itempayload };
-                                                    if (event?.target?.files[0]) {
-                                                        temp.imagepreview = URL.createObjectURL(event?.target?.files[0]);
-                                                        temp.image = event?.target?.files[0];
-                                                    }
+                                                // onChange={(event) => {
+                                                //     setopenModal(true);
 
-                                                    setitempayload({ ...temp });
-                                                }}
+                                                //     // var temp = { ...itempayload };
+                                                //     // if (event?.target?.files[0]) {
+                                                //     //     temp.imagepreview = URL.createObjectURL(event?.target?.files[0]);
+                                                //     //     temp.image = event?.target?.files[0];
+                                                //     // }
+
+                                                //     // setitempayload({ ...temp });
+                                                // }}
+                                              
                                                 style={{ display: 'none' }}
-                                            />
+                                            /> */}
                                         </div>
                                         <label for="updatecompanybanner" class={generalstyles.avatar_preview + ' pointer '}>
                                             <div class={generalstyles.imgpreviewtxt + ' text-capitalize'}>
@@ -1490,17 +1509,27 @@ const AddItem = (props) => {
                                                             ))}
                                                             <div class="col-lg-12 mb-3">
                                                                 <div class="row m-0 w-100  ">
-                                                                    <div class={generalstyles.avatar_upload + ' text-center justify-content-center align-items-center m-auto '}>
+                                                                    <div
+                                                                        onClick={() => {
+                                                                            setindexes({ color: color, variant: variantIdx });
+                                                                            setmodelfrom('variant');
+                                                                            setopenModal(true);
+                                                                        }}
+                                                                        class={generalstyles.avatar_upload + ' text-center justify-content-center align-items-center m-auto '}
+                                                                    >
                                                                         <div class={generalstyles.avatar_edit}>
-                                                                            <input
+                                                                            {/* <input
                                                                                 type="file"
                                                                                 accept="image/*"
                                                                                 name="updatecompanybanner"
                                                                                 id={'updatecompanybanner' + variantIdx}
                                                                                 hidden
-                                                                                onChange={(event) => handleImageChange(color, variantIdx, event)}
+                                                                                onClick={() => {
+                                                                                    setopenModal(true);
+                                                                                }}
+                                                                                // onChange={(event) => handleImageChange(color, variantIdx, event)}
                                                                                 style={{ display: 'none' }}
-                                                                            />
+                                                                            /> */}
                                                                         </div>
                                                                         <label for={'updatecompanybanner' + variantIdx} class={generalstyles.avatar_preview + ' pointer '}>
                                                                             <div class={generalstyles.imgpreviewtxt + ' text-capitalize'}>
@@ -1547,6 +1576,42 @@ const AddItem = (props) => {
                     </div>
                 </div>
             </div>
+            <FilesPopup
+                openModal={openModal}
+                setopenModal={setopenModal}
+                onChange={(imageUrl) => {
+                    if (modelfrom == 'main') {
+                        var temp = { ...itempayload };
+                        if (imageUrl) {
+                            temp.imagepreview = imageUrl;
+                            temp.imageUrl = imageUrl;
+                        }
+                        setitempayload({ ...temp });
+                        setopenModal(false);
+                    } else {
+                        setitemVariants((prevItemVariants) => {
+                            const updatedVariants = { ...prevItemVariants };
+                            const colorVariants = updatedVariants[indexes.color]?.variants || [];
+
+                            if (!colorVariants[indexes.variant]) {
+                                colorVariants[indexes.variant] = {};
+                            }
+
+                            if (imageUrl) {
+                                colorVariants[indexes.variant].imageUrl = imageUrl;
+                                colorVariants[indexes.variant].imageUrlPrev = imageUrl;
+                            }
+
+                            return {
+                                ...updatedVariants,
+                                [indexes.color]: { ...updatedVariants[indexes.color], variants: colorVariants },
+                            };
+                        });
+
+                        setopenModal(false);
+                    }
+                }}
+            />
         </div>
     );
 };

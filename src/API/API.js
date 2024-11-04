@@ -989,6 +989,24 @@ const API = () => {
             }
         `;
     };
+    const paginateFiles = (payload) => {
+        return gql`
+            query paginateFiles($input: PaginateFilesInput!) {
+                paginateFiles(input: $input) {
+                    data {
+                        id
+                        key
+                        url
+                        merchantId
+                        createdAt
+                        lastModified
+                        deletedAt
+                    }
+                    cursor
+                }
+            }
+        `;
+    };
     const fetchMerchants = (payload) => {
         return gql`
             query fetchMerchants($input: PaginateMerchantsInput!) {
@@ -2173,6 +2191,7 @@ const API = () => {
         fetchCourierSheet,
         updateCourierSheet,
         fetchCouriers,
+        paginateFiles,
         fetchMerchants,
         addMerchant,
         addCompoundItem,
