@@ -502,71 +502,74 @@ const OrderInfo = (props) => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-lg-12">
-                                        <div class={generalstyles.card + ' row m-0 w-100'}>
-                                            {chosenOrderContext?.sheetOrder == null && (
-                                                <div class="col-lg-4">
-                                                    <div class="row m-0 w-100 d-flex align-items-center">
-                                                        <div class="col-lg-12 p-0">
-                                                            <p class=" p-0 m-0" style={{ fontSize: '17px' }}>
-                                                                <span style={{ color: 'var(--danger)' }}>Not Assigned to Sheet</span>
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )}
-                                            {chosenOrderContext?.sheetOrder != null && (
-                                                <>
-                                                    <div className="col-lg-4 p-0">
+                                    {cookies.get('userInfo')?.type != 'merchant' && (
+                                        <div class="col-lg-12">
+                                            <div class={generalstyles.card + ' row m-0 w-100'}>
+                                                {chosenOrderContext?.sheetOrder == null && (
+                                                    <div class="col-lg-4">
                                                         <div class="row m-0 w-100 d-flex align-items-center">
-                                                            <span style={{ fontWeight: 600 }} class="text-capitalize">
-                                                                {chosenOrderContext?.courier?.name}{' '}
-                                                            </span>
-                                                            <div style={{ background: '#eee', color: 'black' }} className={' wordbreak rounded-pill font-weight-600 allcentered mx-1 '}>
-                                                                # {chosenOrderContext?.sheetOrder?.sheetId}
+                                                            <div class="col-lg-12 p-0">
+                                                                <p class=" p-0 m-0" style={{ fontSize: '17px' }}>
+                                                                    <span style={{ color: 'var(--danger)' }}>Not Assigned to Sheet</span>
+                                                                </p>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
-                                                        <div
-                                                            style={{
-                                                                color: 'white',
-                                                                borderRadius: '0.25rem',
-                                                                fontSize: '11px',
-                                                                background: chosenOrderContext?.sheetOrder?.financePass ? 'var(--success)' : 'var(--danger)',
-                                                            }}
-                                                            class="allcentered mx-2 p-1 px-2"
-                                                        >
-                                                            {chosenOrderContext?.sheetOrder?.financePass ? 'Finance Accepted' : 'Finance Pending'}
+                                                )}
+                                                {chosenOrderContext?.sheetOrder != null && (
+                                                    <>
+                                                        <div className="col-lg-4 p-0">
+                                                            <div class="row m-0 w-100 d-flex align-items-center">
+                                                                <span style={{ fontWeight: 600 }} class="text-capitalize">
+                                                                    {chosenOrderContext?.courier?.name}{' '}
+                                                                </span>
+                                                                <div style={{ background: '#eee', color: 'black' }} className={' wordbreak rounded-pill font-weight-600 allcentered mx-1 '}>
+                                                                    # {chosenOrderContext?.sheetOrder?.sheetId}
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                        <div
-                                                            style={{
-                                                                color: 'white',
-                                                                borderRadius: '0.25rem',
-                                                                fontSize: '11px',
-                                                                background: chosenOrderContext?.sheetOrder?.adminPass ? 'var(--success)' : 'var(--danger)',
-                                                            }}
-                                                            class="allcentered mx-2 p-1 px-2"
-                                                        >
-                                                            {chosenOrderContext?.sheetOrder?.financePass ? 'Admin Accepted' : 'Admin Pending'}
+                                                        <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
+                                                            <div
+                                                                style={{
+                                                                    color: 'white',
+                                                                    borderRadius: '0.25rem',
+                                                                    fontSize: '11px',
+                                                                    background: chosenOrderContext?.sheetOrder?.financePass ? 'var(--success)' : 'var(--danger)',
+                                                                }}
+                                                                class="allcentered mx-2 p-1 px-2"
+                                                            >
+                                                                {chosenOrderContext?.sheetOrder?.financePass ? 'Finance Accepted' : 'Finance Pending'}
+                                                            </div>
+                                                            <div
+                                                                style={{
+                                                                    color: 'white',
+                                                                    borderRadius: '0.25rem',
+                                                                    fontSize: '11px',
+                                                                    background: chosenOrderContext?.sheetOrder?.adminPass ? 'var(--success)' : 'var(--danger)',
+                                                                }}
+                                                                class="allcentered mx-2 p-1 px-2"
+                                                            >
+                                                                {chosenOrderContext?.sheetOrder?.financePass ? 'Admin Accepted' : 'Admin Pending'}
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div className="col-lg-12 p-0 my-2">
-                                                        <hr className="m-0" />
-                                                    </div>
+                                                        <div className="col-lg-12 p-0 my-2">
+                                                            <hr className="m-0" />
+                                                        </div>
 
-                                                    <div className="col-lg-6 p-0 mb-2"></div>
+                                                        <div className="col-lg-6 p-0 mb-2"></div>
 
-                                                    <div class="col-lg-12 p-0 mb-2 d-flex justify-content-end">
-                                                        <span class="d-flex align-items-center" style={{ fontWeight: 400, color: 'grey', fontSize: '10px' }}>
-                                                            <IoMdTime class="mr-1" />
-                                                            {dateformatter(chosenOrderContext?.sheetOrder?.createdAt)}
-                                                        </span>
-                                                    </div>
-                                                </>
-                                            )}
+                                                        <div class="col-lg-12 p-0 mb-2 d-flex justify-content-end">
+                                                            <span class="d-flex align-items-center" style={{ fontWeight: 400, color: 'grey', fontSize: '10px' }}>
+                                                                <IoMdTime class="mr-1" />
+                                                                {dateformatter(chosenOrderContext?.sheetOrder?.createdAt)}
+                                                            </span>
+                                                        </div>
+                                                    </>
+                                                )}
+                                            </div>
                                         </div>
-                                    </div>
+                                    )}
+
                                     <div class="col-lg-5">
                                         <div style={{ minHeight: '400px', maxHeight: '400px' }} class={generalstyles.card + ' row m-0 w-100 d-flex align-content-start'}>
                                             <div className="col-lg-4 p-0">

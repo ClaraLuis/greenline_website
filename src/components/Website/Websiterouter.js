@@ -65,6 +65,7 @@ import WebToken from './WebToken/WebToken.js';
 import { TbApi, TbLogout } from 'react-icons/tb';
 import ItemDetails from './MerchantItems/ItemDetails.js';
 import UserRoles from './Users/UserRoles.js';
+import NotFound from './NotFound.js';
 const App = (props) => {
     const history = useHistory();
     const location = useLocation();
@@ -348,6 +349,7 @@ const App = (props) => {
                                                                 <Route exact path="/inventoryreturns" component={InventoryReturns} />
                                                                 <Route exact path="/inventorypackages" component={InventoryPackages} />
                                                                 <Route exact path="/merchantpackages" component={MerchantPackages} />
+                                                                <Route component={NotFound} />
                                                             </Switch>
                                                         );
                                                     }}
