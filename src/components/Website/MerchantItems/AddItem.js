@@ -739,13 +739,13 @@ const AddItem = (props) => {
                                                             })),
                                                         );
                                                         var resp = undefined;
-                                                        if (!itempayload.imageUrl) {
-                                                            if (itempayload.image) {
-                                                                resp = await uploadImage(itempayload.image);
-                                                            }
-                                                        } else {
-                                                            resp = itempayload.imageUrl;
-                                                        }
+                                                        // if (!itempayload.imageUrl) {
+                                                        //     if (itempayload.image) {
+                                                        //         resp = await uploadImage(itempayload.image);
+                                                        //     }
+                                                        // } else {
+                                                        resp = itempayload.imageUrl;
+                                                        // }
                                                         const extractData = async (data) => {
                                                             const result = [];
                                                             await Promise.all(
@@ -758,7 +758,7 @@ const AddItem = (props) => {
                                                                             const { price, imageUrl, merchantSku } = variant;
                                                                             let resp1 = undefined;
                                                                             if (imageUrl) {
-                                                                                resp1 = await uploadImage(imageUrl);
+                                                                                resp1 = imageUrl;
                                                                             }
 
                                                                             if (price || merchantSku) {
@@ -942,13 +942,13 @@ const AddItem = (props) => {
                                                             })),
                                                         );
                                                         var resp = undefined;
-                                                        if (!itempayload.imageUrl) {
-                                                            if (itempayload.image) {
-                                                                resp = await uploadImage(itempayload.image);
-                                                            }
-                                                        } else {
-                                                            resp = itempayload.imageUrl;
-                                                        }
+                                                        // if (!itempayload.imageUrl) {
+                                                        //     if (itempayload.image) {
+                                                        //         resp = await uploadImage(itempayload.image);
+                                                        //     }
+                                                        // } else {
+                                                        resp = itempayload.imageUrl;
+                                                        // }
                                                         // alert(resp);
                                                         const extractData = async (data) => {
                                                             const result = [];
@@ -964,7 +964,7 @@ const AddItem = (props) => {
                                                                             const { price, imageUrl, merchantSku } = variant;
                                                                             let resp1 = undefined;
                                                                             if (imageUrl) {
-                                                                                resp1 = await uploadImage(imageUrl);
+                                                                                resp1 = imageUrl;
                                                                             }
 
                                                                             if (price || merchantSku) {
@@ -1140,11 +1140,11 @@ const AddItem = (props) => {
                                                             if (itempayload.image) {
                                                                 const isHttpLink = /^https?:\/\//i.test(itempayload.image);
 
-                                                                if (!isHttpLink) {
-                                                                    resp = await uploadImage(itempayload.image);
-                                                                } else {
-                                                                    resp = itempayload.image;
-                                                                }
+                                                                // if (!isHttpLink) {
+                                                                //     resp = await uploadImage(itempayload.image);
+                                                                // } else {
+                                                                resp = itempayload.image;
+                                                                // }
                                                             }
                                                         } else {
                                                             resp = itempayload.imageUrl;
@@ -1167,7 +1167,7 @@ const AddItem = (props) => {
                                                                                 const isHttpLink = /^https?:\/\//i.test(imageUrl);
 
                                                                                 if (!isHttpLink) {
-                                                                                    resp1 = await uploadImage(imageUrl);
+                                                                                    resp1 = imageUrl;
                                                                                 } else {
                                                                                     resp1 = imageUrl;
                                                                                 }
@@ -1592,6 +1592,7 @@ const AddItem = (props) => {
                         if (imageUrl) {
                             temp.imagepreview = imageUrl;
                             temp.imageUrl = imageUrl;
+                            temp.image = imageUrl;
                         }
                         setitempayload({ ...temp });
                         setopenModal(false);
