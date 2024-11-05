@@ -22,6 +22,7 @@ import MerchantSelect from '../MerchantHome/MerchantSelect.js';
 import ItemsTable from './ItemsTable.js';
 import SkuPrint from './SkuPrint.js';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
+import SelectComponent from '../../SelectComponent.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -764,13 +765,14 @@ keep data consistent.</span></p>
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, dateformatter, setimportedDataContext, isAuth } = useContext(Contexthandlerscontext);
-    const { fetchMerchantItems, useQueryGQL, useMutationNoInputGQL, uploadExcelFile, addCompoundItem } = API();
+    const { fetchMerchantItems, useQueryGQL, useMutationNoInputGQL, uploadExcelFile, addCompoundItem, fetchMerchants } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const cookies = new Cookies();
     const [importModal, setimportModal] = useState(false);
     const [csvFile, setcsvFile] = useState(null);
     const [buttonLoading, setbuttonLoading] = useState(false);
+    const [merchantModal, setmerchantModal] = useState(false);
 
     const [payload, setPayload] = useState({
         limit: 20,
@@ -782,6 +784,15 @@ keep data consistent.</span></p>
         merchantId: parseInt(cookies.get('merchantId')),
     });
     const fetchMerchantItemsQuery = useQueryGQL('', fetchMerchantItems(), payload);
+
+    const [filteMerchants, setfilteMerchants] = useState({
+        isAsc: true,
+        limit: 10,
+        afterCursor: undefined,
+        beforeCursor: undefined,
+    });
+
+    const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filteMerchants);
 
     const { refetch: refetchItems } = useQueryGQL('', fetchMerchantItems(), payload);
     const [uploadExcelFileMutation] = useMutationNoInputGQL(uploadExcelFile(), { base64File: csvFile });
@@ -895,7 +906,8 @@ keep data consistent.</span></p>
                                                 style={{ height: '35px' }}
                                                 class={generalstyles.roundbutton + '  mb-1 mx-2'}
                                                 onClick={() => {
-                                                    history.push('/additem');
+                                                    // history.push('/additem');
+                                                    setmerchantModal(true);
                                                 }}
                                             >
                                                 Add Single Item
@@ -976,6 +988,51 @@ keep data consistent.</span></p>
                     </>
                 )}
             </div>
+            <Modal
+                show={merchantModal}
+                onHide={() => {
+                    setmerchantModal(false);
+                }}
+                centered
+                size={'md'}
+            >
+                <Modal.Header>
+                    <div className="row w-100 m-0 p-0">
+                        <div class="col-lg-6 pt-3 ">
+                            <div className="row w-100 m-0 p-0">Choose Merchant</div>
+                        </div>
+                        <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
+                            <div
+                                class={'close-modal-container'}
+                                onClick={() => {
+                                    setmerchantModal(false);
+                                }}
+                            >
+                                <IoMdClose />
+                            </div>
+                        </div>{' '}
+                    </div>
+                </Modal.Header>
+                <Modal.Body>
+                    <div class="row m-0 w-100 py-2">
+                        <div class={'col-lg-12'} style={{ marginBottom: '15px' }}>
+                            <SelectComponent
+                                title={'Merchant'}
+                                filter={filteMerchants}
+                                setfilter={setfilteMerchants}
+                                options={fetchMerchantsQuery}
+                                attr={'paginateMerchants'}
+                                label={'name'}
+                                value={'id'}
+                                onClick={(option) => {
+                                    history.push('/additem?merchantId=' + option?.id);
+                                }}
+                                removeAll={true}
+                            />
+                        </div>
+                    </div>
+                </Modal.Body>
+            </Modal>
 
             <Modal
                 show={importModal}

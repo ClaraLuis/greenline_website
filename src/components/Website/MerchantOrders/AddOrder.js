@@ -467,6 +467,7 @@ const AddOrder = (props) => {
                         <button
                             class={generalstyles.roundbutton}
                             onClick={async () => {
+                                if (buttonLoading) return;
                                 setbuttonLoading(true);
                                 try {
                                     if (

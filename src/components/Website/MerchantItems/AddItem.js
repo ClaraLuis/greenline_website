@@ -602,7 +602,11 @@ const AddItem = (props) => {
             }
         }
     }, [chosenItemContext]);
-
+    useEffect(() => {
+        if (queryParameters.get('merchantId')) {
+            setitempayload({ ...itempayload, merchantId: queryParameters.get('merchantId') });
+        }
+    }, [queryParameters.get('merchantId')]);
     const uploadImage = async (img) => {
         const getoken = async () => {
             var token = await cookies.get('accessToken');
@@ -636,6 +640,7 @@ const AddItem = (props) => {
             throw error; // Throw error so you can handle it in the calling function if needed
         }
     };
+
     const handleValidations = () => {
         if (!itempayload?.name) {
             NotificationManager.warning('Name cannot be empty', 'Warning');
@@ -1311,12 +1316,13 @@ const AddItem = (props) => {
                                         filter={filteMerchants}
                                         setfilter={setfilteMerchants}
                                         options={fetchMerchantsQuery}
-                                        disabled={window.location.pathname == '/updateitem'}
+                                        // disabled={window.location.pathname == '/updateitem'}
                                         attr={'paginateMerchants'}
                                         label={'name'}
                                         value={'id'}
                                         removeAll={true}
                                         payload={itempayload}
+                                        disabled={true}
                                         payloadAttr={'merchantId'}
                                         onClick={(option) => {
                                             if (option != undefined) {
@@ -1577,6 +1583,7 @@ const AddItem = (props) => {
                 </div>
             </div>
             <FilesPopup
+                merchantId={queryParameters.get('merchantId')}
                 openModal={openModal}
                 setopenModal={setopenModal}
                 onChange={(imageUrl) => {
