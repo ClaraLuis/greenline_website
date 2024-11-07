@@ -78,6 +78,7 @@ const AddSheet = (props) => {
     });
 
     const handleAddCourierSheet = async () => {
+        if (buttonLoading) return;
         setbuttonLoading(true);
         try {
             const { data } = await addCourierSheetMutation();

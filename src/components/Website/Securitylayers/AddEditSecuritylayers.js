@@ -197,6 +197,7 @@ const AddEditSecuritylayers = (props) => {
                             style={{ height: '35px' }}
                             className={`${generalstyles.roundbutton} mb-1`}
                             onClick={async () => {
+                                if (buttonLoading) return;
                                 setbuttonLoading(true);
                                 try {
                                     const { data } = await updateUserRolesMutation();

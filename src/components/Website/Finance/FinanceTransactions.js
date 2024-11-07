@@ -558,6 +558,7 @@ const FinanceTransactions = (props) => {
                                     button1class={generalstyles.roundbutton + '  mr-2 my-2 '}
                                     button1placeholder={'Add transaction'}
                                     button1onClick={async () => {
+                                        if (buttonLoading) return;
                                         setbuttonLoading(true);
                                         if (
                                             transactionpayload?.type?.length != 0 &&

@@ -385,6 +385,7 @@ const Expenses = (props) => {
                                 button1class={generalstyles.roundbutton + '  mr-2 '}
                                 button1placeholder={'Add expense'}
                                 button1onClick={async () => {
+                                    if (buttonLoading) return;
                                     setbuttonLoading(true);
                                     if (expensepayload?.type?.length != 0 && expensepayload?.amount?.length != 0 && expensepayload?.fromAccountId?.length != 0) {
                                         try {

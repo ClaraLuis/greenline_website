@@ -61,6 +61,7 @@ const Login = () => {
     }, [email, password, confirmpassword, isValid, inFirebase]);
 
     const handleSubmit = async () => {
+        if (buttonLoading) return;
         setbuttonLoading(true);
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -84,6 +85,7 @@ const Login = () => {
                     }
                 }
             } else {
+                if (buttonLoading) return;
                 setbuttonLoading(true);
 
                 if (!inFirebase) {

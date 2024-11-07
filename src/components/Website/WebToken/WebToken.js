@@ -103,6 +103,7 @@ const WebToken = (props) => {
                                         class={generalstyles.roundbutton + '  mx-1'}
                                         onClick={async () => {
                                             if (!buttonLoading) {
+                                                if (buttonLoading) return;
                                                 setbuttonLoading(true);
                                                 try {
                                                     const { data } = await createMerchantTokenMutation();

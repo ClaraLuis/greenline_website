@@ -360,6 +360,7 @@ const InventorySettings = (props) => {
                                     disabled={buttonLoading}
                                     class={generalstyles.roundbutton + ' allcentered'}
                                     onClick={async () => {
+                                        if (buttonLoading) return;
                                         setbuttonLoading(true);
                                         try {
                                             if (
@@ -416,6 +417,7 @@ const InventorySettings = (props) => {
                                 style={{ height: '35px' }}
                                 class={generalstyles.roundbutton + ' allcentered p-0'}
                                 onClick={async () => {
+                                    if (buttonLoading) return;
                                     setbuttonLoading(true);
                                     try {
                                         const { data } = await removeMerchantAssignmentFromInventoryMutation();

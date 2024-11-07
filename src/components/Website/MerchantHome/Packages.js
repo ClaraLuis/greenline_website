@@ -358,6 +358,7 @@ const Packages = (props) => {
                         <div class="col-lg-12 p-0 allcentered">
                             <button
                                 onClick={async () => {
+                                    if (buttonLoading) return;
                                     setbuttonLoading(true);
                                     try {
                                         if (packagepayload?.ids?.length != 0 && packagepayload?.userId?.length != 0) {

@@ -223,6 +223,7 @@ const AddMerchant = (props) => {
             if (merchantPayload?.name?.length == 0) {
                 NotificationManager.warning('Name Can not be empty', 'Warning');
             } else {
+                if (buttonLoading) return;
                 setbuttonLoading(true);
                 try {
                     const { data } = await addMerchantMutation();
@@ -297,6 +298,7 @@ const AddMerchant = (props) => {
             if (merchantPayload?.name?.length == 0) {
                 NotificationManager.warning('Name Can not be empty', 'Warning');
             } else {
+                if (buttonLoading) return;
                 setbuttonLoading(true);
 
                 try {
@@ -545,6 +547,7 @@ const AddMerchant = (props) => {
                                                             button1class={generalstyles.roundbutton + '  mr-2 '}
                                                             button1placeholder={'Confirm address'}
                                                             button1onClick={async () => {
+                                                                if (buttonLoading) return;
                                                                 setbuttonLoading(true);
                                                                 if (addresspayload?.city?.length != 0 && addresspayload?.country?.length != 0 && addresspayload?.streetAddress?.length != 0) {
                                                                     try {

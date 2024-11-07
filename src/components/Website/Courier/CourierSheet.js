@@ -156,6 +156,7 @@ const CourierSheet = (props) => {
     });
 
     const handleupdateCourierSheet = async () => {
+        if (buttonLoading) return;
         setbuttonLoading(true);
         if (
             submitSheetPayload?.status == 'inProgress' ||

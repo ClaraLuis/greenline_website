@@ -37,6 +37,7 @@ const AddCustomer = (props) => {
     });
 
     const handleAddCustomer = async () => {
+        if (buttonLoading) return;
         setbuttonLoading(true);
         try {
             const { data } = await addCustomerMutation();

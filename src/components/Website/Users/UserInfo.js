@@ -106,6 +106,7 @@ const UserInfo = (props) => {
     const fetchHubsQuery = useQueryGQL('', fetchHubs(), filterHubs);
 
     const handleAddUser = async () => {
+        if (buttonLoading) return;
         setbuttonLoading(true);
 
         try {

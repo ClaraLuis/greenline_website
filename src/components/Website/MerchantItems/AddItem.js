@@ -704,6 +704,7 @@ const AddItem = (props) => {
                                                 style={{ height: '35px' }}
                                                 class={generalstyles.roundbutton + '  mb-1'}
                                                 onClick={async () => {
+                                                    if (buttonLoading) return;
                                                     setbuttonLoading(true);
                                                     if (handleValidations()) {
                                                         var tempOptions = [];
@@ -906,6 +907,7 @@ const AddItem = (props) => {
                                                 style={{ height: '35px' }}
                                                 class={generalstyles.roundbutton + '  mb-1'}
                                                 onClick={async () => {
+                                                    if (buttonLoading) return;
                                                     setbuttonLoading(true);
                                                     if (handleValidations()) {
                                                         // Assuming this code is inside an async function
@@ -1101,6 +1103,7 @@ const AddItem = (props) => {
                                                 style={{ height: '35px' }}
                                                 class={generalstyles.roundbutton + '  mb-1'}
                                                 onClick={async () => {
+                                                    if (buttonLoading) return;
                                                     setbuttonLoading(true);
                                                     if (handleValidations()) {
                                                         var tempOptions = [];

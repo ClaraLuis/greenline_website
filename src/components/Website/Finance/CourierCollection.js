@@ -522,6 +522,7 @@ const CourierCollection = (props) => {
                             button1class={generalstyles.roundbutton + ' mr-2 '}
                             button1placeholder={payload?.type == 'transfer' ? 'Transfer' : 'Process'}
                             button1onClick={async () => {
+                                if (buttonLoading) return;
                                 setbuttonLoading(true);
                                 if (isAuth([1, 28, 51])) {
                                     if (payload?.type == 'transfer') {

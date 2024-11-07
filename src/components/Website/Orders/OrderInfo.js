@@ -268,6 +268,7 @@ const OrderInfo = (props) => {
 
     const fetchMerchantItemVariantsQuery = useQueryGQL('', fetchMerchantItemVariants(), filter);
     const changePriceFunc = async () => {
+        if (buttonLoading) return;
         setbuttonLoading(true);
         try {
             var { data } = await changeOrderPriceMutation();
@@ -296,6 +297,7 @@ const OrderInfo = (props) => {
         setbuttonLoading(false);
     };
     const addOrderItemsFunc = async () => {
+        if (buttonLoading) return;
         setbuttonLoading(true);
         try {
             var temp = [];
@@ -329,6 +331,7 @@ const OrderInfo = (props) => {
     };
     const removeOrderItemsFunc = async () => {
         if (window.confirm('Are you sure you want to delete this item?')) {
+            if (buttonLoading) return;
             setbuttonLoading(true);
             try {
                 const { data } = await removeOrderItemsMutation();
@@ -1173,6 +1176,7 @@ const OrderInfo = (props) => {
                                                                 </div>
                                                                 <button
                                                                     onClick={async () => {
+                                                                        if (buttonLoading) return;
                                                                         setbuttonLoading(true);
                                                                         try {
                                                                             await linkCustomerMutation();
@@ -1206,6 +1210,7 @@ const OrderInfo = (props) => {
                                                                 <button
                                                                     class={generalstyles.roundbutton}
                                                                     onClick={async () => {
+                                                                        if (buttonLoading) return;
                                                                         setbuttonLoading(true);
                                                                         try {
                                                                             var { data } = await changeOrderCustomerInfoMutation();
@@ -1548,6 +1553,7 @@ const OrderInfo = (props) => {
                             button1class={generalstyles.roundbutton + '  mr-2 '}
                             button1placeholder={'Request Return'}
                             button1onClick={async () => {
+                                if (buttonLoading) return;
                                 setbuttonLoading(true);
 
                                 try {

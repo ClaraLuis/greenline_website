@@ -506,6 +506,7 @@ const MerchantPayments = (props) => {
                             button1class={generalstyles.roundbutton + ' mr-2 '}
                             button1placeholder={'Complete'}
                             button1onClick={async () => {
+                                if (buttonLoading) return;
                                 setbuttonLoading(true);
                                 try {
                                     const { data } = await completeMerchantPaymentsMutation();

@@ -249,6 +249,7 @@ const FinancialAccounts = (props) => {
                             button1class={generalstyles.roundbutton + '  mr-2 '}
                             button1placeholder={payload?.functype == 'add' ? 'Create Account' : 'Update Account'}
                             button1onClick={async () => {
+                                if (buttonLoading) return;
                                 setbuttonLoading(true);
                                 try {
                                     if (payload?.functype == 'add') {

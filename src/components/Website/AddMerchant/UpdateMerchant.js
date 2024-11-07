@@ -301,6 +301,8 @@ const UpdateMerchant = (props) => {
                                                         style={{ height: '35px' }}
                                                         class={generalstyles.roundbutton + ' allcentered p-0'}
                                                         onClick={async () => {
+                                                            if (buttonLoading) return;
+
                                                             setbuttonLoading(true);
                                                             try {
                                                                 const { data } = await updateMerchantMutation();
@@ -395,6 +397,7 @@ const UpdateMerchant = (props) => {
                                                         style={{ height: '35px' }}
                                                         class={generalstyles.roundbutton + ' allcentered p-0'}
                                                         onClick={async () => {
+                                                            if (buttonLoading) return;
                                                             setbuttonLoading(true);
                                                             try {
                                                                 const { data } = await updateMerchantOwnerMutation();
@@ -691,6 +694,7 @@ const UpdateMerchant = (props) => {
                                                         class={generalstyles.roundbutton + ' allcentered p-0'}
                                                         onClick={async () => {
                                                             if (!issimilarAddresses) {
+                                                                if (buttonLoading) return;
                                                                 setbuttonLoading(true);
                                                                 if (addresspayload?.city?.length != 0 && addresspayload?.country?.length != 0 && addresspayload?.streetAddress?.length != 0) {
                                                                     try {
@@ -729,6 +733,7 @@ const UpdateMerchant = (props) => {
                                                                 }
                                                                 setbuttonLoading(false);
                                                             } else {
+                                                                if (buttonLoading) return;
                                                                 setbuttonLoading(true);
                                                                 try {
                                                                     const { data } = await updateMerchantAddressMutation();
@@ -919,6 +924,7 @@ const UpdateMerchant = (props) => {
                                                             style={{ height: '35px' }}
                                                             class={generalstyles.roundbutton + ' allcentered p-0'}
                                                             onClick={async () => {
+                                                                if (buttonLoading) return;
                                                                 setbuttonLoading(true);
                                                                 try {
                                                                     const { data } = await updateMerchantBillingMutation();

@@ -349,6 +349,7 @@ const FinancialAccountInfo = (props) => {
                                     button1placeholder={'Add transaction'}
                                     button1onClick={async () => {
                                         // if(isAuth([]))
+                                        if (buttonLoading) return;
                                         setbuttonLoading(true);
                                         if (
                                             transactionpayload?.type?.length != 0 &&

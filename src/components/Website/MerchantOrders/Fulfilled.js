@@ -133,6 +133,7 @@ const Fulfilled = (props) => {
                             <button
                                 disabled={buttonLoading}
                                 onClick={async () => {
+                                    if (buttonLoading) return;
                                     setbuttonLoading(true);
                                     if (selectedOrders?.length != 0) {
                                         try {

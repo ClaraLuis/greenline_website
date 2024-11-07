@@ -1101,6 +1101,7 @@ keep data consistent.</span></p>
                                 class={generalstyles.roundbutton + '  mb-1 '}
                                 disabled={buttonLoading}
                                 onClick={async () => {
+                                    if (buttonLoading) return;
                                     setbuttonLoading(true);
                                     try {
                                         const { data } = await uploadExcelFileMutation();

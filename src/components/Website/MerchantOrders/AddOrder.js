@@ -468,6 +468,7 @@ const AddOrder = (props) => {
                             class={generalstyles.roundbutton}
                             onClick={async () => {
                                 if (buttonLoading) return;
+                                if (buttonLoading) return;
                                 setbuttonLoading(true);
                                 try {
                                     if (
@@ -837,6 +838,7 @@ const AddOrder = (props) => {
                                             </div>
                                             <button
                                                 onClick={async () => {
+                                                    if (buttonLoading) return;
                                                     setbuttonLoading(true);
                                                     try {
                                                         await linkCustomerMutation();
@@ -976,6 +978,7 @@ const AddOrder = (props) => {
                                                         button1class={generalstyles.roundbutton + '  mr-2 '}
                                                         button1placeholder={'Add address'}
                                                         button1onClick={async () => {
+                                                            if (buttonLoading) return;
                                                             setbuttonLoading(true);
                                                             if (addresspayload?.city?.length != 0 && addresspayload?.country?.length != 0 && addresspayload?.streetAddress?.length != 0) {
                                                                 var { data } = await fetchSimilarAddressesQuery({

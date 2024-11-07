@@ -69,6 +69,7 @@ const ImportNewItem = (props) => {
     });
 
     const handleIMportNewItem = async () => {
+        if (buttonLoading) return;
         setbuttonLoading(true);
         try {
             const { data } = await importNewMutation();

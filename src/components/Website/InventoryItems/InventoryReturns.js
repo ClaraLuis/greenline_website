@@ -239,6 +239,7 @@ const InventoryReturns = (props) => {
                             <button
                                 disabled={buttonLoading}
                                 onClick={async () => {
+                                    if (buttonLoading) return;
                                     setbuttonLoading(true);
                                     try {
                                         if (packagepayload?.ids?.length != 0 && packagepayload?.type?.length != 0 && packagepayload?.toInventoryId?.length != 0) {

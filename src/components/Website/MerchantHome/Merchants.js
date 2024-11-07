@@ -79,6 +79,7 @@ const Merchants = (props) => {
     const [search, setSearch] = useState('');
 
     const handleAddMerchant = async () => {
+        if (buttonLoading) return;
         setbuttonLoading(true);
         try {
             const { data } = await addMerchantMutation();
@@ -500,6 +501,7 @@ const Merchants = (props) => {
                                         disabled={buttonLoading}
                                         class={generalstyles.roundbutton + ' allcentered'}
                                         onClick={async () => {
+                                            if (buttonLoading) return;
                                             setbuttonLoading(true);
                                             try {
                                                 if (

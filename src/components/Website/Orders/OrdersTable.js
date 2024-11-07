@@ -652,6 +652,7 @@ const OrdersTable = (props) => {
                             button1class={generalstyles.roundbutton + '  mr-2 '}
                             button1placeholder={'Request Return'}
                             button1onClick={async () => {
+                                if (buttonLoading) return;
                                 setbuttonLoading(true);
 
                                 try {

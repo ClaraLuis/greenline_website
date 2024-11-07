@@ -113,6 +113,7 @@ const SheetsTable = (props) => {
                                                                 <Dropdown.Item
                                                                     onClick={async () => {
                                                                         if (!buttonLoading) {
+                                                                            if (buttonLoading) return;
                                                                             setbuttonLoading(true);
                                                                             await setsheetID(item?.id);
                                                                             try {

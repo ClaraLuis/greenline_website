@@ -434,6 +434,7 @@ const MerchantHome = (props) => {
                             button1class={generalstyles.roundbutton + '  mr-2 '}
                             button1placeholder={'Update'}
                             button1onClick={async () => {
+                                if (buttonLoading) return;
                                 setbuttonLoading(true);
                                 try {
                                     await addInventoryRent();

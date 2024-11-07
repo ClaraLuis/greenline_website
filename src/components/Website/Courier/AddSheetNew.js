@@ -80,6 +80,7 @@ const AddSheetNew = (props) => {
     });
 
     const handleAddCourierSheet = async () => {
+        if (buttonLoading) return;
         setbuttonLoading(true);
         if (queryParameters.get('sheetId')) {
             try {
@@ -418,6 +419,7 @@ const AddSheetNew = (props) => {
                                 style={{ height: '30px', minWidth: '170px' }}
                                 class={generalstyles.roundbutton + ' allcentered  p-0'}
                                 onClick={async () => {
+                                    if (buttonLoading) return;
                                     setbuttonLoading(true);
                                     if (sheetpayload?.orderIds?.length != 0) {
                                         try {

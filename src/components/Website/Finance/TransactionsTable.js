@@ -181,6 +181,7 @@ const TransactionsTable = (props) => {
                                                             onClick={async () => {
                                                                 await setstatuspayload({ ...statuspayload, id: item?.id, status: 'cancel' });
                                                                 if (window.confirm('Are you sure you want to cancel this transaction')) {
+                                                                    if (buttonLoading) return;
                                                                     setbuttonLoading(true);
                                                                     if (isAuth([1, 51])) {
                                                                         var { data } = await updateAnyFinancialTransactionMutation();
@@ -496,6 +497,7 @@ const TransactionsTable = (props) => {
                             button1onClick={async () => {
                                 try {
                                     if (statuspayload?.status?.length != 0) {
+                                        if (buttonLoading) return;
                                         setbuttonLoading(true);
 
                                         if (isAuth([1, 51])) {

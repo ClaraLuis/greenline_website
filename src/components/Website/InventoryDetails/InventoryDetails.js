@@ -721,6 +721,7 @@ const InventoryDetails = (props) => {
                                         class={generalstyles.roundbutton + '  mb-1 mx-2'}
                                         disabled={buttonLoading}
                                         onClick={async () => {
+                                            if (buttonLoading) return;
                                             setbuttonLoading(true);
                                             try {
                                                 if (merchantModal?.modalType == 'assign') {
@@ -790,6 +791,7 @@ const InventoryDetails = (props) => {
                                         class={generalstyles.roundbutton + '  mb-1 mx-2'}
                                         disabled={buttonLoading}
                                         onClick={async () => {
+                                            if (buttonLoading) return;
                                             setbuttonLoading(true);
                                             try {
                                                 if (merchantModal?.editType == 'rack') {
@@ -866,6 +868,7 @@ const InventoryDetails = (props) => {
                                         class={generalstyles.roundbutton + '  mb-1 mx-2'}
                                         disabled={buttonLoading}
                                         onClick={async () => {
+                                            if (buttonLoading) return;
                                             setbuttonLoading(true);
                                             try {
                                                 const { data } = await addRackLevelsMutation();

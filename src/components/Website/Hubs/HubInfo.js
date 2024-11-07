@@ -41,6 +41,7 @@ const HubInfo = (props) => {
     const handlecreateHub = async () => {
         if (props?.payload?.name?.length) {
             if (props?.payload?.governorateId) {
+                if (buttonLoading) return;
                 setbuttonLoading(true);
 
                 try {

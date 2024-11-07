@@ -112,6 +112,7 @@ const InventoryItems = (props) => {
     const { refetch: refetchInventories } = useQueryGQL('', fetchInventories(), filterInventories);
 
     const handleAddInventory = async () => {
+        if (buttonLoading) return;
         setbuttonLoading(true);
         try {
             const { data } = await addInvrntoryMutation();
@@ -789,6 +790,7 @@ const InventoryItems = (props) => {
                                 class={generalstyles.roundbutton + '  mb-1 text-capitalize'}
                                 disabled={buttonLoading}
                                 onClick={async () => {
+                                    if (buttonLoading) return;
                                     setbuttonLoading(true);
 
                                     if (importmodal?.type == 'import') {
