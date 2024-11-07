@@ -906,8 +906,11 @@ keep data consistent.</span></p>
                                                 style={{ height: '35px' }}
                                                 class={generalstyles.roundbutton + '  mb-1 mx-2'}
                                                 onClick={() => {
-                                                    // history.push('/additem');
-                                                    setmerchantModal(true);
+                                                    if (isAuth([1])) {
+                                                        setmerchantModal(true);
+                                                    } else {
+                                                        history.push('/additem');
+                                                    }
                                                 }}
                                             >
                                                 Add Single Item

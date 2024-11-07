@@ -288,14 +288,7 @@ const FilesPopup = (props) => {
                                     {unsupportedFiles.length ? <p>Please remove all unsupported files.</p> : ''}
                                     <div className={`${uploaderstyles.drop_container}` + ' w-100 d-flex align-items-center '}>
                                         <div class="row w-100 m-0">
-                                            <div
-                                                onDragOver={dragOver}
-                                                onDragEnter={dragEnter}
-                                                onDragLeave={dragLeave}
-                                                onDrop={fileDrop}
-                                                onClick={fileInputClicked}
-                                                class={'col-lg-12 text-center pt-5 pb-5'}
-                                            >
+                                            <div onDragOver={dragOver} onDragEnter={dragEnter} onDragLeave={dragLeave} onDrop={fileDrop} onClick={fileInputClicked} class={'col-lg-12 text-center'}>
                                                 <div className={`${uploaderstyles.drop_message}`}>
                                                     {!isuploading && (
                                                         <div class={'text-capitalize text-light'}>
@@ -431,25 +424,27 @@ const FilesPopup = (props) => {
                                         />
                                     </div>
                                     <div class="col-lg-12 my-3">
-                                        <div class="row m-0 w-100">
+                                        <div class="row m-0 w-100 allcentered">
                                             {paginateFilesQuery?.data?.paginateFiles?.data?.map((item, index) => {
                                                 return (
-                                                    <div
-                                                        onClick={() => {
-                                                            props?.onChange(item.url);
-                                                        }}
-                                                        style={{
-                                                            width: '100px',
-                                                            height: '100px',
-                                                            borderRadius: '0.25rem',
-                                                            border: '3px solid white',
-                                                            background: '#EFF4F8',
-                                                            cursor: 'pointer',
-                                                            boxShadow: '0 0 1.32vh #e6e6e6',
-                                                        }}
-                                                        class="m-3"
-                                                    >
-                                                        <img style={{ width: '100%', height: '100%', objectFit: 'contain' }} src={item.url} />
+                                                    <div class={uploaderstyles._Grid_g2n5w_1}>
+                                                        <div
+                                                            onClick={() => {
+                                                                props?.onChange(item.url);
+                                                            }}
+                                                            style={{
+                                                                width: '100px',
+                                                                height: '100px',
+                                                                borderRadius: '0.5rem',
+                                                                border: '4px solid white',
+                                                                background: 'rgba(241, 241, 241, 1)',
+                                                                cursor: 'pointer',
+                                                                boxShadow: '0 0 0 .0625rem #1718180d',
+                                                                margin: '1.25rem 0.75rem 0.7rem',
+                                                            }}
+                                                        >
+                                                            <img style={{ width: '100%', height: '100%', objectFit: 'contain' }} src={item.url} />
+                                                        </div>
                                                     </div>
                                                 );
                                             })}
