@@ -24,7 +24,7 @@ const { ValueContainer, Placeholder } = components;
 const InventorySettings = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, inventoryRentTypeContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, inventoryRentTypeContext, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
     const {
         useQueryGQL,
         fetchTransactions,
@@ -40,7 +40,6 @@ const InventorySettings = (props) => {
     } = API();
     const [importItemModel, setimportItemModel] = useState(false);
     const [inventorySettings, setinventorySettings] = useState({});
-    const [buttonLoading, setbuttonLoading] = useState(false);
 
     const [fetchRacksQuery, setfetchRacksQuery] = useState(null);
     const [fetchBoxesQuery, setfetchBoxesQuery] = useState(null);
@@ -357,11 +356,11 @@ const InventorySettings = (props) => {
                             </div>
                             <div class={'col-lg-12 d-flex justify-content-center mt-5'}>
                                 <button
-                                    disabled={buttonLoading}
+                                    disabled={buttonLoadingContext}
                                     class={generalstyles.roundbutton + ' allcentered'}
                                     onClick={async () => {
-                                        if (buttonLoading) return;
-                                        setbuttonLoading(true);
+                                        if (buttonLoadingContext) return;
+                                        setbuttonLoadingContext(true);
                                         try {
                                             if (
                                                 inventorySettings?.type &&
@@ -401,12 +400,12 @@ const InventorySettings = (props) => {
                                             NotificationManager.warning(errorMessage, 'Warning!');
                                             console.error('Error adding Merchant:', error);
                                         }
-                                        setbuttonLoading(false);
+                                        setbuttonLoadingContext(false);
                                     }}
                                     style={{ padding: '0px' }}
                                 >
-                                    {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                    {!buttonLoading && <span>{inventorySettings?.functype == 'add' ? 'Add' : 'Edit'}</span>}
+                                    {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                    {!buttonLoadingContext && <span>{inventorySettings?.functype == 'add' ? 'Add' : 'Edit'}</span>}
                                 </button>
                             </div>
                         </div>
@@ -417,8 +416,8 @@ const InventorySettings = (props) => {
                                 style={{ height: '35px' }}
                                 class={generalstyles.roundbutton + ' allcentered p-0'}
                                 onClick={async () => {
-                                    if (buttonLoading) return;
-                                    setbuttonLoading(true);
+                                    if (buttonLoadingContext) return;
+                                    setbuttonLoadingContext(true);
                                     try {
                                         const { data } = await removeMerchantAssignmentFromInventoryMutation();
                                     } catch (error) {
@@ -434,11 +433,11 @@ const InventorySettings = (props) => {
                                         NotificationManager.warning(errorMessage, 'Warning!');
                                         console.error('Error adding Inventory Rent:', error);
                                     }
-                                    setbuttonLoading(false);
+                                    setbuttonLoadingContext(false);
                                 }}
                             >
-                                {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                {!buttonLoading && <span>Remove</span>}
+                                {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                {!buttonLoadingContext && <span>Remove</span>}
                             </button>
                         </div>
                     )}

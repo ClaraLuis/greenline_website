@@ -31,7 +31,7 @@ const { ValueContainer, Placeholder } = components;
 const InventoryItems = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, dateformatter, isAuth, setpagetitle_context } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, dateformatter, isAuth, setpagetitle_context, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
     const { fetchUsers, useQueryGQL, fetchInventories, useMutationGQL, addInventory, fetchItemsInBox, fetchMerchants, importNew, fetchItemHistory, exportItem, importItem, useLazyQueryGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -40,7 +40,6 @@ const InventoryItems = (props) => {
     const [openModal, setopenModal] = useState(false);
     const [search, setSearch] = useState('');
     const [openInventoryModal, setopenInventoryModal] = useState(false);
-    const [buttonLoading, setbuttonLoading] = useState(false);
     const [importpayload, setimportpayload] = useState({
         id: '',
         count: '',
@@ -112,8 +111,8 @@ const InventoryItems = (props) => {
     const { refetch: refetchInventories } = useQueryGQL('', fetchInventories(), filterInventories);
 
     const handleAddInventory = async () => {
-        if (buttonLoading) return;
-        setbuttonLoading(true);
+        if (buttonLoadingContext) return;
+        setbuttonLoadingContext(true);
         try {
             const { data } = await addInvrntoryMutation();
             // setop(false);
@@ -133,7 +132,7 @@ const InventoryItems = (props) => {
             NotificationManager.warning(errorMessage, 'Warning!');
             console.error('Error adding Inventory:', error);
         }
-        setbuttonLoading(false);
+        setbuttonLoadingContext(false);
     };
     const fetchinventories = useQueryGQL('', fetchInventories(), filterInventories);
     const [filterItemInBox, setfilterItemInBox] = useState({
@@ -701,7 +700,7 @@ const InventoryItems = (props) => {
                             <button
                                 style={{ height: '35px' }}
                                 class={generalstyles.roundbutton + '  mb-1'}
-                                disabled={buttonLoading}
+                                disabled={buttonLoadingContext}
                                 onClick={() => {
                                     if (inventoryPayload?.name?.length == 0) {
                                         NotificationManager.warning('Name Can not be empty', 'Warning');
@@ -710,8 +709,8 @@ const InventoryItems = (props) => {
                                     }
                                 }}
                             >
-                                {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                {!buttonLoading && <span>Add item</span>}
+                                {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                {!buttonLoadingContext && <span>Add item</span>}
                             </button>
                         </div>
                     </div>
@@ -788,10 +787,10 @@ const InventoryItems = (props) => {
                             <button
                                 style={{ height: '35px' }}
                                 class={generalstyles.roundbutton + '  mb-1 text-capitalize'}
-                                disabled={buttonLoading}
+                                disabled={buttonLoadingContext}
                                 onClick={async () => {
-                                    if (buttonLoading) return;
-                                    setbuttonLoading(true);
+                                    if (buttonLoadingContext) return;
+                                    setbuttonLoadingContext(true);
 
                                     if (importmodal?.type == 'import') {
                                         try {
@@ -832,11 +831,11 @@ const InventoryItems = (props) => {
                                             console.error('Error exporting item:', error);
                                         }
                                     }
-                                    setbuttonLoading(false);
+                                    setbuttonLoadingContext(false);
                                 }}
                             >
-                                {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                {!buttonLoading && <span>{importmodal?.type} item</span>}
+                                {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                {!buttonLoadingContext && <span>{importmodal?.type} item</span>}
                             </button>
                         </div>
                     </div>

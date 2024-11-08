@@ -29,9 +29,9 @@ import { TbTruckDelivery } from 'react-icons/tb';
 const Packages = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, returnPackageStatusContext, returnPackageTypeContext, dateformatter } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, returnPackageStatusContext, returnPackageTypeContext, dateformatter, buttonLoadingContext, setbuttonLoadingContext } =
+        useContext(Contexthandlerscontext);
     const { useMutationGQL, fetchMerchants, assignPackageToCourier, fetchCouriers, fetchPackages, useQueryGQL, createReturnPackage } = API();
-    const [buttonLoading, setbuttonLoading] = useState(false);
     const { lang, langdetect } = useContext(LanguageContext);
     const [cartItems, setcartItems] = useState([]);
     const [packagepayload, setpackagepayload] = useState({
@@ -358,8 +358,8 @@ const Packages = (props) => {
                         <div class="col-lg-12 p-0 allcentered">
                             <button
                                 onClick={async () => {
-                                    if (buttonLoading) return;
-                                    setbuttonLoading(true);
+                                    if (buttonLoadingContext) return;
+                                    setbuttonLoadingContext(true);
                                     try {
                                         if (packagepayload?.ids?.length != 0 && packagepayload?.userId?.length != 0) {
                                             await assignPackageToCourierMutation();
@@ -381,13 +381,13 @@ const Packages = (props) => {
 
                                         NotificationManager.warning(errorMessage, 'Warning!');
                                     }
-                                    setbuttonLoading(false);
+                                    setbuttonLoadingContext(false);
                                 }}
-                                disabled={buttonLoading}
+                                disabled={buttonLoadingContext}
                                 class={generalstyles.roundbutton}
                             >
-                                {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                {!buttonLoading && <span>Assign to courier</span>}
+                                {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                {!buttonLoadingContext && <span>Assign to courier</span>}
                             </button>
                         </div>
                     </div>

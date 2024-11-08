@@ -32,7 +32,8 @@ const { ValueContainer, Placeholder } = components;
 const AddOrder = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, paymentTypeContext, orderTypeContext, orderStatusEnumContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, paymentTypeContext, orderTypeContext, orderStatusEnumContext, buttonLoadingContext, setbuttonLoadingContext } =
+        useContext(Contexthandlerscontext);
     const {
         useMutationGQL,
         fetchCustomerNameSuggestions,
@@ -91,7 +92,7 @@ const AddOrder = (props) => {
         { name: 'Order Items', isChecked: true },
         { name: 'User Info', isChecked: false },
     ]);
-    const [buttonLoading, setbuttonLoading] = useState(false);
+
     const [fetching, setfetching] = useState(false);
     const [userAddresses, setuserAddresses] = useState();
     const [search, setsearch] = useState('');
@@ -467,8 +468,8 @@ const AddOrder = (props) => {
                         <button
                             class={generalstyles.roundbutton}
                             onClick={async () => {
-                                if (buttonLoading) return;
-                                setbuttonLoading(true);
+                                if (buttonLoadingContext) return;
+                                setbuttonLoadingContext(true);
                                 try {
                                     if (
                                         orderpayload?.customerId?.length != 0 &&
@@ -509,11 +510,11 @@ const AddOrder = (props) => {
                                     NotificationManager.warning(errorMessage, 'Warning!');
                                     console.error('Error adding Merchant:', error);
                                 }
-                                setbuttonLoading(false);
+                                setbuttonLoadingContext(false);
                             }}
                         >
-                            {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                            {!buttonLoading && <span>Create Order</span>}
+                            {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                            {!buttonLoadingContext && <span>Create Order</span>}
                         </button>
                     </div>
                     <div class="col-lg-12 text-danger">
@@ -837,8 +838,8 @@ const AddOrder = (props) => {
                                             </div>
                                             <button
                                                 onClick={async () => {
-                                                    if (buttonLoading) return;
-                                                    setbuttonLoading(true);
+                                                    if (buttonLoadingContext) return;
+                                                    setbuttonLoadingContext(true);
                                                     try {
                                                         await linkCustomerMutation();
                                                         setcustomerFound(true);
@@ -855,14 +856,14 @@ const AddOrder = (props) => {
                                                         NotificationManager.warning(errorMessage, 'Warning!');
                                                         console.error('Error adding Merchant:', error);
                                                     }
-                                                    setbuttonLoading(false);
+                                                    setbuttonLoadingContext(false);
                                                 }}
                                                 style={{ height: '35px' }}
                                                 class={generalstyles.roundbutton + '  mb-1 mt-2'}
-                                                disabled={buttonLoading}
+                                                disabled={buttonLoadingContext}
                                             >
-                                                {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                                {!buttonLoading && <span>Create customer</span>}
+                                                {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                                {!buttonLoadingContext && <span>Create customer</span>}
                                             </button>
                                         </div>
                                     )}
@@ -973,12 +974,12 @@ const AddOrder = (props) => {
                                                         }
                                                         payload={addresspayload}
                                                         setpayload={setaddresspayload}
-                                                        button1disabled={buttonLoading}
+                                                        button1disabled={buttonLoadingContext}
                                                         button1class={generalstyles.roundbutton + '  mr-2 '}
                                                         button1placeholder={'Add address'}
                                                         button1onClick={async () => {
-                                                            if (buttonLoading) return;
-                                                            setbuttonLoading(true);
+                                                            if (buttonLoadingContext) return;
+                                                            setbuttonLoadingContext(true);
                                                             if (addresspayload?.city?.length != 0 && addresspayload?.country?.length != 0 && addresspayload?.streetAddress?.length != 0) {
                                                                 var { data } = await fetchSimilarAddressesQuery({
                                                                     variables: {
@@ -1035,7 +1036,7 @@ const AddOrder = (props) => {
                                                             } else {
                                                                 NotificationManager.warning('', 'Please complete the missing fields');
                                                             }
-                                                            setbuttonLoading(false);
+                                                            setbuttonLoadingContext(false);
                                                         }}
                                                     />
                                                 </div>

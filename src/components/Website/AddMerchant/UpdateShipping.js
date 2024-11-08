@@ -23,7 +23,7 @@ const UpdateShipping = (props) => {
     const { useQueryGQL, useMutationGQL, fetchGovernorates, findMerchantDomesticShippings, updateMerchantDomesticShipping, useLazyQueryGQL, addMerchant, createInventoryRent, fetchAllCountries } =
         API();
     const steps = ['Merchant Info', 'Shipping', 'Inventory Settings'];
-    const [buttonLoading, setbuttonLoading] = useState(false);
+
     const { lang, langdetect } = useContext(LanguageContext);
     const [governoratesItems, setgovernoratesItems] = useState([
         {

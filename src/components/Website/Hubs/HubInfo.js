@@ -22,13 +22,12 @@ const { ValueContainer, Placeholder } = components;
 const HubInfo = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { userRolesContext, userTypeContext, employeeTypeContext } = useContext(Contexthandlerscontext);
+    const { userRolesContext, userTypeContext, employeeTypeContext, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
     const { useQueryGQL, fetchUsers, useMutationGQL, createHub, editUserType, fetchMerchants, fetchInventories, fetchGovernorates } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [submit, setsubmit] = useState(false);
     const [changerolesmodal, setchangerolesmodal] = useState(false);
-    const [buttonLoading, setbuttonLoading] = useState(false);
 
     const [createHubMutation] = useMutationGQL(createHub(), {
         name: props?.payload?.name,
@@ -41,8 +40,8 @@ const HubInfo = (props) => {
     const handlecreateHub = async () => {
         if (props?.payload?.name?.length) {
             if (props?.payload?.governorateId) {
-                if (buttonLoading) return;
-                setbuttonLoading(true);
+                if (buttonLoadingContext) return;
+                setbuttonLoadingContext(true);
 
                 try {
                     var { data } = await createHubMutation();
@@ -65,7 +64,7 @@ const HubInfo = (props) => {
                     NotificationManager.warning(errorMessage, 'Warning!');
                     console.error('Error adding user:', error);
                 }
-                setbuttonLoading(false);
+                setbuttonLoadingContext(false);
             } else {
                 NotificationManager.warning('Choose Governorate', 'Warning!');
             }
@@ -125,7 +124,7 @@ const HubInfo = (props) => {
                                 ]}
                                 payload={props?.payload}
                                 setpayload={props?.setpayload}
-                                button1disabled={buttonLoading}
+                                button1disabled={buttonLoadingContext}
                                 button1class={generalstyles.roundbutton + '  mr-2 '}
                                 button1placeholder={props?.payload?.functype == 'add' ? lang.add : lang.edit}
                                 button1onClick={() => {

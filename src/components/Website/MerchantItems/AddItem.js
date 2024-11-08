@@ -26,12 +26,12 @@ import FilesPopup from '../FilesPopup.js';
 const AddItem = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setchosenItemContext, chosenItemContext, importedDataContext, isAuth, setpagetitle_context } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setchosenItemContext, chosenItemContext, importedDataContext, isAuth, setpagetitle_context, buttonLoadingContext, setbuttonLoadingContext } =
+        useContext(Contexthandlerscontext);
     const { fetchMerchantItems, useQueryGQL, useMutationGQL, fetchMerchants, addCompoundItem, updateMerchantItem, findOneItem, useLazyQueryGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const cookies = new Cookies();
-    const [buttonLoading, setbuttonLoading] = useState(false);
     const [itemIndex, setitemIndex] = useState(0);
     const [modelfrom, setmodelfrom] = useState('');
     const [indexes, setindexes] = useState({ color: 0, variant: 0 });
@@ -704,8 +704,8 @@ const AddItem = (props) => {
                                                 style={{ height: '35px' }}
                                                 class={generalstyles.roundbutton + '  mb-1'}
                                                 onClick={async () => {
-                                                    if (buttonLoading) return;
-                                                    setbuttonLoading(true);
+                                                    if (buttonLoadingContext) return;
+                                                    setbuttonLoadingContext(true);
                                                     if (handleValidations()) {
                                                         var tempOptions = [];
                                                         var tempValues = [];
@@ -873,12 +873,12 @@ const AddItem = (props) => {
                                                             }
                                                         }
                                                     }
-                                                    setbuttonLoading(false);
+                                                    setbuttonLoadingContext(false);
                                                 }}
-                                                disabled={buttonLoading}
+                                                disabled={buttonLoadingContext}
                                             >
-                                                {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                                {!buttonLoading && <span>Add item</span>}
+                                                {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                                {!buttonLoadingContext && <span>Add item</span>}
                                             </button>
                                             {importedDataContext?.length && (
                                                 <button
@@ -907,8 +907,8 @@ const AddItem = (props) => {
                                                 style={{ height: '35px' }}
                                                 class={generalstyles.roundbutton + '  mb-1'}
                                                 onClick={async () => {
-                                                    if (buttonLoading) return;
-                                                    setbuttonLoading(true);
+                                                    if (buttonLoadingContext) return;
+                                                    setbuttonLoadingContext(true);
                                                     if (handleValidations()) {
                                                         // Assuming this code is inside an async function
                                                         var tempOptions = [];
@@ -1080,12 +1080,12 @@ const AddItem = (props) => {
                                                             }
                                                         }
                                                     }
-                                                    setbuttonLoading(false);
+                                                    setbuttonLoadingContext(false);
                                                 }}
-                                                disabled={buttonLoading}
+                                                disabled={buttonLoadingContext}
                                             >
-                                                {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                                {!buttonLoading && <span>Add item</span>}
+                                                {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                                {!buttonLoadingContext && <span>Add item</span>}
                                             </button>
                                         </div>
                                     </div>
@@ -1103,8 +1103,8 @@ const AddItem = (props) => {
                                                 style={{ height: '35px' }}
                                                 class={generalstyles.roundbutton + '  mb-1'}
                                                 onClick={async () => {
-                                                    if (buttonLoading) return;
-                                                    setbuttonLoading(true);
+                                                    if (buttonLoadingContext) return;
+                                                    setbuttonLoadingContext(true);
                                                     if (handleValidations()) {
                                                         var tempOptions = [];
                                                         var tempValues = [];
@@ -1231,12 +1231,12 @@ const AddItem = (props) => {
                                                             handleMutationError(error);
                                                         }
                                                     }
-                                                    setbuttonLoading(false);
+                                                    setbuttonLoadingContext(false);
                                                 }}
-                                                disabled={buttonLoading}
+                                                disabled={buttonLoadingContext}
                                             >
-                                                {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                                {!buttonLoading && <span>Update item</span>}
+                                                {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                                {!buttonLoadingContext && <span>Update item</span>}
                                             </button>
                                         </div>
                                     </div>

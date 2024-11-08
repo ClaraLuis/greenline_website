@@ -28,7 +28,7 @@ const { ValueContainer, Placeholder } = components;
 const Merchants = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, inventoryRentTypeContext, chosenMerchantContext, isAuth, setpagetitle_context } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, inventoryRentTypeContext, chosenMerchantContext, isAuth, setpagetitle_context, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
     const { useQueryGQL, useMutationGQL, addMerchant, fetchMerchants, fetchItemHistory, exportItem, createInventoryRent, updateInventoryRent } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -75,12 +75,11 @@ const Merchants = (props) => {
     });
     const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
     const { refetch: refetchMerchants } = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
-    const [buttonLoading, setbuttonLoading] = useState(false);
     const [search, setSearch] = useState('');
 
     const handleAddMerchant = async () => {
-        if (buttonLoading) return;
-        setbuttonLoading(true);
+        if (buttonLoadingContext) return;
+        setbuttonLoadingContext(true);
         try {
             const { data } = await addMerchantMutation();
             refetchMerchants();
@@ -98,7 +97,7 @@ const Merchants = (props) => {
             NotificationManager.warning(errorMessage, 'Warning!');
             console.error('Error adding Merchant:', error);
         }
-        setbuttonLoading(false);
+        setbuttonLoadingContext(false);
     };
     useEffect(() => {
         setpageactive_context('/merchants');
@@ -343,7 +342,7 @@ const Merchants = (props) => {
                             <button
                                 style={{ height: '35px' }}
                                 class={generalstyles.roundbutton + '  mb-1'}
-                                disabled={buttonLoading}
+                                disabled={buttonLoadingContext}
                                 onClick={() => {
                                     if (merchantPayload?.name?.length == 0) {
                                         NotificationManager.warning('Name Can not be empty', 'Warning');
@@ -352,8 +351,8 @@ const Merchants = (props) => {
                                     }
                                 }}
                             >
-                                {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                {!buttonLoading && <span>Add Merchant</span>}
+                                {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                {!buttonLoadingContext && <span>Add Merchant</span>}
                             </button>
                         </div>
                     </div>
@@ -498,11 +497,11 @@ const Merchants = (props) => {
                                 </div>
                                 <div class={'col-lg-12 d-flex justify-content-center mt-5'}>
                                     <button
-                                        disabled={buttonLoading}
+                                        disabled={buttonLoadingContext}
                                         class={generalstyles.roundbutton + ' allcentered'}
                                         onClick={async () => {
-                                            if (buttonLoading) return;
-                                            setbuttonLoading(true);
+                                            if (buttonLoadingContext) return;
+                                            setbuttonLoadingContext(true);
                                             try {
                                                 if (
                                                     inventorySettings?.type &&
@@ -542,12 +541,12 @@ const Merchants = (props) => {
                                                 NotificationManager.warning(errorMessage, 'Warning!');
                                                 console.error('Error adding Merchant:', error);
                                             }
-                                            setbuttonLoading(false);
+                                            setbuttonLoadingContext(false);
                                         }}
                                         style={{ padding: '0px' }}
                                     >
-                                        {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                        {!buttonLoading && <span>{inventorySettings?.functype == 'add' ? 'Add' : 'Edit'}</span>}
+                                        {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                        {!buttonLoadingContext && <span>{inventorySettings?.functype == 'add' ? 'Add' : 'Edit'}</span>}
                                     </button>
                                 </div>
                             </div>

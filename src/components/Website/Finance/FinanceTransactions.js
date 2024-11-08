@@ -33,7 +33,8 @@ const { ValueContainer, Placeholder } = components;
 const FinanceTransactions = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, isAuth, dateformatter, setpagetitle_context, transactionStatusTypeContext, transactionTypeContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, isAuth, dateformatter, setpagetitle_context, transactionStatusTypeContext, transactionTypeContext, buttonLoadingContext, setbuttonLoadingContext } =
+        useContext(Contexthandlerscontext);
     const { fetchUsers, useQueryGQL, sendAnyFinancialTransaction, useMutationGQL, fetchTransactions, fetchFinancialAccounts, sendMyFinancialTransaction } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -74,7 +75,6 @@ const FinanceTransactions = (props) => {
     const fetchAllTransactionsQuery = useQueryGQL('', fetchTransactions(), filterTransactionsObj);
     const { refetch: refetchAllTransactionsQuery } = useQueryGQL('', fetchTransactions(), filterTransactionsObj);
 
-    const [buttonLoading, setbuttonLoading] = useState(false);
     const [filterAllFinancialAccountsObj, setfilterAllFinancialAccountsObj] = useState({
         isAsc: true,
         limit: 20,
@@ -554,12 +554,12 @@ const FinanceTransactions = (props) => {
                                     }
                                     payload={transactionpayload}
                                     setpayload={settransactionpayload}
-                                    button1disabled={buttonLoading}
+                                    button1disabled={buttonLoadingContext}
                                     button1class={generalstyles.roundbutton + '  mr-2 my-2 '}
                                     button1placeholder={'Add transaction'}
                                     button1onClick={async () => {
-                                        if (buttonLoading) return;
-                                        setbuttonLoading(true);
+                                        if (buttonLoadingContext) return;
+                                        setbuttonLoadingContext(true);
                                         if (
                                             transactionpayload?.type?.length != 0 &&
                                             transactionpayload?.amount?.length != 0 &&
@@ -590,7 +590,7 @@ const FinanceTransactions = (props) => {
                                         } else {
                                             NotificationManager.warning('complete all missing fields', 'Warning!');
                                         }
-                                        setbuttonLoading(false);
+                                        setbuttonLoadingContext(false);
                                     }}
                                 />
                             )}

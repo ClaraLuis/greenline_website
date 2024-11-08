@@ -27,7 +27,8 @@ const { ValueContainer, Placeholder } = components;
 const OrdersTable = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { orderStatusEnumContext, dateformatter, orderTypeContext, setchosenOrderContext, chosenOrderContext, isAuth } = useContext(Contexthandlerscontext);
+    const { orderStatusEnumContext, dateformatter, orderTypeContext, setchosenOrderContext, chosenOrderContext, isAuth, buttonLoadingContext, setbuttonLoadingContext } =
+        useContext(Contexthandlerscontext);
     const { requestOrderReturn, useMutationGQL, updateOrdersStatus } = API();
     const { lang, langdetect } = useContext(LanguageContext);
 
@@ -35,7 +36,7 @@ const OrdersTable = (props) => {
 
     const [fulfilllModal, setfulfilllModal] = useState(false);
     const [ordersToBeFulfilled, setordersToBeFulfilled] = useState([]);
-    const [buttonLoading, setbuttonLoading] = useState(false);
+
     const [submit, setsubmit] = useState(false);
     const [returnOrderModal, setreturnOrderModal] = useState(false);
     const [inventoryModal, setinventoryModal] = useState({ open: false, items: [] });
@@ -651,12 +652,12 @@ const OrdersTable = (props) => {
                             }
                             payload={requestReturnPayload}
                             setpayload={setrequestReturnPayload}
-                            button1disabled={buttonLoading}
+                            button1disabled={buttonLoadingContext}
                             button1class={generalstyles.roundbutton + '  mr-2 '}
                             button1placeholder={'Request Return'}
                             button1onClick={async () => {
-                                if (buttonLoading) return;
-                                setbuttonLoading(true);
+                                if (buttonLoadingContext) return;
+                                setbuttonLoadingContext(true);
 
                                 try {
                                     const data = await requestOrderReturnMutation();
@@ -679,7 +680,7 @@ const OrdersTable = (props) => {
 
                                     NotificationManager.warning(errorMessage, 'Warning!');
                                 }
-                                setbuttonLoading(false);
+                                setbuttonLoadingContext(false);
                             }}
                         />
                     </div>

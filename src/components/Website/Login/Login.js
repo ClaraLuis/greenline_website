@@ -20,10 +20,10 @@ const Login = () => {
     const { isValidEmailMutation, useMutationGQL, useQueryGQL, useLazyQueryGQL } = API();
     let history = useHistory();
     const [otp, setOtp] = useState('');
-    const [buttonLoading, setbuttonLoading] = useState(false);
+
     const queryParameters = new URLSearchParams(window.location.search);
     const { loggedincontext, setloggedincontext } = useContext(Loggedincontext);
-    const { setpageactive_context, setpagetitle_context, setUserInfoContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, setUserInfoContext, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
     useEffect(() => {
         setpagetitle_context('login');
         setpageactive_context('/login');
@@ -61,8 +61,8 @@ const Login = () => {
     }, [email, password, confirmpassword, isValid, inFirebase]);
 
     const handleSubmit = async () => {
-        if (buttonLoading) return;
-        setbuttonLoading(true);
+        if (buttonLoadingContext) return;
+        setbuttonLoadingContext(true);
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
         if (email != undefined && email?.length != 0 && regex.test(email)) {
@@ -85,8 +85,8 @@ const Login = () => {
                     }
                 }
             } else {
-                if (buttonLoading) return;
-                setbuttonLoading(true);
+                if (buttonLoadingContext) return;
+                setbuttonLoadingContext(true);
 
                 if (!inFirebase) {
                     if (password === confirmpassword) {
@@ -119,13 +119,13 @@ const Login = () => {
                             NotificationManager.warning(message, 'Warning');
                         });
                 }
-                setbuttonLoading(false);
+                setbuttonLoadingContext(false);
             }
         } else {
             NotificationManager.warning('Please enter a valid email', 'Warning');
         }
 
-        setbuttonLoading(false);
+        setbuttonLoadingContext(false);
     };
 
     const handleError = (error) => {
@@ -326,12 +326,12 @@ const Login = () => {
                                                     width: '100%',
                                                     height: 48,
                                                 }}
-                                                disabled={buttonLoading}
+                                                disabled={buttonLoadingContext}
                                             >
-                                                {buttonLoading && <CircularProgress color="white" width="20px" height="20px" duration="1s" />}
-                                                {!isValid && <>{!buttonLoading && <span>{isNew ? 'Signup' : 'Login'} </span>}</>}
-                                                {!inFirebase && isValid && <>{!buttonLoading && <span>{'Signup'} </span>}</>}
-                                                {inFirebase && isValid && <>{!buttonLoading && <span>{'Login'} </span>}</>}
+                                                {buttonLoadingContext && <CircularProgress color="white" width="20px" height="20px" duration="1s" />}
+                                                {!isValid && <>{!buttonLoadingContext && <span>{isNew ? 'Signup' : 'Login'} </span>}</>}
+                                                {!inFirebase && isValid && <>{!buttonLoadingContext && <span>{'Signup'} </span>}</>}
+                                                {inFirebase && isValid && <>{!buttonLoadingContext && <span>{'Login'} </span>}</>}
                                             </button>
                                         </div>
                                     </div>

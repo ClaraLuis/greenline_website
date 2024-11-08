@@ -34,7 +34,7 @@ import Decimal from 'decimal.js';
 const MerchantPayments = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, isAuth, setpagetitle_context } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, isAuth, setpagetitle_context, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
     const {
         useQueryGQL,
         fetchMerchants,
@@ -48,7 +48,6 @@ const MerchantPayments = (props) => {
     const cookies = new Cookies();
 
     const { lang, langdetect } = useContext(LanguageContext);
-    const [buttonLoading, setbuttonLoading] = useState(false);
     const [openModal, setopenModal] = useState(false);
     const [chosenMerchantsArray, setchosenMerchantsArray] = useState([]);
     const [total, setTotal] = useState(0);
@@ -502,12 +501,12 @@ const MerchantPayments = (props) => {
                             attr={[{ name: 'Description', attr: 'description', type: 'textarea', size: '12' }]}
                             payload={payload}
                             setpayload={setpayload}
-                            button1disabled={buttonLoading}
+                            button1disabled={buttonLoadingContext}
                             button1class={generalstyles.roundbutton + ' mr-2 '}
                             button1placeholder={'Complete'}
                             button1onClick={async () => {
-                                if (buttonLoading) return;
-                                setbuttonLoading(true);
+                                if (buttonLoadingContext) return;
+                                setbuttonLoadingContext(true);
                                 try {
                                     const { data } = await completeMerchantPaymentsMutation();
                                     refetchMerchantPaymentTransactionsQuery();
@@ -526,7 +525,7 @@ const MerchantPayments = (props) => {
 
                                     NotificationManager.warning(errorMessage, 'Warning!');
                                 }
-                                setbuttonLoading(false);
+                                setbuttonLoadingContext(false);
                             }}
                         />
                     </div>

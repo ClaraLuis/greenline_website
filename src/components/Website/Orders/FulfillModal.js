@@ -26,14 +26,13 @@ const { ValueContainer, Placeholder } = components;
 const FulfillModal = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { orderStatusEnumContext, dateformatter, orderTypeContext, setchosenOrderContext, chosenOrderContext, isAuth } = useContext(Contexthandlerscontext);
+    const { orderStatusEnumContext, dateformatter, orderTypeContext, setchosenOrderContext, chosenOrderContext, isAuth, buttonLoadingContext, setbuttonLoadingContext } =
+        useContext(Contexthandlerscontext);
     const { requestOrderReturn, useMutationGQL, updateOrdersStatus } = API();
     const { lang, langdetect } = useContext(LanguageContext);
 
     const [itemScanned, setitemScanned] = useState([]);
     const [index, setindex] = useState(0);
-
-    const [buttonLoading, setbuttonLoading] = useState(false);
 
     const [updateOrdersStatusMutation] = useMutationGQL(updateOrdersStatus(), {
         status: 'fulfilled',
@@ -141,8 +140,8 @@ const FulfillModal = (props) => {
                             class={generalstyles.roundbutton}
                             style={{ height: '35px' }}
                             onClick={async () => {
-                                if (buttonLoading) return;
-                                setbuttonLoading(true);
+                                if (buttonLoadingContext) return;
+                                setbuttonLoadingContext(true);
                                 try {
                                     const { data } = await updateOrdersStatusMutation();
                                     NotificationManager.success('', 'Status changed successfully');
@@ -163,12 +162,12 @@ const FulfillModal = (props) => {
 
                                     NotificationManager.warning(errorMessage, 'Warning!');
                                 }
-                                setbuttonLoading(false);
+                                setbuttonLoadingContext(false);
                             }}
-                            disabled={!allItemsScanned || buttonLoading}
+                            disabled={!allItemsScanned || buttonLoadingContext}
                         >
-                            {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                            {!buttonLoading && <span> Fulfill Order</span>}
+                            {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                            {!buttonLoadingContext && <span> Fulfill Order</span>}
                         </button>
                     </div>
                 </Modal.Body>

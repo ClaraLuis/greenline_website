@@ -29,14 +29,14 @@ const UserInfo = (props) => {
     let history = useHistory();
     const cookies = new Cookies();
 
-    const { userRolesContext, userTypeContext, employeeTypeContext, isAuth } = useContext(Contexthandlerscontext);
+    const { userRolesContext, userTypeContext, employeeTypeContext, isAuth, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
     const { useQueryGQL, fetchUsers, useMutationGQL, addUser, editUserType, fetchMerchants, fetchInventories, fetchHubs, updateEmployeeInfo } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [submit, setsubmit] = useState(false);
     const [edit, setedit] = useState(false);
     const [changerolesmodal, setchangerolesmodal] = useState(false);
-    const [buttonLoading, setbuttonLoading] = useState(false);
+
     const groupedRoles = _.groupBy(props?.payload?.userRoles, (role) => role.role.type);
 
     // Transform into desired format
@@ -106,8 +106,8 @@ const UserInfo = (props) => {
     const fetchHubsQuery = useQueryGQL('', fetchHubs(), filterHubs);
 
     const handleAddUser = async () => {
-        if (buttonLoading) return;
-        setbuttonLoading(true);
+        if (buttonLoadingContext) return;
+        setbuttonLoadingContext(true);
 
         try {
             if (props?.payload.functype == 'edit') {
@@ -146,7 +146,7 @@ const UserInfo = (props) => {
             NotificationManager.warning(errorMessage, 'Warning!');
             console.error('Error adding user:', error);
         }
-        setbuttonLoading(false);
+        setbuttonLoadingContext(false);
     };
 
     return (
@@ -375,7 +375,7 @@ const UserInfo = (props) => {
                                         ]}
                                         payload={props?.payload}
                                         setpayload={props?.setpayload}
-                                        button1disabled={buttonLoading}
+                                        button1disabled={buttonLoadingContext}
                                         button1class={generalstyles.roundbutton + '  mr-2 '}
                                         button1placeholder={props?.payload?.functype == 'add' ? lang.add : lang.edit}
                                         button1onClick={() => {
@@ -564,7 +564,7 @@ const UserInfo = (props) => {
                                     }
                                     payload={props?.payload}
                                     setpayload={props?.setpayload}
-                                    button1disabled={buttonLoading}
+                                    button1disabled={buttonLoadingContext}
                                     button1class={generalstyles.roundbutton + '  mr-2 '}
                                     button1placeholder={props?.payload?.functype == 'add' ? lang.add : lang.edit}
                                     button1onClick={() => {

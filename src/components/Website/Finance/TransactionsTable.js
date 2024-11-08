@@ -27,7 +27,8 @@ const { ValueContainer, Placeholder } = components;
 const TransactionsTable = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { transactionStatusTypeContext, setchosenOrderContext, isAuth, transactionStatusesSelectContext, dateformatter } = useContext(Contexthandlerscontext);
+    const { transactionStatusTypeContext, setchosenOrderContext, isAuth, transactionStatusesSelectContext, dateformatter, buttonLoadingContext, setbuttonLoadingContext } =
+        useContext(Contexthandlerscontext);
     const { fetchUsers, useQueryGQL, updateAnyFinancialTransaction, updateMyFinancialTransaction, useMutationGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -68,7 +69,6 @@ const TransactionsTable = (props) => {
     const [submit, setsubmit] = useState(false);
 
     const [transactionhistorymodal, settransactionhistorymodal] = useState(false);
-    const [buttonLoading, setbuttonLoading] = useState(false);
     const [updateAnyFinancialTransactionMutation] = useMutationGQL(updateAnyFinancialTransaction(), {
         id: statuspayload?.id,
         description: statuspayload?.description,
@@ -181,8 +181,8 @@ const TransactionsTable = (props) => {
                                                             onClick={async () => {
                                                                 await setstatuspayload({ ...statuspayload, id: item?.id, status: 'cancel' });
                                                                 if (window.confirm('Are you sure you want to cancel this transaction')) {
-                                                                    if (buttonLoading) return;
-                                                                    setbuttonLoading(true);
+                                                                    if (buttonLoadingContext) return;
+                                                                    setbuttonLoadingContext(true);
                                                                     if (isAuth([1, 51])) {
                                                                         var { data } = await updateAnyFinancialTransactionMutation();
                                                                     } else {
@@ -193,7 +193,7 @@ const TransactionsTable = (props) => {
                                                                     } else {
                                                                         NotificationManager.warning(data?.updateAnyFinancialTransaction?.message, 'Warning!');
                                                                     }
-                                                                    setbuttonLoading(false);
+                                                                    setbuttonLoadingContext(false);
                                                                 }
                                                             }}
                                                             style={{
@@ -201,7 +201,7 @@ const TransactionsTable = (props) => {
                                                                 width: '30px',
                                                             }}
                                                             class={' iconhover allcentered '}
-                                                            disabled={buttonLoading}
+                                                            disabled={buttonLoadingContext}
                                                         >
                                                             <FcCancel size={25} />
                                                         </button>
@@ -491,14 +491,14 @@ const TransactionsTable = (props) => {
                             ]}
                             payload={statuspayload}
                             setpayload={setstatuspayload}
-                            button1disabled={buttonLoading}
+                            button1disabled={buttonLoadingContext}
                             button1class={generalstyles.roundbutton + '  mr-2 my-3 '}
                             button1placeholder={'Update status'}
                             button1onClick={async () => {
                                 try {
                                     if (statuspayload?.status?.length != 0) {
-                                        if (buttonLoading) return;
-                                        setbuttonLoading(true);
+                                        if (buttonLoadingContext) return;
+                                        setbuttonLoadingContext(true);
 
                                         if (isAuth([1, 51])) {
                                             var { data } = await updateAnyFinancialTransactionMutation();
@@ -511,7 +511,7 @@ const TransactionsTable = (props) => {
                                         } else {
                                             NotificationManager.warning(data?.updateAnyFinancialTransaction?.message, 'Warning!');
                                         }
-                                        setbuttonLoading(false);
+                                        setbuttonLoadingContext(false);
                                     } else {
                                         NotificationManager.warning('Choose Status First', 'Warning!');
                                     }

@@ -27,7 +27,7 @@ const ImportNewItem = (props) => {
     let history = useHistory();
     const cookies = new Cookies();
 
-    const { setpageactive_context, dateformatter } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, dateformatter, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
     const { fetchMerchants, useQueryGQL, fetchInventories, useMutationGQL, useLazyQueryGQL, fetchMerchantItemVariants, fetchRacks, importNew, fetchItemHistory } = API();
     const [search, setsearch] = useState('');
 
@@ -39,7 +39,7 @@ const ImportNewItem = (props) => {
     });
     const [step, setstep] = useState(0);
     const [itemChosen, setitemChosen] = useState({});
-    const [buttonLoading, setbuttonLoading] = useState(false);
+
     const [filterInventories, setfilterInventories] = useState({
         limit: 10,
         afterCursor: null,
@@ -69,8 +69,8 @@ const ImportNewItem = (props) => {
     });
 
     const handleIMportNewItem = async () => {
-        if (buttonLoading) return;
-        setbuttonLoading(true);
+        if (buttonLoadingContext) return;
+        setbuttonLoadingContext(true);
         try {
             const { data } = await importNewMutation();
             // setop(false);
@@ -99,7 +99,7 @@ const ImportNewItem = (props) => {
             NotificationManager.warning(errorMessage, 'Warning!');
             console.error('Error adding user:', error);
         }
-        setbuttonLoading(false);
+        setbuttonLoadingContext(false);
     };
     const fetchinventories = useQueryGQL('', fetchInventories(), filterInventories);
     // const fetchRacksQuery = useQueryGQL('', fetchRacks(filter));
@@ -589,10 +589,10 @@ const ImportNewItem = (props) => {
                                 onClick={() => {
                                     handleIMportNewItem();
                                 }}
-                                disabled={buttonLoading}
+                                disabled={buttonLoadingContext}
                             >
-                                {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                {!buttonLoading && <span>Import</span>}
+                                {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                {!buttonLoadingContext && <span>Import</span>}
                             </button>
                         </div>
                     </div>

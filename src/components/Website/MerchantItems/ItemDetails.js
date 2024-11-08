@@ -33,7 +33,6 @@ const ItemDetails = (props) => {
 
     const { lang, langdetect } = useContext(LanguageContext);
     const cookies = new Cookies();
-    const [buttonLoading, setbuttonLoading] = useState(false);
     const [itemIndex, setitemIndex] = useState(0);
     const [itempayload, setitempayload] = useState({
         functype: 'add',

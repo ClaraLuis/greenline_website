@@ -39,7 +39,8 @@ const OrderInfo = (props) => {
     let history = useHistory();
     const cookies = new Cookies();
 
-    const { setchosenOrderContext, chosenOrderContext, dateformatter, orderStatusEnumContext, orderTypeContext, setpagetitle_context, isAuth } = useContext(Contexthandlerscontext);
+    const { setchosenOrderContext, chosenOrderContext, dateformatter, orderStatusEnumContext, orderTypeContext, setpagetitle_context, isAuth, buttonLoadingContext, setbuttonLoadingContext } =
+        useContext(Contexthandlerscontext);
     const {
         useQueryGQL,
         useMutationGQL,
@@ -63,7 +64,7 @@ const OrderInfo = (props) => {
     const [diffInDays, setdiffInDays] = useState(0);
     const [orderItemIds, setorderItemIds] = useState([]);
     const [historyType, sethistoryType] = useState('order');
-    const [buttonLoading, setbuttonLoading] = useState(false);
+
     const [returnOrderModal, setreturnOrderModal] = useState(false);
     const [submit, setsubmit] = useState(false);
     const [newCustomer, setnewCustomer] = useState(false);
@@ -268,8 +269,8 @@ const OrderInfo = (props) => {
 
     const fetchMerchantItemVariantsQuery = useQueryGQL('', fetchMerchantItemVariants(), filter);
     const changePriceFunc = async () => {
-        if (buttonLoading) return;
-        setbuttonLoading(true);
+        if (buttonLoadingContext) return;
+        setbuttonLoadingContext(true);
         try {
             var { data } = await changeOrderPriceMutation();
             if (data?.changeOrderPrice?.success == true) {
@@ -294,11 +295,11 @@ const OrderInfo = (props) => {
             NotificationManager.warning(errorMessage, 'Warning!');
             console.error('Error adding Merchant:', error);
         }
-        setbuttonLoading(false);
+        setbuttonLoadingContext(false);
     };
     const addOrderItemsFunc = async () => {
-        if (buttonLoading) return;
-        setbuttonLoading(true);
+        if (buttonLoadingContext) return;
+        setbuttonLoadingContext(true);
         try {
             var temp = [];
             await itemsModal?.items?.map((item, index) => {
@@ -327,12 +328,12 @@ const OrderInfo = (props) => {
             NotificationManager.warning(errorMessage, 'Warning!');
             console.error('Error adding Merchant:', error);
         }
-        setbuttonLoading(false);
+        setbuttonLoadingContext(false);
     };
     const removeOrderItemsFunc = async () => {
         if (window.confirm('Are you sure you want to delete this item?')) {
-            if (buttonLoading) return;
-            setbuttonLoading(true);
+            if (buttonLoadingContext) return;
+            setbuttonLoadingContext(true);
             try {
                 const { data } = await removeOrderItemsMutation();
                 if (data?.removeOrderItems?.success == true) {
@@ -356,7 +357,7 @@ const OrderInfo = (props) => {
                 NotificationManager.warning(errorMessage, 'Warning!');
                 console.error('Error adding Inventory Rent:', error);
             }
-            setbuttonLoading(false);
+            setbuttonLoadingContext(false);
         }
     };
     useEffect(async () => {
@@ -900,7 +901,7 @@ const OrderInfo = (props) => {
                                                                                 style={{ width: '30px', height: '30px' }}
                                                                                 className="iconhover allcentered"
                                                                                 onClick={async () => {
-                                                                                    if (!buttonLoading) {
+                                                                                    if (!buttonLoadingContext) {
                                                                                         const temp = [...orderItemIds, orderItem.id];
                                                                                         await setorderItemIds(temp);
                                                                                         if (!chosenOrderContext?.originalPrice) {
@@ -1191,8 +1192,8 @@ const OrderInfo = (props) => {
                                                                 </div>
                                                                 <button
                                                                     onClick={async () => {
-                                                                        if (buttonLoading) return;
-                                                                        setbuttonLoading(true);
+                                                                        if (buttonLoadingContext) return;
+                                                                        setbuttonLoadingContext(true);
                                                                         try {
                                                                             await linkCustomerMutation();
                                                                             setcustomerFound(true);
@@ -1209,14 +1210,14 @@ const OrderInfo = (props) => {
                                                                             NotificationManager.warning(errorMessage, 'Warning!');
                                                                             console.error('Error adding Merchant:', error);
                                                                         }
-                                                                        setbuttonLoading(false);
+                                                                        setbuttonLoadingContext(false);
                                                                     }}
                                                                     style={{ height: '35px' }}
                                                                     class={generalstyles.roundbutton + '  mb-1 mt-2'}
-                                                                    disabled={buttonLoading}
+                                                                    disabled={buttonLoadingContext}
                                                                 >
-                                                                    {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                                                    {!buttonLoading && <span>Create customer</span>}
+                                                                    {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                                                    {!buttonLoadingContext && <span>Create customer</span>}
                                                                 </button>
                                                             </div>
                                                         )}
@@ -1225,8 +1226,8 @@ const OrderInfo = (props) => {
                                                                 <button
                                                                     class={generalstyles.roundbutton}
                                                                     onClick={async () => {
-                                                                        if (buttonLoading) return;
-                                                                        setbuttonLoading(true);
+                                                                        if (buttonLoadingContext) return;
+                                                                        setbuttonLoadingContext(true);
                                                                         try {
                                                                             var { data } = await changeOrderCustomerInfoMutation();
                                                                             if (data?.changeOrderCustomerInfo?.success == true) {
@@ -1250,11 +1251,11 @@ const OrderInfo = (props) => {
                                                                             NotificationManager.warning(errorMessage, 'Warning!');
                                                                             console.error('Error adding Merchant:', error);
                                                                         }
-                                                                        setbuttonLoading(false);
+                                                                        setbuttonLoadingContext(false);
                                                                     }}
                                                                 >
-                                                                    {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                                                    {!buttonLoading && <span>Update Customers</span>}
+                                                                    {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                                                    {!buttonLoadingContext && <span>Update Customers</span>}
                                                                 </button>
                                                             </div>
                                                         )}
@@ -1346,8 +1347,8 @@ const OrderInfo = (props) => {
                                     addOrderItemsFunc();
                                 }}
                             >
-                                {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                {!buttonLoading && <span>Add Items</span>}
+                                {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                {!buttonLoadingContext && <span>Add Items</span>}
                             </button>
                         </div>
                         <div class="col-lg-6 p-0 mb-3">
@@ -1564,12 +1565,12 @@ const OrderInfo = (props) => {
                             }
                             payload={requestReturnPayload}
                             setpayload={setrequestReturnPayload}
-                            button1disabled={buttonLoading}
+                            button1disabled={buttonLoadingContext}
                             button1class={generalstyles.roundbutton + '  mr-2 '}
                             button1placeholder={'Request Return'}
                             button1onClick={async () => {
-                                if (buttonLoading) return;
-                                setbuttonLoading(true);
+                                if (buttonLoadingContext) return;
+                                setbuttonLoadingContext(true);
 
                                 try {
                                     const data = await requestOrderReturnMutation();
@@ -1594,7 +1595,7 @@ const OrderInfo = (props) => {
 
                                     NotificationManager.warning(errorMessage, 'Warning!');
                                 }
-                                setbuttonLoading(false);
+                                setbuttonLoadingContext(false);
                             }}
                         />
                     </div>
@@ -1717,10 +1718,12 @@ const OrderInfo = (props) => {
                                             await changePriceFunc();
                                         }
                                     }}
-                                    disabled={buttonLoading}
+                                    disabled={buttonLoadingContext}
                                 >
-                                    {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                    {!buttonLoading && <span>{orderLogsModal?.func == 'removeitems' ? 'Remove items' : orderLogsModal?.func == 'additems' ? 'Add items' : 'Change order price'}</span>}
+                                    {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                    {!buttonLoadingContext && (
+                                        <span>{orderLogsModal?.func == 'removeitems' ? 'Remove items' : orderLogsModal?.func == 'additems' ? 'Add items' : 'Change order price'}</span>
+                                    )}
                                 </button>
                             </div>
                         </div>

@@ -23,13 +23,13 @@ const WebToken = (props) => {
     let history = useHistory();
     const cookies = new Cookies();
 
-    const { setpageactive_context, setpagetitle_context, dateformatter, isAuth } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, dateformatter, isAuth, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
     const { fetchUsers, useQueryGQL, useLazyQueryGQL, findOneMerchant, useMutationNoInputGQL, createMerchantToken } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
 
     const [merchantPayload, setmerchantPayload] = useState({});
-    const [buttonLoading, setbuttonLoading] = useState(false);
+
     const [copied, setcopied] = useState(false);
     const [show, setshow] = useState(false);
 
@@ -102,9 +102,9 @@ const WebToken = (props) => {
                                         style={{ height: '35px' }}
                                         class={generalstyles.roundbutton + '  mx-1'}
                                         onClick={async () => {
-                                            if (!buttonLoading) {
-                                                if (buttonLoading) return;
-                                                setbuttonLoading(true);
+                                            if (!buttonLoadingContext) {
+                                                if (buttonLoadingContext) return;
+                                                setbuttonLoadingContext(true);
                                                 try {
                                                     const { data } = await createMerchantTokenMutation();
 
@@ -126,14 +126,14 @@ const WebToken = (props) => {
                                                     }
                                                     NotificationManager.warning(errorMessage, 'Warning!');
                                                 }
-                                                setbuttonLoading(false);
+                                                setbuttonLoadingContext(false);
                                             }
                                         }}
-                                        disabled={buttonLoading}
+                                        disabled={buttonLoadingContext}
                                     >
-                                        {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                        {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
 
-                                        {!buttonLoading && <span> {merchantPayload?.webToken ? 'Regenerate Token' : 'Generate Token'}</span>}
+                                        {!buttonLoadingContext && <span> {merchantPayload?.webToken ? 'Regenerate Token' : 'Generate Token'}</span>}
                                     </button>
                                 </div>
                             </div>

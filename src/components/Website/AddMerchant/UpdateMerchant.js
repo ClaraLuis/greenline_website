@@ -22,11 +22,10 @@ import { MdClose } from 'react-icons/md';
 const UpdateMerchant = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, isAuth, dateformatter } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, isAuth, dateformatter, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
     const { useQueryGQL, useMutationGQL, fetchGovernorates, findOneMerchant, useLazyQueryGQL, fetchSimilarAddresses, fetchUsers, fetchMerchants, updateMerchant, fetchAllCountries, findAllZones } =
         API();
     const steps = ['Merchant Info', 'Shipping', 'Inventory Settings'];
-    const [buttonLoading, setbuttonLoading] = useState(false);
     const { lang, langdetect } = useContext(LanguageContext);
     const [similarAddresses, setsimilarAddresses] = useState([]);
     const [issimilarAddresses, setissimilarAddresses] = useState(false);
@@ -301,9 +300,9 @@ const UpdateMerchant = (props) => {
                                                         style={{ height: '35px' }}
                                                         class={generalstyles.roundbutton + ' allcentered p-0'}
                                                         onClick={async () => {
-                                                            if (buttonLoading) return;
+                                                            if (buttonLoadingContext) return;
 
-                                                            setbuttonLoading(true);
+                                                            setbuttonLoadingContext(true);
                                                             try {
                                                                 const { data } = await updateMerchantMutation();
                                                                 refetchfindOneMerchantQuery();
@@ -320,11 +319,11 @@ const UpdateMerchant = (props) => {
                                                                 NotificationManager.warning(errorMessage, 'Warning!');
                                                                 console.error('Error adding Inventory Rent:', error);
                                                             }
-                                                            setbuttonLoading(false);
+                                                            setbuttonLoadingContext(false);
                                                         }}
                                                     >
-                                                        {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                                        {!buttonLoading && <span>Update</span>}
+                                                        {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                                        {!buttonLoadingContext && <span>Update</span>}
                                                     </button>
                                                 </div>
                                             </div>
@@ -397,8 +396,8 @@ const UpdateMerchant = (props) => {
                                                         style={{ height: '35px' }}
                                                         class={generalstyles.roundbutton + ' allcentered p-0'}
                                                         onClick={async () => {
-                                                            if (buttonLoading) return;
-                                                            setbuttonLoading(true);
+                                                            if (buttonLoadingContext) return;
+                                                            setbuttonLoadingContext(true);
                                                             try {
                                                                 const { data } = await updateMerchantOwnerMutation();
                                                                 refetchfindOneMerchantQuery();
@@ -415,11 +414,11 @@ const UpdateMerchant = (props) => {
                                                                 NotificationManager.warning(errorMessage, 'Warning!');
                                                                 console.error('Error adding Inventory Rent:', error);
                                                             }
-                                                            setbuttonLoading(false);
+                                                            setbuttonLoadingContext(false);
                                                         }}
                                                     >
-                                                        {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                                        {!buttonLoading && <span>Update</span>}
+                                                        {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                                        {!buttonLoadingContext && <span>Update</span>}
                                                     </button>
                                                 </div>
                                             </div>
@@ -588,7 +587,7 @@ const UpdateMerchant = (props) => {
                                                             }
                                                             payload={addresspayload}
                                                             setpayload={setaddresspayload}
-                                                            button1disabled={buttonLoading}
+                                                            button1disabled={buttonLoadingContext}
                                                             button1class={generalstyles.roundbutton + '  mr-2 d-none '}
                                                             button1placeholder={'Confirm address'}
                                                             button1onClick={async () => {}}
@@ -694,8 +693,8 @@ const UpdateMerchant = (props) => {
                                                         class={generalstyles.roundbutton + ' allcentered p-0'}
                                                         onClick={async () => {
                                                             if (!issimilarAddresses) {
-                                                                if (buttonLoading) return;
-                                                                setbuttonLoading(true);
+                                                                if (buttonLoadingContext) return;
+                                                                setbuttonLoadingContext(true);
                                                                 if (addresspayload?.city?.length != 0 && addresspayload?.country?.length != 0 && addresspayload?.streetAddress?.length != 0) {
                                                                     try {
                                                                         var { data } = await fetchSimilarAddressesQuery({
@@ -731,10 +730,10 @@ const UpdateMerchant = (props) => {
                                                                 } else {
                                                                     NotificationManager.warning('', 'Please complete the missing fields');
                                                                 }
-                                                                setbuttonLoading(false);
+                                                                setbuttonLoadingContext(false);
                                                             } else {
-                                                                if (buttonLoading) return;
-                                                                setbuttonLoading(true);
+                                                                if (buttonLoadingContext) return;
+                                                                setbuttonLoadingContext(true);
                                                                 try {
                                                                     const { data } = await updateMerchantAddressMutation();
                                                                     refetchfindOneMerchantQuery();
@@ -751,12 +750,12 @@ const UpdateMerchant = (props) => {
                                                                     NotificationManager.warning(errorMessage, 'Warning!');
                                                                     console.error('Error adding Inventory Rent:', error);
                                                                 }
-                                                                setbuttonLoading(false);
+                                                                setbuttonLoadingContext(false);
                                                             }
                                                         }}
                                                     >
-                                                        {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                                        {!buttonLoading && <span>{issimilarAddresses ? 'Update' : 'Confirm address'}</span>}
+                                                        {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                                        {!buttonLoadingContext && <span>{issimilarAddresses ? 'Update' : 'Confirm address'}</span>}
                                                     </button>
                                                 </div>
                                             </div>
@@ -924,8 +923,8 @@ const UpdateMerchant = (props) => {
                                                             style={{ height: '35px' }}
                                                             class={generalstyles.roundbutton + ' allcentered p-0'}
                                                             onClick={async () => {
-                                                                if (buttonLoading) return;
-                                                                setbuttonLoading(true);
+                                                                if (buttonLoadingContext) return;
+                                                                setbuttonLoadingContext(true);
                                                                 try {
                                                                     const { data } = await updateMerchantBillingMutation();
                                                                     refetchfindOneMerchantQuery();
@@ -942,11 +941,11 @@ const UpdateMerchant = (props) => {
                                                                     NotificationManager.warning(errorMessage, 'Warning!');
                                                                     console.error('Error adding Inventory Rent:', error);
                                                                 }
-                                                                setbuttonLoading(false);
+                                                                setbuttonLoadingContext(false);
                                                             }}
                                                         >
-                                                            {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                                            {!buttonLoading && <span>Update</span>}
+                                                            {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                                            {!buttonLoadingContext && <span>Update</span>}
                                                         </button>
                                                     </div>
                                                 </div>

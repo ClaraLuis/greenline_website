@@ -31,13 +31,13 @@ const { ValueContainer, Placeholder } = components;
 const AddSheet = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, dateformatter, orderStatusEnumContext, user, isAuth } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, dateformatter, orderStatusEnumContext, user, isAuth, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
     const { useQueryGQL, fetchOrders, addCourierSheet, useMutationGQL, fetchCouriers, fetchCourierSheet, useLazyQueryGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [submit, setsubmit] = useState(false);
     const [fetchCourierSheetQuery, setfetchCourierSheetQuery] = useState({});
-    const [buttonLoading, setbuttonLoading] = useState(false);
+
     const [sheetpayload, setsheetpayload] = useState({
         functype: 'add',
         name: '',
@@ -78,8 +78,8 @@ const AddSheet = (props) => {
     });
 
     const handleAddCourierSheet = async () => {
-        if (buttonLoading) return;
-        setbuttonLoading(true);
+        if (buttonLoadingContext) return;
+        setbuttonLoadingContext(true);
         try {
             const { data } = await addCourierSheetMutation();
             if (data?.createCourierSheet?.success == true) {
@@ -103,7 +103,7 @@ const AddSheet = (props) => {
                 setassignOpenModal(true);
             }
         }
-        setbuttonLoading(false);
+        setbuttonLoadingContext(false);
     };
     useEffect(() => {
         setpageactive_context('/addsheet');
@@ -319,7 +319,7 @@ const AddSheet = (props) => {
                                     ]}
                                     payload={sheetpayload}
                                     setpayload={setsheetpayload}
-                                    button1disabled={buttonLoading}
+                                    button1disabled={buttonLoadingContext}
                                     button1class={generalstyles.roundbutton + '  mr-2 '}
                                     button1placeholder={sheetpayload?.functype == 'add' ? 'Add Manifest' : lang.edit}
                                     button1onClick={() => {

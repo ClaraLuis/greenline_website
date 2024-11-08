@@ -22,11 +22,9 @@ const { ValueContainer, Placeholder } = components;
 const SheetsTable = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { courierSheetStatusesContext, dateformatter, isAuth } = useContext(Contexthandlerscontext);
+    const { courierSheetStatusesContext, dateformatter, isAuth, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
     const { deleteCourierSheet, useMutationNoInputGQL } = API();
     const { lang, langdetect } = useContext(LanguageContext);
-    const [buttonLoading, setbuttonLoading] = useState(false);
-
     const [submit, setsubmit] = useState(false);
     const [changestatusmodal, setchangestatusmodal] = useState(false);
     const [sheetID, setsheetID] = useState(undefined);
@@ -112,9 +110,9 @@ const SheetsTable = (props) => {
                                                             {parseInt(item?.orderCount) == 0 && (
                                                                 <Dropdown.Item
                                                                     onClick={async () => {
-                                                                        if (!buttonLoading) {
-                                                                            if (buttonLoading) return;
-                                                                            setbuttonLoading(true);
+                                                                        if (!buttonLoadingContext) {
+                                                                            if (buttonLoadingContext) return;
+                                                                            setbuttonLoadingContext(true);
                                                                             await setsheetID(item?.id);
                                                                             try {
                                                                                 const { data } = await deleteCourierSheetMutation();
@@ -138,14 +136,14 @@ const SheetsTable = (props) => {
                                                                                 }
                                                                                 NotificationManager.warning(errorMessage, 'Warning!');
                                                                             }
-                                                                            setbuttonLoading(false);
+                                                                            setbuttonLoadingContext(false);
                                                                         }
                                                                     }}
                                                                     class="py-2"
                                                                 >
                                                                     <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>
-                                                                        {buttonLoading && <CircularProgress color="var(--primary)" width="15px" height="15px" duration="1s" />}
-                                                                        {!buttonLoading && <span>Delete Manifest</span>}
+                                                                        {buttonLoadingContext && <CircularProgress color="var(--primary)" width="15px" height="15px" duration="1s" />}
+                                                                        {!buttonLoadingContext && <span>Delete Manifest</span>}
                                                                     </p>
                                                                 </Dropdown.Item>
                                                             )}

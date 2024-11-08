@@ -25,7 +25,7 @@ import ReturnsTable from './ReturnsTable.js';
 const MerchanReturns = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, paymentTypeContext, returnPackageTypeContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, paymentTypeContext, returnPackageTypeContext, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
     const { useMutationGQL, fetchMerchants, fetchInventories, fetchCustomerAddresses, fetchMerchantItemReturns, useQueryGQL, createReturnPackage } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -53,7 +53,6 @@ const MerchanReturns = (props) => {
         assignedToPackage: false,
         merchantId: undefined,
     });
-    const [buttonLoading, setbuttonLoading] = useState(false);
     const fetchMerchantItemReturnsQuery = useQueryGQL('', fetchMerchantItemReturns(), filter);
     const { refetch: refetchMerchantItemReturnsQuery } = useQueryGQL('', fetchMerchantItemReturns(), filter);
 
@@ -230,8 +229,8 @@ const MerchanReturns = (props) => {
                         <div class="col-lg-12 p-0 allcentered">
                             <button
                                 onClick={async () => {
-                                    if (buttonLoading) return;
-                                    setbuttonLoading(true);
+                                    if (buttonLoadingContext) return;
+                                    setbuttonLoadingContext(true);
                                     try {
                                         if (packagepayload?.ids?.length != 0 && packagepayload?.toMerchantId != undefined) {
                                             try {
@@ -273,13 +272,13 @@ const MerchanReturns = (props) => {
                                         NotificationManager.warning(errorMessage, 'Warning!');
                                         console.error('Error adding Merchant:', error);
                                     }
-                                    setbuttonLoading(false);
+                                    setbuttonLoadingContext(false);
                                 }}
-                                disabled={buttonLoading}
+                                disabled={buttonLoadingContext}
                                 class={generalstyles.roundbutton}
                             >
-                                {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                {!buttonLoading && <span>Add Package</span>}
+                                {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                {!buttonLoadingContext && <span>Add Package</span>}
                             </button>
                         </div>
                     </div>

@@ -32,7 +32,7 @@ var _ = require('lodash');
 const InventoryDetails = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, dateformatter } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, dateformatter, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
     const {
         fetchMerchants,
         useQueryGQL,
@@ -48,7 +48,6 @@ const InventoryDetails = (props) => {
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [merchantModal, setmerchantModal] = useState({ open: false, type: '' });
-    const [buttonLoading, setbuttonLoading] = useState(false);
 
     const [openModal, setopenModal] = useState(false);
     const [inventoryId, setinventoryId] = useState('');
@@ -719,10 +718,10 @@ const InventoryDetails = (props) => {
                                     <button
                                         style={{ height: '35px' }}
                                         class={generalstyles.roundbutton + '  mb-1 mx-2'}
-                                        disabled={buttonLoading}
+                                        disabled={buttonLoadingContext}
                                         onClick={async () => {
-                                            if (buttonLoading) return;
-                                            setbuttonLoading(true);
+                                            if (buttonLoadingContext) return;
+                                            setbuttonLoadingContext(true);
                                             try {
                                                 if (merchantModal?.modalType == 'assign') {
                                                     const { data } = await assignMerchantToInventoryMutation();
@@ -764,11 +763,11 @@ const InventoryDetails = (props) => {
                                                 }
                                                 NotificationManager.warning(errorMessage, 'Warning!');
                                             }
-                                            setbuttonLoading(false);
+                                            setbuttonLoadingContext(false);
                                         }}
                                     >
-                                        {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                        {!buttonLoading && <>{merchantModal?.modalType == 'assign' ? 'Assign' : 'Remove assigned'}</>}
+                                        {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                        {!buttonLoadingContext && <>{merchantModal?.modalType == 'assign' ? 'Assign' : 'Remove assigned'}</>}
                                     </button>
                                 </div>
                             </div>
@@ -789,10 +788,10 @@ const InventoryDetails = (props) => {
                                     <button
                                         style={{ height: '35px' }}
                                         class={generalstyles.roundbutton + '  mb-1 mx-2'}
-                                        disabled={buttonLoading}
+                                        disabled={buttonLoadingContext}
                                         onClick={async () => {
-                                            if (buttonLoading) return;
-                                            setbuttonLoading(true);
+                                            if (buttonLoadingContext) return;
+                                            setbuttonLoadingContext(true);
                                             try {
                                                 if (merchantModal?.editType == 'rack') {
                                                     const { data } = await updateRackNameMutation();
@@ -838,11 +837,11 @@ const InventoryDetails = (props) => {
                                                 }
                                                 NotificationManager.warning(errorMessage, 'Warning!');
                                             }
-                                            setbuttonLoading(false);
+                                            setbuttonLoadingContext(false);
                                         }}
                                     >
-                                        {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                        {!buttonLoading && <>{'Edit Name'}</>}
+                                        {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                        {!buttonLoadingContext && <>{'Edit Name'}</>}
                                     </button>
                                 </div>
                             </div>
@@ -866,10 +865,10 @@ const InventoryDetails = (props) => {
                                     <button
                                         style={{ height: '35px' }}
                                         class={generalstyles.roundbutton + '  mb-1 mx-2'}
-                                        disabled={buttonLoading}
+                                        disabled={buttonLoadingContext}
                                         onClick={async () => {
-                                            if (buttonLoading) return;
-                                            setbuttonLoading(true);
+                                            if (buttonLoadingContext) return;
+                                            setbuttonLoadingContext(true);
                                             try {
                                                 const { data } = await addRackLevelsMutation();
                                                 if (data?.addRackLevels?.success == true) {
@@ -892,11 +891,11 @@ const InventoryDetails = (props) => {
                                                 }
                                                 NotificationManager.warning(errorMessage, 'Warning!');
                                             }
-                                            setbuttonLoading(false);
+                                            setbuttonLoadingContext(false);
                                         }}
                                     >
-                                        {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                        {!buttonLoading && <>{'Add levels'}</>}
+                                        {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                        {!buttonLoadingContext && <>{'Add levels'}</>}
                                     </button>
                                 </div>
                             </div>

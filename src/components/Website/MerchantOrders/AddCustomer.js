@@ -22,14 +22,14 @@ const { ValueContainer, Placeholder } = components;
 const AddCustomer = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, dateformatter } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, dateformatter, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
     const { useQueryGQL, useMutationGQL, addUser, addCustomer } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [submit, setsubmit] = useState(false);
     const [changerolesmodal, setchangerolesmodal] = useState(false);
     const [newpassword, setnewpassword] = useState('');
-    const [buttonLoading, setbuttonLoading] = useState(false);
+
     const [addCustomerMutation] = useMutationGQL(addCustomer(), {
         name: props?.payload?.name,
         phone: props?.payload?.phone,
@@ -37,8 +37,8 @@ const AddCustomer = (props) => {
     });
 
     const handleAddCustomer = async () => {
-        if (buttonLoading) return;
-        setbuttonLoading(true);
+        if (buttonLoadingContext) return;
+        setbuttonLoadingContext(true);
         try {
             const { data } = await addCustomerMutation();
             props?.setopenModal(false);
@@ -56,7 +56,7 @@ const AddCustomer = (props) => {
             NotificationManager.warning(errorMessage, 'Warning!');
             console.error('Error adding user:', error);
         }
-        setbuttonLoading(false);
+        setbuttonLoadingContext(false);
     };
     return (
         <>
@@ -98,7 +98,7 @@ const AddCustomer = (props) => {
                             ]}
                             payload={props?.payload}
                             setpayload={props?.setpayload}
-                            button1disabled={buttonLoading}
+                            button1disabled={buttonLoadingContext}
                             button1class={generalstyles.roundbutton + '  mr-2 '}
                             button1placeholder={lang.add}
                             button1onClick={() => {

@@ -764,14 +764,14 @@ keep data consistent.</span></p>
   `;
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, dateformatter, setimportedDataContext, isAuth } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, dateformatter, setimportedDataContext, isAuth, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
     const { fetchMerchantItems, useQueryGQL, useMutationNoInputGQL, uploadExcelFile, addCompoundItem, fetchMerchants } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const cookies = new Cookies();
     const [importModal, setimportModal] = useState(false);
     const [csvFile, setcsvFile] = useState(null);
-    const [buttonLoading, setbuttonLoading] = useState(false);
+
     const [merchantModal, setmerchantModal] = useState(false);
 
     const [payload, setPayload] = useState({
@@ -1054,7 +1054,7 @@ keep data consistent.</span></p>
                             <button
                                 style={{ height: '35px' }}
                                 class={generalstyles.roundbutton + '  mb-1 mx-2 '}
-                                disabled={buttonLoading}
+                                disabled={buttonLoadingContext}
                                 onClick={async () => {
                                     handleDownload();
                                 }}
@@ -1099,10 +1099,10 @@ keep data consistent.</span></p>
                             <button
                                 style={{ height: '35px' }}
                                 class={generalstyles.roundbutton + '  mb-1 '}
-                                disabled={buttonLoading}
+                                disabled={buttonLoadingContext}
                                 onClick={async () => {
-                                    if (buttonLoading) return;
-                                    setbuttonLoading(true);
+                                    if (buttonLoadingContext) return;
+                                    setbuttonLoadingContext(true);
                                     try {
                                         const { data } = await uploadExcelFileMutation();
 
@@ -1125,11 +1125,11 @@ keep data consistent.</span></p>
                                         }
                                         NotificationManager.warning(errorMessage, 'Warning!');
                                     }
-                                    setbuttonLoading(false);
+                                    setbuttonLoadingContext(false);
                                 }}
                             >
-                                {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                {!buttonLoading && <>{'Import'}</>}
+                                {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                {!buttonLoadingContext && <>{'Import'}</>}
                             </button>
                         </div>
 

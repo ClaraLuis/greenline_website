@@ -28,11 +28,10 @@ const MerchantHome = (props) => {
     const thirtyDaysAgo = new Date(today);
     thirtyDaysAgo.setDate(today.getDate() - 30);
     let history = useHistory();
-    const { setpageactive_context, inventoryRentTypeContext, isAuth, setpagetitle_context } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, inventoryRentTypeContext, isAuth, setpagetitle_context, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
     const { createInventory, useMutationGQL, paginateInventoryRentTransaction, useQueryGQL, ordersDeliverableSummary, graphOrders, mostSoldItems, fetchMerchants } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
-    const [buttonLoading, setbuttonLoading] = useState(false);
     const [inventoryRentPayload, setinventoryRentPayload] = useState({
         merchantId: 1,
         type: '',
@@ -430,12 +429,12 @@ const MerchantHome = (props) => {
                             ]}
                             payload={inventoryRentPayload}
                             setpayload={setinventoryRentPayload}
-                            button1disabled={buttonLoading}
+                            button1disabled={buttonLoadingContext}
                             button1class={generalstyles.roundbutton + '  mr-2 '}
                             button1placeholder={'Update'}
                             button1onClick={async () => {
-                                if (buttonLoading) return;
-                                setbuttonLoading(true);
+                                if (buttonLoadingContext) return;
+                                setbuttonLoadingContext(true);
                                 try {
                                     await addInventoryRent();
                                     setchangestatusmodal(false);
@@ -452,7 +451,7 @@ const MerchantHome = (props) => {
                                     NotificationManager.warning(errorMessage, 'Warning!');
                                     console.error('Error adding Merchant:', error);
                                 }
-                                setbuttonLoading(false);
+                                setbuttonLoadingContext(false);
                             }}
                         />
                     </div>

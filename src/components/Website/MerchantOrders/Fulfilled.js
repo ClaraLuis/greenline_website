@@ -21,7 +21,7 @@ import OrdersTable from '../Orders/OrdersTable.js';
 const Fulfilled = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, paymentTypeContext, returnPackageTypeContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, paymentTypeContext, returnPackageTypeContext, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
     const { useMutationGQL, fetchOrders, updateupdateOrderIdsStatus, fetchHubs, fetchInventoryItemReturns, useQueryGQL, createReturnPackage } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -33,8 +33,6 @@ const Fulfilled = (props) => {
         toInventoryId: undefined,
         toMerchantId: undefined,
     });
-
-    const [buttonLoading, setbuttonLoading] = useState(false);
 
     const [filterorders, setfilterorders] = useState({
         limit: 20,
@@ -131,10 +129,10 @@ const Fulfilled = (props) => {
 
                         <div class="col-lg-12 p-0 allcentered">
                             <button
-                                disabled={buttonLoading}
+                                disabled={buttonLoadingContext}
                                 onClick={async () => {
-                                    if (buttonLoading) return;
-                                    setbuttonLoading(true);
+                                    if (buttonLoadingContext) return;
+                                    setbuttonLoadingContext(true);
                                     if (selectedOrders?.length != 0) {
                                         try {
                                             const { data } = await updateupdateOrderIdsStatusMutation();
@@ -157,12 +155,12 @@ const Fulfilled = (props) => {
                                             NotificationManager.warning(errorMessage, 'Warning!');
                                         }
                                     }
-                                    setbuttonLoading(false);
+                                    setbuttonLoadingContext(false);
                                 }}
                                 class={generalstyles.roundbutton}
                             >
-                                {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                {!buttonLoading && <span>Dispatch Orders</span>}
+                                {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                {!buttonLoadingContext && <span>Dispatch Orders</span>}
                             </button>
                         </div>
                     </div>

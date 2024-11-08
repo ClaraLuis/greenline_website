@@ -30,7 +30,7 @@ const HubDetails = (props) => {
     const { lang, langdetect } = useContext(LanguageContext);
     const [submit, setsubmit] = useState(false);
     const [changerolesmodal, setchangerolesmodal] = useState(false);
-    const [buttonLoading, setbuttonLoading] = useState(false);
+
     const [search, setSearch] = useState('');
 
     const [filterUsers, setfilterUsers] = useState({

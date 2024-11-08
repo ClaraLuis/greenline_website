@@ -16,11 +16,9 @@ const AddEditSecuritylayers = (props) => {
     const cookies = new Cookies();
     const { lang, langdetect } = useContext(LanguageContext);
     const { useQueryGQL, fetchUsers, useMutationGQL, updateUserRoles, findRoles } = API();
-
+    const { buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
     const [selectedroles, setselectedroles] = useState([]);
     const [rolesarray, setrolesarray] = useState([]);
-    const [buttonLoading, setbuttonLoading] = useState(false);
-
     const [updateUserRolesMutation] = useMutationGQL(updateUserRoles(), {
         roles: selectedroles,
         id: props?.payload?.id,
@@ -197,8 +195,8 @@ const AddEditSecuritylayers = (props) => {
                             style={{ height: '35px' }}
                             className={`${generalstyles.roundbutton} mb-1`}
                             onClick={async () => {
-                                if (buttonLoading) return;
-                                setbuttonLoading(true);
+                                if (buttonLoadingContext) return;
+                                setbuttonLoadingContext(true);
                                 try {
                                     const { data } = await updateUserRolesMutation();
                                     if (props?.setopenModal) {
@@ -215,11 +213,11 @@ const AddEditSecuritylayers = (props) => {
                                     const errorMessage = error.graphQLErrors?.[0]?.message || error.networkError?.message || error.message || 'An unexpected error occurred';
                                     NotificationManager.warning(errorMessage, 'Warning!');
                                 }
-                                setbuttonLoading(false);
+                                setbuttonLoadingContext(false);
                             }}
                         >
-                            {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                            {!buttonLoading && <span>Update</span>}
+                            {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                            {!buttonLoadingContext && <span>Update</span>}
                         </button>
                     </div>
                 </div>

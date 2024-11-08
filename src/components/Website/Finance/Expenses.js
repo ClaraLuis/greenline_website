@@ -29,7 +29,8 @@ const { ValueContainer, Placeholder } = components;
 const Expenses = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, isAuth, setpagetitle_context, expenseTypeContext, transactionStatusTypeContext, transactionTypeContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, isAuth, setpagetitle_context, expenseTypeContext, transactionStatusTypeContext, transactionTypeContext, buttonLoadingContext, setbuttonLoadingContext } =
+        useContext(Contexthandlerscontext);
     const { fetchUsers, useQueryGQL, createExpense, useMutationGQL, fetchExpenses, fetchFinancialAccounts, sendMyFinancialTransaction } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -59,7 +60,6 @@ const Expenses = (props) => {
     const fetchExpensesQuery = useQueryGQL('', fetchExpenses(), filterTransactionsObj);
     const { refetch: refetchExpensesQuery } = useQueryGQL('', fetchExpenses(), filterTransactionsObj);
 
-    const [buttonLoading, setbuttonLoading] = useState(false);
     const [filterExpensesObj, setfilterExpensesObj] = useState({
         isAsc: true,
         limit: 20,
@@ -381,12 +381,12 @@ const Expenses = (props) => {
                                 ]}
                                 payload={expensepayload}
                                 setpayload={setexpensepayload}
-                                button1disabled={buttonLoading}
+                                button1disabled={buttonLoadingContext}
                                 button1class={generalstyles.roundbutton + '  mr-2 '}
                                 button1placeholder={'Add expense'}
                                 button1onClick={async () => {
-                                    if (buttonLoading) return;
-                                    setbuttonLoading(true);
+                                    if (buttonLoadingContext) return;
+                                    setbuttonLoadingContext(true);
                                     if (expensepayload?.type?.length != 0 && expensepayload?.amount?.length != 0 && expensepayload?.fromAccountId?.length != 0) {
                                         try {
                                             await createExpenseMutation();
@@ -409,7 +409,7 @@ const Expenses = (props) => {
                                     } else {
                                         NotificationManager.warning('complete all missing fields', 'Warning!');
                                     }
-                                    setbuttonLoading(false);
+                                    setbuttonLoadingContext(false);
                                 }}
                             />
                         </div>

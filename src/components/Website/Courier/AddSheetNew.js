@@ -20,12 +20,12 @@ const { ValueContainer, Placeholder } = components;
 const AddSheetNew = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, dateformatter, orderStatusEnumContext, user, isAuth } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, dateformatter, orderStatusEnumContext, user, isAuth, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
     const { useQueryGQL, updateupdateOrderIdsStatus, addCourierSheet, addOrdersToCourierSheet, useMutationGQL, fetchCouriers, fetchCourierSheet, useLazyQueryGQL, fetchHubs } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [submit, setsubmit] = useState(false);
-    const [buttonLoading, setbuttonLoading] = useState(false);
+
     const [fetchCourierSheetQuery, setfetchCourierSheetQuery] = useState({});
 
     const [sheetpayload, setsheetpayload] = useState({
@@ -80,8 +80,8 @@ const AddSheetNew = (props) => {
     });
 
     const handleAddCourierSheet = async () => {
-        if (buttonLoading) return;
-        setbuttonLoading(true);
+        if (buttonLoadingContext) return;
+        setbuttonLoadingContext(true);
         if (queryParameters.get('sheetId')) {
             try {
                 const { data } = await addOrdersToCourierSheetMutation();
@@ -135,7 +135,7 @@ const AddSheetNew = (props) => {
             }
         }
 
-        setbuttonLoading(false);
+        setbuttonLoadingContext(false);
     };
     useEffect(() => {
         setpageactive_context(window.location.pathname);
@@ -407,10 +407,10 @@ const AddSheetNew = (props) => {
                                         NotificationManager.warning('Not Authorized', 'Warning!');
                                     }
                                 }}
-                                disabled={buttonLoading}
+                                disabled={buttonLoadingContext}
                             >
-                                {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                {!buttonLoading && <span>{queryParameters.get('sheetId') == undefined ? 'Add Manifest' : 'Update Manifest'}</span>}
+                                {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                {!buttonLoadingContext && <span>{queryParameters.get('sheetId') == undefined ? 'Add Manifest' : 'Update Manifest'}</span>}
                                 {/* Add Manifest */}
                             </button>
                         )}
@@ -419,8 +419,8 @@ const AddSheetNew = (props) => {
                                 style={{ height: '30px', minWidth: '170px' }}
                                 class={generalstyles.roundbutton + ' allcentered  p-0'}
                                 onClick={async () => {
-                                    if (buttonLoading) return;
-                                    setbuttonLoading(true);
+                                    if (buttonLoadingContext) return;
+                                    setbuttonLoadingContext(true);
                                     if (sheetpayload?.orderIds?.length != 0) {
                                         try {
                                             const { data } = await updateupdateOrderIdsStatusMutation();
@@ -444,12 +444,12 @@ const AddSheetNew = (props) => {
                                         }
                                     }
 
-                                    setbuttonLoading(false);
+                                    setbuttonLoadingContext(false);
                                 }}
-                                disabled={buttonLoading}
+                                disabled={buttonLoadingContext}
                             >
-                                {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                {!buttonLoading && (
+                                {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                {!buttonLoadingContext && (
                                     <span>
                                         {window.location.pathname == '/dispatched'
                                             ? 'Arrived At Sort Facilities'

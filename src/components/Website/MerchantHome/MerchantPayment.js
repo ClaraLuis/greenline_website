@@ -46,8 +46,6 @@ const MerchantPayment = (props) => {
     const cookies = new Cookies();
 
     const { lang, langdetect } = useContext(LanguageContext);
-    const [buttonLoading, setbuttonLoading] = useState(false);
-
     const [selectedArray, setselectedArray] = useState([]);
 
     const [filterobj, setfilterobj] = useState({

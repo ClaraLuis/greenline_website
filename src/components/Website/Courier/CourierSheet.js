@@ -25,7 +25,7 @@ import { IoChevronBackOutline } from 'react-icons/io5';
 const CourierSheet = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, courierSheetStatusesContext, dateformatter, setpagetitle_context, isAuth } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, courierSheetStatusesContext, dateformatter, setpagetitle_context, isAuth, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
     const { useLazyQueryGQL, useQueryGQL, fetchCourierSheet, updateCourierSheet, useMutationGQL, updateOrdersStatus } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -35,8 +35,8 @@ const CourierSheet = (props) => {
     const [sheetID, setsheetID] = useState(null);
     const [submitSheetPayload, setsubmitSheetPayload] = useState({});
     const [type, settype] = useState('');
-    const [buttonLoading, setbuttonLoading] = useState(false);
-    const [updateStatusButtonLoading, setupdateStatusButtonLoading] = useState(false);
+
+    const [updateStatusbuttonLoadingContext, setupdateStatusbuttonLoadingContext] = useState(false);
 
     const [fetchCourierSheetLazyQuery] = useLazyQueryGQL(fetchCourierSheet());
     const [fetchCourierSheetQuery, setfetchCourierSheetQuery] = useState({});
@@ -156,8 +156,8 @@ const CourierSheet = (props) => {
     });
 
     const handleupdateCourierSheet = async () => {
-        if (buttonLoading) return;
-        setbuttonLoading(true);
+        if (buttonLoadingContext) return;
+        setbuttonLoadingContext(true);
         if (
             submitSheetPayload?.status == 'inProgress' ||
             (type == 'admin' && submitSheetPayload?.status == 'waitingForAdminApproval') ||
@@ -189,7 +189,7 @@ const CourierSheet = (props) => {
         } else {
             NotificationManager.warning('Sheet already closed.', 'Warning!');
         }
-        setbuttonLoading(false);
+        setbuttonLoadingContext(false);
     };
     const [submit, setsubmit] = useState(false);
 
@@ -1149,7 +1149,7 @@ const CourierSheet = (props) => {
                             <button
                                 style={{ height: '35px' }}
                                 class={generalstyles.roundbutton}
-                                disabled={buttonLoading}
+                                disabled={buttonLoadingContext}
                                 onClick={() => {
                                     if (isAuth([1, 53, 51, 35])) {
                                         handleupdateCourierSheet();
@@ -1158,8 +1158,8 @@ const CourierSheet = (props) => {
                                     }
                                 }}
                             >
-                                {buttonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                {!buttonLoading && <span>Update Manifest</span>}
+                                {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                {!buttonLoadingContext && <span>Update Manifest</span>}
                             </button>
                         </div>
                     </div>
@@ -1823,7 +1823,7 @@ const CourierSheet = (props) => {
                                             return;
                                         }
                                         try {
-                                            setupdateStatusButtonLoading(true);
+                                            setupdateStatusbuttonLoadingContext(true);
                                             const { data } = await updateOrdersStatusMutation();
                                             var temp = { ...submitSheetPayload };
                                             temp.updateSheetOrderstemp.map((i, ii) => {
@@ -1847,13 +1847,13 @@ const CourierSheet = (props) => {
 
                                             NotificationManager.warning(errorMessage, 'Warning!');
                                         }
-                                        setupdateStatusButtonLoading(false);
+                                        setupdateStatusbuttonLoadingContext(false);
                                     }}
                                     class={generalstyles.roundbutton}
-                                    disabled={updateStatusButtonLoading}
+                                    disabled={updateStatusbuttonLoadingContext}
                                 >
-                                    {updateStatusButtonLoading && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                    {!updateStatusButtonLoading && <span>Update Status</span>}
+                                    {updateStatusbuttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                    {!updateStatusbuttonLoadingContext && <span>Update Status</span>}
                                 </button>
                             </div>
                         </div>
