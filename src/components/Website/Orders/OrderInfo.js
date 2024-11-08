@@ -447,11 +447,20 @@ const OrderInfo = (props) => {
                                                             <span style={{ color: 'var(--info)' }}>{chosenOrderContext?.merchant?.name}</span>
                                                         </p>
                                                     </div>
-                                                    <div class="col-lg-12 p-0">
-                                                        <p style={{ fontSize: '12px' }} className={' m-0 p-0 wordbreak  '}>
-                                                            {dateformatter(chosenOrderContext?.orderDate)}
-                                                        </p>
-                                                    </div>
+                                                    {chosenOrderContext?.orderDate && (
+                                                        <div class="col-lg-12 p-0">
+                                                            <p style={{ fontSize: '12px' }} className={' m-0 p-0 wordbreak  '}>
+                                                                Order Date: {dateformatter(chosenOrderContext?.orderDate)}
+                                                            </p>
+                                                        </div>
+                                                    )}
+                                                    {chosenOrderContext?.createdAt && (
+                                                        <div class="col-lg-12 p-0">
+                                                            <p style={{ fontSize: '12px' }} className={' m-0 p-0 wordbreak  '}>
+                                                                Initial Date: {dateformatter(chosenOrderContext?.createdAt)}
+                                                            </p>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </div>
                                             <div class="col-lg-8 d-flex justify-content-end mb-3">
@@ -683,6 +692,12 @@ const OrderInfo = (props) => {
                                                                             </TimelineSeparator>
                                                                             <TimelineContent style={{ fontWeight: 600, color: 'black', textTransform: 'capitalize' }}>
                                                                                 {historyItem?.status.split(/(?=[A-Z])/).join(' ')} <br />
+                                                                                {historyItem?.status == 'postponed' && (
+                                                                                    <>
+                                                                                        <span style={{ fontSize: '13px', fontWeight: 400 }}>{dateformatter(historyItem?.postponeDate)}</span>
+                                                                                        <br />
+                                                                                    </>
+                                                                                )}
                                                                                 {historyItem?.description && (
                                                                                     <>
                                                                                         <span style={{ fontSize: '13px', fontWeight: 400 }}>{historyItem?.description}</span>

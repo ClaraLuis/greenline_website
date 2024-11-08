@@ -500,7 +500,10 @@ const OrdersTable = (props) => {
                                                         </div>
                                                     )} */}
                                                     <div class="col-lg-6 p-0 d-flex justify-content-end">
-                                                        <p className={' m-0 p-0 wordbreak  '}>{dateformatter(item?.createdAt != item.orderDate && item.orderDate ? item.orderDate : item.createdAt)}</p>
+                                                        <div class="row m-0 w-100">
+                                                            <div className={' m-0 p-0 col-lg-12 d-flex justify-content-end '}>Initial: {dateformatter(item.createdAt)}</div>
+                                                            {item.orderDate && <div className={' m-0 p-0 col-lg-12 d-flex justify-content-end'}>Date: {dateformatter(item.orderDate)}</div>}
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>

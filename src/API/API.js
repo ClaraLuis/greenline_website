@@ -611,6 +611,7 @@ const API = () => {
                         description
                         createdAt
                         lastModified
+                        postponeDate
                         user {
                             name
                             email
