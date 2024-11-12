@@ -428,22 +428,15 @@ const FilesPopup = (props) => {
                                             {paginateFilesQuery?.data?.paginateFiles?.data?.map((item, index) => {
                                                 return (
                                                     <div class={uploaderstyles._Grid_g2n5w_1}>
-                                                        <div
-                                                            onClick={() => {
-                                                                props?.onChange(item.url);
-                                                            }}
-                                                            style={{
-                                                                width: '100px',
-                                                                height: '100px',
-                                                                borderRadius: '0.5rem',
-                                                                border: '4px solid white',
-                                                                background: 'rgba(241, 241, 241, 1)',
-                                                                cursor: 'pointer',
-                                                                boxShadow: '0 0 0 .0625rem #1718180d',
-                                                                margin: '1.25rem 0.75rem 0.7rem',
-                                                            }}
-                                                        >
-                                                            <img style={{ width: '100%', height: '100%', objectFit: 'contain' }} src={item.url} />
+                                                        <div class={uploaderstyles.imagesContainer}>
+                                                            <div
+                                                                onClick={() => {
+                                                                    props?.onChange(item.url);
+                                                                }}
+                                                                class={uploaderstyles.images}
+                                                            >
+                                                                <img style={{ width: '100%', height: '100%', objectFit: 'contain' }} src={item.url} />
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 );

@@ -133,6 +133,7 @@
     border-radius: 5px;
     border: 2px solid #ccc;
 }
+
 .image_preview img {
     width: 100% !important;
     height: 100% !important;
@@ -174,4 +175,22 @@ li.slick-active button:before {
     list-style-type: none;
     margin: 0;
     padding: 0;
+}
+.imagesContainer {
+    padding: 1.25rem;
+    background-color: transparent;
+    transition: all 0.4s;
+    border-radius: 0.625rem;
+}
+.images {
+    width: 110px;
+    height: 110px;
+    border-radius: 0.5rem;
+    border: 4px solid white;
+    background: rgba(241, 241, 241, 1);
+    cursor: pointer;
+    box-shadow: 0 0 0 0.0625rem #1718180d;
+}
+.imagesContainer:hover {
+    background-color: rgba(241, 241, 241, 1) !important;
 }
