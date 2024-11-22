@@ -346,13 +346,13 @@ const CourierSheet = (props) => {
                                     });
                                     setsubmitSheetPayload({ ...temp });
                                 }}
-                                className={type == 'admin' ? 'col-lg-12 ' : 'col-lg-6 '}
+                                className={'col-lg-6 '}
                                 key={index}
                             >
                                 <AccordionItem uuid={index} style={{}} className={generalstyles.card + ' col-lg-12 p-4 mb-3'}>
                                     <div id={'id' + JSON.stringify(item.id)} className={' col-lg-12 p-0'}>
                                         <div className="row m-0 w-100">
-                                            <div className="col-lg-7 p-0">
+                                            <div className="col-lg-9 p-0">
                                                 <div className="row m-0 w-100">
                                                     <div className="col-lg-12 p-0">
                                                         <label style={{}} className={`${formstyles.checkbox} ${formstyles.checkbox_sub} ${formstyles.path}` + ' d-flex my-0 '}>
@@ -392,19 +392,6 @@ const CourierSheet = (props) => {
                                                         </label>
                                                     </div>
 
-                                                    <div className="col-lg-12 mt-1">
-                                                        <span>{item?.order?.merchantCustomer?.customerName}</span>
-                                                        {item?.order?.merchantCustomer?.customer && (
-                                                            <>
-                                                                <br />
-                                                                <span>{item?.order?.merchantCustomer?.customer?.email}</span>
-
-                                                                <br />
-                                                                <span>{item?.order?.merchantCustomer?.customer?.phone}</span>
-                                                            </>
-                                                        )}
-                                                    </div>
-
                                                     <div class="col-lg-12 p-0 d-flex justify-content-start mb-1 mt-3">
                                                         <div className="row m-0 w-100 d-flex align-items-center justify-content-start">
                                                             <div style={{ background: '#eee', color: 'black' }} className={' wordbreak rounded-pill font-weight-600 allcentered '}>
@@ -441,7 +428,7 @@ const CourierSheet = (props) => {
 
                                                                     setchangestatusmodal(true);
                                                                 }}
-                                                                style={{ cursor: 'pointer' }}
+                                                                style={{ cursor: 'pointer', marginInlineEnd: '5px' }}
                                                                 className={
                                                                     item.status == 'delivered' || item.status == 'partiallyDelivered' || item.status == 'returned' || item.status == 'partiallyReturned'
                                                                         ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 text-capitalize '
@@ -452,12 +439,13 @@ const CourierSheet = (props) => {
                                                             >
                                                                 <span>{tempsheetpayload?.orderStatus?.split(/(?=[A-Z])/).join(' ')}</span>
                                                             </div>
+                                                            {item?.order?.merchant?.name}
                                                         </div>
                                                     </div>
                                                 </div>{' '}
                                             </div>
 
-                                            <div className="col-lg-5 p-0">
+                                            <div className="col-lg-3 p-0">
                                                 <div className="row m-0 w-100">
                                                     {type == 'finance' && (
                                                         <div className="col-lg-12 p-0 mb-2 d-flex justify-content-end">
@@ -701,7 +689,7 @@ const CourierSheet = (props) => {
 
                                                                             setchangestatusmodal(true);
                                                                         }}
-                                                                        style={{ cursor: 'pointer' }}
+                                                                        style={{ cursor: 'pointer', marginInlineEnd: '5px' }}
                                                                         className={
                                                                             item.status == 'delivered' ||
                                                                             item.status == 'partiallyDelivered' ||
@@ -715,6 +703,7 @@ const CourierSheet = (props) => {
                                                                     >
                                                                         <span>{tempsheetpayloadPreviousOrder?.orderStatus?.split(/(?=[A-Z])/).join(' ')}</span>
                                                                     </div>
+                                                                    {item?.order?.merchant?.name}
                                                                 </div>
                                                             </div>
                                                         </div>{' '}
@@ -824,7 +813,7 @@ const CourierSheet = (props) => {
                                             <hr className="mt-2 mb-3" />
                                             <div class="col-lg-12 p-0">
                                                 <div class="row m-0 w-100">
-                                                    <div className="col-lg-8 p-0">
+                                                    <div className="col-lg-12 p-0">
                                                         <div className="row m-0 w-100">
                                                             {type == 'admin' && (
                                                                 <div class="col-lg-12 mb-2 text-capitalize" style={{ fontWeight: 600 }}>
@@ -834,22 +823,21 @@ const CourierSheet = (props) => {
                                                             {item?.order?.orderItems?.map((subitem, subindex) => {
                                                                 return (
                                                                     <div className={type == 'admin' ? 'col-lg-6 mb-2' : 'col-lg-12 p-0 mb-2'} key={subindex}>
-                                                                        <div style={{ border: '1px solid #eee', borderRadius: '0.25rem' }} className="row m-0 w-100 p-2 d-flex align-items-center">
+                                                                        <div style={{ border: '1px solid #eee', borderRadius: '0.25rem' }} className="row m-0 w-100 p-2 d-flex align-items-start">
                                                                             {item?.order?.type == 'return' && (
-                                                                                <div style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }} className="p-1 px-2 mr-1 allcentered">
+                                                                                <div style={{ borderRadius: '10px', fontWeight: 700, fontSize: '11px' }} className="p-1 px-2 mr-1 allcentered">
                                                                                     {subitem?.partialCount != null
-                                                                                        ? new Decimal(subitem.partialCount).toFixed(2)
-                                                                                        : new Decimal(subitem.count).toFixed(2)}
+                                                                                        ? new Decimal(subitem.partialCount).toFixed(0)
+                                                                                        : new Decimal(subitem.count).toFixed(0)}
                                                                                 </div>
                                                                             )}
                                                                             {item?.order?.type != 'return' && (
-                                                                                <div style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }} className="p-1 px-2 mr-1 allcentered">
+                                                                                <div style={{ borderRadius: '10px', fontWeight: 700, fontSize: '11px' }} className="p-1 px-2 mr-1 allcentered">
                                                                                     {subitem?.partialCount != null
-                                                                                        ? new Decimal(subitem.count).minus(new Decimal(subitem.partialCount)).toFixed(2)
-                                                                                        : '0.00'}
+                                                                                        ? new Decimal(subitem.count).minus(new Decimal(subitem.partialCount)).toFixed(0)
+                                                                                        : '0'}
                                                                                 </div>
                                                                             )}
-
                                                                             {type == 'admin' && (
                                                                                 <div style={{ width: '40px', height: '40px', borderRadius: '7px', marginInlineEnd: '5px' }}>
                                                                                     <img
@@ -862,8 +850,30 @@ const CourierSheet = (props) => {
                                                                                     />
                                                                                 </div>
                                                                             )}
+                                                                            <div style={{ marginTop: '10px' }}>
+                                                                                {item?.order?.type != 'return' && (
+                                                                                    <div style={{ fontWeight: 700 }} className="mx-2">
+                                                                                        {new Decimal(
+                                                                                            subitem?.partialCount != null
+                                                                                                ? new Decimal(subitem.count).minus(new Decimal(subitem.partialCount))
+                                                                                                : new Decimal(0),
+                                                                                        )
+                                                                                            .times(new Decimal(subitem?.unitPrice))
+                                                                                            .toFixed(2)}{' '}
+                                                                                        {item?.order?.currency}
+                                                                                    </div>
+                                                                                )}
+                                                                                {item?.order?.type == 'return' && (
+                                                                                    <div style={{ fontWeight: 700 }} className="mx-2">
+                                                                                        {new Decimal(subitem?.partialCount != null ? new Decimal(subitem.partialCount) : new Decimal(subitem.count))
+                                                                                            .times(new Decimal(subitem?.unitPrice))
+                                                                                            .toFixed(2)}{' '}
+                                                                                        {item?.order?.currency}
+                                                                                    </div>
+                                                                                )}
+                                                                            </div>
 
-                                                                            <div className="col-lg-5 d-flex align-items-center">
+                                                                            {/* <div className="col-lg-5 d-flex align-items-center">
                                                                                 <div className="row m-0 w-100">
                                                                                     <div style={{ fontSize: '14px', fontWeight: 500 }} className={'col-lg-12 p-0 wordbreak wordbreak1'}>
                                                                                         {subitem?.info?.item?.name ?? '-'}
@@ -872,31 +882,7 @@ const CourierSheet = (props) => {
                                                                                         {subitem?.info?.name ?? '-'}
                                                                                     </div>
                                                                                 </div>
-                                                                            </div>
-                                                                            <div className={type == 'admin' ? 'col-lg-4' : 'col-lg-6'}>
-                                                                                <div className="row m-0 w-100 d-flex align-items-center justify-content-end">
-                                                                                    {item?.order?.type != 'return' && (
-                                                                                        <div style={{ fontWeight: 700 }} className="mx-2">
-                                                                                            {new Decimal(
-                                                                                                subitem?.partialCount != null
-                                                                                                    ? new Decimal(subitem.count).minus(new Decimal(subitem.partialCount))
-                                                                                                    : new Decimal(0),
-                                                                                            )
-                                                                                                .times(new Decimal(subitem?.unitPrice))
-                                                                                                .toFixed(2)}{' '}
-                                                                                            {item?.info?.currency}
-                                                                                        </div>
-                                                                                    )}
-                                                                                    {item?.order?.type == 'return' && (
-                                                                                        <div style={{ fontWeight: 700 }} className="mx-2">
-                                                                                            {new Decimal(subitem?.partialCount != null ? new Decimal(subitem.partialCount) : new Decimal(subitem.count))
-                                                                                                .times(new Decimal(subitem?.unitPrice))
-                                                                                                .toFixed(2)}{' '}
-                                                                                            {item?.info?.currency}
-                                                                                        </div>
-                                                                                    )}
-                                                                                </div>
-                                                                            </div>
+                                                                            </div> */}
                                                                         </div>
                                                                     </div>
                                                                 );
@@ -915,28 +901,22 @@ const CourierSheet = (props) => {
                                                                             {previousOrder?.order?.orderItems?.map((subitem, subindex) => {
                                                                                 return (
                                                                                     <div className={type == 'admin' ? 'col-lg-6 mb-2' : 'col-lg-12 p-0 mb-2'} key={subindex}>
-                                                                                        <div
-                                                                                            style={{ border: '1px solid #eee', borderRadius: '0.25rem' }}
-                                                                                            className="row m-0 w-100 p-2 d-flex align-items-center"
-                                                                                        >
+                                                                                        <div style={{ border: '1px solid #eee', borderRadius: '0.25rem' }} className="row m-0 w-100 p-2  ">
                                                                                             {previousOrder?.order?.type == 'return' && (
-                                                                                                <div
-                                                                                                    style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }}
-                                                                                                    className="p-1 px-2 mr-1 allcentered"
-                                                                                                >
+                                                                                                <div style={{ borderRadius: '8px', fontWeight: 700, fontSize: '11px' }} className="p-1 px-2 mr-1 ">
                                                                                                     {subitem?.partialCount != null
-                                                                                                        ? new Decimal(subitem.partialCount).toFixed(2)
-                                                                                                        : new Decimal(subitem.count).toFixed(2)}
+                                                                                                        ? new Decimal(subitem.partialCount).toFixed(0)
+                                                                                                        : new Decimal(subitem.count).toFixed(0)}
                                                                                                 </div>
                                                                                             )}
                                                                                             {previousOrder?.order?.type != 'return' && (
                                                                                                 <div
-                                                                                                    style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }}
+                                                                                                    style={{ borderRadius: '8px', fontWeight: 700, fontSize: '11px' }}
                                                                                                     className="p-1 px-2 mr-1 allcentered"
                                                                                                 >
                                                                                                     {subitem?.partialCount != null
-                                                                                                        ? new Decimal(subitem.count).minus(new Decimal(subitem.partialCount)).toFixed(2)
-                                                                                                        : '0.00'}
+                                                                                                        ? new Decimal(subitem.count).minus(new Decimal(subitem.partialCount)).toFixed(0)
+                                                                                                        : '0'}
                                                                                                 </div>
                                                                                             )}
 
@@ -952,44 +932,31 @@ const CourierSheet = (props) => {
                                                                                                     />
                                                                                                 </div>
                                                                                             )}
-
-                                                                                            <div className="col-lg-5 d-flex align-items-center">
-                                                                                                <div className="row m-0 w-100">
-                                                                                                    <div style={{ fontSize: '14px', fontWeight: 500 }} className={'col-lg-12 p-0 wordbreak wordbreak1'}>
-                                                                                                        {subitem?.info?.item?.name ?? '-'}
+                                                                                            <div style={{ marginTop: '10px' }}>
+                                                                                                {previousOrder?.order?.type != 'return' && (
+                                                                                                    <div style={{ fontWeight: 700 }} className="mx-2">
+                                                                                                        {new Decimal(
+                                                                                                            subitem?.partialCount != null
+                                                                                                                ? new Decimal(subitem.count).minus(new Decimal(subitem.partialCount))
+                                                                                                                : new Decimal(0),
+                                                                                                        )
+                                                                                                            .times(new Decimal(subitem?.unitPrice))
+                                                                                                            .toFixed(2)}{' '}
+                                                                                                        {previousOrder?.order?.currency}
                                                                                                     </div>
-                                                                                                    <div style={{ fontSize: '12px' }} className={'col-lg-12 p-0 wordbreak wordbreak1'}>
-                                                                                                        {subitem?.info?.name ?? '-'}
+                                                                                                )}
+                                                                                                {previousOrder?.order?.type == 'return' && (
+                                                                                                    <div style={{ fontWeight: 700 }} className="mx-2">
+                                                                                                        {new Decimal(
+                                                                                                            subitem?.partialCount != null
+                                                                                                                ? new Decimal(subitem.partialCount)
+                                                                                                                : new Decimal(subitem.count),
+                                                                                                        )
+                                                                                                            .times(new Decimal(subitem?.unitPrice))
+                                                                                                            .toFixed(2)}{' '}
+                                                                                                        {previousOrder?.order?.currency}
                                                                                                     </div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                            <div className={type == 'admin' ? 'col-lg-4' : 'col-lg-6'}>
-                                                                                                <div className="row m-0 w-100 d-flex align-items-center justify-content-end">
-                                                                                                    {previousOrder?.order?.type != 'return' && (
-                                                                                                        <div style={{ fontWeight: 700 }} className="mx-2">
-                                                                                                            {new Decimal(
-                                                                                                                subitem?.partialCount != null
-                                                                                                                    ? new Decimal(subitem.count).minus(new Decimal(subitem.partialCount))
-                                                                                                                    : new Decimal(0),
-                                                                                                            )
-                                                                                                                .times(new Decimal(subitem?.unitPrice))
-                                                                                                                .toFixed(2)}{' '}
-                                                                                                            {previousOrder?.info?.currency}
-                                                                                                        </div>
-                                                                                                    )}
-                                                                                                    {previousOrder?.order?.type == 'return' && (
-                                                                                                        <div style={{ fontWeight: 700 }} className="mx-2">
-                                                                                                            {new Decimal(
-                                                                                                                subitem?.partialCount != null
-                                                                                                                    ? new Decimal(subitem.partialCount)
-                                                                                                                    : new Decimal(subitem.count),
-                                                                                                            )
-                                                                                                                .times(new Decimal(subitem?.unitPrice))
-                                                                                                                .toFixed(2)}{' '}
-                                                                                                            {previousOrder?.info?.currency}
-                                                                                                        </div>
-                                                                                                    )}
-                                                                                                </div>
+                                                                                                )}
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
@@ -1001,12 +968,10 @@ const CourierSheet = (props) => {
                                                             )}
                                                         </div>
                                                     </div>
-                                                    <div class="col-lg-4 p-0">
+                                                    {/* <div class="col-lg-4 p-0">
                                                         <div class="row m-0 w-100 px-1">
                                                             <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                                                {/* <label for="name" class={formstyles.form__label}>
-                                                                    {'Notes'}
-                                                                </label> */}
+                                                               
                                                                 <TextareaAutosize
                                                                     style={{ zIndex: 1000 }}
                                                                     class={formstyles.form__field}
@@ -1036,7 +1001,7 @@ const CourierSheet = (props) => {
                                                                 />
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    </div> */}
                                                 </div>
                                                 {type == 'admin' && (
                                                     <div className="col-lg-12 p-0 d-flex justify-content-end mb-2 px-3" style={{ fontWeight: 600, fontSize: '15px' }}>
@@ -1218,14 +1183,14 @@ const CourierSheet = (props) => {
                                         { label: 'Delivered', value: 'delivered' },
                                         { label: 'Postponed', value: 'postponed' },
                                         { label: 'Unreachable', value: 'unreachable' },
-                                        { label: 'Cancelled ', value: 'cancelled ' },
+                                        { label: 'Cancelled', value: 'cancelled' },
                                     ]}
                                     styles={defaultstyles}
                                     value={[
                                         { label: 'Delivered', value: 'delivered' },
                                         { label: 'Postponed', value: 'postponed' },
                                         { label: 'Unreachable', value: 'unreachable' },
-                                        { label: 'Cancelled ', value: 'cancelled ' },
+                                        { label: 'Cancelled', value: 'cancelled' },
                                     ].filter((option) => option.value == statuspayload?.status)}
                                     onChange={(option) => {
                                         setstatuspayload({

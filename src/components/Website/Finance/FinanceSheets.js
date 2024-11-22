@@ -82,114 +82,114 @@ const FinanceSheets = (props) => {
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
-                <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
-                    <p class=" p-0 m-0" style={{ fontSize: '27px' }}>
-                        {/* Dashboard */}
-                    </p>
-                </div>
-
-                <div class={' col-lg-12 col-md-12 col-sm-12 p-0 d-flex align-items-center justify-content-start '}>
-                    <p class=" p-0 m-0" style={{ fontSize: '15px' }}>
-                        <span style={{ color: 'var(--info)' }}>Manifests</span>
-                    </p>
-                </div>
-                <div class={generalstyles.card + ' mb-3 col-lg-12 p-2'}>
-                    <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
-                        <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
-                            <AccordionItemHeading>
-                                <AccordionItemButton>
+                <div class="col-lg-12 px-3">
+                    {' '}
+                    <div class={' col-lg-12 col-md-12 col-sm-12 mb-2 p-1 d-flex align-items-center justify-content-start '}>
+                        <p class=" p-0 m-0" style={{ fontSize: '15px' }}>
+                            <span style={{ color: 'var(--info)' }}>Finance Manifests</span>
+                        </p>
+                    </div>
+                    <div class={generalstyles.card + ' mb-3 col-lg-12'}>
+                        <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
+                            <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
+                                <AccordionItemHeading>
+                                    <AccordionItemButton>
+                                        <div class="row m-0 w-100">
+                                            <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
+                                                <p class={generalstyles.cardTitle + '  m-0 p-0 '}>Filter:</p>
+                                            </div>
+                                            <div class="col-lg-4 col-md-4 col-sm-4 p-0 d-flex align-items-center justify-content-end">
+                                                <AccordionItemState>
+                                                    {(state) => {
+                                                        if (state.expanded == true) {
+                                                            return (
+                                                                <i class="h-100 d-flex align-items-center justify-content-center">
+                                                                    <BsChevronUp />
+                                                                </i>
+                                                            );
+                                                        } else {
+                                                            return (
+                                                                <i class="h-100 d-flex align-items-center justify-content-center">
+                                                                    <BsChevronDown />
+                                                                </i>
+                                                            );
+                                                        }
+                                                    }}
+                                                </AccordionItemState>
+                                            </div>
+                                        </div>
+                                    </AccordionItemButton>
+                                </AccordionItemHeading>
+                                <AccordionItemPanel>
+                                    <hr className="mt-2 mb-3" />
                                     <div class="row m-0 w-100">
-                                        <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
-                                            <p class={generalstyles.cardTitle + '  m-0 p-0 '}>Filter:</p>
-                                        </div>
-                                        <div class="col-lg-4 col-md-4 col-sm-4 p-0 d-flex align-items-center justify-content-end">
-                                            <AccordionItemState>
-                                                {(state) => {
-                                                    if (state.expanded == true) {
-                                                        return (
-                                                            <i class="h-100 d-flex align-items-center justify-content-center">
-                                                                <BsChevronUp />
-                                                            </i>
-                                                        );
-                                                    } else {
-                                                        return (
-                                                            <i class="h-100 d-flex align-items-center justify-content-center">
-                                                                <BsChevronDown />
-                                                            </i>
-                                                        );
-                                                    }
+                                        <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                            <SelectComponent
+                                                title={'Courier'}
+                                                filter={filterCouriers}
+                                                setfilter={setfilterCouriers}
+                                                options={fetchCouriersQuery}
+                                                attr={'paginateCouriers'}
+                                                label={'name'}
+                                                value={'id'}
+                                                payload={filter}
+                                                payloadAttr={'courierId'}
+                                                onClick={(option) => {
+                                                    setfilter({ ...filter, courierId: option?.id });
                                                 }}
-                                            </AccordionItemState>
+                                            />
+                                        </div>
+                                        <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                            <MultiSelect
+                                                title={'Status'}
+                                                options={courierSheetStatusesContext}
+                                                label={'label'}
+                                                value={'value'}
+                                                selected={filter?.statuses}
+                                                onClick={(option) => {
+                                                    var tempArray = [...(filter?.statuses ?? [])];
+                                                    if (option == 'All') {
+                                                        tempArray = undefined;
+                                                    } else {
+                                                        if (!tempArray?.includes(option.value)) {
+                                                            tempArray.push(option.value);
+                                                        } else {
+                                                            tempArray.splice(tempArray?.indexOf(option?.value), 1);
+                                                        }
+                                                    }
+
+                                                    setfilter({ ...filter, statuses: tempArray?.length != 0 ? tempArray : undefined });
+                                                }}
+                                            />
                                         </div>
                                     </div>
-                                </AccordionItemButton>
-                            </AccordionItemHeading>
-                            <AccordionItemPanel>
-                                <hr className="mt-2 mb-3" />
-                                <div class="row m-0 w-100">
-                                    <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                        <SelectComponent
-                                            title={'Courier'}
-                                            filter={filterCouriers}
-                                            setfilter={setfilterCouriers}
-                                            options={fetchCouriersQuery}
-                                            attr={'paginateCouriers'}
-                                            label={'name'}
-                                            value={'id'}
-                                            payload={filter}
-                                            payloadAttr={'courierId'}
-                                            onClick={(option) => {
-                                                setfilter({ ...filter, courierId: option?.id });
-                                            }}
-                                        />
-                                    </div>
-                                    <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                        <MultiSelect
-                                            title={'Status'}
-                                            options={courierSheetStatusesContext}
-                                            label={'label'}
-                                            value={'value'}
-                                            selected={filter?.statuses}
-                                            onClick={(option) => {
-                                                var tempArray = [...(filter?.statuses ?? [])];
-                                                if (option == 'All') {
-                                                    tempArray = undefined;
-                                                } else {
-                                                    if (!tempArray?.includes(option.value)) {
-                                                        tempArray.push(option.value);
-                                                    } else {
-                                                        tempArray.splice(tempArray?.indexOf(option?.value), 1);
-                                                    }
-                                                }
-
-                                                setfilter({ ...filter, statuses: tempArray?.length != 0 ? tempArray : undefined });
-                                            }}
-                                        />
-                                    </div>
-                                </div>
-                            </AccordionItemPanel>
-                        </AccordionItem>
-                    </Accordion>
+                                </AccordionItemPanel>
+                            </AccordionItem>
+                        </Accordion>
+                    </div>
                 </div>
                 {isAuth([1, 34, 53, 51]) && (
                     <>
-                        <div class="col-lg-12 p-0 mb-2">
-                            <Pagination
-                                beforeCursor={fetchSheetsQuery?.data?.paginateCourierSheets?.cursor?.beforeCursor}
-                                afterCursor={fetchSheetsQuery?.data?.paginateCourierSheets?.cursor?.afterCursor}
-                                filter={filter}
-                                setfilter={setfilter}
-                            />
-                        </div>
-                        <div class={' row m-0 w-100'}>
-                            <SheetsTable
-                                fetchSheetsQuery={fetchSheetsQuery}
-                                refetchCourierSheets={refetchCourierSheets}
-                                clickable={true}
-                                onClick={(item) => {
-                                    history.push('/couriersheet?id=' + item?.id + '&type=finance');
-                                }}
-                            />
+                        <div class="col-lg-12 px-3">
+                            {' '}
+                            <div class="col-lg-12 p-0 mb-3">
+                                <Pagination
+                                    beforeCursor={fetchSheetsQuery?.data?.paginateCourierSheets?.cursor?.beforeCursor}
+                                    afterCursor={fetchSheetsQuery?.data?.paginateCourierSheets?.cursor?.afterCursor}
+                                    filter={filter}
+                                    setfilter={setfilter}
+                                />
+                            </div>
+                            <div class={' row m-0 w-100'}>
+                                <SheetsTable
+                                    fetchSheetsQuery={fetchSheetsQuery}
+                                    refetchCourierSheets={refetchCourierSheets}
+                                    clickable={true}
+                                    onClick={(item) => {
+                                        history.push('/couriersheet?id=' + item?.id + '&type=finance');
+                                    }}
+                                />
+                            </div>
                         </div>
                     </>
                 )}

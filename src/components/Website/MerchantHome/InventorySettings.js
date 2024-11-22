@@ -19,6 +19,7 @@ import TransactionsTable from '../Finance/TransactionsTable.js';
 
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
+import SelectComponent from '../../SelectComponent.js';
 const { ValueContainer, Placeholder } = components;
 
 const InventorySettings = (props) => {

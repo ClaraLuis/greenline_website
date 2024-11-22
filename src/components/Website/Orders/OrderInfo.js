@@ -133,6 +133,7 @@ const OrderInfo = (props) => {
     const [filterordershistory, setfilterordershistory] = useState({
         limit: 20,
         orderId: parseInt(queryParameters?.get('orderId')),
+        isAsc: false,
     });
     const [filterOrderLogs, setfilterOrderLogs] = useState({
         limit: 20,
@@ -448,17 +449,17 @@ const OrderInfo = (props) => {
                                                             <span style={{ color: 'var(--info)' }}>{chosenOrderContext?.merchant?.name}</span>
                                                         </p>
                                                     </div>
-                                                    {chosenOrderContext?.orderDate && (
+                                                    {/* {chosenOrderContext?.orderDate && (
                                                         <div class="col-lg-12 p-0">
                                                             <p style={{ fontSize: '12px' }} className={' m-0 p-0 wordbreak  '}>
                                                                 Order Date: {dateformatter(chosenOrderContext?.orderDate)}
                                                             </p>
                                                         </div>
-                                                    )}
+                                                    )} */}
                                                     {chosenOrderContext?.createdAt && (
                                                         <div class="col-lg-12 p-0">
                                                             <p style={{ fontSize: '12px' }} className={' m-0 p-0 wordbreak  '}>
-                                                                Initial Date: {dateformatter(chosenOrderContext?.createdAt)}
+                                                                {dateformatter(chosenOrderContext?.createdAt)}
                                                             </p>
                                                         </div>
                                                     )}
@@ -517,13 +518,18 @@ const OrderInfo = (props) => {
                                     </div>
                                     {cookies.get('userInfo')?.type != 'merchant' && (
                                         <div class="col-lg-12">
+                                            <div class="col-lg-12 mb-1 p-0" style={{ color: 'grey', fontSize: '11px', fontWeight: 700 }}>
+                                                <div class="row m-0 w-100 d-flex align-items-center justify-content-between">
+                                                    <div>Manifest</div>
+                                                </div>
+                                            </div>
                                             <div class={generalstyles.card + ' row m-0 w-100'}>
                                                 {chosenOrderContext?.sheetOrder == null && (
                                                     <div class="col-lg-4">
                                                         <div class="row m-0 w-100 d-flex align-items-center">
                                                             <div class="col-lg-12 p-0">
                                                                 <p class=" p-0 m-0" style={{ fontSize: '17px' }}>
-                                                                    <span style={{ color: 'var(--danger)' }}>Not Assigned to Sheet</span>
+                                                                    <span style={{ color: 'var(--danger)' }}>Not Assigned to Manifest</span>
                                                                 </p>
                                                             </div>
                                                         </div>
@@ -583,7 +589,7 @@ const OrderInfo = (props) => {
                                         </div>
                                     )}
 
-                                    <div class="col-lg-5">
+                                    <div class="col-lg-6">
                                         <div style={{ minHeight: '400px', maxHeight: '400px' }} class={generalstyles.card + ' row m-0 w-100 d-flex align-content-start'}>
                                             <div className="col-lg-4 p-0">
                                                 <div class="row m-0 w-100 d-flex align-items-center">
@@ -799,7 +805,7 @@ const OrderInfo = (props) => {
                                             )}
                                         </div>
                                     </div>
-                                    <div class="col-lg-7">
+                                    <div class="col-lg-6">
                                         <div style={{ minHeight: '400px', maxHeight: '400px' }} class={generalstyles.card + ' row m-0 w-100 d-flex align-items-start align-content-start'}>
                                             <div class="col-lg-12 p-0">
                                                 <div class="row m-0 w-100 d-flex justify-content-between">
@@ -850,19 +856,16 @@ const OrderInfo = (props) => {
                                                                         />
                                                                     </div>
                                                                     <div class="col-lg-4 d-flex align-items-center">
-                                                                        {queryParameters?.get('type') == 'inventory' && (
-                                                                            <div className="row m-0 w-100">
-                                                                                <div style={{ fontSize: '14px', fontWeight: 600 }} className={' col-lg-12 p-0'}>
-                                                                                    {orderItem?.info?.chosenOrderContext?.name}
-                                                                                </div>
-                                                                                <div style={{ fontSize: '13px' }} className={' col-lg-12 p-0'}>
-                                                                                    {orderItem?.info?.name}
-                                                                                </div>
-                                                                                <div style={{ color: 'lightgray', fontSize: '13px' }} className="col-lg-12 p-0">
-                                                                                    {orderItem?.info?.sku}
-                                                                                </div>
+                                                                        {/* {queryParameters?.get('type') == 'inventory' && ( */}
+                                                                        <div className="row m-0 w-100">
+                                                                            <div style={{ fontSize: '13px' }} className={' col-lg-12 p-0'}>
+                                                                                {orderItem?.info?.fullName}
                                                                             </div>
-                                                                        )}
+                                                                            {/* <div style={{ color: 'lightgray', fontSize: '13px' }} className="col-lg-12 p-0">
+                                                                                {orderItem?.info?.sku}
+                                                                            </div> */}
+                                                                        </div>
+                                                                        {/* )} */}
                                                                     </div>
 
                                                                     <div className="col-lg-5">
@@ -998,7 +1001,8 @@ const OrderInfo = (props) => {
                                                 </div>
                                                 <div className="col-lg-12 p-0 ">
                                                     <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                        {chosenOrderContext?.address?.streetAddress}, {chosenOrderContext?.address?.buildingNumber}, {chosenOrderContext?.address?.apartmentFloor}
+                                                        {chosenOrderContext?.address?.streetAddress}, Building {chosenOrderContext?.address?.buildingNumber}, Floor{' '}
+                                                        {chosenOrderContext?.address?.apartmentFloor}
                                                     </span>
                                                 </div>
                                             </div>
@@ -1270,34 +1274,34 @@ const OrderInfo = (props) => {
                                             <div style={{ fontSize: '12px' }} className="col-lg-12 p-0 mt-2">
                                                 <div className="row m-0 w-100 d-flex align-items-center">
                                                     <div className="col-lg-4 p-0">
-                                                        <div className="text-capitalize" style={{ fontWeight: 600 }}>
-                                                            Can Be Opened
+                                                        <div className="text-capitalize">Can Be Opened</div>
+                                                        <div style={{ fontWeight: 600 }} className="text-capitalize">
+                                                            {chosenOrderContext?.canBeOpened == 1 ? 'Yes' : 'No'}
                                                         </div>
-                                                        <div className="text-capitalize">{chosenOrderContext?.canBeOpened == 1 ? 'Yes' : 'No'}</div>
                                                     </div>
                                                     <div className="col-lg-4 p-0">
-                                                        <div className="text-capitalize" style={{ fontWeight: 600 }}>
-                                                            Fragile
+                                                        <div className="text-capitalize">Fragile</div>
+                                                        <div style={{ fontWeight: 600 }} className="text-capitalize">
+                                                            {chosenOrderContext?.fragile == 1 ? 'Yes' : 'No'}
                                                         </div>
-                                                        <div className="text-capitalize">{chosenOrderContext?.fragile == 1 ? 'Yes' : 'No'}</div>
                                                     </div>
                                                     <div className="col-lg-4 p-0">
-                                                        <div className="text-capitalize" style={{ fontWeight: 600 }}>
-                                                            Fragile
+                                                        <div className="text-capitalize">Partial Delivery</div>
+                                                        <div style={{ fontWeight: 600 }} className="text-capitalize">
+                                                            {chosenOrderContext?.deliveryPart == 1 ? 'Yes' : 'No'}
                                                         </div>
-                                                        <div className="text-capitalize">{chosenOrderContext?.deliveryPart == 1 ? 'Yes' : 'No'}</div>
                                                     </div>
                                                     <div className="col-lg-4 p-0 mt-2">
-                                                        <div className="text-capitalize" style={{ fontWeight: 600 }}>
-                                                            Payment Method
+                                                        <div className="text-capitalize">Payment Method</div>
+                                                        <div style={{ fontWeight: 600 }} className="text-capitalize">
+                                                            {chosenOrderContext?.paymentType}
                                                         </div>
-                                                        <div className="text-capitalize">{chosenOrderContext?.paymentType}</div>
                                                     </div>
                                                     <div className="col-lg-4 p-0 mt-2">
-                                                        <div className="text-capitalize" style={{ fontWeight: 600 }}>
-                                                            Order Type
+                                                        <div className="text-capitalize">Order Type</div>
+                                                        <div style={{ fontWeight: 600 }} className="text-capitalize">
+                                                            {chosenOrderContext?.type}
                                                         </div>
-                                                        <div className="text-capitalize">{chosenOrderContext?.type}</div>
                                                     </div>
                                                 </div>
                                             </div>

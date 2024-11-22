@@ -67,7 +67,7 @@ const CourierSheets = (props) => {
                     <div class={generalstyles.card + ' row m-0 w-100'}>
                         <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
                             <p class=" p-0 m-0" style={{ fontSize: '27px' }}>
-                                Manifest
+                                Courier Manifest
                             </p>
                         </div>
 

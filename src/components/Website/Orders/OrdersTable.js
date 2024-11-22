@@ -305,7 +305,7 @@ const OrdersTable = (props) => {
                                                                 <span style={{ fontWeight: 400, fontSize: '13px' }}>
                                                                     {item?.address?.country}, {item?.address?.city},{' '}
                                                                     <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                        {item?.address?.streetAddress}, {item?.address?.buildingNumber}, {item?.address?.apartmentFloor}
+                                                                        {item?.address?.streetAddress}, Building {item?.address?.buildingNumber}, Floor {item?.address?.apartmentFloor}
                                                                     </span>
                                                                 </span>
                                                             </div>

@@ -1277,6 +1277,7 @@ const API = () => {
                     partialCount
                     info {
                         name
+                        fullName
                         imageUrl
                         sku
                         item {
@@ -1801,13 +1802,7 @@ const API = () => {
                             currency
                             shippingPrice
                             price
-                            merchantCustomer {
-                                customerName
-                                customer {
-                                    email
-                                    phone
-                                }
-                            }
+
                             merchant {
                                 id
                                 name

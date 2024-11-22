@@ -646,14 +646,20 @@ const AddItem = (props) => {
             NotificationManager.warning('Name cannot be empty', 'Warning');
             return false;
         }
-        if (!itempayload?.image) {
-            NotificationManager.warning('Main image cannot be empty', 'Warning');
-            return false;
+        if (!itempayload?.imageUrl) {
+            if (!itempayload?.image) {
+                NotificationManager.warning('Main image cannot be empty', 'Warning');
+                return false;
+            }
         }
+
         if (isAuth([1]) && !itempayload?.merchantId) {
             NotificationManager.warning('Merchant must be selected', 'Warning');
             return false;
         }
+        const p = Object.entries(itemVariants).map(([color, variants], colorIndex) => variants);
+        alert(JSON.stringify(p));
+
         const prices = variants.map((variant) => variant.price).filter(Boolean);
         if (prices.length === 0 && !itempayload?.price) {
             NotificationManager.warning('Please provide a default price or prices for each variant', 'Warning');
@@ -1396,7 +1402,7 @@ const AddItem = (props) => {
                             <div class="col-lg-12">
                                 <div class="row m-0 w-100  ">
                                     <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                        <label class={formstyles.form__label}>description</label>
+                                        <label class={formstyles.form__label}>Description</label>
                                         <TextareaAutosize
                                             type={'text'}
                                             class={formstyles.form__field}
