@@ -657,12 +657,18 @@ const AddItem = (props) => {
             NotificationManager.warning('Merchant must be selected', 'Warning');
             return false;
         }
-        const p = Object.entries(itemVariants).map(([color, variants], colorIndex) => variants);
-        alert(JSON.stringify(p));
+        const variantsArray = Object.entries(itemVariants).map(([color, variants], colorIndex) => variants.variants[0]);
 
-        const prices = variants.map((variant) => variant.price).filter(Boolean);
-        if (prices.length === 0 && !itempayload?.price) {
+        const prices = variantsArray.map((variant) => variant.price).filter(Boolean);
+        // alert(JSON.stringify(variantsArray));
+        // return;
+        if (prices.length != variantsArray?.length && !itempayload?.price) {
             NotificationManager.warning('Please provide a default price or prices for each variant', 'Warning');
+            return false;
+        }
+        const images = variantsArray.map((variant) => variant.imageUrl).filter(Boolean);
+        if (images.length != variantsArray?.length) {
+            NotificationManager.warning('Please provide an image for each variant', 'Warning');
             return false;
         }
         const invalidOptions = variantsList.filter((option) => !option.variantOptions || option.variantOptions.length === 0);
@@ -1592,7 +1598,7 @@ const AddItem = (props) => {
                 </div>
             </div>
             <FilesPopup
-                merchantId={queryParameters.get('merchantId')}
+                merchantId={queryParameters.get('merchantId') ?? itempayload.merchantId}
                 openModal={openModal}
                 setopenModal={setopenModal}
                 onChange={(imageUrl) => {
