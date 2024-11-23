@@ -66,8 +66,8 @@ const AddMerchant = (props) => {
         pricePerUnit: '',
         merchantId: '',
         sqaureMeter: undefined,
-        currency: '',
-        startDate: undefined,
+        currency: 'EGP',
+        startDate: new Date().toISOString().split('T')[0],
     });
 
     const [addresspayload, setaddresspayload] = useState({
@@ -198,6 +198,13 @@ const AddMerchant = (props) => {
         }
         return true; // No bank info is fine, so we consider it valid
     };
+    const validateRentInfo = (payload) => {
+        const { type, startDate, currency, pricePerUnit } = payload;
+        if (type || startDate || currency || pricePerUnit) {
+            return type && startDate && currency && pricePerUnit;
+        }
+        return true; // No bank info is fine, so we consider it valid
+    };
 
     const handleNext = async () => {
         if (activeStep == 0) {
@@ -220,6 +227,10 @@ const AddMerchant = (props) => {
         } else if (activeStep == 1) {
             setActiveStep((prevActiveStep) => prevActiveStep + 1);
         } else if (activeStep == 2) {
+            if (!validateRentInfo(inventorySettings)) {
+                NotificationManager.warning('Complete rent info', 'Warning');
+                return;
+            }
             if (merchantPayload?.name?.length == 0) {
                 NotificationManager.warning('Name Can not be empty', 'Warning');
             } else {
@@ -439,12 +450,19 @@ const AddMerchant = (props) => {
                                                         <div class="row m-0 w-100  ">
                                                             <div class={`${formstyles.form__group} ${formstyles.field}`}>
                                                                 <label class={formstyles.form__label}>Currency</label>
-                                                                <input
-                                                                    type={'text'}
-                                                                    class={formstyles.form__field}
-                                                                    value={merchantPayload.currency}
-                                                                    onChange={(event) => {
-                                                                        setmerchantPayload({ ...merchantPayload, currency: event.target.value });
+                                                                <Select
+                                                                    options={[
+                                                                        { label: 'EGP', value: 'EGP' },
+                                                                        { label: 'USD', value: 'USD' },
+                                                                    ]}
+                                                                    styles={defaultstyles}
+                                                                    value={[
+                                                                        { label: 'EGP', value: 'EGP' },
+                                                                        { label: 'USD', value: 'USD' },
+                                                                    ].filter((option) => option.value == merchantPayload?.currency)}
+                                                                    onChange={(option) => {
+                                                                        // alert(JSON.stringify(option.value));
+                                                                        setmerchantPayload({ ...merchantPayload, currency: option.value });
                                                                     }}
                                                                 />
                                                             </div>
@@ -827,61 +845,158 @@ const AddMerchant = (props) => {
                                 )}
                                 {activeStep === 1 && (
                                     <>
-                                        <div class={generalstyles.card + ' row m-0 w-100'}>
-                                            <div class="col-lg-4">
-                                                <div class="row m-0 w-100  ">
-                                                    <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                                        <label class={formstyles.form__label}>Max order weight</label>
-                                                        <input
-                                                            type={'number'}
-                                                            step="any"
-                                                            class={formstyles.form__field}
-                                                            value={merchantPayload.threshold}
-                                                            onChange={(event) => {
-                                                                setmerchantPayload({ ...merchantPayload, threshold: event.target.value });
-                                                            }}
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4">
-                                                <div class="row m-0 w-100  ">
-                                                    <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                                        <label class={formstyles.form__label}>Price per unit overweight</label>
-                                                        <input
-                                                            type={'number'}
-                                                            step="any"
-                                                            class={formstyles.form__field}
-                                                            value={merchantPayload.overShipping}
-                                                            onChange={(event) => {
-                                                                setmerchantPayload({ ...merchantPayload, overShipping: event.target.value });
-                                                            }}
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        {!fetchGovernoratesQuery?.loading && (
+                                        <div class="col-lg-12 px-3">
                                             <div class={generalstyles.card + ' row m-0 w-100'}>
-                                                <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
-                                                    <table style={{}} className={'table'}>
-                                                        <thead>
-                                                            <th style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}></th>
-                                                            <th>VAT (14%)</th>
-                                                            <th>Post (10%)</th>
-                                                            <th style={{ maxWidth: '150px', minWidth: '150px', width: '150px' }}>Base</th>
-                                                            <th style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>Extra</th>
-                                                            <th style={{ maxWidth: '150px', minWidth: '150px', width: '150px' }}>Total</th>
-                                                        </thead>
-                                                        <tbody>
-                                                            {governoratesItems?.map((item, index) => {
-                                                                if (index % 3 == 0) {
-                                                                    return (
-                                                                        <>
-                                                                            <div style={{ border: '1px solid #eee', borderRadius: '5px', background: '#eee' }} class="col-lg-12 py-2">
-                                                                                {item?.name}
-                                                                            </div>
+                                                <div class="col-lg-4">
+                                                    <div class="row m-0 w-100  ">
+                                                        <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                            <label class={formstyles.form__label}>Max order weight</label>
+                                                            <input
+                                                                type={'number'}
+                                                                step="any"
+                                                                class={formstyles.form__field}
+                                                                value={merchantPayload.threshold}
+                                                                onChange={(event) => {
+                                                                    setmerchantPayload({ ...merchantPayload, threshold: event.target.value });
+                                                                }}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-4">
+                                                    <div class="row m-0 w-100  ">
+                                                        <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                            <label class={formstyles.form__label}>Price per unit overweight</label>
+                                                            <input
+                                                                type={'number'}
+                                                                step="any"
+                                                                class={formstyles.form__field}
+                                                                value={merchantPayload.overShipping}
+                                                                onChange={(event) => {
+                                                                    setmerchantPayload({ ...merchantPayload, overShipping: event.target.value });
+                                                                }}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {!fetchGovernoratesQuery?.loading && (
+                                                <div class={generalstyles.card + ' row m-0 w-100'}>
+                                                    <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
+                                                        <table style={{}} className={'table'}>
+                                                            <thead>
+                                                                <th style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}></th>
+                                                                <th>VAT (14%)</th>
+                                                                <th>Post (10%)</th>
+                                                                <th style={{ maxWidth: '150px', minWidth: '150px', width: '150px' }}>Base</th>
+                                                                <th style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>Extra</th>
+                                                                <th style={{ maxWidth: '150px', minWidth: '150px', width: '150px' }}>Total</th>
+                                                            </thead>
+                                                            <tbody>
+                                                                {governoratesItems?.map((item, index) => {
+                                                                    if (index % 3 == 0) {
+                                                                        return (
+                                                                            <>
+                                                                                <div style={{ border: '1px solid #eee', borderRadius: '5px', background: '#eee' }} class="col-lg-12 py-2">
+                                                                                    {item?.name}
+                                                                                </div>
 
+                                                                                <tr>
+                                                                                    <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
+                                                                                        <p className={' m-0 p-0 wordbreak '}>
+                                                                                            <span style={{ color: 'grey', fontSize: '14px' }} class="text-capitalize">
+                                                                                                {item?.orderType}
+                                                                                            </span>
+                                                                                        </p>
+                                                                                    </td>
+
+                                                                                    <td>
+                                                                                        <div class="row m-0 w-100 d-flex align-items-center">
+                                                                                            <input
+                                                                                                style={{ width: '50%' }}
+                                                                                                type={'text'}
+                                                                                                disabled={true}
+                                                                                                class={formstyles.form__field}
+                                                                                                value={item.vat}
+                                                                                                onChange={(event) => {
+                                                                                                    var governoratesItemsTemp = [...governoratesItems];
+
+                                                                                                    governoratesItemsTemp[index].vat = event.target.value;
+
+                                                                                                    setgovernoratesItems([...governoratesItemsTemp]);
+                                                                                                }}
+                                                                                            />
+                                                                                            <p style={{ width: '45%' }} className={' m-0 p-0 mx-1 h-100 d-flex align-items-center '}>
+                                                                                                {new Decimal(item?.shipping ?? 0).sub(new Decimal(item?.shipping ?? 0).div(1.14)).toFixed(2)}
+                                                                                            </p>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <div class="row m-0 w-100 d-flex align-items-center">
+                                                                                            <input
+                                                                                                style={{ width: '50%' }}
+                                                                                                type={'text'}
+                                                                                                disabled={true}
+                                                                                                class={formstyles.form__field}
+                                                                                                value={item.post}
+                                                                                                onChange={(event) => {
+                                                                                                    var governoratesItemsTemp = [...governoratesItems];
+
+                                                                                                    governoratesItemsTemp[index].post = event.target.value;
+
+                                                                                                    setgovernoratesItems([...governoratesItemsTemp]);
+                                                                                                }}
+                                                                                            />
+                                                                                            <p style={{ width: '45%' }} className={' m-0 p-0 mx-1 h-100 d-flex align-items-center '}>
+                                                                                                {new Decimal(0.1).mul(new Decimal(item?.base ?? 0)).toFixed(2)}
+                                                                                            </p>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                    <td style={{ maxWidth: '150px', minWidth: '150px', width: '150px' }}>
+                                                                                        <input
+                                                                                            type={'text'}
+                                                                                            class={formstyles.form__field}
+                                                                                            value={item?.base}
+                                                                                            onChange={(event) => {
+                                                                                                var governoratesItemsTemp = [...governoratesItems];
+                                                                                                if (event.target.value.length == 0) {
+                                                                                                    governoratesItemsTemp[index].base = 0;
+                                                                                                } else {
+                                                                                                    governoratesItemsTemp[index].base = event.target.value;
+                                                                                                }
+                                                                                                setgovernoratesItems([...governoratesItemsTemp]);
+                                                                                            }}
+                                                                                        />
+                                                                                    </td>
+                                                                                    <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
+                                                                                        <p className={' m-0 p-0  h-100 d-flex align-items-center '}>
+                                                                                            {new Decimal(item?.shipping ?? 0)
+                                                                                                .div(1.14)
+                                                                                                .minus(new Decimal(item?.base ?? 0))
+                                                                                                .toFixed(2)}
+                                                                                        </p>
+                                                                                    </td>
+                                                                                    <td style={{ maxWidth: '150px', minWidth: '150px', width: '150px' }}>
+                                                                                        <input
+                                                                                            type={'text'}
+                                                                                            class={formstyles.form__field}
+                                                                                            value={item?.shipping}
+                                                                                            onChange={(event) => {
+                                                                                                var governoratesItemsTemp = [...governoratesItems];
+                                                                                                if (event.target.value.length == 0) {
+                                                                                                    governoratesItemsTemp[index].shipping = 0;
+                                                                                                } else {
+                                                                                                    governoratesItemsTemp[index].shipping = event.target.value;
+                                                                                                }
+                                                                                                setgovernoratesItems([...governoratesItemsTemp]);
+                                                                                            }}
+                                                                                        />
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </>
+                                                                        );
+                                                                    } else {
+                                                                        return (
                                                                             <tr>
                                                                                 <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
                                                                                     <p className={' m-0 p-0 wordbreak '}>
@@ -974,110 +1089,15 @@ const AddMerchant = (props) => {
                                                                                     />
                                                                                 </td>
                                                                             </tr>
-                                                                        </>
-                                                                    );
-                                                                } else {
-                                                                    return (
-                                                                        <tr>
-                                                                            <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
-                                                                                <p className={' m-0 p-0 wordbreak '}>
-                                                                                    <span style={{ color: 'grey', fontSize: '14px' }} class="text-capitalize">
-                                                                                        {item?.orderType}
-                                                                                    </span>
-                                                                                </p>
-                                                                            </td>
-
-                                                                            <td>
-                                                                                <div class="row m-0 w-100 d-flex align-items-center">
-                                                                                    <input
-                                                                                        style={{ width: '50%' }}
-                                                                                        type={'text'}
-                                                                                        disabled={true}
-                                                                                        class={formstyles.form__field}
-                                                                                        value={item.vat}
-                                                                                        onChange={(event) => {
-                                                                                            var governoratesItemsTemp = [...governoratesItems];
-
-                                                                                            governoratesItemsTemp[index].vat = event.target.value;
-
-                                                                                            setgovernoratesItems([...governoratesItemsTemp]);
-                                                                                        }}
-                                                                                    />
-                                                                                    <p style={{ width: '45%' }} className={' m-0 p-0 mx-1 h-100 d-flex align-items-center '}>
-                                                                                        {new Decimal(item?.shipping ?? 0).sub(new Decimal(item?.shipping ?? 0).div(1.14)).toFixed(2)}
-                                                                                    </p>
-                                                                                </div>
-                                                                            </td>
-                                                                            <td>
-                                                                                <div class="row m-0 w-100 d-flex align-items-center">
-                                                                                    <input
-                                                                                        style={{ width: '50%' }}
-                                                                                        type={'text'}
-                                                                                        disabled={true}
-                                                                                        class={formstyles.form__field}
-                                                                                        value={item.post}
-                                                                                        onChange={(event) => {
-                                                                                            var governoratesItemsTemp = [...governoratesItems];
-
-                                                                                            governoratesItemsTemp[index].post = event.target.value;
-
-                                                                                            setgovernoratesItems([...governoratesItemsTemp]);
-                                                                                        }}
-                                                                                    />
-                                                                                    <p style={{ width: '45%' }} className={' m-0 p-0 mx-1 h-100 d-flex align-items-center '}>
-                                                                                        {new Decimal(0.1).mul(new Decimal(item?.base ?? 0)).toFixed(2)}
-                                                                                    </p>
-                                                                                </div>
-                                                                            </td>
-                                                                            <td style={{ maxWidth: '150px', minWidth: '150px', width: '150px' }}>
-                                                                                <input
-                                                                                    type={'text'}
-                                                                                    class={formstyles.form__field}
-                                                                                    value={item?.base}
-                                                                                    onChange={(event) => {
-                                                                                        var governoratesItemsTemp = [...governoratesItems];
-                                                                                        if (event.target.value.length == 0) {
-                                                                                            governoratesItemsTemp[index].base = 0;
-                                                                                        } else {
-                                                                                            governoratesItemsTemp[index].base = event.target.value;
-                                                                                        }
-                                                                                        setgovernoratesItems([...governoratesItemsTemp]);
-                                                                                    }}
-                                                                                />
-                                                                            </td>
-                                                                            <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
-                                                                                <p className={' m-0 p-0  h-100 d-flex align-items-center '}>
-                                                                                    {new Decimal(item?.shipping ?? 0)
-                                                                                        .div(1.14)
-                                                                                        .minus(new Decimal(item?.base ?? 0))
-                                                                                        .toFixed(2)}
-                                                                                </p>
-                                                                            </td>
-                                                                            <td style={{ maxWidth: '150px', minWidth: '150px', width: '150px' }}>
-                                                                                <input
-                                                                                    type={'text'}
-                                                                                    class={formstyles.form__field}
-                                                                                    value={item?.shipping}
-                                                                                    onChange={(event) => {
-                                                                                        var governoratesItemsTemp = [...governoratesItems];
-                                                                                        if (event.target.value.length == 0) {
-                                                                                            governoratesItemsTemp[index].shipping = 0;
-                                                                                        } else {
-                                                                                            governoratesItemsTemp[index].shipping = event.target.value;
-                                                                                        }
-                                                                                        setgovernoratesItems([...governoratesItemsTemp]);
-                                                                                    }}
-                                                                                />
-                                                                            </td>
-                                                                        </tr>
-                                                                    );
-                                                                }
-                                                            })}
-                                                        </tbody>
-                                                    </table>
+                                                                        );
+                                                                    }
+                                                                })}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        )}
+                                            )}
+                                        </div>
                                     </>
                                 )}
                                 {activeStep === 2 && (
@@ -1116,11 +1136,18 @@ const AddMerchant = (props) => {
                                                     <div class="row m-0 w-100  ">
                                                         <div class={`${formstyles.form__group} ${formstyles.field}`}>
                                                             <label class={formstyles.form__label}>Currency</label>
-                                                            <input
-                                                                class={formstyles.form__field}
-                                                                value={inventorySettings.currency}
-                                                                onChange={(event) => {
-                                                                    setinventorySettings({ ...inventorySettings, currency: event.target.value });
+                                                            <Select
+                                                                options={[
+                                                                    { label: 'EGP', value: 'EGP' },
+                                                                    { label: 'USD', value: 'USD' },
+                                                                ]}
+                                                                styles={defaultstyles}
+                                                                value={[
+                                                                    { label: 'EGP', value: 'EGP' },
+                                                                    { label: 'USD', value: 'USD' },
+                                                                ].filter((option) => option.value == inventorySettings?.currency)}
+                                                                onChange={(option) => {
+                                                                    setinventorySettings({ ...inventorySettings, currency: option.value });
                                                                 }}
                                                             />
                                                         </div>
@@ -1185,6 +1212,31 @@ const AddMerchant = (props) => {
                                 )}
                             </div>
                         </Typography>
+                        <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                            <Button color="inherit" disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
+                                Back
+                            </Button>
+                            <Box sx={{ flex: '1 1 auto' }} />
+                            {isStepOptional(activeStep) && (
+                                <Button disabled={buttonLoadingContext} color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
+                                    {buttonLoadingContext && <CircularProgress color="var(--primary)" width="15px" height="15px" duration="1s" />}
+                                    {!buttonLoadingContext && <span>Skip</span>}
+                                </Button>
+                            )}
+                            <button disabled={buttonLoadingContext} class={generalstyles.roundbutton + ' allcentered'} onClick={handleNext} style={{ padding: '0px' }}>
+                                {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                {!buttonLoadingContext && (
+                                    <span style={{ fontSize: '14px' }} className="text-uppercase">
+                                        {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                                    </span>
+                                )}
+                            </button>
+
+                            {/* <Button disabled={buttonLoadingContext} onClick={handleNext}>
+                                {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                {!buttonLoadingContext && <span>{activeStep === steps.length - 1 ? 'Finish' : 'Next'}</span>}
+                            </Button> */}
+                        </Box>
                     </React.Fragment>
                 )}
             </Box>

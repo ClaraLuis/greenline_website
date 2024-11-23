@@ -90,7 +90,7 @@ const AddOrder = (props) => {
     });
     const [tabs, settabs] = useState([
         { name: 'Order Items', isChecked: true },
-        { name: 'User Info', isChecked: false },
+        { name: 'Customer Info', isChecked: false },
     ]);
 
     const [fetching, setfetching] = useState(false);
@@ -243,12 +243,12 @@ const AddOrder = (props) => {
             orderpayload?.ordertype == 'exchange'
                 ? [
                       { name: 'Order Items', isChecked: true },
-                      { name: 'User Info', isChecked: false },
+                      { name: 'Customer Info', isChecked: false },
                       { name: 'Previous Order', isChecked: false },
                   ]
                 : [
                       { name: 'Order Items', isChecked: true },
-                      { name: 'User Info', isChecked: false },
+                      { name: 'Customer Info', isChecked: false },
                   ],
         );
     }, [orderpayload?.ordertype]);
@@ -429,93 +429,95 @@ const AddOrder = (props) => {
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div class="row m-0 w-100 d-flex  justify-content-start mt-sm-2 pb-5 pb-md-0">
                 <div class="col-lg-12 p-0">
-                    <div class={generalstyles.card + ' row m-0 w-100  d-flex align-items-center p-2'} style={{ justifyContent: 'space-between' }}>
-                        <div class="row m-0 d-flex align-items-center">
-                            {tabs?.map((item, index) => {
-                                return (
-                                    <div
-                                        onClick={() => {
-                                            var tabstemp = [...tabs];
-                                            tabstemp.map((i, ii) => {
-                                                if (i.name == item.name) {
-                                                    tabstemp[ii].isChecked = true;
-                                                } else {
-                                                    tabstemp[ii].isChecked = false;
-                                                }
+                    <div class="col-lg-12 px-3">
+                        <div class={generalstyles.card + ' row m-0 w-100  d-flex align-items-center p-2'} style={{ justifyContent: 'space-between' }}>
+                            <div class="row m-0 d-flex align-items-center">
+                                {tabs?.map((item, index) => {
+                                    return (
+                                        <div
+                                            onClick={() => {
+                                                var tabstemp = [...tabs];
+                                                tabstemp.map((i, ii) => {
+                                                    if (i.name == item.name) {
+                                                        tabstemp[ii].isChecked = true;
+                                                    } else {
+                                                        tabstemp[ii].isChecked = false;
+                                                    }
+                                                });
+                                                settabs([...tabstemp]);
+                                            }}
+                                            class={!item.isChecked ? generalstyles.tab + ' allcentered' : `${generalstyles.tab} ${generalstyles.tab_active}` + ' allcentered'}
+                                        >
+                                            {item.name}
+                                            {((index == 0 && orderpayload?.items?.length == 0) ||
+                                                (index == 1 &&
+                                                    (orderpayload?.customerId?.length == 0 ||
+                                                        orderpayload?.customerId == undefined ||
+                                                        orderpayload?.address?.length == 0 ||
+                                                        orderpayload?.address == undefined)) ||
+                                                (index == 2 &&
+                                                    ((orderpayload?.returnOrderItems?.length == 0 && externalOrder) ||
+                                                        !previousOrderType ||
+                                                        (!externalOrder && previousOrderType == 'd' && (orderpayload?.previousOrderId?.length == 0 || orderpayload?.previousOrderId == undefined)) ||
+                                                        (!externalOrder && previousOrderType == 'r' && (orderpayload?.returnOrderId?.length == 0 || orderpayload?.returnOrderId == undefined))))) && (
+                                                <RiErrorWarningFill color="var(--danger)" size={20} class="ml-2" />
+                                            )}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                            <button
+                                class={generalstyles.roundbutton}
+                                onClick={async () => {
+                                    if (buttonLoadingContext) return;
+                                    setbuttonLoadingContext(true);
+                                    try {
+                                        if (
+                                            orderpayload?.customerId?.length != 0 &&
+                                            orderpayload?.address?.length != 0 &&
+                                            orderpayload?.ordertype?.length != 0 &&
+                                            orderpayload?.canbeoppened?.length != 0 &&
+                                            orderpayload?.fragile?.length != 0 &&
+                                            orderpayload?.partialdelivery?.length != 0 &&
+                                            orderpayload?.items?.length != 0
+                                        ) {
+                                            var temp = [];
+                                            var temp1 = [];
+                                            await orderpayload?.items?.map((item, index) => {
+                                                temp.push({ itemVariantId: item?.item?.id, count: item?.count });
                                             });
-                                            settabs([...tabstemp]);
-                                        }}
-                                        class={!item.isChecked ? generalstyles.tab + ' allcentered' : `${generalstyles.tab} ${generalstyles.tab_active}` + ' allcentered'}
-                                    >
-                                        {item.name}
-                                        {((index == 0 && orderpayload?.items?.length == 0) ||
-                                            (index == 1 &&
-                                                (orderpayload?.customerId?.length == 0 ||
-                                                    orderpayload?.customerId == undefined ||
-                                                    orderpayload?.address?.length == 0 ||
-                                                    orderpayload?.address == undefined)) ||
-                                            (index == 2 &&
-                                                ((orderpayload?.returnOrderItems?.length == 0 && externalOrder) ||
-                                                    !previousOrderType ||
-                                                    (!externalOrder && previousOrderType == 'd' && (orderpayload?.previousOrderId?.length == 0 || orderpayload?.previousOrderId == undefined)) ||
-                                                    (!externalOrder && previousOrderType == 'r' && (orderpayload?.returnOrderId?.length == 0 || orderpayload?.returnOrderId == undefined))))) && (
-                                            <RiErrorWarningFill color="var(--danger)" size={20} class="ml-2" />
-                                        )}
-                                    </div>
-                                );
-                            })}
-                        </div>
-                        <button
-                            class={generalstyles.roundbutton}
-                            onClick={async () => {
-                                if (buttonLoadingContext) return;
-                                setbuttonLoadingContext(true);
-                                try {
-                                    if (
-                                        orderpayload?.customerId?.length != 0 &&
-                                        orderpayload?.address?.length != 0 &&
-                                        orderpayload?.ordertype?.length != 0 &&
-                                        orderpayload?.canbeoppened?.length != 0 &&
-                                        orderpayload?.fragile?.length != 0 &&
-                                        orderpayload?.partialdelivery?.length != 0 &&
-                                        orderpayload?.items?.length != 0
-                                    ) {
-                                        var temp = [];
-                                        var temp1 = [];
-                                        await orderpayload?.items?.map((item, index) => {
-                                            temp.push({ itemVariantId: item?.item?.id, count: item?.count });
-                                        });
-                                        await orderpayload?.returnOrderItems?.map((returnOrderItem, index) => {
-                                            temp1.push({ itemVariantId: returnOrderItem?.item?.id, count: returnOrderItem?.count });
-                                        });
-                                        await setorderpayload({ ...orderpayload, returnOrderItems: temp1 });
-                                        await setcartItems([...temp]);
-                                        await addOrderMutation();
-                                        setTimeout(() => {
-                                            history.push('/merchantorders');
-                                        }, 500);
-                                    } else {
-                                        NotificationManager.warning('Complete the missing fields', 'Warning!');
-                                    }
-                                } catch (error) {
-                                    let errorMessage = 'An unexpected error occurred';
-                                    if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-                                        errorMessage = error.graphQLErrors[0].message || errorMessage;
-                                    } else if (error.networkError) {
-                                        errorMessage = error.networkError.message || errorMessage;
-                                    } else if (error.message) {
-                                        errorMessage = error.message;
-                                    }
+                                            await orderpayload?.returnOrderItems?.map((returnOrderItem, index) => {
+                                                temp1.push({ itemVariantId: returnOrderItem?.item?.id, count: returnOrderItem?.count });
+                                            });
+                                            await setorderpayload({ ...orderpayload, returnOrderItems: temp1 });
+                                            await setcartItems([...temp]);
+                                            await addOrderMutation();
+                                            setTimeout(() => {
+                                                history.push('/merchantorders');
+                                            }, 500);
+                                        } else {
+                                            NotificationManager.warning('Complete the missing fields', 'Warning!');
+                                        }
+                                    } catch (error) {
+                                        let errorMessage = 'An unexpected error occurred';
+                                        if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                            errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                        } else if (error.networkError) {
+                                            errorMessage = error.networkError.message || errorMessage;
+                                        } else if (error.message) {
+                                            errorMessage = error.message;
+                                        }
 
-                                    NotificationManager.warning(errorMessage, 'Warning!');
-                                    console.error('Error adding Merchant:', error);
-                                }
-                                setbuttonLoadingContext(false);
-                            }}
-                        >
-                            {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                            {!buttonLoadingContext && <span>Create Order</span>}
-                        </button>
+                                        NotificationManager.warning(errorMessage, 'Warning!');
+                                        console.error('Error adding Merchant:', error);
+                                    }
+                                    setbuttonLoadingContext(false);
+                                }}
+                            >
+                                {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                {!buttonLoadingContext && <span>Create Order</span>}
+                            </button>
+                        </div>
                     </div>
                     <div class="col-lg-12 text-danger">
                         <div class="row m-0 w-100 mb-2">

@@ -58,3 +58,22 @@
     height: auto;
     margin-left: 16px;
 }
+.print-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.print-page {
+    width: 100%;
+    height: auto;
+    margin: 0 auto;
+    page-break-before: always; /* Ensures a new page starts for each .print-page element */
+    page-break-inside: avoid; /* Avoid breaking content within this element */
+}
+
+@media print {
+    .print-page {
+        page-break-before: always;
+        page-break-inside: avoid;
+    }
+}

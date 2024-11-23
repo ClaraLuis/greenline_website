@@ -172,6 +172,7 @@ const FilesPopup = (props) => {
             unsupportedFiles.splice(index3, 1);
             setUnsupportedFiles([...unsupportedFiles]);
         }
+        fileInputRef.current.value = null;
     };
     const uploadFiles = async () => {
         var vv = [...validFiles];

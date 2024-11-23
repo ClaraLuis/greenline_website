@@ -45,6 +45,7 @@ const Merchants = (props) => {
         inInventory: '',
         type: '',
         price: '',
+        startDate: new Date().toISOString().split('T')[0],
     });
 
     const [addMerchantMutation] = useMutationGQL(addMerchant(), {
@@ -225,6 +226,7 @@ const Merchants = (props) => {
                                                                     merchantId: item?.id,
                                                                     functype: item?.inventoryRent == null ? 'add' : 'edit',
                                                                     inInventory: item?.inventoryRent == null ? false : true,
+                                                                    startDate: item.inventoryRent == null ? new Date().toISOString().split('T')[0] : item?.inventoryRent?.startDate,
                                                                 });
                                                             }}
                                                         >
@@ -383,7 +385,7 @@ const Merchants = (props) => {
                 </Modal.Header>
                 <Modal.Body>
                     <div class="row m-0 w-100 py-2">
-                        <div class="col-lg-12 p-0 mb-2">
+                        {/* <div class="col-lg-12 p-0 mb-2">
                             <div class="row m-0 w-100">
                                 <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
                                     <p class=" p-0 m-0" style={{ fontSize: '20px' }}>
@@ -406,151 +408,155 @@ const Merchants = (props) => {
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        {inventorySettings?.inInventory && (
-                            <div class={' row m-0 w-100'}>
-                                <div class={'col-lg-12 mb-3'}>
-                                    <label for="name" class={formstyles.form__label}>
-                                        Rent Type
-                                    </label>
-                                    <Select
-                                        isDisabled={inventorySettings?.functype == 'edit'}
-                                        options={inventoryRentTypeContext}
-                                        styles={defaultstyles}
-                                        value={inventoryRentTypeContext.filter((option) => option.value == inventorySettings?.type)}
-                                        onChange={(option) => {
-                                            setinventorySettings({ ...inventorySettings, type: option.value });
-                                        }}
-                                    />
-                                </div>
-                                <div class="col-lg-12">
-                                    <div class="row m-0 w-100  ">
-                                        <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                            <label class={formstyles.form__label}>Start Date</label>
-                                            <input
-                                                disabled={inventorySettings?.functype == 'edit'}
-                                                type={'date'}
-                                                class={formstyles.form__field}
-                                                value={inventorySettings.startDate ? formatDate(inventorySettings.startDate) : ''}
-                                                onChange={(event) => {
-                                                    setinventorySettings({ ...inventorySettings, startDate: event.target.value });
-                                                }}
-                                            />
-                                        </div>
+                        </div> */}
+                        {/* {inventorySettings?.inInventory && ( */}
+                        <div class={' row m-0 w-100'}>
+                            <div class={'col-lg-12 mb-3'}>
+                                <label for="name" class={formstyles.form__label}>
+                                    Rent Type
+                                </label>
+                                <Select
+                                    isDisabled={inventorySettings?.functype == 'edit'}
+                                    options={inventoryRentTypeContext}
+                                    styles={defaultstyles}
+                                    value={inventoryRentTypeContext.filter((option) => option.value == inventorySettings?.type)}
+                                    onChange={(option) => {
+                                        setinventorySettings({ ...inventorySettings, type: option.value });
+                                    }}
+                                />
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="row m-0 w-100  ">
+                                    <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                        <label class={formstyles.form__label}>Start Date</label>
+                                        <input
+                                            disabled={inventorySettings?.functype == 'edit'}
+                                            type={'date'}
+                                            class={formstyles.form__field}
+                                            value={inventorySettings.startDate ? formatDate(inventorySettings.startDate) : ''}
+                                            onChange={(event) => {
+                                                setinventorySettings({ ...inventorySettings, startDate: event.target.value });
+                                            }}
+                                        />
                                     </div>
-                                </div>
-
-                                <div class="col-lg-12">
-                                    <div class="row m-0 w-100  ">
-                                        <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                            <label class={formstyles.form__label}>Currency</label>
-                                            <input
-                                                class={formstyles.form__field}
-                                                value={inventorySettings.currency}
-                                                onChange={(event) => {
-                                                    setinventorySettings({ ...inventorySettings, currency: event.target.value });
-                                                }}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                                {inventorySettings?.type == 'meter' && (
-                                    <div class="col-lg-12">
-                                        <div class="row m-0 w-100  ">
-                                            <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                                <label class={formstyles.form__label}>Sqaure Meter</label>
-                                                <input
-                                                    type={'number'}
-                                                    class={formstyles.form__field}
-                                                    value={inventorySettings.sqaureMeter}
-                                                    onChange={(event) => {
-                                                        setinventorySettings({ ...inventorySettings, sqaureMeter: event.target.value });
-                                                    }}
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-                                <div class="col-lg-12">
-                                    <div class="row m-0 w-100  ">
-                                        <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                            <label class={formstyles.form__label}>
-                                                {inventorySettings?.type === 'item'
-                                                    ? 'Price Per Item'
-                                                    : inventorySettings?.type == 'order'
-                                                    ? 'Price Per Order'
-                                                    : inventorySettings?.type == 'meter'
-                                                    ? 'Price Per Meter'
-                                                    : 'Price Per Unit Per Month'}
-                                            </label>
-                                            <input
-                                                type={'number'}
-                                                step="any"
-                                                class={formstyles.form__field}
-                                                value={inventorySettings.pricePerUnit}
-                                                onChange={(event) => {
-                                                    setinventorySettings({ ...inventorySettings, pricePerUnit: event.target.value });
-                                                }}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class={'col-lg-12 d-flex justify-content-center mt-5'}>
-                                    <button
-                                        disabled={buttonLoadingContext}
-                                        class={generalstyles.roundbutton + ' allcentered'}
-                                        onClick={async () => {
-                                            if (buttonLoadingContext) return;
-                                            setbuttonLoadingContext(true);
-                                            try {
-                                                if (
-                                                    inventorySettings?.type &&
-                                                    inventorySettings?.type?.length != 0 &&
-                                                    inventorySettings?.startDate &&
-                                                    inventorySettings?.startDate?.length != 0 &&
-                                                    inventorySettings?.merchantId &&
-                                                    inventorySettings?.merchantId?.length != 0 &&
-                                                    inventorySettings?.currency &&
-                                                    inventorySettings?.currency?.length != 0 &&
-                                                    inventorySettings?.pricePerUnit &&
-                                                    inventorySettings?.pricePerUnit?.length != 0
-                                                ) {
-                                                    if (inventorySettings?.functype == 'add') {
-                                                        const { data } = await createInventoryRentMutation();
-                                                        refetchMerchants();
-                                                        setinventoryModal(false);
-                                                    } else if (inventorySettings?.functype == 'edit') {
-                                                        const { data } = await updateInventoryRentMutation();
-                                                        refetchMerchants();
-                                                        setinventoryModal(false);
-                                                    }
-                                                    NotificationManager.success('', 'Success');
-                                                } else {
-                                                    NotificationManager.warning('Please Complete all fields', 'Warning');
-                                                }
-                                            } catch (error) {
-                                                let errorMessage = 'An unexpected error occurred';
-                                                if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-                                                    errorMessage = error.graphQLErrors[0].message || errorMessage;
-                                                } else if (error.networkError) {
-                                                    errorMessage = error.networkError.message || errorMessage;
-                                                } else if (error.message) {
-                                                    errorMessage = error.message;
-                                                }
-
-                                                NotificationManager.warning(errorMessage, 'Warning!');
-                                                console.error('Error adding Merchant:', error);
-                                            }
-                                            setbuttonLoadingContext(false);
-                                        }}
-                                        style={{ padding: '0px' }}
-                                    >
-                                        {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                        {!buttonLoadingContext && <span>{inventorySettings?.functype == 'add' ? 'Add' : 'Edit'}</span>}
-                                    </button>
                                 </div>
                             </div>
-                        )}
+
+                            <div class="col-lg-12">
+                                <div class="row m-0 w-100  ">
+                                    <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                        <label class={formstyles.form__label}>Currency</label>
+                                        <Select
+                                            options={[
+                                                { label: 'EGP', value: 'EGP' },
+                                                { label: 'USD', value: 'USD' },
+                                            ]}
+                                            styles={defaultstyles}
+                                            defaultValue={inventorySettings.currency}
+                                            onChange={(option) => {
+                                                setinventorySettings({ ...inventorySettings, currency: option.value });
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            {inventorySettings?.type == 'meter' && (
+                                <div class="col-lg-12">
+                                    <div class="row m-0 w-100  ">
+                                        <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                            <label class={formstyles.form__label}>Sqaure Meter</label>
+                                            <input
+                                                type={'number'}
+                                                class={formstyles.form__field}
+                                                value={inventorySettings.sqaureMeter}
+                                                onChange={(event) => {
+                                                    setinventorySettings({ ...inventorySettings, sqaureMeter: event.target.value });
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                            <div class="col-lg-12">
+                                <div class="row m-0 w-100  ">
+                                    <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                        <label class={formstyles.form__label}>
+                                            {inventorySettings?.type === 'item'
+                                                ? 'Price Per Item'
+                                                : inventorySettings?.type == 'order'
+                                                ? 'Price Per Order'
+                                                : inventorySettings?.type == 'meter'
+                                                ? 'Price Per Meter'
+                                                : 'Price Per Unit Per Month'}
+                                        </label>
+                                        <input
+                                            type={'number'}
+                                            step="any"
+                                            class={formstyles.form__field}
+                                            value={inventorySettings.pricePerUnit}
+                                            onChange={(event) => {
+                                                setinventorySettings({ ...inventorySettings, pricePerUnit: event.target.value });
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class={'col-lg-12 d-flex justify-content-center mt-5'}>
+                                <button
+                                    disabled={buttonLoadingContext}
+                                    class={generalstyles.roundbutton + ' allcentered'}
+                                    onClick={async () => {
+                                        if (buttonLoadingContext) return;
+                                        setbuttonLoadingContext(true);
+                                        try {
+                                            if (
+                                                inventorySettings?.type &&
+                                                inventorySettings?.type?.length != 0 &&
+                                                inventorySettings?.startDate &&
+                                                inventorySettings?.startDate?.length != 0 &&
+                                                inventorySettings?.merchantId &&
+                                                inventorySettings?.merchantId?.length != 0 &&
+                                                inventorySettings?.currency &&
+                                                inventorySettings?.currency?.length != 0 &&
+                                                inventorySettings?.pricePerUnit &&
+                                                inventorySettings?.pricePerUnit?.length != 0
+                                            ) {
+                                                if (inventorySettings?.functype == 'add') {
+                                                    const { data } = await createInventoryRentMutation();
+                                                    refetchMerchants();
+                                                    setinventoryModal(false);
+                                                } else if (inventorySettings?.functype == 'edit') {
+                                                    const { data } = await updateInventoryRentMutation();
+                                                    refetchMerchants();
+                                                    setinventoryModal(false);
+                                                }
+                                                NotificationManager.success('', 'Success');
+                                            } else {
+                                                NotificationManager.warning('Please Complete all fields', 'Warning');
+                                            }
+                                        } catch (error) {
+                                            let errorMessage = 'An unexpected error occurred';
+                                            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                                errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                            } else if (error.networkError) {
+                                                errorMessage = error.networkError.message || errorMessage;
+                                            } else if (error.message) {
+                                                errorMessage = error.message;
+                                            }
+
+                                            NotificationManager.warning(errorMessage, 'Warning!');
+                                            console.error('Error adding Merchant:', error);
+                                        }
+                                        setbuttonLoadingContext(false);
+                                    }}
+                                    style={{ padding: '0px' }}
+                                >
+                                    {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                    {!buttonLoadingContext && <span>{inventorySettings?.functype == 'add' ? 'Add' : 'Edit'}</span>}
+                                </button>
+                            </div>
+                        </div>
+                        {/* )} */}
                     </div>
                 </Modal.Body>
             </Modal>

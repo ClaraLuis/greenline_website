@@ -85,6 +85,9 @@ const ImportNewItem = (props) => {
                 minCount: 0,
             });
             props?.setopenModal(false);
+            if (props?.refetchfetchItemsInBox) {
+                props?.refetchfetchItemsInBox();
+            }
             // console.log(data); // Handle response
         } catch (error) {
             let errorMessage = 'An unexpected error occurred';

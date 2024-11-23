@@ -842,7 +842,13 @@ const InventoryItems = (props) => {
                 </Modal.Body>
             </Modal>
 
-            <ImportNewItem openModal={importItemModel} setopenModal={setimportItemModel} importItemPayload={importItemPayload} setimportItemPayload={setimportItemPayload} />
+            <ImportNewItem
+                openModal={importItemModel}
+                setopenModal={setimportItemModel}
+                importItemPayload={importItemPayload}
+                setimportItemPayload={setimportItemPayload}
+                refetchfetchItemsInBox={refetchfetchItemsInBox}
+            />
 
             <ItemInfo openModal={openModal} setopenModal={setopenModal} item={chosenitem} fetchItemHistoryQuery={fetchItemHistoryQuery} />
             {/* <OrderInfo openModal={openOrderModal} setopenModal={setopenOrderModal} payload={payload} setpayload={setpayload} refetchUsers={fetchusers.refetch} /> */}

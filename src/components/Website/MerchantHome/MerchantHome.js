@@ -35,7 +35,7 @@ const MerchantHome = (props) => {
     const [inventoryRentPayload, setinventoryRentPayload] = useState({
         merchantId: 1,
         type: '',
-        startDate: '',
+        startDate: new Date().toISOString().split('T')[0],
         pricePerUnit: '',
         currency: '',
     });
@@ -423,7 +423,10 @@ const MerchantHome = (props) => {
                                     name: 'Currency',
                                     attr: 'currency',
                                     type: 'select',
-                                    options: [{ label: 'EGP', value: 'EGP' }],
+                                    options: [
+                                        { label: 'EGP', value: 'EGP' },
+                                        { label: 'USD', value: 'USD' },
+                                    ],
                                     size: '12',
                                 },
                             ]}

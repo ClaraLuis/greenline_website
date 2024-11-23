@@ -283,13 +283,15 @@ const UpdateMerchant = (props) => {
                                                     <div class="row m-0 w-100  ">
                                                         <div class={`${formstyles.form__group} ${formstyles.field}`}>
                                                             <label class={formstyles.form__label}>Currency</label>
-                                                            <input
-                                                                disabled={true}
-                                                                type={'text'}
-                                                                class={formstyles.form__field}
-                                                                value={merchantPayload.currency}
-                                                                onChange={(event) => {
-                                                                    setmerchantPayload({ ...merchantPayload, currency: event.target.value });
+                                                            <Select
+                                                                options={[
+                                                                    { label: 'EGP', value: 'EGP' },
+                                                                    { label: 'USD', value: 'USD' },
+                                                                ]}
+                                                                styles={defaultstyles}
+                                                                defaultValue={merchantPayload.currency}
+                                                                onChange={(option) => {
+                                                                    setmerchantPayload({ ...merchantPayload, currency: option.value });
                                                                 }}
                                                             />
                                                         </div>
