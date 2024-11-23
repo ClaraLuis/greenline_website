@@ -48,7 +48,7 @@ const MultiSelect = (props) => {
             const mergedData = [...data, ...newData];
             setData(mergedData);
             if (props?.filter?.name) {
-                const filtered = newData.filter((item) => item[props?.label].toLowerCase().includes(props?.filter?.name.toLowerCase()));
+                const filtered = newData.filter((item) => item[props?.label].toLowerCase().includes(value.toLowerCase()));
 
                 setFilteredData(filtered);
             } else {
@@ -60,39 +60,44 @@ const MultiSelect = (props) => {
 
     useEffect(() => {
         const handleScroll = () => {
-            if (searchMenuRef.current) {
-                const { scrollTop, scrollHeight, clientHeight } = searchMenuRef.current;
-                if (scrollTop + clientHeight + 1 >= scrollHeight) {
-                    const cursor = props?.options?.data?.[props?.attr]?.cursor;
-                    if (cursor?.afterCursor !== null) {
-                        if (props?.setfilter) {
-                            props?.setfilter({
-                                ...props?.filter,
-                                afterCursor: cursor?.afterCursor,
-                                beforeCursor: null,
-                            });
+            if (!searchMenuRef.current) return;
+
+            const { scrollTop, scrollHeight, clientHeight } = searchMenuRef.current;
+
+            // Trigger when reaching the bottom
+            if (scrollTop + clientHeight >= scrollHeight - 1) {
+                const cursor = props?.options?.data?.[props?.attr]?.cursor;
+                if (cursor?.afterCursor) {
+                    const currentScrollTop = scrollTop; // Save current scroll position
+
+                    // Update the filter to fetch new data
+                    props?.setfilter({
+                        ...props?.filter,
+                        afterCursor: cursor.afterCursor,
+                        beforeCursor: null,
+                    });
+
+                    // Wait for DOM update, then restore scroll position
+                    const observer = new MutationObserver(() => {
+                        if (searchMenuRef.current) {
+                            searchMenuRef.current.scrollTop = currentScrollTop; // Restore scroll position
                         }
-                    }
+                        observer.disconnect(); // Stop observing
+                    });
+
+                    observer.observe(searchMenuRef.current, { childList: true, subtree: true });
                 }
             }
         };
 
-        if (searchMenuRef.current) {
-            searchMenuRef.current.addEventListener('scroll', handleScroll);
-        }
-
-        return () => {
-            if (searchMenuRef.current) {
-                searchMenuRef.current.removeEventListener('scroll', handleScroll);
-            }
-        };
-    }, [props]);
+        searchMenuRef.current?.addEventListener('scroll', handleScroll);
+        return () => searchMenuRef.current?.removeEventListener('scroll', handleScroll);
+    }, [props?.options?.data, props?.attr, props?.filter]);
 
     const handleInputChange = (event) => {
         const value = event.target.value;
         setsearch(value);
 
-        // setplaceholder(value);
         if (value) {
             const filtered = data.filter((item) => item[props?.label].toLowerCase().includes(value.toLowerCase()));
 
@@ -117,6 +122,20 @@ const MultiSelect = (props) => {
     }, [search]);
 
     useEffect(() => {
+        // Disable body scroll when the menu is open
+        if (showmenu) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+
+        // Cleanup to restore scroll when component unmounts
+        return () => {
+            document.body.style.overflow = 'auto';
+        };
+    }, [showmenu]);
+
+    useEffect(() => {
         data?.map((item, index) => {
             if (item[props?.value] == props?.payload[props?.payloadAttr]) {
                 setplaceholder(item[props?.label]);
@@ -139,7 +158,7 @@ const MultiSelect = (props) => {
                         className={cardstyles.formfield + ' d-flex align-items-center'}
                     >
                         <div
-                            class=" row m-0 w-100"
+                            className=" row m-0 w-100"
                             style={{
                                 overflow: 'hidden',
                                 display: '-webkit-box',
@@ -200,18 +219,11 @@ const MultiSelect = (props) => {
                             onChange={handleInputChange} // Update onChange handler
                         />
                     </div>
-                    {props?.options?.loading && (
-                        <div className="col-lg-12 allcentered p-2">
-                            <div>
-                                <CircularProgress color="var(--greenprimary)" width="25px" height="25px" duration="1s" />
-                            </div>
-                        </div>
-                    )}
+
                     <div
                         onClick={(e) => {
                             e.stopPropagation();
                             props?.onClick('All');
-                            // setshowmenu(false);
                         }}
                         className="col-lg-12 p-0"
                     >
@@ -236,54 +248,51 @@ const MultiSelect = (props) => {
                             </div>
                         </div>
                     </div>
-                    {!props?.options?.loading && (
-                        <>
-                            {filteredData?.map((item, index) => {
-                                var isSelected = false;
-                                var selectedIndex = null;
-                                if (props?.selected) {
-                                    props?.selected?.map((selected, selectedindex) => {
-                                        if (item[props?.value] === selected) {
-                                            isSelected = true;
-                                            selectedIndex = selectedindex;
-                                        }
-                                    });
+
+                    {filteredData?.map((item, index) => {
+                        var isSelected = false;
+                        var selectedIndex = null;
+                        if (props?.selected) {
+                            props?.selected?.map((selected, selectedindex) => {
+                                if (item[props?.value] === selected) {
+                                    isSelected = true;
+                                    selectedIndex = selectedindex;
                                 }
-                                return (
-                                    <div
-                                        key={index}
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            props?.onClick(item);
-                                            // setshowmenu(false);
-                                        }}
-                                        className="col-lg-12 p-0"
-                                    >
-                                        <div style={{ cursor: 'pointer', zIndex: 1000, fontSize: '11px' }} className={cardstyles.searchitem}>
-                                            <div style={{ justifyContent: 'space-between' }} className={formstyles.companyname + ' row m-0 w-100 d-flex align-items-center'}>
-                                                {item[props?.label]}
-                                                <div className={' m-0 pt-1 pb-1 pl-2 pr-2 '} style={{ borderRadius: '5px' }}>
-                                                    <label className={`${generalstyles.checkbox} ${checkboxstyles.checkbox} ` + ' d-flex mb-0 '}>
-                                                        <input
-                                                            id={item[props?.label]}
-                                                            type="checkbox"
-                                                            onChange={(event) => {}}
-                                                            checked={isSelected}
-                                                            className={checkboxstyles.checkboxinputstyles + ' mt-auto mb-auto '}
-                                                            // checked={fetchcustomercartQueryContext?.data?.data?.customercart.paymentmethod === 'cod' ? true : false}
-                                                        />
-                                                        <svg viewBox="0 0 21 21" className={checkboxstyles.svgstyles + ' h-100 '}>
-                                                            <path d="M5,10.75 L8.5,14.25 L19.4,2.3 C18.8333333,1.43333333 18.0333333,1 17,1 L4,1 C2.35,1 1,2.35 1,4 L1,17 C1,18.65 2.35,20 4,20 L17,20 C18.65,20 20,18.65 20,17 L20,7.99769186"></path>
-                                                        </svg>
-                                                    </label>
-                                                </div>
-                                            </div>
+                            });
+                        }
+                        return (
+                            <div
+                                key={index}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    props?.onClick(item);
+                                    // setshowmenu(false);
+                                }}
+                                className="col-lg-12 p-0"
+                            >
+                                <div style={{ cursor: 'pointer', zIndex: 1000, fontSize: '11px' }} className={cardstyles.searchitem}>
+                                    <div style={{ justifyContent: 'space-between' }} className={formstyles.companyname + ' row m-0 w-100 d-flex align-items-center'}>
+                                        {item[props?.label]}
+                                        <div className={' m-0 pt-1 pb-1 pl-2 pr-2 '} style={{ borderRadius: '5px' }}>
+                                            <label className={`${generalstyles.checkbox} ${checkboxstyles.checkbox} ` + ' d-flex mb-0 '}>
+                                                <input
+                                                    id={item[props?.label]}
+                                                    type="checkbox"
+                                                    onChange={(event) => {}}
+                                                    checked={isSelected}
+                                                    className={checkboxstyles.checkboxinputstyles + ' mt-auto mb-auto '}
+                                                    // checked={fetchcustomercartQueryContext?.data?.data?.customercart.paymentmethod === 'cod' ? true : false}
+                                                />
+                                                <svg viewBox="0 0 21 21" className={checkboxstyles.svgstyles + ' h-100 '}>
+                                                    <path d="M5,10.75 L8.5,14.25 L19.4,2.3 C18.8333333,1.43333333 18.0333333,1 17,1 L4,1 C2.35,1 1,2.35 1,4 L1,17 C1,18.65 2.35,20 4,20 L17,20 C18.65,20 20,18.65 20,17 L20,7.99769186"></path>
+                                                </svg>
+                                            </label>
                                         </div>
                                     </div>
-                                );
-                            })}
-                        </>
-                    )}
+                                </div>
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
         </>

@@ -7,161 +7,145 @@ import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
 
 import { LanguageContext } from '../LanguageContext';
 
-const { ValueContainer, Placeholder } = components;
-
 const SelectComponent = (props) => {
-    const { lang, setlang, langdetect } = useContext(LanguageContext);
+    const { langdetect } = useContext(LanguageContext);
     const searchMenuRef = useRef(null);
+
     const [isFocused, setIsFocused] = useState(false);
-    const [showmenu, setshowmenu] = useState(false);
-    const [placeholder, setplaceholder] = useState('');
-    const [search, setsearch] = useState('');
-
+    const [showMenu, setShowMenu] = useState(false);
+    const [placeholder, setPlaceholder] = useState('Select...');
+    const [search, setSearch] = useState('');
     const [data, setData] = useState([]);
-    const [filteredData, setFilteredData] = useState([]); // Add filteredData state
+    const [filteredData, setFilteredData] = useState([]);
 
-    // useEffect(() => {
-    //     if (props?.options?.data && !props?.options?.loading) {
-    //         const newData = props?.options?.data[props?.attr]?.data || [];
-    //         const mergedData = [...data, ...newData];
-    //         setData(mergedData);
-    //         setFilteredData(mergedData); // Update filteredData as well
-    //     }
-    // }, [props?.options?.data, props?.options?.loading]);
+    // Handle incoming options and filter updates
     useEffect(() => {
         if (props?.options?.data && !props?.options?.loading) {
             const newData = props?.options?.data[props?.attr]?.data || [];
-
-            // Combine current data and new data, then filter out duplicates
             const mergedData = [...data, ...newData];
-            const uniqueData = Array.from(new Set(mergedData.map((item) => item[props?.value]))).map((id) => {
-                return mergedData.find((item) => item[props?.value] === id);
-            });
+            const uniqueData = Array.from(new Set(mergedData.map((item) => item[props?.value]))).map((id) => mergedData.find((item) => item[props?.value] === id));
 
-            setData(uniqueData); // Update data state with unique items
+            setData(uniqueData);
 
-            // Handle filtering
-            if (props?.filter?.name) {
-                const filtered = uniqueData.filter((item) => item[props?.label].toLowerCase().includes(props?.filter?.name.toLowerCase()));
-                setFilteredData(filtered);
-            } else {
-                setFilteredData(uniqueData); // Update filteredData with unique items
-            }
+            // Apply filter if applicable
+            const filterText = props?.filter?.name?.toLowerCase() || '';
+            setFilteredData(uniqueData.filter((item) => item[props?.label]?.toLowerCase().includes(filterText)));
         }
-    }, [props?.filter, props?.options?.data, props?.options?.loading]);
+    }, [props?.options?.data, props?.options?.loading, props?.filter?.name]);
 
+    // Handle infinite scroll for loading additional data
     useEffect(() => {
         const handleScroll = () => {
-            if (searchMenuRef.current) {
-                const { scrollTop, scrollHeight, clientHeight } = searchMenuRef.current;
-                if (scrollTop + clientHeight + 1 >= scrollHeight) {
-                    const cursor = props?.options?.data?.[props?.attr]?.cursor;
-                    if (cursor?.afterCursor !== null) {
-                        props?.setfilter({
-                            ...props?.filter,
-                            afterCursor: cursor?.afterCursor,
-                            beforeCursor: null,
-                        });
-                    }
+            if (!searchMenuRef.current) return;
+            const { scrollTop, scrollHeight, clientHeight } = searchMenuRef.current;
+
+            if (scrollTop + clientHeight >= scrollHeight - 1) {
+                const cursor = props?.options?.data?.[props?.attr]?.cursor;
+                if (cursor?.afterCursor) {
+                    props?.setfilter({
+                        ...props?.filter,
+                        afterCursor: cursor.afterCursor,
+                        beforeCursor: null,
+                    });
                 }
             }
         };
 
-        if (searchMenuRef.current) {
-            searchMenuRef.current.addEventListener('scroll', handleScroll);
-        }
-
-        return () => {
-            if (searchMenuRef.current) {
-                searchMenuRef.current.removeEventListener('scroll', handleScroll);
-            }
-        };
+        searchMenuRef.current?.addEventListener('scroll', handleScroll);
+        return () => searchMenuRef.current?.removeEventListener('scroll', handleScroll);
     }, [props]);
 
+    // Update placeholder on payload change
+    useEffect(() => {
+        if (props?.payload) {
+            const matchingItem = data.find((item) => item[props?.value] === props?.payload[props?.payloadAttr]);
+            setPlaceholder(matchingItem ? matchingItem[props?.label] : props?.removeAll ? '' : 'All');
+        }
+    }, [props?.payload, data]);
+
+    // Handle search input
     const handleInputChange = (event) => {
         const value = event.target.value;
-        setsearch(value);
+        setSearch(value);
 
         if (value) {
-            const filtered = data.filter((item) => item[props?.label].toLowerCase().includes(value.toLowerCase()));
-
-            setFilteredData(filtered);
+            setFilteredData(data.filter((item) => item[props?.label]?.toLowerCase().includes(value.toLowerCase())));
         } else {
-            setFilteredData(data); // Reset to original data if search is cleared
+            setFilteredData(data);
         }
     };
 
+    // Debounce search filter update
     useEffect(() => {
-        // alert(JSON.stringify(props?.payload[props?.payloadAttr]));
-        if (props?.payload) {
-            filteredData?.map((item, index) => {
-                if (item[props?.value] == props?.payload[props?.payloadAttr]) {
-                    setplaceholder(item[props?.label]);
-                }
-            });
-            if (props?.removeAll != true && props?.payload[props?.payloadAttr] == undefined) {
-                setplaceholder('All');
-            }
-        }
-    }, [props?.payload, filteredData]);
-    useEffect(() => {
-        const debounceTimer = setTimeout(() => {
+        const timer = setTimeout(() => {
             if (props?.setfilter) {
                 props?.setfilter({
                     ...props?.filter,
-                    name: search?.length ? search : undefined,
+                    name: search || undefined,
                 });
             }
-        }, 500); // Set delay to 500ms or any delay you prefer
+        }, 500);
+        return () => clearTimeout(timer);
+    }, [search, props]);
 
-        // Clean up the timer if the component unmounts or search changes
-        return () => clearTimeout(debounceTimer);
-    }, [search]);
+    useEffect(() => {
+        // Disable body scroll when the menu is open
+        if (showMenu) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
 
+        // Cleanup to restore scroll when component unmounts
+        return () => {
+            document.body.style.overflow = 'auto';
+        };
+    }, [showMenu]);
     return (
-        <>
-            <div className="row m-0 w-100">
-                <div className={`${cardstyles.formgroup} ${cardstyles.field}`}>
-                    <label htmlFor="departments" className={cardstyles.formlabel}>
-                        {props?.title}
-                    </label>
-                    <div
-                        onClick={() => {
-                            if (props?.disabled != true) {
-                                setIsFocused(true);
-                                setshowmenu(true);
-                            }
-                        }}
-                        style={{ cursor: props?.disabled == true ? 'not-allowed' : 'pointer' }}
-                        className={cardstyles.formfield}
-                    >
-                        {placeholder}
-                    </div>
-
-                    <div
-                        style={{
-                            position: 'absolute',
-                            right: langdetect === 'en' ? 10 : '',
-                            left: langdetect === 'ar' ? 10 : '',
-                            top: '55%',
-                            fontSize: '13.5px',
-                            width: '20px',
-                            color: 'var(--primary)',
-                        }}
-                    >
-                        {!isFocused && <i className="fa fa-chevron-down"></i>}
-                        {isFocused && <i className="fa fa-chevron-up"></i>}
-                    </div>
+        <div className="row m-0 w-100">
+            <div className={`${cardstyles.formgroup} ${cardstyles.field}`}>
+                <label htmlFor="departments" className={cardstyles.formlabel}>
+                    {props?.title}
+                </label>
+                <div
+                    onClick={() => {
+                        if (!props?.disabled) {
+                            setIsFocused(true);
+                            setShowMenu(true);
+                        }
+                    }}
+                    className={cardstyles.formfield}
+                    style={{
+                        cursor: props?.disabled ? 'not-allowed' : 'pointer',
+                    }}
+                >
+                    {placeholder}
                 </div>
-                <div style={{ maxHeight: '200px', overflow: 'auto' }} ref={searchMenuRef} className={!showmenu ? `${cardstyles.searchmenu} row m-0 w-100` : `${cardstyles.searchmenushown} row m-0`}>
+                <div
+                    style={{
+                        position: 'absolute',
+                        right: langdetect === 'en' ? 10 : '',
+                        left: langdetect === 'ar' ? 10 : '',
+                        top: '55%',
+                        fontSize: '13.5px',
+                        width: '20px',
+                        color: 'var(--primary)',
+                    }}
+                >
+                    <i className={`fa fa-chevron-${isFocused ? 'up' : 'down'}`}></i>
+                </div>
+            </div>
+
+            {showMenu && (
+                <div style={{ maxHeight: '200px', overflow: 'auto' }} ref={searchMenuRef} className={`${showMenu ? cardstyles.searchmenushown : cardstyles.searchmenu} row m-0 w-100`}>
                     <div
                         className="blocker"
-                        onClick={(e) => {
-                            setshowmenu(false);
+                        onClick={() => {
+                            setShowMenu(false);
                             setIsFocused(false);
                         }}
                     ></div>
-                    <div class="col-lg-12 py-2 px-1">
+                    <div className="col-lg-12 py-2 px-1">
                         <input
                             type="text"
                             style={{
@@ -169,62 +153,52 @@ const SelectComponent = (props) => {
                                 borderRadius: '8px',
                                 height: '25px',
                             }}
-                            className={formstyles.form__field + ' p-2'}
+                            className={`${formstyles.form__field} p-2`}
                             value={search}
-                            placeholder="search"
-                            onChange={handleInputChange} // Update onChange handler
+                            placeholder="Search"
+                            onChange={handleInputChange}
                         />
                     </div>
+
                     {props?.options?.loading && (
                         <div className="col-lg-12 allcentered p-2">
-                            <div>
-                                <CircularProgress color="var(--greenprimary)" width="25px" height="25px" duration="1s" />
-                            </div>
+                            <CircularProgress color="var(--greenprimary)" width="25px" height="25px" duration="1s" />
                         </div>
                     )}
-                    {props?.removeAll != true && (
+
+                    {props?.removeAll !== true && (
                         <div
-                            onClick={(e) => {
-                                e.stopPropagation();
+                            onClick={() => {
                                 props?.onClick(undefined);
-                                setshowmenu(false);
+                                setShowMenu(false);
                                 setIsFocused(false);
                             }}
                             className="col-lg-12 p-0"
                         >
-                            <div style={{ cursor: 'pointer', zIndex: 1000, fontSize: '11px' }} className={cardstyles.searchitem}>
-                                <div style={{ fontSize: '11px' }} className={cardstyles.companyname}>
-                                    All
-                                </div>
+                            <div className={cardstyles.searchitem} style={{ cursor: 'pointer', fontSize: '11px' }}>
+                                All
                             </div>
                         </div>
                     )}
 
-                    {!props?.options?.loading && (
-                        <>
-                            {filteredData?.map((item, index) => (
-                                <div
-                                    key={index}
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        props?.onClick(item);
-                                        setshowmenu(false);
-                                        setIsFocused(false);
-                                    }}
-                                    className="col-lg-12 p-0"
-                                >
-                                    <div style={{ cursor: 'pointer', zIndex: 1000, fontSize: '11px' }} className={cardstyles.searchitem}>
-                                        <div style={{ fontSize: '11px' }} className={cardstyles.companyname}>
-                                            {item[props?.label]}
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </>
-                    )}
+                    {filteredData.map((item, index) => (
+                        <div
+                            key={index}
+                            onClick={() => {
+                                props?.onClick(item);
+                                setShowMenu(false);
+                                setIsFocused(false);
+                            }}
+                            className="col-lg-12 p-0"
+                        >
+                            <div className={cardstyles.searchitem} style={{ cursor: 'pointer', fontSize: '11px' }}>
+                                {item[props?.label]}
+                            </div>
+                        </div>
+                    ))}
                 </div>
-            </div>
-        </>
+            )}
+        </div>
     );
 };
 

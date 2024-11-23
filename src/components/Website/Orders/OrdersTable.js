@@ -194,7 +194,9 @@ const OrdersTable = (props) => {
                                                                 ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 '
                                                                 : item?.status == 'cancelled' || item?.status == 'failedDeliveryAttempt'
                                                                 ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 '
-                                                                : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 '
+                                                                : item.status == 'postponed'
+                                                                ? ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 rounded-pill-hover '
+                                                                : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600  '
                                                         }
                                                     >
                                                         {orderStatusEnumContext?.map((i, ii) => {
@@ -202,6 +204,7 @@ const OrdersTable = (props) => {
                                                                 return <span>{i.label}</span>;
                                                             }
                                                         })}
+                                                        <div class="hovercontainer">{dateformatter(item.orderDate)}</div>
                                                     </div>
                                                     <div
                                                         // onClick={() => {
@@ -502,8 +505,8 @@ const OrdersTable = (props) => {
                                                     )} */}
                                                     <div class="col-lg-6 p-0 d-flex justify-content-end">
                                                         <div class="row m-0 w-100">
-                                                            <div className={' m-0 p-0 col-lg-12 d-flex justify-content-end '}>Initial: {dateformatter(item.createdAt)}</div>
-                                                            {item.orderDate && <div className={' m-0 p-0 col-lg-12 d-flex justify-content-end'}>Date: {dateformatter(item.orderDate)}</div>}
+                                                            <div className={' m-0 p-0 col-lg-12 d-flex justify-content-end '}>{dateformatter(item.createdAt)}</div>
+                                                            {/* {item.orderDate && <div className={' m-0 p-0 col-lg-12 d-flex justify-content-end'}>Date: {dateformatter(item.orderDate)}</div>} */}
                                                         </div>
                                                     </div>
                                                 </div>

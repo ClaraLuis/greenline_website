@@ -64,7 +64,7 @@ const AddItem = (props) => {
     const [findOneItemLazyQuery] = useLazyQueryGQL(findOneItem());
 
     const [addItemMutation] = useMutationGQL(addCompoundItem(), {
-        merchantId: 1,
+        merchantId: itempayload?.merchantId,
         items: [
             {
                 name: itempayload?.name,
@@ -80,7 +80,7 @@ const AddItem = (props) => {
     });
 
     const [updateMerchantItemMutation] = useMutationGQL(updateMerchantItem(), {
-        merchantId: 1,
+        merchantId: itempayload?.merchantId,
         item: {
             id: parseInt(queryParameters?.get('id')),
 
@@ -320,14 +320,14 @@ const AddItem = (props) => {
         setActiveColor(activeColor === color ? null : color);
     };
 
-    const [filteMerchants, setfilteMerchants] = useState({
+    const [filterMerchants, setfilterMerchants] = useState({
         isAsc: true,
         limit: 10,
         afterCursor: undefined,
         beforeCursor: undefined,
     });
 
-    const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filteMerchants);
+    const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
 
     useEffect(() => {
         const itemVariantsTemp = createVariantOptions([], 0);
@@ -1328,8 +1328,8 @@ const AddItem = (props) => {
                                 <div class="col-lg-6">
                                     <SelectComponent
                                         title={'Merchant'}
-                                        filter={filteMerchants}
-                                        setfilter={setfilteMerchants}
+                                        filter={filterMerchants}
+                                        setfilter={setfilterMerchants}
                                         options={fetchMerchantsQuery}
                                         // disabled={window.location.pathname == '/updateitem'}
                                         attr={'paginateMerchants'}

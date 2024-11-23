@@ -13,7 +13,7 @@
     box-shadow: 0 0 3.125rem 0 rgba(82, 63, 105, 0.15);
     min-width: 120px;
     padding: 5px 0px;
-    z-index: 100;
+    z-index: 10000;
 }
 .dropdown:hover .dropdownlist {
     visibility: visible;

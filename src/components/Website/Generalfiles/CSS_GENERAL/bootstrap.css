@@ -3788,6 +3788,26 @@ hr {
     padding: 3px 10px;
     width: fit-content;
 }
+.hovercontainer {
+    /* display: none; */
+    /* transition: all 10s; */
+    padding: 10px;
+    position: absolute;
+    color: #000;
+    background-color: white;
+    border-radius: 0.25rem;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+    z-index: 1000;
+    opacity: 0;
+    transform: scale(0.95);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    margin-top: 10px;
+}
+.rounded-pill-hover:hover .hovercontainer {
+    /* display: flex; */
+    opacity: 1;
+    transform: scale(1);
+}
 .bg-borderdanger {
     border-color: var(--danger) !important ;
     color: var(--danger) !important;
@@ -4068,6 +4088,10 @@ hr {
     z-index: -1;
     width: 1000vh;
     height: 100vh;
+    overflow: hidden !important;
+}
+.blocker body {
+    overflow: hidden !important;
 }
 
 .daterangepicker-control-section {

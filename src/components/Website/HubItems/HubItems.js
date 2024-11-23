@@ -56,7 +56,6 @@ const HubItems = (props) => {
         afterCursor: '',
         beforeCursor: '',
         name: undefined,
-        merchantId: 1,
     });
     const fetchMerchantItemVariantsQuery = useQueryGQL('', fetchMerchantItemVariants(), filter);
 

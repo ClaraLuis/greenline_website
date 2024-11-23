@@ -32,17 +32,8 @@ const MerchantPayment = (props) => {
     let history = useHistory();
     const [total, setTotal] = useState(0);
 
-    const { setpageactive_context, isAuth, financialAccountTypeContext } = useContext(Contexthandlerscontext);
-    const {
-        useQueryGQL,
-        fetchMerchants,
-        useMutationGQL,
-        createFinancialAccount,
-        calculateFinancialTransactionsTotal,
-        fetchMerchantPaymentTransactions,
-        completeMerchantPayments,
-        fetchFinancialAccounts,
-    } = API();
+    const { setpageactive_context, isAuth, setpagetitle_context } = useContext(Contexthandlerscontext);
+    const { useQueryGQL, fetchMerchantPaymentTransactions } = API();
     const cookies = new Cookies();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -61,6 +52,8 @@ const MerchantPayment = (props) => {
 
     useEffect(() => {
         setpageactive_context('/merchantpayment');
+        setpagetitle_context('Merchant');
+
         setfilterobj({
             isAsc: true,
             limit: 20,
@@ -91,13 +84,12 @@ const MerchantPayment = (props) => {
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
-                <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
-                    <p class=" p-0 m-0" style={{ fontSize: '27px' }}>
-                        Merchant Payments
-                    </p>
-                </div>
-
-                <div class="col-lg-12 p-0 ">
+                <div class="col-lg-12 p-0 px-3 ">
+                    <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
+                        <p class=" p-0 m-0" style={{ fontSize: '27px' }}>
+                            Merchant Payments
+                        </p>
+                    </div>
                     <div class="row m-0 w-100">
                         <div class="col-lg-12 p-0">
                             <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>

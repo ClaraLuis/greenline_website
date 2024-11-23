@@ -352,6 +352,7 @@ const Packages = (props) => {
                                 onClick={(option) => {
                                     setpackagepayload({ ...packagepayload, userId: option?.id });
                                 }}
+                                removeAll={true}
                             />
                         </div>
 

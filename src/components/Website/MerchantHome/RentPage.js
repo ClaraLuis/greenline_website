@@ -79,14 +79,14 @@ const RentPage = (props) => {
         }
     }, []);
 
-    const [filteMerchants, setfilteMerchants] = useState({
+    const [filterMerchants, setfilterMerchants] = useState({
         isAsc: true,
         limit: 10,
         afterCursor: undefined,
         beforeCursor: undefined,
     });
 
-    const fetchMerchantsQuery = useQueryGQL('cashe-first', fetchMerchants(), filteMerchants);
+    const fetchMerchantsQuery = useQueryGQL('cashe-first', fetchMerchants(), filterMerchants);
     const getFirstDayOfNextMonth = () => {
         const today = new Date();
         const firstDayNextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1);
@@ -105,8 +105,8 @@ const RentPage = (props) => {
                     <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
                         <SelectComponent
                             title={'Merchant'}
-                            filter={filteMerchants}
-                            setfilter={setfilteMerchants}
+                            filter={filterMerchants}
+                            setfilter={setfilterMerchants}
                             options={fetchMerchantsQuery}
                             attr={'paginateMerchants'}
                             label={'name'}

@@ -549,6 +549,15 @@ const OrderInfo = (props) => {
                                                         </div>
                                                         <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
                                                             <div
+                                                                class={
+                                                                    chosenOrderContext?.sheetOrder?.shippingCollected == 'collected'
+                                                                        ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600'
+                                                                        : ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600'
+                                                                }
+                                                            >
+                                                                Courier collected shipping:{chosenOrderContext?.sheetOrder?.shippingCollected == 'collected' ? 'Yes' : 'No'}
+                                                            </div>
+                                                            <div
                                                                 style={{
                                                                     color: 'white',
                                                                     borderRadius: '0.25rem',
@@ -559,6 +568,7 @@ const OrderInfo = (props) => {
                                                             >
                                                                 {chosenOrderContext?.sheetOrder?.financePass ? 'Finance Accepted' : 'Finance Pending'}
                                                             </div>
+
                                                             <div
                                                                 style={{
                                                                     color: 'white',
@@ -566,7 +576,7 @@ const OrderInfo = (props) => {
                                                                     fontSize: '11px',
                                                                     background: chosenOrderContext?.sheetOrder?.adminPass ? 'var(--success)' : 'var(--danger)',
                                                                 }}
-                                                                class="allcentered mx-2 p-1 px-2"
+                                                                class="allcentered  p-1 px-2"
                                                             >
                                                                 {chosenOrderContext?.sheetOrder?.financePass ? 'Admin Accepted' : 'Admin Pending'}
                                                             </div>

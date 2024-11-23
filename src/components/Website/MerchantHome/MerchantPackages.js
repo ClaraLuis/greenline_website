@@ -26,7 +26,7 @@ const MerchantPackages = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setchosenPackageContext, returnPackageStatusContext, isAuth, dateformatter, setpagetitle_context } = useContext(Contexthandlerscontext);
-    const { fetchPackages, useQueryGQL, findReturnPackageBySku, useLazyQueryGQL } = API();
+    const { fetchPackages, useQueryGQL, findReturnPackageBySku, useLazyQueryGQL, fetchMerchants } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [packagepayload, setpackagepayload] = useState({
@@ -42,6 +42,7 @@ const MerchantPackages = (props) => {
         assigned: undefined,
         status: undefined,
         type: 'merchant',
+        toMerchantId: undefined,
     });
 
     const fetchPackagesQuery = useQueryGQL('', fetchPackages(), filter);
@@ -54,7 +55,13 @@ const MerchantPackages = (props) => {
     const [findReturnPackageBySkuQuery] = useLazyQueryGQL(findReturnPackageBySku());
 
     const [barcode, setBarcode] = useState('');
-
+    const [filterMerchants, setfilterMerchants] = useState({
+        isAsc: true,
+        limit: 10,
+        afterCursor: undefined,
+        beforeCursor: undefined,
+    });
+    const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filterMerchants);
     useEffect(() => {
         const handleKeyDown = async (e) => {
             // Ignore control keys and functional keys
@@ -165,6 +172,22 @@ const MerchantPackages = (props) => {
                                                         value={[{ label: 'All', value: undefined }, ...returnPackageStatusContext].filter((option) => option.value == filter?.status)}
                                                         onChange={(option) => {
                                                             setfilter({ ...filter, status: option.value });
+                                                        }}
+                                                    />
+                                                </div>
+                                                <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                                    <SelectComponent
+                                                        title={'Merchant'}
+                                                        filter={filterMerchants}
+                                                        setfilter={setfilterMerchants}
+                                                        options={fetchMerchantsQuery}
+                                                        attr={'paginateMerchants'}
+                                                        label={'name'}
+                                                        value={'id'}
+                                                        payload={filter}
+                                                        payloadAttr={'toMerchantId'}
+                                                        onClick={(option) => {
+                                                            setfilter({ ...filter, toMerchantId: option?.id ?? undefined });
                                                         }}
                                                     />
                                                 </div>

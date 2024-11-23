@@ -32,32 +32,10 @@ const MerchantHome = (props) => {
     const { createInventory, useMutationGQL, paginateInventoryRentTransaction, useQueryGQL, ordersDeliverableSummary, graphOrders, mostSoldItems, fetchMerchants } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
-    const [inventoryRentPayload, setinventoryRentPayload] = useState({
-        merchantId: 1,
-        type: '',
-        startDate: new Date().toISOString().split('T')[0],
-        pricePerUnit: '',
-        currency: '',
-    });
+
     const [openModal, setopenModal] = useState(false);
     const [submit, setsubmit] = useState(false);
     const [barchartaxis, setbarchartaxis] = useState({ xAxis: undefined, yAxis: undefined });
-
-    const [addInventoryRent] = useMutationGQL(createInventory(), {
-        merchantId: parseInt(inventoryRentPayload?.merchantId),
-        type: inventoryRentPayload?.type,
-        startDate: inventoryRentPayload?.startDate,
-        pricePerUnit: inventoryRentPayload?.pricePerUnit,
-        currency: inventoryRentPayload?.currency,
-    });
-    const [filterTransactions, setfilterTransactions] = useState({
-        isAsc: true,
-        limit: 100,
-        afterCursor: undefined,
-        beforeCursor: undefined,
-        merchantId: 1,
-    });
-    const paginateInventoryRentTransactionQuery = useQueryGQL('cache-first', paginateInventoryRentTransaction(), filterTransactions);
 
     const [filterordersDeliverableSummary, setfilterordersDeliverableSummary] = useState({
         startDate: '2024-06-28T18:38:47.762Z',
@@ -187,17 +165,6 @@ const MerchantHome = (props) => {
                                 Dashboard
                             </p>
                         </div>
-                        <div class={' col-lg-6 col-md-6 col-sm-6 p-0 pr-3 pr-md-1 pr-sm-0 d-flex align-items-center justify-content-end pb-1 '}>
-                            <button
-                                style={{ height: '35px' }}
-                                class={generalstyles.roundbutton + '  mb-1 mx-2'}
-                                onClick={() => {
-                                    history.push('/bookvisit');
-                                }}
-                            >
-                                Book a visit
-                            </button>
-                        </div>
                     </div>
                 </div>
                 <div class="col-lg-12 ">
@@ -273,7 +240,7 @@ const MerchantHome = (props) => {
                                                         if (event != null) {
                                                             setfilterordersDeliverableSummary({
                                                                 ...filterordersDeliverableSummary,
-                                                                startdDate: event[0],
+                                                                startDate: event[0],
                                                                 endDate: event[1],
                                                             });
                                                         }
@@ -281,8 +248,8 @@ const MerchantHome = (props) => {
                                                     onClean={() => {
                                                         setfilterordersDeliverableSummary({
                                                             ...filterordersDeliverableSummary,
-                                                            startdDate: null,
-                                                            endDate: null,
+                                                            startDate: '2024-06-28T18:38:47.762Z',
+                                                            endDate: undefined,
                                                         });
                                                     }}
                                                 />
@@ -296,12 +263,13 @@ const MerchantHome = (props) => {
                 </div>
 
                 <div class={barchartaxis?.xAxis && barchartaxis?.yAxis1?.length ? 'col-lg-7 scrollmenuclasssubscrollbar' : 'col-lg-12 p-1 scrollmenuclasssubscrollbar'}>
-                    {barchartaxis?.xAxis && barchartaxis?.yAxis && (
+                    {barchartaxis?.xAxis && barchartaxis?.yAxis && ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data?.length != 0 && (
                         <div class={generalstyles.card + ' row m-0 w-100 '}>
                             <Barchart xAxis={barchartaxis?.xAxis} yAxis={barchartaxis?.yAxis} />
                         </div>
                     )}
-                    {chartData && xaxisCategories && mostSoldItemsQuery?.data && (
+
+                    {chartData && xaxisCategories && mostSoldItemsQuery?.data && graphOrdersQuery?.data?.graphOrders?.data && Object.keys(graphOrdersQuery.data.graphOrders.data).length > 0 && (
                         <div class={generalstyles.card + ' row m-0 w-100 '}>
                             <Multilinechart chartData={chartData} xaxisCategories={xaxisCategories} />
                         </div>
@@ -309,9 +277,12 @@ const MerchantHome = (props) => {
                 </div>
                 {barchartaxis?.xAxis && barchartaxis?.yAxis1 && (
                     <div class="col-lg-5 ">
-                        <div class={generalstyles.card + ' row m-0 w-100 '}>
-                            <Piechart height={mostSoldItemsQuery?.data ? '250' : 300} xAxis={barchartaxis?.xAxis} yAxis={barchartaxis?.yAxis1} title={'Orders'} total={barchartaxis?.total} />
-                        </div>
+                        {ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data?.length != 0 && (
+                            <div class={generalstyles.card + ' row m-0 w-100 '}>
+                                <Piechart height={mostSoldItemsQuery?.data ? '250' : 300} xAxis={barchartaxis?.xAxis} yAxis={barchartaxis?.yAxis1} title={'Orders'} total={barchartaxis?.total} />
+                            </div>
+                        )}
+
                         {mostSoldItemsQuery?.data && (
                             <div class={generalstyles.card + ' row m-0 w-100 '}>
                                 <div class={'col-lg-12 my-2'} style={{ fontSize: '17px', fontWeight: 700 }}>
@@ -360,7 +331,7 @@ const MerchantHome = (props) => {
                         )}
                     </div>
                 )}
-                {chartData && xaxisCategories && !mostSoldItemsQuery?.data && (
+                {chartData && xaxisCategories && !mostSoldItemsQuery?.data && graphOrdersQuery?.data?.graphOrders?.data && Object.keys(graphOrdersQuery.data.graphOrders.data).length > 0 && (
                     <div class="col-lg-12 ">
                         <div class={generalstyles.card + ' row m-0 w-100 '}>
                             <Multilinechart chartData={chartData} xaxisCategories={xaxisCategories} />
@@ -368,98 +339,6 @@ const MerchantHome = (props) => {
                     </div>
                 )}
             </div>
-            <Modal
-                show={openModal}
-                onHide={() => {
-                    setopenModal(false);
-                }}
-                centered
-                size={'md'}
-            >
-                <Modal.Header>
-                    <div className="row w-100 m-0 p-0">
-                        <div class="col-lg-6 pt-3 ">
-                            <div className="row w-100 m-0 p-0">Inventory rent</div>
-                        </div>
-                        <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
-                            <div
-                                class={'close-modal-container'}
-                                onClick={() => {
-                                    setopenModal(false);
-                                }}
-                            >
-                                <IoMdClose />
-                            </div>
-                        </div>{' '}
-                    </div>
-                </Modal.Header>
-                <Modal.Body>
-                    <div class="row m-0 w-100 py-2">
-                        <Form
-                            submit={submit}
-                            setsubmit={setsubmit}
-                            size={'md'}
-                            attr={[
-                                {
-                                    name: 'Type',
-                                    attr: 'type',
-                                    type: 'select',
-                                    options: inventoryRentTypeContext,
-                                    size: '12',
-                                },
-                                {
-                                    name: 'Start Date',
-                                    attr: 'startDate',
-                                    type: 'date',
-                                    size: '12',
-                                },
-                                {
-                                    name: 'Price Per Unit',
-                                    attr: 'pricePerUnit',
-                                    type: 'number',
-                                    size: '12',
-                                },
-                                {
-                                    name: 'Currency',
-                                    attr: 'currency',
-                                    type: 'select',
-                                    options: [
-                                        { label: 'EGP', value: 'EGP' },
-                                        { label: 'USD', value: 'USD' },
-                                    ],
-                                    size: '12',
-                                },
-                            ]}
-                            payload={inventoryRentPayload}
-                            setpayload={setinventoryRentPayload}
-                            button1disabled={buttonLoadingContext}
-                            button1class={generalstyles.roundbutton + '  mr-2 '}
-                            button1placeholder={'Update'}
-                            button1onClick={async () => {
-                                if (buttonLoadingContext) return;
-                                setbuttonLoadingContext(true);
-                                try {
-                                    await addInventoryRent();
-                                    setchangestatusmodal(false);
-                                } catch (error) {
-                                    let errorMessage = 'An unexpected error occurred';
-                                    if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-                                        errorMessage = error.graphQLErrors[0].message || errorMessage;
-                                    } else if (error.networkError) {
-                                        errorMessage = error.networkError.message || errorMessage;
-                                    } else if (error.message) {
-                                        errorMessage = error.message;
-                                    }
-
-                                    NotificationManager.warning(errorMessage, 'Warning!');
-                                    console.error('Error adding Merchant:', error);
-                                }
-                                setbuttonLoadingContext(false);
-                            }}
-                        />
-                    </div>
-                </Modal.Body>
-            </Modal>
         </div>
     );
 };

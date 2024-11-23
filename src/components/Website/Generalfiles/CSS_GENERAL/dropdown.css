@@ -9,7 +9,7 @@
 }
 .dropdown-menu {
     position: absolute;
-    z-index: 10;
+    z-index: 10000;
     display: none;
     padding: 10px 0px;
     font-size: 0.88rem;

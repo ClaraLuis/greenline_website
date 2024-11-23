@@ -372,6 +372,7 @@ const FinanceTransactions = (props) => {
                             </div>
                             <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
                                 <TransactionsTable
+                                    hasOrder={true}
                                     width={'50%'}
                                     query={fetchAllTransactionsQuery}
                                     paginationAttr="paginateFinancialTransaction"
@@ -481,160 +482,118 @@ const FinanceTransactions = (props) => {
                     </Modal.Header>
                     <Modal.Body>
                         <div class="row m-0 w-100 py-2">
-                            {openModal?.type == 'transaction' && !fetchAllFinancialAccountsQuery?.loading && (
-                                <Form
-                                    size={'md'}
-                                    submit={submit}
-                                    setsubmit={setsubmit}
-                                    attr={
-                                        isAuth([1, 51])
-                                            ? [
-                                                  {
-                                                      name: 'Type',
-                                                      attr: 'type',
-                                                      type: 'select',
-                                                      options: transactionTypeContext,
-                                                      size: '12',
-                                                  },
-                                                  { name: 'Description', attr: 'description', type: 'textarea', size: '12' },
+                            <Form
+                                size={'md'}
+                                submit={submit}
+                                setsubmit={setsubmit}
+                                attr={
+                                    isAuth([1, 51])
+                                        ? [
+                                              {
+                                                  name: 'Type',
+                                                  attr: 'type',
+                                                  type: 'select',
+                                                  options: transactionTypeContext,
+                                                  size: '12',
+                                              },
+                                              { name: 'Description', attr: 'description', type: 'textarea', size: '12' },
 
-                                                  {
-                                                      title: 'From Account',
-                                                      filter: filterAllFinancialAccountsObj,
-                                                      setfilter: setfilterAllFinancialAccountsObj,
-                                                      options: fetchAllFinancialAccountsQuery,
-                                                      optionsAttr: 'paginateFinancialAccounts',
-                                                      label: 'name',
-                                                      value: 'id',
-                                                      size: '12',
-                                                      attr: 'fromAccountId',
-                                                      type: 'fetchSelect',
-                                                  },
+                                              {
+                                                  title: 'From Account',
+                                                  filter: filterAllFinancialAccountsObj,
+                                                  setfilter: setfilterAllFinancialAccountsObj,
+                                                  options: fetchAllFinancialAccountsQuery,
+                                                  optionsAttr: 'paginateFinancialAccounts',
+                                                  label: 'name',
+                                                  value: 'id',
+                                                  size: '12',
+                                                  attr: 'fromAccountId',
+                                                  type: 'fetchSelect',
+                                              },
 
-                                                  {
-                                                      title: 'To Account',
-                                                      filter: filterAllFinancialAccountsObj,
-                                                      setfilter: setfilterAllFinancialAccountsObj,
-                                                      options: fetchAllFinancialAccountsQuery,
-                                                      optionsAttr: 'paginateFinancialAccounts',
-                                                      label: 'name',
-                                                      value: 'id',
-                                                      size: '12',
-                                                      attr: 'toAccountId',
-                                                      type: 'fetchSelect',
-                                                  },
-                                                  { name: 'Amount', attr: 'amount', type: 'number', size: '12' },
-                                                  { name: 'Receipt', attr: 'receipt', previewerAttr: 'previewerReceipt', type: 'image', size: '12' },
-                                              ]
-                                            : [
-                                                  {
-                                                      name: 'Type',
-                                                      attr: 'type',
-                                                      type: 'select',
-                                                      options: transactionTypeContext,
-                                                      size: '12',
-                                                  },
-                                                  { name: 'Description', attr: 'description', type: 'textarea', size: '12' },
+                                              {
+                                                  title: 'To Account',
+                                                  filter: filterAllFinancialAccountsObj,
+                                                  setfilter: setfilterAllFinancialAccountsObj,
+                                                  options: fetchAllFinancialAccountsQuery,
+                                                  optionsAttr: 'paginateFinancialAccounts',
+                                                  label: 'name',
+                                                  value: 'id',
+                                                  size: '12',
+                                                  attr: 'toAccountId',
+                                                  type: 'fetchSelect',
+                                              },
+                                              { name: 'Amount', attr: 'amount', type: 'number', size: '12' },
+                                              { name: 'Receipt', attr: 'receipt', previewerAttr: 'previewerReceipt', type: 'image', size: '12' },
+                                          ]
+                                        : [
+                                              {
+                                                  name: 'Type',
+                                                  attr: 'type',
+                                                  type: 'select',
+                                                  options: transactionTypeContext,
+                                                  size: '12',
+                                              },
+                                              { name: 'Description', attr: 'description', type: 'textarea', size: '12' },
 
-                                                  {
-                                                      title: 'To Account',
-                                                      filter: filterAllFinancialAccountsObj,
-                                                      setfilter: setfilterAllFinancialAccountsObj,
-                                                      options: fetchAllFinancialAccountsQuery,
-                                                      optionsAttr: 'paginateFinancialAccounts',
-                                                      label: 'name',
-                                                      value: 'id',
-                                                      size: '12',
-                                                      attr: 'toAccountId',
-                                                      type: 'fetchSelect',
-                                                  },
-                                                  { name: 'Amount', attr: 'amount', type: 'number', size: '12' },
-                                                  { name: 'Receipt', attr: 'receipt', previewerAttr: 'previewerReceipt', type: 'image', size: '12' },
-                                              ]
-                                    }
-                                    payload={transactionpayload}
-                                    setpayload={settransactionpayload}
-                                    button1disabled={buttonLoadingContext}
-                                    button1class={generalstyles.roundbutton + '  mr-2 my-2 '}
-                                    button1placeholder={'Add transaction'}
-                                    button1onClick={async () => {
-                                        if (buttonLoadingContext) return;
-                                        setbuttonLoadingContext(true);
-                                        if (
-                                            transactionpayload?.type?.length != 0 &&
-                                            transactionpayload?.amount?.length != 0 &&
-                                            transactionpayload?.fromAccountId?.length != 0 &&
-                                            transactionpayload?.toAccountId?.length != 0
-                                        ) {
-                                            try {
-                                                if (isAuth([1, 51])) {
-                                                    await sendAnyFinancialTransactionMutation();
-                                                } else {
-                                                    await sendMyFinancialTransactionMutation();
-                                                }
-                                                setopenModal({ open: false, type: '' });
-                                                Refetch();
-                                            } catch (error) {
-                                                let errorMessage = 'An unexpected error occurred';
-                                                if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-                                                    errorMessage = error.graphQLErrors[0].message || errorMessage;
-                                                } else if (error.networkError) {
-                                                    errorMessage = error.networkError.message || errorMessage;
-                                                } else if (error.message) {
-                                                    errorMessage = error.message;
-                                                }
-
-                                                NotificationManager.warning(errorMessage, 'Warning!');
-                                                console.error('Error adding Merchant:', error);
+                                              {
+                                                  title: 'To Account',
+                                                  filter: filterAllFinancialAccountsObj,
+                                                  setfilter: setfilterAllFinancialAccountsObj,
+                                                  options: fetchAllFinancialAccountsQuery,
+                                                  optionsAttr: 'paginateFinancialAccounts',
+                                                  label: 'name',
+                                                  value: 'id',
+                                                  size: '12',
+                                                  attr: 'toAccountId',
+                                                  type: 'fetchSelect',
+                                                  //   removeAll: true,
+                                              },
+                                              { name: 'Amount', attr: 'amount', type: 'number', size: '12' },
+                                              { name: 'Receipt', attr: 'receipt', previewerAttr: 'previewerReceipt', type: 'image', size: '12' },
+                                          ]
+                                }
+                                payload={transactionpayload}
+                                setpayload={settransactionpayload}
+                                button1disabled={buttonLoadingContext}
+                                button1class={generalstyles.roundbutton + '  mr-2 my-2 '}
+                                button1placeholder={'Add transaction'}
+                                button1onClick={async () => {
+                                    if (buttonLoadingContext) return;
+                                    setbuttonLoadingContext(true);
+                                    if (
+                                        transactionpayload?.type?.length != 0 &&
+                                        transactionpayload?.amount?.length != 0 &&
+                                        transactionpayload?.fromAccountId?.length != 0 &&
+                                        transactionpayload?.toAccountId?.length != 0
+                                    ) {
+                                        try {
+                                            if (isAuth([1, 51])) {
+                                                await sendAnyFinancialTransactionMutation();
+                                            } else {
+                                                await sendMyFinancialTransactionMutation();
                                             }
-                                        } else {
-                                            NotificationManager.warning('complete all missing fields', 'Warning!');
+                                            setopenModal({ open: false, type: '' });
+                                            Refetch();
+                                        } catch (error) {
+                                            let errorMessage = 'An unexpected error occurred';
+                                            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                                errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                            } else if (error.networkError) {
+                                                errorMessage = error.networkError.message || errorMessage;
+                                            } else if (error.message) {
+                                                errorMessage = error.message;
+                                            }
+
+                                            NotificationManager.warning(errorMessage, 'Warning!');
+                                            console.error('Error adding Merchant:', error);
                                         }
-                                        setbuttonLoadingContext(false);
-                                    }}
-                                />
-                            )}
-
-                            {openModal?.type == 'expense' && (
-                                <Form
-                                    size={'md'}
-                                    submit={submit}
-                                    setsubmit={setsubmit}
-                                    attr={[
-                                        {
-                                            name: 'Type',
-                                            attr: 'type',
-                                            type: 'select',
-                                            options: expenseTypeContext,
-                                            size: '12',
-                                        },
-
-                                        {
-                                            title: 'From Account',
-                                            filter: filterAllFinancialAccountsObj,
-                                            setfilter: setfilterAllFinancialAccountsObj,
-                                            options: fetchAllFinancialAccountsQuery,
-                                            optionsAttr: 'paginateFinancialAccounts',
-                                            label: 'name',
-                                            value: 'id',
-                                            size: '12',
-                                            attr: 'fromAccountId',
-                                            type: 'fetchSelect',
-                                        },
-                                        { name: 'Amount', attr: 'amount', type: 'number', size: '12' },
-                                        { name: 'Receipt', attr: 'receipt', type: 'image', size: '12' },
-                                        { name: 'Comment', attr: 'comment', type: 'textarea', size: '12' },
-                                    ]}
-                                    payload={expensepayload}
-                                    setpayload={setexpensepayload}
-                                    // button1disabled={UserMutation.isLoading}
-                                    button1class={generalstyles.roundbutton + '  mr-2 '}
-                                    button1placeholder={'Add expense'}
-                                    button1onClick={() => {
-                                        setopenModal({ open: false, type: '' });
-                                    }}
-                                />
-                            )}
+                                    } else {
+                                        NotificationManager.warning('complete all missing fields', 'Warning!');
+                                    }
+                                    setbuttonLoadingContext(false);
+                                }}
+                            />
                         </div>
                     </Modal.Body>
                 </Modal>

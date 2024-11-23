@@ -139,7 +139,7 @@ const CourierSheet = (props) => {
     }, [statuspayload]);
 
     const [updateOrdersStatusMutation] = useMutationGQL(updateOrdersStatus(), {
-        status: statuspayload?.status,
+        status: !statuspayload?.fullDelivery && statuspayload?.status == 'delivered' ? 'partiallyDelivered' : statuspayload?.status,
         sheetOrderId: parseInt(statuspayload?.orderid),
         amountCollected: calculateAmountCollected(),
         description: statuspayload?.description,
@@ -148,7 +148,7 @@ const CourierSheet = (props) => {
         partialItems: statuspayload?.partialItems,
         returnOrderUpdateInput: statuspayload?.previousOrder
             ? {
-                  status: statuspayload?.returnStatus,
+                  status: !statuspayload?.fullReturn && statuspayload?.returnStatus == 'return' ? 'partiallyReturned' : statuspayload?.returnStatus,
                   partialItems: statuspayload?.partialItemsReturn,
                   amountCollected: calculateAmountCollectedReturn(),
               }
@@ -425,7 +425,9 @@ const CourierSheet = (props) => {
                                                                         fullReturn: true,
                                                                         returnStatus: 'returned',
                                                                     });
-
+                                                                    if (tempsheetpayload?.status == 'financeAccepted' || tempsheetpayload?.status == 'adminAccepted') {
+                                                                        return;
+                                                                    }
                                                                     setchangestatusmodal(true);
                                                                 }}
                                                                 style={{ cursor: 'pointer', marginInlineEnd: '5px' }}
@@ -1333,7 +1335,7 @@ const CourierSheet = (props) => {
                                                                                     }}
                                                                                     className="p-1 px-2 mr-1 allcentered"
                                                                                 >
-                                                                                    {new Decimal(subitem.count).toFixed(2)}
+                                                                                    {new Decimal(subitem.count).toFixed(0)}
                                                                                 </div>
                                                                             )}
                                                                             {!statuspayload?.fullReturn && (
@@ -1496,7 +1498,7 @@ const CourierSheet = (props) => {
                                                                         }}
                                                                         className="p-1 px-2 mr-1 allcentered"
                                                                     >
-                                                                        {new Decimal(subitem.count).toFixed(2)} {/* Using Decimal here */}
+                                                                        {new Decimal(subitem.count).toFixed(0)} {/* Using Decimal here */}
                                                                     </div>
                                                                 )}
                                                                 {!statuspayload?.fullDelivery && (
@@ -1674,7 +1676,7 @@ const CourierSheet = (props) => {
                                                                                     }}
                                                                                     className="p-1 px-2 mr-1 allcentered"
                                                                                 >
-                                                                                    {new Decimal(subitem.count).toFixed(2)} {/* Using Decimal for full return */}
+                                                                                    {new Decimal(subitem.count).toFixed(0)} {/* Using Decimal for full return */}
                                                                                 </div>
                                                                             )}
                                                                             {!statuspayload?.fullReturn && (
@@ -1783,7 +1785,12 @@ const CourierSheet = (props) => {
                             <div class="col-lg-12 mb-3 allcentered">
                                 <button
                                     onClick={async () => {
-                                        if (!statuspayload?.order?.originalPrice && !statuspayload?.fullDelivery && !statuspayload?.amountCollected) {
+                                        if (
+                                            !statuspayload?.order?.originalPrice &&
+                                            !statuspayload?.fullDelivery &&
+                                            !statuspayload?.amountCollected &&
+                                            (statuspayload?.status == 'delivered' || statuspayload?.status == 'return')
+                                        ) {
                                             NotificationManager.warning('Enter Amount Collected.', 'Warning!');
                                             return;
                                         }
@@ -1793,7 +1800,12 @@ const CourierSheet = (props) => {
                                             var temp = { ...submitSheetPayload };
                                             temp.updateSheetOrderstemp.map((i, ii) => {
                                                 if (i.sheetOrderId == statuspayload.orderid) {
-                                                    temp.updateSheetOrderstemp[ii].orderStatus = statuspayload?.status;
+                                                    temp.updateSheetOrderstemp[ii].orderStatus =
+                                                        !statuspayload?.fullDelivery && statuspayload?.status == 'delivered'
+                                                            ? 'partiallyDelivered'
+                                                            : !statuspayload?.fullReturn && statuspayload?.status == 'return'
+                                                            ? 'partiallyReturned'
+                                                            : statuspayload?.status;
                                                 }
                                             });
                                             setsubmitSheetPayload({ ...temp });

@@ -785,14 +785,14 @@ keep data consistent.</span></p>
     });
     const fetchMerchantItemsQuery = useQueryGQL('', fetchMerchantItems(), payload);
 
-    const [filteMerchants, setfilteMerchants] = useState({
+    const [filterMerchants, setfilterMerchants] = useState({
         isAsc: true,
         limit: 10,
         afterCursor: undefined,
         beforeCursor: undefined,
     });
 
-    const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filteMerchants);
+    const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
 
     const { refetch: refetchItems } = useQueryGQL('', fetchMerchantItems(), payload);
     const [uploadExcelFileMutation] = useMutationNoInputGQL(uploadExcelFile(), { base64File: csvFile });
@@ -1021,8 +1021,8 @@ keep data consistent.</span></p>
                         <div class={'col-lg-12'} style={{ marginBottom: '15px' }}>
                             <SelectComponent
                                 title={'Merchant'}
-                                filter={filteMerchants}
-                                setfilter={setfilteMerchants}
+                                filter={filterMerchants}
+                                setfilter={setfilterMerchants}
                                 options={fetchMerchantsQuery}
                                 attr={'paginateMerchants'}
                                 label={'name'}

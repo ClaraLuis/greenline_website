@@ -45,14 +45,14 @@ const ImportNewItem = (props) => {
         afterCursor: null,
         beforeCursor: null,
     });
-    const [filteMerchants, setfilteMerchants] = useState({
+    const [filterMerchants, setfilterMerchants] = useState({
         isAsc: true,
         limit: 10,
         afterCursor: undefined,
         beforeCursor: undefined,
     });
 
-    const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filteMerchants);
+    const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filterMerchants);
 
     const [importNewMutation] = useMutationGQL(importNew(), {
         itemVariantId: props?.importItemPayload?.itemVariantId,
@@ -193,8 +193,8 @@ const ImportNewItem = (props) => {
                         <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
                             <SelectComponent
                                 title={'Merchant'}
-                                filter={filteMerchants}
-                                setfilter={setfilteMerchants}
+                                filter={filterMerchants}
+                                setfilter={setfilterMerchants}
                                 options={fetchMerchantsQuery}
                                 attr={'paginateMerchants'}
                                 label={'name'}
