@@ -482,118 +482,130 @@ const FinanceTransactions = (props) => {
                     </Modal.Header>
                     <Modal.Body>
                         <div class="row m-0 w-100 py-2">
-                            <Form
-                                size={'md'}
-                                submit={submit}
-                                setsubmit={setsubmit}
-                                attr={
-                                    isAuth([1, 51])
-                                        ? [
-                                              {
-                                                  name: 'Type',
-                                                  attr: 'type',
-                                                  type: 'select',
-                                                  options: transactionTypeContext,
-                                                  size: '12',
-                                              },
-                                              { name: 'Description', attr: 'description', type: 'textarea', size: '12' },
+                            <>
+                                <div class="col-lg-12">
+                                    <div class="row m-0 w-100">
+                                        <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                            <label class={formstyles.form__label}>Type</label>
+                                            <Select
+                                                options={transactionTypeContext.map((type) => ({
+                                                    label: type.label,
+                                                    value: type.value,
+                                                }))}
+                                                styles={defaultstyles}
+                                                value={transactionTypeContext.find((option) => option.value === transactionpayload.type)}
+                                                onChange={(option) => settransactionpayload({ ...transactionpayload, type: option.value })}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="row m-0 w-100">
+                                        <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                            <label class={formstyles.form__label}>Description</label>
+                                            <textarea
+                                                class={formstyles.form__field}
+                                                value={transactionpayload.description}
+                                                onChange={(event) => settransactionpayload({ ...transactionpayload, description: event.target.value })}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                {isAuth([1, 51]) && (
+                                    <div class="col-lg-12 mb-3">
+                                        <div class="row m-0 w-100">
+                                            <SelectComponent
+                                                removeAll={true}
+                                                title="From Account"
+                                                filter={filterAllFinancialAccountsObj}
+                                                setfilter={setfilterAllFinancialAccountsObj}
+                                                options={fetchAllFinancialAccountsQuery}
+                                                attr="paginateFinancialAccounts"
+                                                payload={transactionpayload}
+                                                payloadAttr="fromAccountId"
+                                                label="name"
+                                                value="id"
+                                                onClick={(option) => settransactionpayload({ ...transactionpayload, fromAccountId: option?.id })}
+                                            />
+                                        </div>
+                                    </div>
+                                )}
+                                <div class="col-lg-12 mb-3">
+                                    <div class="row m-0 w-100">
+                                        <SelectComponent
+                                            removeAll={true}
+                                            title="To Account"
+                                            filter={filterAllFinancialAccountsObj}
+                                            setfilter={setfilterAllFinancialAccountsObj}
+                                            options={fetchAllFinancialAccountsQuery}
+                                            attr="paginateFinancialAccounts"
+                                            payload={transactionpayload}
+                                            payloadAttr="toAccountId"
+                                            label="name"
+                                            value="id"
+                                            onClick={(option) => settransactionpayload({ ...transactionpayload, toAccountId: option?.id })}
+                                        />
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="row m-0 w-100">
+                                        <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                            <label class={formstyles.form__label}>Amount</label>
+                                            <input
+                                                type="number"
+                                                class={formstyles.form__field}
+                                                value={transactionpayload.amount}
+                                                onChange={(event) => settransactionpayload({ ...transactionpayload, amount: event.target.value })}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="row m-0 w-100">
+                                        <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                            <label class={formstyles.form__label}>Receipt</label>
+                                            <input type="file" class={formstyles.form__field} onChange={(event) => settransactionpayload({ ...transactionpayload, receipt: event.target.files[0] })} />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 allcentered">
+                                    <button
+                                        class={`${generalstyles.roundbutton}  my-2`}
+                                        disabled={buttonLoadingContext}
+                                        onClick={async () => {
+                                            if (buttonLoadingContext) return;
+                                            setbuttonLoadingContext(true);
+                                            if (transactionpayload?.type && transactionpayload?.amount && transactionpayload?.fromAccountId && transactionpayload?.toAccountId) {
+                                                try {
+                                                    if (isAuth([1, 51])) {
+                                                        await sendAnyFinancialTransactionMutation();
+                                                    } else {
+                                                        await sendMyFinancialTransactionMutation();
+                                                    }
+                                                    setopenModal({ open: false, type: '' });
+                                                    Refetch();
+                                                } catch (error) {
+                                                    let errorMessage = 'An unexpected error occurred';
+                                                    if (error.graphQLErrors?.length) {
+                                                        errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                                    } else if (error.networkError) {
+                                                        errorMessage = error.networkError.message || errorMessage;
+                                                    } else if (error.message) {
+                                                        errorMessage = error.message;
+                                                    }
 
-                                              {
-                                                  title: 'From Account',
-                                                  filter: filterAllFinancialAccountsObj,
-                                                  setfilter: setfilterAllFinancialAccountsObj,
-                                                  options: fetchAllFinancialAccountsQuery,
-                                                  optionsAttr: 'paginateFinancialAccounts',
-                                                  label: 'name',
-                                                  value: 'id',
-                                                  size: '12',
-                                                  attr: 'fromAccountId',
-                                                  type: 'fetchSelect',
-                                              },
-
-                                              {
-                                                  title: 'To Account',
-                                                  filter: filterAllFinancialAccountsObj,
-                                                  setfilter: setfilterAllFinancialAccountsObj,
-                                                  options: fetchAllFinancialAccountsQuery,
-                                                  optionsAttr: 'paginateFinancialAccounts',
-                                                  label: 'name',
-                                                  value: 'id',
-                                                  size: '12',
-                                                  attr: 'toAccountId',
-                                                  type: 'fetchSelect',
-                                              },
-                                              { name: 'Amount', attr: 'amount', type: 'number', size: '12' },
-                                              { name: 'Receipt', attr: 'receipt', previewerAttr: 'previewerReceipt', type: 'image', size: '12' },
-                                          ]
-                                        : [
-                                              {
-                                                  name: 'Type',
-                                                  attr: 'type',
-                                                  type: 'select',
-                                                  options: transactionTypeContext,
-                                                  size: '12',
-                                              },
-                                              { name: 'Description', attr: 'description', type: 'textarea', size: '12' },
-
-                                              {
-                                                  title: 'To Account',
-                                                  filter: filterAllFinancialAccountsObj,
-                                                  setfilter: setfilterAllFinancialAccountsObj,
-                                                  options: fetchAllFinancialAccountsQuery,
-                                                  optionsAttr: 'paginateFinancialAccounts',
-                                                  label: 'name',
-                                                  value: 'id',
-                                                  size: '12',
-                                                  attr: 'toAccountId',
-                                                  type: 'fetchSelect',
-                                                  //   removeAll: true,
-                                              },
-                                              { name: 'Amount', attr: 'amount', type: 'number', size: '12' },
-                                              { name: 'Receipt', attr: 'receipt', previewerAttr: 'previewerReceipt', type: 'image', size: '12' },
-                                          ]
-                                }
-                                payload={transactionpayload}
-                                setpayload={settransactionpayload}
-                                button1disabled={buttonLoadingContext}
-                                button1class={generalstyles.roundbutton + '  mr-2 my-2 '}
-                                button1placeholder={'Add transaction'}
-                                button1onClick={async () => {
-                                    if (buttonLoadingContext) return;
-                                    setbuttonLoadingContext(true);
-                                    if (
-                                        transactionpayload?.type?.length != 0 &&
-                                        transactionpayload?.amount?.length != 0 &&
-                                        transactionpayload?.fromAccountId?.length != 0 &&
-                                        transactionpayload?.toAccountId?.length != 0
-                                    ) {
-                                        try {
-                                            if (isAuth([1, 51])) {
-                                                await sendAnyFinancialTransactionMutation();
+                                                    NotificationManager.warning(errorMessage, 'Warning!');
+                                                }
                                             } else {
-                                                await sendMyFinancialTransactionMutation();
+                                                NotificationManager.warning('Complete all missing fields', 'Warning!');
                                             }
-                                            setopenModal({ open: false, type: '' });
-                                            Refetch();
-                                        } catch (error) {
-                                            let errorMessage = 'An unexpected error occurred';
-                                            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-                                                errorMessage = error.graphQLErrors[0].message || errorMessage;
-                                            } else if (error.networkError) {
-                                                errorMessage = error.networkError.message || errorMessage;
-                                            } else if (error.message) {
-                                                errorMessage = error.message;
-                                            }
-
-                                            NotificationManager.warning(errorMessage, 'Warning!');
-                                            console.error('Error adding Merchant:', error);
-                                        }
-                                    } else {
-                                        NotificationManager.warning('complete all missing fields', 'Warning!');
-                                    }
-                                    setbuttonLoadingContext(false);
-                                }}
-                            />
+                                            setbuttonLoadingContext(false);
+                                        }}
+                                    >
+                                        Add Transaction
+                                    </button>
+                                </div>
+                            </>
                         </div>
                     </Modal.Body>
                 </Modal>

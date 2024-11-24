@@ -1349,6 +1349,12 @@ const API = () => {
         }
     `;
 
+    const emailTaken = () => gql`
+        query emailTaken($input: EmailTakenInput!) {
+            emailTaken(input: $input)
+        }
+    `;
+
     const fetchMerchantItems = (payload) => {
         return gql`
             query paginateItms($input: paginateItemsInput!) {
@@ -2262,6 +2268,7 @@ const API = () => {
         ordersDeliverableSummary,
         graphOrders,
         findOneUser,
+        emailTaken,
     };
 };
 export default API;

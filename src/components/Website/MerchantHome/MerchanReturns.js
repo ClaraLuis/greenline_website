@@ -30,6 +30,8 @@ const MerchanReturns = (props) => {
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [cartItems, setcartItems] = useState([]);
+    const [search, setsearch] = useState('');
+
     const [packagepayload, setpackagepayload] = useState({
         ids: [],
         type: '',
@@ -67,6 +69,51 @@ const MerchanReturns = (props) => {
         setpagetitle_context('Hubs');
     }, []);
 
+    const [barcode, setBarcode] = useState('');
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            // Ignore control keys and functional keys
+            if (e.ctrlKey || e.altKey || e.metaKey || e.key === 'CapsLock' || e.key === 'Shift' || e.key === 'Tab' || e.key === 'Backspace' || e.key === 'Control' || e.key === 'Alt') {
+                return;
+            }
+
+            if (e.key === 'Enter') {
+                if (filter?.merchantId == undefined || filter.merchantId?.length == 0 || filter.merchantId == null) {
+                    NotificationManager.warning('Filter by merchant first', 'Warning');
+                } else {
+                    var temp = { ...packagepayload };
+                    var exist = false;
+                    var chosenindex = null;
+                    temp.ids.map((i, ii) => {
+                        if (i?.id == barcode) {
+                            exist = true;
+                            chosenindex = ii;
+                        }
+                    });
+                    if (!exist) {
+                        var inData = fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.data?.filter((i) => i.id == barcode)[0];
+                        if (barcode?.length != 0 && !isNaN(parseInt(barcode)) && inData) {
+                            temp.ids.push(inData);
+                        }
+                    } else {
+                        NotificationManager.warning('Already added', 'Warning!');
+                    }
+                    setpackagepayload({ ...temp });
+                }
+
+                setBarcode('');
+                setsearch('');
+            } else {
+                setBarcode((prevBarcode) => prevBarcode + e.key);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [barcode]);
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div class="row m-0 w-100 d-flex  justify-content-start mt-sm-2 pb-5 pb-md-0">
@@ -106,7 +153,7 @@ const MerchanReturns = (props) => {
                                     <AccordionItemPanel>
                                         <hr className="mt-2 mb-3" />
                                         <div class="row m-0 w-100">
-                                            <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                            <div class={'col-lg-4'} style={{ marginBottom: '15px' }}>
                                                 <SelectComponent
                                                     title={'Merchant'}
                                                     filter={filterMerchants}
@@ -128,6 +175,86 @@ const MerchanReturns = (props) => {
                                 </AccordionItem>
                             </Accordion>
                         </div>
+                        <div class={generalstyles.card + ' row m-0 w-100'}>
+                            <div class="col-lg-10 p-0 ">
+                                <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
+                                    <input
+                                        type="number"
+                                        class={formstyles.form__field}
+                                        value={search}
+                                        placeholder={'Search by order ID'}
+                                        onChange={(event) => {
+                                            setsearch(event.target.value);
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                            <div class="col-lg-2 p-0 allcentered">
+                                <button
+                                    style={{ height: '30px', minWidth: '80%' }}
+                                    class={generalstyles.roundbutton + ' allcentered p-0'}
+                                    onClick={() => {
+                                        if (filter?.merchantId == undefined || filter.merchantId?.length == 0 || filter.merchantId == null) {
+                                            NotificationManager.warning('Filter by merchant first', 'Warning');
+                                        } else {
+                                            var temp = { ...packagepayload };
+                                            var exist = false;
+                                            var chosenindex = null;
+                                            temp.ids.map((i, ii) => {
+                                                if (i?.id == search) {
+                                                    exist = true;
+                                                    chosenindex = ii;
+                                                }
+                                            });
+                                            if (!exist) {
+                                                var inData = fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.data?.filter((i) => i.id == barcode)[0];
+                                                if (search?.length != 0 && !isNaN(parseInt(search)) && inData) {
+                                                    temp.ids.push(inData);
+                                                }
+                                            } else {
+                                                NotificationManager.warning('Already added', 'Warning!');
+                                            }
+                                            setpackagepayload({ ...temp });
+                                        }
+                                        setsearch('');
+                                    }}
+                                >
+                                    Add order
+                                </button>
+                            </div>
+                        </div>
+                        <div class={' row m-0 w-100 scrollmenuclasssubscrollbar'} style={{ overflow: 'scroll' }}>
+                            {packagepayload?.ids?.map((item, index) => {
+                                return (
+                                    <div class={'col-lg-4'}>
+                                        <div class={generalstyles.card + ' p-0 row m-0 w-100'}>
+                                            <span class="mr-3" style={{ fontSize: '12px', color: 'grey' }}>
+                                                # {item?.id}
+                                            </span>
+
+                                            {item?.orderItems?.map((subitem, subindex) => {
+                                                return (
+                                                    <div class="row m-0">
+                                                        {subitem?.count}{' '}
+                                                        <div style={{ width: '25px', height: '25px', borderRadius: '2px', marginInline: '5px', border: '1px solid #eee' }}>
+                                                            <img
+                                                                src={
+                                                                    subitem?.info?.imageUrl
+                                                                        ? subitem?.info?.imageUrl
+                                                                        : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'
+                                                                }
+                                                                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+
                         <div class="col-lg-12 p-0 mb-3">
                             <Pagination
                                 beforeCursor={fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.cursor?.beforeCursor}
@@ -144,26 +271,21 @@ const MerchanReturns = (props) => {
                                 if (filter?.merchantId == undefined || filter.merchantId?.length == 0 || filter.merchantId == null) {
                                     NotificationManager.warning('Filter by merchant first', 'Warning');
                                 } else {
-                                    var temp = { ...packagepayload };
-                                    var exist = false;
-                                    var chosenindex = null;
-                                    temp.ids.map((i, ii) => {
-                                        if (i?.id == item?.id) {
-                                            exist = true;
-                                            chosenindex = ii;
-                                        }
-                                    });
-                                    if (!exist) {
-                                        temp.ids.push(item);
+                                    const temp = { ...packagepayload };
+                                    const existingIndex = temp.ids.findIndex((i) => i?.id === item?.id);
+
+                                    if (existingIndex === -1) {
+                                        temp.ids.push(item); // Add item if not already in the list
                                     } else {
-                                        temp.ids.splice(chosenindex, 1);
+                                        temp.ids.splice(existingIndex, 1); // Remove item if already in the list
                                     }
                                     setpackagepayload({ ...temp });
                                 }
                             }}
                             card="col-lg-6 "
-                            items={fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.data}
+                            items={fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.data?.filter((item) => !packagepayload?.ids?.some((selected) => selected?.id === item?.id))}
                         />
+
                         <div class="col-lg-12 p-0">
                             <Pagination
                                 beforeCursor={fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.cursor?.beforeCursor}

@@ -43,6 +43,7 @@ const AddMerchant = (props) => {
         createAddress,
         fetchCustomerAddresses,
         findAllZones,
+        emailTaken,
     } = API();
     const steps = ['Merchant Info', 'Shipping', 'Inventory Settings'];
 
@@ -103,6 +104,7 @@ const AddMerchant = (props) => {
 
     const { refetch: refetchMerchants } = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
     const [fetchSimilarAddressesQuery] = useLazyQueryGQL(fetchSimilarAddresses());
+    const [emailTakenQuery] = useLazyQueryGQL(emailTaken());
 
     const [addMerchantMutation] = useMutationGQL(addMerchant(), {
         name: merchantPayload?.name,
@@ -183,12 +185,49 @@ const AddMerchant = (props) => {
         return skipped.has(step);
     };
 
-    const validateOwnerInfo = (payload) => {
+    const validateOwnerInfo = async (payload) => {
         const { ownerName, ownerBirthdate, ownerPhone, ownerEmail } = payload;
-        if (ownerName || ownerBirthdate || ownerPhone || ownerEmail) {
-            return ownerName && ownerBirthdate && ownerPhone && ownerEmail;
+
+        if (!ownerName && !ownerBirthdate && !ownerPhone && !ownerEmail) {
+            return true; // No owner info is fine, so we consider it valid
         }
-        return true; // No owner info is fine, so we consider it valid
+
+        if (!ownerName || !ownerBirthdate || !ownerPhone || !ownerEmail) {
+            NotificationManager.warning('Complete owner info', 'Warning');
+            return false;
+        }
+
+        let isEmailTaken = false;
+
+        // Verify email asynchronously
+        try {
+            const { data } = await emailTakenQuery({
+                variables: {
+                    input: {
+                        email: ownerEmail,
+                    },
+                },
+            });
+            isEmailTaken = data?.emailTaken;
+        } catch (e) {
+            let errorMessage = 'An unexpected error occurred';
+            if (e.graphQLErrors && e.graphQLErrors.length > 0) {
+                errorMessage = e.graphQLErrors[0].message || errorMessage;
+            } else if (e.networkError) {
+                errorMessage = e.networkError.message || errorMessage;
+            } else if (e.message) {
+                errorMessage = e.message;
+            }
+            NotificationManager.warning(errorMessage, 'Warning!');
+            return false;
+        }
+
+        if (isEmailTaken) {
+            NotificationManager.warning('Email is taken', 'Warning!');
+            return false;
+        }
+
+        return true;
     };
 
     const validateBankInfo = (payload) => {
@@ -213,8 +252,7 @@ const AddMerchant = (props) => {
                 return;
             }
 
-            if (!validateOwnerInfo(merchantPayload)) {
-                NotificationManager.warning('Complete owner info', 'Warning');
+            if (!(await validateOwnerInfo(merchantPayload))) {
                 return;
             }
 

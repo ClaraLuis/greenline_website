@@ -4090,9 +4090,6 @@ hr {
     height: 100vh;
     overflow: hidden !important;
 }
-.blocker body {
-    overflow: hidden !important;
-}
 
 .daterangepicker-control-section {
     max-width: 246px;

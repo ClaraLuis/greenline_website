@@ -160,12 +160,6 @@ const SelectComponent = (props) => {
                         />
                     </div>
 
-                    {props?.options?.loading && (
-                        <div className="col-lg-12 allcentered p-2">
-                            <CircularProgress color="var(--greenprimary)" width="25px" height="25px" duration="1s" />
-                        </div>
-                    )}
-
                     {props?.removeAll !== true && (
                         <div
                             onClick={() => {
