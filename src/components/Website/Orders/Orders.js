@@ -49,6 +49,7 @@ const Orders = (props) => {
 
     const [filterorders, setfilterorders] = useState({
         limit: 20,
+        outOfStock: false,
     });
     const fetchOrdersInInventoryQuery = useQueryGQL('', fetchOrdersInInventory(), filterorders);
     const { refetch: refetchOrdersInInventory } = useQueryGQL('', fetchOrdersInInventory(), filterorders);
@@ -156,6 +157,25 @@ const Orders = (props) => {
                                 <AccordionItemPanel>
                                     <hr className="mt-2 mb-3" />
                                     <div class="row m-0 w-100">
+                                        <div className="col-lg-2 p-0 mb-2 d-flex align-items-center ">
+                                            <div className="row m-0 w-100 d-flex ">
+                                                <label className={`${formstyles.switch}  my-0`}>
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={filterorders?.outOfStock}
+                                                        onChange={(e) => {
+                                                            e.stopPropagation();
+                                                            setfilterorders({
+                                                                ...filterorders,
+                                                                outOfStock: !filterorders?.outOfStock,
+                                                            });
+                                                        }}
+                                                    />
+                                                    <span className={`${formstyles.slider} ${formstyles.round}`}></span>
+                                                </label>
+                                                <p className={`${generalstyles.checkbox_label} mb-0 text-focus text-capitalize cursor-pointer font_14 ml-2 mr-2 wordbreak`}>Out of stock</p>
+                                            </div>
+                                        </div>
                                         <div class="col-lg-3" style={{ marginBottom: '15px' }}>
                                             <MultiSelect
                                                 title="Merchants"

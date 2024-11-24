@@ -211,6 +211,7 @@ const FilesPopup = (props) => {
                 formData.append('file', validFiles[i]);
                 formData.append('isPublic', true);
                 formData.append('merchantId', props?.merchantId);
+                formData.append('orginalName', validFiles[i]?.name);
 
                 axios
                     .post((process.env.REACT_APP_DEV_MODE === 'true' ? process.env.REACT_APP_API_URL_LOCAL : process.env.REACT_APP_API_URL) + 'api/aws-bucket/file', formData, {
@@ -427,6 +428,14 @@ const FilesPopup = (props) => {
                                     <div class="col-lg-12 my-3">
                                         <div class="row m-0 w-100 allcentered">
                                             {paginateFilesQuery?.data?.paginateFiles?.data?.map((item, index) => {
+                                                var bgColor = '';
+                                                if (fileType(item.name) == 'png') {
+                                                    bgColor = '#16aaff';
+                                                } else if (fileType(item.name) == 'jpg' || fileType(item.name) == 'jpeg') {
+                                                    bgColor = '#28a745';
+                                                } else {
+                                                    bgColor = '#d92550';
+                                                }
                                                 return (
                                                     <div class={uploaderstyles._Grid_g2n5w_1}>
                                                         <div class={uploaderstyles.imagesContainer}>
@@ -438,6 +447,14 @@ const FilesPopup = (props) => {
                                                             >
                                                                 <img style={{ width: '100%', height: '100%', objectFit: 'contain' }} src={item.url} />
                                                             </div>
+                                                        </div>
+                                                        <div class="col-lg-12 col-md-12 d-flex align-items-center justify-content-center mt-2 p-0 ">
+                                                            <div className={`${uploaderstyles.file_type}`} style={{ height: 'fit-content', background: bgColor }}>
+                                                                {fileType(item.name)}
+                                                            </div>
+                                                            <span className={`${uploaderstyles.file_name}` + ' text-overflow '} style={{ lineHeight: '20px', maxWidth: '80%' }}>
+                                                                {item.name}
+                                                            </span>
                                                         </div>
                                                     </div>
                                                 );

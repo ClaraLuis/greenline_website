@@ -997,6 +997,7 @@ const API = () => {
                     data {
                         id
                         key
+                        name
                         url
                         merchantId
                         createdAt
@@ -1400,6 +1401,105 @@ const API = () => {
                         }
                     }
                     cursor
+                }
+            }
+        `;
+    };
+    const findItemReturnByOrder = (payload) => {
+        return gql`
+            query findItemReturnByOrder($input: FindReturnByOrderInput!) {
+                findItemReturnByOrder(input: $input) {
+                    id
+                    type
+                    createdAt
+                    shippingPrice
+                    merchant {
+                        id
+                        name
+                    }
+                    address {
+                        country
+                        city
+                        streetAddress
+                        buildingNumber
+                        apartmentFloor
+                    }
+                    courier {
+                        id
+                        name
+                    }
+                    price
+                    paymentType
+                    status
+                    orderDate
+                    currency
+                    otherId
+                    shopifyName
+                    originalPrice
+                    merchantCustomer {
+                        customerName
+                        customer {
+                            email
+                            phone
+                        }
+                    }
+                    orderItems {
+                        id
+                        orderId
+                        count
+                        unitPrice
+                        unitDiscount
+                        partialCount
+                        info {
+                            name
+                            fullName
+                            imageUrl
+                            sku
+                            item {
+                                name
+                            }
+                        }
+
+                        inventory {
+                            count
+                            box {
+                                id
+                                name
+                                ballot {
+                                    id
+                                    level
+                                    name
+                                    rack {
+                                        name
+                                        id
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    canOpen
+                    fragile
+                    deliveryPart
+                    sheetOrder {
+                        id
+                        sheetId
+                        orderId
+                        adminPass
+                        financePass
+                        shippingCollected
+                        amountCollected
+                        transactionId
+                        createdAt
+                        lastModified
+                        sheet {
+                            status
+                            user {
+                                name
+                                email
+                                id
+                            }
+                        }
+                    }
                 }
             }
         `;
@@ -2269,6 +2369,7 @@ const API = () => {
         graphOrders,
         findOneUser,
         emailTaken,
+        findItemReturnByOrder,
     };
 };
 export default API;

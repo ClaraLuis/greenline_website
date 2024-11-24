@@ -60,6 +60,8 @@ const AddMerchant = (props) => {
         },
     ]);
     const [merchantId, setmerchantId] = useState(undefined);
+    const [addressskipped, setaddressskipped] = useState(undefined);
+    const [addressConfirmed, setaddressConfirmed] = useState(undefined);
     const [governoratesItemsList, setgovernoratesItemsList] = useState([]);
     const [inventorySettings, setinventorySettings] = useState({
         inInventory: '',
@@ -258,6 +260,10 @@ const AddMerchant = (props) => {
 
             if (!validateBankInfo(merchantPayload)) {
                 NotificationManager.warning('Complete bank info', 'Warning');
+                return;
+            }
+            if (addressskipped == undefined && addressConfirmed == undefined) {
+                NotificationManager.warning('Please either confirm address or skip to continue', 'Warning');
                 return;
             }
 
@@ -601,44 +607,58 @@ const AddMerchant = (props) => {
                                                             setpayload={setaddresspayload}
                                                             button1disabled={buttonLoadingContext}
                                                             button1class={generalstyles.roundbutton + '  mr-2 '}
-                                                            button1placeholder={'Confirm address'}
+                                                            button1placeholder={addressskipped || addressConfirmed ? 'Edit' : 'Confirm address'}
                                                             button1onClick={async () => {
-                                                                if (buttonLoadingContext) return;
-                                                                setbuttonLoadingContext(true);
-                                                                if (addresspayload?.city?.length != 0 && addresspayload?.country?.length != 0 && addresspayload?.streetAddress?.length != 0) {
-                                                                    try {
-                                                                        var { data } = await fetchSimilarAddressesQuery({
-                                                                            variables: {
-                                                                                input: {
-                                                                                    city: addresspayload?.city,
-                                                                                    country: addresspayload?.country,
-                                                                                    streetAddress: addresspayload?.streetAddress,
-                                                                                    buildingNumber: addresspayload?.buildingNumber,
-                                                                                    apartmentFloor: addresspayload?.apartmentFloor,
-                                                                                    zoneId: addresspayload?.zone,
-
-                                                                                    merchantId: merchantId,
-                                                                                },
-                                                                            },
-                                                                        });
-                                                                        if (data?.findSimilarAddresses) {
-                                                                            setsimilarAddresses([...data?.findSimilarAddresses]);
-                                                                        }
-                                                                    } catch (e) {
-                                                                        let errorMessage = 'An unexpected error occurred';
-                                                                        if (e.graphQLErrors && e.graphQLErrors.length > 0) {
-                                                                            errorMessage = e.graphQLErrors[0].message || errorMessage;
-                                                                        } else if (e.networkError) {
-                                                                            errorMessage = e.networkError.message || errorMessage;
-                                                                        } else if (e.message) {
-                                                                            errorMessage = e.message;
-                                                                        }
-                                                                        NotificationManager.warning(errorMessage, 'Warning!');
-                                                                    }
+                                                                if (addressskipped || addressConfirmed) {
+                                                                    setaddressConfirmed(undefined);
+                                                                    setaddressskipped(undefined);
                                                                 } else {
-                                                                    NotificationManager.warning('', 'Please complete the missing fields');
+                                                                    setaddressConfirmed(true);
+
+                                                                    if (buttonLoadingContext) return;
+                                                                    setbuttonLoadingContext(true);
+                                                                    if (addresspayload?.city?.length != 0 && addresspayload?.country?.length != 0 && addresspayload?.streetAddress?.length != 0) {
+                                                                        try {
+                                                                            var { data } = await fetchSimilarAddressesQuery({
+                                                                                variables: {
+                                                                                    input: {
+                                                                                        city: addresspayload?.city,
+                                                                                        country: addresspayload?.country,
+                                                                                        streetAddress: addresspayload?.streetAddress,
+                                                                                        buildingNumber: addresspayload?.buildingNumber,
+                                                                                        apartmentFloor: addresspayload?.apartmentFloor,
+                                                                                        zoneId: addresspayload?.zone,
+
+                                                                                        merchantId: merchantId,
+                                                                                    },
+                                                                                },
+                                                                            });
+                                                                            if (data?.findSimilarAddresses) {
+                                                                                setsimilarAddresses([...data?.findSimilarAddresses]);
+                                                                            }
+                                                                        } catch (e) {
+                                                                            let errorMessage = 'An unexpected error occurred';
+                                                                            if (e.graphQLErrors && e.graphQLErrors.length > 0) {
+                                                                                errorMessage = e.graphQLErrors[0].message || errorMessage;
+                                                                            } else if (e.networkError) {
+                                                                                errorMessage = e.networkError.message || errorMessage;
+                                                                            } else if (e.message) {
+                                                                                errorMessage = e.message;
+                                                                            }
+                                                                            NotificationManager.warning(errorMessage, 'Warning!');
+                                                                        }
+                                                                    } else {
+                                                                        NotificationManager.warning('', 'Please complete the missing fields');
+                                                                    }
+                                                                    setbuttonLoadingContext(false);
                                                                 }
-                                                                setbuttonLoadingContext(false);
+                                                            }}
+                                                            button2={addressskipped || addressConfirmed ? false : true}
+                                                            button2disabled={buttonLoadingContext}
+                                                            button2class={generalstyles.roundbutton + '  mr-2 '}
+                                                            button2placeholder={'Skip'}
+                                                            button2onClick={async () => {
+                                                                setaddressskipped(true);
                                                             }}
                                                         />
                                                     </div>

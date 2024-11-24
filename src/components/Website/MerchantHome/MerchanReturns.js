@@ -26,7 +26,7 @@ const MerchanReturns = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, paymentTypeContext, returnPackageTypeContext, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
-    const { useMutationGQL, fetchMerchants, fetchInventories, fetchCustomerAddresses, fetchMerchantItemReturns, useQueryGQL, createReturnPackage } = API();
+    const { useMutationGQL, fetchMerchants, findItemReturnByOrder, useLazyQueryGQL, fetchMerchantItemReturns, useQueryGQL, createReturnPackage } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [cartItems, setcartItems] = useState([]);
@@ -46,6 +46,7 @@ const MerchanReturns = (props) => {
         beforeCursor: undefined,
     });
     const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
+    const [findItemReturnByOrderQuery] = useLazyQueryGQL(findItemReturnByOrder());
 
     const [filter, setfilter] = useState({
         limit: 20,
@@ -70,37 +71,65 @@ const MerchanReturns = (props) => {
     }, []);
 
     const [barcode, setBarcode] = useState('');
+
+    const addItemRetun = async (orderId) => {
+        if (filter?.merchantId == undefined || filter.merchantId?.length == 0 || filter.merchantId == null) {
+            NotificationManager.warning('Filter by merchant first', 'Warning');
+        } else {
+            var temp = { ...packagepayload };
+            var exist = false;
+            var chosenindex = null;
+            temp.ids.map((i, ii) => {
+                if (i?.id == orderId) {
+                    exist = true;
+                    chosenindex = ii;
+                }
+            });
+            if (!exist) {
+                var inData = fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.data?.filter((i) => i.id == orderId)[0];
+                if (orderId?.length != 0 && !isNaN(parseInt(orderId)) && inData) {
+                    temp.ids.push(inData);
+                } else {
+                    try {
+                        var { data } = await findItemReturnByOrderQuery({
+                            variables: {
+                                input: {
+                                    orderId: [parseInt(orderId)],
+                                },
+                            },
+                        });
+                        if (data?.findItemReturnByOrder) {
+                            temp.ids.push(data?.findItemReturnByOrder);
+                        } else {
+                            NotificationManager.warning('No order with this id', 'Warning!');
+                        }
+                    } catch (e) {
+                        let errorMessage = 'An unexpected error occurred';
+                        if (e.graphQLErrors && e.graphQLErrors.length > 0) {
+                            errorMessage = e.graphQLErrors[0].message || errorMessage;
+                        } else if (e.networkError) {
+                            errorMessage = e.networkError.message || errorMessage;
+                        } else if (e.message) {
+                            errorMessage = e.message;
+                        }
+                        NotificationManager.warning(errorMessage, 'Warning!');
+                    }
+                }
+            } else {
+                NotificationManager.warning('Already added', 'Warning!');
+            }
+            setpackagepayload({ ...temp });
+        }
+    };
     useEffect(() => {
-        const handleKeyDown = (e) => {
+        const handleKeyDown = async (e) => {
             // Ignore control keys and functional keys
             if (e.ctrlKey || e.altKey || e.metaKey || e.key === 'CapsLock' || e.key === 'Shift' || e.key === 'Tab' || e.key === 'Backspace' || e.key === 'Control' || e.key === 'Alt') {
                 return;
             }
 
             if (e.key === 'Enter') {
-                if (filter?.merchantId == undefined || filter.merchantId?.length == 0 || filter.merchantId == null) {
-                    NotificationManager.warning('Filter by merchant first', 'Warning');
-                } else {
-                    var temp = { ...packagepayload };
-                    var exist = false;
-                    var chosenindex = null;
-                    temp.ids.map((i, ii) => {
-                        if (i?.id == barcode) {
-                            exist = true;
-                            chosenindex = ii;
-                        }
-                    });
-                    if (!exist) {
-                        var inData = fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.data?.filter((i) => i.id == barcode)[0];
-                        if (barcode?.length != 0 && !isNaN(parseInt(barcode)) && inData) {
-                            temp.ids.push(inData);
-                        }
-                    } else {
-                        NotificationManager.warning('Already added', 'Warning!');
-                    }
-                    setpackagepayload({ ...temp });
-                }
-
+                addItemRetun(barcode);
                 setBarcode('');
                 setsearch('');
             } else {
@@ -194,28 +223,7 @@ const MerchanReturns = (props) => {
                                     style={{ height: '30px', minWidth: '80%' }}
                                     class={generalstyles.roundbutton + ' allcentered p-0'}
                                     onClick={() => {
-                                        if (filter?.merchantId == undefined || filter.merchantId?.length == 0 || filter.merchantId == null) {
-                                            NotificationManager.warning('Filter by merchant first', 'Warning');
-                                        } else {
-                                            var temp = { ...packagepayload };
-                                            var exist = false;
-                                            var chosenindex = null;
-                                            temp.ids.map((i, ii) => {
-                                                if (i?.id == search) {
-                                                    exist = true;
-                                                    chosenindex = ii;
-                                                }
-                                            });
-                                            if (!exist) {
-                                                var inData = fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.data?.filter((i) => i.id == barcode)[0];
-                                                if (search?.length != 0 && !isNaN(parseInt(search)) && inData) {
-                                                    temp.ids.push(inData);
-                                                }
-                                            } else {
-                                                NotificationManager.warning('Already added', 'Warning!');
-                                            }
-                                            setpackagepayload({ ...temp });
-                                        }
+                                        addItemRetun(search);
                                         setsearch('');
                                     }}
                                 >

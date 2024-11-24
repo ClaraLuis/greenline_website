@@ -20,6 +20,7 @@ import TransactionsTable from '../Finance/TransactionsTable.js';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
 import SelectComponent from '../../SelectComponent.js';
+import { NotificationManager } from 'react-notifications';
 const { ValueContainer, Placeholder } = components;
 
 const InventorySettings = (props) => {
@@ -38,10 +39,13 @@ const InventorySettings = (props) => {
         useMutationGQL,
         inventoryRentSummary,
         fetchMerchants,
+        updateInventoryRent,
+        createInventoryRent,
     } = API();
     const [importItemModel, setimportItemModel] = useState(false);
     const [inventorySettings, setinventorySettings] = useState({
         startDate: new Date().toISOString().split('T')[0],
+        currency: 'EGP',
     });
 
     const [fetchRacksQuery, setfetchRacksQuery] = useState(null);
@@ -73,22 +77,39 @@ const InventorySettings = (props) => {
     const [paginateBallotsLazyQuery] = useLazyQueryGQL(paginateBallots());
     const [inventoryRentSummaryLazyQuery] = useLazyQueryGQL(inventoryRentSummary());
 
+    const [createInventoryRentMutation] = useMutationGQL(createInventoryRent(), {
+        startDate: inventorySettings?.startDate,
+        pricePerUnit: inventorySettings?.pricePerUnit,
+        currency: inventorySettings?.currency,
+        type: inventorySettings?.type,
+        sqaureMeter: inventorySettings?.sqaureMeter,
+        merchantId: parseInt(queryParameters.get('merchantId')),
+    });
+
+    const [updateInventoryRentMutation] = useMutationGQL(updateInventoryRent(), {
+        pricePerUnit: inventorySettings?.pricePerUnit,
+        currency: inventorySettings?.currency,
+        squareMeter: inventorySettings?.sqaureMeter,
+        merchantId: parseInt(queryParameters.get('merchantId')),
+    });
+
     const [removeMerchantAssignmentFromInventoryMutation] = useMutationGQL(removeMerchantAssignmentFromInventory(), {
         rackIds: idsToBeRemoved?.rackIds,
         ballotIds: idsToBeRemoved?.ballotIds,
         boxIds: idsToBeRemoved?.boxIds,
     });
 
-    useEffect(async () => {
-        if (queryParameters.get('merchantId')) {
-            try {
-                var lastbill = undefined;
-                var { data } = await findOneMerchantQuery({
-                    variables: {
-                        id: parseInt(queryParameters?.get('merchantId')),
-                    },
-                });
-                if (data?.findOneMerchant) {
+    const findOneMerchantFunction = async () => {
+        try {
+            var lastbill = undefined;
+            var { data } = await findOneMerchantQuery({
+                variables: {
+                    id: parseInt(queryParameters?.get('merchantId')),
+                },
+            });
+            if (data?.findOneMerchant) {
+                // alert(data?.findOneMerchant?.inventoryRent);
+                if (data?.findOneMerchant?.inventoryRent != null) {
                     setinventorySettings({
                         ...data?.findOneMerchant,
                         type: data?.findOneMerchant?.inventoryRent?.type,
@@ -99,61 +120,71 @@ const InventorySettings = (props) => {
                         pricePerUnit: data?.findOneMerchant?.inventoryRent?.pricePerUnit,
                         sqaureMeter: data?.findOneMerchant?.inventoryRent?.sqaureMeter,
                         startDate: data?.findOneMerchant?.inventoryRent?.startDate,
+                        functype: 'edit',
                     });
-                    lastbill = data?.findOneMerchant?.inventoryRent?.lastBill;
-                    if (data?.findOneMerchant?.inventoryRent?.type == 'rack') {
-                        var { data } = await fetchRacksLazyQuery({
-                            variables: {
-                                input: {
-                                    limit: 50,
-                                    merchantId: parseInt(queryParameters.get('merchantId')),
-                                },
-                            },
-                        });
-                        setfetchRacksQuery(data);
-                    } else if (data?.findOneMerchant?.inventoryRent?.type == 'box') {
-                        var { data } = await paginateBoxesLazyQuery({
-                            variables: {
-                                input: {
-                                    limit: 50,
-                                    merchantId: parseInt(queryParameters.get('merchantId')),
-                                },
-                            },
-                        });
-                        setfetchBoxesQuery(data);
-                    } else if (data?.findOneMerchant?.inventoryRent?.type == 'ballot') {
-                        var { data } = await paginateBallotsLazyQuery({
-                            variables: {
-                                input: {
-                                    limit: 50,
-                                    merchantId: parseInt(queryParameters.get('merchantId')),
-                                },
-                            },
-                        });
-                        setfetchBallotsQuery(data);
-                    }
+                } else {
+                    setinventorySettings({ ...inventorySettings, functype: 'add' });
+                }
 
-                    var { data } = await inventoryRentSummaryLazyQuery({
+                lastbill = data?.findOneMerchant?.inventoryRent?.lastBill;
+                if (data?.findOneMerchant?.inventoryRent?.type == 'rack') {
+                    var { data } = await fetchRacksLazyQuery({
                         variables: {
                             input: {
-                                // merchantId: parseInt(queryParameters.get('merchantId')),
-                                // afterDate: lastbill ?? undefined,
+                                limit: 50,
+                                merchantId: parseInt(queryParameters.get('merchantId')),
                             },
                         },
                     });
-                    setinventoryRentSummaryData(data?.inventoryRentSummary?.data[0]);
+                    setfetchRacksQuery(data);
+                } else if (data?.findOneMerchant?.inventoryRent?.type == 'box') {
+                    var { data } = await paginateBoxesLazyQuery({
+                        variables: {
+                            input: {
+                                limit: 50,
+                                merchantId: parseInt(queryParameters.get('merchantId')),
+                            },
+                        },
+                    });
+                    setfetchBoxesQuery(data);
+                } else if (data?.findOneMerchant?.inventoryRent?.type == 'ballot') {
+                    var { data } = await paginateBallotsLazyQuery({
+                        variables: {
+                            input: {
+                                limit: 50,
+                                merchantId: parseInt(queryParameters.get('merchantId')),
+                            },
+                        },
+                    });
+                    setfetchBallotsQuery(data);
                 }
-            } catch (e) {
-                let errorMessage = 'An unexpected error occurred';
-                if (e.graphQLErrors && e.graphQLErrors.length > 0) {
-                    errorMessage = e.graphQLErrors[0].message || errorMessage;
-                } else if (e.networkError) {
-                    errorMessage = e.networkError.message || errorMessage;
-                } else if (e.message) {
-                    errorMessage = e.message;
-                }
-                NotificationManager.warning(errorMessage, 'Warning!');
+
+                var { data } = await inventoryRentSummaryLazyQuery({
+                    variables: {
+                        input: {
+                            // merchantId: parseInt(queryParameters.get('merchantId')),
+                            // afterDate: lastbill ?? undefined,
+                        },
+                    },
+                });
+                setinventoryRentSummaryData(data?.inventoryRentSummary?.data[0]);
             }
+        } catch (e) {
+            let errorMessage = 'An unexpected error occurred';
+            if (e.graphQLErrors && e.graphQLErrors.length > 0) {
+                errorMessage = e.graphQLErrors[0].message || errorMessage;
+            } else if (e.networkError) {
+                errorMessage = e.networkError.message || errorMessage;
+            } else if (e.message) {
+                errorMessage = e.message;
+            }
+            NotificationManager.warning(errorMessage, 'Warning!');
+        }
+    };
+
+    useEffect(async () => {
+        if (queryParameters.get('merchantId')) {
+            findOneMerchantFunction();
         }
     }, []);
     const formatDate = (isoDate) => {
@@ -238,7 +269,7 @@ const InventorySettings = (props) => {
                         </div>
                     </div>
                     <div class="col-lg-12 px-3">
-                        <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
+                        {/* <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
                             <div class={' col-lg-6 col-md-6 col-sm-12 p-0 d-flex align-items-center justify-content-start '}>
                                 <p class=" p-0 m-0 text-uppercase" style={{ fontSize: '15px' }}>
                                     <span style={{ color: 'var(--info)' }}>Transactions</span>
@@ -269,7 +300,7 @@ const InventorySettings = (props) => {
                                     />
                                 </div>
                             </>
-                        </div>
+                        </div> */}
                         <div class="row m-0 w-100">
                             <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 pt-4 px-3'}>
                                 <div class={'col-lg-6 mb-3'}>
@@ -307,11 +338,18 @@ const InventorySettings = (props) => {
                                     <div class="row m-0 w-100  ">
                                         <div class={`${formstyles.form__group} ${formstyles.field}`}>
                                             <label class={formstyles.form__label}>Currency</label>
-                                            <input
-                                                class={formstyles.form__field}
-                                                value={inventorySettings.currency}
-                                                onChange={(event) => {
-                                                    setinventorySettings({ ...inventorySettings, currency: event.target.value });
+                                            <Select
+                                                options={[
+                                                    { label: 'EGP', value: 'EGP' },
+                                                    { label: 'USD', value: 'USD' },
+                                                ]}
+                                                styles={defaultstyles}
+                                                value={[
+                                                    { label: 'EGP', value: 'EGP' },
+                                                    { label: 'USD', value: 'USD' },
+                                                ].filter((option) => option.value == inventorySettings?.currency)}
+                                                onChange={(option) => {
+                                                    setinventorySettings({ ...inventorySettings, currency: option.value });
                                                 }}
                                             />
                                         </div>
@@ -371,8 +409,6 @@ const InventorySettings = (props) => {
                                                     inventorySettings?.type?.length != 0 &&
                                                     inventorySettings?.startDate &&
                                                     inventorySettings?.startDate?.length != 0 &&
-                                                    inventorySettings?.merchantId &&
-                                                    inventorySettings?.merchantId?.length != 0 &&
                                                     inventorySettings?.currency &&
                                                     inventorySettings?.currency?.length != 0 &&
                                                     inventorySettings?.pricePerUnit &&
@@ -380,14 +416,21 @@ const InventorySettings = (props) => {
                                                 ) {
                                                     if (inventorySettings?.functype == 'add') {
                                                         const { data } = await createInventoryRentMutation();
-                                                        refetchMerchants();
-                                                        setinventoryModal(false);
+                                                        if (data?.createInventoryRent?.success) {
+                                                            findOneMerchantFunction();
+                                                            NotificationManager.success('', 'Success');
+                                                        } else {
+                                                            NotificationManager.warning('', 'Warning');
+                                                        }
                                                     } else if (inventorySettings?.functype == 'edit') {
                                                         const { data } = await updateInventoryRentMutation();
-                                                        refetchMerchants();
-                                                        setinventoryModal(false);
+                                                        if (data?.updateInventoryRent?.success) {
+                                                            findOneMerchantFunction();
+                                                            NotificationManager.success('', 'Success');
+                                                        } else {
+                                                            NotificationManager.warning('', 'Warning');
+                                                        }
                                                     }
-                                                    NotificationManager.success('', 'Success');
                                                 } else {
                                                     NotificationManager.warning('Please Complete all fields', 'Warning');
                                                 }
