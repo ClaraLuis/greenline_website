@@ -211,7 +211,7 @@ const FilesPopup = (props) => {
                 formData.append('file', validFiles[i]);
                 formData.append('isPublic', true);
                 formData.append('merchantId', props?.merchantId);
-                formData.append('orginalName', validFiles[i]?.name);
+                formData.append('originalName', validFiles[i]?.name);
 
                 axios
                     .post((process.env.REACT_APP_DEV_MODE === 'true' ? process.env.REACT_APP_API_URL_LOCAL : process.env.REACT_APP_API_URL) + 'api/aws-bucket/file', formData, {
@@ -249,6 +249,7 @@ const FilesPopup = (props) => {
         } else {
             setbeforeuploaderrortext('');
         }
+        fileInputRef.current.value = null;
     };
     useEffect(() => {
         // alert(props?.merchantId);
@@ -449,9 +450,9 @@ const FilesPopup = (props) => {
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-12 col-md-12 d-flex align-items-center justify-content-center mt-2 p-0 ">
-                                                            <div className={`${uploaderstyles.file_type}`} style={{ height: 'fit-content', background: bgColor }}>
+                                                            {/* <div className={`${uploaderstyles.file_type}`} style={{ height: 'fit-content', background: bgColor }}>
                                                                 {fileType(item.name)}
-                                                            </div>
+                                                            </div> */}
                                                             <span className={`${uploaderstyles.file_name}` + ' text-overflow '} style={{ lineHeight: '20px', maxWidth: '80%' }}>
                                                                 {item.name}
                                                             </span>
