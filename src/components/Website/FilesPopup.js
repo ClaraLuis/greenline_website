@@ -52,12 +52,12 @@ const FilesPopup = (props) => {
     const [paginateFilesLazyQuery] = useLazyQueryGQL(paginateFiles());
 
     const fetchfiles = async (merchantId) => {
-        if (merchantId) {
+        if (merchantId || cookies.get('merchantId') != undefined) {
             try {
                 var { data } = await paginateFilesLazyQuery({
                     variables: {
                         input: {
-                            isAsc: true,
+                            isAsc: false,
                             limit: filterFiles?.limit,
                             afterCursor: filterFiles?.afterCursor,
                             beforeCursor: filterFiles?.beforeCursor,
