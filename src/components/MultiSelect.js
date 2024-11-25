@@ -24,7 +24,25 @@ const MultiSelect = (props) => {
 
     useEffect(() => {
         if (props?.attr) {
-            if (props?.options?.data && !props?.options?.loading) {
+            if (props?.attr === 'findAllZones' && props?.options) {
+                let newData = props?.options;
+                // alert(JSON.stringify(newData));
+                // Combine current data and new data, then filter out duplicates
+                const mergedData = [...newData];
+                const uniqueData = Array.from(new Set(mergedData.map((item) => item[props?.value]))).map((id) => {
+                    return mergedData.find((item) => item[props?.value] === id);
+                });
+
+                setData(uniqueData); // Update data state with unique items
+
+                // Handle filtering
+                if (props?.filter?.name) {
+                    const filtered = uniqueData.filter((item) => item[props?.label].toLowerCase().includes(props?.filter?.name.toLowerCase()));
+                    setFilteredData(filtered);
+                } else {
+                    setFilteredData(uniqueData); // Update filteredData with unique items
+                }
+            } else if (props?.options?.data && !props?.options?.loading) {
                 let newData = props?.attr === 'findAllDomesticGovernorates' ? props?.options?.data[props?.attr] || [] : props?.options?.data[props?.attr]?.data || [];
 
                 // Combine current data and new data, then filter out duplicates
@@ -56,7 +74,7 @@ const MultiSelect = (props) => {
                 setFilteredData(mergedData); // Update filteredData as well
             }
         }
-    }, [props?.filter, props?.options?.data, props?.options?.loading]);
+    }, [props?.filter, props?.options?.data, props?.options?.loading, props?.options]);
 
     useEffect(() => {
         const handleScroll = () => {

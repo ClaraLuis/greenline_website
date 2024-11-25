@@ -36,7 +36,7 @@ const MerchantOrders = (props) => {
     const cookies = new Cookies();
 
     const { setpageactive_context, orderStatusEnumContext, orderTypeContext, paymentTypeContext, isAuth, courierSheetStatusesContext, setpagetitle_context } = useContext(Contexthandlerscontext);
-    const { fetchMerchants, useQueryGQL, useLazyQueryGQL, fetchOrders, fetchCouriers, fetchGovernorates } = API();
+    const { fetchMerchants, useQueryGQL, useLazyQueryGQL, fetchOrders, fetchCouriers, fetchGovernorates, findAllZones } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [search, setsearch] = useState('');
@@ -66,6 +66,8 @@ const MerchantOrders = (props) => {
         afterCursor: undefined,
         beforeCursor: undefined,
     });
+    const findAllZonesQuery = useQueryGQL('cache-and-network', findAllZones());
+
     const fetchCouriersQuery = useQueryGQL('cache-first', fetchCouriers(), filterCouriers);
     useEffect(async () => {
         setpageactive_context('/merchantorders');
@@ -316,6 +318,33 @@ const MerchantOrders = (props) => {
                                                         }
                                                     }
                                                     setfilterorders({ ...filterorders, governorateIds: tempArray?.length != 0 ? tempArray : undefined });
+                                                }}
+                                            />
+                                        </div>
+                                        <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                            <MultiSelect
+                                                title={'Zones'}
+                                                options={
+                                                    filterorders?.governorateIds
+                                                        ? findAllZonesQuery?.data?.findAllZones?.filter((e) => filterorders?.governorateIds?.includes(e.governorateId))
+                                                        : findAllZonesQuery?.data?.findAllZones
+                                                }
+                                                attr={'findAllZones'}
+                                                label={'name'}
+                                                value={'id'}
+                                                selected={filterorders?.zoneIds}
+                                                onClick={(option) => {
+                                                    var tempArray = [...(filterorders?.zoneIds ?? [])];
+                                                    if (option == 'All') {
+                                                        tempArray = undefined;
+                                                    } else {
+                                                        if (!tempArray?.includes(option?.id)) {
+                                                            tempArray.push(option?.id);
+                                                        } else {
+                                                            tempArray.splice(tempArray?.indexOf(option?.id), 1);
+                                                        }
+                                                    }
+                                                    setfilterorders({ ...filterorders, zoneIds: tempArray?.length != 0 ? tempArray : undefined });
                                                 }}
                                             />
                                         </div>

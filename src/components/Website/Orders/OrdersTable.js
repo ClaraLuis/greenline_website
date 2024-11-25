@@ -290,7 +290,7 @@ const OrdersTable = (props) => {
                                                     {item?.shopifyName && (
                                                         <div style={{ position: 'absolute', right: 10 }}>
                                                             <div class="row m-0 w-100 aign-items-center">
-                                                                <FaShopify /> {item?.shopifyName}
+                                                                <FaShopify class="mt-1 mr-1" /> {item?.shopifyName}
                                                             </div>
                                                         </div>
                                                     )}
