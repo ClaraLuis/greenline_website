@@ -1538,27 +1538,18 @@ const AddItem = (props) => {
                                                                         }}
                                                                         class={generalstyles.avatar_upload + ' text-center justify-content-center align-items-center m-auto '}
                                                                     >
-                                                                        <div class={generalstyles.avatar_edit}>
-                                                                            {/* <input
-                                                                                type="file"
-                                                                                accept="image/*"
-                                                                                name="updatecompanybanner"
-                                                                                id={'updatecompanybanner' + variantIdx}
-                                                                                hidden
-                                                                                onClick={() => {
-                                                                                    setopenModal(true);
-                                                                                }}
-                                                                                // onChange={(event) => handleImageChange(color, variantIdx, event)}
-                                                                                style={{ display: 'none' }}
-                                                                            /> */}
-                                                                        </div>
-                                                                        <label for={'updatecompanybanner' + variantIdx} class={generalstyles.avatar_preview + ' pointer '}>
+                                                                        <div class={generalstyles.avatar_edit}></div>
+                                                                        <label
+                                                                            style={{ width: '50px', height: '50px', border: '5px', borderRadius: '0.25rem' }}
+                                                                            for={'updatecompanybanner' + variantIdx}
+                                                                            class={generalstyles.avatar_preview + ' pointer '}
+                                                                        >
                                                                             <div class={generalstyles.imgpreviewtxt + ' text-capitalize'}>
                                                                                 <i class="">
-                                                                                    <TbCameraPlus size={25} />
+                                                                                    <TbCameraPlus size={10} />
                                                                                 </i>
                                                                                 <br />
-                                                                                upload image
+                                                                                {/* upload image */}
                                                                             </div>
                                                                             <img
                                                                                 src={variant.imageUrlPrev}

@@ -21,12 +21,14 @@ import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 import { FaLayerGroup } from 'react-icons/fa';
 import { TbTruckDelivery } from 'react-icons/tb';
+import Cookies from 'universal-cookie';
 
 const MerchantPackages = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setchosenPackageContext, returnPackageStatusContext, isAuth, dateformatter, setpagetitle_context } = useContext(Contexthandlerscontext);
     const { fetchPackages, useQueryGQL, findReturnPackageBySku, useLazyQueryGQL, fetchMerchants } = API();
+    const cookies = new Cookies();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [packagepayload, setpackagepayload] = useState({
@@ -176,22 +178,24 @@ const MerchantPackages = (props) => {
                                                         }}
                                                     />
                                                 </div>
-                                                <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                                    <SelectComponent
-                                                        title={'Merchant'}
-                                                        filter={filterMerchants}
-                                                        setfilter={setfilterMerchants}
-                                                        options={fetchMerchantsQuery}
-                                                        attr={'paginateMerchants'}
-                                                        label={'name'}
-                                                        value={'id'}
-                                                        payload={filter}
-                                                        payloadAttr={'toMerchantId'}
-                                                        onClick={(option) => {
-                                                            setfilter({ ...filter, toMerchantId: option?.id ?? undefined });
-                                                        }}
-                                                    />
-                                                </div>
+                                                {!cookies.get('userInfo')?.merchantId && (
+                                                    <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                                        <SelectComponent
+                                                            title={'Merchant'}
+                                                            filter={filterMerchants}
+                                                            setfilter={setfilterMerchants}
+                                                            options={fetchMerchantsQuery}
+                                                            attr={'paginateMerchants'}
+                                                            label={'name'}
+                                                            value={'id'}
+                                                            payload={filter}
+                                                            payloadAttr={'toMerchantId'}
+                                                            onClick={(option) => {
+                                                                setfilter({ ...filter, toMerchantId: option?.id ?? undefined });
+                                                            }}
+                                                        />
+                                                    </div>
+                                                )}
                                             </div>
                                         </AccordionItemPanel>
                                     </AccordionItem>

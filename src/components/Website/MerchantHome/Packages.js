@@ -25,15 +25,19 @@ import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
 import { TbTruckDelivery } from 'react-icons/tb';
+import Cookies from 'universal-cookie';
 
 const Packages = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, returnPackageStatusContext, returnPackageTypeContext, dateformatter, buttonLoadingContext, setbuttonLoadingContext } =
         useContext(Contexthandlerscontext);
-    const { useMutationGQL, fetchMerchants, assignPackageToCourier, fetchCouriers, fetchPackages, useQueryGQL, createReturnPackage } = API();
+    const { useMutationGQL, fetchMerchants, assignPackageToCourier, fetchCouriers, fetchPackages, useQueryGQL, fetchInventories } = API();
     const { lang, langdetect } = useContext(LanguageContext);
     const [cartItems, setcartItems] = useState([]);
+    const [search, setSearch] = useState('');
+    const cookies = new Cookies();
+
     const [packagepayload, setpackagepayload] = useState({
         ids: [],
         userId: '',
@@ -62,6 +66,20 @@ const Packages = (props) => {
         ids: packagepayload?.ids,
         userId: packagepayload?.userId,
     });
+    const [filterMerchants, setfilterMerchants] = useState({
+        isAsc: true,
+        limit: 10,
+        afterCursor: undefined,
+        beforeCursor: undefined,
+    });
+    const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filterMerchants);
+
+    const [filterInventories, setfilterInventories] = useState({
+        limit: 20,
+        afterCursor: null,
+        beforeCursor: null,
+    });
+    const fetchinventories = useQueryGQL('', fetchInventories(), filterInventories);
 
     useEffect(() => {
         setpageactive_context('/packages');
@@ -170,10 +188,75 @@ const Packages = (props) => {
                                                     }}
                                                 />
                                             </div>
+                                            {!cookies.get('userInfo')?.merchantId && (
+                                                <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                                    <SelectComponent
+                                                        title={'Merchant'}
+                                                        filter={filterMerchants}
+                                                        setfilter={setfilterMerchants}
+                                                        options={fetchMerchantsQuery}
+                                                        attr={'paginateMerchants'}
+                                                        label={'name'}
+                                                        value={'id'}
+                                                        payload={filter}
+                                                        payloadAttr={'toMerchantId'}
+                                                        onClick={(option) => {
+                                                            setfilter({ ...filter, toMerchantId: option?.id ?? undefined });
+                                                        }}
+                                                    />
+                                                </div>
+                                            )}
+                                            {!cookies.get('userInfo')?.inventoryId && (
+                                                <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                                    <SelectComponent
+                                                        title={'Inventory'}
+                                                        filter={filterInventories}
+                                                        setfilter={setfilterInventories}
+                                                        options={fetchinventories}
+                                                        attr={'paginateInventories'}
+                                                        label={'name'}
+                                                        value={'id'}
+                                                        payload={filter}
+                                                        payloadAttr={'toInventoryId'}
+                                                        onClick={(option) => {
+                                                            setfilter({ ...filter, toInventoryId: option?.id });
+                                                        }}
+                                                    />
+                                                </div>
+                                            )}
                                         </div>
                                     </AccordionItemPanel>
                                 </AccordionItem>
                             </Accordion>
+                        </div>
+                        <div class={generalstyles.card + ' row m-0 w-100 my-2 p-2 px-0'}>
+                            <div class="col-lg-12 p-0 ">
+                                <div class="row m-0 w-100 d-flex align-items-center">
+                                    <div class="col-lg-10">
+                                        <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
+                                            <input
+                                                class={formstyles.form__field}
+                                                value={search}
+                                                placeholder={'Search by name or SKU'}
+                                                onChange={(event) => {
+                                                    setSearch(event.target.value);
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 p-0 allcenered">
+                                        <button
+                                            onClick={() => {
+                                                setfilter({ ...filter, sku: search?.length == 0 ? undefined : search });
+                                            }}
+                                            style={{ height: '35px', marginInlineStart: '5px' }}
+                                            class={generalstyles.roundbutton + '  allcentered bg-primary-light'}
+                                        >
+                                            search
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-lg-12 p-0 mb-3">
                             <Pagination

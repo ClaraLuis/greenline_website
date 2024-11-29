@@ -122,7 +122,7 @@ const OrderInfo = (props) => {
     const [linkCustomerMutation] = useMutationGQL(linkCustomerMerchant(), {
         customerId: orderpayload?.customerId,
         customerName: orderpayload?.user,
-        merchantId: merchantId,
+        merchantId: chosenOrderContext?.merchant?.id,
     });
     const dateformatterDayAndMonth = (date) => {
         const d = new Date(date);
