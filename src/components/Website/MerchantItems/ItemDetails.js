@@ -234,39 +234,11 @@ const ItemDetails = (props) => {
         }
     }, [chosenItemContext]);
     // Generalized function to find the matching variant index
-    const findMatchingVariantIndex = (chosenarr) => {
-        // Iterate over all the keys (like "red", "green") in the itemvariants object
-        for (const key in itemVariants) {
-            const variants = itemVariants[key]?.variants || [];
-
-            // Iterate through each variant for the current color/key (e.g., "red")
-            for (let i = 0; i < variants.length; i++) {
-                const variant = variants[i];
-                const options = variant.variantOptions;
-
-                // Check if all chosen options match the variant's options
-                const isMatch = chosenarr.map((chosen) => {
-                    // Look for a matching variant option based on the chosen option and value
-                    const matchedOption = options.map((option) => {
-                        alert(JSON.stringify(option));
-
-                        if (option.value === chosen.value) {
-                            alert(JSON.stringify(option));
-                        }
-                    });
-                    return matchedOption;
-                });
-
-                // If all options match, return the variant index and other details
-                if (isMatch) {
-                    return { index: i, colorKey: key, variant };
-                }
-            }
-        }
-
-        // Return null if no match is found
-        return null;
-    };
+    function findMatchingVariantIndex(chosarr) {
+        return chosenItemContext?.itemVariants.findIndex((variant) =>
+            chosarr.every((chos) => variant.selectedOptions.some((option) => option.variantName.name === chos.option && option.variantOption.value === chos.value)),
+        );
+    }
 
     return (
         <div class="row m-0 w-100 p-md-2 pt-2 d-flex justify-content-center">
@@ -434,7 +406,10 @@ const ItemDetails = (props) => {
                                                                             chosenarr.push({ option: it.variantName.name, value: it?.variantOption?.value });
                                                                         }
                                                                     });
-                                                                    alert(findMatchingVariantIndex(chosenarr)?.index);
+                                                                    if (chosenarr) {
+                                                                        var chosenindex = findMatchingVariantIndex(chosenarr);
+                                                                        setchosenvariant(chosenItemContext?.itemVariants[chosenindex]);
+                                                                    }
                                                                     // item?.variantOptions?.map((m, mm) => {
                                                                     //     m?.selectedOptions?.map((i, ii) => {
                                                                     //         if (item.name == i.variantName?.name && optionItem.value == i.variantOption?.value) {

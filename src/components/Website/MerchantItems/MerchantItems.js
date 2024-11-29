@@ -771,6 +771,7 @@ keep data consistent.</span></p>
     const cookies = new Cookies();
     const [importModal, setimportModal] = useState(false);
     const [csvFile, setcsvFile] = useState(null);
+    const [type, settype] = useState('additem');
 
     const [merchantModal, setmerchantModal] = useState(false);
 
@@ -908,6 +909,7 @@ keep data consistent.</span></p>
                                                 onClick={() => {
                                                     if (isAuth([1])) {
                                                         setmerchantModal(true);
+                                                        settype('additem');
                                                     } else {
                                                         history.push('/additem');
                                                     }
@@ -919,7 +921,12 @@ keep data consistent.</span></p>
                                                 style={{ height: '35px' }}
                                                 class={generalstyles.roundbutton + '  mb-1 '}
                                                 onClick={() => {
-                                                    setimportModal(true);
+                                                    if (isAuth([1])) {
+                                                        setmerchantModal(true);
+                                                        settype('importbulk');
+                                                    } else {
+                                                        setimportModal(true);
+                                                    }
                                                 }}
                                             >
                                                 Import Bulk
@@ -1028,7 +1035,12 @@ keep data consistent.</span></p>
                                 label={'name'}
                                 value={'id'}
                                 onClick={(option) => {
-                                    history.push('/additem?merchantId=' + option?.id);
+                                    if (type == 'additem') {
+                                        history.push('/additem?merchantId=' + option?.id);
+                                    } else {
+                                        settype(option.id);
+                                        setimportModal(true);
+                                    }
                                 }}
                                 removeAll={true}
                             />
@@ -1110,7 +1122,7 @@ keep data consistent.</span></p>
                                             await setimportedDataContext([...data?.uploadExcelFile?.result]);
 
                                             NotificationManager.success('', 'Success');
-                                            history.push('/additem?import=true');
+                                            history.push('/additem?import=true&merchantId=' + type);
                                         } else {
                                             NotificationManager.warning(data?.uploadExcelFile?.message, 'Warning!');
                                         }

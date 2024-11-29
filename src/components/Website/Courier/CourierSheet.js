@@ -35,6 +35,7 @@ const CourierSheet = (props) => {
     const [sheetID, setsheetID] = useState(null);
     const [submitSheetPayload, setsubmitSheetPayload] = useState({});
     const [type, settype] = useState('');
+    const [sheetOrders, setsheetOrders] = useState();
 
     const [updateStatusbuttonLoadingContext, setupdateStatusbuttonLoadingContext] = useState(false);
 
@@ -202,8 +203,8 @@ const CourierSheet = (props) => {
     const [expandedItems, setExpandedItems] = useState([]);
     const [totalExpected, settotalExpected] = useState(0);
     useEffect(() => {
-        setExpandedItems(Array.from(Array(fetchCourierSheetQuery?.data?.CourierSheet?.sheetOrders?.length).keys()));
-    }, [fetchCourierSheetQuery?.data]);
+        setExpandedItems(Array.from(Array(sheetOrders?.length).keys()));
+    }, [sheetOrders]);
 
     const handleAccordionChange = (index) => {
         if (expandedItems.includes(index)) {
@@ -225,7 +226,7 @@ const CourierSheet = (props) => {
         var total = new Decimal(0); // Initialize with Decimal
         var currency = '';
 
-        fetchCourierSheetQuery?.data?.CourierSheet?.sheetOrders?.map((item, index) => {
+        sheetOrders?.map((item, index) => {
             // Calculate total using Decimal for precision
             total = total.plus(new Decimal(item?.order?.price || 0)).plus(new Decimal(item?.order?.shippingPrice || 0));
             currency = item?.order?.currency;
@@ -263,7 +264,10 @@ const CourierSheet = (props) => {
         temp.userInfo = fetchCourierSheetQuery?.data?.CourierSheet?.userInfo;
 
         setsubmitSheetPayload({ ...temp });
-    }, [fetchCourierSheetQuery?.data]);
+    }, [fetchCourierSheetQuery?.data, sheetOrders]);
+    // useEffect(() => {
+    //     alert(JSON.stringify(sheetOrders));
+    // }, [sheetOrders]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -273,6 +277,8 @@ const CourierSheet = (props) => {
                         variables: { id: parseInt(sheetID) },
                     });
                     setfetchCourierSheetQuery({ data: data });
+                    // alert(JSON.stringify(data?.CourierSheet?.sheetOrders[0]));
+                    setsheetOrders([...data?.CourierSheet?.sheetOrders]);
                 } catch (error) {
                     console.error('Error fetching data:', error);
                 }
@@ -298,7 +304,7 @@ const CourierSheet = (props) => {
     const fetchCourierSheets = (status) => {
         return (
             <>
-                {fetchCourierSheetQuery?.data?.CourierSheet?.sheetOrders?.map((item, index) => {
+                {sheetOrders?.map((item, index) => {
                     var tempsheetpayload = {};
                     var tempsheetpayloadPreviousOrder = {};
                     var show = false;
@@ -320,7 +326,7 @@ const CourierSheet = (props) => {
                         }
                     });
                     if (item?.order?.previousOrderId) {
-                        previousOrder = fetchCourierSheetQuery?.data?.CourierSheet?.sheetOrders?.filter((ii) => ii.orderId == item?.order?.previousOrderId)[0];
+                        previousOrder = sheetOrders?.filter((ii) => ii.orderId == item?.order?.previousOrderId)[0];
                         submitSheetPayload?.updateSheetOrderstemp?.map((i, ii) => {
                             if (item?.order?.previousOrderId == i.orderId) {
                                 tempsheetpayloadPreviousOrder = i;
@@ -328,7 +334,7 @@ const CourierSheet = (props) => {
                         });
                     }
                     if (item?.order?.type == 'return') {
-                        var orderexist = fetchCourierSheetQuery?.data?.CourierSheet?.sheetOrders?.filter((ii) => ii.order?.previousOrderId == item?.orderId)[0];
+                        var orderexist = sheetOrders?.filter((ii) => ii.order?.previousOrderId == item?.orderId)[0];
                         if (orderexist) {
                             show = false;
                         }
@@ -361,7 +367,6 @@ const CourierSheet = (props) => {
                     });
 
                     if (show) {
-                        // alert(JSON.stringify(tempsheetpayload));
                         return (
                             <div
                                 onClick={(e) => {
@@ -451,9 +456,7 @@ const CourierSheet = (props) => {
                                                                         status: '',
                                                                         type: tempsheetpayload?.orderStatus?.split(/(?=[A-Z])/).join(' '),
                                                                         order: item?.order,
-                                                                        previousOrder: fetchCourierSheetQuery?.data?.CourierSheet?.sheetOrders?.filter(
-                                                                            (ii) => ii.orderId == item?.order?.previousOrderId,
-                                                                        )[0]?.order,
+                                                                        previousOrder: sheetOrders?.filter((ii) => ii.orderId == item?.order?.previousOrderId)[0]?.order,
                                                                         fullDelivery: true,
                                                                         fullReturn: true,
                                                                         returnStatus: 'returned',
@@ -718,7 +721,7 @@ const CourierSheet = (props) => {
                                                                         //         orderid: item.id,
                                                                         //         status: '',
                                                                         //         order: item?.order,
-                                                                        //         previousOrder: fetchCourierSheetQuery?.data?.CourierSheet?.sheetOrders?.filter(
+                                                                        //         previousOrder: sheetOrders?.filter(
                                                                         //             (ii) => ii.orderId == item?.order?.previousOrderId,
                                                                         //         )[0]?.order,
                                                                         //         fullDelivery: true,
@@ -1884,8 +1887,39 @@ const CourierSheet = (props) => {
                                                             : !statuspayload?.fullReturn && statuspayload?.status == 'return'
                                                             ? 'partiallyReturned'
                                                             : statuspayload?.status;
+
+                                                    // alert(JSON.stringify(temp.updateSheetOrderstemp[ii].order?.orderItems));
                                                 }
                                             });
+                                            const deepClone = (obj) => JSON.parse(JSON.stringify(obj)); // Utility for deep cloning
+
+                                            var sheetOrdersTemp = deepClone(sheetOrders);
+
+                                            sheetOrders?.forEach((sheet, sheetIndex) => {
+                                                if (sheet.order.id === statuspayload.order.id) {
+                                                    sheet?.order?.orderItems?.forEach((orderitem, orderitemindex) => {
+                                                        const matchingSuborder = statuspayload?.partialItems?.find((suborderitem) => suborderitem.id === orderitem.id);
+
+                                                        if (matchingSuborder) {
+                                                            sheetOrdersTemp[sheetIndex].order.orderItems[orderitemindex].partialCount = matchingSuborder.partialCount;
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                            sheetOrders?.forEach((sheet, sheetIndex) => {
+                                                if (sheet.order.id === statuspayload.previousOrder.id) {
+                                                    sheet?.order?.orderItems?.forEach((orderitem, orderitemindex) => {
+                                                        const matchingSuborder = statuspayload?.partialItemsReturn?.find((suborderitem) => suborderitem.id === orderitem.id);
+
+                                                        if (matchingSuborder) {
+                                                            sheetOrdersTemp[sheetIndex].order.orderItems[orderitemindex].partialCount = matchingSuborder.partialCount;
+                                                        }
+                                                    });
+                                                }
+                                            });
+
+                                            setsheetOrders(sheetOrdersTemp);
+
                                             setsubmitSheetPayload({ ...temp });
                                             setstatuspayload({ step: 0, orderid: '', status: '', fullDelivery: true });
                                             setchangestatusmodal(false);

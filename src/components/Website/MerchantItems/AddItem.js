@@ -64,7 +64,7 @@ const AddItem = (props) => {
     const [findOneItemLazyQuery] = useLazyQueryGQL(findOneItem());
 
     const [addItemMutation] = useMutationGQL(addCompoundItem(), {
-        merchantId: itempayload?.merchantId,
+        merchantId: parseInt(itempayload?.merchantId),
         items: [
             {
                 name: itempayload?.name,
@@ -80,7 +80,7 @@ const AddItem = (props) => {
     });
 
     const [updateMerchantItemMutation] = useMutationGQL(updateMerchantItem(), {
-        merchantId: itempayload?.merchantId,
+        merchantId: parseInt(itempayload?.merchantId),
         item: {
             id: parseInt(queryParameters?.get('id')),
 
@@ -409,24 +409,25 @@ const AddItem = (props) => {
             }, {});
             const extractData = (data) => {
                 const result = [];
+                if (data) {
+                    Object.keys(data).forEach((key) => {
+                        const variants = data[key].variants;
 
-                // Iterate over each key in the data object
-                Object.keys(data).forEach((key) => {
-                    const variants = data[key].variants;
+                        // Process each variant
+                        variants.forEach(async (variant) => {
+                            const { price, imageUrl, merchantSku } = variant;
 
-                    // Process each variant
-                    variants.forEach(async (variant) => {
-                        const { price, imageUrl, merchantSku } = variant;
-
-                        if (price || imageUrl || merchantSku) {
-                            result.push({
-                                price,
-                                imageUrl,
-                                merchantSku,
-                            });
-                        }
+                            if (price || imageUrl || merchantSku) {
+                                result.push({
+                                    price,
+                                    imageUrl,
+                                    merchantSku,
+                                });
+                            }
+                        });
                     });
-                });
+                }
+                // Iterate over each key in the data object
 
                 return result;
             };
@@ -476,13 +477,14 @@ const AddItem = (props) => {
                 description: importedData?.productDescrioption,
                 price: importedData?.defaultPrice,
                 imageUrl: importedData?.imageUrl,
+                merchantId: queryParameters.get('merchantId'),
             });
 
             setitemVariants(itemVariants);
 
             setvariantsList(variantNames);
         }
-    }, [importedDataContext, itemIndex]);
+    }, [importedDataContext, itemIndex, queryParameters.get('merchantId')]);
     useEffect(async () => {
         if (window.location.pathname == '/updateitem') {
             if (JSON.stringify(chosenItemContext) == '{}') {
@@ -897,7 +899,18 @@ const AddItem = (props) => {
                                                     style={{ height: '35px' }}
                                                     class={generalstyles.roundbutton + '  mb-1 mx-2'}
                                                     onClick={() => {
-                                                        setitemIndex(itemIndex + 1);
+                                                        const importedItemsCookie = cookies.get('ImportedItems') ?? [];
+                                                        var tempproductsarray = importedItemsCookie;
+                                                        cookies.set('ImportedItems', JSON.stringify(tempproductsarray), {
+                                                            expires: new Date(Date.now() + 2 * 60 * 60 * 1000),
+                                                            path: '/',
+                                                        });
+
+                                                        if (itemIndex < importedDataContext.length - 1) {
+                                                            setitemIndex(itemIndex + 1);
+                                                        } else {
+                                                            history.push('/merchantitems');
+                                                        }
                                                     }}
                                                 >
                                                     Skip
