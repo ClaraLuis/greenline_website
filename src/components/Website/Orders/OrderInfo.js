@@ -13,7 +13,7 @@ import API from '../../../API/API.js';
 
 import { FaLayerGroup } from 'react-icons/fa';
 import { IoMdClose, IoMdTime } from 'react-icons/io';
-import { MdClose, MdOutlineInventory2, MdOutlineLocationOn } from 'react-icons/md';
+import { MdClose, MdOutlineEditLocationAlt, MdOutlineInventory2, MdOutlineLocationOn } from 'react-icons/md';
 
 import Timeline from '@mui/lab/Timeline';
 import TimelineConnector from '@mui/lab/TimelineConnector';
@@ -87,6 +87,7 @@ const OrderInfo = (props) => {
     const [fetchSuggestions, setfetchSuggestions] = useState(false);
     const [fetching, setfetching] = useState(false);
     const [editCustomer, seteditCustomer] = useState(false);
+    const [editAddress, seteditAddress] = useState(false);
     const [orderLogsModal, setorderLogsModal] = useState({ open: false });
     const [similarAddresses, setsimilarAddresses] = useState([]);
 
@@ -1055,6 +1056,33 @@ const OrderInfo = (props) => {
                                                     >
                                                         <TbEdit />
                                                     </div>
+                                                    <div
+                                                        style={{ height: '30px', width: '30px' }}
+                                                        class="iconhover allcentered"
+                                                        onClick={async () => {
+                                                            setorderpayload({ ...orderpayload, customerId: chosenOrderContext?.merchantCustomer?.customer?.id });
+                                                            if (chosenOrderContext?.merchantCustomer?.customer?.id) {
+                                                                var { data } = await fetchCustomerAddressesQuery({
+                                                                    variables: {
+                                                                        input: {
+                                                                            customerId: chosenOrderContext?.merchantCustomer?.id,
+                                                                            merchantId: chosenOrderContext?.merchant?.id,
+                                                                            limit: 20,
+                                                                        },
+                                                                        merchantId: chosenOrderContext?.merchant?.id,
+                                                                    },
+                                                                });
+
+                                                                if (data?.paginateAddresses?.data) {
+                                                                    setuserAddresses([...data?.paginateAddresses?.data]);
+                                                                }
+                                                            }
+                                                            seteditCustomer(true);
+                                                            seteditAddress(true);
+                                                        }}
+                                                    >
+                                                        <MdOutlineEditLocationAlt />
+                                                    </div>
                                                 </div>
                                                 <div className="col-lg-12 p-0 mb-1 d-flex align-items-center">
                                                     <MdOutlineLocationOn className="mr-1" />
@@ -1073,108 +1101,147 @@ const OrderInfo = (props) => {
 
                                         {editCustomer && (
                                             <div class={generalstyles.card + ' row m-0 w-100 p-3'}>
-                                                <div class="col-lg-12 p-0 mt-3 ">
+                                                <div class="col-lg-12 p-0 my-3 ">
                                                     <div
                                                         style={{ height: '30px', width: '30px', position: 'absolute', right: 0, zIndex: 1000, top: -10 }}
                                                         class="iconhover allcentered"
                                                         onClick={() => {
+                                                            setorderpayload({
+                                                                functype: 'add',
+                                                                items: [],
+                                                                returnOrderItems: [],
+                                                                user: '',
+                                                                address: '',
+                                                                ordertype: 'delivery',
+                                                                paymenttype: 'cash',
+                                                                shippingprice: '',
+                                                                canbeoppened: 1,
+                                                                fragile: 0,
+                                                                partialdelivery: 1,
+                                                                original: 1,
+                                                                returnoriginal: 1,
+                                                                price: undefined,
+                                                                returnAmount: undefined,
+                                                                includevat: 0,
+                                                                previousOrderId: undefined,
+                                                                returnOrderId: undefined,
+                                                                // currency: 'EGP',
+                                                            });
+                                                            setfilterCustomerPayload({
+                                                                phone: '',
+                                                                email: '',
+                                                                myCustomers: true,
+                                                                limit: 20,
+                                                                merchantId: chosenOrderContext?.merchant?.id,
+                                                            });
+                                                            setaddresspayload({
+                                                                city: '',
+                                                                country: 'Egypt',
+                                                                streetAddress: '',
+                                                            });
+                                                            setopenModal(!openModal);
+                                                            setcustomerData([]);
+                                                            setcustomerFound(false);
                                                             seteditCustomer(false);
                                                         }}
                                                     >
                                                         <MdClose />
                                                     </div>
-                                                    <div class="row m-0 w-100 d-flex align-items-center">
-                                                        <div class={'col-lg-12'}>
-                                                            <label style={{ fontSize: '1.8vh' }} class="m-0 mb-2">
-                                                                Phone
-                                                            </label>
-                                                            <Inputfield
-                                                                hideLabel={true}
-                                                                placeholder={'phone'}
-                                                                value={filterCustomerPayload?.phone}
-                                                                onChange={(event) => {
-                                                                    setcustomerFound(false);
-                                                                    setopenModal(false);
-                                                                    setnewCustomer(false);
-                                                                    setnameSuggestions([]);
-                                                                    setsimilarAddresses([]);
-                                                                    setfilterCustomerPayload({ ...filterCustomerPayload, phone: event.target.value, myCustomers: true });
-                                                                    setorderpayload({ ...orderpayload, phone: event.target.value });
-                                                                }}
-                                                                type={'number'}
-                                                            />
-                                                        </div>
+                                                    {!editAddress && (
+                                                        <div class="row m-0 w-100 d-flex align-items-center">
+                                                            <div class={'col-lg-12'}>
+                                                                <label style={{ fontSize: '1.8vh' }} class="m-0 mb-2">
+                                                                    Phone
+                                                                </label>
+                                                                <Inputfield
+                                                                    hideLabel={true}
+                                                                    placeholder={'phone'}
+                                                                    value={filterCustomerPayload?.phone}
+                                                                    onChange={(event) => {
+                                                                        setcustomerFound(false);
+                                                                        setopenModal(false);
+                                                                        setnewCustomer(false);
+                                                                        setnameSuggestions([]);
+                                                                        setsimilarAddresses([]);
+                                                                        setfilterCustomerPayload({ ...filterCustomerPayload, phone: event.target.value, myCustomers: true });
+                                                                        setorderpayload({ ...orderpayload, phone: event.target.value, customerId: undefined });
+                                                                    }}
+                                                                    type={'number'}
+                                                                />
+                                                            </div>
 
-                                                        <div class={'col-lg-12 '}>
-                                                            <label style={{ fontSize: '1.8vh' }} class="m-0 mb-2">
-                                                                Email
-                                                            </label>
-                                                            <Inputfield
-                                                                hideLabel={true}
-                                                                placeholder={'email'}
-                                                                value={orderpayload?.email}
-                                                                onChange={(event) => {
-                                                                    setcustomerFound(false);
-                                                                    setopenModal(false);
-                                                                    setnewCustomer(false);
-                                                                    setnameSuggestions([]);
-                                                                    setsimilarAddresses([]);
+                                                            <div class={'col-lg-12 '}>
+                                                                <label style={{ fontSize: '1.8vh' }} class="m-0 mb-2">
+                                                                    Email
+                                                                </label>
+                                                                <Inputfield
+                                                                    hideLabel={true}
+                                                                    placeholder={'email'}
+                                                                    value={orderpayload?.email}
+                                                                    onChange={(event) => {
+                                                                        setcustomerFound(false);
+                                                                        setopenModal(false);
+                                                                        setnewCustomer(false);
+                                                                        setnameSuggestions([]);
+                                                                        setsimilarAddresses([]);
 
-                                                                    setfilterCustomerPayload({ ...filterCustomerPayload, email: event.target.value, myCustomers: true });
-                                                                    setorderpayload({ ...orderpayload, email: event.target.value });
-                                                                }}
-                                                                type={'text'}
-                                                            />
-                                                        </div>
-                                                        <div class="col-lg-12 p-0 ">
-                                                            <button
-                                                                onClick={async () => {
-                                                                    if (filterCustomerPayload?.phone?.length != 0 || filterCustomerPayload?.email?.length != 0) {
-                                                                        try {
-                                                                            setfetchSuggestions(false);
-                                                                            setcustomerFound(false);
-                                                                            setfetching(true);
-                                                                            var { data } = await checkCustomer({
-                                                                                variables: {
-                                                                                    input: {
-                                                                                        phone: filterCustomerPayload?.phone,
-                                                                                        email: filterCustomerPayload?.email,
-                                                                                        myCustomers: true,
-                                                                                        limit: filterCustomerPayload?.limit,
+                                                                        setfilterCustomerPayload({ ...filterCustomerPayload, email: event.target.value, myCustomers: true });
+                                                                        setorderpayload({ ...orderpayload, email: event.target.value, customerId: undefined });
+                                                                    }}
+                                                                    type={'text'}
+                                                                />
+                                                            </div>
+
+                                                            <div class="col-lg-12 p-0 ">
+                                                                <button
+                                                                    onClick={async () => {
+                                                                        if (filterCustomerPayload?.phone?.length != 0 || filterCustomerPayload?.email?.length != 0) {
+                                                                            try {
+                                                                                setfetchSuggestions(false);
+                                                                                setcustomerFound(false);
+                                                                                setfetching(true);
+                                                                                var { data } = await checkCustomer({
+                                                                                    variables: {
+                                                                                        input: {
+                                                                                            phone: filterCustomerPayload?.phone,
+                                                                                            email: filterCustomerPayload?.email,
+                                                                                            myCustomers: true,
+                                                                                            limit: filterCustomerPayload?.limit,
+                                                                                            merchantId: chosenOrderContext?.merchant?.id,
+                                                                                        },
                                                                                         merchantId: chosenOrderContext?.merchant?.id,
                                                                                     },
-                                                                                    merchantId: chosenOrderContext?.merchant?.id,
-                                                                                },
-                                                                            });
-                                                                            setcustomerData({ ...data });
-                                                                            setfetching(false);
-                                                                        } catch (error) {
-                                                                            let errorMessage = 'An unexpected error occurred';
-                                                                            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-                                                                                errorMessage = error.graphQLErrors[0].message || errorMessage;
-                                                                            } else if (error.networkError) {
-                                                                                errorMessage = error.networkError.message || errorMessage;
-                                                                            } else if (error.message) {
-                                                                                errorMessage = error.message;
+                                                                                });
+                                                                                setcustomerData({ ...data });
+                                                                                setfetching(false);
+                                                                            } catch (error) {
+                                                                                let errorMessage = 'An unexpected error occurred';
+                                                                                if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                                                                    errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                                                                } else if (error.networkError) {
+                                                                                    errorMessage = error.networkError.message || errorMessage;
+                                                                                } else if (error.message) {
+                                                                                    errorMessage = error.message;
+                                                                                }
+
+                                                                                NotificationManager.warning(errorMessage, 'Warning!');
+                                                                                console.error(':', error);
                                                                             }
-
-                                                                            NotificationManager.warning(errorMessage, 'Warning!');
-                                                                            console.error(':', error);
+                                                                        } else {
+                                                                            NotificationManager.warning('', 'Please fill email or phone');
                                                                         }
-                                                                    } else {
-                                                                        NotificationManager.warning('', 'Please fill email or phone');
-                                                                    }
-                                                                }}
-                                                                class={generalstyles.roundbutton + '  mx-2'}
-                                                                disabled={loading || fetching}
-                                                            >
-                                                                {!loading && <>Search</>}
-                                                                {loading && <CircularProgress color="var(--primary)" width="20px" height="20px" duration="1s" />}
+                                                                    }}
+                                                                    class={generalstyles.roundbutton + '  mx-2'}
+                                                                    disabled={loading || fetching}
+                                                                >
+                                                                    {!loading && <>Search</>}
+                                                                    {loading && <CircularProgress color="var(--primary)" width="20px" height="20px" duration="1s" />}
 
-                                                                {/* Search */}
-                                                            </button>
+                                                                    {/* Search */}
+                                                                </button>
+                                                            </div>
                                                         </div>
-                                                    </div>
+                                                    )}
                                                 </div>
                                                 {fetching && (
                                                     <div class="col-lg-12 col-md-12 col-sm-12 mt-4 allcentered">
@@ -1308,55 +1375,9 @@ const OrderInfo = (props) => {
                                                                 </button>
                                                             </div>
                                                         )}
-                                                        {orderpayload?.customerId && (
-                                                            <div class="col-lg-12 allcentered">
-                                                                <button
-                                                                    class={generalstyles.roundbutton}
-                                                                    onClick={async () => {
-                                                                        if (buttonLoadingContext) return;
-                                                                        setbuttonLoadingContext(true);
-                                                                        try {
-                                                                            var { data } = await changeOrderCustomerInfoMutation();
-                                                                            if (data?.changeOrderCustomerInfo?.success == true) {
-                                                                                setTimeout(async () => {
-                                                                                    NotificationManager.success('Success!', '');
-                                                                                    var { data } = await fetchOneOrderLazyQuery({
-                                                                                        variables: {
-                                                                                            id: parseInt(queryParameters.get('orderId')),
-                                                                                        },
-                                                                                    });
-                                                                                    setchosenOrderContext(data?.findOneOrder);
-                                                                                    if (data?.findOneOrder) {
-                                                                                        seteditCustomer(false);
-                                                                                    }
-                                                                                }, 1000);
-                                                                            } else {
-                                                                                NotificationManager.warning(data?.changeOrderCustomerInfo?.message, 'Warning!');
-                                                                            }
-                                                                        } catch (error) {
-                                                                            let errorMessage = 'An unexpected error occurred';
-                                                                            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-                                                                                errorMessage = error.graphQLErrors[0].message || errorMessage;
-                                                                            } else if (error.networkError) {
-                                                                                errorMessage = error.networkError.message || errorMessage;
-                                                                            } else if (error.message) {
-                                                                                errorMessage = error.message;
-                                                                            }
-
-                                                                            NotificationManager.warning(errorMessage, 'Warning!');
-                                                                            console.error('Error adding Merchant:', error);
-                                                                        }
-                                                                        setbuttonLoadingContext(false);
-                                                                    }}
-                                                                >
-                                                                    {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                                                    {!buttonLoadingContext && <span>Update Customers</span>}
-                                                                </button>
-                                                            </div>
-                                                        )}
                                                     </>
                                                 )}
-                                                {orderpayload?.customerId?.length != 0 && orderpayload?.customerId && customerFound && (
+                                                {orderpayload?.customerId?.length != 0 && orderpayload?.customerId && (
                                                     <>
                                                         <div class="col-lg-6 p-3" style={{ fontSize: '17px', fontWeight: 700 }}>
                                                             Addresses
@@ -1542,7 +1563,7 @@ const OrderInfo = (props) => {
                                                                             if (item?.score == 0) {
                                                                                 return (
                                                                                     <>
-                                                                                        <div class="col-lg-6 mt-2 ">
+                                                                                        <div class="col-lg-12 mt-2 ">
                                                                                             <div
                                                                                                 onClick={async () => {
                                                                                                     try {
@@ -1617,7 +1638,7 @@ const OrderInfo = (props) => {
                                                                             if (item?.score != 0) {
                                                                                 return (
                                                                                     <>
-                                                                                        <div class="col-lg-6 mt-2 ">
+                                                                                        <div class="col-lg-12 mt-2 ">
                                                                                             <div
                                                                                                 onClick={async () => {
                                                                                                     try {
@@ -1694,7 +1715,7 @@ const OrderInfo = (props) => {
                                                                 <div class="row m-0 w-100">
                                                                     {userAddresses?.map((item, index) => {
                                                                         return (
-                                                                            <div class="col-lg-6 mt-2 ">
+                                                                            <div class="col-lg-12 mt-2 ">
                                                                                 <div
                                                                                     onClick={() => {
                                                                                         setorderpayload({ ...orderpayload, address: item?.details?.id });
@@ -1733,6 +1754,93 @@ const OrderInfo = (props) => {
                                                             </div>
                                                         )}
                                                     </>
+                                                )}
+                                                {orderpayload?.customerId && orderpayload?.address && (
+                                                    <div class="col-lg-12 allcentered mt-2">
+                                                        <button
+                                                            class={generalstyles.roundbutton}
+                                                            onClick={async () => {
+                                                                if (orderpayload.address) {
+                                                                    if (buttonLoadingContext) return;
+                                                                    setbuttonLoadingContext(true);
+                                                                    try {
+                                                                        var { data } = await changeOrderCustomerInfoMutation();
+                                                                        if (data?.changeOrderCustomerInfo?.success == true) {
+                                                                            setTimeout(async () => {
+                                                                                NotificationManager.success('Success!', '');
+                                                                                var { data } = await fetchOneOrderLazyQuery({
+                                                                                    variables: {
+                                                                                        id: parseInt(queryParameters.get('orderId')),
+                                                                                    },
+                                                                                });
+                                                                                setchosenOrderContext(data?.findOneOrder);
+                                                                                if (data?.findOneOrder) {
+                                                                                    setorderpayload({
+                                                                                        functype: 'add',
+                                                                                        items: [],
+                                                                                        returnOrderItems: [],
+                                                                                        user: '',
+                                                                                        address: '',
+                                                                                        ordertype: 'delivery',
+                                                                                        paymenttype: 'cash',
+                                                                                        shippingprice: '',
+                                                                                        canbeoppened: 1,
+                                                                                        fragile: 0,
+                                                                                        partialdelivery: 1,
+                                                                                        original: 1,
+                                                                                        returnoriginal: 1,
+                                                                                        price: undefined,
+                                                                                        returnAmount: undefined,
+                                                                                        includevat: 0,
+                                                                                        previousOrderId: undefined,
+                                                                                        returnOrderId: undefined,
+
+                                                                                        // currency: 'EGP',
+                                                                                    });
+                                                                                    setfilterCustomerPayload({
+                                                                                        phone: '',
+                                                                                        email: '',
+                                                                                        myCustomers: true,
+                                                                                        limit: 20,
+                                                                                        merchantId: chosenOrderContext?.merchant?.id,
+                                                                                    });
+                                                                                    setaddresspayload({
+                                                                                        city: '',
+                                                                                        country: 'Egypt',
+                                                                                        streetAddress: '',
+                                                                                    });
+                                                                                    setopenModal(!openModal);
+                                                                                    setcustomerData([]);
+                                                                                    setcustomerFound(false);
+                                                                                    seteditCustomer(false);
+                                                                                }
+                                                                            }, 1000);
+                                                                        } else {
+                                                                            NotificationManager.warning(data?.changeOrderCustomerInfo?.message, 'Warning!');
+                                                                        }
+                                                                    } catch (error) {
+                                                                        let errorMessage = 'An unexpected error occurred';
+                                                                        if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                                                            errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                                                        } else if (error.networkError) {
+                                                                            errorMessage = error.networkError.message || errorMessage;
+                                                                        } else if (error.message) {
+                                                                            errorMessage = error.message;
+                                                                        }
+
+                                                                        NotificationManager.warning(errorMessage, 'Warning!');
+                                                                        console.error('Error adding Merchant:', error);
+                                                                    }
+                                                                    setbuttonLoadingContext(false);
+                                                                } else {
+                                                                    NotificationManager.warning('Please choose address first', 'Warning!');
+                                                                }
+                                                            }}
+                                                        >
+                                                            {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                                            {!buttonLoadingContext && <span>Update Customer</span>}
+                                                        </button>
+                                                    </div>
                                                 )}
                                             </div>
                                         )}

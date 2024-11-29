@@ -737,10 +737,12 @@ const API = () => {
                         otherId
                         shopifyName
                         merchantCustomer {
+                            id
                             customerName
                             customer {
                                 email
                                 phone
+                                id
                             }
                         }
                         address {
@@ -852,9 +854,11 @@ const API = () => {
                             apartmentFloor
                         }
                         merchantCustomer {
+                            id
                             customerName
                             customer {
                                 email
+                                id
                                 phone
                             }
                         }
@@ -1268,10 +1272,12 @@ const API = () => {
                 shopifyName
                 originalPrice
                 merchantCustomer {
+                    id
                     customerName
                     customer {
                         email
                         phone
+                        id
                     }
                 }
                 orderItems {
@@ -1445,10 +1451,12 @@ const API = () => {
                     shopifyName
                     originalPrice
                     merchantCustomer {
+                        id
                         customerName
                         customer {
                             email
                             phone
+                            id
                         }
                     }
                     orderItems {
@@ -1565,10 +1573,12 @@ const API = () => {
                         orderDate
                         currency
                         merchantCustomer {
+                            id
                             customerName
                             customer {
                                 email
                                 phone
+                                id
                             }
                         }
                         address {
@@ -2117,10 +2127,12 @@ const API = () => {
                                 shippingPrice
                                 price
                                 merchantCustomer {
+                                    id
                                     customerName
                                     customer {
                                         email
                                         phone
+                                        id
                                     }
                                 }
                                 merchant {
