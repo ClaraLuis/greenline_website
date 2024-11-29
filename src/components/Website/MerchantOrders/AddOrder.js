@@ -799,7 +799,7 @@ const AddOrder = (props) => {
                                                             <div class="col-lg-6">
                                                                 <div
                                                                     onClick={() => {
-                                                                        setorderpayload({ ...orderpayload, customerId: item?.details?.id, user: item?.details?.customerName });
+                                                                        setorderpayload({ ...orderpayload, customerId: item?.id, user: item?.details?.customerName });
                                                                     }}
                                                                     style={{
                                                                         border: orderpayload?.customerId == item?.id ? '1px solid var(--primary)' : '',

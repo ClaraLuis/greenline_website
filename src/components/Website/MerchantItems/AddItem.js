@@ -1509,7 +1509,7 @@ const AddItem = (props) => {
                                         <div key={colorIndex} style={{ border: '1px solid #eee', borderRadius: '0.25rem', fontSize: '13px', cursor: 'pointer' }} className="p-3 mb-2">
                                             <div class="col-lg-12 p-0">
                                                 <div class="row m-0 w-100">
-                                                    <div className="col-lg-10 p-0" onClick={() => handleColorClick(color)}>
+                                                    <div className="col-lg-10 p-0 text-capitalize" onClick={() => handleColorClick(color)}>
                                                         {color}
                                                     </div>
                                                     <div className="col-lg-2 p-0 mb-2" style={{ color: 'grey', fontSize: '12px' }} onClick={() => handleColorClick(color)}>
@@ -1523,7 +1523,7 @@ const AddItem = (props) => {
                                                     {variants?.variants.map((variant, variantIdx) => (
                                                         <div key={variantIdx} className="mb-2">
                                                             {variant.variantOptions.map((option, optionIdx) => (
-                                                                <span key={optionIdx}>
+                                                                <span key={optionIdx} class="text-capitalize mb-2">
                                                                     {option?.value}
                                                                     {optionIdx !== variant.variantOptions.length - 1 && '-'}
                                                                 </span>
@@ -1536,7 +1536,7 @@ const AddItem = (props) => {
                                                                             setmodelfrom('variant');
                                                                             setopenModal(true);
                                                                         }}
-                                                                        class={generalstyles.avatar_upload + ' text-center justify-content-center align-items-center m-auto '}
+                                                                        class={generalstyles.avatar_upload + ' text-center justify-content-center align-items-center m-0 d-flex align-items-center '}
                                                                     >
                                                                         <div class={generalstyles.avatar_edit}></div>
                                                                         <label
@@ -1557,25 +1557,37 @@ const AddItem = (props) => {
                                                                                 style={{ width: '100%', height: '100%', objectFit: 'contain' }}
                                                                             />
                                                                         </label>
+                                                                    </div>{' '}
+                                                                    <div class="col-lg-5">
+                                                                        <div class="row m-0 w-100  ">
+                                                                            <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                                                <label class={formstyles.form__label}>Price</label>
+                                                                                <input
+                                                                                    className={`${formstyles.form__field}`}
+                                                                                    type="text"
+                                                                                    value={variant.price ? new Decimal(variant.price).toLocaleString('en-US', { minimumFractionDigits: 0 }) : ''}
+                                                                                    onChange={(event) => handlePriceChange(color, variantIdx, event)}
+                                                                                    placeholder="Enter price"
+                                                                                />
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
-                                                                </div>
+                                                                    <div class="col-lg-5">
+                                                                        <div class="row m-0 w-100  ">
+                                                                            <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                                                <label class={formstyles.form__label}>Sku</label>
+                                                                                <input
+                                                                                    className={formstyles.form__field}
+                                                                                    type="text"
+                                                                                    value={variant.merchantSku}
+                                                                                    onChange={(event) => handleMerchantSkuChange(color, variantIdx, event)}
+                                                                                    placeholder="Enter SKU"
+                                                                                />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>{' '}
                                                             </div>
-
-                                                            <input
-                                                                className={`${formstyles.form__field} col-lg-3 mx-1 ml-4`}
-                                                                type="text"
-                                                                value={variant.price ? new Decimal(variant.price).toLocaleString('en-US', { minimumFractionDigits: 0 }) : ''}
-                                                                onChange={(event) => handlePriceChange(color, variantIdx, event)}
-                                                                placeholder="Enter price"
-                                                            />
-
-                                                            <input
-                                                                className={formstyles.form__field + ' col-lg-3 mx-1'}
-                                                                type="text"
-                                                                value={variant.merchantSku}
-                                                                onChange={(event) => handleMerchantSkuChange(color, variantIdx, event)}
-                                                                placeholder="Enter SKU"
-                                                            />
                                                         </div>
                                                     ))}
                                                 </div>
