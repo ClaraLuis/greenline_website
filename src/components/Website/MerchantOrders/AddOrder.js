@@ -852,7 +852,19 @@ const AddOrder = (props) => {
                                                     setbuttonLoadingContext(true);
                                                     try {
                                                         await linkCustomerMutation();
-                                                        setcustomerFound(true);
+                                                        var { data } = await checkCustomer({
+                                                            variables: {
+                                                                input: {
+                                                                    phone: filterCustomerPayload?.phone,
+                                                                    email: filterCustomerPayload?.email,
+                                                                    myCustomers: true,
+                                                                    limit: filterCustomerPayload?.limit,
+                                                                    merchantId: merchantId,
+                                                                },
+                                                                merchantId: merchantId,
+                                                            },
+                                                        });
+                                                        setcustomerData({ ...data });
                                                     } catch (error) {
                                                         let errorMessage = 'An unexpected error occurred';
                                                         if (error.graphQLErrors && error.graphQLErrors.length > 0) {
