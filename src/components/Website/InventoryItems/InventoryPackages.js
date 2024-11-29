@@ -18,12 +18,15 @@ import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import { FaLayerGroup } from 'react-icons/fa';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 import { TbTruckDelivery } from 'react-icons/tb';
+import SelectComponent from '../../SelectComponent.js';
+import Cookies from 'universal-cookie';
 
 const InventoryPackages = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, returnPackageStatusContext, isAuth, dateformatter } = useContext(Contexthandlerscontext);
-    const { fetchPackages, useQueryGQL, findReturnPackageBySku, useLazyQueryGQL } = API();
+    const { fetchPackages, useQueryGQL, findReturnPackageBySku, useLazyQueryGQL, fetchInventories } = API();
+    const cookies = new Cookies();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [packagepayload, setpackagepayload] = useState({
@@ -51,6 +54,13 @@ const InventoryPackages = (props) => {
 
     const [barcode, setBarcode] = useState('');
     const [search, setSearch] = useState('');
+
+    const [filterInventories, setfilterInventories] = useState({
+        limit: 20,
+        afterCursor: null,
+        beforeCursor: null,
+    });
+    const fetchinventories = useQueryGQL('', fetchInventories(), filterInventories);
 
     useEffect(() => {
         const handleKeyDown = async (e) => {
@@ -167,6 +177,24 @@ const InventoryPackages = (props) => {
                                                         }}
                                                     />
                                                 </div>
+                                                {!cookies.get('userInfo')?.inventoryId && (
+                                                    <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                                        <SelectComponent
+                                                            title={'Inventory'}
+                                                            filter={filterInventories}
+                                                            setfilter={setfilterInventories}
+                                                            options={fetchinventories}
+                                                            attr={'paginateInventories'}
+                                                            label={'name'}
+                                                            value={'id'}
+                                                            payload={filter}
+                                                            payloadAttr={'toInventoryId'}
+                                                            onClick={(option) => {
+                                                                setfilter({ ...filter, toInventoryId: option?.id });
+                                                            }}
+                                                        />
+                                                    </div>
+                                                )}
                                             </div>
                                         </AccordionItemPanel>
                                     </AccordionItem>

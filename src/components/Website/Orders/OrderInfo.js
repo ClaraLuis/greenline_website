@@ -57,6 +57,7 @@ const OrderInfo = (props) => {
         fetchCustomerNameSuggestions,
         fetchCustomer,
         changeOrderPrice,
+        linkCustomerMerchant,
     } = API();
     const steps = ['Merchant Info', 'Shipping', 'Inventory Settings'];
     const [inventoryModal, setinventoryModal] = useState({ open: false, items: [] });
@@ -118,7 +119,11 @@ const OrderInfo = (props) => {
         name: undefined,
         merchantId: chosenOrderContext?.merchant?.id,
     });
-
+    const [linkCustomerMutation] = useMutationGQL(linkCustomerMerchant(), {
+        customerId: orderpayload?.customerId,
+        customerName: orderpayload?.user,
+        merchantId: merchantId,
+    });
     const dateformatterDayAndMonth = (date) => {
         const d = new Date(date);
         const day = d.getDate();

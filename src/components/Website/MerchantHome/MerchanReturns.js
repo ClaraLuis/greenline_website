@@ -21,6 +21,7 @@ import ItemsTable from './ItemsTable.js';
 import { NotificationManager } from 'react-notifications';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
 import ReturnsTable from './ReturnsTable.js';
+import { IoMdClose } from 'react-icons/io';
 
 const MerchanReturns = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -195,7 +196,7 @@ const MerchanReturns = (props) => {
                                                     payloadAttr={'merchantId'}
                                                     onClick={(option) => {
                                                         setfilter({ ...filter, merchantId: option?.id });
-                                                        setpackagepayload({ ...packagepayload, toMerchantId: option?.id });
+                                                        setpackagepayload({ ...packagepayload, toMerchantId: option?.id, ids: [] });
                                                     }}
                                                 />
                                             </div>
@@ -257,6 +258,17 @@ const MerchanReturns = (props) => {
                                                     </div>
                                                 );
                                             })}
+                                            <div
+                                                style={{ position: 'absolute', top: 10, right: 10 }}
+                                                onClick={() => {
+                                                    const temp = { ...packagepayload };
+                                                    temp.ids.splice(index, 1);
+                                                    setpackagepayload({ ...temp });
+                                                }}
+                                                className="text-dangerhover"
+                                            >
+                                                <IoMdClose />
+                                            </div>
                                         </div>
                                     </div>
                                 );

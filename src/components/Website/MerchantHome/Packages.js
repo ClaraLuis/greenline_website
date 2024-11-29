@@ -327,6 +327,9 @@ const Packages = (props) => {
                     </div>
                 </div>
                 <div class="col-lg-4 mb-3">
+                    <div class="col-lg-12 p-0 mb-1" style={{ color: 'grey', fontSize: '12px' }}>
+                        <div class="row m-0 w-100 d-flex align-items-center justify-content-between">Courier Assignment</div>
+                    </div>
                     <div class={generalstyles.card + ' row m-0 w-100 p-2 py-3'}>
                         <div class="col-lg-12">
                             {packagepayload?.ids?.length != 0 && (

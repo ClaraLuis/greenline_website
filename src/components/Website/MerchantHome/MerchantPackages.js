@@ -33,6 +33,7 @@ const MerchantPackages = (props) => {
         ids: [],
         userId: '',
     });
+    const [search, setSearch] = useState('');
 
     const [filter, setfilter] = useState({
         limit: 20,
@@ -197,6 +198,41 @@ const MerchantPackages = (props) => {
                                 </Accordion>
                             </div>
                         </div>
+                        <div class="col-lg-12 p-0 px-3">
+                            <div class={generalstyles.card + ' row m-0 w-100 my-2 p-2 px-2'}>
+                                <div class="col-lg-12 p-0 ">
+                                    <div class="row m-0 w-100 d-flex align-items-center">
+                                        <div class="col-lg-10">
+                                            <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
+                                                <input
+                                                    // disabled={props?.disabled}
+                                                    // type={props?.type}
+                                                    class={formstyles.form__field}
+                                                    value={search}
+                                                    placeholder={'Search by name or SKU'}
+                                                    onChange={(event) => {
+                                                        setBarcode(event.target.value);
+                                                        setSearch(event.target.value);
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-2 allcenered">
+                                            <button
+                                                onClick={() => {
+                                                    setfilter({ ...filter, sku: search?.length == 0 ? undefined : search });
+                                                }}
+                                                style={{ height: '35px', marginInlineStart: '5px' }}
+                                                class={generalstyles.roundbutton + '  allcentered bg-primary-light'}
+                                            >
+                                                search
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         {isAuth([61, 52, 1]) && (
                             <>
                                 <div class="col-lg-12 p-0 mb-3">

@@ -209,7 +209,7 @@ const ItemsTable = (props) => {
                                     </div>
                                     {item?.itemVariants && (
                                         <div class="col-lg-12 p-0 d-flex align-items-cent6er justify-content-between " style={{ fontSize: '11px', fontWeight: 600, color: 'grey' }}>
-                                            <div>{item?.itemVariants?.length} Variiant(s)</div>
+                                            <div>{item?.itemVariants?.length} Variant(s)</div>
                                             <div>
                                                 {' '}
                                                 {item.itemVariants.length > 0 && (
