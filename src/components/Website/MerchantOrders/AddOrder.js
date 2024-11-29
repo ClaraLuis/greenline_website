@@ -258,9 +258,10 @@ const AddOrder = (props) => {
         var customerFound = false;
         if (customerData?.findCustomer?.data?.length != 0) {
             if (customerData?.findCustomer?.data[0]) {
+                // alert(customerData?.findCustomer?.data[0]?.details?.id);
                 setorderpayload({
                     ...orderpayload,
-                    customerId: customerData?.findCustomer?.data[0]?.id,
+                    customerId: customerData?.findCustomer?.data[0]?.details?.id,
                     email: customerData?.findCustomer?.data[0]?.email,
                     user: customerData?.findCustomer?.data[0]?.details?.customerName,
                 });
@@ -799,10 +800,10 @@ const AddOrder = (props) => {
                                                             <div class="col-lg-6">
                                                                 <div
                                                                     onClick={() => {
-                                                                        setorderpayload({ ...orderpayload, customerId: item?.id, user: item?.details?.customerName });
+                                                                        setorderpayload({ ...orderpayload, customerId: item?.details?.id, user: item?.details?.customerName });
                                                                     }}
                                                                     style={{
-                                                                        border: orderpayload?.customerId == item?.id ? '1px solid var(--primary)' : '',
+                                                                        border: orderpayload?.customerId == item?.details?.id ? '1px solid var(--primary)' : '',
                                                                     }}
                                                                     class={generalstyles.card + ' row m-0 p-2 w-100'}
                                                                 >
