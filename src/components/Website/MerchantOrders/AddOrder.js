@@ -150,7 +150,7 @@ const AddOrder = (props) => {
     const [fetchMerchantItemVariantsLazyQuery] = useLazyQueryGQL(fetchMerchantItemVariants());
 
     const [linkCustomerMutation] = useMutationGQL(linkCustomerMerchant(), {
-        customerId: orderpayload?.customerId,
+        customerId: orderpayload?.customerIdForAddress,
         customerName: orderpayload?.user,
         merchantId: merchantId,
     });
@@ -175,7 +175,7 @@ const AddOrder = (props) => {
     });
 
     const [linkCurrentCustomerAddressMutation] = useMutationGQL(linkCurrentCustomerAddress(), {
-        customerId: orderpayload?.customerId,
+        customerId: orderpayload?.customerIdForAddress,
         addressId: orderpayload?.address,
     });
     const [findSingleMerchantDomesticShippingLazyQuery] = useLazyQueryGQL(findSingleMerchantDomesticShipping());
@@ -187,7 +187,7 @@ const AddOrder = (props) => {
         merchantId: merchantId,
     });
     const [createAddressMutation] = useMutationGQL(createAddress(), {
-        customerId: orderpayload?.customerId,
+        customerId: orderpayload?.customerIdForAddress,
         city: addresspayload?.city,
         country: addresspayload?.country,
         streetAddress: addresspayload?.streetAddress,
@@ -204,7 +204,7 @@ const AddOrder = (props) => {
             const addCustomerMutationdata = await addCustomerMutation();
             setcustomerFound(true);
 
-            setorderpayload({ ...orderpayload, customerId: addCustomerMutationdata?.data?.createCustomer });
+            // setorderpayload({ ...orderpayload, customerId: addCustomerMutationdata?.data?.createCustomer });
 
             setfetchSuggestions(false);
             setcustomerFound(false);
@@ -261,6 +261,7 @@ const AddOrder = (props) => {
                 // alert(customerData?.findCustomer?.data[0]?.details?.id);
                 setorderpayload({
                     ...orderpayload,
+                    customerIdForAddress: customerData?.findCustomer?.data[0]?.id,
                     customerId: customerData?.findCustomer?.data[0]?.details?.id,
                     email: customerData?.findCustomer?.data[0]?.email,
                     user: customerData?.findCustomer?.data[0]?.details?.customerName,
@@ -311,8 +312,9 @@ const AddOrder = (props) => {
             if (customerDataSuggestions?.findCustomer?.data[0]) {
                 setorderpayload({
                     ...orderpayload,
-                    customerId: customerDataSuggestions?.findCustomer?.data[0]?.id,
-                    email: customerDataSuggestions?.findCustomer?.data[0]?.email,
+                    customerId: customerDataSuggestions?.findCustomer?.data[0]?.details?.id,
+                    customerIdForAddress: customerDataSuggestions?.findCustomer?.data[0]?.id,
+                    email: customerDataSuggestions?.findCustomer?.data[0]?.details?.email,
                 });
                 nameSuggestions = [...customerDataSuggestions?.findCustomer?.data[0]?.nameSuggestions];
                 setnewCustomer(false);
@@ -330,7 +332,7 @@ const AddOrder = (props) => {
             var { data } = await fetchCustomerAddressesQuery({
                 variables: {
                     input: {
-                        customerId: orderpayload?.customerId,
+                        customerId: orderpayload?.customerIdForAddress,
                         merchantId: merchantId,
                         limit: 20,
                     },
@@ -800,7 +802,12 @@ const AddOrder = (props) => {
                                                             <div class="col-lg-6">
                                                                 <div
                                                                     onClick={() => {
-                                                                        setorderpayload({ ...orderpayload, customerId: item?.details?.id, user: item?.details?.customerName });
+                                                                        setorderpayload({
+                                                                            ...orderpayload,
+                                                                            customerIdForAddress: item?.id,
+                                                                            customerId: item?.details?.id,
+                                                                            user: item?.details?.customerName,
+                                                                        });
                                                                     }}
                                                                     style={{
                                                                         border: orderpayload?.customerId == item?.details?.id ? '1px solid var(--primary)' : '',
@@ -987,7 +994,7 @@ const AddOrder = (props) => {
                                                                 var { data } = await fetchSimilarAddressesQuery({
                                                                     variables: {
                                                                         input: {
-                                                                            customerId: orderpayload?.customerId,
+                                                                            customerId: orderpayload?.customerIdForAddress,
                                                                             city: addresspayload?.city,
                                                                             country: addresspayload?.country,
                                                                             streetAddress: addresspayload?.streetAddress,
@@ -1008,7 +1015,7 @@ const AddOrder = (props) => {
                                                                             var { data } = await fetchCustomerAddressesQuery({
                                                                                 variables: {
                                                                                     input: {
-                                                                                        customerId: orderpayload?.customerId,
+                                                                                        customerId: orderpayload?.customerIdForAddress,
                                                                                         merchantId: merchantId,
                                                                                         limit: 20,
                                                                                     },
@@ -1071,7 +1078,7 @@ const AddOrder = (props) => {
                                                                                                 var { data } = await fetchCustomerAddressesQuery({
                                                                                                     variables: {
                                                                                                         input: {
-                                                                                                            customerId: orderpayload?.customerId,
+                                                                                                            customerId: orderpayload?.customerIdForAddress,
                                                                                                             merchantId: merchantId,
                                                                                                             limit: 20,
                                                                                                         },
@@ -1146,7 +1153,7 @@ const AddOrder = (props) => {
                                                                                                 var { data } = await fetchCustomerAddressesQuery({
                                                                                                     variables: {
                                                                                                         input: {
-                                                                                                            customerId: orderpayload?.customerId,
+                                                                                                            customerId: orderpayload?.customerIdForAddress,
                                                                                                             merchantId: merchantId,
                                                                                                             limit: 20,
                                                                                                         },
