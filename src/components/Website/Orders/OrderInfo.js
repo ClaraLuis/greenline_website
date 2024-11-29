@@ -261,6 +261,7 @@ const OrderInfo = (props) => {
             setchosenOrderContext(data?.findOneOrder);
             if (data?.findOneOrder) {
                 seteditCustomer(false);
+                seteditAddress(true);
             }
             console.log(data);
         }
@@ -995,6 +996,11 @@ const OrderInfo = (props) => {
                                         <div style={{ minHeight: '140px' }} class={generalstyles.card + ' row m-0 w-100 p-4'}>
                                             <div style={{ cursor: props?.clickable ? 'pointer' : '' }} className="col-lg-12 p-0 allcentered">
                                                 <div class={' row m-0 w-100 allcentered '}>
+                                                    <div className="col-lg-12 p-0 d-flex justify-content-end mb-3">
+                                                        <div style={{ background: '#eee', color: 'black' }} className={' wordbreak rounded-pill font-weight-600 allcentered mx-1 '}>
+                                                            {chosenOrderContext?.sheetOrder?.originalPrice ? 'Original Price' : 'Not Original Price'}
+                                                        </div>
+                                                    </div>
                                                     <div class="col-lg-12 p-0 mt-2">
                                                         <div className="row m-0 w-100 d-flex">
                                                             <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4">
@@ -1143,6 +1149,7 @@ const OrderInfo = (props) => {
                                                             setcustomerData([]);
                                                             setcustomerFound(false);
                                                             seteditCustomer(false);
+                                                            seteditAddress(true);
                                                         }}
                                                     >
                                                         <MdClose />
@@ -1813,6 +1820,7 @@ const OrderInfo = (props) => {
                                                                                     setcustomerData([]);
                                                                                     setcustomerFound(false);
                                                                                     seteditCustomer(false);
+                                                                                    seteditAddress(true);
                                                                                 }
                                                                             }, 1000);
                                                                         } else {
