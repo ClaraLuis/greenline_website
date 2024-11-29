@@ -175,82 +175,103 @@ const FilesPopup = (props) => {
         fileInputRef.current.value = null;
     };
     const uploadFiles = async () => {
-        var vv = [...validFiles];
-        var mediaappwithoutpostarr = [];
-        validFiles.forEach((fileleemnt, index) => {
-            if (fileleemnt.mediaapp) {
-                if (fileleemnt.posterfile == undefined) {
-                    mediaappwithoutpostarr.push(index);
-                }
+        const vv = [...validFiles];
+        const mediaappwithoutpostarr = [];
+
+        validFiles.forEach((fileElement, index) => {
+            if (fileElement.mediaapp && !fileElement.posterfile) {
+                mediaappwithoutpostarr.push(index);
             }
-            if (fileleemnt.invalid) {
+            if (fileElement.invalid) {
                 mediaappwithoutpostarr.push(index);
             }
         });
 
-        if (mediaappwithoutpostarr.length == 0) {
-            setisuploading(true);
-            setbeforeuploaderrortext('');
-            const getoken = async () => {
-                var token = await cookies.get('accessToken');
-                return token;
-            };
-            var tokenasy = await getoken();
+        if (mediaappwithoutpostarr.length === 0) {
+            try {
+                setisuploading(true);
+                setbeforeuploaderrortext('');
 
-            const axiosheaders = {
-                Authorization: 'Bearer ' + tokenasy,
-                'Content-Type': 'multipart/form-data',
-            };
-            var filesuploaded = 1;
-            var currentfilestoupload = validFiles.length;
-            setuploadtext(filesuploaded + ' / ' + currentfilestoupload + ' File(s) Uploaded...');
-            for (let i = 0; i < validFiles.length; i++) {
-                var uploadPercentage = 0;
+                const token = await cookies.get('accessToken');
+                const axiosheaders = {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data',
+                };
 
-                const formData = new FormData();
-                formData.append('file', validFiles[i]);
-                formData.append('isPublic', true);
-                formData.append('merchantId', props?.merchantId);
-                formData.append('originalName', validFiles[i]?.name);
+                let filesUploaded = 0;
+                const totalFiles = validFiles.length;
+                setuploadtext(`${filesUploaded} / ${totalFiles} File(s) Uploaded...`);
 
-                axios
-                    .post((process.env.REACT_APP_DEV_MODE === 'true' ? process.env.REACT_APP_API_URL_LOCAL : process.env.REACT_APP_API_URL) + 'api/aws-bucket/file', formData, {
-                        headers: axiosheaders,
-                        onUploadProgress: (progressEvent) => {
-                            uploadPercentage = Math.floor((progressEvent.loaded / progressEvent.total) * 100);
-                            setprogressbarwidth(uploadPercentage);
-                            if (uploadPercentage === 100) {
-                                validFiles.length = 0;
-                                setValidFiles([...validFiles]);
-                                setSelectedFiles([...validFiles]);
-                                setUnsupportedFiles([...validFiles]);
-                                setuploadtext(filesuploaded + ' / ' + currentfilestoupload + lang.filesuploaded);
-                                if (filesuploaded == currentfilestoupload) {
-                                    setisuploading(false);
-                                }
-                                filesuploaded++;
-                            }
-                        },
-                    })
-                    .then((response) => {
+                for (let i = 0; i < validFiles.length; i++) {
+                    let uploadPercentage = 0;
+
+                    const formData = new FormData();
+                    formData.append('file', validFiles[i]);
+                    formData.append('isPublic', true);
+                    formData.append('merchantId', props?.merchantId);
+                    formData.append('originalName', validFiles[i]?.name);
+
+                    try {
+                        const response = await axios.post(
+                            `${process.env.REACT_APP_DEV_MODE === 'true' ? process.env.REACT_APP_API_URL_LOCAL : process.env.REACT_APP_API_URL}api/aws-bucket/file`,
+                            formData,
+                            {
+                                headers: axiosheaders,
+                                onUploadProgress: (progressEvent) => {
+                                    uploadPercentage = Math.floor((progressEvent.loaded / progressEvent.total) * 100);
+                                    setprogressbarwidth(uploadPercentage);
+
+                                    if (uploadPercentage === 100) {
+                                        filesUploaded++;
+                                        setuploadtext(`${filesUploaded} / ${totalFiles} File(s) Uploaded...`);
+
+                                        if (filesUploaded === totalFiles) {
+                                            setisuploading(false);
+                                        }
+                                    }
+                                },
+                            },
+                        );
+
                         if (response.data.url) {
+                            setValidFiles([]);
+                            setSelectedFiles([]);
                             fetchfiles(parseInt(props?.merchantId));
-                            NotificationManager.success('', 'success');
+                            NotificationManager.success('File uploaded successfully!', 'Success');
                         } else {
-                            NotificationManager.warning('', response.data.reason);
+                            NotificationManager.warning(response.data.reason || 'Upload failed', 'Warning');
                         }
-                    })
-                    .catch(() => {
-                        setisuploading(false);
-                        setuploadtext('Error Uploading Files');
-                        NotificationManager.error('', lang.servererroruploadingimage);
-                    });
+                    } catch (uploadError) {
+                        console.error('Upload Error:', uploadError);
+                        NotificationManager.error('Error uploading this file. Please try again.', 'Upload Error');
+                    }
+                }
+            } catch (error) {
+                console.error('Error during upload process:', error);
+                NotificationManager.error('Failed to start the upload process. Please check your connection.', 'Error');
+            } finally {
+                setisuploading(false);
             }
         } else {
-            setbeforeuploaderrortext('');
+            const errorMessages = [];
+            mediaappwithoutpostarr.forEach((index) => {
+                const fileElement = validFiles[index];
+                if (fileElement.invalid) {
+                    errorMessages.push(`File ${fileElement.name} is invalid.`);
+                } else if (fileElement.mediaapp && !fileElement.posterfile) {
+                    errorMessages.push(`File ${fileElement.name} requires a poster file.`);
+                }
+            });
+
+            setbeforeuploaderrortext(errorMessages.join(' '));
+            NotificationManager.error('Some files are invalid or missing required attributes.', 'Upload Error');
         }
-        fileInputRef.current.value = null;
+
+        if (fileInputRef.current) {
+            fileInputRef.current.value = null;
+        }
     };
+
     useEffect(() => {
         // alert(props?.merchantId);
         fetchfiles(parseInt(props?.merchantId));

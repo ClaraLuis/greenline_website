@@ -15,6 +15,7 @@ import ImportNewItem from '../InventoryItems/ImportNewItem.js';
 import { FiCheckCircle } from 'react-icons/fi';
 import { Dropdown } from 'react-bootstrap';
 import { TbEdit, TbEye, TbMinus, TbPlus } from 'react-icons/tb';
+import Cookies from 'universal-cookie';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -24,6 +25,7 @@ const ItemsTable = (props) => {
     const { setchosenItemContext, setpagetitle_context, dateformatter } = useContext(Contexthandlerscontext);
     const { useQueryGQL } = API();
     const [importItemModel, setimportItemModel] = useState(false);
+    const cookies = new Cookies();
 
     const [importItemPayload, setimportItemPayload] = useState({
         itemSku: '',
@@ -165,8 +167,16 @@ const ItemsTable = (props) => {
                                             />
                                         </div>
                                     </div>
+
                                     <div class="col-lg-12 pl-0 pr-0 pb-0 wordbreak" style={{ fontWeight: 700, fontSize: '16px', paddingTop: '1.5rem' }}>
-                                        {item?.fullName ?? item?.name}
+                                        <div class="row m-0 w-100">
+                                            {cookies.get('userInfo')?.type == 'employee' && (
+                                                <div class="col-lg-12 p-0 " style={{ fontSize: '11px', fontWeight: 600, color: 'grey' }}>
+                                                    {item?.merchant?.name}
+                                                </div>
+                                            )}
+                                            <div class="col-lg-12 p-0 ">{item?.fullName ?? item?.name}</div>
+                                        </div>
                                     </div>
                                     {/* {props?.clickable && (
                                         <div class="col-lg-4 d-flex justify-content-end mt-2 p-0">
@@ -197,28 +207,19 @@ const ItemsTable = (props) => {
                                             })}
                                         </div>
                                     </div>
-                                    {/* <div class="col-lg-12 p-0 mt-1">
-                                        <p class=" p-0 m-0" style={{ fontSize: '14px' }}>
-                                            <span
-                                                onClick={() => {
-                                                    setimportItemPayload({
-                                                        itemSku: item?.sku,
-                                                        ownedByOneMerchant: true,
-                                                        ballotId: '',
-                                                        inventoryId: '',
-                                                        boxName: '',
-                                                        count: 0,
-                                                        minCount: 0,
-                                                    });
-                                                    setimportItemModel(true);
-                                                }}
-                                                class="text-primary text-secondaryhover"
-                                                style={{ textDecoration: 'underline' }}
-                                            >
-                                                Import new item
-                                            </span>
-                                        </p>
-                                    </div> */}
+                                    {item?.itemVariants && (
+                                        <div class="col-lg-12 p-0 d-flex align-items-cent6er justify-content-between " style={{ fontSize: '11px', fontWeight: 600, color: 'grey' }}>
+                                            <div>{item?.itemVariants?.length} Variiant(s)</div>
+                                            <div>
+                                                {' '}
+                                                {item.itemVariants.length > 0 && (
+                                                    <span>
+                                                        {Math.min(...item.itemVariants.map((variant) => parseFloat(variant.price || 0)))} {item?.currency}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         );

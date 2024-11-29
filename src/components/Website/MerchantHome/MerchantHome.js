@@ -35,6 +35,7 @@ const MerchantHome = (props) => {
 
     const [openModal, setopenModal] = useState(false);
     const [submit, setsubmit] = useState(false);
+    const [merchants, setmerchants] = useState([]);
     const [barchartaxis, setbarchartaxis] = useState({ xAxis: undefined, yAxis: undefined });
 
     const [filterordersDeliverableSummary, setfilterordersDeliverableSummary] = useState({
@@ -58,65 +59,91 @@ const MerchantHome = (props) => {
         beforeCursor: undefined,
     });
     const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
-
     useEffect(() => {
-        const temp = [];
-        const tempvalues = [{ name: props?.type, data: [] }];
-        let tempvalues1 = [];
+        const temp = []; // Array to track all unique statuses
+        const tempvalues = [{ name: props?.type, data: [] }]; // Data for bar chart
+        let tempvalues1 = []; // Data for percentage chart
         let total = new Decimal(0); // Initialize total as a Decimal
-        if (Array.isArray(ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data)) {
-            if (filterordersDeliverableSummary?.merchantIds?.length) {
-                tempvalues1 = undefined;
 
-                Object.keys(ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data || {}).forEach((merchantId) => {
-                    const payments = ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data[merchantId];
-                    const groupedPayments = {};
+        const data = ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data;
 
-                    payments.forEach((payment) => {
-                        const { merchantId, status, total: paymentTotal } = payment;
+        if (data) {
+            // Check grouping type
+            const isGroupedByStatus = Array.isArray(data['Partially Delivered']); // Example key check for status
+            const isGroupedByMerchant = Object.keys(data).some((key) => Array.isArray(data[key]));
 
-                        if (!groupedPayments[merchantId]) {
-                            groupedPayments[merchantId] = {};
+            if (isGroupedByStatus) {
+                // Handle data grouped by status
+                Object.keys(data).forEach((status) => {
+                    temp.push(status); // Add status to x-axis
+
+                    const statusTotal = data[status]?.reduce((acc, item) => acc.plus(new Decimal(item?.total || 0)), new Decimal(0));
+                    const statusCount = data[status]?.reduce((acc, item) => acc.plus(new Decimal(item?.count || 0)), new Decimal(0));
+
+                    // Add total to bar chart
+                    tempvalues[0].data.push(statusTotal.toNumber());
+
+                    // Accumulate overall total count
+                    total = total.plus(statusCount);
+                });
+
+                // Calculate percentages for each status
+                temp.forEach((status) => {
+                    const statusCount = data[status]?.reduce((acc, item) => acc.plus(new Decimal(item?.count || 0)), new Decimal(0));
+
+                    const percentage = statusCount.div(total).times(100).toNumber();
+                    tempvalues1.push(percentage);
+                });
+            } else if (isGroupedByMerchant) {
+                // Handle data grouped by merchant
+                Object.keys(data).forEach((merchantId) => {
+                    const merchantPayments = data[merchantId];
+                    const groupedByStatus = {};
+
+                    // Group merchant data by status
+                    merchantPayments.forEach((payment) => {
+                        const { status, total: paymentTotal } = payment;
+
+                        if (!groupedByStatus[status]) {
+                            groupedByStatus[status] = new Decimal(0);
                         }
 
-                        if (!groupedPayments[merchantId][status]) {
-                            groupedPayments[merchantId][status] = new Decimal(0); // Use Decimal for accurate counting
-                        }
-
-                        groupedPayments[merchantId][status] = groupedPayments[merchantId][status].plus(new Decimal(paymentTotal)); // Accumulate totals
-
-                        if (!temp.includes(status)) {
-                            temp.push(status); // Track all unique statuses
-                        }
+                        groupedByStatus[status] = groupedByStatus[status].plus(new Decimal(paymentTotal || 0));
+                        if (!temp.includes(status)) temp.push(status); // Add status to x-axis if not already present
                     });
 
-                    // Prepare data for grouped bar chart
-                    Object.keys(groupedPayments).forEach((merchantId) => {
-                        const merchantData = [];
-                        temp.forEach((status) => {
-                            merchantData.push(groupedPayments[merchantId][status].toNumber() || 0); // Convert Decimal to number
-                        });
+                    // Prepare bar chart data for each merchant
+                    const merchantData = temp.map((status) => groupedByStatus[status]?.toNumber() || 0);
+                    tempvalues.push({ name: `${merchants?.filter((i) => i.id == merchantId)[0]?.name}`, data: merchantData });
+                });
 
-                        tempvalues.push({ name: `Merchant ${merchantId}`, data: merchantData });
+                // Calculate total and percentages for merchants
+                Object.values(data).forEach((merchantPayments) => {
+                    merchantPayments.forEach((payment) => {
+                        total = total.plus(new Decimal(payment?.count || 0));
                     });
                 });
-            } else {
-                ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data.forEach((item) => {
-                    temp.push(item.status);
-                    tempvalues[0].data.push(new Decimal(item?.total || 0).toNumber()); // Convert Decimal to number
-                });
 
-                ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data.forEach((item) => {
-                    total = total.plus(new Decimal(item?.count || 0)); // Accumulate total with Decimal
-                });
+                temp.forEach((status) => {
+                    const statusCount = Object.values(data).reduce((acc, merchantPayments) => {
+                        return acc.plus(
+                            merchantPayments.filter((payment) => payment.status === status).reduce((statusAcc, payment) => statusAcc.plus(new Decimal(payment?.count || 0)), new Decimal(0)),
+                        );
+                    }, new Decimal(0));
 
-                ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data.forEach((subitem) => {
-                    tempvalues1.push(new Decimal(subitem?.count || 0).div(total).times(100).toNumber()); // Calculate percentage
+                    const percentage = statusCount.div(total).times(100).toNumber();
+                    tempvalues1.push(percentage);
                 });
             }
         }
 
-        setbarchartaxis({ xAxis: temp, yAxis: tempvalues, yAxis1: tempvalues1, total: total.toNumber() }); // Set total as a number
+        // Set the data for charts
+        setbarchartaxis({
+            xAxis: temp, // Unique statuses
+            yAxis: tempvalues, // Bar chart data
+            yAxis1: tempvalues1, // Percentage chart data
+            total: total.toNumber(), // Overall total count
+        });
     }, [ordersDeliverableSummaryQuery?.data]);
 
     const [chartData, setChartData] = useState([]);
@@ -216,17 +243,26 @@ const MerchantHome = (props) => {
                                                     selected={filterordersDeliverableSummary?.merchantIds}
                                                     onClick={(option) => {
                                                         var tempArray = [...(filterordersDeliverableSummary?.merchantIds ?? [])];
-
+                                                        var temp = [...merchants];
                                                         if (option == 'All') {
                                                             tempArray = undefined;
+                                                            temp = [];
                                                         } else {
+                                                            if (!temp.some((i) => i.id === option.id)) {
+                                                                temp.push(option);
+                                                            } else {
+                                                                const index = temp.findIndex((i) => i.id === option.id);
+                                                                if (index !== -1) {
+                                                                    temp.splice(index, 1);
+                                                                }
+                                                            }
                                                             if (!tempArray?.includes(option?.id)) {
                                                                 tempArray.push(option?.id);
                                                             } else {
                                                                 tempArray.splice(tempArray?.indexOf(option?.id), 1);
                                                             }
                                                         }
-
+                                                        setmerchants([...temp]);
                                                         setfilterordersDeliverableSummary({ ...filterordersDeliverableSummary, merchantIds: tempArray?.length != 0 ? tempArray : undefined });
                                                     }}
                                                 />
@@ -264,11 +300,15 @@ const MerchantHome = (props) => {
                 </div>
 
                 <div class={barchartaxis?.xAxis && barchartaxis?.yAxis1?.length ? 'col-lg-7 scrollmenuclasssubscrollbar' : 'col-lg-12 p-1 scrollmenuclasssubscrollbar'}>
-                    {barchartaxis?.xAxis && barchartaxis?.yAxis && ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data?.length != 0 && (
-                        <div class={generalstyles.card + ' row m-0 w-100 '}>
-                            <Barchart xAxis={barchartaxis?.xAxis} yAxis={barchartaxis?.yAxis} />
-                        </div>
-                    )}
+                    {barchartaxis?.xAxis &&
+                        barchartaxis?.yAxis &&
+                        ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data?.length != 0 &&
+                        ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data &&
+                        Object.keys(ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data).length > 0 && (
+                            <div class={generalstyles.card + ' row m-0 w-100 '}>
+                                <Barchart xAxis={barchartaxis?.xAxis} yAxis={barchartaxis?.yAxis} />
+                            </div>
+                        )}
 
                     {chartData && xaxisCategories && mostSoldItemsQuery?.data && graphOrdersQuery?.data?.graphOrders?.data && Object.keys(graphOrdersQuery.data.graphOrders.data).length > 0 && (
                         <div class={generalstyles.card + ' row m-0 w-100 '}>
@@ -276,13 +316,15 @@ const MerchantHome = (props) => {
                         </div>
                     )}
                 </div>
-                {barchartaxis?.xAxis && barchartaxis?.yAxis1 && (
+                {barchartaxis?.xAxis && barchartaxis?.yAxis1 && ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary && (
                     <div class="col-lg-5 ">
-                        {ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data?.length != 0 && (
-                            <div class={generalstyles.card + ' row m-0 w-100 '}>
-                                <Piechart height={mostSoldItemsQuery?.data ? '250' : 300} xAxis={barchartaxis?.xAxis} yAxis={barchartaxis?.yAxis1} title={'Orders'} total={barchartaxis?.total} />
-                            </div>
-                        )}
+                        {ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data?.length != 0 &&
+                            ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data &&
+                            Object.keys(ordersDeliverableSummaryQuery.data.ordersDeliverableSummary.data).length > 0 && (
+                                <div class={generalstyles.card + ' row m-0 w-100 '}>
+                                    <Piechart height={mostSoldItemsQuery?.data ? '250' : 300} xAxis={barchartaxis?.xAxis} yAxis={barchartaxis?.yAxis1} title={'Orders'} total={barchartaxis?.total} />
+                                </div>
+                            )}
 
                         {mostSoldItemsQuery?.data && (
                             <div class={generalstyles.card + ' row m-0 w-100 '}>

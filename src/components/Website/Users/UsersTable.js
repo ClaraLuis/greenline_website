@@ -1,33 +1,21 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Modal } from 'react-bootstrap';
-import { BiShowAlt } from 'react-icons/bi';
-import { IoMdClose } from 'react-icons/io';
+import React, { useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
-import Pagespaginatecomponent from '../../../Pagespaginatecomponent.js';
-import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
+import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
+import { Dropdown } from 'react-bootstrap';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
 import { FaEllipsisV, FaLayerGroup } from 'react-icons/fa';
 import { NotificationManager } from 'react-notifications';
-import { useMutation } from 'react-query';
-import { Dropdown } from 'react-bootstrap';
 import Cookies from 'universal-cookie';
-import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 
-import reviewsstyles from './reviews.module.css';
-import Select, { components } from 'react-select';
 import { TbBuilding, TbBuildingWarehouse, TbUserPentagon } from 'react-icons/tb';
+import { components } from 'react-select';
 // Icons
-import API from '../../../API/API.js';
-import UserInfo from './UserInfo.js';
-import { FiPlus } from 'react-icons/fi';
-import { defaultstyles } from '../Generalfiles/selectstyles.js';
 import { MdEmail, MdOutlinePhone } from 'react-icons/md';
-import { CiUnlock } from 'react-icons/ci';
-import { RiSettings4Line } from 'react-icons/ri';
+import UserInfo from './UserInfo.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -78,7 +66,7 @@ const UsersTable = (props) => {
                         </div>
                     )}
                     {props?.fetchusers?.data?.length != 0 && (
-                        <div style={{ minHeight: '70vh' }} class="row m-0 w-100">
+                        <div style={{ minHeight: '70vh' }} class="row m-0 w-100 d-flex align-content-start align-items-start justify-content-start">
                             {props?.fetchusers?.data?.paginateUsers?.data?.map((item, index) => {
                                 return (
                                     <div className={props?.card}>

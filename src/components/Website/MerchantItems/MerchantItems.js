@@ -802,90 +802,90 @@ keep data consistent.</span></p>
         refetchItems();
     }, []);
 
-    const handleDownload = () => {
-        // Prepare the data in row format
-        const data = {
-            uploadExcelFile: {
-                result: [
-                    {
-                        productName: 'Shirt',
-                        productDescription: 'Good quality shirt',
-                        productSku: 'primary_sku',
-                        defaultPrice: 27.5,
-                        variantOptionAttributes: [
-                            {
-                                sku: 'RED-L-TH-SHIRT_23',
-                                price: 22.2,
-                                variantOptions: [{ value: 'red', colorHex: 'FF0000' }, { value: 'large' }, { value: 'leather', colorHex: 'FF00FF' }],
-                            },
-                            {
-                                sku: 'RED-M-TH-SHIRT_28',
-                                price: 27.5,
-                                variantOptions: [{ value: 'red', colorHex: 'FF0000' }, { value: 'medium' }, { value: 'leather', colorHex: 'FF00FF' }],
-                            },
-                            {
-                                sku: 'RED-S-TH-SHIRT_24',
-                                price: 27.5,
-                                variantOptions: [{ value: 'red', colorHex: 'FF0000' }, { value: 'small' }, { value: 'leather', colorHex: 'FF00FF' }],
-                            },
-                        ],
-                    },
-                    {
-                        productName: 'Pants',
-                        productDescription: 'Jeans pants',
-                        productSku: 'primary_sku',
-                        defaultPrice: 105,
-                        variantOptionAttributes: [
-                            {
-                                sku: 'BLUE_JEANS_L',
-                                price: 150,
-                                variantOptions: [{ value: 'blue' }, { value: 'large' }],
-                            },
-                            {
-                                sku: 'BLK_JEANS_L',
-                                price: 105,
-                                variantOptions: [{ value: 'black', colorHex: 'FFFFFF' }, { value: 'large' }],
-                            },
-                            {
-                                sku: 'GREY_JNZ_L',
-                                price: 70,
-                                variantOptions: [{ value: 'grey' }, { value: 'large' }],
-                            },
-                        ],
-                    },
-                ],
-            },
-        };
+    // const handleDownload = () => {
+    //     // Prepare the data in row format
+    //     const data = {
+    //         uploadExcelFile: {
+    //             result: [
+    //                 {
+    //                     productName: 'Shirt',
+    //                     productDescription: 'Good quality shirt',
+    //                     productSku: 'primary_sku',
+    //                     defaultPrice: 27.5,
+    //                     variantOptionAttributes: [
+    //                         {
+    //                             sku: 'RED-L-TH-SHIRT_23',
+    //                             price: 22.2,
+    //                             variantOptions: [{ value: 'red', colorHex: 'FF0000' }, { value: 'large' }, { value: 'leather', colorHex: 'FF00FF' }],
+    //                         },
+    //                         {
+    //                             sku: 'RED-M-TH-SHIRT_28',
+    //                             price: 27.5,
+    //                             variantOptions: [{ value: 'red', colorHex: 'FF0000' }, { value: 'medium' }, { value: 'leather', colorHex: 'FF00FF' }],
+    //                         },
+    //                         {
+    //                             sku: 'RED-S-TH-SHIRT_24',
+    //                             price: 27.5,
+    //                             variantOptions: [{ value: 'red', colorHex: 'FF0000' }, { value: 'small' }, { value: 'leather', colorHex: 'FF00FF' }],
+    //                         },
+    //                     ],
+    //                 },
+    //                 {
+    //                     productName: 'Pants',
+    //                     productDescription: 'Jeans pants',
+    //                     productSku: 'primary_sku',
+    //                     defaultPrice: 105,
+    //                     variantOptionAttributes: [
+    //                         {
+    //                             sku: 'BLUE_JEANS_L',
+    //                             price: 150,
+    //                             variantOptions: [{ value: 'blue' }, { value: 'large' }],
+    //                         },
+    //                         {
+    //                             sku: 'BLK_JEANS_L',
+    //                             price: 105,
+    //                             variantOptions: [{ value: 'black', colorHex: 'FFFFFF' }, { value: 'large' }],
+    //                         },
+    //                         {
+    //                             sku: 'GREY_JNZ_L',
+    //                             price: 70,
+    //                             variantOptions: [{ value: 'grey' }, { value: 'large' }],
+    //                         },
+    //                     ],
+    //                 },
+    //             ],
+    //         },
+    //     };
 
-        const rows = [];
-        data.uploadExcelFile.result.forEach((product, index) => {
-            product.variantOptionAttributes.forEach((variant, variantIndex) => {
-                const variantNames = product.variantOptionAttributes[0].variantOptions.map((option) => (option.colorHex ? option.value : option.value)).join(',');
+    //     const rows = [];
+    //     data.uploadExcelFile.result.forEach((product, index) => {
+    //         product.variantOptionAttributes.forEach((variant, variantIndex) => {
+    //             const variantNames = product.variantOptionAttributes[0].variantOptions.map((option) => (option.colorHex ? option.value : option.value)).join(',');
 
-                const variantOptions = variant.variantOptions.map((option) => option.value).join(',');
-                const variantHex = variant.variantOptions.map((option) => option.colorHex || '').join(',');
+    //             const variantOptions = variant.variantOptions.map((option) => option.value).join(',');
+    //             const variantHex = variant.variantOptions.map((option) => option.colorHex || '').join(',');
 
-                rows.push({
-                    id: index + 1,
-                    product_name: variantIndex === 0 ? product.productName : '',
-                    product_description: variantIndex === 0 ? product.productDescription : '',
-                    product_sku: variantIndex === 0 ? product.productSku : '',
-                    default_price: variantIndex === 0 ? product.defaultPrice : '',
-                    variant_name: index < 3 ? 'Color,Size,Texture' : 'Color,Size',
-                    variant_option: variantOptions,
-                    variant_option_hex: variantHex,
-                    variant_sku: variant.sku,
-                    variant_price: variant.price || '',
-                });
-            });
-        });
+    //             rows.push({
+    //                 id: index + 1,
+    //                 product_name: variantIndex === 0 ? product.productName : '',
+    //                 product_description: variantIndex === 0 ? product.productDescription : '',
+    //                 product_sku: variantIndex === 0 ? product.productSku : '',
+    //                 default_price: variantIndex === 0 ? product.defaultPrice : '',
+    //                 variant_name: index < 3 ? 'Color,Size,Texture' : 'Color,Size',
+    //                 variant_option: variantOptions,
+    //                 variant_option_hex: variantHex,
+    //                 variant_sku: variant.sku,
+    //                 variant_price: variant.price || '',
+    //             });
+    //         });
+    //     });
 
-        const worksheet = XLSX.utils.json_to_sheet(rows);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, 'Products');
+    //     const worksheet = XLSX.utils.json_to_sheet(rows);
+    //     const workbook = XLSX.utils.book_new();
+    //     XLSX.utils.book_append_sheet(workbook, worksheet, 'Products');
 
-        XLSX.writeFile(workbook, 'products.xlsx');
-    };
+    //     XLSX.writeFile(workbook, 'products.xlsx');
+    // };
 
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
@@ -913,7 +913,7 @@ keep data consistent.</span></p>
                                                     }
                                                 }}
                                             >
-                                                Add Single Item
+                                                Add New Item
                                             </button>
                                             <button
                                                 style={{ height: '35px' }}
@@ -922,7 +922,7 @@ keep data consistent.</span></p>
                                                     setimportModal(true);
                                                 }}
                                             >
-                                                Import CSV
+                                                Import Bulk
                                             </button>
                                         </div>
                                     </div>
@@ -1056,7 +1056,7 @@ keep data consistent.</span></p>
                                 class={generalstyles.roundbutton + '  mb-1 mx-2 '}
                                 disabled={buttonLoadingContext}
                                 onClick={async () => {
-                                    handleDownload();
+                                    window.open('https://greenline-bucket.s3.amazonaws.com/75b1701a-6ae7-4d5d-aabe-8057aa473d37');
                                 }}
                             >
                                 Download Template
@@ -1133,19 +1133,22 @@ keep data consistent.</span></p>
                             </button>
                         </div>
 
-                        <div class={generalstyles.card + ' my-3 col-lg-12 p-2'}>
-                            <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
-                                <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
+                        <div style={{ background: '#EFF4F8' }} class={generalstyles.card + ' my-3 col-lg-12 p-2'}>
+                            <Accordion allowMultipleExpanded={true} allowZeroExpanded={true} preExpanded={['import-instructions']}>
+                                <AccordionItem
+                                    class={`${generalstyles.innercard}` + ' p-2'}
+                                    uuid="import-instructions" // Unique ID for this accordion item
+                                >
                                     <AccordionItemHeading>
                                         <AccordionItemButton>
                                             <div class="row m-0 w-100">
                                                 <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
-                                                    <p class={generalstyles.cardTitle + '  m-0 p-0 '}>Import Instructions</p>
+                                                    <p class={generalstyles.cardTitle + ' m-0 p-0 '}>Import Instructions</p>
                                                 </div>
                                                 <div class="col-lg-4 col-md-4 col-sm-4 p-0 d-flex align-items-center justify-content-end">
                                                     <AccordionItemState>
                                                         {(state) => {
-                                                            if (state.expanded == true) {
+                                                            if (state.expanded) {
                                                                 return (
                                                                     <i class="h-100 d-flex align-items-center justify-content-center">
                                                                         <BsChevronUp />

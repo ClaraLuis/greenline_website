@@ -77,20 +77,7 @@ const App = (props) => {
     const user = cookies.get('userInfo');
     const { hidesidenav_context, sethidesidenav_context, setopenloginmodalcontext, openloginmodalcontext, pagetitle_context } = React.useContext(Contexthandlerscontext);
     useEffect(() => {
-        // if (openloginmodalcontext != true) {
-        //     const foo = params.get('secondtrial');
-        //     if (foo != 'true') {
-        //         setopenloginmodalcontext(true);
-        //     }
-        //     setTimeout(() => {
-        //         alert('s');
-        //         params.delete('secondtrial');
-        //         history.replace({
-        //             search: params.toString(),
-        //         });
-        //         clearTimeout(this);
-        //     }, 2000);
-        // }
+        // alert(JSON.stringify(user));
     }, []);
 
     const headerSection = () => {
@@ -195,10 +182,10 @@ const App = (props) => {
                                             <span style={{ fontWeight: 400 }}> {user?.name}</span>
                                         </span>
                                     </div>
-                                    <div class="col-lg-12 py-0">
-                                        <span style={{ fontSize: '11px', color: 'grey' }}>
+                                    <div class="col-lg-12 py-0 text-capitalize">
+                                        <span style={{ fontSize: '13px', color: 'grey' }}>
                                             {' '}
-                                            {user?.type}. {user?.employeeType}
+                                            {user?.type} {user?.merchant?.name ? ', ' + user.merchant?.name : ''}
                                         </span>
                                     </div>
                                     <div class="col-lg-12">

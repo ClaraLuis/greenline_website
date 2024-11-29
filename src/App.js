@@ -147,6 +147,9 @@ async function refreshAuthToken() {
                                 roles {
                                     roleId
                                 }
+                                merchant {
+                                    name
+                                }
                             }
                             accessToken
                         }

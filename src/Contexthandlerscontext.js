@@ -123,6 +123,18 @@ export const Contexthandlerscontext_provider = (props) => {
                         permissionpage: [1],
                         show: isAuth([1, 54, 2, 4, 6, 7, 8]),
                     },
+                    {
+                        name: 'Inventory Settings',
+                        isselected: false,
+                        icon: (
+                            <i class={'allcentered'}>
+                                <CiShop size={18} />
+                            </i>
+                        ),
+                        path: '/inventorysettings?merchantId=' + cookies.get('merchantId'),
+                        permissionpage: [1],
+                        show: cookies.get('userInfo')?.type == 'merchant' && cookies.get('merchantId') != undefined,
+                    },
                     // {
                     //     name: 'Hub Items',
                     //     isselected: false,
@@ -220,29 +232,17 @@ export const Contexthandlerscontext_provider = (props) => {
                 path: '/merchants',
                 subitems: [
                     {
-                        name: 'Dashboard',
+                        name: 'Merchant Details',
                         isselected: false,
                         icon: (
                             <i class={'allcentered'}>
-                                <IoMdHome size={18} />
+                                <CiShop size={18} />
                             </i>
                         ),
-                        path: '/merchanthome',
+                        path: '/updatemerchant?merchantId=' + cookies.get('merchantId'),
                         permissionpage: [1],
-                        show: isAuth([1, 52]) || cookies.get('merchantId') != undefined,
+                        show: cookies.get('userInfo')?.type == 'merchant' && cookies.get('merchantId') != undefined,
                     },
-                    // {
-                    //     name: 'Webtoken',
-                    //     isselected: false,
-                    //     icon: (
-                    //         <i class={'allcentered'}>
-                    //             <RxTokens size={18} />
-                    //         </i>
-                    //     ),
-                    //     path: '/webtoken',
-                    //     permissionpage: [1],
-                    //     show: isAuth([1, 52]),
-                    // },
                     {
                         name: 'Merchants',
                         isselected: false,
@@ -256,28 +256,16 @@ export const Contexthandlerscontext_provider = (props) => {
                         show: isAuth([1]),
                     },
                     {
-                        name: 'Merchant Details',
+                        name: 'Dashboard',
                         isselected: false,
                         icon: (
                             <i class={'allcentered'}>
-                                <CiShop size={18} />
+                                <IoMdHome size={18} />
                             </i>
                         ),
-                        path: '/updatemerchant?merchantId=' + cookies.get('merchantId'),
+                        path: '/merchanthome',
                         permissionpage: [1],
-                        show: cookies.get('userInfo')?.type == 'merchant' && cookies.get('merchantId') != undefined,
-                    },
-                    {
-                        name: 'Finance',
-                        isselected: false,
-                        icon: (
-                            <i class={'allcentered'}>
-                                <BiSolidCoinStack size={18} />
-                            </i>
-                        ),
-                        path: '/merchantfinance',
-                        permissionpage: [1],
-                        show: isAuth([1, 52]),
+                        show: isAuth([1, 52]) || cookies.get('merchantId') != undefined,
                     },
                     {
                         name: 'Items',
@@ -305,14 +293,14 @@ export const Contexthandlerscontext_provider = (props) => {
                     },
 
                     {
-                        name: 'Return Packages',
+                        name: 'Finance',
                         isselected: false,
                         icon: (
                             <i class={'allcentered'}>
-                                <TbPackages size={18} />
+                                <BiSolidCoinStack size={18} />
                             </i>
                         ),
-                        path: '/merchantpackages',
+                        path: '/merchantfinance',
                         permissionpage: [1],
                         show: isAuth([1, 52]),
                     },
@@ -328,6 +316,30 @@ export const Contexthandlerscontext_provider = (props) => {
                         permissionpage: [1],
                         show: isAuth([1, 51, 19, 52]) && cookies.get('merchantId') != undefined,
                     },
+                    {
+                        name: 'Return Packages',
+                        isselected: false,
+                        icon: (
+                            <i class={'allcentered'}>
+                                <TbPackages size={18} />
+                            </i>
+                        ),
+                        path: '/merchantpackages',
+                        permissionpage: [1],
+                        show: isAuth([1, 52]),
+                    },
+                    // {
+                    //     name: 'Webtoken',
+                    //     isselected: false,
+                    //     icon: (
+                    //         <i class={'allcentered'}>
+                    //             <RxTokens size={18} />
+                    //         </i>
+                    //     ),
+                    //     path: '/webtoken',
+                    //     permissionpage: [1],
+                    //     show: isAuth([1, 52]),
+                    // },
                 ],
             },
             {

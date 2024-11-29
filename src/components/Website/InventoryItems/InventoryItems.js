@@ -25,6 +25,7 @@ import ItemInfo from './ItemInfo.js';
 import MultiSelect from '../../MultiSelect.js';
 import { CiExport, CiImport } from 'react-icons/ci';
 import SkuPrint from '../MerchantItems/SkuPrint.js';
+import Cookies from 'universal-cookie';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -33,6 +34,8 @@ const InventoryItems = (props) => {
     let history = useHistory();
     const { setpageactive_context, dateformatter, isAuth, setpagetitle_context, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
     const { fetchUsers, useQueryGQL, fetchInventories, useMutationGQL, addInventory, fetchItemsInBox, fetchMerchants, importNew, fetchItemHistory, exportItem, importItem, useLazyQueryGQL } = API();
+
+    const cookies = new Cookies();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [selectedVariants, setselectedVariants] = useState([]);
@@ -481,6 +484,12 @@ const InventoryItems = (props) => {
                                                         />
                                                     </div>
                                                     <div class="col-lg-9 p-0 ">
+                                                        {cookies.get('userInfo')?.type == 'employee' && (
+                                                            <div class="col-lg-12 p-0 " style={{ fontSize: '11px', fontWeight: 600, color: 'grey' }}>
+                                                                {element?.merchant?.name}
+                                                            </div>
+                                                        )}
+
                                                         <div class="col-lg-12 p-0 " style={{ fontSize: '14px', fontWeight: 600 }}>
                                                             {element?.itemVariant?.fullName}
                                                         </div>

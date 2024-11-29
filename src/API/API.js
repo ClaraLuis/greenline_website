@@ -473,6 +473,9 @@ const API = () => {
                         roles {
                             roleId
                         }
+                        merchant {
+                            name
+                        }
                     }
                     accessToken
                 }
@@ -559,7 +562,9 @@ const API = () => {
                         inventoryId
                         count
                         totalCount
-
+                        merchant {
+                            name
+                        }
                         itemVariant {
                             name
                             merchantId
@@ -1367,6 +1372,9 @@ const API = () => {
                         currency
                         imageUrl
                         merchantId
+                        merchant {
+                            name
+                        }
                         itemVariants {
                             id
                             sku

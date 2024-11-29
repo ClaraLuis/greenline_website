@@ -417,6 +417,7 @@ const CourierSheet = (props) => {
                                                                         step: 0,
                                                                         orderid: item.id,
                                                                         status: '',
+                                                                        type: tempsheetpayload?.orderStatus?.split(/(?=[A-Z])/).join(' '),
                                                                         order: item?.order,
                                                                         previousOrder: fetchCourierSheetQuery?.data?.CourierSheet?.sheetOrders?.filter(
                                                                             (ii) => ii.orderId == item?.order?.previousOrderId,
@@ -432,9 +433,12 @@ const CourierSheet = (props) => {
                                                                 }}
                                                                 style={{ cursor: 'pointer', marginInlineEnd: '5px' }}
                                                                 className={
-                                                                    item.status == 'delivered' || item.status == 'partiallyDelivered' || item.status == 'returned' || item.status == 'partiallyReturned'
+                                                                    tempsheetpayload?.orderStatus == 'delivered' ||
+                                                                    tempsheetpayload?.orderStatus == 'partiallyDelivered' ||
+                                                                    tempsheetpayload?.orderStatus == 'returned' ||
+                                                                    tempsheetpayload?.orderStatus == 'partiallyReturned'
                                                                         ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 text-capitalize '
-                                                                        : item?.status == 'cancelled' || item?.status == 'failedDeliveryAttempt'
+                                                                        : tempsheetpayload?.orderStatus == 'cancelled' || tempsheetpayload?.orderStatus == 'failedDeliveryAttempt'
                                                                         ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 text-capitalize '
                                                                         : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 text-capitalize '
                                                                 }
@@ -673,32 +677,33 @@ const CourierSheet = (props) => {
                                                                         {previousOrder?.order?.type?.split(/(?=[A-Z])/).join(' ')}
                                                                     </div>
                                                                     <div
-                                                                        onClick={(e) => {
-                                                                            e.stopPropagation();
+                                                                        // onClick={(e) => {
+                                                                        //     e.stopPropagation();
 
-                                                                            setstatuspayload({
-                                                                                step: 0,
-                                                                                orderid: item.id,
-                                                                                status: '',
-                                                                                order: item?.order,
-                                                                                previousOrder: fetchCourierSheetQuery?.data?.CourierSheet?.sheetOrders?.filter(
-                                                                                    (ii) => ii.orderId == item?.order?.previousOrderId,
-                                                                                )[0]?.order,
-                                                                                fullDelivery: true,
-                                                                                fullReturn: true,
-                                                                                returnStatus: 'returned',
-                                                                            });
+                                                                        //     setstatuspayload({
+                                                                        //         step: 0,
+                                                                        //         orderid: item.id,
+                                                                        //         status: '',
+                                                                        //         order: item?.order,
+                                                                        //         previousOrder: fetchCourierSheetQuery?.data?.CourierSheet?.sheetOrders?.filter(
+                                                                        //             (ii) => ii.orderId == item?.order?.previousOrderId,
+                                                                        //         )[0]?.order,
+                                                                        //         fullDelivery: true,
+                                                                        //         fullReturn: true,
+                                                                        //         returnStatus: 'returned',
+                                                                        //     });
 
-                                                                            setchangestatusmodal(true);
-                                                                        }}
+                                                                        //     setchangestatusmodal(true);
+                                                                        // }}
                                                                         style={{ cursor: 'pointer', marginInlineEnd: '5px' }}
                                                                         className={
-                                                                            item.status == 'delivered' ||
-                                                                            item.status == 'partiallyDelivered' ||
-                                                                            item.status == 'returned' ||
-                                                                            item.status == 'partiallyReturned'
+                                                                            tempsheetpayloadPreviousOrder?.orderStatus == 'delivered' ||
+                                                                            tempsheetpayloadPreviousOrder?.orderStatus == 'partiallyDelivered' ||
+                                                                            tempsheetpayloadPreviousOrder?.orderStatus == 'returned' ||
+                                                                            tempsheetpayloadPreviousOrder?.orderStatus == 'partiallyReturned'
                                                                                 ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 text-capitalize '
-                                                                                : item?.status == 'cancelled' || item?.status == 'failedDeliveryAttempt'
+                                                                                : tempsheetpayloadPreviousOrder?.orderStatus == 'cancelled' ||
+                                                                                  tempsheetpayloadPreviousOrder?.orderStatus == 'failedDeliveryAttempt'
                                                                                 ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 text-capitalize '
                                                                                 : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 text-capitalize '
                                                                         }
@@ -819,7 +824,8 @@ const CourierSheet = (props) => {
                                                         <div className="row m-0 w-100">
                                                             {type == 'admin' && (
                                                                 <div class="col-lg-12 mb-2 text-capitalize" style={{ fontWeight: 600 }}>
-                                                                    {item?.order?.type} items
+                                                                    {/* {item?.order?.type}  */}
+                                                                    Items with courier
                                                                 </div>
                                                             )}
                                                             {item?.order?.orderItems?.map((subitem, subindex) => {
@@ -1152,7 +1158,7 @@ const CourierSheet = (props) => {
                                         }}
                                         className="iconhover allcentered"
                                         onClick={() => {
-                                            setstatuspayload({ step: statuspayload?.step - 1 });
+                                            setstatuspayload({ ...statuspayload, step: statuspayload?.step - 1 });
                                         }}
                                     >
                                         <IoChevronBackOutline size={20} />
@@ -1177,8 +1183,8 @@ const CourierSheet = (props) => {
                     {statuspayload?.step == 0 && (
                         <div class="row m-0 w-100 py-2">
                             <div class={'col-lg-12 mb-3'}>
-                                <label for="name" class={formstyles.form__label}>
-                                    Status
+                                <label for="name" class={formstyles.form__label + ' text-capitalize'}>
+                                    {statuspayload.type} Status
                                 </label>
                                 <Select
                                     options={[
@@ -1209,7 +1215,7 @@ const CourierSheet = (props) => {
                     )}
                     {statuspayload?.step == 1 && (
                         <div class="row m-0 w-100 py-2">
-                            {statuspayload?.status == 'cancelled ' && (
+                            {statuspayload?.status == 'cancelled' && (
                                 <>
                                     <div class={'col-lg-12 mb-3'}>
                                         <label for="name" class={formstyles.form__label}>
@@ -1314,8 +1320,8 @@ const CourierSheet = (props) => {
                                                                         <div className="row m-0 w-100 d-flex align-items-center justify-content-end">
                                                                             <div style={{ fontWeight: 700 }} className="mx-2">
                                                                                 {statuspayload?.fullReturn
-                                                                                    ? new Decimal(subitem?.count).mul(new Decimal(subitem?.unitPrice))
-                                                                                    : new Decimal(subitem?.unitPrice).mul(new Decimal(partialItem?.partialCount ?? 0))}{' '}
+                                                                                    ? new Decimal(subitem?.count).times(new Decimal(subitem?.unitPrice)).toFixed(2) // Using Decimal here
+                                                                                    : new Decimal(subitem.unitPrice).times(new Decimal(partialItem?.partialCount ?? 0)).toFixed(2)}{' '}
                                                                                 {statuspayload?.info?.currency}
                                                                             </div>
                                                                         </div>
@@ -1335,44 +1341,50 @@ const CourierSheet = (props) => {
                                                                                     }}
                                                                                     className="p-1 px-2 mr-1 allcentered"
                                                                                 >
-                                                                                    {new Decimal(subitem.count).toFixed(0)}
+                                                                                    {new Decimal(subitem.count).toFixed(0)} {/* Using Decimal for full return */}
                                                                                 </div>
                                                                             )}
                                                                             {!statuspayload?.fullReturn && (
                                                                                 <>
-                                                                                    {Array.from({ length: new Decimal(subitem.count).plus(1).toNumber() }, (_, i) => (
-                                                                                        <div
-                                                                                            key={i}
-                                                                                            onClick={() => {
-                                                                                                const partialItemsReturnTemp = [...(statuspayload?.partialItemsReturn || [])];
-                                                                                                const existingItemIndex = partialItemsReturnTemp?.findIndex((item) => item.id === subitem?.id);
+                                                                                    {Array.from(
+                                                                                        { length: new Decimal(subitem.count).plus(1).toNumber() },
+                                                                                        (
+                                                                                            _,
+                                                                                            i, // Using Decimal for the count
+                                                                                        ) => (
+                                                                                            <div
+                                                                                                key={i}
+                                                                                                onClick={() => {
+                                                                                                    const partialItemsReturnTemp = [...(statuspayload?.partialItemsReturn || [])];
+                                                                                                    const existingItemIndex = partialItemsReturnTemp?.findIndex((item) => item.id === subitem?.id);
 
-                                                                                                if (existingItemIndex !== -1) {
-                                                                                                    partialItemsReturnTemp[existingItemIndex].partialCount = i;
-                                                                                                } else {
-                                                                                                    partialItemsReturnTemp.push({ id: subitem?.id, partialCount: i });
-                                                                                                }
+                                                                                                    if (existingItemIndex !== -1) {
+                                                                                                        partialItemsReturnTemp[existingItemIndex].partialCount = i;
+                                                                                                    } else {
+                                                                                                        partialItemsReturnTemp.push({ id: subitem?.id, partialCount: i });
+                                                                                                    }
 
-                                                                                                setstatuspayload((prev) => ({
-                                                                                                    ...prev,
-                                                                                                    partialItemsReturn: partialItemsReturnTemp,
-                                                                                                }));
-                                                                                            }}
-                                                                                            style={{
-                                                                                                border: '1px solid #eee',
-                                                                                                borderRadius: '8px',
-                                                                                                fontWeight: 700,
-                                                                                                background: partialItem?.partialCount === i ? 'var(--primary)' : '',
-                                                                                                color: partialItem?.partialCount === i ? 'white' : '',
-                                                                                                width: '35px',
-                                                                                                cursor: 'pointer',
-                                                                                                transition: 'all 0.4s',
-                                                                                            }}
-                                                                                            className="p-1 px-2 mr-1 allcentered"
-                                                                                        >
-                                                                                            {i}
-                                                                                        </div>
-                                                                                    ))}
+                                                                                                    setstatuspayload((prev) => ({
+                                                                                                        ...prev,
+                                                                                                        partialItemsReturn: partialItemsReturnTemp,
+                                                                                                    }));
+                                                                                                }}
+                                                                                                style={{
+                                                                                                    border: '1px solid #eee',
+                                                                                                    borderRadius: '8px',
+                                                                                                    fontWeight: 700,
+                                                                                                    background: partialItem?.partialCount === i ? 'var(--primary)' : '',
+                                                                                                    color: partialItem?.partialCount === i ? 'white' : '',
+                                                                                                    width: '35px',
+                                                                                                    cursor: 'pointer',
+                                                                                                    transition: 'all 0.4s',
+                                                                                                }}
+                                                                                                className="p-1 px-2 mr-1 allcentered"
+                                                                                            >
+                                                                                                {i}
+                                                                                            </div>
+                                                                                        ),
+                                                                                    )}
                                                                                 </>
                                                                             )}
                                                                         </div>
