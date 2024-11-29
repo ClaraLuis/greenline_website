@@ -311,6 +311,7 @@ const OrderInfo = (props) => {
     const [changeOrderCustomerInfoMutation] = useMutationGQL(changeOrderCustomerInfo(), {
         orderId: parseInt(queryParameters?.get('orderId')),
         merchantCustomerId: parseInt(orderpayload?.customerId),
+        addressId: parseInt(orderpayload?.address),
     });
 
     const [changeOrderPriceMutation] = useMutationGQL(changeOrderPrice(), {
