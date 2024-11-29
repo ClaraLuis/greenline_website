@@ -120,7 +120,7 @@ const OrderInfo = (props) => {
         merchantId: chosenOrderContext?.merchant?.id,
     });
     const [linkCustomerMutation] = useMutationGQL(linkCustomerMerchant(), {
-        customerId: orderpayload?.customerId,
+        customerId: orderpayload?.customerIdForAddress,
         customerName: orderpayload?.user,
         merchantId: chosenOrderContext?.merchant?.id,
     });
@@ -216,6 +216,9 @@ const OrderInfo = (props) => {
                 },
             });
             setchosenOrderContext(data?.findOneOrder);
+            if (data?.findOneOrder) {
+                seteditCustomer(false);
+            }
             console.log(data);
         }
     };
@@ -265,7 +268,7 @@ const OrderInfo = (props) => {
 
     const [changeOrderCustomerInfoMutation] = useMutationGQL(changeOrderCustomerInfo(), {
         orderId: parseInt(queryParameters?.get('orderId')),
-        mercahantCustomerId: orderpayload?.customerId,
+        merchantCustomerId: parseInt(orderpayload?.customerId),
     });
 
     const [changeOrderPriceMutation] = useMutationGQL(changeOrderPrice(), {
@@ -373,7 +376,8 @@ const OrderInfo = (props) => {
             if (customerData?.findCustomer?.data[0]) {
                 setorderpayload({
                     ...orderpayload,
-                    customerId: customerData?.findCustomer?.data[0]?.details?.customerId,
+                    customerId: customerData?.findCustomer?.data[0]?.details?.id,
+                    customerIdForAddress: customerData?.findCustomer?.data[0]?.id,
                     email: customerData?.findCustomer?.data[0]?.email,
                     user: customerData?.findCustomer?.data[0]?.details?.customerName,
                 });
@@ -423,7 +427,8 @@ const OrderInfo = (props) => {
             if (customerDataSuggestions?.findCustomer?.data[0]) {
                 setorderpayload({
                     ...orderpayload,
-                    customerId: customerDataSuggestions?.findCustomer?.data[0]?.details?.customerId,
+                    customerId: customerDataSuggestions?.findCustomer?.data[0]?.details?.id,
+                    customerIdForAddress: customerDataSuggestions?.findCustomer?.data[0]?.id,
                     email: customerDataSuggestions?.findCustomer?.data[0]?.email,
                 });
                 nameSuggestions = [...customerDataSuggestions?.findCustomer?.data[0]?.nameSuggestions];
@@ -1170,10 +1175,15 @@ const OrderInfo = (props) => {
                                                                                 <div class="col-lg-12">
                                                                                     <div
                                                                                         onClick={() => {
-                                                                                            setorderpayload({ ...orderpayload, customerId: item?.details?.id, user: item?.details?.customerName });
+                                                                                            setorderpayload({
+                                                                                                ...orderpayload,
+                                                                                                customerId: item?.details?.id,
+                                                                                                customerIdForAddress: item.id,
+                                                                                                user: item?.details?.customerName,
+                                                                                            });
                                                                                         }}
                                                                                         style={{
-                                                                                            border: orderpayload?.customerId == item?.id ? '1px solid var(--primary)' : '',
+                                                                                            border: orderpayload?.customerId == item?.details?.id ? '1px solid var(--primary)' : '',
                                                                                         }}
                                                                                         class={generalstyles.card + ' row m-0 p-2 w-100'}
                                                                                     >
@@ -1215,7 +1225,19 @@ const OrderInfo = (props) => {
                                                                         setbuttonLoadingContext(true);
                                                                         try {
                                                                             await linkCustomerMutation();
-                                                                            setcustomerFound(true);
+                                                                            var { data } = await checkCustomer({
+                                                                                variables: {
+                                                                                    input: {
+                                                                                        phone: filterCustomerPayload?.phone,
+                                                                                        email: filterCustomerPayload?.email,
+                                                                                        myCustomers: true,
+                                                                                        limit: filterCustomerPayload?.limit,
+                                                                                        merchantId: merchantId,
+                                                                                    },
+                                                                                    merchantId: merchantId,
+                                                                                },
+                                                                            });
+                                                                            setcustomerData({ ...data });
                                                                         } catch (error) {
                                                                             let errorMessage = 'An unexpected error occurred';
                                                                             if (error.graphQLErrors && error.graphQLErrors.length > 0) {
@@ -1250,9 +1272,17 @@ const OrderInfo = (props) => {
                                                                         try {
                                                                             var { data } = await changeOrderCustomerInfoMutation();
                                                                             if (data?.changeOrderCustomerInfo?.success == true) {
-                                                                                setTimeout(() => {
+                                                                                setTimeout(async () => {
                                                                                     NotificationManager.success('Success!', '');
-                                                                                    findOneOrder();
+                                                                                    var { data } = await fetchOneOrderLazyQuery({
+                                                                                        variables: {
+                                                                                            id: parseInt(queryParameters.get('orderId')),
+                                                                                        },
+                                                                                    });
+                                                                                    setchosenOrderContext(data?.findOneOrder);
+                                                                                    if (data?.findOneOrder) {
+                                                                                        seteditCustomer(false);
+                                                                                    }
                                                                                 }, 1000);
                                                                             } else {
                                                                                 NotificationManager.warning(data?.changeOrderCustomerInfo?.message, 'Warning!');
