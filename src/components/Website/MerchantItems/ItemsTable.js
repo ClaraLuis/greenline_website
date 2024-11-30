@@ -170,11 +170,10 @@ const ItemsTable = (props) => {
 
                                     <div class="col-lg-12 pl-0 pr-0 pb-0 wordbreak" style={{ fontWeight: 700, fontSize: '16px', paddingTop: '1.5rem' }}>
                                         <div class="row m-0 w-100">
-                                            {cookies.get('userInfo')?.type == 'employee' && (
-                                                <div class="col-lg-12 p-0 " style={{ fontSize: '11px', fontWeight: 600, color: 'grey' }}>
-                                                    {item?.merchant?.name}
-                                                </div>
-                                            )}
+                                            <div class="col-lg-12 p-0 " style={{ fontSize: '11px', fontWeight: 600, color: 'grey' }}>
+                                                {item?.shopifyId && <FaShopify class="mt-1 mr-1" />}
+                                                {cookies.get('userInfo')?.type == 'employee' && <>{item?.merchant?.name}</>}
+                                            </div>
                                             <div class="col-lg-12 p-0 ">{item?.fullName ?? item?.name}</div>
                                         </div>
                                     </div>
@@ -207,13 +206,7 @@ const ItemsTable = (props) => {
                                             })}
                                         </div>
                                     </div>
-                                    {item?.shopifyId && (
-                                        <div style={{ position: 'absolute', right: 5, top: 5 }}>
-                                            <div class="row m-0 w-100 aign-items-center">
-                                                <FaShopify class="mt-1 mr-1" />
-                                            </div>
-                                        </div>
-                                    )}
+
                                     {item?.itemVariants && (
                                         <div class="col-lg-12 p-0 d-flex align-items-cent6er justify-content-between " style={{ fontSize: '11px', fontWeight: 600, color: 'grey' }}>
                                             <div>{item?.itemVariants?.length} Variant(s)</div>

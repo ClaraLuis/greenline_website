@@ -10,17 +10,19 @@ const Sku = ({ item }) => {
     const [src, setImageSrc] = React.useState(false);
 
     React.useEffect(() => {
-        let canvas = document.createElement('canvas');
-        bwipjs?.toCanvas(canvas, {
-            bcid: 'datamatrix', // Barcode type
-            text: item?.sku, // Text to encode
-            scale: 2, // 3x scaling factor
-            height: 15, // Bar height, in millimeters
-            includetext: true, // Show human-readable text
-            textxalign: 'center', // Always good to set this
-        });
-        setImageSrc(canvas.toDataURL('image/png'));
-    }, [item?.sku]);
+        if (bwipjs) {
+            let canvas = document.createElement('canvas');
+            bwipjs?.toCanvas(canvas, {
+                bcid: 'datamatrix', // Barcode type
+                text: item?.sku, // Text to encode
+                scale: 2, // 3x scaling factor
+                height: 15, // Bar height, in millimeters
+                includetext: true, // Show human-readable text
+                textxalign: 'center', // Always good to set this
+            });
+            setImageSrc(canvas.toDataURL('image/png'));
+        }
+    }, [item?.sku, bwipjs]);
     return (
         <div style={{ fontSize: '11px', width: '5cm', height: '3cm', overflow: 'hidden' }} className="print-item p-1 ">
             <div class="row m-0 w-100">

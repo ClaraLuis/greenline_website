@@ -1475,13 +1475,22 @@ const API = () => {
                         unitDiscount
                         partialCount
                         info {
-                            name
-                            fullName
-                            imageUrl
-                            sku
                             item {
                                 name
                             }
+                            id
+                            sku
+                            name
+                            shopifyId
+                            merchantSku
+                            merchantId
+                            itemId
+                            isEnabled
+                            imageUrl
+                            price
+                            weight
+                            createdAt
+                            fullName
                         }
 
                         inventory {
@@ -1947,10 +1956,19 @@ const API = () => {
                                 unitPrice
                                 itemVariantId
                                 info {
+                                    id
+                                    sku
                                     name
-                                    item {
-                                        name
-                                    }
+                                    shopifyId
+                                    merchantSku
+                                    merchantId
+                                    itemId
+                                    isEnabled
+                                    imageUrl
+                                    price
+                                    weight
+                                    createdAt
+                                    fullName
                                 }
                             }
                         }

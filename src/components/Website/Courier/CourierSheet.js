@@ -21,6 +21,7 @@ import { defaultstyles } from '../Generalfiles/selectstyles.js';
 import Inputfield from '../../Inputfield.js';
 import Decimal from 'decimal.js';
 import { IoChevronBackOutline } from 'react-icons/io5';
+import OrderItemsModal from './OrderItemsModal.js';
 
 const CourierSheet = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -31,6 +32,8 @@ const CourierSheet = (props) => {
     const { lang, langdetect } = useContext(LanguageContext);
     const [changestatusmodal, setchangestatusmodal] = useState(false);
     const [total, settotal] = useState(0);
+    const [skuModal, setskuModal] = useState(false);
+    const [skuModalInfo, setskuModalInfo] = useState({});
 
     const [sheetID, setsheetID] = useState(null);
     const [submitSheetPayload, setsubmitSheetPayload] = useState({});
@@ -152,7 +155,7 @@ const CourierSheet = (props) => {
                   status:
                       statuspayload?.status == 'postponed'
                           ? statuspayload?.status
-                          : !statuspayload?.fullReturn && statuspayload?.returnStatus == 'return'
+                          : !statuspayload?.fullReturn && statuspayload?.returnStatus == 'returned'
                           ? 'partiallyReturned'
                           : statuspayload?.returnStatus,
                   partialItems: statuspayload?.partialItemsReturn,
@@ -869,79 +872,74 @@ const CourierSheet = (props) => {
                                                                         </div>
                                                                     )}
                                                                     {orderItems?.map((subitem, subindex) => {
-                                                                        var count =
-                                                                            item?.order?.type == 'return'
-                                                                                ? subitem?.partialCount != null
-                                                                                    ? new Decimal(subitem.partialCount).toFixed(0)
-                                                                                    : new Decimal(subitem.count).toFixed(0)
-                                                                                : subitem?.partialCount != null
-                                                                                ? new Decimal(subitem.count).minus(new Decimal(subitem.partialCount)).toFixed(0)
-                                                                                : '0';
-                                                                        if (count != 0) {
-                                                                            return (
-                                                                                <div className={type == 'admin' ? 'col-lg-6 mb-2' : 'col-lg-12 p-0 mb-2'} key={subindex}>
-                                                                                    <div
-                                                                                        style={{ border: '1px solid #eee', borderRadius: '0.25rem' }}
-                                                                                        className="row m-0 w-100 p-2 d-flex align-items-start"
-                                                                                    >
-                                                                                        {item?.order?.type == 'return' && (
-                                                                                            <div
-                                                                                                style={{ borderRadius: '10px', fontWeight: 700, fontSize: '11px' }}
-                                                                                                className="p-1 px-2 mr-1 allcentered"
-                                                                                            >
-                                                                                                {subitem?.partialCount != null
-                                                                                                    ? new Decimal(subitem.partialCount).toFixed(0)
-                                                                                                    : new Decimal(subitem.count).toFixed(0)}
-                                                                                            </div>
-                                                                                        )}
-                                                                                        {item?.order?.type != 'return' && (
-                                                                                            <div
-                                                                                                style={{ borderRadius: '10px', fontWeight: 700, fontSize: '11px' }}
-                                                                                                className="p-1 px-2 mr-1 allcentered"
-                                                                                            >
-                                                                                                {subitem?.partialCount != null
-                                                                                                    ? new Decimal(subitem.count).minus(new Decimal(subitem.partialCount)).toFixed(0)
-                                                                                                    : '0'}
-                                                                                            </div>
-                                                                                        )}
-                                                                                        {type == 'admin' && (
-                                                                                            <div style={{ width: '40px', height: '40px', borderRadius: '7px', marginInlineEnd: '5px' }}>
-                                                                                                <img
-                                                                                                    src={
-                                                                                                        subitem?.info?.imageUrl
-                                                                                                            ? subitem?.info?.imageUrl
-                                                                                                            : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'
-                                                                                                    }
-                                                                                                    style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
-                                                                                                />
-                                                                                            </div>
-                                                                                        )}
-                                                                                        <div style={{ marginTop: '10px' }}>
-                                                                                            {item?.order?.type != 'return' && (
-                                                                                                <div style={{ fontWeight: 700 }} className="mx-2">
-                                                                                                    {new Decimal(
-                                                                                                        subitem?.partialCount != null
-                                                                                                            ? new Decimal(subitem.count).minus(new Decimal(subitem.partialCount))
-                                                                                                            : new Decimal(0),
-                                                                                                    )
-                                                                                                        .times(new Decimal(subitem?.unitPrice))
-                                                                                                        .toFixed(2)}{' '}
-                                                                                                    {item?.order?.currency}
-                                                                                                </div>
-                                                                                            )}
-                                                                                            {item?.order?.type == 'return' && (
-                                                                                                <div style={{ fontWeight: 700 }} className="mx-2">
-                                                                                                    {new Decimal(
-                                                                                                        subitem?.partialCount != null ? new Decimal(subitem.partialCount) : new Decimal(subitem.count),
-                                                                                                    )
-                                                                                                        .times(new Decimal(subitem?.unitPrice))
-                                                                                                        .toFixed(2)}{' '}
-                                                                                                    {item?.order?.currency}
-                                                                                                </div>
-                                                                                            )}
+                                                                        return (
+                                                                            <div className={type == 'admin' ? 'col-lg-6 mb-2' : 'col-lg-12 p-0 mb-2'} key={subindex}>
+                                                                                <div
+                                                                                    onClick={(e) => {
+                                                                                        e.stopPropagation();
+                                                                                        setskuModal(true);
+                                                                                        setskuModalInfo({
+                                                                                            previousOrder: previousOrder,
+                                                                                            previousOrderItems: previousOrderItems,
+                                                                                            order: item.order,
+                                                                                            orderItems: orderItems,
+                                                                                        });
+                                                                                    }}
+                                                                                    style={{ border: '1px solid #eee', borderRadius: '0.25rem' }}
+                                                                                    className="row m-0 w-100 p-2 d-flex align-items-start"
+                                                                                >
+                                                                                    {item?.order?.type == 'return' && (
+                                                                                        <div style={{ borderRadius: '10px', fontWeight: 700, fontSize: '11px' }} className="p-1 px-2 mr-1 allcentered">
+                                                                                            {subitem?.partialCount != null
+                                                                                                ? new Decimal(subitem.partialCount).toFixed(0)
+                                                                                                : new Decimal(subitem.count).toFixed(0)}
                                                                                         </div>
+                                                                                    )}
+                                                                                    {item?.order?.type != 'return' && (
+                                                                                        <div style={{ borderRadius: '10px', fontWeight: 700, fontSize: '11px' }} className="p-1 px-2 mr-1 allcentered">
+                                                                                            {subitem?.partialCount != null
+                                                                                                ? new Decimal(subitem.count).minus(new Decimal(subitem.partialCount)).toFixed(0)
+                                                                                                : '0'}
+                                                                                        </div>
+                                                                                    )}
+                                                                                    {type == 'admin' && (
+                                                                                        <div style={{ width: '40px', height: '40px', borderRadius: '7px', marginInlineEnd: '5px' }}>
+                                                                                            <img
+                                                                                                src={
+                                                                                                    subitem?.info?.imageUrl
+                                                                                                        ? subitem?.info?.imageUrl
+                                                                                                        : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'
+                                                                                                }
+                                                                                                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
+                                                                                            />
+                                                                                        </div>
+                                                                                    )}
+                                                                                    <div style={{ marginTop: '10px' }}>
+                                                                                        {item?.order?.type != 'return' && (
+                                                                                            <div style={{ fontWeight: 700 }} className="mx-2">
+                                                                                                {new Decimal(
+                                                                                                    subitem?.partialCount != null
+                                                                                                        ? new Decimal(subitem.count).minus(new Decimal(subitem.partialCount))
+                                                                                                        : new Decimal(0),
+                                                                                                )
+                                                                                                    .times(new Decimal(subitem?.unitPrice))
+                                                                                                    .toFixed(2)}{' '}
+                                                                                                {item?.order?.currency}
+                                                                                            </div>
+                                                                                        )}
+                                                                                        {item?.order?.type == 'return' && (
+                                                                                            <div style={{ fontWeight: 700 }} className="mx-2">
+                                                                                                {new Decimal(
+                                                                                                    subitem?.partialCount != null ? new Decimal(subitem.partialCount) : new Decimal(subitem.count),
+                                                                                                )
+                                                                                                    .times(new Decimal(subitem?.unitPrice))
+                                                                                                    .toFixed(2)}{' '}
+                                                                                                {item?.order?.currency}
+                                                                                            </div>
+                                                                                        )}
+                                                                                    </div>
 
-                                                                                        {/* <div className="col-lg-5 d-flex align-items-center">
+                                                                                    {/* <div className="col-lg-5 d-flex align-items-center">
                                                                               <div className="row m-0 w-100">
                                                                                   <div style={{ fontSize: '14px', fontWeight: 500 }} className={'col-lg-12 p-0 wordbreak wordbreak1'}>
                                                                                       {subitem?.info?.item?.name ?? '-'}
@@ -951,10 +949,9 @@ const CourierSheet = (props) => {
                                                                                   </div>
                                                                               </div>
                                                                           </div> */}
-                                                                                    </div>
                                                                                 </div>
-                                                                            );
-                                                                        }
+                                                                            </div>
+                                                                        );
                                                                     })}
                                                                 </>
                                                             )}
@@ -972,7 +969,14 @@ const CourierSheet = (props) => {
                                                                             {previousOrderItems?.map((subitem, subindex) => {
                                                                                 return (
                                                                                     <div className={type == 'admin' ? 'col-lg-6 mb-2' : 'col-lg-12 p-0 mb-2'} key={subindex}>
-                                                                                        <div style={{ border: '1px solid #eee', borderRadius: '0.25rem' }} className="row m-0 w-100 p-2  ">
+                                                                                        <div
+                                                                                            onClick={(e) => {
+                                                                                                e.stopPropagation();
+                                                                                                setskuModal(true);
+                                                                                            }}
+                                                                                            style={{ border: '1px solid #eee', borderRadius: '0.25rem' }}
+                                                                                            className="row m-0 w-100 p-2  "
+                                                                                        >
                                                                                             {previousOrder?.order?.type == 'return' && (
                                                                                                 <div style={{ borderRadius: '8px', fontWeight: 700, fontSize: '11px' }} className="p-1 px-2 mr-1 ">
                                                                                                     {subitem?.partialCount != null
@@ -1864,7 +1868,7 @@ const CourierSheet = (props) => {
                                             !statuspayload?.order?.originalPrice &&
                                             !statuspayload?.fullDelivery &&
                                             !statuspayload?.amountCollected &&
-                                            (statuspayload?.status == 'delivered' || statuspayload?.status == 'return')
+                                            (statuspayload?.status == 'delivered' || statuspayload?.status == 'returned')
                                         ) {
                                             NotificationManager.warning('Enter Amount Collected.', 'Warning!');
                                             return;
@@ -1877,20 +1881,16 @@ const CourierSheet = (props) => {
                                                 temp.updateSheetOrderstemp.map((i, ii) => {
                                                     if (i.orderId == statuspayload.order.id) {
                                                         temp.updateSheetOrderstemp[ii].orderStatus =
-                                                            !statuspayload?.fullDelivery && statuspayload?.status == 'delivered'
-                                                                ? 'partiallyDelivered'
-                                                                : !statuspayload?.fullReturn && statuspayload?.status == 'return'
-                                                                ? 'partiallyReturned'
-                                                                : statuspayload?.status;
+                                                            !statuspayload?.fullDelivery && statuspayload?.status == 'delivered' ? 'partiallyDelivered' : statuspayload?.status;
                                                     }
 
                                                     if (i.orderId == statuspayload?.previousOrder?.id) {
                                                         temp.updateSheetOrderstemp[ii].orderStatus =
-                                                            !statuspayload?.fullDelivery && statuspayload?.status == 'delivered'
-                                                                ? 'partiallyDelivered'
-                                                                : !statuspayload?.fullReturn && statuspayload?.status == 'return'
+                                                            statuspayload?.status == 'postponed'
+                                                                ? statuspayload?.status
+                                                                : !statuspayload?.fullReturn && statuspayload?.returnStatus == 'returned'
                                                                 ? 'partiallyReturned'
-                                                                : statuspayload?.status;
+                                                                : statuspayload?.returnStatus;
                                                     }
                                                 });
 
@@ -1901,11 +1901,7 @@ const CourierSheet = (props) => {
                                                     sheetOrders?.forEach((sheet, sheetIndex) => {
                                                         if (sheet.order.id === statuspayload.order.id) {
                                                             sheetOrdersTemp[sheetIndex].order.status =
-                                                                !statuspayload?.fullDelivery && statuspayload?.status == 'delivered'
-                                                                    ? 'partiallyDelivered'
-                                                                    : !statuspayload?.fullReturn && statuspayload?.status == 'return'
-                                                                    ? 'partiallyReturned'
-                                                                    : statuspayload?.status;
+                                                                !statuspayload?.fullDelivery && statuspayload?.status == 'delivered' ? 'partiallyDelivered' : statuspayload?.status;
                                                             sheet?.order?.orderItems?.forEach((orderitem, orderitemindex) => {
                                                                 const matchingSuborder = statuspayload?.partialItems?.find((suborderitem) => suborderitem.id === orderitem.id);
                                                                 // if (matchingSuborder) {
@@ -1917,13 +1913,14 @@ const CourierSheet = (props) => {
                                                         }
                                                     });
                                                 }
+
                                                 if (statuspayload?.previousOrder?.id) {
                                                     sheetOrders?.forEach((sheet, sheetIndex) => {
                                                         if (sheet.order.id === statuspayload.previousOrder.id) {
                                                             sheetOrdersTemp[sheetIndex].order.status =
                                                                 statuspayload?.status == 'postponed'
                                                                     ? statuspayload?.status
-                                                                    : !statuspayload?.fullReturn && statuspayload?.returnStatus == 'return'
+                                                                    : !statuspayload?.fullReturn && statuspayload?.returnStatus == 'returned'
                                                                     ? 'partiallyReturned'
                                                                     : statuspayload?.returnStatus;
                                                             sheet?.order?.orderItems?.forEach((orderitem, orderitemindex) => {
@@ -1973,6 +1970,14 @@ const CourierSheet = (props) => {
                     )}
                 </Modal.Body>
             </Modal>
+            <OrderItemsModal
+                openModal={skuModal}
+                setOpenModal={setskuModal}
+                previousOrder={skuModalInfo?.previousOrder}
+                order={skuModalInfo?.item?.order}
+                orderItems={skuModalInfo?.orderItems}
+                previousOrderItems={skuModalInfo?.previousOrderItems}
+            />
         </div>
     );
 };
