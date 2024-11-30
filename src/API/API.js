@@ -768,6 +768,9 @@ const API = () => {
                                 }
                             }
                         }
+                        latestHistory {
+                            description
+                        }
                         canOpen
                         fragile
                         deliveryPart
@@ -1145,6 +1148,9 @@ const API = () => {
                     currency
                     imageUrl
                     merchantId
+                    merchant {
+                        name
+                    }
                     itemVariants {
                         id
                         sku

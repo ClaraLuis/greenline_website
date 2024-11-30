@@ -1366,7 +1366,7 @@ const AddItem = (props) => {
                             <div class="col-lg-6">
                                 <div class="row m-0 w-100  ">
                                     <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                        <label class={formstyles.form__label}>SKU</label>
+                                        <label class={formstyles.form__label}>Default SKU</label>
                                         <input
                                             type={'text'}
                                             class={formstyles.form__field}
@@ -1397,7 +1397,7 @@ const AddItem = (props) => {
                             <div className="col-lg-6">
                                 <div className="row m-0 w-100">
                                     <div className={`${formstyles.form__group} ${formstyles.field}`}>
-                                        <label className={formstyles.form__label}>Price</label>
+                                        <label className={formstyles.form__label}>Default Price</label>
                                         <input
                                             type="text"
                                             className={formstyles.form__field}

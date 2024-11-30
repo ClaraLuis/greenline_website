@@ -56,10 +56,19 @@ const SelectComponent = (props) => {
     }, [props]);
 
     // Update placeholder on payload change
+    // useEffect(() => {
+    //     if (props?.payload) {
+    //         const matchingItem = filteredData.find((item) => item[props?.value] === props?.payload[props?.payloadAttr]);
+    //         setPlaceholder(matchingItem ? matchingItem[props?.label] : props?.removeAll ? '' : 'All');
+    //     }
+    // }, [props?.payload, data]);
     useEffect(() => {
-        if (props?.payload) {
-            const matchingItem = data.find((item) => item[props?.value] === props?.payload[props?.payloadAttr]);
-            setPlaceholder(matchingItem ? matchingItem[props?.label] : props?.removeAll ? '' : 'All');
+        if (props?.payload && props?.payloadAttr) {
+            data?.map((item, index) => {
+                if (item[props?.value] == props?.payload[props?.payloadAttr]) {
+                    setPlaceholder(item[props?.label]);
+                }
+            });
         }
     }, [props?.payload, data]);
 

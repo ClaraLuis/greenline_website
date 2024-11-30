@@ -189,22 +189,32 @@ const OrdersTable = (props) => {
                                                         //     setchangestatusmodal(true);
                                                         // }}
                                                         // style={{ cursor: 'pointer' }}
-                                                        className={
-                                                            item.status == 'delivered' || item.status == 'partiallyDelivered' || item.status == 'returned' || item.status == 'partiallyReturned'
-                                                                ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 '
-                                                                : item?.status == 'cancelled' || item?.status == 'failedDeliveryAttempt'
-                                                                ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 '
-                                                                : item.status == 'postponed'
-                                                                ? ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 rounded-pill-hover '
-                                                                : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600  '
-                                                        }
+                                                        className={`wordbreak rounded-pill font-weight-600 ${
+                                                            item.status === 'delivered' || item.status === 'partiallyDelivered' || item.status === 'returned' || item.status === 'partiallyReturned'
+                                                                ? 'text-success bg-light-success'
+                                                                : item.status === 'cancelled' || item.status === 'failedDeliveryAttempt'
+                                                                ? 'text-danger bg-light-danger'
+                                                                : item.status === 'postponed'
+                                                                ? 'text-warning bg-light-warning rounded-pill-hover'
+                                                                : 'text-warning bg-light-warning'
+                                                        } ${item?.latestHistory?.description ? 'rounded-pill-hover' : ''}`}
                                                     >
                                                         {orderStatusEnumContext?.map((i, ii) => {
                                                             if (i.value == item?.status) {
                                                                 return <span>{i.label}</span>;
                                                             }
                                                         })}
-                                                        <div class="hovercontainer">{dateformatter(item.orderDate)}</div>
+                                                        {(item?.latestHistory?.description || item.orderDate) && (
+                                                            <div class="hovercontainer">
+                                                                <div class="row m-0 w-100">
+                                                                    {item.orderDate && item.status === 'postponed' && <div class="col-lg-12 p-0 mb-2">Postponed Date:</div>}
+                                                                    {item.orderDate && item.status === 'postponed' && <div class="col-lg-12 p-0 mb-2">{dateformatter(item.orderDate)}</div>}
+
+                                                                    {item?.latestHistory?.description && <div class="col-lg-12 p-0">Description:</div>}
+                                                                    {item?.latestHistory?.description && <div class="col-lg-12 p-0">{item?.latestHistory?.description}</div>}
+                                                                </div>
+                                                            </div>
+                                                        )}
                                                     </div>
                                                     <div
                                                         // onClick={() => {

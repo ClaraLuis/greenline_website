@@ -1251,14 +1251,14 @@ const CourierSheet = (props) => {
                                     options={[
                                         { label: 'Delivered', value: 'delivered' },
                                         { label: 'Postponed', value: 'postponed' },
-                                        { label: 'Unreachable', value: 'unreachable' },
+                                        { label: 'Failed Delivery Attempt', value: 'failedDeliveryAttempt' },
                                         { label: 'Cancelled', value: 'cancelled' },
                                     ]}
                                     styles={defaultstyles}
                                     value={[
                                         { label: 'Delivered', value: 'delivered' },
                                         { label: 'Postponed', value: 'postponed' },
-                                        { label: 'Unreachable', value: 'unreachable' },
+                                        { label: 'Failed Delivery Attempt', value: 'failedDeliveryAttempt' },
                                         { label: 'Cancelled', value: 'cancelled' },
                                     ].filter((option) => option.value == statuspayload?.status)}
                                     onChange={(option) => {
@@ -1823,7 +1823,7 @@ const CourierSheet = (props) => {
                                     </div>
                                 </div>
                             )}
-                            {statuspayload?.status == 'unreachable' && (
+                            {statuspayload?.status == 'failedDeliveryAttempt' && (
                                 <div class={'col-lg-12 mb-3'}>
                                     <label for="name" class={formstyles.form__label}>
                                         Comment
@@ -1891,32 +1891,36 @@ const CourierSheet = (props) => {
                                                     // alert(JSON.stringify(temp.updateSheetOrderstemp[ii].order?.orderItems));
                                                 }
                                             });
+
                                             const deepClone = (obj) => JSON.parse(JSON.stringify(obj)); // Utility for deep cloning
 
                                             var sheetOrdersTemp = deepClone(sheetOrders);
+                                            if (statuspayload?.order?.id) {
+                                                sheetOrders?.forEach((sheet, sheetIndex) => {
+                                                    if (sheet.order.id === statuspayload.order.id) {
+                                                        sheet?.order?.orderItems?.forEach((orderitem, orderitemindex) => {
+                                                            const matchingSuborder = statuspayload?.partialItems?.find((suborderitem) => suborderitem.id === orderitem.id);
 
-                                            sheetOrders?.forEach((sheet, sheetIndex) => {
-                                                if (sheet.order.id === statuspayload.order.id) {
-                                                    sheet?.order?.orderItems?.forEach((orderitem, orderitemindex) => {
-                                                        const matchingSuborder = statuspayload?.partialItems?.find((suborderitem) => suborderitem.id === orderitem.id);
+                                                            if (matchingSuborder) {
+                                                                sheetOrdersTemp[sheetIndex].order.orderItems[orderitemindex].partialCount = matchingSuborder.partialCount;
+                                                            }
+                                                        });
+                                                    }
+                                                });
+                                            }
+                                            if (statuspayload?.previousOrder?.id) {
+                                                sheetOrders?.forEach((sheet, sheetIndex) => {
+                                                    if (sheet.order.id === statuspayload.previousOrder.id) {
+                                                        sheet?.order?.orderItems?.forEach((orderitem, orderitemindex) => {
+                                                            const matchingSuborder = statuspayload?.partialItemsReturn?.find((suborderitem) => suborderitem.id === orderitem.id);
 
-                                                        if (matchingSuborder) {
-                                                            sheetOrdersTemp[sheetIndex].order.orderItems[orderitemindex].partialCount = matchingSuborder.partialCount;
-                                                        }
-                                                    });
-                                                }
-                                            });
-                                            sheetOrders?.forEach((sheet, sheetIndex) => {
-                                                if (sheet.order.id === statuspayload.previousOrder.id) {
-                                                    sheet?.order?.orderItems?.forEach((orderitem, orderitemindex) => {
-                                                        const matchingSuborder = statuspayload?.partialItemsReturn?.find((suborderitem) => suborderitem.id === orderitem.id);
-
-                                                        if (matchingSuborder) {
-                                                            sheetOrdersTemp[sheetIndex].order.orderItems[orderitemindex].partialCount = matchingSuborder.partialCount;
-                                                        }
-                                                    });
-                                                }
-                                            });
+                                                            if (matchingSuborder) {
+                                                                sheetOrdersTemp[sheetIndex].order.orderItems[orderitemindex].partialCount = matchingSuborder.partialCount;
+                                                            }
+                                                        });
+                                                    }
+                                                });
+                                            }
 
                                             setsheetOrders(sheetOrdersTemp);
 

@@ -351,6 +351,11 @@ const ItemDetails = (props) => {
                     </div>
                     <div class="col-lg-7 pl-3">
                         <div class="row m-0 w-100">
+                            {cookies.get('userInfo')?.type == 'employee' && (
+                                <div class="col-lg-12 " style={{ fontSize: '11px', fontWeight: 600, color: 'grey' }}>
+                                    {chosenItemContext?.merchant?.name}
+                                </div>
+                            )}
                             <div class="col-lg-12">
                                 <span style={{ fontSize: '14px', color: 'var(--primary)' }}>{chosenvariant?.merchantSku}</span>
                             </div>
@@ -394,7 +399,7 @@ const ItemDetails = (props) => {
                                                                 transition: 'all 0.4s',
                                                                 cursor: chosen ? 'default' : 'pointer',
                                                             }}
-                                                            className={'mr-1 wordbreak rounded-pill font-weight-600 '}
+                                                            className={'mr-1 mb-1 wordbreak rounded-pill font-weight-600 '}
                                                             onClick={() => {
                                                                 if (!chosen) {
                                                                     console.log('vvv' + JSON.stringify(itemVariants));
