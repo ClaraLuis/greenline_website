@@ -30,6 +30,7 @@ const cookies = new Cookies();
 const Websiterouter = React.lazy(() => import('./components/Website/Websiterouter'));
 const Login = React.lazy(() => import('./components/Website/Login/Login'));
 const PrivacyPolicy = React.lazy(() => import('./components/Website/PrivacyPolicy/PrivacyPolicy.js'));
+const OrderInfo = React.lazy(() => import('./components/Website/Orders/TrackActivity.js'));
 let isRefreshing = false;
 let pendingRequests = [];
 
@@ -235,9 +236,17 @@ const App = (props) => {
                                                     //     return <Redirect to={'/users'} />;
                                                     // }}
                                                 />
-                                                {!loggedincontext && window.location.pathname != '/privacypolicy' && !loggedincontextLoading && <Login />}
+                                                {!loggedincontext && window.location.pathname != '/privacypolicy' && window.location.pathname != '/trackorderactivity' && !loggedincontextLoading && (
+                                                    <Login />
+                                                )}
                                                 <Route exact path="/privacypolicy" component={PrivacyPolicy} />
-                                                <AuthRoute>{loggedincontext && window.location.pathname != '/privacypolicy' && <Route exact path="*" component={Websiterouter} />}</AuthRoute>
+                                                <Route exact path="/trackorderactivity" component={OrderInfo} />
+
+                                                <AuthRoute>
+                                                    {loggedincontext && window.location.pathname != '/privacypolicy' && window.location.pathname != '/trackorderactivity' && (
+                                                        <Route exact path="*" component={Websiterouter} />
+                                                    )}
+                                                </AuthRoute>
                                                 {/* <Route exact path="/login" component={Login} /> */}
                                             </Suspense>
                                         </div>

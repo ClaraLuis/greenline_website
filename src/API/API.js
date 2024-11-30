@@ -1348,6 +1348,117 @@ const API = () => {
         }
     `;
 
+    const findPublicOrder = () => gql`
+        query findPublicOrder($input: FindPublicOrderInput!) {
+            findPublicOrder(input: $input) {
+                order {
+                    id
+                    type
+                    createdAt
+                    shippingPrice
+                    merchant {
+                        id
+                        name
+                    }
+                    address {
+                        country
+                        city
+                        streetAddress
+                        buildingNumber
+                        apartmentFloor
+                    }
+                    courier {
+                        id
+                        name
+                    }
+                    price
+                    paymentType
+                    status
+                    orderDate
+                    currency
+                    otherId
+                    shopifyName
+                    originalPrice
+                    merchantCustomer {
+                        id
+                        customerName
+                        customer {
+                            email
+                            phone
+                            id
+                        }
+                    }
+                    orderItems {
+                        id
+                        orderId
+                        count
+                        unitPrice
+                        unitDiscount
+                        partialCount
+                        info {
+                            name
+                            fullName
+                            imageUrl
+                            sku
+                            item {
+                                name
+                            }
+                        }
+                    }
+                    canOpen
+                    fragile
+                    deliveryPart
+                    sheetOrder {
+                        id
+                        sheetId
+                        orderId
+                        adminPass
+                        financePass
+                        shippingCollected
+                        amountCollected
+                        transactionId
+                        createdAt
+                        lastModified
+                        sheet {
+                            status
+                            user {
+                                name
+                                email
+                                id
+                            }
+                        }
+                    }
+                }
+                history {
+                    id
+                    orderId
+                    userId
+                    status
+                    fromHubId
+                    toHubId
+                    inventoryId
+                    description
+                    createdAt
+                    lastModified
+                    postponeDate
+                    user {
+                        name
+                        email
+                    }
+                    inventory {
+                        name
+                    }
+                    fromHub {
+                        name
+                    }
+                    toHub {
+                        name
+                    }
+                }
+            }
+        }
+    `;
+
     const findOneReturnPackage = () => gql`
         query findReturnPackageById($id: Int!) {
             findReturnPackageById(input: $id) {
@@ -2417,6 +2528,7 @@ const API = () => {
         findOneUser,
         emailTaken,
         findItemReturnByOrder,
+        findPublicOrder,
     };
 };
 export default API;

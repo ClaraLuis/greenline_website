@@ -43,7 +43,7 @@ const Login = () => {
     const [confirmpassword, setconfirmpassword] = useState('');
     const [payload, setpayload] = useState({ id: null, token: null });
 
-    const [checkEmail, { loading, error, data }] = useLazyQueryGQL(isValidEmailMutation(), 'cache-first');
+    const [checkEmail] = useLazyQueryGQL(isValidEmailMutation(), 'cache-first');
     // 0 = not valid
     // 1 = signup
     // 2 = login
@@ -73,13 +73,24 @@ const Login = () => {
                         if (result.length > 0) {
                             setinFirebase(true);
                         }
-                        setisValid(true); // Set isValid to true after validating the email
+                        // setisValid(true); // Set isValid to true after validating the email
                     } catch (e) {
                         handleError(e);
                     }
 
                     try {
-                        await checkEmail({ variables: { email } });
+                        var { data } = await checkEmail({ variables: { email } });
+                        if (data) {
+                            if (data?.userState == 0) {
+                                NotificationManager.warning('Email is not Valid', 'Warning');
+                            } else if (data?.userState == 1) {
+                                setisValid(true);
+                            } else if (data?.userState == 2) {
+                                setisValid(true);
+                                setinFirebase(true);
+                            }
+                            // alert(JSON.stringify(data?.isValidEmail?.isValid));
+                        }
                     } catch (error) {
                         handleError(error);
                     }
@@ -182,22 +193,6 @@ const Login = () => {
         }
     };
 
-    useEffect(() => {
-        if (error) {
-            alert(JSON.stringify(error));
-        }
-        if (data) {
-            if (data?.userState == 0) {
-                NotificationManager.warning('Email is not Valid', 'Warning');
-            } else if (data?.userState == 1) {
-                setisValid(true);
-            } else if (data?.userState == 2) {
-                setisValid(true);
-                setinFirebase(true);
-            }
-            // alert(JSON.stringify(data?.isValidEmail?.isValid));
-        }
-    }, [data, error]);
     useEffect(() => {
         if (queryParameters.get('signup') == undefined) {
         } else {
