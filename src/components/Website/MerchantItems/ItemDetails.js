@@ -280,7 +280,7 @@ const ItemDetails = (props) => {
                             <div class="col-lg-12 p-0 mb-3">
                                 <div
                                     style={{
-                                        height: '600px',
+                                        height: '300px',
                                         width: '100%',
                                     }}
                                 >

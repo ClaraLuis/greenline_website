@@ -341,28 +341,30 @@ const CourierSheet = (props) => {
                     }
 
                     var orderItems = item?.order?.orderItems?.filter((subitem) => {
-                        if (item?.order?.type === 'return') {
-                            if (subitem?.order?.type === 'return') {
-                                // For return subitems, check partialCount or count
-                                const value = subitem?.partialCount != null ? new Decimal(subitem.partialCount).toFixed(0) : new Decimal(subitem.count).toFixed(0);
-                                return new Decimal(value).greaterThan(0); // Filter items with positive value
-                            } else {
-                                // For non-return subitems, calculate remaining count
-                                const value = subitem?.partialCount != null ? new Decimal(subitem.count).minus(new Decimal(subitem.partialCount)).toFixed(0) : '0';
-                                return new Decimal(value).greaterThan(0); // Filter items with positive value
-                            }
+                        // if (item?.order?.type === 'return') {
+                        if (subitem?.order?.type === 'return') {
+                            // For return subitems, check partialCount or count
+                            const value = subitem?.partialCount != null ? new Decimal(subitem.partialCount).toFixed(0) : new Decimal(subitem.count).toFixed(0);
+                            return value != 0;
+                        } else {
+                            // For non-return subitems, calculate remaining count
+                            const value = subitem?.partialCount != null ? new Decimal(subitem.count).minus(new Decimal(subitem.partialCount)).toFixed(0) : '0';
+                            // alert(value > 0);
+                            return value != 0;
                         }
+                        // }
                         return false; // Exclude if item?.order?.type is not 'return'
                     });
+                    // alert(JSON.stringify(orderItems));
                     var previousOrderItems = previousOrder?.order?.orderItems?.filter((subitem) => {
                         if (previousOrder?.order?.type === 'return') {
                             // For 'return' type, check partialCount or count
                             const value = subitem?.partialCount != null ? new Decimal(subitem.partialCount).toFixed(0) : new Decimal(subitem.count).toFixed(0);
-                            return new Decimal(value).greaterThan(0); // Include items with a positive value
+                            return value != 0;
                         } else {
                             // For non-'return' type, calculate the remaining count
                             const value = subitem?.partialCount != null ? new Decimal(subitem.count).minus(new Decimal(subitem.partialCount)).toFixed(0) : '0';
-                            return new Decimal(value).greaterThan(0); // Include items with a positive value
+                            return value != 0;
                         }
                     });
 
@@ -1870,64 +1872,82 @@ const CourierSheet = (props) => {
                                         try {
                                             setupdateStatusbuttonLoadingContext(true);
                                             const { data } = await updateOrdersStatusMutation();
-                                            var temp = { ...submitSheetPayload };
-                                            temp.updateSheetOrderstemp.map((i, ii) => {
-                                                if (i.orderId == statuspayload.order.id) {
-                                                    temp.updateSheetOrderstemp[ii].orderStatus =
-                                                        !statuspayload?.fullDelivery && statuspayload?.status == 'delivered'
-                                                            ? 'partiallyDelivered'
-                                                            : !statuspayload?.fullReturn && statuspayload?.status == 'return'
-                                                            ? 'partiallyReturned'
-                                                            : statuspayload?.status;
-                                                }
-                                                if (i.orderId == statuspayload?.previousOrder?.id) {
-                                                    temp.updateSheetOrderstemp[ii].orderStatus =
-                                                        !statuspayload?.fullDelivery && statuspayload?.status == 'delivered'
-                                                            ? 'partiallyDelivered'
-                                                            : !statuspayload?.fullReturn && statuspayload?.status == 'return'
-                                                            ? 'partiallyReturned'
-                                                            : statuspayload?.status;
+                                            if (data?.updateOrderStatus?.success) {
+                                                var temp = { ...submitSheetPayload };
+                                                temp.updateSheetOrderstemp.map((i, ii) => {
+                                                    if (i.orderId == statuspayload.order.id) {
+                                                        temp.updateSheetOrderstemp[ii].orderStatus =
+                                                            !statuspayload?.fullDelivery && statuspayload?.status == 'delivered'
+                                                                ? 'partiallyDelivered'
+                                                                : !statuspayload?.fullReturn && statuspayload?.status == 'return'
+                                                                ? 'partiallyReturned'
+                                                                : statuspayload?.status;
+                                                    }
 
-                                                    // alert(JSON.stringify(temp.updateSheetOrderstemp[ii].order?.orderItems));
-                                                }
-                                            });
-
-                                            const deepClone = (obj) => JSON.parse(JSON.stringify(obj)); // Utility for deep cloning
-
-                                            var sheetOrdersTemp = deepClone(sheetOrders);
-                                            if (statuspayload?.order?.id) {
-                                                sheetOrders?.forEach((sheet, sheetIndex) => {
-                                                    if (sheet.order.id === statuspayload.order.id) {
-                                                        sheet?.order?.orderItems?.forEach((orderitem, orderitemindex) => {
-                                                            const matchingSuborder = statuspayload?.partialItems?.find((suborderitem) => suborderitem.id === orderitem.id);
-
-                                                            if (matchingSuborder) {
-                                                                sheetOrdersTemp[sheetIndex].order.orderItems[orderitemindex].partialCount = matchingSuborder.partialCount;
-                                                            }
-                                                        });
+                                                    if (i.orderId == statuspayload?.previousOrder?.id) {
+                                                        temp.updateSheetOrderstemp[ii].orderStatus =
+                                                            !statuspayload?.fullDelivery && statuspayload?.status == 'delivered'
+                                                                ? 'partiallyDelivered'
+                                                                : !statuspayload?.fullReturn && statuspayload?.status == 'return'
+                                                                ? 'partiallyReturned'
+                                                                : statuspayload?.status;
                                                     }
                                                 });
+
+                                                const deepClone = (obj) => JSON.parse(JSON.stringify(obj)); // Utility for deep cloning
+
+                                                var sheetOrdersTemp = deepClone(sheetOrders);
+                                                if (statuspayload?.order?.id) {
+                                                    sheetOrders?.forEach((sheet, sheetIndex) => {
+                                                        if (sheet.order.id === statuspayload.order.id) {
+                                                            sheetOrdersTemp[sheetIndex].order.status =
+                                                                !statuspayload?.fullDelivery && statuspayload?.status == 'delivered'
+                                                                    ? 'partiallyDelivered'
+                                                                    : !statuspayload?.fullReturn && statuspayload?.status == 'return'
+                                                                    ? 'partiallyReturned'
+                                                                    : statuspayload?.status;
+                                                            sheet?.order?.orderItems?.forEach((orderitem, orderitemindex) => {
+                                                                const matchingSuborder = statuspayload?.partialItems?.find((suborderitem) => suborderitem.id === orderitem.id);
+                                                                // if (matchingSuborder) {
+                                                                sheetOrdersTemp[sheetIndex].order.orderItems[orderitemindex].partialCount = matchingSuborder
+                                                                    ? matchingSuborder?.partialCount
+                                                                    : sheetOrdersTemp[sheetIndex].order.orderItems[orderitemindex].count;
+                                                                // }
+                                                            });
+                                                        }
+                                                    });
+                                                }
+                                                if (statuspayload?.previousOrder?.id) {
+                                                    sheetOrders?.forEach((sheet, sheetIndex) => {
+                                                        if (sheet.order.id === statuspayload.previousOrder.id) {
+                                                            sheetOrdersTemp[sheetIndex].order.status =
+                                                                statuspayload?.status == 'postponed'
+                                                                    ? statuspayload?.status
+                                                                    : !statuspayload?.fullReturn && statuspayload?.returnStatus == 'return'
+                                                                    ? 'partiallyReturned'
+                                                                    : statuspayload?.returnStatus;
+                                                            sheet?.order?.orderItems?.forEach((orderitem, orderitemindex) => {
+                                                                const matchingSuborder = statuspayload?.partialItemsReturn?.find((suborderitem) => suborderitem.id === orderitem.id);
+
+                                                                // if (matchingSuborder) {
+                                                                sheetOrdersTemp[sheetIndex].order.orderItems[orderitemindex].partialCount = matchingSuborder
+                                                                    ? matchingSuborder?.partialCount
+                                                                    : sheetOrdersTemp[sheetIndex].order.orderItems[orderitemindex].count;
+                                                                // }
+                                                            });
+                                                        }
+                                                    });
+                                                }
+
+                                                setsheetOrders(sheetOrdersTemp);
+
+                                                setsubmitSheetPayload({ ...temp });
+                                                setstatuspayload({ step: 0, orderid: '', status: '', fullDelivery: true });
+                                                setchangestatusmodal(false);
+                                                NotificationManager.success('', 'Status changed successfully');
+                                            } else {
+                                                NotificationManager.warning(data?.updateOrderStatus?.message, 'Warning!');
                                             }
-                                            if (statuspayload?.previousOrder?.id) {
-                                                sheetOrders?.forEach((sheet, sheetIndex) => {
-                                                    if (sheet.order.id === statuspayload.previousOrder.id) {
-                                                        sheet?.order?.orderItems?.forEach((orderitem, orderitemindex) => {
-                                                            const matchingSuborder = statuspayload?.partialItemsReturn?.find((suborderitem) => suborderitem.id === orderitem.id);
-
-                                                            if (matchingSuborder) {
-                                                                sheetOrdersTemp[sheetIndex].order.orderItems[orderitemindex].partialCount = matchingSuborder.partialCount;
-                                                            }
-                                                        });
-                                                    }
-                                                });
-                                            }
-
-                                            setsheetOrders(sheetOrdersTemp);
-
-                                            setsubmitSheetPayload({ ...temp });
-                                            setstatuspayload({ step: 0, orderid: '', status: '', fullDelivery: true });
-                                            setchangestatusmodal(false);
-                                            NotificationManager.success('', 'Status changed successfully');
                                         } catch (error) {
                                             let errorMessage = 'An unexpected error occurred';
                                             if (error.graphQLErrors && error.graphQLErrors.length > 0) {
