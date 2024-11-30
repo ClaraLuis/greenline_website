@@ -15,18 +15,26 @@ import API from '../../../API/API.js';
 import ImportNewItem from '../InventoryItems/ImportNewItem.js';
 import { FiCheckCircle } from 'react-icons/fi';
 import Pagination from '../../Pagination.js';
-import TransactionsTable from '../Finance/TransactionsTable.js';
+import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
+import { DateRangePicker } from 'rsuite';
 
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
 import SelectComponent from '../../SelectComponent.js';
 import { NotificationManager } from 'react-notifications';
+import { IoMdTime } from 'react-icons/io';
+import Decimal from 'decimal.js';
+import Cookies from 'universal-cookie';
+import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
+
 const { ValueContainer, Placeholder } = components;
 
 const InventorySettings = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, inventoryRentTypeContext, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
+    const cookies = new Cookies();
+
+    const { dateformatter, inventoryRentTypeContext, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
     const {
         useQueryGQL,
         fetchTransactions,
@@ -41,6 +49,7 @@ const InventorySettings = (props) => {
         fetchMerchants,
         updateInventoryRent,
         createInventoryRent,
+        paginateInventoryRentTransaction,
     } = API();
     const [importItemModel, setimportItemModel] = useState(false);
     const [inventorySettings, setinventorySettings] = useState({
@@ -64,13 +73,13 @@ const InventorySettings = (props) => {
 
     const [filterSentTransactionsObj, setfilterSentTransactionsObj] = useState({
         isAsc: true,
-        limit: 3,
+        limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
-        type: 'inventoryRent',
+        merchantIds: [parseInt(queryParameters.get('merchantId'))],
     });
 
-    const fetchSenttTransactionsQuery = useQueryGQL('', fetchTransactions(), filterSentTransactionsObj);
+    const fetchSenttTransactionsQuery = useQueryGQL('', paginateInventoryRentTransaction(), filterSentTransactionsObj);
     const [findOneMerchantQuery] = useLazyQueryGQL(findOneMerchant());
     const [fetchRacksLazyQuery] = useLazyQueryGQL(fetchRacks());
     const [paginateBoxesLazyQuery] = useLazyQueryGQL(paginateBoxes());
@@ -158,16 +167,6 @@ const InventorySettings = (props) => {
                     });
                     setfetchBallotsQuery(data);
                 }
-
-                var { data } = await inventoryRentSummaryLazyQuery({
-                    variables: {
-                        input: {
-                            // merchantId: parseInt(queryParameters.get('merchantId')),
-                            // afterDate: lastbill ?? undefined,
-                        },
-                    },
-                });
-                setinventoryRentSummaryData(data?.inventoryRentSummary?.data[0]);
             }
         } catch (e) {
             let errorMessage = 'An unexpected error occurred';
@@ -183,10 +182,30 @@ const InventorySettings = (props) => {
     };
 
     useEffect(async () => {
+        var { data } = await inventoryRentSummaryLazyQuery({
+            variables: {
+                input: {
+                    startDate: filterSentTransactionsObj?.startDate,
+                    endDate: filterSentTransactionsObj?.endDate,
+                    merchantIds: [parseInt(queryParameters.get('merchantId'))],
+                },
+            },
+        });
+        setinventoryRentSummaryData(data?.inventoryRentSummary?.data[0]);
+    }, [filterSentTransactionsObj?.startDate, filterSentTransactionsObj?.endDate, parseInt(queryParameters.get('merchantId'))]);
+
+    useEffect(async () => {
         if (queryParameters.get('merchantId')) {
             findOneMerchantFunction();
+            setfilterSentTransactionsObj({
+                isAsc: true,
+                limit: 20,
+                afterCursor: undefined,
+                beforeCursor: undefined,
+                merchantIds: [parseInt(queryParameters.get('merchantId'))],
+            });
         }
-    }, []);
+    }, [queryParameters.get('merchantId')]);
     const formatDate = (isoDate) => {
         return isoDate.split('T')[0];
     };
@@ -208,7 +227,12 @@ const InventorySettings = (props) => {
         afterCursor: undefined,
         beforeCursor: undefined,
     });
-
+    const dateformatterDayAndMonth = (date) => {
+        const d = new Date(date);
+        const day = d.getDate();
+        const month = d.toLocaleString('default', { month: 'long' });
+        return `${day} ${month}`;
+    };
     const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filterMerchants);
     const getFirstDayOfNextMonth = () => {
         const today = new Date();
@@ -240,6 +264,142 @@ const InventorySettings = (props) => {
                     </div>
                 </div>
             )}
+            <div class="col-lg-12 px-3">
+                {inventorySettings?.functype == 'edit' && cookies.get('userInfo')?.type == 'merchant' && (
+                    <div class="row m-0 w-100">
+                        <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 pt-4 px-3'}>
+                            <div class="row m-0 w-100">
+                                <div class="row m-0 w-100 mb-2 p-2 pt-4 px-3">
+                                    <div class="col-lg-6 mb-3">
+                                        <label class={formstyles.form__label}>Rent Type</label>
+                                        <p>{inventorySettings?.type || 'N/A'}</p>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <label class={formstyles.form__label}>Start Date</label>
+                                        <p>{inventorySettings?.startDate ? formatDate(inventorySettings.startDate) : 'N/A'}</p>
+                                    </div>
+
+                                    {inventorySettings?.type === 'meter' && (
+                                        <div class="col-lg-6">
+                                            <label class={formstyles.form__label}>Square Meter</label>
+                                            <p>
+                                                {inventorySettings?.sqaureMeter || 'N/A'} {inventorySettings?.currency}
+                                            </p>
+                                        </div>
+                                    )}
+                                    <div class="col-lg-6">
+                                        <label class={formstyles.form__label}>
+                                            {inventorySettings?.type === 'item'
+                                                ? 'Price Per Item'
+                                                : inventorySettings?.type === 'order'
+                                                ? 'Price Per Order'
+                                                : inventorySettings?.type === 'meter'
+                                                ? 'Price Per Meter'
+                                                : 'Price Per Unit Per Month'}
+                                        </label>
+                                        <p>
+                                            {inventorySettings?.pricePerUnit || 'N/A'} {inventorySettings?.currency}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+                {inventorySettings?.functype == 'add' && cookies.get('userInfo')?.type == 'merchant' && (
+                    <div class="row m-0 w-100">
+                        <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 pt-4 px-3 allcentered'}>You have no inventory rent</div>
+                    </div>
+                )}
+            </div>
+            <div class="col-lg-12 px-3">
+                <div style={{ borderRadius: '0.25rem', background: 'white' }} class={generalstyles.card + ' col-lg-12'}>
+                    <Accordion allowMultipleExpanded={true} allowZeroExpanded={true} preExpanded={['import-instructions']}>
+                        <AccordionItem
+                            uuid="import-instructions" // Unique ID for this accordion item
+                            class={`${generalstyles.innercard}` + '  p-2'}
+                        >
+                            <AccordionItemHeading>
+                                <AccordionItemButton>
+                                    <div class="row m-0 w-100">
+                                        <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
+                                            <p class={generalstyles.cardTitle + '  m-0 p-0 '}>
+                                                Filter:{' '}
+                                                <AccordionItemState>
+                                                    {(state) => {
+                                                        if (state.expanded == true) {
+                                                            return <></>;
+                                                        } else {
+                                                            return (
+                                                                <>
+                                                                    {dateformatterDayAndMonth(filterSentTransactionsObj?.startDate) ?? ''} -{' '}
+                                                                    {dateformatterDayAndMonth(filterSentTransactionsObj?.endDate) ?? ''}
+                                                                </>
+                                                            );
+                                                        }
+                                                    }}
+                                                </AccordionItemState>
+                                            </p>
+                                        </div>
+                                        <div class="col-lg-4 col-md-4 col-sm-4 p-0 d-flex align-items-center justify-content-end">
+                                            <AccordionItemState>
+                                                {(state) => {
+                                                    if (state.expanded == true) {
+                                                        return (
+                                                            <i class="h-100 d-flex align-items-center justify-content-center">
+                                                                <BsChevronUp />
+                                                            </i>
+                                                        );
+                                                    } else {
+                                                        return (
+                                                            <i class="h-100 d-flex align-items-center justify-content-center">
+                                                                <BsChevronDown />
+                                                            </i>
+                                                        );
+                                                    }
+                                                }}
+                                            </AccordionItemState>
+                                        </div>
+                                    </div>
+                                </AccordionItemButton>
+                            </AccordionItemHeading>
+                            <AccordionItemPanel>
+                                <hr className="mt-2 mb-3" />
+                                <div class="row m-0 w-100">
+                                    <div class=" col-lg-3 mb-md-2">
+                                        <span>Date Range</span>
+                                        <div class="mt-1" style={{ width: '100%' }}>
+                                            <DateRangePicker
+                                                // disabledDate={allowedMaxDays(30)}
+                                                // value={[filterorders?.startDate, filterorders?.endDate]}
+                                                onChange={(event) => {
+                                                    if (event != null) {
+                                                        const start = event[0];
+                                                        const startdate = new Date(start);
+                                                        const year1 = startdate.getFullYear();
+                                                        const month1 = startdate.getMonth() + 1; // Months are zero-indexed
+                                                        const day1 = startdate.getDate();
+
+                                                        const end = event[1];
+                                                        const enddate = new Date(end);
+                                                        const year2 = enddate.getFullYear();
+                                                        const month2 = enddate.getMonth() + 1; // Months are zero-indexed
+                                                        const day2 = enddate.getDate();
+                                                        setfilterSentTransactionsObj({ ...filterSentTransactionsObj, startDate: event[0], endDate: event[1] });
+                                                    }
+                                                }}
+                                                onClean={() => {
+                                                    setfilterSentTransactionsObj({ ...filterSentTransactionsObj, startDate: null, endDate: null });
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </AccordionItemPanel>
+                        </AccordionItem>
+                    </Accordion>
+                </div>
+            </div>
             {queryParameters.get('merchantId') && (
                 <>
                     <div class="col-lg-12 p-0">
@@ -247,7 +407,7 @@ const InventorySettings = (props) => {
                             <div class="col-lg-5">
                                 <div class={generalstyles.card + ' row m-0 p-3 w-100'}>
                                     <div style={{ fontSize: '17px' }} class="col-lg-12 mb-1">
-                                        Next Bill Payment <span style={{ color: 'grey', fontSize: '15px' }}>({getFirstDayOfNextMonth()})</span>
+                                        Total Cost
                                     </div>
                                     <div class="col-lg-12">
                                         <span style={{ fontWeight: 800, fontSize: '23px' }}>
@@ -269,194 +429,302 @@ const InventorySettings = (props) => {
                         </div>
                     </div>
                     <div class="col-lg-12 px-3">
-                        {/* <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
+                        <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
                             <div class={' col-lg-6 col-md-6 col-sm-12 p-0 d-flex align-items-center justify-content-start '}>
                                 <p class=" p-0 m-0 text-uppercase" style={{ fontSize: '15px' }}>
                                     <span style={{ color: 'var(--info)' }}>Transactions</span>
                                 </p>
                             </div>
-                            <div class="col-lg-6 p-0 d-flex justify-content-end">
-                                <span
-                                    onClick={() => {
-                                        history.push('/merchantpayments');
-                                    }}
-                                    style={{ height: '35px' }}
-                                    class={generalstyles.roundbutton + '  allcentered'}
-                                >
-                                    View all
-                                </span>
-                            </div>
+
                             <>
                                 <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
-                                    <TransactionsTable
-                                        width={'50%'}
-                                        query={fetchSenttTransactionsQuery}
-                                        paginationAttr="paginateFinancialTransaction"
-                                        srctype="courierCollection"
-                                        // accountId={queryParameters.get('accountId')}
-                                        refetchFunc={() => {
-                                            Refetch();
-                                        }}
-                                    />
+                                    {!props?.query?.loading && fetchSenttTransactionsQuery != undefined && fetchSenttTransactionsQuery && (
+                                        <>
+                                            {fetchSenttTransactionsQuery.data?.paginateInventoryRentTransaction?.data?.length == 0 && (
+                                                <div style={{ height: '70vh' }} class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
+                                                    <div class="row m-0 w-100">
+                                                        <FaLayerGroup size={40} class=" col-lg-12" />
+                                                        <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
+                                                            {props?.srctype == 'expenses' ? 'No Expenses' : 'No Transactions'}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+                                            {fetchSenttTransactionsQuery.data?.paginateInventoryRentTransaction?.data?.length != 0 && (
+                                                <div class="row m-0 w-100">
+                                                    <div class="col-lg-12 p-0 mb-3">
+                                                        <Pagination
+                                                            beforeCursor={fetchSenttTransactionsQuery?.data?.paginateInventoryRentTransaction?.cursor?.beforeCursor}
+                                                            afterCursor={fetchSenttTransactionsQuery?.data?.paginateInventoryRentTransaction?.cursor?.afterCursor}
+                                                            filter={filterSentTransactionsObj}
+                                                            setfilter={setfilterSentTransactionsObj}
+                                                        />
+                                                    </div>
+                                                    {fetchSenttTransactionsQuery.data?.paginateInventoryRentTransaction?.data?.map((item, index) => {
+                                                        return (
+                                                            <div
+                                                                style={{ fontSize: '13px', cursor: props?.allowSelect ? 'pointer' : '', position: 'relative', padding: 'auto' }}
+                                                                onClick={() => {
+                                                                    if (props?.allowSelect) {
+                                                                        handleSelect(item);
+                                                                    }
+                                                                }}
+                                                                className={'col-lg-4'}
+                                                            >
+                                                                <div class={generalstyles.card + ' p-2 px-3 row m-0 w-100 allcentered'}>
+                                                                    <div className="col-lg-3 p-0">
+                                                                        <span style={{ fontWeight: 700, fontSize: '16px' }} class=" d-flex align-items-center">
+                                                                            {/* <FaMoneyBill class="mr-1" /> */}
+                                                                            {new Decimal(item?.quantity ?? 0).times(inventorySettings?.pricePerUnit ?? 0).toFixed(2)}
+                                                                            {inventorySettings?.currency}
+                                                                        </span>
+                                                                    </div>
+
+                                                                    <div className="col-lg-9 p-0 d-flex justify-content-end align-items-center">
+                                                                        <div class="row m-0 w-100 d-flex justify-content-end align-items-center">
+                                                                            <div
+                                                                                style={{ color: 'white' }}
+                                                                                className={' wordbreak bg-primary rounded-pill font-weight-600 allcentered mx-1 text-capitalize'}
+                                                                            >
+                                                                                {item?.type?.split(/(?=[A-Z])/).join(' ')}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-lg-12 p-0 mt-2">
+                                                                        <div class="row m-0 w-100 justify-content-end">
+                                                                            <div className="col-lg-12 p-0 mb-1 d-flex justify-content-end">
+                                                                                <span class="d-flex align-items-center" style={{ fontWeight: 500, color: 'grey', fontSize: '12px' }}>
+                                                                                    <IoMdTime class="mr-1" />
+                                                                                    {dateformatter(item?.createdAt)}
+                                                                                </span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    {/* )} */}
+                                                                    {/* <div class="col-lg-12 p-0 allcentered">
+                                                {item?.toAccount?.id == props?.accountId && (
+                                                    <button
+                                                        onClick={() => {
+                                                            setstatuspayload({ ...statuspayload, id: item?.id });
+                                                            setchangestatusmodal(true);
+                                                        }}
+                                                        style={{
+                                                            height: '25px',
+                                                            fontSize: '12px',
+                                                            width: 'fit-content',
+                                                        }}
+                                                        class={generalstyles.roundbutton + '  mr-2 my-3 py-0 px-0'}
+                                                    >
+                                                        Update status
+                                                    </button>
+                                                )}
+                                                {item?.fromAccount?.id == props?.accountId && item?.status == 'pendingReceiver' && (
+                                                    <button
+                                                        onClick={async () => {
+                                                            await setstatuspayload({ ...statuspayload, id: item?.id, status: 'cancel' });
+                                                            if (window.confirm('Are you sure you want to cancel this transaction')) {
+                                                                if (isAuth([1, 51])) {
+                                                                    var { data } = await updateAnyFinancialTransactionMutation();
+                                                                } else {
+                                                                    var { data } = await updateMyFinancialTransactionMutation();
+                                                                }
+                                                                if (data?.updateAnyFinancialTransaction?.success) {
+                                                                    props?.refetchFunc();
+                                                                } else {
+                                                                    NotificationManager.warning(data?.updateAnyFinancialTransaction?.message, 'Warning!');
+                                                                }
+                                                            }
+                                                        }}
+                                                        class={generalstyles.roundbutton + '  mr-2 my-3 bg-danger bg-dangerhover '}
+                                                    >
+                                                        Cancel transaction
+                                                    </button>
+                                                )}
+                                            </div> */}
+                                                                </div>
+                                                            </div>
+                                                        );
+                                                    })}
+                                                    <div class="col-lg-12 p-0 mb-3">
+                                                        <Pagination
+                                                            beforeCursor={fetchSenttTransactionsQuery?.data?.paginateInventoryRentTransaction?.cursor?.beforeCursor}
+                                                            afterCursor={fetchSenttTransactionsQuery?.data?.paginateInventoryRentTransaction?.cursor?.afterCursor}
+                                                            filter={filterSentTransactionsObj}
+                                                            setfilter={setfilterSentTransactionsObj}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </>
+                                    )}
                                 </div>
                             </>
-                        </div> */}
-                        <div class="row m-0 w-100">
-                            <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 pt-4 px-3'}>
-                                <div class={'col-lg-6 mb-3'}>
-                                    <label for="name" class={formstyles.form__label}>
-                                        Rent Type
-                                    </label>
-                                    <Select
-                                        isDisabled={inventorySettings?.functype == 'edit'}
-                                        options={inventoryRentTypeContext}
-                                        styles={defaultstyles}
-                                        value={inventoryRentTypeContext.filter((option) => option.value == inventorySettings?.type)}
-                                        onChange={(option) => {
-                                            setinventorySettings({ ...inventorySettings, type: option.value });
-                                        }}
-                                    />
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="row m-0 w-100  ">
-                                        <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                            <label class={formstyles.form__label}>Start Date</label>
-                                            <input
-                                                disabled={inventorySettings?.functype == 'edit'}
-                                                type={'date'}
-                                                class={formstyles.form__field}
-                                                value={inventorySettings.startDate ? formatDate(inventorySettings.startDate) : ''}
-                                                onChange={(event) => {
-                                                    setinventorySettings({ ...inventorySettings, startDate: event.target.value });
-                                                }}
-                                            />
-                                        </div>
+                        </div>
+                        {inventorySettings?.functype == 'edit' && cookies.get('userInfo')?.type != 'merchant' && (
+                            <div class="row m-0 w-100">
+                                <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 pt-4 px-3'}>
+                                    <div class={'col-lg-6 mb-3'}>
+                                        <label for="name" class={formstyles.form__label}>
+                                            Rent Type
+                                        </label>
+                                        <Select
+                                            isDisabled={inventorySettings?.functype == 'edit'}
+                                            options={inventoryRentTypeContext}
+                                            styles={defaultstyles}
+                                            value={inventoryRentTypeContext.filter((option) => option.value == inventorySettings?.type)}
+                                            onChange={(option) => {
+                                                setinventorySettings({ ...inventorySettings, type: option.value });
+                                            }}
+                                        />
                                     </div>
-                                </div>
-
-                                <div class="col-lg-6">
-                                    <div class="row m-0 w-100  ">
-                                        <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                            <label class={formstyles.form__label}>Currency</label>
-                                            <Select
-                                                options={[
-                                                    { label: 'EGP', value: 'EGP' },
-                                                    { label: 'USD', value: 'USD' },
-                                                ]}
-                                                styles={defaultstyles}
-                                                value={[
-                                                    { label: 'EGP', value: 'EGP' },
-                                                    { label: 'USD', value: 'USD' },
-                                                ].filter((option) => option.value == inventorySettings?.currency)}
-                                                onChange={(option) => {
-                                                    setinventorySettings({ ...inventorySettings, currency: option.value });
-                                                }}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                                {inventorySettings?.type == 'meter' && (
                                     <div class="col-lg-6">
                                         <div class="row m-0 w-100  ">
                                             <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                                <label class={formstyles.form__label}>Sqaure Meter</label>
+                                                <label class={formstyles.form__label}>Start Date</label>
                                                 <input
-                                                    type={'number'}
+                                                    disabled={inventorySettings?.functype == 'edit'}
+                                                    type={'date'}
                                                     class={formstyles.form__field}
-                                                    value={inventorySettings.sqaureMeter}
+                                                    value={inventorySettings.startDate ? formatDate(inventorySettings.startDate) : ''}
                                                     onChange={(event) => {
-                                                        setinventorySettings({ ...inventorySettings, sqaureMeter: event.target.value });
+                                                        setinventorySettings({ ...inventorySettings, startDate: event.target.value });
                                                     }}
                                                 />
                                             </div>
                                         </div>
                                     </div>
-                                )}
-                                <div class="col-lg-6">
-                                    <div class="row m-0 w-100  ">
-                                        <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                            <label class={formstyles.form__label}>
-                                                {inventorySettings?.type === 'item'
-                                                    ? 'Price Per Item'
-                                                    : inventorySettings?.type == 'order'
-                                                    ? 'Price Per Order'
-                                                    : inventorySettings?.type == 'meter'
-                                                    ? 'Price Per Meter'
-                                                    : 'Price Per Unit Per Month'}
-                                            </label>
-                                            <input
-                                                type={'number'}
-                                                step="any"
-                                                class={formstyles.form__field}
-                                                value={inventorySettings.pricePerUnit}
-                                                onChange={(event) => {
-                                                    setinventorySettings({ ...inventorySettings, pricePerUnit: event.target.value });
-                                                }}
-                                            />
+
+                                    <div class="col-lg-6">
+                                        <div class="row m-0 w-100  ">
+                                            <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                <label class={formstyles.form__label}>Currency</label>
+                                                <Select
+                                                    options={[
+                                                        { label: 'EGP', value: 'EGP' },
+                                                        { label: 'USD', value: 'USD' },
+                                                    ]}
+                                                    styles={defaultstyles}
+                                                    value={[
+                                                        { label: 'EGP', value: 'EGP' },
+                                                        { label: 'USD', value: 'USD' },
+                                                    ].filter((option) => option.value == inventorySettings?.currency)}
+                                                    onChange={(option) => {
+                                                        setinventorySettings({ ...inventorySettings, currency: option.value });
+                                                    }}
+                                                    isDisabled={inventorySettings?.functype == 'edit'}
+                                                />
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class={'col-lg-12 d-flex justify-content-center mt-5'}>
-                                    <button
-                                        disabled={buttonLoadingContext}
-                                        class={generalstyles.roundbutton + ' allcentered'}
-                                        onClick={async () => {
-                                            if (buttonLoadingContext) return;
-                                            setbuttonLoadingContext(true);
-                                            try {
-                                                if (
-                                                    inventorySettings?.type &&
-                                                    inventorySettings?.type?.length != 0 &&
-                                                    inventorySettings?.startDate &&
-                                                    inventorySettings?.startDate?.length != 0 &&
-                                                    inventorySettings?.currency &&
-                                                    inventorySettings?.currency?.length != 0 &&
-                                                    inventorySettings?.pricePerUnit &&
-                                                    inventorySettings?.pricePerUnit?.length != 0
-                                                ) {
-                                                    if (inventorySettings?.functype == 'add') {
-                                                        const { data } = await createInventoryRentMutation();
-                                                        if (data?.createInventoryRent?.success) {
-                                                            findOneMerchantFunction();
-                                                            NotificationManager.success('', 'Success');
+                                    {inventorySettings?.type == 'meter' && (
+                                        <div class="col-lg-6">
+                                            <div class="row m-0 w-100  ">
+                                                <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                    <label class={formstyles.form__label}>Sqaure Meter</label>
+                                                    <input
+                                                        type={'number'}
+                                                        disabled={inventorySettings?.functype == 'edit' && cookies.get('userInfo')?.type == 'merchant'}
+                                                        class={formstyles.form__field}
+                                                        value={inventorySettings.sqaureMeter}
+                                                        onChange={(event) => {
+                                                            setinventorySettings({ ...inventorySettings, sqaureMeter: event.target.value });
+                                                        }}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+                                    <div class="col-lg-6">
+                                        <div class="row m-0 w-100  ">
+                                            <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                <label class={formstyles.form__label}>
+                                                    {inventorySettings?.type === 'item'
+                                                        ? 'Price Per Item'
+                                                        : inventorySettings?.type == 'order'
+                                                        ? 'Price Per Order'
+                                                        : inventorySettings?.type == 'meter'
+                                                        ? 'Price Per Meter'
+                                                        : 'Price Per Unit Per Month'}
+                                                </label>
+                                                <input
+                                                    disabled={inventorySettings?.functype == 'edit' && cookies.get('userInfo')?.type == 'merchant'}
+                                                    type={'number'}
+                                                    step="any"
+                                                    class={formstyles.form__field}
+                                                    value={inventorySettings.pricePerUnit}
+                                                    onChange={(event) => {
+                                                        setinventorySettings({ ...inventorySettings, pricePerUnit: event.target.value });
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {inventorySettings?.functype == 'edit' && cookies.get('userInfo')?.type != 'merchant' && (
+                                        <div class={'col-lg-12 d-flex justify-content-center mt-5'}>
+                                            <button
+                                                disabled={buttonLoadingContext}
+                                                class={generalstyles.roundbutton + ' allcentered'}
+                                                onClick={async () => {
+                                                    if (buttonLoadingContext) return;
+                                                    setbuttonLoadingContext(true);
+                                                    try {
+                                                        if (
+                                                            inventorySettings?.type &&
+                                                            inventorySettings?.type?.length != 0 &&
+                                                            inventorySettings?.startDate &&
+                                                            inventorySettings?.startDate?.length != 0 &&
+                                                            inventorySettings?.currency &&
+                                                            inventorySettings?.currency?.length != 0 &&
+                                                            inventorySettings?.pricePerUnit &&
+                                                            inventorySettings?.pricePerUnit?.length != 0
+                                                        ) {
+                                                            if (inventorySettings?.functype == 'add') {
+                                                                const { data } = await createInventoryRentMutation();
+                                                                if (data?.createInventoryRent?.success) {
+                                                                    findOneMerchantFunction();
+                                                                    NotificationManager.success('', 'Success');
+                                                                } else {
+                                                                    NotificationManager.warning('', 'Warning');
+                                                                }
+                                                            } else if (inventorySettings?.functype == 'edit') {
+                                                                const { data } = await updateInventoryRentMutation();
+                                                                if (data?.updateInventoryRent?.success) {
+                                                                    findOneMerchantFunction();
+                                                                    NotificationManager.success('', 'Success');
+                                                                } else {
+                                                                    NotificationManager.warning('', 'Warning');
+                                                                }
+                                                            }
                                                         } else {
-                                                            NotificationManager.warning('', 'Warning');
+                                                            NotificationManager.warning('Please Complete all fields', 'Warning');
                                                         }
-                                                    } else if (inventorySettings?.functype == 'edit') {
-                                                        const { data } = await updateInventoryRentMutation();
-                                                        if (data?.updateInventoryRent?.success) {
-                                                            findOneMerchantFunction();
-                                                            NotificationManager.success('', 'Success');
-                                                        } else {
-                                                            NotificationManager.warning('', 'Warning');
+                                                    } catch (error) {
+                                                        let errorMessage = 'An unexpected error occurred';
+                                                        if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                                            errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                                        } else if (error.networkError) {
+                                                            errorMessage = error.networkError.message || errorMessage;
+                                                        } else if (error.message) {
+                                                            errorMessage = error.message;
                                                         }
-                                                    }
-                                                } else {
-                                                    NotificationManager.warning('Please Complete all fields', 'Warning');
-                                                }
-                                            } catch (error) {
-                                                let errorMessage = 'An unexpected error occurred';
-                                                if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-                                                    errorMessage = error.graphQLErrors[0].message || errorMessage;
-                                                } else if (error.networkError) {
-                                                    errorMessage = error.networkError.message || errorMessage;
-                                                } else if (error.message) {
-                                                    errorMessage = error.message;
-                                                }
 
-                                                NotificationManager.warning(errorMessage, 'Warning!');
-                                                console.error('Error adding Merchant:', error);
-                                            }
-                                            setbuttonLoadingContext(false);
-                                        }}
-                                        style={{ padding: '0px' }}
-                                    >
-                                        {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                        {!buttonLoadingContext && <span>{inventorySettings?.functype == 'add' ? 'Add' : 'Edit'}</span>}
-                                    </button>
+                                                        NotificationManager.warning(errorMessage, 'Warning!');
+                                                        console.error('Error adding Merchant:', error);
+                                                    }
+                                                    setbuttonLoadingContext(false);
+                                                }}
+                                                style={{ padding: '0px' }}
+                                            >
+                                                {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                                {!buttonLoadingContext && <span>{inventorySettings?.functype == 'add' ? 'Add' : 'Edit'}</span>}
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
-                        </div>
+                        )}
                     </div>
                     {(inventorySettings?.type == 'rack' || inventorySettings?.type == 'box' || inventorySettings?.type == 'ballot') && (
                         <div class="col-lg-12 p-0 d-flex align-items-center justify-content-end">

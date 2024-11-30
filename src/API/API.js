@@ -538,7 +538,7 @@ const API = () => {
 
     const paginateInventoryRentTransaction = (payload) => {
         return gql`
-            query paginateInventoryRentTransaction($input: InventoryRentTransactionPageInput!) {
+            query paginateInventoryRentTransaction($input: PaginateInventoryRentTransactionsInput!) {
                 paginateInventoryRentTransaction(input: $input) {
                     data {
                         id
