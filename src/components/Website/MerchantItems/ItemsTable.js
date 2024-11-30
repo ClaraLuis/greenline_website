@@ -5,7 +5,7 @@ import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
-import { FaCheck, FaEllipsisV, FaLayerGroup, FaPlus } from 'react-icons/fa';
+import { FaCheck, FaEllipsisV, FaLayerGroup, FaPlus, FaShopify } from 'react-icons/fa';
 import { components } from 'react-select';
 
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
@@ -207,6 +207,13 @@ const ItemsTable = (props) => {
                                             })}
                                         </div>
                                     </div>
+                                    {item?.shopifyId && (
+                                        <div style={{ position: 'absolute', right: 5, top: 5 }}>
+                                            <div class="row m-0 w-100 aign-items-center">
+                                                <FaShopify class="mt-1 mr-1" />
+                                            </div>
+                                        </div>
+                                    )}
                                     {item?.itemVariants && (
                                         <div class="col-lg-12 p-0 d-flex align-items-cent6er justify-content-between " style={{ fontSize: '11px', fontWeight: 600, color: 'grey' }}>
                                             <div>{item?.itemVariants?.length} Variant(s)</div>

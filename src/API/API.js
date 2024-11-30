@@ -572,6 +572,7 @@ const API = () => {
                             id
                             sku
                             fullName
+                            shopifyId
                             item {
                                 name
                             }
@@ -1387,6 +1388,7 @@ const API = () => {
                         merchant {
                             name
                         }
+                        shopifyId
                         itemVariants {
                             id
                             sku
@@ -1541,6 +1543,7 @@ const API = () => {
                         price
                         weight
                         fullName
+                        shopifyId
                         createdAt
                         lastModified
                     }

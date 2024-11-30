@@ -16,7 +16,7 @@ import { TextareaAutosize } from '@mui/material';
 import axios from 'axios';
 import { sha256 } from 'js-sha256';
 import { Trash2 } from 'react-bootstrap-icons';
-import { FaChevronDown } from 'react-icons/fa';
+import { FaChevronDown, FaShopify } from 'react-icons/fa';
 import { TbCameraPlus } from 'react-icons/tb';
 import { NotificationManager } from 'react-notifications';
 import Cookies from 'universal-cookie';
@@ -243,7 +243,14 @@ const ItemDetails = (props) => {
     return (
         <div class="row m-0 w-100 p-md-2 pt-2 d-flex justify-content-center">
             <div class="col-lg-12 px-4">
-                <div class={generalstyles.card + ' row m-0 w-100 d-flex justify-content-end'}>
+                <div class={generalstyles.card + ' row m-0 w-100 d-flex justify-content-end align-items-center'}>
+                    {chosenvariant?.shopifyId && (
+                        <div>
+                            <div class="row m-0 w-100 aign-items-center">
+                                <FaShopify class=" mr-1" size={28} />
+                            </div>
+                        </div>
+                    )}
                     <button
                         onClick={() => {
                             setselectedVariants([]);
