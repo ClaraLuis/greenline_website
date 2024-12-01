@@ -85,6 +85,7 @@ const Login = () => {
                                 NotificationManager.warning('Email is not Valid', 'Warning');
                             } else if (data?.userState == 1) {
                                 setisValid(true);
+                                setinFirebase(false);
                             } else if (data?.userState == 2) {
                                 setisValid(true);
                                 setinFirebase(true);
