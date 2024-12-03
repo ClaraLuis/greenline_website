@@ -165,6 +165,7 @@ const AddOrder = (props) => {
         deliveryPart: orderpayload?.partialdelivery == 1 ? true : false,
         original: orderpayload?.original == 1 ? true : false,
         price: orderpayload?.price,
+        paymentType: orderpayload?.paymenttype,
         returnAmount: orderpayload?.returnAmount,
         returnOrderItems: orderpayload?.returnOrderItems?.length == 0 ? undefined : orderpayload?.returnOrderItems,
         previousOrderId: orderpayload?.previousOrderId?.length == 0 ? undefined : orderpayload?.previousOrderId,

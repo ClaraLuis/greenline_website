@@ -38,6 +38,7 @@ const Login = () => {
     const [inFirebase, setinFirebase] = useState(false);
     const [isValid, setisValid] = useState(false);
     const [isNew, setisNew] = useState(false);
+    const [forgetpass, setforgetpass] = useState(false);
 
     const [password, setpassword] = useState('');
     const [confirmpassword, setconfirmpassword] = useState('');
@@ -64,45 +65,78 @@ const Login = () => {
         if (buttonLoadingContext) return;
         setbuttonLoadingContext(true);
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (forgetpass) {
+            if (email != undefined && email?.length != 0 && regex.test(email)) {
+                const auth = getAuth();
+                sendPasswordResetEmail(auth, email)
+                    .then(() => {
+                        NotificationManager.success('Password reset email sent!', 'Success');
+                    })
+                    .catch((error) => {
+                        const errorCode = error.code;
+                        const errorMessage = error.message;
+                        NotificationManager.warning(errorMessage, 'Warning');
 
-        if (email != undefined && email?.length != 0 && regex.test(email)) {
-            if (!isValid) {
+                        // ..
+                    });
+            } else {
+                NotificationManager.warning('Please enter a valid email', 'Warning');
+            }
+        } else {
+            if (email != undefined && email?.length != 0 && regex.test(email)) {
                 if (!isValid) {
-                    try {
-                        const result = await fetchSignInMethodsForEmail(auth, email);
-                        if (result.length > 0) {
-                            setinFirebase(true);
-                        }
-                        // setisValid(true); // Set isValid to true after validating the email
-                    } catch (e) {
-                        handleError(e);
-                    }
-
-                    try {
-                        var { data } = await checkEmail({ variables: { email } });
-                        if (data) {
-                            if (data?.userState == 0) {
-                                NotificationManager.warning('Email is not Valid', 'Warning');
-                            } else if (data?.userState == 1) {
-                                setisValid(true);
-                                setinFirebase(false);
-                            } else if (data?.userState == 2) {
-                                setisValid(true);
+                    if (!isValid) {
+                        try {
+                            const result = await fetchSignInMethodsForEmail(auth, email);
+                            if (result.length > 0) {
                                 setinFirebase(true);
                             }
-                            // alert(JSON.stringify(data?.isValidEmail?.isValid));
+                            // setisValid(true); // Set isValid to true after validating the email
+                        } catch (e) {
+                            handleError(e);
                         }
-                    } catch (error) {
-                        handleError(error);
-                    }
-                }
-            } else {
-                if (buttonLoadingContext) return;
-                setbuttonLoadingContext(true);
 
-                if (!inFirebase) {
-                    if (password === confirmpassword) {
-                        createUserWithEmailAndPassword(auth, email, password)
+                        try {
+                            var { data } = await checkEmail({ variables: { email } });
+                            if (data) {
+                                if (data?.userState == 0) {
+                                    NotificationManager.warning('Email is not Valid', 'Warning');
+                                } else if (data?.userState == 1) {
+                                    setisValid(true);
+                                    setinFirebase(false);
+                                } else if (data?.userState == 2) {
+                                    setisValid(true);
+                                    setinFirebase(true);
+                                }
+                                // alert(JSON.stringify(data?.isValidEmail?.isValid));
+                            }
+                        } catch (error) {
+                            handleError(error);
+                        }
+                    }
+                } else {
+                    if (buttonLoadingContext) return;
+                    setbuttonLoadingContext(true);
+
+                    if (!inFirebase) {
+                        if (password === confirmpassword) {
+                            createUserWithEmailAndPassword(auth, email, password)
+                                .then((response) => {
+                                    if (response) {
+                                        var temp = { ...payload };
+                                        temp.token = response.user.accessToken;
+                                        // handleRequestLoginResponse(temp);
+                                    }
+                                })
+                                .catch((error) => {
+                                    console.log(error);
+                                    alert('error' + JSON.stringify(error));
+                                });
+                        } else {
+                            NotificationManager.warning("Passwords don't match", 'Warning');
+                        }
+                    } else {
+                        signInWithEmailAndPassword(auth, email, password)
                             .then((response) => {
                                 if (response) {
                                     var temp = { ...payload };
@@ -111,33 +145,19 @@ const Login = () => {
                                 }
                             })
                             .catch((error) => {
-                                console.log(error);
-                                alert('error' + JSON.stringify(error));
+                                var message = getFirebaseAuthErrorMessage(error?.code);
+                                NotificationManager.warning(message, 'Warning');
                             });
-                    } else {
-                        NotificationManager.warning("Passwords don't match", 'Warning');
                     }
-                } else {
-                    signInWithEmailAndPassword(auth, email, password)
-                        .then((response) => {
-                            if (response) {
-                                var temp = { ...payload };
-                                temp.token = response.user.accessToken;
-                                // handleRequestLoginResponse(temp);
-                            }
-                        })
-                        .catch((error) => {
-                            var message = getFirebaseAuthErrorMessage(error?.code);
-                            NotificationManager.warning(message, 'Warning');
-                        });
+                    setbuttonLoadingContext(false);
                 }
-                setbuttonLoadingContext(false);
+            } else {
+                NotificationManager.warning('Please enter a valid email', 'Warning');
             }
-        } else {
-            NotificationManager.warning('Please enter a valid email', 'Warning');
         }
-
-        setbuttonLoadingContext(false);
+        setTimeout(() => {
+            setbuttonLoadingContext(false);
+        }, 1000);
     };
 
     const handleError = (error) => {
@@ -325,9 +345,10 @@ const Login = () => {
                                                 disabled={buttonLoadingContext}
                                             >
                                                 {buttonLoadingContext && <CircularProgress color="white" width="20px" height="20px" duration="1s" />}
-                                                {!isValid && <>{!buttonLoadingContext && <span>{isNew ? 'Signup' : 'Login'} </span>}</>}
-                                                {!inFirebase && isValid && <>{!buttonLoadingContext && <span>{'Signup'} </span>}</>}
-                                                {inFirebase && isValid && <>{!buttonLoadingContext && <span>{'Login'} </span>}</>}
+                                                {!isValid && !forgetpass && <>{!buttonLoadingContext && <span>{isNew ? 'Signup' : 'Login'} </span>}</>}
+                                                {!inFirebase && isValid && !forgetpass && <>{!buttonLoadingContext && <span>{'Signup'} </span>}</>}
+                                                {inFirebase && isValid && !forgetpass && <>{!buttonLoadingContext && <span>{'Login'} </span>}</>}
+                                                {forgetpass && <>{!buttonLoadingContext && <span>{'Send Reset Email'} </span>}</>}
                                             </button>
                                         </div>
                                     </div>
@@ -340,21 +361,11 @@ const Login = () => {
                     <span
                         class="text-primaryhover"
                         onClick={() => {
-                            const auth = getAuth();
-                            sendPasswordResetEmail(auth, email)
-                                .then(() => {
-                                    NotificationManager.success('Password reset email sent!', 'Success');
-                                })
-                                .catch((error) => {
-                                    const errorCode = error.code;
-                                    const errorMessage = error.message;
-                                    NotificationManager.warning(errorMessage, 'Warning');
-
-                                    // ..
-                                });
+                            setforgetpass(!forgetpass);
                         }}
                     >
-                        forgot password?
+                        {!forgetpass && <>forgot password?</>}
+                        {forgetpass && <>Login</>}
                     </span>
                 </div>
             </div>

@@ -437,7 +437,7 @@ const InventoryItems = (props) => {
                                 var selected = false;
                                 var count = 0;
                                 selectedVariants?.map((i) => {
-                                    if (i.item.sku == element.itemVariant.sku) {
+                                    if (i.id == element.id) {
                                         selected = true;
                                         count = i?.count;
                                     }
@@ -450,13 +450,13 @@ const InventoryItems = (props) => {
                                                 var exist = false;
                                                 var chosenindex = null;
                                                 temp.map((i, ii) => {
-                                                    if (i?.item?.sku == element?.itemVariant.sku) {
+                                                    if (i?.id == element?.id) {
                                                         exist = true;
                                                         chosenindex = ii;
                                                     }
                                                 });
                                                 if (!exist) {
-                                                    temp.push({ item: element.itemVariant });
+                                                    temp.push({ item: element.itemVariant, id: element.id });
                                                 } else {
                                                     temp.splice(chosenindex, 1);
                                                 }

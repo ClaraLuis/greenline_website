@@ -1001,7 +1001,7 @@ const OrderInfo = (props) => {
                                                 <div class={' row m-0 w-100 allcentered '}>
                                                     <div className="col-lg-12 p-0 d-flex justify-content-end mb-3">
                                                         <div style={{ background: '#eee', color: 'black' }} className={' wordbreak rounded-pill font-weight-600 allcentered mx-1 '}>
-                                                            {chosenOrderContext?.sheetOrder?.originalPrice ? 'Original Price' : 'Not Original Price'}
+                                                            {chosenOrderContext?.originalPrice ? 'Original Price' : 'Not Original Price'}
                                                         </div>
                                                     </div>
 
@@ -1066,6 +1066,7 @@ const OrderInfo = (props) => {
                                                             class="iconhover allcentered"
                                                             onClick={() => {
                                                                 seteditCustomer(true);
+                                                                seteditAddress(false);
                                                             }}
                                                         >
                                                             <TbEdit />
