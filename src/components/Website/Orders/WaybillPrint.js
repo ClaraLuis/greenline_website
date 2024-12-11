@@ -59,7 +59,7 @@ const WaybillPrint = ({ waybills }) => {
     const printToPDF = async () => {
         // Create a new PDF document with A4 size
 
-        const pdf = new jsPDF('p', 'mm', 'a4'); // 'p' for portrait orientation, 'mm' for units, 'a4' for A4 size
+        const pdf = new jsPDF('l', 'pc', 'a5'); // 'p' for portrait orientation, 'mm' for units, 'a4' for A4 size
 
         const pdfWidth = pdf.internal.pageSize.getWidth();
 

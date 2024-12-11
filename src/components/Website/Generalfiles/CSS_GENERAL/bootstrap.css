@@ -5114,7 +5114,7 @@ ul {
 
 @media print {
     @page {
-        size: portrait;
+        size: landscape;
     }
     /* .print-container {
         display: block;

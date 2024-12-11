@@ -194,7 +194,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/fulfilled',
                         permissionpage: [1],
-                        show: isAuth([1]),
+                        show: isAuth([1, 54]),
                     },
                     {
                         name: 'Receive At Sort Facilities',

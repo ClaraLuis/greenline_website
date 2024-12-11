@@ -61,19 +61,37 @@
 .print-container {
     display: flex;
     flex-direction: column;
+    align-items: center; /* Center the content horizontally */
+    justify-content: flex-start; /* Align content to the top */
 }
 
 .print-page {
-    width: 100%;
-    height: auto;
-    margin: 0 auto;
-    page-break-before: always; /* Ensures a new page starts for each .print-page element */
-    page-break-inside: avoid; /* Avoid breaking content within this element */
+    width: 5cm; /* Adjust to the SKU label's width */
+    height: 3cm; /* Adjust to the SKU label's height */
+    margin: 0; /* Remove default margins to fit the label dimensions */
+    padding: 0.2cm; /* Add padding if necessary */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center the content horizontally */
+    justify-content: center; /* Center the content vertically */
+    border: 1px solid transparent; /* Remove for actual printing; useful for preview */
+    page-break-before: always; /* Ensure each SKU starts on a new page */
+    page-break-inside: avoid; /* Avoid splitting content within a SKU */
 }
 
 @media print {
+    .print-container {
+        display: block; /* Ensure container displays correctly during print */
+        margin: 0; /* Remove margins for full utilization of printable area */
+        padding: 0;
+    }
+
     .print-page {
-        page-break-before: always;
-        page-break-inside: avoid;
+        width: 5cm; /* Match the SKU machine's label width */
+        height: 3cm; /* Match the SKU machine's label height */
+        page-break-before: always; /* New page for each SKU */
+        page-break-inside: avoid; /* Avoid content splits */
+        border: none; /* Remove any borders */
+        overflow: hidden; /* Prevent content overflow */
     }
 }
