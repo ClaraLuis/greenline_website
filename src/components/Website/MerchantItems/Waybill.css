@@ -58,6 +58,7 @@
     height: auto;
     margin-left: 16px;
 }
+
 .print-container {
     display: flex;
     flex-direction: column;
