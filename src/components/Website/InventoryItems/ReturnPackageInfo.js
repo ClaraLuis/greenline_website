@@ -183,7 +183,7 @@ const ReturnPackageInfo = (props) => {
                                                                 return (
                                                                     <div class="col-lg-12">
                                                                         <div key={ballotData.ballot.id}>
-                                                                            <p class="p-0 m-0">Pallet: {ballotData.ballot.name}</p>
+                                                                            <p class="p-0 m-0">Ballot: {ballotData.ballot.name}</p>
                                                                             <div class="row m-0 w-100">
                                                                                 {ballotData.boxes.map((box) => (
                                                                                     <div class={'searchpill'}>

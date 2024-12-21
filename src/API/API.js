@@ -466,7 +466,7 @@ const API = () => {
                         inventoryId
                         name
                         type
-                        birthdate
+
                         createdAt
                         lastModified
                         deletedAt
@@ -947,8 +947,6 @@ const API = () => {
             query findUsers($input: PaginateUsersInput!) {
                 paginateUsers(paginateUsersInput: $input) {
                     data {
-                        birthdate
-
                         id
                         name
                         type
@@ -1095,7 +1093,6 @@ const API = () => {
                         name
                         email
                         phone
-                        birthdate
                     }
                 }
             }
@@ -1114,7 +1111,7 @@ const API = () => {
                     name
                     email
                     phone
-                    birthdate
+
                     refreshToken
                     createdAt
                     lastModified

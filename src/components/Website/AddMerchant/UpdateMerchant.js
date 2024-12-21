@@ -130,7 +130,6 @@ const UpdateMerchant = (props) => {
                     apartmentFloor: data?.findOneMerchant?.address?.apartmentFloor,
                     streetAddress: data?.findOneMerchant?.address?.streetAddress,
                     ownerName: data?.findOneMerchant?.owner?.name,
-                    ownerBirthdate: data?.findOneMerchant?.owner?.birthdate,
                     ownerPhone: data?.findOneMerchant?.owner?.phone,
                     ownerEmail: data?.findOneMerchant?.owner?.email,
                 });
@@ -181,7 +180,6 @@ const UpdateMerchant = (props) => {
                     apartmentFloor: data?.findOneMerchant?.address?.apartmentFloor,
                     streetAddress: data?.findOneMerchant?.address?.streetAddress,
                     ownerName: data?.findOneMerchant?.owner?.name,
-                    ownerBirthdate: data?.findOneMerchant?.owner?.birthdate,
                     ownerPhone: data?.findOneMerchant?.owner?.phone,
                     ownerEmail: data?.findOneMerchant?.owner?.email,
                 });
@@ -452,14 +450,14 @@ const UpdateMerchant = (props) => {
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="col-lg-12">
+                                                        {/* <div class="col-lg-12">
                                                             <div class="row m-0 w-100  ">
                                                                 <div class={`${formstyles.form__group} ${formstyles.field}`}>
                                                                     <label class={formstyles.form__label}>Owner Birthdate</label>
                                                                     <div>{merchantPayload.ownerBirthdate}</div>
                                                                 </div>
                                                             </div>
-                                                        </div>
+                                                        </div> */}
                                                     </div>
                                                 )}
                                                 {!merchantPayload.ownerName && (

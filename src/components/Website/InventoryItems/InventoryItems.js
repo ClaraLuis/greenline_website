@@ -676,7 +676,7 @@ const InventoryItems = (props) => {
                         <div class="col-lg-6">
                             <div class="row m-0 w-100  ">
                                 <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                    <label class={formstyles.form__label}>Pallet Per Rack</label>
+                                    <label class={formstyles.form__label}>Ballot Per Rack</label>
                                     <input
                                         type={'number'}
                                         class={formstyles.form__field}
@@ -692,7 +692,7 @@ const InventoryItems = (props) => {
                         <div class="col-lg-6">
                             <div class="row m-0 w-100  ">
                                 <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                    <label class={formstyles.form__label}>Box Per Pallet</label>
+                                    <label class={formstyles.form__label}>Box Per Ballot</label>
                                     <input
                                         type={'number'}
                                         class={formstyles.form__field}

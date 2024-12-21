@@ -134,7 +134,6 @@ const AddMerchant = (props) => {
         ownerName: merchantPayload?.ownerName,
         ownerEmail: merchantPayload?.ownerEmail,
         ownerPhone: merchantPayload?.ownerPhone,
-        ownerBirthdate: merchantPayload?.ownerBirthdate,
     });
 
     const [createInventoryRentMutation] = useMutationGQL(createInventoryRent(), {
@@ -188,13 +187,13 @@ const AddMerchant = (props) => {
     };
 
     const validateOwnerInfo = async (payload) => {
-        const { ownerName, ownerBirthdate, ownerPhone, ownerEmail } = payload;
+        const { ownerName, ownerPhone, ownerEmail } = payload;
 
-        if (!ownerName && !ownerBirthdate && !ownerPhone && !ownerEmail) {
+        if (!ownerName && !ownerPhone && !ownerEmail) {
             return true; // No owner info is fine, so we consider it valid
         }
 
-        if (!ownerName || !ownerBirthdate || !ownerPhone || !ownerEmail) {
+        if (!ownerName || !ownerPhone || !ownerEmail) {
             NotificationManager.warning('Complete owner info', 'Warning');
             return false;
         }
@@ -881,7 +880,7 @@ const AddMerchant = (props) => {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="col-lg-12">
+                                                    {/* <div class="col-lg-12">
                                                         <div class="row m-0 w-100  ">
                                                             <div class={`${formstyles.form__group} ${formstyles.field}`}>
                                                                 <label class={formstyles.form__label}>Owner Birthdate</label>
@@ -895,7 +894,7 @@ const AddMerchant = (props) => {
                                                                 />
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    </div> */}
                                                 </div>
                                             </div>
                                         </div>{' '}

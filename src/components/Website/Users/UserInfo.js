@@ -64,7 +64,6 @@ const UserInfo = (props) => {
         type: cookies.get('merchantId') != undefined ? 'merchant' : props?.payload?.type,
         phone: props?.payload?.phone,
         email: props?.payload?.email,
-        birthdate: props?.payload?.birthdate,
         employeeInfo:
             props?.payload?.type == 'employee'
                 ? {
@@ -227,7 +226,7 @@ const UserInfo = (props) => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-lg-6 mb-3">
+                                    {/* <div class="col-lg-6 mb-3">
                                         <div class="row m-0 w-100">
                                             <div class="form__group field">
                                                 <label class="form__label" style={{ marginBottom: 0, fontSize: '13px', color: 'grey' }}>
@@ -236,7 +235,7 @@ const UserInfo = (props) => {
                                                 <div>{props?.payload?.birthdate.split('T')[0]}</div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> */}
                                     {props?.payload?.hub && (
                                         <div class="col-lg-6 mb-3">
                                             <div class="row m-0 w-100">
@@ -409,7 +408,6 @@ const UserInfo = (props) => {
 
                                                   { name: 'Email', attr: 'email', size: '6' },
                                                   { name: 'Phone number', attr: 'phone', type: 'number', size: '6' },
-                                                  { name: 'Birthdate', attr: 'birthdate', type: 'date', size: '6' },
                                               ]
                                             : props?.payload?.type == 'merchant'
                                             ? [
@@ -417,7 +415,6 @@ const UserInfo = (props) => {
 
                                                   { name: 'Email', attr: 'email', size: '6' },
                                                   { name: 'Phone number', attr: 'phone', type: 'number', size: '6' },
-                                                  { name: 'Birthdate', attr: 'birthdate', type: 'date', size: '6' },
                                                   {
                                                       name: 'Type',
                                                       attr: 'type',
@@ -445,7 +442,6 @@ const UserInfo = (props) => {
 
                                                   { name: 'Email', attr: 'email', size: '6' },
                                                   { name: 'Phone number', attr: 'phone', type: 'number', size: '6' },
-                                                  { name: 'Birthdate', attr: 'birthdate', type: 'date', size: '6' },
                                                   {
                                                       name: 'Type',
                                                       attr: 'type',
@@ -493,7 +489,6 @@ const UserInfo = (props) => {
 
                                                   { name: 'Email', attr: 'email', size: '6' },
                                                   { name: 'Phone number', attr: 'phone', type: 'number', size: '6' },
-                                                  { name: 'Birthdate', attr: 'birthdate', type: 'date', size: '6' },
                                                   {
                                                       name: 'Type',
                                                       attr: 'type',
@@ -552,7 +547,6 @@ const UserInfo = (props) => {
 
                                                   { name: 'Email', attr: 'email', size: '6' },
                                                   { name: 'Phone number', attr: 'phone', type: 'number', size: '6' },
-                                                  { name: 'Birthdate', attr: 'birthdate', type: 'date', size: '6' },
                                                   {
                                                       name: 'Type',
                                                       attr: 'type',
