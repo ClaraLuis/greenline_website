@@ -35,6 +35,7 @@ import WaybillPrint from './WaybillPrint.js';
 import Decimal from 'decimal.js';
 import { useQuery } from 'react-query';
 import { Loggedincontext } from '../../../Loggedincontext.js';
+import NotFound from '../NotFound.js';
 
 const TrackActivity = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -55,8 +56,6 @@ const TrackActivity = (props) => {
     const [historyType, sethistoryType] = useState('order');
     const { loggedincontext } = useContext(Loggedincontext);
 
-    const [editCustomer, seteditCustomer] = useState(false);
-    const [editAddress, seteditAddress] = useState(false);
     const [fetchOrderHistoryQuery, setfetchOrderHistoryQuery] = useState([]);
 
     const dateformatterDayAndMonth = (date) => {
@@ -69,16 +68,6 @@ const TrackActivity = (props) => {
         const options = { hour: '2-digit', minute: '2-digit', hour12: true };
         return new Date(date).toLocaleTimeString(undefined, options);
     };
-
-    const [filterordershistory, setfilterordershistory] = useState({
-        limit: 20,
-        orderId: parseInt(queryParameters?.get('orderId')),
-        isAsc: false,
-    });
-    const [filterOrderLogs, setfilterOrderLogs] = useState({
-        limit: 20,
-        orderId: parseInt(queryParameters?.get('orderId')),
-    });
 
     const [fetchOneOrderLazyQuery] = useLazyQueryGQL(findPublicOrder());
 
@@ -448,6 +437,11 @@ const TrackActivity = (props) => {
                                         </div>
                                     </div>
                                 </>
+                            )}
+                            {(chosenOrderContext == undefined || !chosenOrderContext || JSON.stringify(chosenOrderContext) == '{}') && (
+                                <div class="col-lg-12 p-0 alllcentered">
+                                    <NotFound />
+                                </div>
                             )}
                         </div>
                     </div>
