@@ -141,7 +141,7 @@ async function refreshAuthToken() {
                                 inventoryId
                                 name
                                 type
-                                birthdate
+
                                 createdAt
                                 lastModified
                                 deletedAt

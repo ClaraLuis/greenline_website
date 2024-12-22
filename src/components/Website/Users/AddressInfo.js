@@ -30,14 +30,6 @@ const AddressInfo = (props) => {
     const [changerolesmodal, setchangerolesmodal] = useState(false);
     const [newpassword, setnewpassword] = useState('');
 
-    const ADD_USER = gql`
-        mutation cruser {
-            createUser(createUserInput: { name: ${JSON.stringify(props?.addresspayload?.name)}, type: ${JSON.stringify(props?.addresspayload?.type)}, phone: ${JSON.stringify(
-        props?.addresspayload?.phone,
-    )}, email: ${JSON.stringify(props?.addresspayload?.email)}, birthdate: ${JSON.stringify(props?.addresspayload?.birthdate)} })
-        }
-    `;
-
     const [addUser1] = useMutationGQL(addUser(props?.addresspayload));
     const [filterUsers, setfilterUsers] = useState({
         isAsc: true,

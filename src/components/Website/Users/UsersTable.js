@@ -37,7 +37,6 @@ const UsersTable = (props) => {
         type: '',
         phone: '',
         email: '',
-        birthdate: '',
     });
     const [filterobj, setfilterobj] = useState({
         page: 1,

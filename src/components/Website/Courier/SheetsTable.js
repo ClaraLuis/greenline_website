@@ -35,20 +35,6 @@ const SheetsTable = (props) => {
     });
     const [deleteCourierSheetMutation] = useMutationNoInputGQL(deleteCourierSheet(), { id: sheetID });
 
-    const [payload, setpayload] = useState({
-        functype: 'add',
-        id: 'add',
-        name: '',
-        type: '',
-        phone: '',
-        email: '',
-        birthdate: '',
-    });
-    const [filterobj, setfilterobj] = useState({
-        page: 1,
-        search: '',
-    });
-
     return (
         <>
             {props?.fetchSheetsQuery?.loading && (

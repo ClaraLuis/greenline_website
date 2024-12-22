@@ -36,20 +36,6 @@ const ExpensesTable = (props) => {
         { id: '3', type: 'fuel', fromAccount: 'Account 2', amount: '500', reciept: 'Reciept', comment: 'cc' },
     ]);
 
-    const [payload, setpayload] = useState({
-        functype: 'add',
-        id: 'add',
-        name: '',
-        type: '',
-        phone: '',
-        email: '',
-        birthdate: '',
-    });
-    const [filterobj, setfilterobj] = useState({
-        page: 1,
-        search: '',
-    });
-
     return (
         <>
             {/*       

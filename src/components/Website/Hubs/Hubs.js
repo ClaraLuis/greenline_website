@@ -43,7 +43,6 @@ const Hubs = (props) => {
         type: '',
         phone: '',
         email: '',
-        birthdate: '',
     });
     const [filterobj, setfilterobj] = useState({
         page: 1,
@@ -96,7 +95,6 @@ const Hubs = (props) => {
                                                 type: '',
                                                 phone: '',
                                                 email: '',
-                                                birthdate: '',
                                             });
                                             setopenModal(true);
                                         }}

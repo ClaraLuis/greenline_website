@@ -44,7 +44,6 @@ const Users = (props) => {
         type: '',
         phone: '',
         email: '',
-        birthdate: '',
     });
     const [filterobj, setfilterobj] = useState({
         page: 1,
@@ -94,7 +93,6 @@ const Users = (props) => {
                                                 type: '',
                                                 phone: '',
                                                 email: '',
-                                                birthdate: '',
                                             });
                                             setopenModal(true);
                                         }}
