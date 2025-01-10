@@ -230,7 +230,7 @@ const Merchants = (props) => {
                                                                 });
                                                             }}
                                                         >
-                                                            <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Inventory Settings</p>
+                                                            <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Inventory Rent</p>
                                                         </Dropdown.Item>
                                                         <Dropdown.Item
                                                             class="py-2"

@@ -45,7 +45,7 @@ const AddMerchant = (props) => {
         findAllZones,
         emailTaken,
     } = API();
-    const steps = ['Merchant Info', 'Shipping', 'Inventory Settings'];
+    const steps = ['Merchant Info', 'Shipping', 'Inventory Rent'];
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [similarAddresses, setsimilarAddresses] = useState([]);
