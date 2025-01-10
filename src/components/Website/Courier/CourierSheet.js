@@ -546,7 +546,7 @@ const CourierSheet = (props) => {
                                                                         class={generalstyles.roundbutton + '  allcentered px-1 py-0'}
                                                                         onClick={(e) => {
                                                                             e.stopPropagation();
-                                                                            if (item?.amountCollected == null) {
+                                                                            if (item?.amountCollected == null && item.order.status !== 'postponed') {
                                                                                 NotificationManager.warning(`Can not update order`, 'Warning!');
                                                                                 return;
                                                                             }
