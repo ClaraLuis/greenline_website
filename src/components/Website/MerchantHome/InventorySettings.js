@@ -185,11 +185,16 @@ const InventorySettings = (props) => {
         var { data } = await inventoryRentSummaryLazyQuery({
             variables: {
                 input: {
-                    startDate: filterSentTransactionsObj?.startDate,
-                    endDate: filterSentTransactionsObj?.endDate,
+                    startDate: filterSentTransactionsObj?.startDate ?? undefined,
+                    endDate: filterSentTransactionsObj?.endDate ?? undefined,
                     merchantIds: [parseInt(queryParameters.get('merchantId'))],
                 },
             },
+        });
+        // alert(JSON.stringify(data?.inventoryRentSummary));
+        setfilterSentTransactionsObj({
+            startDate: data?.inventoryRentSummary?.startDate,
+            endDate: data?.inventoryRentSummary?.endDate,
         });
         setinventoryRentSummaryData(data?.inventoryRentSummary?.data[0]);
     }, [filterSentTransactionsObj?.startDate, filterSentTransactionsObj?.endDate, parseInt(queryParameters.get('merchantId'))]);
@@ -328,7 +333,12 @@ const InventorySettings = (props) => {
                                                 <AccordionItemState>
                                                     {(state) => {
                                                         if (state.expanded == true) {
-                                                            return <></>;
+                                                            return (
+                                                                <>
+                                                                    {dateformatterDayAndMonth(filterSentTransactionsObj?.startDate) ?? ''} -{' '}
+                                                                    {dateformatterDayAndMonth(filterSentTransactionsObj?.endDate) ?? ''}
+                                                                </>
+                                                            );
                                                         } else {
                                                             return (
                                                                 <>
@@ -371,7 +381,7 @@ const InventorySettings = (props) => {
                                         <div class="mt-1" style={{ width: '100%' }}>
                                             <DateRangePicker
                                                 // disabledDate={allowedMaxDays(30)}
-                                                // value={[filterorders?.startDate, filterorders?.endDate]}
+                                                value={[filterSentTransactionsObj?.startDate, filterSentTransactionsObj?.endDate]}
                                                 onChange={(event) => {
                                                     if (event != null) {
                                                         const start = event[0];

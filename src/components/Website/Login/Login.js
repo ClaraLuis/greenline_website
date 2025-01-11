@@ -98,6 +98,7 @@ const Login = () => {
 
                         try {
                             var { data } = await checkEmail({ variables: { email } });
+
                             if (data) {
                                 if (data?.userState == 0) {
                                     NotificationManager.warning('Email is not Valid', 'Warning');

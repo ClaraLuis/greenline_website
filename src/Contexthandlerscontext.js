@@ -124,7 +124,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         show: isAuth([1, 54, 2, 4, 6, 7, 8]),
                     },
                     {
-                        name: 'Inventory Settings',
+                        name: 'Inventory Rent',
                         isselected: false,
                         icon: (
                             <i class={'allcentered'}>

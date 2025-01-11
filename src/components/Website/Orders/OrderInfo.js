@@ -972,7 +972,7 @@ const OrderInfo = (props) => {
                                                                                 className="iconhover allcentered"
                                                                                 onClick={async () => {
                                                                                     if (!buttonLoadingContext) {
-                                                                                        const temp = [...orderItemIds, orderItem.id];
+                                                                                        const temp = [orderItem.id];
                                                                                         await setorderItemIds(temp);
                                                                                         if (!chosenOrderContext?.originalPrice) {
                                                                                             setorderLogsModal({ open: true, type: 'price', func: 'removeitems' });
