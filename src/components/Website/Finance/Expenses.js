@@ -235,8 +235,8 @@ const Expenses = (props) => {
                                 <Pagination
                                     beforeCursor={fetchExpensesQuery?.data?.paginateExpenses?.cursor?.beforeCursor}
                                     afterCursor={fetchExpensesQuery?.data?.paginateExpenses?.cursor?.afterCursor}
-                                    filter={filterExpensesObj}
-                                    setfilter={setfilterExpensesObj}
+                                    filter={filterTransactionsObj}
+                                    setfilter={setfilterTransactionsObj}
                                 />
                             </div>
                             <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
@@ -392,6 +392,14 @@ const Expenses = (props) => {
                                             await createExpenseMutation();
 
                                             setopenModal({ open: false, type: '' });
+                                            setexpensepayload({
+                                                functype: 'add',
+                                                type: '',
+                                                fromAccountId: '',
+                                                amount: '',
+                                                receipt: '',
+                                                comment: '',
+                                            });
                                             Refetch();
                                         } catch (error) {
                                             let errorMessage = 'An unexpected error occurred';
@@ -402,11 +410,14 @@ const Expenses = (props) => {
                                             } else if (error.message) {
                                                 errorMessage = error.message;
                                             }
+                                            setbuttonLoadingContext(false);
 
                                             NotificationManager.warning(errorMessage, 'Warning!');
                                             console.error('Error adding Merchant:', error);
                                         }
                                     } else {
+                                        setbuttonLoadingContext(false);
+
                                         NotificationManager.warning('complete all missing fields', 'Warning!');
                                     }
                                     setbuttonLoadingContext(false);
