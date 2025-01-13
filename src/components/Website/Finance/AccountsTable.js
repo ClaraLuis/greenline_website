@@ -61,11 +61,12 @@ const AccountsTable = (props) => {
                                     <div className="col-lg-6 p-0 d-flex justify-content-end align-items-center">
                                         <div class="row m-0 w-100 d-flrx justify-content-end align-items-center">
                                             <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered  '}>
-                                                {financialAccountTypeContext?.map((i, ii) => {
+                                                {/* {financialAccountTypeContext?.map((i, ii) => {
                                                     if (i.value == item?.type) {
                                                         return <span>{i.label}</span>;
                                                     }
-                                                })}
+                                                })} */}
+                                                {item?.status?.split(/(?=[A-Z])/).join(' ')}
                                             </div>
                                             {isAuth([1, 51, 21]) && (
                                                 <Dropdown>

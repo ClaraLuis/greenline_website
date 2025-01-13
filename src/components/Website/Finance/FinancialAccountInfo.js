@@ -152,11 +152,12 @@ const FinancialAccountInfo = (props) => {
                         </div>
                         <div className="col-lg-6 p-0 d-flex justify-content-end align-items-center">
                             <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered  '}>
-                                {financialAccountTypeContext?.map((i, ii) => {
+                                {/* {financialAccountTypeContext?.map((i, ii) => {
                                     if (i.value == accountItem?.type) {
                                         return <span>{i.label}</span>;
                                     }
-                                })}
+                                })} */}
+                                {accountItem?.type?.split(/(?=[A-Z])/).join(' ')}
                             </div>
                         </div>
                         <div className="col-lg-12 p-0 my-2">
