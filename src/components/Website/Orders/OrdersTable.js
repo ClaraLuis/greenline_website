@@ -199,11 +199,13 @@ const OrdersTable = (props) => {
                                                                 : 'text-warning bg-light-warning'
                                                         } ${item?.latestHistory?.description ? 'rounded-pill-hover' : ''}`}
                                                     >
-                                                        {orderStatusEnumContext?.map((i, ii) => {
+                                                        {/* {orderStatusEnumContext?.map((i, ii) => {
                                                             if (i.value == item?.status) {
                                                                 return <span>{i.label}</span>;
                                                             }
-                                                        })}
+                                                        })} */}
+                                                        {item?.status?.split(/(?=[A-Z])/).join(' ')}
+
                                                         {(item?.latestHistory?.description || item.orderDate) && (
                                                             <div class="hovercontainer">
                                                                 <div class="row m-0 w-100">
@@ -223,11 +225,12 @@ const OrdersTable = (props) => {
                                                         style={{ color: 'white' }}
                                                         className={'ml-1 wordbreak bg-primary rounded-pill font-weight-600 '}
                                                     >
-                                                        {orderTypeContext?.map((i, ii) => {
+                                                        {/* {orderTypeContext?.map((i, ii) => {
                                                             if (i.value == item?.type) {
                                                                 return <span>{i.label}</span>;
                                                             }
-                                                        })}
+                                                        })} */}
+                                                        {item?.type?.split(/(?=[A-Z])/).join(' ')}
                                                     </div>
                                                     <div>
                                                         <Dropdown

@@ -280,11 +280,12 @@ const InventoryPackages = (props) => {
                                                                     : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered '
                                                             }
                                                         >
-                                                            {returnPackageStatusContext?.map((i, ii) => {
+                                                            {/* {returnPackageStatusContext?.map((i, ii) => {
                                                                 if (i.value == item?.status) {
                                                                     return <span>{i.label}</span>;
                                                                 }
-                                                            })}
+                                                            })} */}
+                                                            {item?.status?.split(/(?=[A-Z])/).join(' ')}
                                                         </div>
                                                         {/* <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered mx-1 '}>
                                                     {returnPackageTypeContext?.map((i, ii) => {

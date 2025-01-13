@@ -134,30 +134,30 @@ const TransactionsTable = (props) => {
 
                                             <div className="col-lg-9 p-0 d-flex justify-content-end align-items-center">
                                                 <div class="row m-0 w-100 d-flex justify-content-end align-items-center">
-                                                    {transactionStatusTypeContext?.map((i, ii) => {
-                                                        if (i.value == item.status) {
-                                                            return (
-                                                                <div
-                                                                    style={{ cursor: item?.toAccount?.id == props?.accountId ? 'pointer' : '' }}
-                                                                    className={
-                                                                        item.status == 'completed'
-                                                                            ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 '
-                                                                            : item?.status == 'cancelled' ||
-                                                                              item?.status == 'failed' ||
-                                                                              item?.status == 'rejectedByReceiver' ||
-                                                                              item?.status == 'cancelledBySender' ||
-                                                                              item?.status == 'cancelledByReceiver' ||
-                                                                              item?.status == 'rejectedBySender' ||
-                                                                              item?.status == 'rejected'
-                                                                            ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600'
-                                                                            : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 '
-                                                                    }
-                                                                >
-                                                                    <p className={' m-0 p-0 wordbreak '}>{i.label}</p>
-                                                                </div>
-                                                            );
+                                                    {/* {transactionStatusTypeContext?.map((i, ii) => {
+                                                        if (i.value == item.status) { */}
+                                                    {/* return ( */}
+                                                    <div
+                                                        style={{ cursor: item?.toAccount?.id == props?.accountId ? 'pointer' : '' }}
+                                                        className={
+                                                            item.status == 'completed'
+                                                                ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 '
+                                                                : item?.status == 'cancelled' ||
+                                                                  item?.status == 'failed' ||
+                                                                  item?.status == 'rejectedByReceiver' ||
+                                                                  item?.status == 'cancelledBySender' ||
+                                                                  item?.status == 'cancelledByReceiver' ||
+                                                                  item?.status == 'rejectedBySender' ||
+                                                                  item?.status == 'rejected'
+                                                                ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600'
+                                                                : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 '
                                                         }
-                                                    })}
+                                                    >
+                                                        <p className={' m-0 p-0 wordbreak '}>{item?.status?.split(/(?=[A-Z])/).join(' ')}</p>
+                                                    </div>
+                                                    {/* ); */}
+                                                    {/* } */}
+                                                    {/* })} */}
                                                     <div style={{ color: 'white' }} className={' wordbreak bg-primary rounded-pill font-weight-600 allcentered mx-1 text-capitalize'}>
                                                         {item?.type?.split(/(?=[A-Z])/).join(' ')}
                                                     </div>
@@ -416,21 +416,24 @@ const TransactionsTable = (props) => {
                                     return (
                                         <tr>
                                             <td>
-                                                {transactionStatusTypeContext?.map((i, ii) => {
+                                                {/* {transactionStatusTypeContext?.map((i, ii) => {
                                                     if (i.value == item.status) {
-                                                        return (
-                                                            <div
-                                                                className={
-                                                                    item.status == 'completed'
-                                                                        ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 '
-                                                                        : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 '
-                                                                }
-                                                            >
-                                                                <p className={' m-0 p-0 wordbreak '}>{i.label}</p>
-                                                            </div>
-                                                        );
+                                                        return ( */}
+                                                <div
+                                                    className={
+                                                        item.status == 'completed'
+                                                            ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 '
+                                                            : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 '
                                                     }
-                                                })}
+                                                >
+                                                    <p className={' m-0 p-0 wordbreak '}>
+                                                        {item?.status?.split(/(?=[A-Z])/).join(' ')}
+                                                        {/* {i.label} */}
+                                                    </p>
+                                                </div>
+                                                {/* );
+                                                    }
+                                                })} */}
                                             </td>
 
                                             <td>

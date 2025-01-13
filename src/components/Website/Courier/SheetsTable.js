@@ -70,11 +70,12 @@ const SheetsTable = (props) => {
                                                                 : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered '
                                                         }
                                                     >
-                                                        {courierSheetStatusesContext?.map((i, ii) => {
+                                                        {/* {courierSheetStatusesContext?.map((i, ii) => {
                                                             if (i.value == item?.status) {
                                                                 return <span>{i.label}</span>;
                                                             }
-                                                        })}
+                                                        })} */}
+                                                        {item?.status?.split(/(?=[A-Z])/).join(' ')}
                                                     </div>
                                                     <Dropdown>
                                                         <Dropdown.Toggle>

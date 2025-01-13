@@ -106,11 +106,12 @@ const MerchantReturnPackageInfo = (props) => {
                                                     : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered '
                                             }
                                         >
-                                            {returnPackageStatusContext?.map((i, ii) => {
+                                            {/* {returnPackageStatusContext?.map((i, ii) => {
                                                 if (i.value == chosenPackageContext?.status) {
                                                     return <span>{i.label}</span>;
                                                 }
-                                            })}
+                                            })} */}
+                                            {chosenPackageContext?.status?.split(/(?=[A-Z])/).join(' ')}
                                         </div>
                                         <div style={{ color: 'white' }} className={' wordbreak  bg-primary rounded-pill font-weight-600 allcentered mx-1 '}>
                                             {chosenPackageContext?.type?.split(/(?=[A-Z])/).join(' ')}
