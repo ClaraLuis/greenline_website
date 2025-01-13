@@ -311,7 +311,7 @@ const Packages = (props) => {
                                     >
                                         <div className="col-lg-2 p-0">
                                             <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
-                                                # {item?.id}
+                                                # {item?.id}, {item.type == 'merchant' ? item?.merchant?.name : item?.inventory?.name}
                                             </span>
                                         </div>
                                         <div className="col-lg-10 p-0 d-flex justify-content-end align-items-center">

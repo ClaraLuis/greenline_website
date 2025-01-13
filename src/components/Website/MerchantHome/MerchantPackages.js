@@ -269,7 +269,9 @@ const MerchantPackages = (props) => {
                                                 class={generalstyles.card + '  row m-0 w-100   d-flex align-items-center'}
                                             >
                                                 <div className="col-lg-4 p-0">
-                                                    <span style={{ fontSize: '12px', color: 'grey' }}># {item?.id}</span>
+                                                    <span style={{ fontSize: '12px', color: 'grey' }}>
+                                                        # {item?.id}, {item.type == 'merchant' ? item?.merchant?.name : item?.inventory?.name}
+                                                    </span>
                                                 </div>
                                                 <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
                                                     <div class="row m-0 w-100 d-fex justify-content-end align-items-center">

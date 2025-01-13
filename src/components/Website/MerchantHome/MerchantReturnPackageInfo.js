@@ -26,11 +26,6 @@ const MerchantReturnPackageInfo = (props) => {
     const { setpageactive_context, chosenPackageContext, setchosenPackageContext, dateformatter, setchosenOrderContext, returnPackageStatusContext, setpagetitle_context } =
         useContext(Contexthandlerscontext);
     const { useQueryGQL, fetchPackages, fetchGovernorates, fetchMerchantItemReturns, updateMerchantDomesticShipping, findOneReturnPackage, useLazyQueryGQL, paginateReturnPackageHistory } = API();
-    const steps = ['Merchant Info', 'Shipping', 'Inventory Settings'];
-    const [inventoryModal, setinventoryModal] = useState({ open: false, items: [] });
-    const [outOfStock, setoutOfStock] = useState(false);
-    const [diffInDays, setdiffInDays] = useState(0);
-
     useEffect(() => {
         setpageactive_context('/packages');
         setpagetitle_context('Hubs');
@@ -72,9 +67,7 @@ const MerchantReturnPackageInfo = (props) => {
                             id: parseInt(queryParameters.get('packageId')),
                         },
                     });
-                    // Handle the data or set state here
                     setchosenPackageContext(data?.findReturnPackageById);
-                    // alert('1');
                     console.log(data);
                 }
             };
@@ -94,10 +87,12 @@ const MerchantReturnPackageInfo = (props) => {
                         </div>
                         <div class="col-lg-12 mb-2 p-0">
                             <div style={{ background: 'white' }} class={generalstyles.card + ' row m-0 w-100   d-flex align-items-center'}>
-                                <div className="col-lg-4 p-0">
-                                    <span style={{ fontSize: '12px', color: 'grey' }}># {chosenPackageContext?.id}</span>
+                                <div className="col-lg-5 p-0">
+                                    <span style={{ fontSize: '12px', color: 'grey' }}>
+                                        # {chosenPackageContext?.id}, {chosenPackageContext?.sku}
+                                    </span>
                                 </div>
-                                <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
+                                <div className="col-lg-7 p-0 d-flex justify-content-end align-items-center">
                                     <div class="row m-0 w-100 d-fex justify-content-end align-items-center">
                                         <div
                                             className={
@@ -122,9 +117,8 @@ const MerchantReturnPackageInfo = (props) => {
                                     <hr className="m-0" />
                                 </div>
                                 <div className="col-lg-12 p-0 mb-2">
-                                    SKU:{' '}
                                     <span style={{ fontWeight: 600 }} class="text-capitalize">
-                                        {chosenPackageContext?.sku}
+                                        #{chosenPackageContext?.merchant?.id}, {chosenPackageContext?.merchant?.name}
                                     </span>
                                 </div>
                                 {chosenPackageContext?.courier && (
