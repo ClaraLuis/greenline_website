@@ -34,10 +34,10 @@ const MerchantReturnPackageInfo = (props) => {
     const [filter, setfilter] = useState({
         limit: 20,
         isAsc: true,
-        afterCursor: '',
-        beforeCursor: '',
+        afterCursor: undefined,
+        beforeCursor: undefined,
         assignedToPackage: undefined,
-        packageCentered: true,
+
         merchantId: undefined,
         packageId: parseInt(queryParameters.get('packageId')),
     });

@@ -148,10 +148,17 @@ const MerchantPayments = (props) => {
                                 onClick={() => {
                                     const merchantTransactions = fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data;
 
-                                    const exportData = merchantTransactions.map((transaction) => ({
-                                        ...transaction,
-                                        fromAccount: transaction.fromAccount?.name,
-                                        toAccount: transaction.toAccount?.name,
+                                    // const exportData = merchantTransactions.map((transaction) => ({
+                                    const exportData = merchantTransactions.map(({ id, createdAt, __typename, fromAccount, toAccount, auditedBy, sheetOrder, type, ...rest }) => ({
+                                        ...rest,
+                                        fromAccount: fromAccount?.name,
+                                        toAccount: toAccount?.name,
+                                        auditedBy: auditedBy?.name,
+                                        orderId: sheetOrder?.order?.id,
+                                        type: type
+                                            .split(/(?=[A-Z])/)
+                                            .join(' ')
+                                            .replace(/^\w/, (c) => c.toUpperCase()),
                                     }));
 
                                     exportToExcel(exportData, 'merchantTransactions');
@@ -438,12 +445,8 @@ const MerchantPayments = (props) => {
                                         class={generalstyles.roundbutton + ' allcentered w-100'}
                                         onClick={async () => {
                                             if (filterobj?.merchantIds?.length != 0 && filterobj?.merchantIds != undefined) {
-                                                if (selectedArray?.length != 0) {
-                                                    setpayload({ ...payload, allTransactions: true });
-                                                    setopenModal(true);
-                                                } else {
-                                                    NotificationManager.warning('Choose transactions first', 'Warning!');
-                                                }
+                                                setpayload({ ...payload, allTransactions: true });
+                                                setopenModal(true);
                                             } else {
                                                 NotificationManager.warning('Choose Merchants first', 'Warning!');
                                             }

@@ -30,7 +30,7 @@ import Cookies from 'universal-cookie';
 const Packages = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, returnPackageStatusContext, returnPackageTypeContext, dateformatter, buttonLoadingContext, setbuttonLoadingContext } =
+    const { setpageactive_context, setpagetitle_context, returnPackageStatusContext, returnPackageTypeContext, dateformatter, buttonLoadingContext, setbuttonLoadingContext, setchosenPackageContext } =
         useContext(Contexthandlerscontext);
     const { useMutationGQL, fetchMerchants, assignPackageToCourier, fetchCouriers, fetchPackages, useQueryGQL, fetchInventories } = API();
     const { lang, langdetect } = useContext(LanguageContext);
@@ -357,7 +357,13 @@ const Packages = (props) => {
                                                         <Dropdown.Item
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
-                                                                history.push('/merchantreturnpackageinfo?packageId=' + item.id);
+                                                                setchosenPackageContext(item);
+
+                                                                if (item.type == 'merchant') {
+                                                                    history.push('/merchantreturnpackageinfo?packageId=' + item.id);
+                                                                } else {
+                                                                    history.push('/returnpackageinfo?packageId=' + item.id);
+                                                                }
                                                             }}
                                                             class="py-2"
                                                         >

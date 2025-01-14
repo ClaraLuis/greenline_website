@@ -32,7 +32,6 @@ const MultiSelect = (props) => {
                 const uniqueData = Array.from(new Set(mergedData.map((item) => item[props?.value]))).map((id) => {
                     return mergedData.find((item) => item[props?.value] === id);
                 });
-
                 setData(uniqueData); // Update data state with unique items
 
                 // Handle filtering
@@ -64,14 +63,17 @@ const MultiSelect = (props) => {
         } else {
             const newData = props?.options || [];
             const mergedData = [...data, ...newData];
-            setData(mergedData);
+            const uniqueData = Array.from(new Set(mergedData.map((item) => item[props?.value]))).map((id) => {
+                return mergedData.find((item) => item[props?.value] === id);
+            });
+            setData(uniqueData);
             if (props?.filter?.name) {
                 const filtered = newData.filter((item) => item[props?.label].toLowerCase().includes(value.toLowerCase()));
 
                 setFilteredData(filtered);
             } else {
-                setData(mergedData);
-                setFilteredData(mergedData); // Update filteredData as well
+                setData(uniqueData);
+                setFilteredData(uniqueData); // Update filteredData as well
             }
         }
     }, [props?.filter, props?.options?.data, props?.options?.loading, props?.options]);
