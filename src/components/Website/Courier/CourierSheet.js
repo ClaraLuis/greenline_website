@@ -7,8 +7,10 @@ import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 import { IoMdClose } from 'react-icons/io';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 import { Modal } from 'react-bootstrap';
+import { DateRangePicker } from 'rsuite';
 
-import { Accordion, AccordionItem, AccordionItemPanel } from 'react-accessible-accordion';
+import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
+
 import API from '../../../API/API.js';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 import { NotificationManager } from 'react-notifications';
@@ -22,12 +24,17 @@ import Inputfield from '../../Inputfield.js';
 import Decimal from 'decimal.js';
 import { IoChevronBackOutline } from 'react-icons/io5';
 import OrderItemsModal from './OrderItemsModal.js';
+import MultiSelect from '../../MultiSelect.js';
+import SelectComponent from '../../SelectComponent.js';
+import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
+import { AiOutlineClose } from 'react-icons/ai';
 
 const CourierSheet = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, courierSheetStatusesContext, dateformatter, setpagetitle_context, isAuth, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
-    const { useLazyQueryGQL, useQueryGQL, fetchCourierSheet, updateCourierSheet, useMutationGQL, updateOrdersStatus } = API();
+    const { setpageactive_context, courierSheetStatusesContext, dateformatter, setpagetitle_context, isAuth, buttonLoadingContext, setbuttonLoadingContext, orderStatusEnumContext } =
+        useContext(Contexthandlerscontext);
+    const { useLazyQueryGQL, useQueryGQL, fetchCourierSheet, updateCourierSheet, useMutationGQL, updateOrdersStatus, fetchInventories, fetchMerchants } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [changestatusmodal, setchangestatusmodal] = useState(false);
@@ -39,6 +46,25 @@ const CourierSheet = (props) => {
     const [submitSheetPayload, setsubmitSheetPayload] = useState({});
     const [type, settype] = useState('');
     const [sheetOrders, setsheetOrders] = useState();
+    const [filterorders, setfilterorders] = useState({
+        limit: 20,
+        outOfStock: false,
+    });
+
+    const [filterInventories, setfilterInventories] = useState({
+        limit: 10,
+        afterCursor: null,
+        beforeCursor: null,
+    });
+    const fetchinventories = useQueryGQL('', fetchInventories(), filterInventories);
+
+    const [filterMerchants, setfilterMerchants] = useState({
+        isAsc: true,
+        limit: 20,
+        afterCursor: undefined,
+        beforeCursor: undefined,
+    });
+    const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
 
     const [updateStatusbuttonLoadingContext, setupdateStatusbuttonLoadingContext] = useState(false);
 
@@ -307,639 +333,661 @@ const CourierSheet = (props) => {
     const fetchCourierSheets = (status) => {
         return (
             <>
-                {sheetOrders?.map((item, index) => {
-                    var tempsheetpayload = {};
-                    var tempsheetpayloadPreviousOrder = {};
-                    var show = false;
-                    var previousOrder = undefined;
-                    submitSheetPayload?.updateSheetOrderstemp?.map((i, ii) => {
-                        if (item?.order?.id == i.orderId) {
-                            tempsheetpayload = i;
-                            if (
-                                status == 'Accepted' &&
-                                ((type == 'admin' && i?.status == 'adminAccepted') ||
-                                    (type != 'admin' && i?.status == 'financeAccepted' && submitSheetPayload?.updateSheetOrders?.find((e) => e.sheetOrderId == item.id)))
-                            ) {
-                                show = true;
-                            }
+                {sheetOrders
+                    ?.filter((item) => {
+                        const statusFilter = filterorders?.statuses ? filterorders.statuses.includes(item.order.status) : true;
 
-                            if (status == 'Not' && ((type == 'admin' && i?.status != 'adminAccepted') || (type != 'admin' && i?.status != 'financeAccepted'))) {
-                                show = true;
-                            }
-                        }
-                    });
-                    if (item?.order?.previousOrderId) {
-                        previousOrder = sheetOrders?.filter((ii) => ii.orderId == item?.order?.previousOrderId)[0];
+                        const orderIdsFilter = filterorders?.orderIds ? filterorders.orderIds.includes(item.order.id) : true;
+
+                        const acceptedFilter =
+                            filterorders?.accepted !== undefined
+                                ? (() => {
+                                      const sta = type === 'admin' ? (item?.adminPass ? 'adminAccepted' : 'adminRejected') : item?.financePass ? 'financeAccepted' : 'financeRejected';
+                                      return (filterorders?.accepted && type === 'admin' && sta === 'adminAccepted') || (filterorders?.accepted && type === 'finance' && sta === 'financeAccepted');
+                                  })()
+                                : true;
+
+                        return statusFilter && orderIdsFilter && acceptedFilter;
+                    })
+                    .map((item, index) => {
+                        var tempsheetpayload = {};
+                        var tempsheetpayloadPreviousOrder = {};
+                        var show = false;
+                        var previousOrder = undefined;
                         submitSheetPayload?.updateSheetOrderstemp?.map((i, ii) => {
-                            if (item?.order?.previousOrderId == i.orderId) {
-                                tempsheetpayloadPreviousOrder = i;
+                            if (item?.order?.id == i.orderId) {
+                                tempsheetpayload = i;
+                                if (
+                                    status == 'Accepted' &&
+                                    ((type == 'admin' && i?.status == 'adminAccepted') ||
+                                        (type != 'admin' && i?.status == 'financeAccepted' && submitSheetPayload?.updateSheetOrders?.find((e) => e.sheetOrderId == item.id)))
+                                ) {
+                                    show = true;
+                                }
+
+                                if (status == 'Not' && ((type == 'admin' && i?.status != 'adminAccepted') || (type != 'admin' && i?.status != 'financeAccepted'))) {
+                                    show = true;
+                                }
                             }
                         });
-                    }
-                    if (item?.order?.type == 'return') {
-                        var orderexist = sheetOrders?.filter((ii) => ii.order?.previousOrderId == item?.orderId)[0];
-                        if (orderexist) {
-                            show = false;
+                        if (item?.order?.previousOrderId) {
+                            previousOrder = sheetOrders?.filter((ii) => ii.orderId == item?.order?.previousOrderId)[0];
+                            submitSheetPayload?.updateSheetOrderstemp?.map((i, ii) => {
+                                if (item?.order?.previousOrderId == i.orderId) {
+                                    tempsheetpayloadPreviousOrder = i;
+                                }
+                            });
                         }
-                    }
-
-                    var orderItems = item?.order?.orderItems?.filter((subitem) => {
-                        // if (item?.order?.type === 'return') {
-                        if (subitem?.order?.type === 'return') {
-                            // For return subitems, check partialCount or count
-                            const value = subitem?.partialCount != null ? new Decimal(subitem.partialCount).toFixed(0) : new Decimal(subitem.count).toFixed(0);
-                            return value != 0;
-                        } else {
-                            // For non-return subitems, calculate remaining count
-                            const value = subitem?.partialCount != null ? new Decimal(subitem.count).minus(new Decimal(subitem.partialCount)).toFixed(0) : '0';
-                            // alert(value > 0);
-                            return value != 0;
+                        if (item?.order?.type == 'return') {
+                            var orderexist = sheetOrders?.filter((ii) => ii.order?.previousOrderId == item?.orderId)[0];
+                            if (orderexist) {
+                                show = false;
+                            }
                         }
-                        // }
-                        return false; // Exclude if item?.order?.type is not 'return'
-                    });
-                    // alert(JSON.stringify(orderItems));
-                    var previousOrderItems = previousOrder?.order?.orderItems?.filter((subitem) => {
-                        if (previousOrder?.order?.type === 'return') {
-                            // For 'return' type, check partialCount or count
-                            const value = subitem?.partialCount != null ? new Decimal(subitem.partialCount).toFixed(0) : new Decimal(subitem.count).toFixed(0);
-                            return value != 0;
-                        } else {
-                            // For non-'return' type, calculate the remaining count
-                            const value = subitem?.partialCount != null ? new Decimal(subitem.count).minus(new Decimal(subitem.partialCount)).toFixed(0) : '0';
-                            return value != 0;
-                        }
-                    });
 
-                    if (show) {
-                        return (
-                            <div
-                                onClick={(e) => {
-                                    e.stopPropagation();
+                        var orderItems = item?.order?.orderItems?.filter((subitem) => {
+                            // if (item?.order?.type === 'return') {
+                            if (subitem?.order?.type === 'return') {
+                                // For return subitems, check partialCount or count
+                                const value = subitem?.partialCount != null ? new Decimal(subitem.partialCount).toFixed(0) : new Decimal(subitem.count).toFixed(0);
+                                return value != 0;
+                            } else {
+                                // For non-return subitems, calculate remaining count
+                                const value = subitem?.partialCount != null ? new Decimal(subitem.count).minus(new Decimal(subitem.partialCount)).toFixed(0) : '0';
+                                // alert(value > 0);
+                                return value != 0;
+                            }
+                            // }
+                            return false; // Exclude if item?.order?.type is not 'return'
+                        });
+                        // alert(JSON.stringify(orderItems));
+                        var previousOrderItems = previousOrder?.order?.orderItems?.filter((subitem) => {
+                            if (previousOrder?.order?.type === 'return') {
+                                // For 'return' type, check partialCount or count
+                                const value = subitem?.partialCount != null ? new Decimal(subitem.partialCount).toFixed(0) : new Decimal(subitem.count).toFixed(0);
+                                return value != 0;
+                            } else {
+                                // For non-'return' type, calculate the remaining count
+                                const value = subitem?.partialCount != null ? new Decimal(subitem.count).minus(new Decimal(subitem.partialCount)).toFixed(0) : '0';
+                                return value != 0;
+                            }
+                        });
 
-                                    handleAccordionChange(index);
-                                    var temp = { ...submitSheetPayload };
+                        if (show) {
+                            return (
+                                <div
+                                    onClick={(e) => {
+                                        e.stopPropagation();
 
-                                    temp.updateSheetOrderstemp.map((i, ii) => {
-                                        if (i.sheetOrderId == item.id) {
-                                            // temp.updateSheetOrders[ii].expanded = !tempsheetpayload?.expanded;
-                                            temp.updateSheetOrderstemp[ii].expanded = !tempsheetpayload?.expanded;
-                                        }
-                                    });
-                                    setsubmitSheetPayload({ ...temp });
-                                }}
-                                className={'col-lg-6 '}
-                                key={index}
-                            >
-                                <AccordionItem uuid={index} style={{}} className={generalstyles.card + ' col-lg-12 p-4 mb-3'}>
-                                    <div id={'id' + JSON.stringify(item.id)} className={' col-lg-12 p-0'}>
-                                        <div className="row m-0 w-100">
-                                            <div className="col-lg-9 p-0">
-                                                <div className="row m-0 w-100">
-                                                    <div className="col-lg-12 p-0">
-                                                        <label style={{}} className={`${formstyles.checkbox} ${formstyles.checkbox_sub} ${formstyles.path}` + ' d-flex my-0 '}>
-                                                            <input
-                                                                type="checkbox"
-                                                                className="mt-auto mb-auto"
-                                                                checked={tempsheetpayload.expanded}
-                                                                onChange={(e) => {
-                                                                    e.stopPropagation();
-                                                                    if (
-                                                                        item?.order?.status == 'delivered' ||
-                                                                        item?.order?.status == 'partiallyDelivered' ||
-                                                                        item?.order?.status == 'cancelled' ||
-                                                                        submitSheetPayload?.status == 'inProgress' ||
-                                                                        (type == 'admin' && submitSheetPayload?.status == 'waitingForAdminApproval') ||
-                                                                        (type != 'admin' && submitSheetPayload?.status == 'waitingForFinanceApproval')
-                                                                    ) {
-                                                                        handleAccordionChange(index);
-                                                                        var temp = { ...submitSheetPayload };
+                                        handleAccordionChange(index);
+                                        var temp = { ...submitSheetPayload };
 
-                                                                        temp.updateSheetOrderstemp.map((i, ii) => {
-                                                                            if (i.sheetOrderId == item.id) {
-                                                                                // temp.updateSheetOrders[ii].expanded = !tempsheetpayload?.expanded;
-                                                                                temp.updateSheetOrderstemp[ii].expanded = !tempsheetpayload?.expanded;
-                                                                            }
-                                                                        });
-                                                                        setsubmitSheetPayload({ ...temp });
-                                                                    }
-                                                                }}
-                                                            />
-                                                            <svg viewBox="0 0 21 21" className="h-100">
-                                                                <path d="M5,10.75 L8.5,14.25 L19.4,2.3 C18.8333333,1.43333333 18.0333333,1 17,1 L4,1 C2.35,1 1,2.35 1,4 L1,17 C1,18.65 2.35,20 4,20 L17,20 C18.65,20 20,18.65 20,17 L20,7.99769186"></path>
-                                                            </svg>
-                                                            <p className={`${generalstyles.checkbox_label} ml-2 mb-0 text-focus text-capitalize cursor-pointer font_14 ml-2 mr-0 wordbreak`}>
-                                                                Expand Order
-                                                            </p>
-                                                        </label>
-                                                    </div>
-
-                                                    <div class="col-lg-12 p-0 d-flex justify-content-start mb-1 mt-3">
-                                                        <div className="row m-0 w-100 d-flex align-items-center justify-content-start">
-                                                            <div style={{ background: '#eee', color: 'black' }} className={' wordbreak rounded-pill font-weight-600 allcentered '}>
-                                                                # {item?.order?.id}
-                                                            </div>
-
-                                                            <div
-                                                                style={{
-                                                                    color: 'white',
-                                                                    borderRadius: '0.25rem',
-                                                                    fontSize: '11px',
-                                                                    background: 'var(--primary)',
-                                                                }}
-                                                                class="allcentered mx-2 p-1 px-2 text-capitalize"
-                                                            >
-                                                                {item?.order?.type?.split(/(?=[A-Z])/).join(' ')}
-                                                            </div>
-                                                            <div
-                                                                onClick={(e) => {
-                                                                    e.stopPropagation();
-
-                                                                    setstatuspayload({
-                                                                        step: 0,
-                                                                        orderid: item.id,
-                                                                        status: '',
-                                                                        type: tempsheetpayload?.orderStatus?.split(/(?=[A-Z])/).join(' '),
-                                                                        order: item?.order,
-                                                                        previousOrder: sheetOrders?.filter((ii) => ii.orderId == item?.order?.previousOrderId)[0]?.order,
-                                                                        fullDelivery: true,
-                                                                        fullReturn: true,
-                                                                        returnStatus: 'returned',
-                                                                    });
-                                                                    if (tempsheetpayload?.status == 'financeAccepted' || tempsheetpayload?.status == 'adminAccepted') {
-                                                                        return;
-                                                                    }
-                                                                    setchangestatusmodal(true);
-                                                                }}
-                                                                style={{ cursor: 'pointer', marginInlineEnd: '5px' }}
-                                                                className={
-                                                                    tempsheetpayload?.orderStatus == 'delivered' ||
-                                                                    tempsheetpayload?.orderStatus == 'partiallyDelivered' ||
-                                                                    tempsheetpayload?.orderStatus == 'returned' ||
-                                                                    tempsheetpayload?.orderStatus == 'partiallyReturned'
-                                                                        ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 text-capitalize '
-                                                                        : tempsheetpayload?.orderStatus == 'cancelled' || tempsheetpayload?.orderStatus == 'failedDeliveryAttempt'
-                                                                        ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 text-capitalize '
-                                                                        : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 text-capitalize '
-                                                                }
-                                                            >
-                                                                <span>{tempsheetpayload?.orderStatus?.split(/(?=[A-Z])/).join(' ')}</span>
-                                                            </div>
-                                                            {item?.order?.merchant?.name}
-                                                        </div>
-                                                    </div>
-                                                </div>{' '}
-                                            </div>
-
-                                            <div className="col-lg-3 p-0">
-                                                <div className="row m-0 w-100">
-                                                    {type == 'finance' && (
-                                                        <div className="col-lg-12 p-0 mb-2 d-flex justify-content-end">
-                                                            <div className="row m-0 w-100 d-flex justify-content-end">
-                                                                <label className={`${formstyles.switch} mx-2 my-0`}>
-                                                                    <input
-                                                                        type="checkbox"
-                                                                        checked={!tempsheetpayload?.shippingCollected}
-                                                                        onChange={(e) => {
-                                                                            e.stopPropagation();
+                                        temp.updateSheetOrderstemp.map((i, ii) => {
+                                            if (i.sheetOrderId == item.id) {
+                                                // temp.updateSheetOrders[ii].expanded = !tempsheetpayload?.expanded;
+                                                temp.updateSheetOrderstemp[ii].expanded = !tempsheetpayload?.expanded;
+                                            }
+                                        });
+                                        setsubmitSheetPayload({ ...temp });
+                                    }}
+                                    className={'col-lg-6 '}
+                                    key={index}
+                                >
+                                    <AccordionItem uuid={index} style={{}} className={generalstyles.card + ' col-lg-12 p-4 mb-3'}>
+                                        <div id={'id' + JSON.stringify(item.id)} className={' col-lg-12 p-0'}>
+                                            <div className="row m-0 w-100">
+                                                <div className="col-lg-9 p-0">
+                                                    <div className="row m-0 w-100">
+                                                        <div className="col-lg-12 p-0">
+                                                            <label style={{}} className={`${formstyles.checkbox} ${formstyles.checkbox_sub} ${formstyles.path}` + ' d-flex my-0 '}>
+                                                                <input
+                                                                    type="checkbox"
+                                                                    className="mt-auto mb-auto"
+                                                                    checked={tempsheetpayload.expanded}
+                                                                    onChange={(e) => {
+                                                                        e.stopPropagation();
+                                                                        if (
+                                                                            item?.order?.status == 'delivered' ||
+                                                                            item?.order?.status == 'partiallyDelivered' ||
+                                                                            item?.order?.status == 'cancelled' ||
+                                                                            submitSheetPayload?.status == 'inProgress' ||
+                                                                            (type == 'admin' && submitSheetPayload?.status == 'waitingForAdminApproval') ||
+                                                                            (type != 'admin' && submitSheetPayload?.status == 'waitingForFinanceApproval')
+                                                                        ) {
+                                                                            handleAccordionChange(index);
                                                                             var temp = { ...submitSheetPayload };
-
-                                                                            temp.updateSheetOrders.map((i, ii) => {
-                                                                                if (i.sheetOrderId == item.id) {
-                                                                                    temp.updateSheetOrders[ii].shippingCollected = !temp.updateSheetOrders[ii].shippingCollected;
-                                                                                }
-                                                                            });
 
                                                                             temp.updateSheetOrderstemp.map((i, ii) => {
                                                                                 if (i.sheetOrderId == item.id) {
-                                                                                    temp.updateSheetOrderstemp[ii].shippingCollected = !temp.updateSheetOrders[ii].shippingCollected;
+                                                                                    // temp.updateSheetOrders[ii].expanded = !tempsheetpayload?.expanded;
+                                                                                    temp.updateSheetOrderstemp[ii].expanded = !tempsheetpayload?.expanded;
                                                                                 }
                                                                             });
-
                                                                             setsubmitSheetPayload({ ...temp });
-                                                                        }}
-                                                                    />
-                                                                    <span className={`${formstyles.slider} ${formstyles.round}`}></span>
-                                                                </label>
-                                                                <p className={`${generalstyles.checkbox_label} mb-0 text-focus text-capitalize cursor-pointer font_14 ml-1 mr-1 wordbreak`}>
-                                                                    Shipping on merchant
+                                                                        }
+                                                                    }}
+                                                                />
+                                                                <svg viewBox="0 0 21 21" className="h-100">
+                                                                    <path d="M5,10.75 L8.5,14.25 L19.4,2.3 C18.8333333,1.43333333 18.0333333,1 17,1 L4,1 C2.35,1 1,2.35 1,4 L1,17 C1,18.65 2.35,20 4,20 L17,20 C18.65,20 20,18.65 20,17 L20,7.99769186"></path>
+                                                                </svg>
+                                                                <p className={`${generalstyles.checkbox_label} ml-2 mb-0 text-focus text-capitalize cursor-pointer font_14 ml-2 mr-0 wordbreak`}>
+                                                                    Expand Order
                                                                 </p>
+                                                            </label>
+                                                        </div>
+
+                                                        <div class="col-lg-12 p-0 d-flex justify-content-start mb-1 mt-3">
+                                                            <div className="row m-0 w-100 d-flex align-items-center justify-content-start">
+                                                                <div style={{ background: '#eee', color: 'black' }} className={' wordbreak rounded-pill font-weight-600 allcentered '}>
+                                                                    # {item?.order?.id}
+                                                                </div>
+
+                                                                <div
+                                                                    style={{
+                                                                        color: 'white',
+                                                                        borderRadius: '0.25rem',
+                                                                        fontSize: '11px',
+                                                                        background: 'var(--primary)',
+                                                                    }}
+                                                                    class="allcentered mx-2 p-1 px-2 text-capitalize"
+                                                                >
+                                                                    {item?.order?.type?.split(/(?=[A-Z])/).join(' ')}
+                                                                </div>
+                                                                <div
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+
+                                                                        setstatuspayload({
+                                                                            step: 0,
+                                                                            orderid: item.id,
+                                                                            status: '',
+                                                                            type: tempsheetpayload?.orderStatus?.split(/(?=[A-Z])/).join(' '),
+                                                                            order: item?.order,
+                                                                            previousOrder: sheetOrders?.filter((ii) => ii.orderId == item?.order?.previousOrderId)[0]?.order,
+                                                                            fullDelivery: true,
+                                                                            fullReturn: true,
+                                                                            returnStatus: 'returned',
+                                                                        });
+                                                                        if (tempsheetpayload?.status == 'financeAccepted' || tempsheetpayload?.status == 'adminAccepted') {
+                                                                            return;
+                                                                        }
+                                                                        setchangestatusmodal(true);
+                                                                    }}
+                                                                    style={{ cursor: 'pointer', marginInlineEnd: '5px' }}
+                                                                    className={
+                                                                        tempsheetpayload?.orderStatus == 'delivered' ||
+                                                                        tempsheetpayload?.orderStatus == 'partiallyDelivered' ||
+                                                                        tempsheetpayload?.orderStatus == 'returned' ||
+                                                                        tempsheetpayload?.orderStatus == 'partiallyReturned'
+                                                                            ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 text-capitalize '
+                                                                            : tempsheetpayload?.orderStatus == 'cancelled' || tempsheetpayload?.orderStatus == 'failedDeliveryAttempt'
+                                                                            ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 text-capitalize '
+                                                                            : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 text-capitalize '
+                                                                    }
+                                                                >
+                                                                    <span>{tempsheetpayload?.orderStatus?.split(/(?=[A-Z])/).join(' ')}</span>
+                                                                </div>
+                                                                {item?.order?.merchant?.name}
                                                             </div>
                                                         </div>
-                                                    )}
+                                                    </div>{' '}
+                                                </div>
 
-                                                    <div className="col-lg-12 p-0 d-flex justify-content-end">
-                                                        <div>
-                                                            <div className="row w-100 d-flex align-items-center d-flex justify-content-end m-0">
-                                                                <div className="col-lg-12 p-0 d-flex justify-content-end my-2">
-                                                                    <button
-                                                                        style={{
-                                                                            backgroundColor:
-                                                                                type == 'admin' && tempsheetpayload?.status == 'adminAccepted'
-                                                                                    ? 'var(--success)'
-                                                                                    : type != 'admin' && tempsheetpayload?.status == 'financeAccepted'
-                                                                                    ? 'var(--success)'
-                                                                                    : '',
-                                                                            height: '30px',
-                                                                            fontSize: '12px ',
-                                                                        }}
-                                                                        class={generalstyles.roundbutton + '  allcentered px-1 py-0'}
-                                                                        onClick={(e) => {
-                                                                            e.stopPropagation();
-                                                                            if (item?.amountCollected == null && item.order.status !== 'postponed') {
-                                                                                NotificationManager.warning(`Can not update order`, 'Warning!');
-                                                                                return;
-                                                                            }
+                                                <div className="col-lg-3 p-0">
+                                                    <div className="row m-0 w-100">
+                                                        {type == 'finance' && (
+                                                            <div className="col-lg-12 p-0 mb-2 d-flex justify-content-end">
+                                                                <div className="row m-0 w-100 d-flex justify-content-end">
+                                                                    <label className={`${formstyles.switch} mx-2 my-0`}>
+                                                                        <input
+                                                                            type="checkbox"
+                                                                            checked={!tempsheetpayload?.shippingCollected}
+                                                                            onChange={(e) => {
+                                                                                e.stopPropagation();
+                                                                                var temp = { ...submitSheetPayload };
 
-                                                                            const orderStatus = item?.order?.status;
-                                                                            const sheetOrder = submitSheetPayload?.updateSheetOrders?.find((e) => e.sheetOrderId == item.id);
+                                                                                temp.updateSheetOrders.map((i, ii) => {
+                                                                                    if (i.sheetOrderId == item.id) {
+                                                                                        temp.updateSheetOrders[ii].shippingCollected = !temp.updateSheetOrders[ii].shippingCollected;
+                                                                                    }
+                                                                                });
 
-                                                                            const canUpdateOrder = ['delivered', 'partiallyDelivered', 'cancelled'].includes(orderStatus);
-                                                                            const isInProgress = submitSheetPayload?.status == 'inProgress';
-                                                                            const isWaitingForAdminApproval = submitSheetPayload?.status == 'waitingForAdminApproval' && type == 'admin';
-                                                                            const isWaitingForFinanceApproval = submitSheetPayload?.status == 'waitingForFinanceApproval' && type != 'admin';
+                                                                                temp.updateSheetOrderstemp.map((i, ii) => {
+                                                                                    if (i.sheetOrderId == item.id) {
+                                                                                        temp.updateSheetOrderstemp[ii].shippingCollected = !temp.updateSheetOrders[ii].shippingCollected;
+                                                                                    }
+                                                                                });
 
-                                                                            if (sheetOrder) {
-                                                                                if (canUpdateOrder || isInProgress || isWaitingForAdminApproval || isWaitingForFinanceApproval) {
-                                                                                    handleAccordionChange(index);
-                                                                                    var temp = { ...submitSheetPayload };
-                                                                                    temp.updateSheetOrders.map((i, ii) => {
-                                                                                        if (i.orderId == item.order.id) {
-                                                                                            if (expandedItems.includes(index)) {
-                                                                                                temp.updateSheetOrders[ii].status = type == 'admin' ? 'adminAccepted' : 'financeAccepted';
-                                                                                            } else {
-                                                                                                temp.updateSheetOrders[ii].status = type == 'admin' ? 'adminRejected' : 'financeRejected';
-                                                                                            }
-                                                                                        }
-                                                                                    });
-                                                                                    temp.updateSheetOrderstemp.map((i, ii) => {
-                                                                                        if (i.orderId == item.order.id) {
-                                                                                            if (expandedItems.includes(index)) {
-                                                                                                temp.updateSheetOrderstemp[ii].status = type == 'admin' ? 'adminAccepted' : 'financeAccepted';
-                                                                                            } else {
-                                                                                                temp.updateSheetOrderstemp[ii].status = type == 'admin' ? 'adminRejected' : 'financeRejected';
-                                                                                            }
-                                                                                        }
-                                                                                    });
-                                                                                    setsubmitSheetPayload({ ...temp });
-                                                                                } else {
-                                                                                    NotificationManager.warning(`Can not update order with status ${orderStatus}`, 'Warning!');
-                                                                                }
-                                                                            }
-                                                                        }}
-                                                                    >
-                                                                        {type == 'admin' && tempsheetpayload?.status == 'adminAccepted'
-                                                                            ? 'Order Accepted'
-                                                                            : type != 'admin' && tempsheetpayload?.status == 'financeAccepted'
-                                                                            ? 'Order Accepted'
-                                                                            : 'Accept Order'}
-                                                                        {((type == 'admin' && tempsheetpayload?.status == 'adminAccepted') ||
-                                                                            (type != 'admin' && tempsheetpayload?.status == 'financeAccepted')) && (
-                                                                            <>
-                                                                                <FaCheck className="m-1 mt-1" size={8} />
-                                                                            </>
-                                                                        )}
-                                                                    </button>
+                                                                                setsubmitSheetPayload({ ...temp });
+                                                                            }}
+                                                                        />
+                                                                        <span className={`${formstyles.slider} ${formstyles.round}`}></span>
+                                                                    </label>
+                                                                    <p className={`${generalstyles.checkbox_label} mb-0 text-focus text-capitalize cursor-pointer font_14 ml-1 mr-1 wordbreak`}>
+                                                                        Shipping on merchant
+                                                                    </p>
                                                                 </div>
-                                                                <div class="col-lg-12 p-0">
-                                                                    <div className="row m-0 w-100 d-flex align-items-center justify-content-end">
+                                                            </div>
+                                                        )}
+
+                                                        <div className="col-lg-12 p-0 d-flex justify-content-end">
+                                                            <div>
+                                                                <div className="row w-100 d-flex align-items-center d-flex justify-content-end m-0">
+                                                                    <div className="col-lg-12 p-0 d-flex justify-content-end my-2">
+                                                                        <button
+                                                                            style={{
+                                                                                backgroundColor:
+                                                                                    type == 'admin' && tempsheetpayload?.status == 'adminAccepted'
+                                                                                        ? 'var(--success)'
+                                                                                        : type != 'admin' && tempsheetpayload?.status == 'financeAccepted'
+                                                                                        ? 'var(--success)'
+                                                                                        : '',
+                                                                                height: '30px',
+                                                                                fontSize: '12px ',
+                                                                            }}
+                                                                            class={generalstyles.roundbutton + '  allcentered px-1 py-0'}
+                                                                            onClick={(e) => {
+                                                                                e.stopPropagation();
+                                                                                if (item?.amountCollected == null && item.order.status !== 'postponed') {
+                                                                                    NotificationManager.warning(`Can not update order`, 'Warning!');
+                                                                                    return;
+                                                                                }
+
+                                                                                const orderStatus = item?.order?.status;
+                                                                                const sheetOrder = submitSheetPayload?.updateSheetOrders?.find((e) => e.sheetOrderId == item.id);
+
+                                                                                const canUpdateOrder = ['delivered', 'partiallyDelivered', 'cancelled'].includes(orderStatus);
+                                                                                const isInProgress = submitSheetPayload?.status == 'inProgress';
+                                                                                const isWaitingForAdminApproval = submitSheetPayload?.status == 'waitingForAdminApproval' && type == 'admin';
+                                                                                const isWaitingForFinanceApproval = submitSheetPayload?.status == 'waitingForFinanceApproval' && type != 'admin';
+
+                                                                                if (sheetOrder) {
+                                                                                    if (canUpdateOrder || isInProgress || isWaitingForAdminApproval || isWaitingForFinanceApproval) {
+                                                                                        handleAccordionChange(index);
+                                                                                        var temp = { ...submitSheetPayload };
+                                                                                        temp.updateSheetOrders.map((i, ii) => {
+                                                                                            if (i.orderId == item.order.id) {
+                                                                                                if (expandedItems.includes(index)) {
+                                                                                                    temp.updateSheetOrders[ii].status = type == 'admin' ? 'adminAccepted' : 'financeAccepted';
+                                                                                                } else {
+                                                                                                    temp.updateSheetOrders[ii].status = type == 'admin' ? 'adminRejected' : 'financeRejected';
+                                                                                                }
+                                                                                            }
+                                                                                        });
+                                                                                        temp.updateSheetOrderstemp.map((i, ii) => {
+                                                                                            if (i.orderId == item.order.id) {
+                                                                                                if (expandedItems.includes(index)) {
+                                                                                                    temp.updateSheetOrderstemp[ii].status = type == 'admin' ? 'adminAccepted' : 'financeAccepted';
+                                                                                                } else {
+                                                                                                    temp.updateSheetOrderstemp[ii].status = type == 'admin' ? 'adminRejected' : 'financeRejected';
+                                                                                                }
+                                                                                            }
+                                                                                        });
+                                                                                        setsubmitSheetPayload({ ...temp });
+                                                                                    } else {
+                                                                                        NotificationManager.warning(`Can not update order with status ${orderStatus}`, 'Warning!');
+                                                                                    }
+                                                                                }
+                                                                            }}
+                                                                        >
+                                                                            {type == 'admin' && tempsheetpayload?.status == 'adminAccepted'
+                                                                                ? 'Order Accepted'
+                                                                                : type != 'admin' && tempsheetpayload?.status == 'financeAccepted'
+                                                                                ? 'Order Accepted'
+                                                                                : 'Accept Order'}
+                                                                            {((type == 'admin' && tempsheetpayload?.status == 'adminAccepted') ||
+                                                                                (type != 'admin' && tempsheetpayload?.status == 'financeAccepted')) && (
+                                                                                <>
+                                                                                    <FaCheck className="m-1 mt-1" size={8} />
+                                                                                </>
+                                                                            )}
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="col-lg-12 p-0">
+                                                                        <div className="row m-0 w-100 d-flex align-items-center justify-content-end">
+                                                                            <div
+                                                                                style={{
+                                                                                    color: 'white',
+                                                                                    borderRadius: '0.25rem',
+                                                                                    fontSize: '11px',
+                                                                                    background:
+                                                                                        type == 'admin'
+                                                                                            ? item?.financePass
+                                                                                                ? 'var(--success)'
+                                                                                                : 'var(--danger)'
+                                                                                            : item?.adminPass
+                                                                                            ? 'var(--success)'
+                                                                                            : 'var(--danger)',
+                                                                                }}
+                                                                                class="allcentered mx-2 p-1 px-2"
+                                                                            >
+                                                                                {type == 'admin'
+                                                                                    ? item?.financePass
+                                                                                        ? 'Finance Accepted'
+                                                                                        : 'Pending Finance'
+                                                                                    : item?.adminPass
+                                                                                    ? 'Admin Accepted'
+                                                                                    : 'Pending Admin'}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {type == 'finance' && (
+                                            <div className="col-lg-12 p-3 mt-2">
+                                                <div className="row m-0 w-100 d-flex">
+                                                    <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-3">
+                                                        <div className="row m-0 w-100">
+                                                            <div className="col-lg-12 p-0 allcentered text-center">
+                                                                <span style={{ fontWeight: 400, fontSize: '11px' }}>Collected</span>
+                                                            </div>
+                                                            <div className="col-lg-12 p-0 allcentered text-center">
+                                                                <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                    {item?.amountCollected ? new Decimal(item?.amountCollected).toFixed(2) : '0.00'} {item?.order?.currency}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-3">
+                                                        <div className="row m-0 w-100">
+                                                            <div className="col-lg-12 p-0 allcentered text-center">
+                                                                <span style={{ fontWeight: 400, fontSize: '11px' }}>Price</span>
+                                                            </div>
+                                                            <div className="col-lg-12 p-0 allcentered text-center">
+                                                                <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                    {new Decimal(item?.order?.price || 0).toFixed(2)} {item?.order?.currency}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-3">
+                                                        <div className="row m-0 w-100">
+                                                            <div className="col-lg-12 p-0 allcentered text-center">
+                                                                <span style={{ fontWeight: 400, fontSize: '11px' }}>Shipping</span>
+                                                            </div>
+                                                            <div className="col-lg-12 p-0 allcentered text-center">
+                                                                <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                    {new Decimal(item?.order?.shippingPrice || 0).toFixed(2)} {item?.order?.currency}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div style={{ fontWeight: 600, fontSize: '15px' }} className="p-0 mb-2 allcentered col-lg-3">
+                                                        <div className="row m-0 w-100">
+                                                            <div className="col-lg-12 p-0 allcentered text-center">
+                                                                <span style={{ fontWeight: 400, fontSize: '11px' }}>Total</span>
+                                                            </div>
+                                                            <div className="col-lg-12 p-0 allcentered text-center">
+                                                                <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                    {new Decimal(item?.order?.price || 0).plus(new Decimal(item?.order?.shippingPrice || 0)).toFixed(2)} {item?.order?.currency}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {previousOrder && (
+                                            <>
+                                                <div className={' col-lg-12 p-0'}>
+                                                    <hr class="mb-0" />
+                                                </div>
+                                                <div className={' col-lg-12 p-0'}>
+                                                    <div className="row m-0 w-100">
+                                                        <div className="col-lg-7 p-0">
+                                                            <div className="row m-0 w-100">
+                                                                <div class="col-lg-12 p-0 d-flex justify-content-start mb-1 mt-3">
+                                                                    <div className="row m-0 w-100 d-flex align-items-center justify-content-start">
+                                                                        <div style={{ background: '#eee', color: 'black' }} className={' wordbreak rounded-pill font-weight-600 allcentered '}>
+                                                                            # {previousOrder?.order?.id}
+                                                                        </div>
+
                                                                         <div
                                                                             style={{
                                                                                 color: 'white',
                                                                                 borderRadius: '0.25rem',
                                                                                 fontSize: '11px',
-                                                                                background:
-                                                                                    type == 'admin'
-                                                                                        ? item?.financePass
-                                                                                            ? 'var(--success)'
-                                                                                            : 'var(--danger)'
-                                                                                        : item?.adminPass
-                                                                                        ? 'var(--success)'
-                                                                                        : 'var(--danger)',
+                                                                                background: 'var(--primary)',
                                                                             }}
-                                                                            class="allcentered mx-2 p-1 px-2"
+                                                                            class="allcentered mx-2 p-1 px-2 text-capitalize"
                                                                         >
-                                                                            {type == 'admin'
-                                                                                ? item?.financePass
-                                                                                    ? 'Finance Accepted'
-                                                                                    : 'Pending Finance'
-                                                                                : item?.adminPass
-                                                                                ? 'Admin Accepted'
-                                                                                : 'Pending Admin'}
+                                                                            {previousOrder?.order?.type?.split(/(?=[A-Z])/).join(' ')}
                                                                         </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {type == 'finance' && (
-                                        <div className="col-lg-12 p-3 mt-2">
-                                            <div className="row m-0 w-100 d-flex">
-                                                <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-3">
-                                                    <div className="row m-0 w-100">
-                                                        <div className="col-lg-12 p-0 allcentered text-center">
-                                                            <span style={{ fontWeight: 400, fontSize: '11px' }}>Collected</span>
-                                                        </div>
-                                                        <div className="col-lg-12 p-0 allcentered text-center">
-                                                            <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                {item?.amountCollected ? new Decimal(item?.amountCollected).toFixed(2) : '0.00'} {item?.order?.currency}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-3">
-                                                    <div className="row m-0 w-100">
-                                                        <div className="col-lg-12 p-0 allcentered text-center">
-                                                            <span style={{ fontWeight: 400, fontSize: '11px' }}>Price</span>
-                                                        </div>
-                                                        <div className="col-lg-12 p-0 allcentered text-center">
-                                                            <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                {new Decimal(item?.order?.price || 0).toFixed(2)} {item?.order?.currency}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-3">
-                                                    <div className="row m-0 w-100">
-                                                        <div className="col-lg-12 p-0 allcentered text-center">
-                                                            <span style={{ fontWeight: 400, fontSize: '11px' }}>Shipping</span>
-                                                        </div>
-                                                        <div className="col-lg-12 p-0 allcentered text-center">
-                                                            <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                {new Decimal(item?.order?.shippingPrice || 0).toFixed(2)} {item?.order?.currency}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div style={{ fontWeight: 600, fontSize: '15px' }} className="p-0 mb-2 allcentered col-lg-3">
-                                                    <div className="row m-0 w-100">
-                                                        <div className="col-lg-12 p-0 allcentered text-center">
-                                                            <span style={{ fontWeight: 400, fontSize: '11px' }}>Total</span>
-                                                        </div>
-                                                        <div className="col-lg-12 p-0 allcentered text-center">
-                                                            <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                {new Decimal(item?.order?.price || 0).plus(new Decimal(item?.order?.shippingPrice || 0)).toFixed(2)} {item?.order?.currency}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )}
+                                                                        <div
+                                                                            // onClick={(e) => {
+                                                                            //     e.stopPropagation();
 
-                                    {previousOrder && (
-                                        <>
-                                            <div className={' col-lg-12 p-0'}>
-                                                <hr class="mb-0" />
-                                            </div>
-                                            <div className={' col-lg-12 p-0'}>
-                                                <div className="row m-0 w-100">
-                                                    <div className="col-lg-7 p-0">
-                                                        <div className="row m-0 w-100">
-                                                            <div class="col-lg-12 p-0 d-flex justify-content-start mb-1 mt-3">
-                                                                <div className="row m-0 w-100 d-flex align-items-center justify-content-start">
-                                                                    <div style={{ background: '#eee', color: 'black' }} className={' wordbreak rounded-pill font-weight-600 allcentered '}>
-                                                                        # {previousOrder?.order?.id}
-                                                                    </div>
+                                                                            //     setstatuspayload({
+                                                                            //         step: 0,
+                                                                            //         orderid: item.id,
+                                                                            //         status: '',
+                                                                            //         order: item?.order,
+                                                                            //         previousOrder: sheetOrders?.filter(
+                                                                            //             (ii) => ii.orderId == item?.order?.previousOrderId,
+                                                                            //         )[0]?.order,
+                                                                            //         fullDelivery: true,
+                                                                            //         fullReturn: true,
+                                                                            //         returnStatus: 'returned',
+                                                                            //     });
 
-                                                                    <div
-                                                                        style={{
-                                                                            color: 'white',
-                                                                            borderRadius: '0.25rem',
-                                                                            fontSize: '11px',
-                                                                            background: 'var(--primary)',
-                                                                        }}
-                                                                        class="allcentered mx-2 p-1 px-2 text-capitalize"
-                                                                    >
-                                                                        {previousOrder?.order?.type?.split(/(?=[A-Z])/).join(' ')}
-                                                                    </div>
-                                                                    <div
-                                                                        // onClick={(e) => {
-                                                                        //     e.stopPropagation();
-
-                                                                        //     setstatuspayload({
-                                                                        //         step: 0,
-                                                                        //         orderid: item.id,
-                                                                        //         status: '',
-                                                                        //         order: item?.order,
-                                                                        //         previousOrder: sheetOrders?.filter(
-                                                                        //             (ii) => ii.orderId == item?.order?.previousOrderId,
-                                                                        //         )[0]?.order,
-                                                                        //         fullDelivery: true,
-                                                                        //         fullReturn: true,
-                                                                        //         returnStatus: 'returned',
-                                                                        //     });
-
-                                                                        //     setchangestatusmodal(true);
-                                                                        // }}
-                                                                        style={{ cursor: 'pointer', marginInlineEnd: '5px' }}
-                                                                        className={
-                                                                            tempsheetpayloadPreviousOrder?.orderStatus == 'delivered' ||
-                                                                            tempsheetpayloadPreviousOrder?.orderStatus == 'partiallyDelivered' ||
-                                                                            tempsheetpayloadPreviousOrder?.orderStatus == 'returned' ||
-                                                                            tempsheetpayloadPreviousOrder?.orderStatus == 'partiallyReturned'
-                                                                                ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 text-capitalize '
-                                                                                : tempsheetpayloadPreviousOrder?.orderStatus == 'cancelled' ||
-                                                                                  tempsheetpayloadPreviousOrder?.orderStatus == 'failedDeliveryAttempt'
-                                                                                ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 text-capitalize '
-                                                                                : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 text-capitalize '
-                                                                        }
-                                                                    >
-                                                                        <span>{tempsheetpayloadPreviousOrder?.orderStatus?.split(/(?=[A-Z])/).join(' ')}</span>
-                                                                    </div>
-                                                                    {item?.order?.merchant?.name}
-                                                                </div>
-                                                            </div>
-                                                        </div>{' '}
-                                                    </div>
-
-                                                    <div className="col-lg-5 p-0">
-                                                        <div className="row m-0 w-100">
-                                                            {type == 'finance' && (
-                                                                <div className="col-lg-12 p-0 mb-2 d-flex justify-content-end">
-                                                                    <div className="row m-0 w-100 d-flex justify-content-end">
-                                                                        <label className={`${formstyles.switch} mx-2 my-0`}>
-                                                                            <input
-                                                                                type="checkbox"
-                                                                                checked={!tempsheetpayloadPreviousOrder?.shippingCollected}
-                                                                                onChange={(e) => {
-                                                                                    e.stopPropagation();
-                                                                                    var temp = { ...submitSheetPayload };
-
-                                                                                    temp.updateSheetOrders.map((i, ii) => {
-                                                                                        if (i.sheetOrderId == previousOrder.id) {
-                                                                                            temp.updateSheetOrders[ii].shippingCollected = !temp.updateSheetOrders[ii].shippingCollected;
-                                                                                        }
-                                                                                    });
-
-                                                                                    temp.updateSheetOrderstemp.map((i, ii) => {
-                                                                                        if (i.sheetOrderId == previousOrder.id) {
-                                                                                            temp.updateSheetOrderstemp[ii].shippingCollected = !temp.updateSheetOrders[ii].shippingCollected;
-                                                                                        }
-                                                                                    });
-
-                                                                                    setsubmitSheetPayload({ ...temp });
-                                                                                }}
-                                                                            />
-                                                                            <span className={`${formstyles.slider} ${formstyles.round}`}></span>
-                                                                        </label>
-                                                                        <p className={`${generalstyles.checkbox_label} mb-0 text-focus text-capitalize cursor-pointer font_14 ml-1 mr-1 wordbreak`}>
-                                                                            Shipping on merchant
-                                                                        </p>
-                                                                    </div>
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            {type == 'finance' && (
-                                                <div className="col-lg-12 p-3 mt-2">
-                                                    <div className="row m-0 w-100 d-flex">
-                                                        <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-3">
-                                                            <div className="row m-0 w-100">
-                                                                <div className="col-lg-12 p-0 allcentered text-center">
-                                                                    <span style={{ fontWeight: 400, fontSize: '11px' }}>Collected</span>
-                                                                </div>
-                                                                <div className="col-lg-12 p-0 allcentered text-center">
-                                                                    <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                        {previousOrder?.amountCollected ? new Decimal(previousOrder?.amountCollected).toFixed(2) : '0.00'}{' '}
-                                                                        {previousOrder?.order?.currency}
-                                                                    </span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-3">
-                                                            <div className="row m-0 w-100">
-                                                                <div className="col-lg-12 p-0 allcentered text-center">
-                                                                    <span style={{ fontWeight: 400, fontSize: '11px' }}>Price</span>
-                                                                </div>
-                                                                <div className="col-lg-12 p-0 allcentered text-center">
-                                                                    <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                        {new Decimal(previousOrder?.order?.price || 0).toFixed(2)} {previousOrder?.order?.currency}
-                                                                    </span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-3">
-                                                            <div className="row m-0 w-100">
-                                                                <div className="col-lg-12 p-0 allcentered text-center">
-                                                                    <span style={{ fontWeight: 400, fontSize: '11px' }}>Shipping</span>
-                                                                </div>
-                                                                <div className="col-lg-12 p-0 allcentered text-center">
-                                                                    <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                        {new Decimal(previousOrder?.order?.shippingPrice || 0).toFixed(2)} {previousOrder?.order?.currency}
-                                                                    </span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div style={{ fontWeight: 600, fontSize: '15px' }} className="p-0 mb-2 allcentered col-lg-3">
-                                                            <div className="row m-0 w-100">
-                                                                <div className="col-lg-12 p-0 allcentered text-center">
-                                                                    <span style={{ fontWeight: 400, fontSize: '11px' }}>Total</span>
-                                                                </div>
-                                                                <div className="col-lg-12 p-0 allcentered text-center">
-                                                                    <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                        {new Decimal(previousOrder?.order?.price || 0).plus(new Decimal(previousOrder?.order?.shippingPrice || 0)).toFixed(2)}{' '}
-                                                                        {previousOrder?.order?.currency}
-                                                                    </span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </>
-                                    )}
-
-                                    {tempsheetpayload?.expanded && (
-                                        <>
-                                            <hr className="mt-2 mb-3" />
-                                            <div class="col-lg-12 p-0">
-                                                <div class="row m-0 w-100">
-                                                    <div className="col-lg-12 p-0">
-                                                        <div className="row m-0 w-100">
-                                                            {orderItems?.length != 0 && (
-                                                                <>
-                                                                    {type == 'admin' && (
-                                                                        <div class="col-lg-12 mb-2 text-capitalize" style={{ fontWeight: 600 }}>
-                                                                            {/* {item?.order?.type}  */}
-                                                                            Items with courier
+                                                                            //     setchangestatusmodal(true);
+                                                                            // }}
+                                                                            style={{ cursor: 'pointer', marginInlineEnd: '5px' }}
+                                                                            className={
+                                                                                tempsheetpayloadPreviousOrder?.orderStatus == 'delivered' ||
+                                                                                tempsheetpayloadPreviousOrder?.orderStatus == 'partiallyDelivered' ||
+                                                                                tempsheetpayloadPreviousOrder?.orderStatus == 'returned' ||
+                                                                                tempsheetpayloadPreviousOrder?.orderStatus == 'partiallyReturned'
+                                                                                    ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 text-capitalize '
+                                                                                    : tempsheetpayloadPreviousOrder?.orderStatus == 'cancelled' ||
+                                                                                      tempsheetpayloadPreviousOrder?.orderStatus == 'failedDeliveryAttempt'
+                                                                                    ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 text-capitalize '
+                                                                                    : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 text-capitalize '
+                                                                            }
+                                                                        >
+                                                                            <span>{tempsheetpayloadPreviousOrder?.orderStatus?.split(/(?=[A-Z])/).join(' ')}</span>
                                                                         </div>
-                                                                    )}
-                                                                    {orderItems?.map((subitem, subindex) => {
-                                                                        return (
-                                                                            <div className={type == 'admin' ? 'col-lg-6 mb-2' : 'col-lg-12 p-0 mb-2'} key={subindex}>
-                                                                                <div
-                                                                                    onClick={(e) => {
+                                                                        {item?.order?.merchant?.name}
+                                                                    </div>
+                                                                </div>
+                                                            </div>{' '}
+                                                        </div>
+
+                                                        <div className="col-lg-5 p-0">
+                                                            <div className="row m-0 w-100">
+                                                                {type == 'finance' && (
+                                                                    <div className="col-lg-12 p-0 mb-2 d-flex justify-content-end">
+                                                                        <div className="row m-0 w-100 d-flex justify-content-end">
+                                                                            <label className={`${formstyles.switch} mx-2 my-0`}>
+                                                                                <input
+                                                                                    type="checkbox"
+                                                                                    checked={!tempsheetpayloadPreviousOrder?.shippingCollected}
+                                                                                    onChange={(e) => {
                                                                                         e.stopPropagation();
-                                                                                        setskuModal(true);
-                                                                                        setskuModalInfo({
-                                                                                            previousOrder: previousOrder,
-                                                                                            previousOrderItems: previousOrderItems,
-                                                                                            order: item.order,
-                                                                                            orderItems: orderItems,
-                                                                                        });
-                                                                                    }}
-                                                                                    style={{ border: '1px solid #eee', borderRadius: '0.25rem' }}
-                                                                                    className="row m-0 w-100 p-2 d-flex align-items-start"
-                                                                                >
-                                                                                    {item?.order?.type == 'return' && (
-                                                                                        <div style={{ borderRadius: '10px', fontWeight: 700, fontSize: '11px' }} className="p-1 px-2 mr-1 allcentered">
-                                                                                            {subitem?.partialCount != null
-                                                                                                ? new Decimal(subitem.partialCount).toFixed(0)
-                                                                                                : new Decimal(subitem.count).toFixed(0)}
-                                                                                        </div>
-                                                                                    )}
-                                                                                    {item?.order?.type != 'return' && (
-                                                                                        <div style={{ borderRadius: '10px', fontWeight: 700, fontSize: '11px' }} className="p-1 px-2 mr-1 allcentered">
-                                                                                            {subitem?.partialCount != null
-                                                                                                ? new Decimal(subitem.count).minus(new Decimal(subitem.partialCount)).toFixed(0)
-                                                                                                : '0'}
-                                                                                        </div>
-                                                                                    )}
-                                                                                    {type == 'admin' && (
-                                                                                        <div style={{ width: '40px', height: '40px', borderRadius: '7px', marginInlineEnd: '5px' }}>
-                                                                                            <img
-                                                                                                src={
-                                                                                                    subitem?.info?.imageUrl
-                                                                                                        ? subitem?.info?.imageUrl
-                                                                                                        : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'
-                                                                                                }
-                                                                                                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
-                                                                                            />
-                                                                                        </div>
-                                                                                    )}
-                                                                                    <div style={{ marginTop: '10px' }}>
-                                                                                        {item?.order?.type != 'return' && (
-                                                                                            <div style={{ fontWeight: 700 }} className="mx-2">
-                                                                                                {new Decimal(
-                                                                                                    subitem?.partialCount != null
-                                                                                                        ? new Decimal(subitem.count).minus(new Decimal(subitem.partialCount))
-                                                                                                        : new Decimal(0),
-                                                                                                )
-                                                                                                    .times(new Decimal(subitem?.unitPrice))
-                                                                                                    .toFixed(2)}{' '}
-                                                                                                {item?.order?.currency}
-                                                                                            </div>
-                                                                                        )}
-                                                                                        {item?.order?.type == 'return' && (
-                                                                                            <div style={{ fontWeight: 700 }} className="mx-2">
-                                                                                                {new Decimal(
-                                                                                                    subitem?.partialCount != null ? new Decimal(subitem.partialCount) : new Decimal(subitem.count),
-                                                                                                )
-                                                                                                    .times(new Decimal(subitem?.unitPrice))
-                                                                                                    .toFixed(2)}{' '}
-                                                                                                {item?.order?.currency}
-                                                                                            </div>
-                                                                                        )}
-                                                                                    </div>
+                                                                                        var temp = { ...submitSheetPayload };
 
-                                                                                    {/* <div className="col-lg-5 d-flex align-items-center">
+                                                                                        temp.updateSheetOrders.map((i, ii) => {
+                                                                                            if (i.sheetOrderId == previousOrder.id) {
+                                                                                                temp.updateSheetOrders[ii].shippingCollected = !temp.updateSheetOrders[ii].shippingCollected;
+                                                                                            }
+                                                                                        });
+
+                                                                                        temp.updateSheetOrderstemp.map((i, ii) => {
+                                                                                            if (i.sheetOrderId == previousOrder.id) {
+                                                                                                temp.updateSheetOrderstemp[ii].shippingCollected = !temp.updateSheetOrders[ii].shippingCollected;
+                                                                                            }
+                                                                                        });
+
+                                                                                        setsubmitSheetPayload({ ...temp });
+                                                                                    }}
+                                                                                />
+                                                                                <span className={`${formstyles.slider} ${formstyles.round}`}></span>
+                                                                            </label>
+                                                                            <p className={`${generalstyles.checkbox_label} mb-0 text-focus text-capitalize cursor-pointer font_14 ml-1 mr-1 wordbreak`}>
+                                                                                Shipping on merchant
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {type == 'finance' && (
+                                                    <div className="col-lg-12 p-3 mt-2">
+                                                        <div className="row m-0 w-100 d-flex">
+                                                            <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-3">
+                                                                <div className="row m-0 w-100">
+                                                                    <div className="col-lg-12 p-0 allcentered text-center">
+                                                                        <span style={{ fontWeight: 400, fontSize: '11px' }}>Collected</span>
+                                                                    </div>
+                                                                    <div className="col-lg-12 p-0 allcentered text-center">
+                                                                        <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                            {previousOrder?.amountCollected ? new Decimal(previousOrder?.amountCollected).toFixed(2) : '0.00'}{' '}
+                                                                            {previousOrder?.order?.currency}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-3">
+                                                                <div className="row m-0 w-100">
+                                                                    <div className="col-lg-12 p-0 allcentered text-center">
+                                                                        <span style={{ fontWeight: 400, fontSize: '11px' }}>Price</span>
+                                                                    </div>
+                                                                    <div className="col-lg-12 p-0 allcentered text-center">
+                                                                        <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                            {new Decimal(previousOrder?.order?.price || 0).toFixed(2)} {previousOrder?.order?.currency}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-3">
+                                                                <div className="row m-0 w-100">
+                                                                    <div className="col-lg-12 p-0 allcentered text-center">
+                                                                        <span style={{ fontWeight: 400, fontSize: '11px' }}>Shipping</span>
+                                                                    </div>
+                                                                    <div className="col-lg-12 p-0 allcentered text-center">
+                                                                        <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                            {new Decimal(previousOrder?.order?.shippingPrice || 0).toFixed(2)} {previousOrder?.order?.currency}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div style={{ fontWeight: 600, fontSize: '15px' }} className="p-0 mb-2 allcentered col-lg-3">
+                                                                <div className="row m-0 w-100">
+                                                                    <div className="col-lg-12 p-0 allcentered text-center">
+                                                                        <span style={{ fontWeight: 400, fontSize: '11px' }}>Total</span>
+                                                                    </div>
+                                                                    <div className="col-lg-12 p-0 allcentered text-center">
+                                                                        <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                            {new Decimal(previousOrder?.order?.price || 0).plus(new Decimal(previousOrder?.order?.shippingPrice || 0)).toFixed(2)}{' '}
+                                                                            {previousOrder?.order?.currency}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </>
+                                        )}
+
+                                        {tempsheetpayload?.expanded && (
+                                            <>
+                                                <hr className="mt-2 mb-3" />
+                                                <div class="col-lg-12 p-0">
+                                                    <div class="row m-0 w-100">
+                                                        <div className="col-lg-12 p-0">
+                                                            <div className="row m-0 w-100">
+                                                                {orderItems?.length != 0 && (
+                                                                    <>
+                                                                        {type == 'admin' && (
+                                                                            <div class="col-lg-12 mb-2 text-capitalize" style={{ fontWeight: 600 }}>
+                                                                                {/* {item?.order?.type}  */}
+                                                                                Items with courier
+                                                                            </div>
+                                                                        )}
+                                                                        {orderItems?.map((subitem, subindex) => {
+                                                                            return (
+                                                                                <div className={type == 'admin' ? 'col-lg-6 mb-2' : 'col-lg-12 p-0 mb-2'} key={subindex}>
+                                                                                    <div
+                                                                                        onClick={(e) => {
+                                                                                            e.stopPropagation();
+                                                                                            setskuModal(true);
+                                                                                            setskuModalInfo({
+                                                                                                previousOrder: previousOrder,
+                                                                                                previousOrderItems: previousOrderItems,
+                                                                                                order: item.order,
+                                                                                                orderItems: orderItems,
+                                                                                            });
+                                                                                        }}
+                                                                                        style={{ border: '1px solid #eee', borderRadius: '0.25rem' }}
+                                                                                        className="row m-0 w-100 p-2 d-flex align-items-start"
+                                                                                    >
+                                                                                        {item?.order?.type == 'return' && (
+                                                                                            <div
+                                                                                                style={{ borderRadius: '10px', fontWeight: 700, fontSize: '11px' }}
+                                                                                                className="p-1 px-2 mr-1 allcentered"
+                                                                                            >
+                                                                                                {subitem?.partialCount != null
+                                                                                                    ? new Decimal(subitem.partialCount).toFixed(0)
+                                                                                                    : new Decimal(subitem.count).toFixed(0)}
+                                                                                            </div>
+                                                                                        )}
+                                                                                        {item?.order?.type != 'return' && (
+                                                                                            <div
+                                                                                                style={{ borderRadius: '10px', fontWeight: 700, fontSize: '11px' }}
+                                                                                                className="p-1 px-2 mr-1 allcentered"
+                                                                                            >
+                                                                                                {subitem?.partialCount != null
+                                                                                                    ? new Decimal(subitem.count).minus(new Decimal(subitem.partialCount)).toFixed(0)
+                                                                                                    : '0'}
+                                                                                            </div>
+                                                                                        )}
+                                                                                        {type == 'admin' && (
+                                                                                            <div style={{ width: '40px', height: '40px', borderRadius: '7px', marginInlineEnd: '5px' }}>
+                                                                                                <img
+                                                                                                    src={
+                                                                                                        subitem?.info?.imageUrl
+                                                                                                            ? subitem?.info?.imageUrl
+                                                                                                            : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'
+                                                                                                    }
+                                                                                                    style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
+                                                                                                />
+                                                                                            </div>
+                                                                                        )}
+                                                                                        <div style={{ marginTop: '10px' }}>
+                                                                                            {item?.order?.type != 'return' && (
+                                                                                                <div style={{ fontWeight: 700 }} className="mx-2">
+                                                                                                    {new Decimal(
+                                                                                                        subitem?.partialCount != null
+                                                                                                            ? new Decimal(subitem.count).minus(new Decimal(subitem.partialCount))
+                                                                                                            : new Decimal(0),
+                                                                                                    )
+                                                                                                        .times(new Decimal(subitem?.unitPrice))
+                                                                                                        .toFixed(2)}{' '}
+                                                                                                    {item?.order?.currency}
+                                                                                                </div>
+                                                                                            )}
+                                                                                            {item?.order?.type == 'return' && (
+                                                                                                <div style={{ fontWeight: 700 }} className="mx-2">
+                                                                                                    {new Decimal(
+                                                                                                        subitem?.partialCount != null ? new Decimal(subitem.partialCount) : new Decimal(subitem.count),
+                                                                                                    )
+                                                                                                        .times(new Decimal(subitem?.unitPrice))
+                                                                                                        .toFixed(2)}{' '}
+                                                                                                    {item?.order?.currency}
+                                                                                                </div>
+                                                                                            )}
+                                                                                        </div>
+
+                                                                                        {/* <div className="col-lg-5 d-flex align-items-center">
                                                                               <div className="row m-0 w-100">
                                                                                   <div style={{ fontSize: '14px', fontWeight: 500 }} className={'col-lg-12 p-0 wordbreak wordbreak1'}>
                                                                                       {subitem?.info?.item?.name ?? '-'}
@@ -949,101 +997,101 @@ const CourierSheet = (props) => {
                                                                                   </div>
                                                                               </div>
                                                                           </div> */}
+                                                                                    </div>
                                                                                 </div>
-                                                                            </div>
-                                                                        );
-                                                                    })}
-                                                                </>
-                                                            )}
+                                                                            );
+                                                                        })}
+                                                                    </>
+                                                                )}
 
-                                                            {previousOrder && previousOrderItems?.length != 0 && (
-                                                                <>
-                                                                    <hr className="mt-2 mb-3" />
-                                                                    <div class="col-lg-12 p-0">
-                                                                        <div className="row m-0 w-100">
-                                                                            {type == 'admin' && (
-                                                                                <div class="col-lg-12 mb-2 text-capitalize" style={{ fontWeight: 600 }}>
-                                                                                    {previousOrder?.order?.type} items with courier
-                                                                                </div>
-                                                                            )}
-                                                                            {previousOrderItems?.map((subitem, subindex) => {
-                                                                                return (
-                                                                                    <div className={type == 'admin' ? 'col-lg-6 mb-2' : 'col-lg-12 p-0 mb-2'} key={subindex}>
-                                                                                        <div
-                                                                                            onClick={(e) => {
-                                                                                                e.stopPropagation();
-                                                                                                setskuModal(true);
-                                                                                            }}
-                                                                                            style={{ border: '1px solid #eee', borderRadius: '0.25rem' }}
-                                                                                            className="row m-0 w-100 p-2  "
-                                                                                        >
-                                                                                            {previousOrder?.order?.type == 'return' && (
-                                                                                                <div style={{ borderRadius: '8px', fontWeight: 700, fontSize: '11px' }} className="p-1 px-2 mr-1 ">
-                                                                                                    {subitem?.partialCount != null
-                                                                                                        ? new Decimal(subitem.partialCount).toFixed(0)
-                                                                                                        : new Decimal(subitem.count).toFixed(0)}
-                                                                                                </div>
-                                                                                            )}
-                                                                                            {previousOrder?.order?.type != 'return' && (
-                                                                                                <div
-                                                                                                    style={{ borderRadius: '8px', fontWeight: 700, fontSize: '11px' }}
-                                                                                                    className="p-1 px-2 mr-1 allcentered"
-                                                                                                >
-                                                                                                    {subitem?.partialCount != null
-                                                                                                        ? new Decimal(subitem.count).minus(new Decimal(subitem.partialCount)).toFixed(0)
-                                                                                                        : '0'}
-                                                                                                </div>
-                                                                                            )}
-
-                                                                                            {type == 'admin' && (
-                                                                                                <div style={{ width: '40px', height: '40px', borderRadius: '7px', marginInlineEnd: '5px' }}>
-                                                                                                    <img
-                                                                                                        src={
-                                                                                                            subitem?.info?.imageUrl
-                                                                                                                ? subitem?.info?.imageUrl
-                                                                                                                : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'
-                                                                                                        }
-                                                                                                        style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
-                                                                                                    />
-                                                                                                </div>
-                                                                                            )}
-                                                                                            <div style={{ marginTop: '10px' }}>
-                                                                                                {previousOrder?.order?.type != 'return' && (
-                                                                                                    <div style={{ fontWeight: 700 }} className="mx-2">
-                                                                                                        {new Decimal(
-                                                                                                            subitem?.partialCount != null
-                                                                                                                ? new Decimal(subitem.count).minus(new Decimal(subitem.partialCount))
-                                                                                                                : new Decimal(0),
-                                                                                                        )
-                                                                                                            .times(new Decimal(subitem?.unitPrice))
-                                                                                                            .toFixed(2)}{' '}
-                                                                                                        {previousOrder?.order?.currency}
-                                                                                                    </div>
-                                                                                                )}
+                                                                {previousOrder && previousOrderItems?.length != 0 && (
+                                                                    <>
+                                                                        <hr className="mt-2 mb-3" />
+                                                                        <div class="col-lg-12 p-0">
+                                                                            <div className="row m-0 w-100">
+                                                                                {type == 'admin' && (
+                                                                                    <div class="col-lg-12 mb-2 text-capitalize" style={{ fontWeight: 600 }}>
+                                                                                        {previousOrder?.order?.type} items with courier
+                                                                                    </div>
+                                                                                )}
+                                                                                {previousOrderItems?.map((subitem, subindex) => {
+                                                                                    return (
+                                                                                        <div className={type == 'admin' ? 'col-lg-6 mb-2' : 'col-lg-12 p-0 mb-2'} key={subindex}>
+                                                                                            <div
+                                                                                                onClick={(e) => {
+                                                                                                    e.stopPropagation();
+                                                                                                    setskuModal(true);
+                                                                                                }}
+                                                                                                style={{ border: '1px solid #eee', borderRadius: '0.25rem' }}
+                                                                                                className="row m-0 w-100 p-2  "
+                                                                                            >
                                                                                                 {previousOrder?.order?.type == 'return' && (
-                                                                                                    <div style={{ fontWeight: 700 }} className="mx-2">
-                                                                                                        {new Decimal(
-                                                                                                            subitem?.partialCount != null
-                                                                                                                ? new Decimal(subitem.partialCount)
-                                                                                                                : new Decimal(subitem.count),
-                                                                                                        )
-                                                                                                            .times(new Decimal(subitem?.unitPrice))
-                                                                                                            .toFixed(2)}{' '}
-                                                                                                        {previousOrder?.order?.currency}
+                                                                                                    <div style={{ borderRadius: '8px', fontWeight: 700, fontSize: '11px' }} className="p-1 px-2 mr-1 ">
+                                                                                                        {subitem?.partialCount != null
+                                                                                                            ? new Decimal(subitem.partialCount).toFixed(0)
+                                                                                                            : new Decimal(subitem.count).toFixed(0)}
                                                                                                     </div>
                                                                                                 )}
+                                                                                                {previousOrder?.order?.type != 'return' && (
+                                                                                                    <div
+                                                                                                        style={{ borderRadius: '8px', fontWeight: 700, fontSize: '11px' }}
+                                                                                                        className="p-1 px-2 mr-1 allcentered"
+                                                                                                    >
+                                                                                                        {subitem?.partialCount != null
+                                                                                                            ? new Decimal(subitem.count).minus(new Decimal(subitem.partialCount)).toFixed(0)
+                                                                                                            : '0'}
+                                                                                                    </div>
+                                                                                                )}
+
+                                                                                                {type == 'admin' && (
+                                                                                                    <div style={{ width: '40px', height: '40px', borderRadius: '7px', marginInlineEnd: '5px' }}>
+                                                                                                        <img
+                                                                                                            src={
+                                                                                                                subitem?.info?.imageUrl
+                                                                                                                    ? subitem?.info?.imageUrl
+                                                                                                                    : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'
+                                                                                                            }
+                                                                                                            style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
+                                                                                                        />
+                                                                                                    </div>
+                                                                                                )}
+                                                                                                <div style={{ marginTop: '10px' }}>
+                                                                                                    {previousOrder?.order?.type != 'return' && (
+                                                                                                        <div style={{ fontWeight: 700 }} className="mx-2">
+                                                                                                            {new Decimal(
+                                                                                                                subitem?.partialCount != null
+                                                                                                                    ? new Decimal(subitem.count).minus(new Decimal(subitem.partialCount))
+                                                                                                                    : new Decimal(0),
+                                                                                                            )
+                                                                                                                .times(new Decimal(subitem?.unitPrice))
+                                                                                                                .toFixed(2)}{' '}
+                                                                                                            {previousOrder?.order?.currency}
+                                                                                                        </div>
+                                                                                                    )}
+                                                                                                    {previousOrder?.order?.type == 'return' && (
+                                                                                                        <div style={{ fontWeight: 700 }} className="mx-2">
+                                                                                                            {new Decimal(
+                                                                                                                subitem?.partialCount != null
+                                                                                                                    ? new Decimal(subitem.partialCount)
+                                                                                                                    : new Decimal(subitem.count),
+                                                                                                            )
+                                                                                                                .times(new Decimal(subitem?.unitPrice))
+                                                                                                                .toFixed(2)}{' '}
+                                                                                                            {previousOrder?.order?.currency}
+                                                                                                        </div>
+                                                                                                    )}
+                                                                                                </div>
                                                                                             </div>
                                                                                         </div>
-                                                                                    </div>
-                                                                                );
-                                                                            })}
+                                                                                    );
+                                                                                })}
+                                                                            </div>
                                                                         </div>
-                                                                    </div>
-                                                                </>
-                                                            )}
+                                                                    </>
+                                                                )}
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    {/* <div class="col-lg-4 p-0">
+                                                        {/* <div class="col-lg-4 p-0">
                                                         <div class="row m-0 w-100 px-1">
                                                             <div class={`${formstyles.form__group} ${formstyles.field}`}>
                                                                
@@ -1077,21 +1125,21 @@ const CourierSheet = (props) => {
                                                             </div>
                                                         </div>
                                                     </div> */}
-                                                </div>
-                                                {type == 'admin' && (
+                                                    </div>
+                                                    {/* {type == 'admin' && (
                                                     <div className="col-lg-12 p-0 d-flex justify-content-end mb-2 px-3" style={{ fontWeight: 600, fontSize: '15px' }}>
                                                         Total: {new Decimal(item?.order?.price ?? 0).plus(new Decimal(item?.order?.shippingPrice ?? 0)).toFixed(2)} {item?.order?.currency}
                                                     </div>
-                                                )}
-                                            </div>
-                                        </>
-                                        // </AccordionItemPanel>
-                                    )}
-                                </AccordionItem>
-                            </div>
-                        );
-                    }
-                })}
+                                                )} */}
+                                                </div>
+                                            </>
+                                            // </AccordionItemPanel>
+                                        )}
+                                    </AccordionItem>
+                                </div>
+                            );
+                        }
+                    })}
             </>
         );
     };
@@ -1151,6 +1199,125 @@ const CourierSheet = (props) => {
                                 {dateformatter(submitSheetPayload?.createdAt)}
                             </span>
                         </div>
+                    </div>
+                </div>
+                <div class="col-lg-12 px-3">
+                    <div class={generalstyles.card + ' mb-2 col-lg-12 p-2'}>
+                        <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
+                            <AccordionItem class={`${generalstyles.innercard} p-2`}>
+                                <AccordionItemHeading>
+                                    <AccordionItemButton>
+                                        <div class="row m-0 w-100">
+                                            <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
+                                                <p class={`${generalstyles.cardTitle} m-0 p-0`}>Filter:</p>
+                                            </div>
+                                            <div class="col-lg-4 col-md-4 col-sm-4 p-0 d-flex align-items-center justify-content-end">
+                                                <AccordionItemState>
+                                                    {(state) => <i class="h-100 d-flex align-items-center justify-content-center">{state.expanded ? <BsChevronUp /> : <BsChevronDown />}</i>}
+                                                </AccordionItemState>
+                                            </div>
+                                        </div>
+                                    </AccordionItemButton>
+                                </AccordionItemHeading>
+                                <AccordionItemPanel>
+                                    <hr className="mt-2 mb-3" />
+                                    <div class="row m-0 w-100">
+                                        <div className="col-lg-2 p-0 mb-2 d-flex align-items-center ">
+                                            <div className="row m-0 w-100 d-flex ">
+                                                <label className={`${formstyles.switch}  my-0`}>
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={filterorders?.accepted}
+                                                        onChange={(e) => {
+                                                            e.stopPropagation();
+                                                            setfilterorders({
+                                                                ...filterorders,
+                                                                accepted: filterorders?.accepted ? undefined : true,
+                                                            });
+                                                        }}
+                                                    />
+                                                    <span className={`${formstyles.slider} ${formstyles.round}`}></span>
+                                                </label>
+                                                <p className={`${generalstyles.checkbox_label} mb-0 text-focus text-capitalize cursor-pointer font_14 ml-2 mr-2 wordbreak`}>Accepted</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3" style={{ marginBottom: '15px' }}>
+                                            <MultiSelect
+                                                title="Statuses"
+                                                options={orderStatusEnumContext}
+                                                label="label"
+                                                value="value"
+                                                selected={filterorders?.statuses}
+                                                onClick={(option) => {
+                                                    const tempArray = [...(filterorders?.statuses ?? [])];
+
+                                                    if (option === 'All') {
+                                                        setfilterorders({ ...filterorders, statuses: undefined });
+                                                    } else {
+                                                        const index = tempArray.indexOf(option?.value);
+                                                        if (index === -1) {
+                                                            tempArray.push(option?.value);
+                                                        } else {
+                                                            tempArray.splice(index, 1);
+                                                        }
+
+                                                        setfilterorders({ ...filterorders, statuses: tempArray.length ? tempArray : undefined });
+                                                    }
+                                                }}
+                                            />
+                                        </div>
+
+                                        <div class="col-lg-3">
+                                            <Inputfield
+                                                placeholder="Order Ids"
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter' && e.target.value?.length !== 0) {
+                                                        const orderId = parseInt(e.target.value);
+                                                        if (!filterorders?.orderIds?.includes(orderId)) {
+                                                            const tempArray = [...(filterorders?.orderIds ?? [])];
+                                                            tempArray.push(orderId);
+                                                            setfilterorders({ ...filterorders, orderIds: tempArray });
+                                                            e.target.value = '';
+                                                        } else {
+                                                            NotificationManager.warning('', 'Already exists');
+                                                        }
+                                                    }
+                                                }}
+                                                type="number"
+                                            />
+                                            <div class="col-lg-12 p-0">
+                                                <div class="row m-0 w-100 scrollmenuclasssubscrollbar" style={{ overflow: 'scroll', flexWrap: 'nowrap' }}>
+                                                    {filterorders?.orderIds?.map((orderItem, orderIndex) => (
+                                                        <div
+                                                            key={orderIndex}
+                                                            style={{
+                                                                background: '#ECECEC',
+                                                                padding: '5px 10px',
+                                                                cursor: 'pointer',
+                                                                borderRadius: '8px',
+                                                                justifyContent: 'space-between',
+                                                                width: 'fit-content',
+                                                                fontSize: '11px',
+                                                                minWidth: 'fit-content',
+                                                            }}
+                                                            className="d-flex align-items-center mr-2 mb-1"
+                                                            onClick={() => {
+                                                                const tempArray = [...filterorders.orderIds];
+                                                                tempArray.splice(orderIndex, 1);
+                                                                setfilterorders({ ...filterorders, orderIds: tempArray.length ? tempArray : undefined });
+                                                            }}
+                                                        >
+                                                            {orderItem}
+                                                            <AiOutlineClose size={12} color="#6C757D" className="ml-2" />
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </AccordionItemPanel>
+                            </AccordionItem>
+                        </Accordion>
                     </div>
                 </div>
 

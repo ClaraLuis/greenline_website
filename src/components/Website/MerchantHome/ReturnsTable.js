@@ -105,8 +105,8 @@ const ReturnsTable = (props) => {
                                     {item?.orderItems?.map((subitem, subindex) => {
                                         return (
                                             <div class={'col-lg-12 mb-2'}>
-                                                <div style={{ border: '1px solid #eee', borderRadius: '0.25rem' }} class="row m-0 w-100 p-2">
-                                                    <div style={{ width: '35px', height: '35px', borderRadius: '7px', marginInlineEnd: '5px' }}>
+                                                <div style={{ border: '1px solid #eee', borderRadius: '0.25rem' }} class="row m-0 d-flex align-items-center w-100 p-2">
+                                                    <div style={{ width: '35px', height: '35px', borderRadius: '7px', marginInline: '5px' }}>
                                                         <img
                                                             src={
                                                                 subitem?.info?.imageUrl
@@ -119,13 +119,15 @@ const ReturnsTable = (props) => {
                                                     <div class="col-lg-10 d-flex align-items-center">
                                                         <div className="row m-0 w-100">
                                                             <div style={{ fontSize: '14px', fontWeight: 500 }} className={' col-lg-12 p-0 wordbreak wordbreak1'}>
-                                                                {subitem?.info?.item?.name ?? '-'}
+                                                                {subitem?.info?.fullName ?? '-'}
                                                             </div>
                                                             <div style={{ fontSize: '12px' }} className={' col-lg-12 p-0 wordbreak wordbreak1'}>
                                                                 {subitem?.info?.name ?? '-'}
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    {subitem?.partial && <>{subitem?.partialCount}</>}
+                                                    {!subitem?.partial && <>{subitem?.count}</>}
                                                 </div>
                                             </div>
                                         );

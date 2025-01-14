@@ -796,7 +796,7 @@ export const Contexthandlerscontext_provider = (props) => {
     const userTypeContext = [
         { label: 'Employee', value: 'employee' },
         { label: 'Merchant', value: 'merchant' },
-        { label: 'Customer', value: 'customer' },
+        // { label: 'Customer', value: 'customer' },
     ];
 
     const employeeTypeContext = [

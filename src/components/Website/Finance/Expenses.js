@@ -57,9 +57,6 @@ const Expenses = (props) => {
         status: undefined,
         type: undefined,
     });
-    const fetchExpensesQuery = useQueryGQL('', fetchExpenses(), filterTransactionsObj);
-    const { refetch: refetchExpensesQuery } = useQueryGQL('', fetchExpenses(), filterTransactionsObj);
-
     const [filterExpensesObj, setfilterExpensesObj] = useState({
         isAsc: true,
         limit: 20,
@@ -70,9 +67,11 @@ const Expenses = (props) => {
         toDate: undefined,
     });
 
-    const fetchAllFinancialAccountsQuery = useQueryGQL('', fetchFinancialAccounts(), filterExpensesObj);
+    const fetchExpensesQuery = useQueryGQL('', fetchExpenses(), filterExpensesObj);
+    const { refetch: refetchExpensesQuery } = useQueryGQL('', fetchExpenses(), filterExpensesObj);
 
-    // const fetchusers = [];
+    const fetchAllFinancialAccountsQuery = useQueryGQL('', fetchFinancialAccounts(), filterTransactionsObj);
+
     useEffect(() => {
         setpageactive_context('/expenses');
         setpagetitle_context('Finance');
@@ -85,10 +84,7 @@ const Expenses = (props) => {
         receipt: expensepayload?.receipt,
     });
 
-    const { refetch: refetchAllFinancialAccountsQuery } = useQueryGQL('', fetchFinancialAccounts(), filterExpensesObj);
-
     const Refetch = () => {
-        refetchAllFinancialAccountsQuery();
         refetchExpensesQuery();
     };
     return (
@@ -235,8 +231,8 @@ const Expenses = (props) => {
                                 <Pagination
                                     beforeCursor={fetchExpensesQuery?.data?.paginateExpenses?.cursor?.beforeCursor}
                                     afterCursor={fetchExpensesQuery?.data?.paginateExpenses?.cursor?.afterCursor}
-                                    filter={filterTransactionsObj}
-                                    setfilter={setfilterTransactionsObj}
+                                    filter={filterExpensesObj}
+                                    setfilter={setfilterExpensesObj}
                                 />
                             </div>
                             <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
@@ -365,8 +361,8 @@ const Expenses = (props) => {
 
                                     {
                                         title: 'From Account',
-                                        filter: filterExpensesObj,
-                                        setfilter: setfilterExpensesObj,
+                                        filter: filterTransactionsObj,
+                                        setfilter: setfilterTransactionsObj,
                                         options: fetchAllFinancialAccountsQuery,
                                         optionsAttr: 'paginateFinancialAccounts',
                                         label: 'name',

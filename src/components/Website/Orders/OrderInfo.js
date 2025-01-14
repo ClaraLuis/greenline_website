@@ -880,16 +880,17 @@ const OrderInfo = (props) => {
                                                     <span style={{ fontWeight: 600 }} class="text-capitalize">
                                                         Order Items:
                                                     </span>
-
-                                                    <div
-                                                        style={{ width: '30px', height: '30px' }}
-                                                        class="iconhover allcentered"
-                                                        onClick={async () => {
-                                                            setitemsModal({ open: true, items: [], itemstobeadded: [] });
-                                                        }}
-                                                    >
-                                                        <TbPlus />
-                                                    </div>
+                                                    {chosenOrderContext?.type != 'return' && (
+                                                        <div
+                                                            style={{ width: '30px', height: '30px' }}
+                                                            class="iconhover allcentered"
+                                                            onClick={async () => {
+                                                                setitemsModal({ open: true, items: [], itemstobeadded: [] });
+                                                            }}
+                                                        >
+                                                            <TbPlus />
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </div>
                                             <div className="col-lg-12 p-0 mt-2">
@@ -1002,8 +1003,13 @@ const OrderInfo = (props) => {
                                             <div style={{ cursor: props?.clickable ? 'pointer' : '' }} className="col-lg-12 p-0 allcentered">
                                                 <div class={' row m-0 w-100 allcentered '}>
                                                     <div className="col-lg-12 p-0 d-flex justify-content-end mb-3">
-                                                        <div style={{ background: '#eee', color: 'black' }} className={' wordbreak rounded-pill font-weight-600 allcentered mx-1 '}>
-                                                            {chosenOrderContext?.originalPrice ? 'Original Price' : 'Not Original Price'}
+                                                        <div className="row m-0 w-100 d-flex justify-content-end ">
+                                                            <div style={{ background: '#eee', color: 'black' }} className={' wordbreak rounded-pill font-weight-600 allcentered mx-1 '}>
+                                                                {chosenOrderContext?.originalPrice ? 'Original Price' : 'Not Original Price'}
+                                                            </div>
+                                                            <div style={{ background: 'var(--primary)', color: 'white' }} className={' wordbreak rounded-pill font-weight-600 allcentered mx-1 '}>
+                                                                {chosenOrderContext?.paymentType == 'cash' ? 'Not Paid' : 'Paid'}
+                                                            </div>
                                                         </div>
                                                     </div>
 

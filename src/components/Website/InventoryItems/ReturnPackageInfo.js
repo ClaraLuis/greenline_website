@@ -202,7 +202,7 @@ const ReturnPackageInfo = (props) => {
                                             <div class="col-lg-9 d-flex align-items-center">
                                                 <div className="row m-0 w-100">
                                                     <div style={{ fontSize: '14px', fontWeight: 500 }} className={' col-lg-12 p-0 wordbreak wordbreak1'}>
-                                                        {subitem?.info?.item?.name ?? '-'}
+                                                        {subitem?.info?.fullName ?? '-'}
                                                     </div>
                                                     <div style={{ fontSize: '12px' }} className={' col-lg-12 p-0 wordbreak wordbreak1'}>
                                                         {subitem?.info?.name ?? '-'}

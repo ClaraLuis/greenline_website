@@ -1201,6 +1201,14 @@ const API = () => {
                     status
                     createdAt
                     lastModified
+                    merchant {
+                        id
+                        name
+                    }
+                    inventory {
+                        id
+                        name
+                    }
                     count
                 }
             }
@@ -1729,9 +1737,12 @@ const API = () => {
                             unitPrice
                             unitDiscount
                             partialCount
+                            partial
                             info {
                                 name
                                 imageUrl
+                                fullName
+
                                 sku
                                 item {
                                     name
@@ -1768,6 +1779,7 @@ const API = () => {
                                 weight
                                 createdAt
                                 lastModified
+                                fullName
                             }
                             inventory {
                                 count
@@ -2014,7 +2026,7 @@ const API = () => {
                         id
                         type
                         fromAccountId
-                        approvedById
+                        auditedById
                         amount
                         receipt
                         comment
