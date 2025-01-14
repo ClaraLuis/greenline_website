@@ -37,6 +37,7 @@ const MerchantReturnPackageInfo = (props) => {
         afterCursor: undefined,
         beforeCursor: undefined,
         assignedToPackage: undefined,
+
         merchantId: undefined,
         packageId: parseInt(queryParameters.get('packageId')),
     });
