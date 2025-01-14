@@ -126,8 +126,8 @@ const ReturnsTable = (props) => {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    {subitem?.partial && <>{subitem?.partialCount}</>}
-                                                    {!subitem?.partial && <>{subitem?.count}</>}
+                                                    {/* {subitem?.partial && <>{subitem?.partialCount}</>} */}
+                                                    <>{subitem?.itemReturn?.count}</>
                                                 </div>
                                             </div>
                                         );

@@ -1737,6 +1737,9 @@ const API = () => {
                             unitPrice
                             unitDiscount
                             partialCount
+                            itemReturn {
+                                count
+                            }
                             info {
                                 name
                                 imageUrl
