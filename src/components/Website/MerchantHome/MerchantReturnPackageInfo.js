@@ -41,7 +41,8 @@ const MerchantReturnPackageInfo = (props) => {
         isAsc: true,
         afterCursor: '',
         beforeCursor: '',
-        assignedToPackage: false,
+        assignedToPackage: undefined,
+        packageCentered: true,
         merchantId: undefined,
         packageId: parseInt(queryParameters.get('packageId')),
     });
