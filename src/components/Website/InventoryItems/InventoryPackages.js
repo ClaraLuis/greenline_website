@@ -269,7 +269,9 @@ const InventoryPackages = (props) => {
                                                 class={generalstyles.card + ' p-3 row m-0 w-100   d-flex align-items-center'}
                                             >
                                                 <div className="col-lg-4 p-0">
-                                                    <span style={{ fontSize: '12px', color: 'grey' }}># {item?.id}</span>
+                                                    <span style={{ fontSize: '12px', color: 'grey' }}>
+                                                        # {item?.id}, {item.type == 'merchant' ? item?.merchant?.name : item?.inventory?.name}
+                                                    </span>
                                                 </div>
                                                 <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
                                                     <div class="row m-0 w-100 d-fex justify-content-end align-items-center">
@@ -280,11 +282,12 @@ const InventoryPackages = (props) => {
                                                                     : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered '
                                                             }
                                                         >
-                                                            {returnPackageStatusContext?.map((i, ii) => {
+                                                            {/* {returnPackageStatusContext?.map((i, ii) => {
                                                                 if (i.value == item?.status) {
                                                                     return <span>{i.label}</span>;
                                                                 }
-                                                            })}
+                                                            })} */}
+                                                            {item?.status?.split(/(?=[A-Z])/).join(' ')}
                                                         </div>
                                                         {/* <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered mx-1 '}>
                                                     {returnPackageTypeContext?.map((i, ii) => {

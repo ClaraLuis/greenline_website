@@ -188,11 +188,12 @@ const TrackActivity = (props) => {
                                                                 : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 '
                                                         }
                                                     >
-                                                        {orderStatusEnumContext?.map((i, ii) => {
+                                                        {/* {orderStatusEnumContext?.map((i, ii) => {
                                                             if (i.value == chosenOrderContext?.status) {
                                                                 return <span>{i.label}</span>;
                                                             }
-                                                        })}
+                                                        })} */}
+                                                        {chosenOrderContext?.status?.split(/(?=[A-Z])/).join(' ')}
                                                     </div>
                                                     <div
                                                         // onClick={() => {
@@ -201,11 +202,12 @@ const TrackActivity = (props) => {
                                                         style={{ color: 'white' }}
                                                         className={'ml-1 wordbreak bg-primary rounded-pill font-weight-600 '}
                                                     >
-                                                        {orderTypeContext?.map((i, ii) => {
+                                                        {/* {orderTypeContext?.map((i, ii) => {
                                                             if (i.value == chosenOrderContext?.type) {
                                                                 return <span>{i.label}</span>;
                                                             }
-                                                        })}
+                                                        })} */}
+                                                        {chosenOrderContext?.type?.split(/(?=[A-Z])/).join(' ')}
                                                     </div>
                                                 </div>
                                             </div>

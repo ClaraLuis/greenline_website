@@ -381,7 +381,10 @@ const InventorySettings = (props) => {
                                         <div class="mt-1" style={{ width: '100%' }}>
                                             <DateRangePicker
                                                 // disabledDate={allowedMaxDays(30)}
-                                                value={[filterSentTransactionsObj?.startDate, filterSentTransactionsObj?.endDate]}
+                                                value={[
+                                                    filterSentTransactionsObj?.startDate ? new Date(filterSentTransactionsObj.startDate) : null,
+                                                    filterSentTransactionsObj?.endDate ? new Date(filterSentTransactionsObj.endDate) : null,
+                                                ]}
                                                 onChange={(event) => {
                                                     if (event != null) {
                                                         const start = event[0];

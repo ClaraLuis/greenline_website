@@ -242,7 +242,7 @@ const FilesPopup = (props) => {
                             NotificationManager.warning(response.data.reason || 'Upload failed', 'Warning');
                         }
                     } catch (uploadError) {
-                        console.error('Upload Error:', uploadError);
+                        handleTokenError(uploadError); // New token error handling
                         NotificationManager.error('Error uploading this file. Please try again.', 'Upload Error');
                     }
                 }
@@ -269,6 +269,25 @@ const FilesPopup = (props) => {
 
         if (fileInputRef.current) {
             fileInputRef.current.value = null;
+        }
+    };
+
+    const handleTokenError = (error) => {
+        if (error.response?.data?.message === 'jwt malformed') {
+            signOut(getAuth());
+            cookies.remove('accessToken');
+            cookies.remove('userInfo');
+            cookies.remove('merchantId');
+            window.location.reload();
+            NotificationManager.warning('Invalid token. Please log in again.', 'Authentication Error');
+        } else if (error.response?.data?.message === 'expired jwt token.') {
+            cookies.remove('accessToken');
+            cookies.remove('userInfo');
+            cookies.remove('merchantId');
+            NotificationManager.error('Token expired. Please log in again.', 'Authentication Error');
+            // Optionally, refresh token logic can be added here
+        } else {
+            console.error('Upload Error:', error.response?.data || error.message);
         }
     };
 
@@ -474,7 +493,7 @@ const FilesPopup = (props) => {
                                                             {/* <div className={`${uploaderstyles.file_type}`} style={{ height: 'fit-content', background: bgColor }}>
                                                                 {fileType(item.name)}
                                                             </div> */}
-                                                            <span className={`${uploaderstyles.file_name}` + ' text-overflow '} style={{ lineHeight: '20px', maxWidth: '80%' }}>
+                                                            <span className={`${uploaderstyles.file_name}` + ' text-overflow '} style={{ lineHeight: '20px', maxWidth: '50%' }}>
                                                                 {item.name}
                                                             </span>
                                                         </div>

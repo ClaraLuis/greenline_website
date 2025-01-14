@@ -181,6 +181,9 @@ li.slick-active button:before {
     background-color: transparent;
     transition: all 0.4s;
     border-radius: 0.625rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .images {
     width: 110px;

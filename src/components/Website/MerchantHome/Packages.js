@@ -311,7 +311,7 @@ const Packages = (props) => {
                                     >
                                         <div className="col-lg-2 p-0">
                                             <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
-                                                # {item?.id}
+                                                # {item?.id}, {item.type == 'merchant' ? item?.merchant?.name : item?.inventory?.name}
                                             </span>
                                         </div>
                                         <div className="col-lg-10 p-0 d-flex justify-content-end align-items-center">
@@ -323,18 +323,20 @@ const Packages = (props) => {
                                                             : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered '
                                                     }
                                                 >
-                                                    {returnPackageStatusContext?.map((i, ii) => {
+                                                    {/* {returnPackageStatusContext?.map((i, ii) => {
                                                         if (i.value == item?.status) {
                                                             return <span>{i.label}</span>;
                                                         }
-                                                    })}
+                                                    })} */}
+                                                    {item?.status?.split(/(?=[A-Z])/).join(' ')}
                                                 </div>
                                                 <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered mx-1 '}>
-                                                    {returnPackageTypeContext?.map((i, ii) => {
+                                                    {/* {returnPackageTypeContext?.map((i, ii) => {
                                                         if (i.value == item?.type) {
                                                             return <span>{i.label}</span>;
                                                         }
-                                                    })}
+                                                    })} */}
+                                                    {item?.type?.split(/(?=[A-Z])/).join(' ')}
                                                 </div>
                                                 <Dropdown>
                                                     <Dropdown.Toggle>

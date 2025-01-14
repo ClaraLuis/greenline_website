@@ -1125,11 +1125,12 @@ const CourierSheet = (props) => {
                                         : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered '
                                 }
                             >
-                                {courierSheetStatusesContext?.map((i, ii) => {
+                                {/* {courierSheetStatusesContext?.map((i, ii) => {
                                     if (i.value == submitSheetPayload?.status) {
                                         return <span>{i.label}</span>;
                                     }
-                                })}
+                                })} */}
+                                {submitSheetPayload?.status?.split(/(?=[A-Z])/).join(' ')}
                             </div>
                         </div>
                         <div className="col-lg-12 p-0 my-2">

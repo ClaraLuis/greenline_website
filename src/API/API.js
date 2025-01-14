@@ -1471,6 +1471,14 @@ const API = () => {
                 courier {
                     name
                 }
+                merchant {
+                    id
+                    name
+                }
+                inventory {
+                    id
+                    name
+                }
                 createdAt
             }
         }
@@ -2336,6 +2344,14 @@ const API = () => {
                         status
                         count
                         courier {
+                            name
+                        }
+                        merchant {
+                            id
+                            name
+                        }
+                        inventory {
+                            id
                             name
                         }
                         createdAt
