@@ -403,6 +403,14 @@ const API = () => {
         `;
     };
 
+    const completeInventoryRentTransactions = () => {
+        return gql`
+            mutation completeInventoryRentTransactions($input: TransferCourierCollectionInput!) {
+                completeInventoryRentTransactions(input: $input)
+            }
+        `;
+    };
+
     const processMerchantPayments = () => {
         return gql`
             mutation processMerchantPayments($input: MerchantPaymentTransactionInput!) {
@@ -718,6 +726,32 @@ const API = () => {
                         merchant {
                             id
                             name
+                        }
+                        failsCount
+                        returnPackage {
+                            id
+                            sku
+                            type
+                            hubId
+                            courierId
+                            toInventoryId
+                            toMerchantId
+                            status
+                            createdAt
+                            lastModified
+                            inventory {
+                                name
+                                id
+                            }
+                            merchant {
+                                name
+                                id
+                            }
+                            courier {
+                                name
+                                id
+                            }
+                            count
                         }
                         address {
                             country
@@ -1271,9 +1305,35 @@ const API = () => {
                     buildingNumber
                     apartmentFloor
                 }
+                failsCount
                 courier {
                     id
                     name
+                }
+                returnPackage {
+                    id
+                    sku
+                    type
+                    hubId
+                    courierId
+                    toInventoryId
+                    toMerchantId
+                    status
+                    createdAt
+                    lastModified
+                    inventory {
+                        name
+                        id
+                    }
+                    merchant {
+                        name
+                        id
+                    }
+                    courier {
+                        name
+                        id
+                    }
+                    count
                 }
                 price
                 paymentType
@@ -2242,6 +2302,46 @@ const API = () => {
         `;
     };
 
+    const fetchInventoryRentBills = (payload) => {
+        return gql`
+            query paginateInventoryRentBills($input: PaginateInventoryRentBillsInput!) {
+                paginateInventoryRentBills(input: $input) {
+                    data {
+                        id
+                        type
+                        description
+                        receipt
+                        status
+                        amount
+                        currency
+                        auditedBy {
+                            name
+                        }
+                        fromAccount {
+                            id
+                            name
+                        }
+                        toAccount {
+                            id
+                            name
+                        }
+                        sheetOrder {
+                            order {
+                                otherId
+                                shopifyName
+                                merchant {
+                                    name
+                                }
+                            }
+                        }
+                        createdAt
+                    }
+                    cursor
+                }
+            }
+        `;
+    };
+
     const fetchMerchantPaymentTransactions = (payload) => {
         return gql`
             query paginateMerchantPaymentTransactions($input: PaginateMerchantPaymentTransactionsInput!) {
@@ -2500,7 +2600,9 @@ const API = () => {
         updateAnyFinancialTransaction,
         updateMyFinancialTransaction,
         fetchCourierCollectionTransactions,
+        fetchInventoryRentBills,
         transferMyCourierCollectionFunds,
+        completeInventoryRentTransactions,
         processMerchantPayments,
         fetchMerchantPaymentTransactions,
         calculateFinancialTransactionsTotal,

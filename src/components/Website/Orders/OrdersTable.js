@@ -47,7 +47,7 @@ const OrdersTable = (props) => {
     });
     const [requestReturnPayload, setrequestReturnPayload] = useState({
         orderId: '',
-        orderDate: '',
+        orderDate: new Date().toISOString().split('T')[0],
         returnAmount: '',
         freeShipping: true,
         originalPrice: true,
@@ -139,7 +139,7 @@ const OrdersTable = (props) => {
                                 }
                                 var outOfStock = false;
                                 item?.orderItems?.map((orderitem, orderindex) => {
-                                    if (orderitem?.countInInventory == 0) {
+                                    if (orderitem?.countInInventory == 0 || orderitem?.count > orderitem?.countInInventory) {
                                         outOfStock = true;
                                     }
                                 });
@@ -477,13 +477,13 @@ const OrdersTable = (props) => {
                                                                                             <div
                                                                                                 onClick={(e) => {
                                                                                                     e.stopPropagation();
-                                                                                                    if (orderItem?.countInInventory != 0) {
+                                                                                                    if (orderItem?.countInInventory != 0 && orderItem?.count < orderItem?.countInInventory) {
                                                                                                         setinventoryModal({ open: true, items: organizedData });
                                                                                                     }
                                                                                                 }}
                                                                                                 style={{ width: '30px', height: '30px' }}
                                                                                                 class={
-                                                                                                    orderItem?.countInInventory == 0
+                                                                                                    orderItem?.countInInventory == 0 || orderItem?.count > orderItem?.countInInventory
                                                                                                         ? 'allcentered iconhover text-danger'
                                                                                                         : 'allcentered iconhover text-success'
                                                                                                 }

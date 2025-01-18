@@ -277,7 +277,7 @@ const OrderInfo = (props) => {
         }
 
         chosenOrderContext?.orderItems?.map((orderitem, orderindex) => {
-            if (orderitem?.countInInventory == 0) {
+            if (orderitem?.countInInventory == 0 || orderitem?.count > orderitem?.countInInventory) {
                 setoutOfStock(true);
             }
         });
@@ -569,10 +569,67 @@ const OrderInfo = (props) => {
                                                     </button>
                                                 )}
                                             </div>
+                                            <div className="col-lg-4">
+                                                <div class="row m-0 w-100 d-flex align-items-center">
+                                                    <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
+                                                        # {chosenOrderContext?.id}
+                                                    </span>{' '}
+                                                </div>
+                                            </div>
+                                            <div className="col-lg-8 d-flex justify-content-end align-items-center">
+                                                <div class="row m-0 w-100  d-flex justify-content-end align-items-center">
+                                                    {outOfStock && queryParameters?.get('type') == 'inventory' && (
+                                                        <div className={'mr-1 wordbreak text-danger bg-light-danger rounded-pill font-weight-600 '}>Out Of Stock</div>
+                                                    )}
+
+                                                    <div
+                                                        // onClick={() => {
+                                                        //     setchangestatusmodal(true);
+                                                        // }}
+                                                        // style={{ cursor: 'pointer' }}
+                                                        className={
+                                                            chosenOrderContext?.status == 'delivered'
+                                                                ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 '
+                                                                : chosenOrderContext?.status == 'postponed' || chosenOrderContext?.status == 'failedDeliveryAttempt'
+                                                                ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 '
+                                                                : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 '
+                                                        }
+                                                    >
+                                                        {/* {orderStatusEnumContext?.map((i, ii) => {
+                                                            if (i.value == chosenOrderContext?.status) {
+                                                                return <span>{i.label}</span>;
+                                                            }
+                                                        })} */}
+                                                        {chosenOrderContext?.status?.split(/(?=[A-Z])/).join(' ')}
+                                                    </div>
+                                                    <div
+                                                        // onClick={() => {
+                                                        //     setchangestatusmodal(true);
+                                                        // }}
+                                                        style={{ color: 'white' }}
+                                                        className={'ml-1 wordbreak bg-primary rounded-pill font-weight-600 '}
+                                                    >
+                                                        {/* {orderTypeContext?.map((i, ii) => {
+                                                            if (i.value == chosenOrderContext?.type) {
+                                                                return <span>{i.label}</span>;
+                                                            }
+                                                        })} */}
+                                                        {chosenOrderContext?.type?.split(/(?=[A-Z])/).join(' ')}
+                                                    </div>
+                                                    <div style={{ background: 'var(--primary)', color: 'white' }} className={' wordbreak rounded-pill font-weight-600 allcentered mx-1 '}>
+                                                        {chosenOrderContext?.paymentType == 'cash' ? 'Not Paid' : 'Paid'}
+                                                    </div>
+                                                    {chosenOrderContext?.failsCount > 0 && (
+                                                        <div style={{ background: 'var(--danger)', color: 'white' }} className={' wordbreak rounded-pill font-weight-600 allcentered mx-1 '}>
+                                                            Failed Attempts {chosenOrderContext?.failsCount}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     {cookies.get('userInfo')?.type != 'merchant' && (
-                                        <div class="col-lg-12">
+                                        <div class="col-lg-7">
                                             <div class="col-lg-12 mb-1 p-0" style={{ color: 'grey', fontSize: '11px', fontWeight: 700 }}>
                                                 <div class="row m-0 w-100 d-flex align-items-center justify-content-between">
                                                     <div>Manifest</div>
@@ -580,7 +637,7 @@ const OrderInfo = (props) => {
                                             </div>
                                             <div class={generalstyles.card + ' row m-0 w-100'}>
                                                 {chosenOrderContext?.sheetOrder == null && (
-                                                    <div class="col-lg-4">
+                                                    <div class="col-lg-12">
                                                         <div class="row m-0 w-100 d-flex align-items-center">
                                                             <div class="col-lg-12 p-0">
                                                                 <p class=" p-0 m-0" style={{ fontSize: '17px' }}>
@@ -592,7 +649,7 @@ const OrderInfo = (props) => {
                                                 )}
                                                 {chosenOrderContext?.sheetOrder != null && (
                                                     <>
-                                                        <div className="col-lg-4 p-0">
+                                                        <div className="col-lg-3 p-0">
                                                             <div class="row m-0 w-100 d-flex align-items-center">
                                                                 <span style={{ fontWeight: 600 }} class="text-capitalize">
                                                                     {chosenOrderContext?.courier?.name}{' '}
@@ -602,7 +659,7 @@ const OrderInfo = (props) => {
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
+                                                        <div className="col-lg-9 p-0 d-flex justify-content-end align-items-center">
                                                             <div
                                                                 class={
                                                                     chosenOrderContext?.sheetOrder?.shippingCollected == 'collected'
@@ -653,61 +710,102 @@ const OrderInfo = (props) => {
                                             </div>
                                         </div>
                                     )}
+                                    {cookies.get('userInfo')?.type != 'merchant' && (
+                                        <div class="col-lg-5">
+                                            <div class="col-lg-12 mb-1 p-0" style={{ color: 'grey', fontSize: '11px', fontWeight: 700 }}>
+                                                <div class="row m-0 w-100 d-flex align-items-center justify-content-between">
+                                                    <div>Return Package</div>
+                                                </div>
+                                            </div>
+                                            <div class={generalstyles.card + ' row m-0 w-100'}>
+                                                {chosenOrderContext?.returnPackage == null && (
+                                                    <div class="col-lg-12">
+                                                        <div class="row m-0 w-100 d-flex align-items-center">
+                                                            <div class="col-lg-12 p-0">
+                                                                <p class=" p-0 m-0" style={{ fontSize: '17px' }}>
+                                                                    <span style={{ color: 'var(--danger)' }}>Not Return Package</span>
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                {chosenOrderContext?.returnPackage != null && (
+                                                    <>
+                                                        <div className="col-lg-4 p-0">
+                                                            <div class="row m-0 w-100 d-flex align-items-center">
+                                                                <span style={{ fontWeight: 600 }} class="text-capitalize">
+                                                                    {chosenOrderContext?.returnPackage?.courier?.name}{' '}
+                                                                </span>
+                                                                <div style={{ background: '#eee', color: 'black' }} className={' wordbreak rounded-pill font-weight-600 allcentered mx-1 '}>
+                                                                    # {chosenOrderContext?.returnPackage?.id}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
+                                                            <div
+                                                                style={{
+                                                                    color: 'white',
+                                                                    borderRadius: '0.25rem',
+                                                                    fontSize: '11px',
+                                                                    background: 'var(--primary)',
+                                                                }}
+                                                                class="allcentered  p-1 px-2"
+                                                            >
+                                                                {chosenOrderContext?.returnPackage?.count}
+                                                            </div>
+                                                            <div
+                                                                style={{
+                                                                    color: 'white',
+                                                                    borderRadius: '0.25rem',
+                                                                    fontSize: '11px',
+                                                                    background: 'var(--primary)',
+                                                                }}
+                                                                class="allcentered mx-2 p-1 px-2"
+                                                            >
+                                                                {chosenOrderContext?.returnPackage?.type.split(/(?=[A-Z])/).join(' ')}
+                                                            </div>
+
+                                                            <div
+                                                                style={{
+                                                                    color: 'white',
+                                                                    borderRadius: '0.25rem',
+                                                                    fontSize: '11px',
+                                                                    background: chosenOrderContext?.sheetOrder?.adminPass ? 'var(--success)' : 'var(--danger)',
+                                                                }}
+                                                                class={
+                                                                    chosenOrderContext?.returnPackage?.status == 'delivered'
+                                                                        ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered  '
+                                                                        : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered '
+                                                                }
+                                                            >
+                                                                {chosenOrderContext?.returnPackage?.status.split(/(?=[A-Z])/).join(' ')}
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-lg-12 p-0 my-2">
+                                                            <hr className="m-0" />
+                                                        </div>
+
+                                                        <div className="col-lg-12 p-0 my-2">
+                                                            {chosenOrderContext?.returnPackage?.merchant && <>Merchant: {chosenOrderContext?.returnPackage?.merchant?.name}</>}
+                                                            {chosenOrderContext?.returnPackage?.inventory && <>Inventory: {chosenOrderContext?.returnPackage?.inventory?.name}</>}
+                                                        </div>
+
+                                                        <div className="col-lg-6 p-0 mb-2"></div>
+
+                                                        <div class="col-lg-12 p-0 mb-2 d-flex justify-content-end">
+                                                            <span class="d-flex align-items-center" style={{ fontWeight: 400, color: 'grey', fontSize: '10px' }}>
+                                                                <IoMdTime class="mr-1" />
+                                                                {dateformatter(chosenOrderContext?.returnPackage?.createdAt)}
+                                                            </span>
+                                                        </div>
+                                                    </>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
 
                                     <div class="col-lg-6">
                                         <div style={{ minHeight: '400px', maxHeight: '400px' }} class={generalstyles.card + ' row m-0 w-100 d-flex align-content-start'}>
-                                            <div className="col-lg-4 p-0">
-                                                <div class="row m-0 w-100 d-flex align-items-center">
-                                                    <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
-                                                        # {chosenOrderContext?.id}
-                                                    </span>{' '}
-                                                </div>
-                                            </div>
-                                            <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
-                                                <div class="row m-0 w-100  d-flex justify-content-end align-items-center">
-                                                    {outOfStock && queryParameters?.get('type') == 'inventory' && (
-                                                        <div className={'mr-1 wordbreak text-danger bg-light-danger rounded-pill font-weight-600 '}>Out Of Stock</div>
-                                                    )}
-
-                                                    <div
-                                                        // onClick={() => {
-                                                        //     setchangestatusmodal(true);
-                                                        // }}
-                                                        // style={{ cursor: 'pointer' }}
-                                                        className={
-                                                            chosenOrderContext?.status == 'delivered'
-                                                                ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 '
-                                                                : chosenOrderContext?.status == 'postponed' || chosenOrderContext?.status == 'failedDeliveryAttempt'
-                                                                ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 '
-                                                                : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 '
-                                                        }
-                                                    >
-                                                        {/* {orderStatusEnumContext?.map((i, ii) => {
-                                                            if (i.value == chosenOrderContext?.status) {
-                                                                return <span>{i.label}</span>;
-                                                            }
-                                                        })} */}
-                                                        {chosenOrderContext?.status?.split(/(?=[A-Z])/).join(' ')}
-                                                    </div>
-                                                    <div
-                                                        // onClick={() => {
-                                                        //     setchangestatusmodal(true);
-                                                        // }}
-                                                        style={{ color: 'white' }}
-                                                        className={'ml-1 wordbreak bg-primary rounded-pill font-weight-600 '}
-                                                    >
-                                                        {/* {orderTypeContext?.map((i, ii) => {
-                                                            if (i.value == chosenOrderContext?.type) {
-                                                                return <span>{i.label}</span>;
-                                                            }
-                                                        })} */}
-                                                        {chosenOrderContext?.type?.split(/(?=[A-Z])/).join(' ')}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-12 p-0">
-                                                <hr />
-                                            </div>
                                             <div class="col-lg-12 p-0 mb-3">
                                                 <div class="row m-0 w-100 allcentered">
                                                     <button
@@ -956,7 +1054,7 @@ const OrderInfo = (props) => {
                                                                             {queryParameters?.get('type') === 'inventory' && (
                                                                                 <div
                                                                                     onClick={() => {
-                                                                                        if (orderItem?.countInInventory !== 0) {
+                                                                                        if (orderItem?.countInInventory !== 0 && orderItem?.count < orderItem?.countInInventory) {
                                                                                             // Uncomment if you need to debug the inventory
                                                                                             // alert(JSON.stringify(orderItem?.inventory));
                                                                                             setinventoryModal({ open: true, items: organizedData });
@@ -964,7 +1062,9 @@ const OrderInfo = (props) => {
                                                                                     }}
                                                                                     style={{ width: '30px', height: '30px' }}
                                                                                     className={
-                                                                                        orderItem?.countInInventory === 0 ? 'allcentered iconhover text-danger' : 'allcentered iconhover text-success'
+                                                                                        orderItem?.countInInventory === 0 || orderItem?.count > orderItem?.countInInventory
+                                                                                            ? 'allcentered iconhover text-danger'
+                                                                                            : 'allcentered iconhover text-success'
                                                                                     }
                                                                                 >
                                                                                     <MdOutlineInventory2 size={20} />
@@ -1006,9 +1106,6 @@ const OrderInfo = (props) => {
                                                         <div className="row m-0 w-100 d-flex justify-content-end ">
                                                             <div style={{ background: '#eee', color: 'black' }} className={' wordbreak rounded-pill font-weight-600 allcentered mx-1 '}>
                                                                 {chosenOrderContext?.originalPrice ? 'Original Price' : 'Not Original Price'}
-                                                            </div>
-                                                            <div style={{ background: 'var(--primary)', color: 'white' }} className={' wordbreak rounded-pill font-weight-600 allcentered mx-1 '}>
-                                                                {chosenOrderContext?.paymentType == 'cash' ? 'Not Paid' : 'Paid'}
                                                             </div>
                                                         </div>
                                                     </div>

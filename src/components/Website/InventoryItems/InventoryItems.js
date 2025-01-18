@@ -776,12 +776,12 @@ const InventoryItems = (props) => {
                                 <Select
                                     options={[
                                         { label: 'Export', value: 'export' },
-                                        { label: 'Order Export', value: 'orderExport' },
+                                        // { label: 'Order Export', value: 'orderExport' },
                                     ]}
                                     styles={defaultstyles}
                                     value={[
                                         { label: 'Export', value: 'export' },
-                                        { label: 'Order Export', value: 'orderExport' },
+                                        // { label: 'Order Export', value: 'orderExport' },
                                     ]?.filter((option) => option.value == importpayload?.type)}
                                     onChange={(option) => {
                                         var temp = { ...importpayload };

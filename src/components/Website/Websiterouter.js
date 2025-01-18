@@ -66,6 +66,7 @@ import { TbApi, TbLogout } from 'react-icons/tb';
 import ItemDetails from './MerchantItems/ItemDetails.js';
 import UserRoles from './Users/UserRoles.js';
 import NotFound from './NotFound.js';
+import RentBills from './Finance/RentBills.js';
 const App = (props) => {
     const history = useHistory();
     const location = useLocation();
@@ -321,6 +322,8 @@ const App = (props) => {
                                                                 <Route exact path="/merchantreturnpackageinfo" component={MerchantReturnPackageInfo} />
 
                                                                 <Route exact path="/couriercollections" component={CourierCollection} />
+                                                                <Route exact path="/rentbills" component={RentBills} />
+
                                                                 <Route exact path="/merchantpayments" component={MerchantPayments} />
 
                                                                 <Route exact path="/financialaccounts" component={FinancialAccounts} />

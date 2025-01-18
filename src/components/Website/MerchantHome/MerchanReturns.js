@@ -384,6 +384,21 @@ const MerchanReturns = (props) => {
                                                 });
                                                 await setcartItems([...temp]);
                                                 await createReturnPackageMutation();
+                                                setcartItems([]);
+                                                setpackagepayload({
+                                                    ids: [],
+                                                    type: '',
+                                                    toInventoryId: undefined,
+                                                    toMerchantId: undefined,
+                                                });
+                                                setfilter({
+                                                    limit: 20,
+                                                    isAsc: true,
+                                                    afterCursor: '',
+                                                    beforeCursor: '',
+                                                    assignedToPackage: false,
+                                                    merchantId: undefined,
+                                                });
                                                 refetchMerchantItemReturnsQuery();
                                                 NotificationManager.success('Return Items package created', 'Success');
                                             } catch (error) {
