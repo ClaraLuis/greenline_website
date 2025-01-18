@@ -65,7 +65,7 @@ const ItemInfo = (props) => {
                                     {props?.fetchItemHistoryQuery?.paginateItemHistory?.data?.length != 0 && (
                                         <table style={{}} className={'table text-capitalize'}>
                                             <thead>
-                                                <th>Amount</th>
+                                                <th>Quantity</th>
                                                 <th style={{ minWidth: '400px' }}>Description</th>
                                                 <th>User</th>
                                                 <th>Timestamp</th>

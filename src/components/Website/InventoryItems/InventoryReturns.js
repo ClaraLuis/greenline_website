@@ -251,6 +251,13 @@ const InventoryReturns = (props) => {
                                                 });
                                                 await setcartItems([...temp]);
                                                 await createReturnPackageMutation();
+                                                setcartItems([]);
+                                                setpackagepayload({
+                                                    ids: [],
+                                                    type: 'inventory',
+                                                    toInventoryId: undefined,
+                                                    toMerchantId: undefined,
+                                                });
                                                 refetchInventoryItemReturnsQuery();
                                                 history.push('/packages');
                                             } catch (error) {

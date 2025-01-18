@@ -98,7 +98,7 @@ const TrackActivity = (props) => {
         }
 
         chosenOrderContext?.orderItems?.map((orderitem, orderindex) => {
-            if (orderitem?.countInInventory == 0) {
+            if (orderitem?.countInInventory == 0 || orderitem?.count > orderitem?.countInInventory) {
                 setoutOfStock(true);
             }
         });
@@ -340,7 +340,7 @@ const TrackActivity = (props) => {
                                                                             {queryParameters?.get('type') === 'inventory' && (
                                                                                 <div
                                                                                     onClick={() => {
-                                                                                        if (orderItem?.countInInventory !== 0) {
+                                                                                        if (orderItem?.countInInventory !== 0 && orderItem?.count < orderItem?.countInInventory) {
                                                                                             // Uncomment if you need to debug the inventory
                                                                                             // alert(JSON.stringify(orderItem?.inventory));
                                                                                             setinventoryModal({ open: true, items: organizedData });
@@ -348,7 +348,9 @@ const TrackActivity = (props) => {
                                                                                     }}
                                                                                     style={{ width: '30px', height: '30px' }}
                                                                                     className={
-                                                                                        orderItem?.countInInventory === 0 ? 'allcentered iconhover text-danger' : 'allcentered iconhover text-success'
+                                                                                        orderItem?.countInInventory === 0 || orderItem?.count > orderItem?.countInInventory
+                                                                                            ? 'allcentered iconhover text-danger'
+                                                                                            : 'allcentered iconhover text-success'
                                                                                     }
                                                                                 >
                                                                                     <MdOutlineInventory2 size={20} />

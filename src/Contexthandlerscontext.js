@@ -564,6 +564,18 @@ export const Contexthandlerscontext_provider = (props) => {
                         permissionpage: [1],
                         show: isAuth([1, 51]),
                     },
+                    {
+                        name: 'Inventory Rent Bills',
+                        isselected: false,
+                        icon: (
+                            <i class={'allcentered'}>
+                                <BiTransfer size={18} />
+                            </i>
+                        ),
+                        path: '/rentbills',
+                        permissionpage: [1],
+                        show: isAuth([1, 51]),
+                    },
                 ],
             },
             // {
