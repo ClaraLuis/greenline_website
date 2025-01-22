@@ -36,9 +36,10 @@ const ActionCenter = (props) => {
 
     const [filterorders, setfilterorders] = useState({
         limit: 20,
-        fromDate: new Date().toISOString().split('T')[0],
+        fromDate: new Date(new Date().setDate(new Date().getDate() - 30)).toISOString().split('T')[0],
         toDate: new Date().toISOString().split('T')[0],
     });
+
     const paginateUnresolvedOrdersQuery = useQueryGQL('', paginateUnresolvedOrders(), filterorders);
     const { refetch: repaginateUnresolvedOrders } = useQueryGQL('', paginateUnresolvedOrders(), filterorders);
     const [selectedOrders, setSelectedOrders] = useState([]);
@@ -136,7 +137,7 @@ const ActionCenter = (props) => {
                                             <span>Date Range</span>
                                             <div class="mt-1" style={{ width: '100%' }}>
                                                 <DateRangePicker
-                                                    value={[filterorders?.fromDate ? new Date(filterorders.fromDate) : null, filterorders?.toDate ? new Date(filterorders.toDate) : null]}
+                                                    // value={[filterorders?.fromDate ? new Date(filterorders.fromDate) : null, filterorders?.toDate ? new Date(filterorders.toDate) : null]}
                                                     onChange={(event) => {
                                                         if (event != null) {
                                                             setfilterorders({
@@ -283,7 +284,6 @@ const ActionCenter = (props) => {
                                 actiononclick={(order) => handleSelectOrder(order)}
                                 fetchOrdersQuery={paginateUnresolvedOrdersQuery}
                                 attr={'paginateUnresolvedOrders'}
-                                srcFrom="inventory"
                             />
                         </div>
                         <div class="col-lg-12 p-0">
