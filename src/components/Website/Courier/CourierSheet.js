@@ -336,8 +336,9 @@ const CourierSheet = (props) => {
                 {sheetOrders
                     ?.filter((item) => {
                         const statusFilter = filterorders?.statuses ? filterorders.statuses.includes(item.order.status) : true;
-
-                        const orderIdsFilter = filterorders?.orderIds ? filterorders.orderIds.includes(item.order.id) : true;
+                        console.log('item', item);
+                        const orderIdsFilter = filterorders?.orderIds ? filterorders.orderIds.includes(item.order.id) || filterorders.orderIds.includes(item.order?.previousOrderId) : true;
+                        // const orderIdsFilter1 = filterorders?.orderIds ? filterorders.orderIds.includes(item.previousOrder?.order?.id) : true;
 
                         const acceptedFilter =
                             filterorders?.accepted !== undefined
