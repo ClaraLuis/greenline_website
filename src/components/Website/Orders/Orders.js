@@ -136,200 +136,202 @@ const Orders = (props) => {
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-12 px-3">
-                    <div class={generalstyles.card + ' mb-2 col-lg-12 p-2'}>
-                        <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
-                            <AccordionItem class={`${generalstyles.innercard} p-2`}>
-                                <AccordionItemHeading>
-                                    <AccordionItemButton>
+                {cookies.get('userInfo')?.type != 'merchant' && (
+                    <div class="col-lg-12 px-3">
+                        <div class={generalstyles.card + ' mb-2 col-lg-12 p-2'}>
+                            <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
+                                <AccordionItem class={`${generalstyles.innercard} p-2`}>
+                                    <AccordionItemHeading>
+                                        <AccordionItemButton>
+                                            <div class="row m-0 w-100">
+                                                <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
+                                                    <p class={`${generalstyles.cardTitle} m-0 p-0`}>Filter:</p>
+                                                </div>
+                                                <div class="col-lg-4 col-md-4 col-sm-4 p-0 d-flex align-items-center justify-content-end">
+                                                    <AccordionItemState>
+                                                        {(state) => <i class="h-100 d-flex align-items-center justify-content-center">{state.expanded ? <BsChevronUp /> : <BsChevronDown />}</i>}
+                                                    </AccordionItemState>
+                                                </div>
+                                            </div>
+                                        </AccordionItemButton>
+                                    </AccordionItemHeading>
+                                    <AccordionItemPanel>
+                                        <hr className="mt-2 mb-3" />
                                         <div class="row m-0 w-100">
-                                            <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
-                                                <p class={`${generalstyles.cardTitle} m-0 p-0`}>Filter:</p>
+                                            <div className="col-lg-2 p-0 mb-2 d-flex align-items-center ">
+                                                <div className="row m-0 w-100 d-flex ">
+                                                    <label className={`${formstyles.switch}  my-0`}>
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={filterorders?.outOfStock}
+                                                            onChange={(e) => {
+                                                                e.stopPropagation();
+                                                                setfilterorders({
+                                                                    ...filterorders,
+                                                                    outOfStock: !filterorders?.outOfStock,
+                                                                });
+                                                            }}
+                                                        />
+                                                        <span className={`${formstyles.slider} ${formstyles.round}`}></span>
+                                                    </label>
+                                                    <p className={`${generalstyles.checkbox_label} mb-0 text-focus text-capitalize cursor-pointer font_14 ml-2 mr-2 wordbreak`}>Out of stock</p>
+                                                </div>
                                             </div>
-                                            <div class="col-lg-4 col-md-4 col-sm-4 p-0 d-flex align-items-center justify-content-end">
-                                                <AccordionItemState>
-                                                    {(state) => <i class="h-100 d-flex align-items-center justify-content-center">{state.expanded ? <BsChevronUp /> : <BsChevronDown />}</i>}
-                                                </AccordionItemState>
-                                            </div>
-                                        </div>
-                                    </AccordionItemButton>
-                                </AccordionItemHeading>
-                                <AccordionItemPanel>
-                                    <hr className="mt-2 mb-3" />
-                                    <div class="row m-0 w-100">
-                                        <div className="col-lg-2 p-0 mb-2 d-flex align-items-center ">
-                                            <div className="row m-0 w-100 d-flex ">
-                                                <label className={`${formstyles.switch}  my-0`}>
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={filterorders?.outOfStock}
-                                                        onChange={(e) => {
-                                                            e.stopPropagation();
-                                                            setfilterorders({
-                                                                ...filterorders,
-                                                                outOfStock: !filterorders?.outOfStock,
-                                                            });
-                                                        }}
-                                                    />
-                                                    <span className={`${formstyles.slider} ${formstyles.round}`}></span>
-                                                </label>
-                                                <p className={`${generalstyles.checkbox_label} mb-0 text-focus text-capitalize cursor-pointer font_14 ml-2 mr-2 wordbreak`}>Out of stock</p>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-3" style={{ marginBottom: '15px' }}>
-                                            <MultiSelect
-                                                title="Merchants"
-                                                filter={filterMerchants}
-                                                setfilter={setfilterMerchants}
-                                                options={fetchMerchantsQuery}
-                                                attr="paginateMerchants"
-                                                label="name"
-                                                value="id"
-                                                selected={filterorders?.merchantIds}
-                                                onClick={(option) => {
-                                                    const tempArray = [...(filterorders?.merchantIds ?? [])];
-
-                                                    if (option === 'All') {
-                                                        setfilterorders({ ...filterorders, merchantIds: undefined });
-                                                    } else {
-                                                        const index = tempArray.indexOf(option?.id);
-                                                        if (index === -1) {
-                                                            tempArray.push(option?.id);
-                                                        } else {
-                                                            tempArray.splice(index, 1);
-                                                        }
-
-                                                        setfilterorders({ ...filterorders, merchantIds: tempArray.length ? tempArray : undefined });
-                                                    }
-                                                }}
-                                            />
-                                        </div>
-
-                                        <div class="col-lg-3 mb-md-2">
-                                            <span>Date Range</span>
-                                            <div class="mt-1" style={{ width: '100%' }}>
-                                                <DateRangePicker
-                                                    onChange={(event) => {
-                                                        if (event != null) {
-                                                            setfilterorders({
-                                                                ...filterorders,
-                                                                fromDate: event[0],
-                                                                toDate: event[1],
-                                                            });
-                                                        }
-                                                    }}
-                                                    onClean={() => {
-                                                        setfilterorders({
-                                                            ...filterorders,
-                                                            fromDate: null,
-                                                            toDate: null,
-                                                        });
-                                                    }}
-                                                />
-                                            </div>
-                                        </div>
-
-                                        {window.location.pathname !== '/handpicked' && (
                                             <div class="col-lg-3" style={{ marginBottom: '15px' }}>
                                                 <MultiSelect
-                                                    title="Status"
-                                                    options={orderStatusEnumContext}
-                                                    label="label"
-                                                    value="value"
-                                                    selected={filterorders?.statuses}
+                                                    title="Merchants"
+                                                    filter={filterMerchants}
+                                                    setfilter={setfilterMerchants}
+                                                    options={fetchMerchantsQuery}
+                                                    attr="paginateMerchants"
+                                                    label="name"
+                                                    value="id"
+                                                    selected={filterorders?.merchantIds}
                                                     onClick={(option) => {
-                                                        const tempArray = [...(filterorders?.statuses ?? [])];
+                                                        const tempArray = [...(filterorders?.merchantIds ?? [])];
 
-                                                        if (option.value === 'All') {
-                                                            setfilterorders({ ...filterorders, statuses: undefined });
+                                                        if (option === 'All') {
+                                                            setfilterorders({ ...filterorders, merchantIds: undefined });
                                                         } else {
-                                                            const index = tempArray.indexOf(option.value);
+                                                            const index = tempArray.indexOf(option?.id);
                                                             if (index === -1) {
-                                                                tempArray.push(option.value);
+                                                                tempArray.push(option?.id);
                                                             } else {
                                                                 tempArray.splice(index, 1);
                                                             }
 
-                                                            setfilterorders({ ...filterorders, statuses: tempArray.length ? tempArray : undefined });
+                                                            setfilterorders({ ...filterorders, merchantIds: tempArray.length ? tempArray : undefined });
                                                         }
                                                     }}
                                                 />
                                             </div>
-                                        )}
 
-                                        <div class="col-lg-3" style={{ marginBottom: '15px' }}>
-                                            <SelectComponent
-                                                title="Inventory"
-                                                filter={filterInventories}
-                                                setfilter={setfilterInventories}
-                                                options={fetchinventories}
-                                                attr="paginateInventories"
-                                                label="name"
-                                                value="id"
-                                                payload={filterorders}
-                                                payloadAttr="inventoryId"
-                                                onClick={(option) => {
-                                                    setfilterorders({
-                                                        ...filterorders,
-                                                        inventoryId: option ? option.id : undefined,
-                                                    });
-                                                }}
-                                            />
-                                        </div>
+                                            <div class="col-lg-3 mb-md-2">
+                                                <span>Date Range</span>
+                                                <div class="mt-1" style={{ width: '100%' }}>
+                                                    <DateRangePicker
+                                                        onChange={(event) => {
+                                                            if (event != null) {
+                                                                setfilterorders({
+                                                                    ...filterorders,
+                                                                    fromDate: event[0],
+                                                                    toDate: event[1],
+                                                                });
+                                                            }
+                                                        }}
+                                                        onClean={() => {
+                                                            setfilterorders({
+                                                                ...filterorders,
+                                                                fromDate: null,
+                                                                toDate: null,
+                                                            });
+                                                        }}
+                                                    />
+                                                </div>
+                                            </div>
 
-                                        <div class="col-lg-3">
-                                            <Inputfield
-                                                placeholder="Order Ids"
-                                                onKeyDown={(e) => {
-                                                    if (e.key === 'Enter' && e.target.value?.length !== 0) {
-                                                        const orderId = parseInt(e.target.value);
-                                                        if (!filterorders?.orderIds?.includes(orderId)) {
-                                                            const tempArray = [...(filterorders?.orderIds ?? [])];
-                                                            tempArray.push(orderId);
-                                                            setfilterorders({ ...filterorders, orderIds: tempArray });
-                                                            e.target.value = '';
-                                                        } else {
-                                                            NotificationManager.warning('', 'Already exists');
+                                            {window.location.pathname !== '/handpicked' && (
+                                                <div class="col-lg-3" style={{ marginBottom: '15px' }}>
+                                                    <MultiSelect
+                                                        title="Status"
+                                                        options={orderStatusEnumContext}
+                                                        label="label"
+                                                        value="value"
+                                                        selected={filterorders?.statuses}
+                                                        onClick={(option) => {
+                                                            const tempArray = [...(filterorders?.statuses ?? [])];
+                                                            if (option.value) {
+                                                                const index = tempArray.indexOf(option.value);
+                                                                if (index === -1) {
+                                                                    tempArray.push(option.value);
+                                                                } else {
+                                                                    tempArray.splice(index, 1);
+                                                                }
+
+                                                                setfilterorders({ ...filterorders, statuses: tempArray.length ? tempArray : undefined });
+                                                            } else {
+                                                                setfilterorders({ ...filterorders, statuses: undefined });
+                                                            }
+                                                        }}
+                                                    />
+                                                </div>
+                                            )}
+
+                                            <div class="col-lg-3" style={{ marginBottom: '15px' }}>
+                                                <SelectComponent
+                                                    title="Inventory"
+                                                    filter={filterInventories}
+                                                    setfilter={setfilterInventories}
+                                                    options={fetchinventories}
+                                                    attr="paginateInventories"
+                                                    label="name"
+                                                    value="id"
+                                                    payload={filterorders}
+                                                    payloadAttr="inventoryId"
+                                                    onClick={(option) => {
+                                                        setfilterorders({
+                                                            ...filterorders,
+                                                            inventoryId: option ? option.id : undefined,
+                                                        });
+                                                    }}
+                                                />
+                                            </div>
+
+                                            <div class="col-lg-3">
+                                                <Inputfield
+                                                    placeholder="Order Ids"
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === 'Enter' && e.target.value?.length !== 0) {
+                                                            const orderId = parseInt(e.target.value);
+                                                            if (!filterorders?.orderIds?.includes(orderId)) {
+                                                                const tempArray = [...(filterorders?.orderIds ?? [])];
+                                                                tempArray.push(orderId);
+                                                                setfilterorders({ ...filterorders, orderIds: tempArray });
+                                                                e.target.value = '';
+                                                            } else {
+                                                                NotificationManager.warning('', 'Already exists');
+                                                            }
                                                         }
-                                                    }
-                                                }}
-                                                type="number"
-                                            />
-                                            <div class="col-lg-12 p-0">
-                                                <div class="row m-0 w-100 scrollmenuclasssubscrollbar" style={{ overflow: 'scroll', flexWrap: 'nowrap' }}>
-                                                    {filterorders?.orderIds?.map((orderItem, orderIndex) => (
-                                                        <div
-                                                            key={orderIndex}
-                                                            style={{
-                                                                background: '#ECECEC',
-                                                                padding: '5px 10px',
-                                                                cursor: 'pointer',
-                                                                borderRadius: '8px',
-                                                                justifyContent: 'space-between',
-                                                                width: 'fit-content',
-                                                                fontSize: '11px',
-                                                                minWidth: 'fit-content',
-                                                            }}
-                                                            className="d-flex align-items-center mr-2 mb-1"
-                                                            onClick={() => {
-                                                                const tempArray = [...filterorders.orderIds];
-                                                                tempArray.splice(orderIndex, 1);
-                                                                setfilterorders({ ...filterorders, orderIds: tempArray.length ? tempArray : undefined });
-                                                            }}
-                                                        >
-                                                            {orderItem}
-                                                            <AiOutlineClose size={12} color="#6C757D" className="ml-2" />
-                                                        </div>
-                                                    ))}
+                                                    }}
+                                                    type="number"
+                                                />
+                                                <div class="col-lg-12 p-0">
+                                                    <div class="row m-0 w-100 scrollmenuclasssubscrollbar" style={{ overflow: 'scroll', flexWrap: 'nowrap' }}>
+                                                        {filterorders?.orderIds?.map((orderItem, orderIndex) => (
+                                                            <div
+                                                                key={orderIndex}
+                                                                style={{
+                                                                    background: '#ECECEC',
+                                                                    padding: '5px 10px',
+                                                                    cursor: 'pointer',
+                                                                    borderRadius: '8px',
+                                                                    justifyContent: 'space-between',
+                                                                    width: 'fit-content',
+                                                                    fontSize: '11px',
+                                                                    minWidth: 'fit-content',
+                                                                }}
+                                                                className="d-flex align-items-center mr-2 mb-1"
+                                                                onClick={() => {
+                                                                    const tempArray = [...filterorders.orderIds];
+                                                                    tempArray.splice(orderIndex, 1);
+                                                                    setfilterorders({ ...filterorders, orderIds: tempArray.length ? tempArray : undefined });
+                                                                }}
+                                                            >
+                                                                {orderItem}
+                                                                <AiOutlineClose size={12} color="#6C757D" className="ml-2" />
+                                                            </div>
+                                                        ))}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </AccordionItemPanel>
-                            </AccordionItem>
-                        </Accordion>
+                                    </AccordionItemPanel>
+                                </AccordionItem>
+                            </Accordion>
+                        </div>
                     </div>
-                </div>
+                )}
+
                 <div class="col-lg-12 px-3">
                     {' '}
                     <div class={generalstyles.card + ' row m-0 w-100 my-2 p-2 px-2'}>

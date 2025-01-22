@@ -751,7 +751,7 @@ const API = () => {
                                 name
                                 id
                             }
-                            count
+                            countAndSum
                         }
                         address {
                             country
@@ -874,7 +874,7 @@ const API = () => {
                                 name
                                 id
                             }
-                            count
+                            countAndSum
                         }
                         address {
                             country
@@ -1366,7 +1366,7 @@ const API = () => {
                         id
                         name
                     }
-                    count
+                    countAndSum
                 }
             }
         `;
@@ -1456,7 +1456,7 @@ const API = () => {
                         name
                         id
                     }
-                    count
+                    countAndSum
                 }
                 price
                 paymentType
@@ -1658,7 +1658,7 @@ const API = () => {
                 toInventoryId
                 toMerchantId
                 status
-                count
+                countAndSum
                 courier {
                     name
                 }
@@ -1671,6 +1671,7 @@ const API = () => {
                     name
                 }
                 createdAt
+                countAndSum
             }
         }
     `;
@@ -2579,7 +2580,7 @@ const API = () => {
                         toInventoryId
                         toMerchantId
                         status
-                        count
+                        countAndSum
                         courier {
                             name
                         }

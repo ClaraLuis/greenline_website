@@ -140,224 +140,81 @@ const MerchantOrders = (props) => {
                     </div>
                 </div>
                 {/* {waybills?.length > 0 && <WaybillPrint waybills={waybills} />} */}
-                <div class="col-lg-12 px-3">
-                    <div class={generalstyles.card + ' mb-3 col-lg-12 p-2'}>
-                        <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
-                            <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
-                                <AccordionItemHeading>
-                                    <AccordionItemButton>
+                {cookies.get('userInfo')?.type != 'merchant' && (
+                    <div class="col-lg-12 px-3">
+                        <div class={generalstyles.card + ' mb-3 col-lg-12 p-2'}>
+                            <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
+                                <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
+                                    <AccordionItemHeading>
+                                        <AccordionItemButton>
+                                            <div class="row m-0 w-100">
+                                                <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
+                                                    <p class={generalstyles.cardTitle + '  m-0 p-0 '}>Filter:</p>
+                                                </div>
+                                                <div class="col-lg-4 col-md-4 col-sm-4 p-0 d-flex align-items-center justify-content-end">
+                                                    <AccordionItemState>
+                                                        {(state) => {
+                                                            if (state.expanded == true) {
+                                                                return (
+                                                                    <i class="h-100 d-flex align-items-center justify-content-center">
+                                                                        <BsChevronUp />
+                                                                    </i>
+                                                                );
+                                                            } else {
+                                                                return (
+                                                                    <i class="h-100 d-flex align-items-center justify-content-center">
+                                                                        <BsChevronDown />
+                                                                    </i>
+                                                                );
+                                                            }
+                                                        }}
+                                                    </AccordionItemState>
+                                                </div>
+                                            </div>
+                                        </AccordionItemButton>
+                                    </AccordionItemHeading>
+                                    <AccordionItemPanel>
+                                        <hr className="mt-2 mb-3" />
                                         <div class="row m-0 w-100">
-                                            <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
-                                                <p class={generalstyles.cardTitle + '  m-0 p-0 '}>Filter:</p>
-                                            </div>
-                                            <div class="col-lg-4 col-md-4 col-sm-4 p-0 d-flex align-items-center justify-content-end">
-                                                <AccordionItemState>
-                                                    {(state) => {
-                                                        if (state.expanded == true) {
-                                                            return (
-                                                                <i class="h-100 d-flex align-items-center justify-content-center">
-                                                                    <BsChevronUp />
-                                                                </i>
-                                                            );
-                                                        } else {
-                                                            return (
-                                                                <i class="h-100 d-flex align-items-center justify-content-center">
-                                                                    <BsChevronDown />
-                                                                </i>
-                                                            );
-                                                        }
-                                                    }}
-                                                </AccordionItemState>
-                                            </div>
-                                        </div>
-                                    </AccordionItemButton>
-                                </AccordionItemHeading>
-                                <AccordionItemPanel>
-                                    <hr className="mt-2 mb-3" />
-                                    <div class="row m-0 w-100">
-                                        {isAuth([1]) && (
-                                            <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                                <MultiSelect
-                                                    title={'Merchants'}
-                                                    filter={filterMerchants}
-                                                    setfilter={setfilterMerchants}
-                                                    options={fetchMerchantsQuery}
-                                                    attr={'paginateMerchants'}
-                                                    label={'name'}
-                                                    value={'id'}
-                                                    selected={filterorders?.merchantIds}
-                                                    onClick={(option) => {
-                                                        var tempArray = [...(filterorders?.merchantIds ?? [])];
+                                            {isAuth([1]) && (
+                                                <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                                    <MultiSelect
+                                                        title={'Merchants'}
+                                                        filter={filterMerchants}
+                                                        setfilter={setfilterMerchants}
+                                                        options={fetchMerchantsQuery}
+                                                        attr={'paginateMerchants'}
+                                                        label={'name'}
+                                                        value={'id'}
+                                                        selected={filterorders?.merchantIds}
+                                                        onClick={(option) => {
+                                                            var tempArray = [...(filterorders?.merchantIds ?? [])];
 
-                                                        if (option == 'All') {
-                                                            tempArray = undefined;
-                                                        } else {
-                                                            if (!tempArray?.includes(option?.id)) {
-                                                                tempArray.push(option?.id);
+                                                            if (option == 'All') {
+                                                                tempArray = undefined;
                                                             } else {
-                                                                tempArray.splice(tempArray?.indexOf(option?.id), 1);
+                                                                if (!tempArray?.includes(option?.id)) {
+                                                                    tempArray.push(option?.id);
+                                                                } else {
+                                                                    tempArray.splice(tempArray?.indexOf(option?.id), 1);
+                                                                }
                                                             }
-                                                        }
 
-                                                        setfilterorders({ ...filterorders, merchantIds: tempArray?.length != 0 ? tempArray : undefined });
-                                                    }}
-                                                />
-                                            </div>
-                                        )}
+                                                            setfilterorders({ ...filterorders, merchantIds: tempArray?.length != 0 ? tempArray : undefined });
+                                                        }}
+                                                    />
+                                                </div>
+                                            )}
 
-                                        <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                            <MultiSelect
-                                                title={'Status'}
-                                                options={orderStatusEnumContext}
-                                                label={'label'}
-                                                value={'value'}
-                                                selected={filterorders?.statuses}
-                                                onClick={(option) => {
-                                                    var tempArray = [...(filterorders?.statuses ?? [])];
-                                                    if (option == 'All') {
-                                                        tempArray = undefined;
-                                                    } else {
-                                                        if (!tempArray?.includes(option.value)) {
-                                                            tempArray.push(option.value);
-                                                        } else {
-                                                            tempArray.splice(tempArray?.indexOf(option?.value), 1);
-                                                        }
-                                                    }
-                                                    setfilterorders({ ...filterorders, statuses: tempArray?.length != 0 ? tempArray : undefined });
-                                                }}
-                                            />
-                                        </div>
-                                        <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                            <MultiSelect
-                                                title={'Types'}
-                                                options={orderTypeContext}
-                                                label={'label'}
-                                                value={'value'}
-                                                selected={filterorders?.types}
-                                                onClick={(option) => {
-                                                    var tempArray = [...(filterorders?.types ?? [])];
-                                                    if (option == 'All') {
-                                                        tempArray = undefined;
-                                                    } else {
-                                                        if (!tempArray?.includes(option.value)) {
-                                                            tempArray.push(option.value);
-                                                        } else {
-                                                            tempArray.splice(tempArray?.indexOf(option?.value), 1);
-                                                        }
-                                                    }
-                                                    setfilterorders({ ...filterorders, types: tempArray?.length != 0 ? tempArray : undefined });
-                                                }}
-                                            />
-                                        </div>
-                                        <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                            <MultiSelect
-                                                title={'Payment Types'}
-                                                options={paymentTypeContext}
-                                                label={'label'}
-                                                value={'value'}
-                                                selected={filterorders?.paymentTypeContext}
-                                                onClick={(option) => {
-                                                    var tempArray = [...(filterorders?.paymentTypeContext ?? [])];
-                                                    if (option == 'All') {
-                                                        tempArray = undefined;
-                                                    } else {
-                                                        if (!tempArray?.includes(option.value)) {
-                                                            tempArray.push(option.value);
-                                                        } else {
-                                                            tempArray.splice(tempArray?.indexOf(option?.value), 1);
-                                                        }
-                                                    }
-                                                    setfilterorders({ ...filterorders, paymentTypeContext: tempArray?.length != 0 ? tempArray : undefined });
-                                                }}
-                                            />
-                                        </div>
-                                        {isAuth([1]) && (
                                             <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
                                                 <MultiSelect
-                                                    title={'Couriers'}
-                                                    filter={filterCouriers}
-                                                    setfilter={setfilterCouriers}
-                                                    options={fetchCouriersQuery}
-                                                    attr={'paginateCouriers'}
-                                                    label={'name'}
-                                                    value={'id'}
-                                                    selected={filterorders?.courierIds}
-                                                    onClick={(option) => {
-                                                        var tempArray = [...(filterorders?.courierIds ?? [])];
-                                                        if (option == 'All') {
-                                                            tempArray = undefined;
-                                                        } else {
-                                                            if (!tempArray?.includes(option?.id)) {
-                                                                tempArray.push(option?.id);
-                                                            } else {
-                                                                tempArray.splice(tempArray?.indexOf(option?.id), 1);
-                                                            }
-                                                        }
-                                                        setfilterorders({ ...filterorders, courierIds: tempArray?.length != 0 ? tempArray : undefined });
-                                                    }}
-                                                />
-                                            </div>
-                                        )}
-                                        <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                            <MultiSelect
-                                                title={'Governorates'}
-                                                options={fetchGovernoratesQuery}
-                                                attr={'findAllDomesticGovernorates'}
-                                                label={'name'}
-                                                value={'id'}
-                                                selected={filterorders?.governorateIds}
-                                                onClick={(option) => {
-                                                    var tempArray = [...(filterorders?.governorateIds ?? [])];
-                                                    if (option == 'All') {
-                                                        tempArray = undefined;
-                                                    } else {
-                                                        if (!tempArray?.includes(option?.id)) {
-                                                            tempArray.push(option?.id);
-                                                        } else {
-                                                            tempArray.splice(tempArray?.indexOf(option?.id), 1);
-                                                        }
-                                                    }
-                                                    setfilterorders({ ...filterorders, governorateIds: tempArray?.length != 0 ? tempArray : undefined });
-                                                }}
-                                            />
-                                        </div>
-                                        <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                            <MultiSelect
-                                                title={'Zones'}
-                                                options={
-                                                    filterorders?.governorateIds
-                                                        ? findAllZonesQuery?.data?.findAllZones?.filter((e) => filterorders?.governorateIds?.includes(e.governorateId))
-                                                        : findAllZonesQuery?.data?.findAllZones
-                                                }
-                                                attr={'findAllZones'}
-                                                label={'name'}
-                                                value={'id'}
-                                                selected={filterorders?.zoneIds}
-                                                onClick={(option) => {
-                                                    var tempArray = [...(filterorders?.zoneIds ?? [])];
-                                                    if (option == 'All') {
-                                                        tempArray = undefined;
-                                                    } else {
-                                                        if (!tempArray?.includes(option?.id)) {
-                                                            tempArray.push(option?.id);
-                                                        } else {
-                                                            tempArray.splice(tempArray?.indexOf(option?.id), 1);
-                                                        }
-                                                    }
-                                                    setfilterorders({ ...filterorders, zoneIds: tempArray?.length != 0 ? tempArray : undefined });
-                                                }}
-                                            />
-                                        </div>
-                                        {isAuth([1]) && (
-                                            <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                                <MultiSelect
-                                                    title={'Manifest Status'}
-                                                    options={courierSheetStatusesContext}
+                                                    title={'Status'}
+                                                    options={orderStatusEnumContext}
                                                     label={'label'}
                                                     value={'value'}
-                                                    selected={filterorders?.manifestStatuses}
+                                                    selected={filterorders?.statuses}
                                                     onClick={(option) => {
-                                                        var tempArray = [...(filterorders?.manifestStatuses ?? [])];
+                                                        var tempArray = [...(filterorders?.statuses ?? [])];
                                                         if (option == 'All') {
                                                             tempArray = undefined;
                                                         } else {
@@ -367,110 +224,256 @@ const MerchantOrders = (props) => {
                                                                 tempArray.splice(tempArray?.indexOf(option?.value), 1);
                                                             }
                                                         }
-                                                        setfilterorders({ ...filterorders, manifestStatuses: tempArray?.length != 0 ? tempArray : undefined });
+                                                        setfilterorders({ ...filterorders, statuses: tempArray?.length != 0 ? tempArray : undefined });
                                                     }}
                                                 />
                                             </div>
-                                        )}
-                                        <div class=" col-lg-3 mb-md-2">
-                                            <span>Date Range</span>
-                                            <div class="mt-1" style={{ width: '100%' }}>
-                                                <DateRangePicker
-                                                    // disabledDate={allowedMaxDays(30)}
-                                                    // value={[filterorders?.fromDate, filterorders?.toDate]}
-                                                    onChange={(event) => {
-                                                        if (event != null) {
-                                                            const start = event[0];
-                                                            const startdate = new Date(start);
-                                                            const year1 = startdate.getFullYear();
-                                                            const month1 = startdate.getMonth() + 1; // Months are zero-indexed
-                                                            const day1 = startdate.getDate();
-
-                                                            const end = event[1];
-                                                            const enddate = new Date(end);
-                                                            const year2 = enddate.getFullYear();
-                                                            const month2 = enddate.getMonth() + 1; // Months are zero-indexed
-                                                            const day2 = enddate.getDate();
-
-                                                            setfilterorders({
-                                                                ...filterorders,
-                                                                fromDate: event[0],
-                                                                toDate: event[1],
-                                                                // from_date: year1 + '-' + month1 + '-' + day1,
-                                                                // to_date: year2 + '-' + month2 + '-' + day2,
-                                                            });
-                                                        }
-                                                    }}
-                                                    onClean={() => {
-                                                        setfilterorders({
-                                                            ...filterorders,
-                                                            fromDate: null,
-                                                            toDate: null,
-                                                        });
-                                                    }}
-                                                />
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <Inputfield
-                                                placeholder={'Order Ids'}
-                                                onKeyDown={(e) => {
-                                                    if (e.key == 'Enter' && e.target.value?.length != 0) {
-                                                        var exists = filterorders?.orderIds?.includes(parseInt(e?.target?.value));
-                                                        if (exists) {
-                                                            NotificationManager.warning('', 'Already exists');
+                                            <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                                <MultiSelect
+                                                    title={'Types'}
+                                                    options={orderTypeContext}
+                                                    label={'label'}
+                                                    value={'value'}
+                                                    selected={filterorders?.types}
+                                                    onClick={(option) => {
+                                                        var tempArray = [...(filterorders?.types ?? [])];
+                                                        if (option == 'All') {
+                                                            tempArray = undefined;
                                                         } else {
-                                                            var temp = [...(filterorders?.orderIds ?? [])];
-                                                            temp.push(parseInt(e.target.value));
+                                                            if (!tempArray?.includes(option.value)) {
+                                                                tempArray.push(option.value);
+                                                            } else {
+                                                                tempArray.splice(tempArray?.indexOf(option?.value), 1);
+                                                            }
+                                                        }
+                                                        setfilterorders({ ...filterorders, types: tempArray?.length != 0 ? tempArray : undefined });
+                                                    }}
+                                                />
+                                            </div>
+                                            <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                                <MultiSelect
+                                                    title={'Payment Types'}
+                                                    options={paymentTypeContext}
+                                                    label={'label'}
+                                                    value={'value'}
+                                                    selected={filterorders?.paymentTypeContext}
+                                                    onClick={(option) => {
+                                                        var tempArray = [...(filterorders?.paymentTypeContext ?? [])];
+                                                        if (option == 'All') {
+                                                            tempArray = undefined;
+                                                        } else {
+                                                            if (!tempArray?.includes(option.value)) {
+                                                                tempArray.push(option.value);
+                                                            } else {
+                                                                tempArray.splice(tempArray?.indexOf(option?.value), 1);
+                                                            }
+                                                        }
+                                                        setfilterorders({ ...filterorders, paymentTypeContext: tempArray?.length != 0 ? tempArray : undefined });
+                                                    }}
+                                                />
+                                            </div>
+                                            {isAuth([1]) && (
+                                                <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                                    <MultiSelect
+                                                        title={'Couriers'}
+                                                        filter={filterCouriers}
+                                                        setfilter={setfilterCouriers}
+                                                        options={fetchCouriersQuery}
+                                                        attr={'paginateCouriers'}
+                                                        label={'name'}
+                                                        value={'id'}
+                                                        selected={filterorders?.courierIds}
+                                                        onClick={(option) => {
+                                                            var tempArray = [...(filterorders?.courierIds ?? [])];
+                                                            if (option == 'All') {
+                                                                tempArray = undefined;
+                                                            } else {
+                                                                if (!tempArray?.includes(option?.id)) {
+                                                                    tempArray.push(option?.id);
+                                                                } else {
+                                                                    tempArray.splice(tempArray?.indexOf(option?.id), 1);
+                                                                }
+                                                            }
+                                                            setfilterorders({ ...filterorders, courierIds: tempArray?.length != 0 ? tempArray : undefined });
+                                                        }}
+                                                    />
+                                                </div>
+                                            )}
+                                            <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                                <MultiSelect
+                                                    title={'Governorates'}
+                                                    options={fetchGovernoratesQuery}
+                                                    attr={'findAllDomesticGovernorates'}
+                                                    label={'name'}
+                                                    value={'id'}
+                                                    selected={filterorders?.governorateIds}
+                                                    onClick={(option) => {
+                                                        var tempArray = [...(filterorders?.governorateIds ?? [])];
+                                                        if (option == 'All') {
+                                                            tempArray = undefined;
+                                                        } else {
+                                                            if (!tempArray?.includes(option?.id)) {
+                                                                tempArray.push(option?.id);
+                                                            } else {
+                                                                tempArray.splice(tempArray?.indexOf(option?.id), 1);
+                                                            }
+                                                        }
+                                                        setfilterorders({ ...filterorders, governorateIds: tempArray?.length != 0 ? tempArray : undefined });
+                                                    }}
+                                                />
+                                            </div>
+                                            <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                                <MultiSelect
+                                                    title={'Zones'}
+                                                    options={
+                                                        filterorders?.governorateIds
+                                                            ? findAllZonesQuery?.data?.findAllZones?.filter((e) => filterorders?.governorateIds?.includes(e.governorateId))
+                                                            : findAllZonesQuery?.data?.findAllZones
+                                                    }
+                                                    attr={'findAllZones'}
+                                                    label={'name'}
+                                                    value={'id'}
+                                                    selected={filterorders?.zoneIds}
+                                                    onClick={(option) => {
+                                                        var tempArray = [...(filterorders?.zoneIds ?? [])];
+                                                        if (option == 'All') {
+                                                            tempArray = undefined;
+                                                        } else {
+                                                            if (!tempArray?.includes(option?.id)) {
+                                                                tempArray.push(option?.id);
+                                                            } else {
+                                                                tempArray.splice(tempArray?.indexOf(option?.id), 1);
+                                                            }
+                                                        }
+                                                        setfilterorders({ ...filterorders, zoneIds: tempArray?.length != 0 ? tempArray : undefined });
+                                                    }}
+                                                />
+                                            </div>
+                                            {isAuth([1]) && (
+                                                <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                                    <MultiSelect
+                                                        title={'Manifest Status'}
+                                                        options={courierSheetStatusesContext}
+                                                        label={'label'}
+                                                        value={'value'}
+                                                        selected={filterorders?.manifestStatuses}
+                                                        onClick={(option) => {
+                                                            var tempArray = [...(filterorders?.manifestStatuses ?? [])];
+                                                            if (option == 'All') {
+                                                                tempArray = undefined;
+                                                            } else {
+                                                                if (!tempArray?.includes(option.value)) {
+                                                                    tempArray.push(option.value);
+                                                                } else {
+                                                                    tempArray.splice(tempArray?.indexOf(option?.value), 1);
+                                                                }
+                                                            }
+                                                            setfilterorders({ ...filterorders, manifestStatuses: tempArray?.length != 0 ? tempArray : undefined });
+                                                        }}
+                                                    />
+                                                </div>
+                                            )}
+                                            <div class=" col-lg-3 mb-md-2">
+                                                <span>Date Range</span>
+                                                <div class="mt-1" style={{ width: '100%' }}>
+                                                    <DateRangePicker
+                                                        // disabledDate={allowedMaxDays(30)}
+                                                        // value={[filterorders?.fromDate, filterorders?.toDate]}
+                                                        onChange={(event) => {
+                                                            if (event != null) {
+                                                                const start = event[0];
+                                                                const startdate = new Date(start);
+                                                                const year1 = startdate.getFullYear();
+                                                                const month1 = startdate.getMonth() + 1; // Months are zero-indexed
+                                                                const day1 = startdate.getDate();
+
+                                                                const end = event[1];
+                                                                const enddate = new Date(end);
+                                                                const year2 = enddate.getFullYear();
+                                                                const month2 = enddate.getMonth() + 1; // Months are zero-indexed
+                                                                const day2 = enddate.getDate();
+
+                                                                setfilterorders({
+                                                                    ...filterorders,
+                                                                    fromDate: event[0],
+                                                                    toDate: event[1],
+                                                                    // from_date: year1 + '-' + month1 + '-' + day1,
+                                                                    // to_date: year2 + '-' + month2 + '-' + day2,
+                                                                });
+                                                            }
+                                                        }}
+                                                        onClean={() => {
                                                             setfilterorders({
                                                                 ...filterorders,
-                                                                orderIds: temp,
+                                                                fromDate: null,
+                                                                toDate: null,
                                                             });
-                                                            e.target.value = '';
+                                                        }}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <Inputfield
+                                                    placeholder={'Order Ids'}
+                                                    onKeyDown={(e) => {
+                                                        if (e.key == 'Enter' && e.target.value?.length != 0) {
+                                                            var exists = filterorders?.orderIds?.includes(parseInt(e?.target?.value));
+                                                            if (exists) {
+                                                                NotificationManager.warning('', 'Already exists');
+                                                            } else {
+                                                                var temp = [...(filterorders?.orderIds ?? [])];
+                                                                temp.push(parseInt(e.target.value));
+                                                                setfilterorders({
+                                                                    ...filterorders,
+                                                                    orderIds: temp,
+                                                                });
+                                                                e.target.value = '';
+                                                            }
                                                         }
-                                                    }
-                                                }}
-                                                type={'number'}
-                                            />
-                                            <div class="col-lg-12 p-0">
-                                                <div class="row m-0 w-100 scrollmenuclasssubscrollbar" style={{ overflow: 'scroll', flexWrap: 'nowrap' }}>
-                                                    {filterorders?.orderIds?.map((orderItem, orderIndex) => {
-                                                        return (
-                                                            <div
-                                                                style={{
-                                                                    background: '#ECECEC',
-                                                                    padding: '5px 10px',
-                                                                    cursor: 'pointer',
-                                                                    borderRadius: '8px',
-                                                                    justifyContent: 'space-between',
-                                                                    width: 'fit-content',
-                                                                    fontSize: '11px',
-                                                                    minWidth: 'fit-content',
-                                                                }}
-                                                                className="d-flex align-items-center mr-2 mb-1"
-                                                                onClick={() => {
-                                                                    var temp = filterorders.orderIds ?? [];
-                                                                    temp.splice(orderIndex, 1);
-                                                                    setfilterorders({
-                                                                        ...filterorders,
-                                                                        orderIds: temp?.length != 0 ? temp : undefined,
-                                                                    });
-                                                                }}
-                                                            >
-                                                                {orderItem}
-                                                                <AiOutlineClose size={12} color="#6C757D" className="ml-2" />
-                                                            </div>
-                                                        );
-                                                    })}
+                                                    }}
+                                                    type={'number'}
+                                                />
+                                                <div class="col-lg-12 p-0">
+                                                    <div class="row m-0 w-100 scrollmenuclasssubscrollbar" style={{ overflow: 'scroll', flexWrap: 'nowrap' }}>
+                                                        {filterorders?.orderIds?.map((orderItem, orderIndex) => {
+                                                            return (
+                                                                <div
+                                                                    style={{
+                                                                        background: '#ECECEC',
+                                                                        padding: '5px 10px',
+                                                                        cursor: 'pointer',
+                                                                        borderRadius: '8px',
+                                                                        justifyContent: 'space-between',
+                                                                        width: 'fit-content',
+                                                                        fontSize: '11px',
+                                                                        minWidth: 'fit-content',
+                                                                    }}
+                                                                    className="d-flex align-items-center mr-2 mb-1"
+                                                                    onClick={() => {
+                                                                        var temp = filterorders.orderIds ?? [];
+                                                                        temp.splice(orderIndex, 1);
+                                                                        setfilterorders({
+                                                                            ...filterorders,
+                                                                            orderIds: temp?.length != 0 ? temp : undefined,
+                                                                        });
+                                                                    }}
+                                                                >
+                                                                    {orderItem}
+                                                                    <AiOutlineClose size={12} color="#6C757D" className="ml-2" />
+                                                                </div>
+                                                            );
+                                                        })}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </AccordionItemPanel>
-                            </AccordionItem>
-                        </Accordion>
+                                    </AccordionItemPanel>
+                                </AccordionItem>
+                            </Accordion>
+                        </div>
                     </div>
-                </div>
+                )}
+
                 <div class="col-lg-12 px-3">
                     <div class={generalstyles.card + ' row m-0 w-100'}>
                         <div class="col-lg-10 p-0 ">
