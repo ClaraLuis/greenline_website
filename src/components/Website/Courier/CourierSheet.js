@@ -588,7 +588,10 @@ const CourierSheet = (props) => {
                                                                             class={generalstyles.roundbutton + '  allcentered px-1 py-0'}
                                                                             onClick={(e) => {
                                                                                 e.stopPropagation();
-                                                                                if (item?.amountCollected == null && item.order.status !== 'postponed') {
+                                                                                if (
+                                                                                    item?.amountCollected == null &&
+                                                                                    (item.order.status !== 'postponed' || item.order.status !== 'failedDeliveryAttempt')
+                                                                                ) {
                                                                                     NotificationManager.warning(`Can not update order`, 'Warning!');
                                                                                     return;
                                                                                 }
@@ -596,7 +599,7 @@ const CourierSheet = (props) => {
                                                                                 const orderStatus = item?.order?.status;
                                                                                 const sheetOrder = submitSheetPayload?.updateSheetOrders?.find((e) => e.sheetOrderId == item.id);
 
-                                                                                const canUpdateOrder = ['delivered', 'partiallyDelivered', 'cancelled'].includes(orderStatus);
+                                                                                const canUpdateOrder = ['delivered', 'partiallyDelivered', 'cancelled', 'failedDeliveryAttempt'].includes(orderStatus);
                                                                                 const isInProgress = submitSheetPayload?.status == 'inProgress';
                                                                                 const isWaitingForAdminApproval = submitSheetPayload?.status == 'waitingForAdminApproval' && type == 'admin';
                                                                                 const isWaitingForFinanceApproval = submitSheetPayload?.status == 'waitingForFinanceApproval' && type != 'admin';
