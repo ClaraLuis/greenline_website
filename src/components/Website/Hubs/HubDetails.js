@@ -97,15 +97,15 @@ const HubDetails = (props) => {
                                 <div class={' row m-0 w-100 px-4'}>
                                     <div style={{ cursor: props?.clickable ? 'pointer' : '' }} className="col-lg-12 p-0">
                                         <div class={' row m-0 w-100 '}>
-                                            <div className="col-lg-12 p-1 mb-2">
+                                            <div className="col-lg-12 p-1 px-2 mb-2">
                                                 <div class="row m-0 w-100 d-flex align-items-center">
                                                     <span class="mr-1">Hub Users</span>{' '}
                                                 </div>
                                             </div>
 
-                                            <div class="col-lg-12 p-1 ">
+                                            <div class="col-lg-12 p-1 px-2 ">
                                                 <div class={generalstyles.card + ' row m-0 w-100 d-flex align-items-center '}>
-                                                    <div class="col-lg-11 p-0">
+                                                    <div class="col-lg-10 p-0">
                                                         <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
                                                             <input
                                                                 // disabled={props?.disabled}
@@ -119,7 +119,7 @@ const HubDetails = (props) => {
                                                             />
                                                         </div>
                                                     </div>
-                                                    <div class="col-lg-1 allcenered">
+                                                    <div class="col-lg-2 allcenered">
                                                         <button
                                                             onClick={() => {
                                                                 setfilterUsers({ ...filterUsers, name: search?.length == 0 ? undefined : search });
@@ -134,7 +134,7 @@ const HubDetails = (props) => {
                                             </div>
 
                                             <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
-                                                <UsersTable fetchusers={fetchusers} card="col-lg-4" />
+                                                <UsersTable fetchusers={fetchusers} card="col-lg-4 p-2" />
                                             </div>
                                             <div class="col-lg-12 p-0">
                                                 <Pagination
