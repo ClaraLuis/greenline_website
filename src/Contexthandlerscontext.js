@@ -11,7 +11,7 @@ import { RxTokens } from 'react-icons/rx';
 import { NotificationManager } from 'react-notifications';
 import { IoSettingsOutline } from 'react-icons/io5';
 import Cookies from 'universal-cookie';
-import { MdOutlineHub, MdOutlineInventory2, MdSwitchAccount } from 'react-icons/md';
+import { MdOutlineHub, MdOutlineInventory2, MdOutlineSmsFailed, MdSwitchAccount } from 'react-icons/md';
 import { BiSolidCoinStack, BiSolidSpreadsheet, BiTransfer } from 'react-icons/bi';
 import { CiBoxes, CiShop } from 'react-icons/ci';
 import { IoMdHome } from 'react-icons/io';
@@ -410,6 +410,18 @@ export const Contexthandlerscontext_provider = (props) => {
                         path: '/arrivedathub',
                         permissionpage: [1],
                         show: isAuth([1, 53, 36, 65, 66, 67]),
+                    },
+                    {
+                        name: 'Action Center',
+                        isselected: false,
+                        icon: (
+                            <i class={'allcentered'}>
+                                <MdOutlineSmsFailed size={18} />
+                            </i>
+                        ),
+                        path: '/actioncenter',
+                        permissionpage: [1],
+                        show: isAuth([1]),
                     },
                 ],
             },

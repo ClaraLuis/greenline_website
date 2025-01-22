@@ -836,6 +836,129 @@ const API = () => {
         `;
     };
 
+    const paginateUnresolvedOrders = () => {
+        return gql`
+            query paginateUnresolvedOrders($input: PaginateUnresolvedOrdersInput!) {
+                paginateUnresolvedOrders(input: $input) {
+                    data {
+                        id
+                        type
+                        createdAt
+                        shippingPrice
+                        originalPrice
+                        merchant {
+                            id
+                            name
+                        }
+                        failsCount
+                        returnPackage {
+                            id
+                            sku
+                            type
+                            hubId
+                            courierId
+                            toInventoryId
+                            toMerchantId
+                            status
+                            createdAt
+                            lastModified
+                            inventory {
+                                name
+                                id
+                            }
+                            merchant {
+                                name
+                                id
+                            }
+                            courier {
+                                name
+                                id
+                            }
+                            count
+                        }
+                        address {
+                            country
+                            city
+                            streetAddress
+                            buildingNumber
+                            apartmentFloor
+                        }
+                        courier {
+                            id
+                            name
+                        }
+                        price
+                        paymentType
+                        status
+                        orderDate
+                        currency
+                        otherId
+                        shopifyName
+                        merchantCustomer {
+                            id
+                            customerName
+                            customer {
+                                email
+                                phone
+                                id
+                            }
+                        }
+                        address {
+                            country
+                            city
+                            streetAddress
+                            buildingNumber
+                            apartmentFloor
+                        }
+                        orderItems {
+                            id
+                            orderId
+                            count
+                            unitPrice
+                            unitDiscount
+                            partialCount
+                            info {
+                                name
+                                imageUrl
+                                sku
+                                item {
+                                    name
+                                }
+                            }
+                        }
+                        latestHistory {
+                            description
+                        }
+                        canOpen
+                        fragile
+                        deliveryPart
+                        sheetOrder {
+                            id
+                            sheetId
+                            orderId
+                            adminPass
+                            financePass
+                            shippingCollected
+                            amountCollected
+                            transactionId
+                            createdAt
+                            lastModified
+                            sheet {
+                                status
+                                user {
+                                    name
+                                    email
+                                    id
+                                }
+                            }
+                        }
+                    }
+                    cursor
+                }
+            }
+        `;
+    };
+
     const fetchOrdersInInventory = () => {
         return gql`
             query paginateOrdersInInventory($input: PaginateOrdersInInventoryInput!) {
@@ -2554,6 +2677,7 @@ const API = () => {
         fetchItemsInBox,
         importNew,
         fetchOrders,
+        paginateUnresolvedOrders,
         fetchRacks,
         paginateBoxes,
         paginateBallots,
