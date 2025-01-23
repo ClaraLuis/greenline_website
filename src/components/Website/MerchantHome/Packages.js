@@ -387,9 +387,18 @@ const Packages = (props) => {
                                         </div>
 
                                         <div class="col-lg-4 p-0 d-flex justify-content-end">
-                                            <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
-                                                {item?.count} items
-                                            </span>
+                                            <div class="row m-0 w-100">
+                                                <div class="col-lg-12 p-0 d-flex justify-content-end">
+                                                    <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
+                                                        {item?.countAndSum?.sum} items
+                                                    </span>
+                                                </div>
+                                                <div class="col-lg-12 p-0 d-flex justify-content-end">
+                                                    <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
+                                                        {item?.countAndSum?.count} orders
+                                                    </span>
+                                                </div>
+                                            </div>
                                         </div>
                                         {item?.courier && (
                                             <div className="col-lg-12 p-0 mb-2 d-flex align-items-center">

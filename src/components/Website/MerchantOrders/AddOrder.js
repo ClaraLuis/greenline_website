@@ -26,13 +26,15 @@ import DynamicInputfield from '../DynamicInputfield/DynamicInputfield.js';
 import ItemsTable from '../MerchantItems/ItemsTable.js';
 import AddCustomer from './AddCustomer.js';
 import Decimal from 'decimal.js';
+import { PhoneInput } from 'react-international-phone';
+import 'react-international-phone/style.css';
 
 const { ValueContainer, Placeholder } = components;
 
 const AddOrder = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, paymentTypeContext, orderTypeContext, orderStatusEnumContext, buttonLoadingContext, setbuttonLoadingContext } =
+    const { setpageactive_context, isPhoneValidContext, paymentTypeContext, orderTypeContext, orderStatusEnumContext, buttonLoadingContext, setbuttonLoadingContext } =
         useContext(Contexthandlerscontext);
     const {
         useMutationGQL,
@@ -666,27 +668,31 @@ const AddOrder = (props) => {
                         <div class={generalstyles.card + ' row m-0 w-100 p-3'}>
                             <div class="col-lg-12 p-0 mt-3 ">
                                 <div class="row m-0 w-100 d-flex align-items-center">
-                                    <div class={'col-lg-6'}>
-                                        <label style={{ fontSize: '1.8vh' }} class="m-0 mb-2">
+                                    <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                        <label for="name" class={formstyles.form__label}>
                                             Phone
                                         </label>
-                                        <Inputfield
-                                            hideLabel={true}
-                                            placeholder={'phone'}
+                                        <PhoneInput
+                                            defaultCountry="eg"
                                             value={filterCustomerPayload?.phone}
-                                            onChange={(event) => {
+                                            onChange={(phone) => {
                                                 setcustomerFound(false);
                                                 setopenModal(false);
                                                 setnewCustomer(false);
                                                 setnameSuggestions([]);
                                                 setsimilarAddresses([]);
                                                 setuserAddresses([]);
-                                                setfilterCustomerPayload({ ...filterCustomerPayload, phone: event.target.value, myCustomers: true });
-                                                setorderpayload({ ...orderpayload, phone: event.target.value });
+                                                setfilterCustomerPayload({ ...filterCustomerPayload, phone: phone, myCustomers: true });
+                                                setorderpayload({ ...orderpayload, phone: phone });
                                             }}
-                                            type={'number'}
                                         />
+                                        {!isPhoneValidContext(filterCustomerPayload?.phone) && (
+                                            <div class="px-0 py-1" style={{ color: 'red', fontSize: '12px' }}>
+                                                Phone is not valid
+                                            </div>
+                                        )}
                                     </div>
+
                                     <div class={'col-lg-6 '}>
                                         <label style={{ fontSize: '1.8vh' }} class="m-0 mb-2">
                                             Email

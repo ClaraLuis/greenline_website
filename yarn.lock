@@ -6820,6 +6820,11 @@ globby@^11.0.4, globby@^11.1.0:
     merge2 "^1.4.1"
     slash "^3.0.0"
 
+google-libphonenumber@^3.2.40:
+  version "3.2.40"
+  resolved "https://registry.yarnpkg.com/google-libphonenumber/-/google-libphonenumber-3.2.40.tgz#ed57d0db67a8745e8e6db7983dda7f94717fb4c9"
+  integrity sha512-bzGxX/vfggcV80LVcibki+JvR91x6zHpBpovDXSfmZUGn6uLzhbYXsWll2a80EG6qTmvf8lt7KZZ/pkMml8ckw==
+
 gopd@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/gopd/-/gopd-1.0.1.tgz#29ff76de69dac7489b7c0918a5788e56477c332c"
@@ -10374,6 +10379,11 @@ react-interactive@^0.8.1:
     detect-it "^3.0.3"
     object-assign "^4.1.1"
     prop-types "^15.6.0"
+
+react-international-phone@^4.5.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/react-international-phone/-/react-international-phone-4.5.0.tgz#901da544760da9b23e0a1945053cac977ff2cd97"
+  integrity sha512-wjwHv+VfiwM49B5/6El4Z5vZKmf3ILpUeiOCI9X+b0Dq4g5nL8gROcwCdVcTXywxznbDSoxSassBX3i9tPZX6g==
 
 react-intersection-observer@^9.4.2:
   version "9.5.3"

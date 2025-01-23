@@ -657,6 +657,9 @@ const API = () => {
                         description
                         transferredToId
                         createdAt
+                        user {
+                            name
+                        }
                     }
                     cursor
                 }
@@ -684,6 +687,20 @@ const API = () => {
                         auditedBy {
                             name
                             email
+                        }
+
+                        fromAccount {
+                            id
+                            name
+                        }
+                        toAccount {
+                            id
+                            name
+                        }
+                        sheetOrder {
+                            order {
+                                id
+                            }
                         }
                     }
                     cursor

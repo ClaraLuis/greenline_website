@@ -16,6 +16,7 @@ import { BiSolidCoinStack, BiSolidSpreadsheet, BiTransfer } from 'react-icons/bi
 import { CiBoxes, CiShop } from 'react-icons/ci';
 import { IoMdHome } from 'react-icons/io';
 import { FaMap } from 'react-icons/fa';
+import { PhoneNumberUtil } from 'google-libphonenumber';
 import { TbArrowsExchange, TbBuilding, TbBuildingStore, TbBuildingWarehouse, TbMoneybag, TbPackages, TbTruckDelivery } from 'react-icons/tb';
 export const Contexthandlerscontext = React.createContext();
 export const Contexthandlerscontext_provider = (props) => {
@@ -37,6 +38,14 @@ export const Contexthandlerscontext_provider = (props) => {
 
     // const [pagetitle_context, setchosenHubContext] = useState({});
     const cookies = new Cookies();
+    const phoneUtil = PhoneNumberUtil.getInstance();
+    const isPhoneValidContext = (phone) => {
+        try {
+            return phoneUtil.isValidNumber(phoneUtil.parseAndKeepRawInput(phone));
+        } catch (error) {
+            return false;
+        }
+    };
 
     const setpageactive_context = (route) => {
         var temparr = [...pagesarray_context];
@@ -1051,6 +1060,7 @@ export const Contexthandlerscontext_provider = (props) => {
                 setchosenItemContext,
                 buttonLoadingContext,
                 setbuttonLoadingContext,
+                isPhoneValidContext,
             }}
         >
             {props.children}
