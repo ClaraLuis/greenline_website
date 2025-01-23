@@ -5129,3 +5129,10 @@ ul {
 .css-1wnygn3-MuiTimeline-root .MuiTimelineOppositeContent-root {
     flex: 0.38 !important;
 }
+.react-international-phone-input-container .react-international-phone-input {
+    width: 100% !important;
+}
+.react-international-phone-input-container .react-international-phone-input:focus {
+    outline: var(--primary) !important;
+    border: 1px solid var(--primary) !important;
+}

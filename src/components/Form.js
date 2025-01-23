@@ -16,7 +16,11 @@ import { useQuery } from 'react-query';
 import generalstyles from '../components/Website/Generalfiles/CSS_GENERAL/general.module.css';
 import SelectComponent from './SelectComponent';
 import MultiSelect from './MultiSelect';
+import { PhoneInput } from 'react-international-phone';
+import 'react-international-phone/style.css';
 const Form = (props) => {
+    const { isPhoneValidContext } = useContext(Contexthandlerscontext);
+
     var exist = false;
 
     return (
@@ -464,7 +468,7 @@ const Form = (props) => {
                             )}
                         </div>
                     );
-                } else if (item?.type == 'number') {
+                } else if (item?.type == 'number' && item?.attr != 'phone') {
                     return (
                         <div class={item.size == '6' ? 'col-lg-6' : 'col-lg-12'}>
                             <Inputfield
@@ -481,6 +485,34 @@ const Form = (props) => {
                                 }}
                                 type={'number'}
                             />
+                        </div>
+                    );
+                } else if (item?.type == 'number' && item?.attr == 'phone') {
+                    return (
+                        <div class={item.size == '6' ? 'col-lg-6' : 'col-lg-12'}>
+                            <div class="row m-0 w-100  ">
+                                <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                    <label for="name" class={formstyles.form__label}>
+                                        {item?.name}
+                                    </label>
+                                    <PhoneInput
+                                        defaultCountry="eg"
+                                        value={props?.payload[item.attr]}
+                                        onChange={(phone) => {
+                                            props?.setsubmit(false);
+                                            var temp = { ...props?.payload };
+                                            temp[item?.attr] = phone;
+                                            props?.setpayload({ ...temp });
+                                        }}
+                                        // class={formstyles.form__field}
+                                    />
+                                    {!isPhoneValidContext(props?.payload[item.attr]) && (
+                                        <div class="px-0 py-1" style={{ color: 'red', fontSize: '12px' }}>
+                                            Phone is not valid
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
                         </div>
                     );
                 } else if (item?.type == 'checkbox') {

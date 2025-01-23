@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
+import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
@@ -13,7 +14,7 @@ import API from '../../../API/API.js';
 
 import { FaLayerGroup } from 'react-icons/fa';
 import { IoMdClose, IoMdTime } from 'react-icons/io';
-import { MdClose, MdOutlineEditLocationAlt, MdOutlineInventory2, MdOutlineLocationOn } from 'react-icons/md';
+import { MdClose, MdOutlineAccountCircle, MdOutlineCallMade, MdOutlineCallReceived, MdOutlineEditLocationAlt, MdOutlineInventory2, MdOutlineLocationOn } from 'react-icons/md';
 
 import Timeline from '@mui/lab/Timeline';
 import TimelineConnector from '@mui/lab/TimelineConnector';
@@ -23,7 +24,7 @@ import TimelineItem from '@mui/lab/TimelineItem';
 import TimelineSeparator from '@mui/lab/TimelineSeparator';
 
 import TimelineOppositeContent, { timelineOppositeContentClasses } from '@mui/lab/TimelineOppositeContent';
-import { TbEdit, TbPlus, TbTrash } from 'react-icons/tb';
+import { TbEdit, TbFileDescription, TbPlus, TbTrash, TbUserDollar } from 'react-icons/tb';
 import { NotificationManager } from 'react-notifications';
 import Pagination from '../../Pagination.js';
 import ItemsTable from '../MerchantItems/ItemsTable.js';
@@ -34,13 +35,16 @@ import Inputfield from '../../Inputfield.js';
 import WaybillPrint from './WaybillPrint.js';
 import Decimal from 'decimal.js';
 import { useQuery } from 'react-query';
+import { AiOutlineInfoCircle } from 'react-icons/ai';
+import { PhoneInput } from 'react-international-phone';
+import 'react-international-phone/style.css';
 
 const OrderInfo = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const cookies = new Cookies();
 
-    const { setchosenOrderContext, chosenOrderContext, dateformatter, orderStatusEnumContext, orderTypeContext, setpagetitle_context, isAuth, buttonLoadingContext, setbuttonLoadingContext } =
+    const { setchosenOrderContext, chosenOrderContext, dateformatter, isPhoneValidContext, orderTypeContext, setpagetitle_context, isAuth, buttonLoadingContext, setbuttonLoadingContext } =
         useContext(Contexthandlerscontext);
     const {
         useQueryGQL,
@@ -90,6 +94,7 @@ const OrderInfo = (props) => {
     const [editAddress, seteditAddress] = useState(false);
     const [orderLogsModal, setorderLogsModal] = useState({ open: false });
     const [similarAddresses, setsimilarAddresses] = useState([]);
+    const [transactionModel, settransactionModel] = useState({ open: false, item: null });
 
     const [orderpayload, setorderpayload] = useState({
         functype: 'add',
@@ -949,17 +954,27 @@ const OrderInfo = (props) => {
                                                                                 )}
                                                                             </TimelineSeparator>
                                                                             <TimelineContent>
-                                                                                <span style={{ fontWeight: 600, color: 'black', textTransform: 'capitalize' }}>
-                                                                                    {historyItem?.type?.split(/(?=[A-Z])/).join(' ')}
-                                                                                </span>
-                                                                                <br />
-                                                                                <span style={{ fontSize: '14px', fontWeight: 400 }}>
-                                                                                    {historyItem?.status?.split(/(?=[A-Z])/).join(' ')}, {historyItem?.amount} {historyItem?.currency}
-                                                                                </span>{' '}
-                                                                                <br />
-                                                                                {cookies.get('userInfo')?.type == 'employee' && (
-                                                                                    <span style={{ fontSize: '14px', fontWeight: 400 }}>{historyItem?.auditedBy?.name}</span>
-                                                                                )}
+                                                                                <div>
+                                                                                    <span class="d-flex align-items-center" style={{ fontWeight: 600, color: 'black', textTransform: 'capitalize' }}>
+                                                                                        {historyItem?.type?.split(/(?=[A-Z])/).join(' ')}
+                                                                                        {cookies.get('userInfo')?.type == 'employee' && (
+                                                                                            <AiOutlineInfoCircle
+                                                                                                onClick={() => {
+                                                                                                    settransactionModel({ open: true, item: historyItem });
+                                                                                                }}
+                                                                                                className="text-secondaryhover ml-4"
+                                                                                            />
+                                                                                        )}
+                                                                                    </span>
+                                                                                    {/* <br /> */}
+                                                                                    <span style={{ fontSize: '14px', fontWeight: 400 }}>
+                                                                                        {historyItem?.status?.split(/(?=[A-Z])/).join(' ')}, {historyItem?.amount} {historyItem?.currency}
+                                                                                    </span>{' '}
+                                                                                    <br />
+                                                                                    {cookies.get('userInfo')?.type == 'employee' && (
+                                                                                        <span style={{ fontSize: '14px', fontWeight: 400 }}>{historyItem?.auditedBy?.name}</span>
+                                                                                    )}
+                                                                                </div>
                                                                             </TimelineContent>
                                                                         </TimelineItem>
                                                                     );
@@ -1100,7 +1115,7 @@ const OrderInfo = (props) => {
 
                                     <div class="col-lg-4">
                                         <div style={{ minHeight: '140px' }} class={generalstyles.card + ' row m-0 w-100 p-4'}>
-                                            <div style={{ cursor: props?.clickable ? 'pointer' : '' }} className="col-lg-12 p-0 allcentered">
+                                            <div className="col-lg-12 p-0 allcentered">
                                                 <div class={' row m-0 w-100 allcentered '}>
                                                     <div className="col-lg-12 p-0 d-flex justify-content-end mb-3">
                                                         <div className="row m-0 w-100 d-flex justify-content-end ">
@@ -1271,24 +1286,32 @@ const OrderInfo = (props) => {
                                                         {!editAddress && (
                                                             <div class="row m-0 w-100 d-flex align-items-center">
                                                                 <div class={'col-lg-12'}>
-                                                                    <label style={{ fontSize: '1.8vh' }} class="m-0 mb-2">
-                                                                        Phone
-                                                                    </label>
-                                                                    <Inputfield
-                                                                        hideLabel={true}
-                                                                        placeholder={'phone'}
-                                                                        value={filterCustomerPayload?.phone}
-                                                                        onChange={(event) => {
-                                                                            setcustomerFound(false);
-                                                                            setopenModal(false);
-                                                                            setnewCustomer(false);
-                                                                            setnameSuggestions([]);
-                                                                            setsimilarAddresses([]);
-                                                                            setfilterCustomerPayload({ ...filterCustomerPayload, phone: event.target.value, myCustomers: true });
-                                                                            setorderpayload({ ...orderpayload, phone: event.target.value, customerId: undefined });
-                                                                        }}
-                                                                        type={'number'}
-                                                                    />
+                                                                    <div class="row m-0 w-100  ">
+                                                                        <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                                            <label for="name" class={formstyles.form__label}>
+                                                                                Phone
+                                                                            </label>
+                                                                            <PhoneInput
+                                                                                defaultCountry="eg"
+                                                                                value={filterCustomerPayload?.phone}
+                                                                                onChange={(phone) => {
+                                                                                    setcustomerFound(false);
+                                                                                    setopenModal(false);
+                                                                                    setnewCustomer(false);
+                                                                                    setnameSuggestions([]);
+                                                                                    setsimilarAddresses([]);
+                                                                                    setfilterCustomerPayload({ ...filterCustomerPayload, phone: phone, myCustomers: true });
+                                                                                    setorderpayload({ ...orderpayload, phone: phone, customerId: undefined });
+                                                                                }}
+                                                                                // class={formstyles.form__field}
+                                                                            />
+                                                                            {!isPhoneValidContext(filterCustomerPayload?.phone) && (
+                                                                                <div class="px-0 py-1" style={{ color: 'red', fontSize: '12px' }}>
+                                                                                    Phone is not valid
+                                                                                </div>
+                                                                            )}
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
 
                                                                 <div class={'col-lg-12 '}>
@@ -2307,6 +2330,116 @@ const OrderInfo = (props) => {
                             }}
                         />
                     </div>
+                </Modal.Body>
+            </Modal>
+
+            <Modal
+                show={transactionModel.open}
+                onHide={() => {
+                    settransactionModel({ open: false, item: null });
+                }}
+                centered
+                size={'md'}
+            >
+                <Modal.Header>
+                    <div className="row w-100 m-0 p-0">
+                        <div class="col-lg-6 pt-3 ">
+                            <div className="row w-100 m-0 p-0">Transaction</div>
+                        </div>
+                        <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
+                            <div
+                                class={'close-modal-container'}
+                                onClick={() => {
+                                    settransactionModel({ open: false, item: null });
+                                }}
+                            >
+                                <IoMdClose />
+                            </div>
+                        </div>{' '}
+                    </div>
+                </Modal.Header>
+                <Modal.Body>
+                    {transactionModel != null && (
+                        <div style={{ fontSize: '13px', position: 'relative', padding: 'auto' }} className={'col-lg-12'}>
+                            <div class={generalstyles.card + ' p-2 px-3 row m-0 w-100 allcentered'}>
+                                <div className="col-lg-3 p-0">
+                                    <span style={{ fontWeight: 700, fontSize: '16px' }} class=" d-flex align-items-center">
+                                        {transactionModel?.item?.amount} {transactionModel?.item?.currency}
+                                    </span>
+                                </div>
+
+                                <div className="col-lg-9 p-0 d-flex justify-content-end align-items-center">
+                                    <div class="row m-0 w-100 d-flex justify-content-end align-items-center">
+                                        <div
+                                            className={
+                                                transactionModel?.item?.status == 'completed'
+                                                    ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 '
+                                                    : transactionModel?.item?.status == 'cancelled' ||
+                                                      transactionModel?.item?.status == 'failed' ||
+                                                      transactionModel?.item?.status == 'rejectedByReceiver' ||
+                                                      transactionModel?.item?.status == 'cancelledBySender' ||
+                                                      transactionModel?.item?.status == 'cancelledByReceiver' ||
+                                                      transactionModel?.item?.status == 'rejectedBySender' ||
+                                                      transactionModel?.item?.status == 'rejected'
+                                                    ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600'
+                                                    : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 '
+                                            }
+                                        >
+                                            <p className={' m-0 p-0 wordbreak '}>{transactionModel?.item?.status?.split(/(?=[A-Z])/).join(' ')}</p>
+                                        </div>
+
+                                        <div style={{ color: 'white' }} className={' wordbreak bg-primary rounded-pill font-weight-600 allcentered mx-1 text-capitalize'}>
+                                            {transactionModel?.item?.type?.split(/(?=[A-Z])/).join(' ')}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-lg-12 p-0 my-2">
+                                    <hr className="m-0" />
+                                </div>
+                                <>
+                                    <div className="col-lg-12 p-0 mb-1">
+                                        <span class="d-flex align-items-center" style={{ fontWeight: 600, color: '#4C8CF5' }}>
+                                            <MdOutlineCallMade class="mr-1" />
+                                            {transactionModel?.item?.fromAccount?.name ?? '-'}
+                                        </span>
+                                    </div>{' '}
+                                    <div className="col-lg-12 p-0 mb-1">
+                                        <span class="d-flex align-items-center" style={{ fontWeight: 600, color: '#1EC000' }}>
+                                            <MdOutlineCallReceived class="mr-1" />
+                                            {transactionModel?.item?.toAccount?.name ?? '-'}
+                                        </span>
+                                    </div>
+                                </>
+
+                                <div className="col-lg-12 p-0 mb-1">
+                                    <span class="d-flex align-items-center" style={{ fontWeight: 600 }}>
+                                        <TbFileDescription class="mr-1" />
+                                        {transactionModel?.item?.description}
+                                    </span>
+                                </div>
+
+                                <div class="col-lg-12 p-0">
+                                    <div class="row m-0 w-100 justify-content-end">
+                                        {transactionModel?.item?.auditedBy && (
+                                            <div className="col-lg-6 p-0 mb-1 d-flex ">
+                                                <span class="d-flex align-items-center" style={{ fontWeight: 500, fontSize: '13px' }}>
+                                                    <TbUserDollar class="mr-1" />
+                                                    {transactionModel?.item?.auditedBy?.name}
+                                                </span>
+                                            </div>
+                                        )}
+
+                                        <div className="col-lg-6 p-0 mb-1 d-flex justify-content-end">
+                                            <span class="d-flex align-items-center" style={{ fontWeight: 500, color: 'grey', fontSize: '12px' }}>
+                                                <IoMdTime class="mr-1" />
+                                                {dateformatter(transactionModel?.item?.createdAt)}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </Modal.Body>
             </Modal>
             <Modal
