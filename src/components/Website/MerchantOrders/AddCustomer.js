@@ -22,7 +22,7 @@ const { ValueContainer, Placeholder } = components;
 const AddCustomer = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, dateformatter, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
+    const { isPhoneValidContext, setpagetitle_context, dateformatter, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
     const { useQueryGQL, useMutationGQL, addUser, addCustomer } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -102,6 +102,10 @@ const AddCustomer = (props) => {
                             button1class={generalstyles.roundbutton + '  mr-2 '}
                             button1placeholder={lang.add}
                             button1onClick={() => {
+                                if (!isPhoneValidContext(props?.payload?.phone)) {
+                                    NotificationManager.warning('', 'Please enter valid phone');
+                                    return;
+                                }
                                 handleAddCustomer();
                             }}
                         />

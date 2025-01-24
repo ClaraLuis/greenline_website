@@ -135,7 +135,7 @@ const Users = (props) => {
                                     setopenModal={setopenModal}
                                     payload={payload}
                                     setpayload={setpayload}
-                                    refetchUsers={refetchUsers()}
+                                    refetchUsers={refetchUsers}
                                     fetchusers={fetchusers}
                                     card="col-lg-4"
                                 />
@@ -145,7 +145,7 @@ const Users = (props) => {
                 </div>
             </div>
 
-            <UserInfo openModal={openModal} setopenModal={setopenModal} payload={payload} setpayload={setpayload} refetchUsers={refetchUsers()} />
+            <UserInfo openModal={openModal} setopenModal={setopenModal} payload={payload} setpayload={setpayload} refetchUsers={refetchUsers} />
         </div>
     );
 };
