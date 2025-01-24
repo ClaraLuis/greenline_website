@@ -1340,6 +1340,10 @@ const OrderInfo = (props) => {
                                                                     <button
                                                                         onClick={async () => {
                                                                             if (filterCustomerPayload?.phone?.length != 0 || filterCustomerPayload?.email?.length != 0) {
+                                                                                if (!isPhoneValidContext(filterCustomerPayload?.phone)) {
+                                                                                    NotificationManager.warning('', 'Please enter valid phone');
+                                                                                    return;
+                                                                                }
                                                                                 try {
                                                                                     setfetchSuggestions(false);
                                                                                     setcustomerFound(false);

@@ -3,21 +3,18 @@ import React, { useContext } from 'react';
 
 // Icons
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
-import Inputfield from './Inputfield';
-import Select, { components } from 'react-select';
-import { defaultstyles, defaultstylesdanger } from './Website/Generalfiles/selectstyles';
 import { TbCameraPlus } from 'react-icons/tb';
+import Select from 'react-select';
 import formstyles from '../components/Website/Generalfiles/CSS_GENERAL/form.module.css';
+import Inputfield from './Inputfield';
+import { defaultstyles, defaultstylesdanger } from './Website/Generalfiles/selectstyles';
 
-import TextareaAutosize from 'react-textarea-autosize';
-import { Contexthandlerscontext } from '../Contexthandlerscontext';
-import API from '../API/API';
-import { useQuery } from 'react-query';
-import generalstyles from '../components/Website/Generalfiles/CSS_GENERAL/general.module.css';
-import SelectComponent from './SelectComponent';
-import MultiSelect from './MultiSelect';
 import { PhoneInput } from 'react-international-phone';
 import 'react-international-phone/style.css';
+import TextareaAutosize from 'react-textarea-autosize';
+import generalstyles from '../components/Website/Generalfiles/CSS_GENERAL/general.module.css';
+import { Contexthandlerscontext } from '../Contexthandlerscontext';
+import SelectComponent from './SelectComponent';
 const Form = (props) => {
     const { isPhoneValidContext } = useContext(Contexthandlerscontext);
 

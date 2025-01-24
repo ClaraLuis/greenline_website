@@ -29,7 +29,7 @@ const UserInfo = (props) => {
     let history = useHistory();
     const cookies = new Cookies();
 
-    const { userRolesContext, userTypeContext, employeeTypeContext, isAuth, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
+    const { isPhoneValidContext, userTypeContext, employeeTypeContext, isAuth, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
     const { useQueryGQL, fetchUsers, useMutationGQL, addUser, editUserType, fetchMerchants, fetchInventories, fetchHubs, updateEmployeeInfo } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -107,7 +107,9 @@ const UserInfo = (props) => {
                     props?.setopenModal(false);
                     setedit(false);
 
-                    props?.refetchUsers();
+                    if (props?.refetchUsers) {
+                        props?.refetchUsers();
+                    }
                     NotificationManager.success('', 'Success');
                 } else {
                     NotificationManager.warning(data?.updateEmployeeInfo?.message, 'Warning!');
@@ -118,7 +120,9 @@ const UserInfo = (props) => {
                     props?.setopenModal(false);
                     setedit(false);
 
-                    props?.refetchUsers();
+                    if (props?.refetchUsers) {
+                        props?.refetchUsers();
+                    }
                     NotificationManager.success('', 'Success');
                 } else {
                     NotificationManager.warning(data?.createUser?.message, 'Warning!');
@@ -554,6 +558,10 @@ const UserInfo = (props) => {
                                     button1class={generalstyles.roundbutton + '  mr-2 '}
                                     button1placeholder={props?.payload?.functype == 'add' ? lang.add : lang.edit}
                                     button1onClick={() => {
+                                        if (!isPhoneValidContext(props?.payload?.phone)) {
+                                            NotificationManager.warning('', 'Please enter valid phone');
+                                            return;
+                                        }
                                         handleAddUser();
                                     }}
                                     // button2={props?.payload?.functype == 'add' ? false : true}

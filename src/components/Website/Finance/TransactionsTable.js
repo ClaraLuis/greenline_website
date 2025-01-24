@@ -189,7 +189,9 @@ const TransactionsTable = (props) => {
                                                                         var { data } = await updateMyFinancialTransactionMutation();
                                                                     }
                                                                     if (data?.updateAnyFinancialTransaction?.success) {
-                                                                        props?.refetchFunc();
+                                                                        if (props?.refetchFunc) {
+                                                                            props?.refetchFunc();
+                                                                        }
                                                                     } else {
                                                                         NotificationManager.warning(data?.updateAnyFinancialTransaction?.message, 'Warning!');
                                                                     }
@@ -509,7 +511,9 @@ const TransactionsTable = (props) => {
                                             var { data } = await updateMyFinancialTransactionMutation();
                                         }
                                         if (data?.updateAnyFinancialTransaction?.success) {
-                                            props?.refetchFunc();
+                                            if (props?.refetchFunc) {
+                                                props?.refetchFunc();
+                                            }
                                             setchangestatusmodal(false);
                                         } else {
                                             NotificationManager.warning(data?.updateAnyFinancialTransaction?.message, 'Warning!');
