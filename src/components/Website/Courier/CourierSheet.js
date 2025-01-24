@@ -343,7 +343,7 @@ const CourierSheet = (props) => {
                             filterorders?.accepted !== undefined
                                 ? (() => {
                                       const sta = type === 'admin' ? (item?.adminPass ? 'adminAccepted' : 'adminRejected') : item?.financePass ? 'financeAccepted' : 'financeRejected';
-                                      return (filterorders?.accepted && type === 'admin' && sta === 'adminAccepted') || (filterorders?.accepted && type === 'finance' && sta === 'financeAccepted');
+                                      return (filterorders?.accepted && type === 'admin' && sta === 'adminRejected') || (filterorders?.accepted && type === 'finance' && sta === 'financeRejected');
                                   })()
                                 : true;
 
@@ -1241,7 +1241,7 @@ const CourierSheet = (props) => {
                                                     />
                                                     <span className={`${formstyles.slider} ${formstyles.round}`}></span>
                                                 </label>
-                                                <p className={`${generalstyles.checkbox_label} mb-0 text-focus text-capitalize cursor-pointer font_14 ml-2 mr-2 wordbreak`}>Accepted</p>
+                                                <p className={`${generalstyles.checkbox_label} mb-0 text-focus text-capitalize cursor-pointer font_14 ml-2 mr-2 wordbreak`}>Not Accepted</p>
                                             </div>
                                         </div>
                                         <div class="col-lg-3" style={{ marginBottom: '15px' }}>
