@@ -49,7 +49,8 @@ const InventoryReturns = (props) => {
     });
 
     const fetchInventoryItemReturnsQuery = useQueryGQL('', fetchInventoryItemReturns(), filter);
-    const { refetch: refetchInventoryItemReturnsQuery } = useQueryGQL('', fetchInventoryItemReturns(), filter);
+    // const { refetch: refetchInventoryItemReturnsQuery } = useQueryGQL('', fetchInventoryItemReturns(), filter);
+    const refetchInventoryItemReturnsQuery = () => fetchInventoryItemReturnsQuery.refetch();
 
     const [createReturnPackageMutation] = useMutationGQL(createReturnPackage(), {
         orderItemIds: cartItems,

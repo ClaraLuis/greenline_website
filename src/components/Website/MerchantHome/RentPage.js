@@ -24,19 +24,7 @@ const RentPage = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, dateformatter } = useContext(Contexthandlerscontext);
-    const {
-        useQueryGQL,
-        paginateInventoryRentTransaction,
-        findOneMerchant,
-        useLazyQueryGQL,
-        fetchRacks,
-        paginateBoxes,
-        paginateBallots,
-        removeMerchantAssignmentFromInventory,
-        useMutationGQL,
-        inventoryRentSummary,
-        fetchMerchants,
-    } = API();
+    const { useQueryGQL, paginateInventoryRentTransaction, useLazyQueryGQL, inventoryRentSummary, fetchMerchants } = API();
 
     const [inventoryRentSummaryData, setinventoryRentSummaryData] = useState(null);
 
@@ -79,14 +67,6 @@ const RentPage = (props) => {
         }
     }, []);
 
-    const [filterMerchants, setfilterMerchants] = useState({
-        isAsc: true,
-        limit: 10,
-        afterCursor: undefined,
-        beforeCursor: undefined,
-    });
-
-    const fetchMerchantsQuery = useQueryGQL('cashe-first', fetchMerchants(), filterMerchants);
     const getFirstDayOfNextMonth = () => {
         const today = new Date();
         const firstDayNextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1);

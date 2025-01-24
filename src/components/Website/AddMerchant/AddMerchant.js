@@ -105,6 +105,7 @@ const AddMerchant = (props) => {
     });
 
     const { refetch: refetchMerchants } = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
+
     const [fetchSimilarAddressesQuery] = useLazyQueryGQL(fetchSimilarAddresses());
     const [emailTakenQuery] = useLazyQueryGQL(emailTaken());
 

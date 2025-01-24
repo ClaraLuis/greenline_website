@@ -60,7 +60,7 @@ const Packages = (props) => {
     });
 
     const fetchPackagesQuery = useQueryGQL('', fetchPackages(), filter);
-    const { refetch: refetchPackagesQuery } = useQueryGQL('', fetchPackages(), filter);
+    const refetchPackagesQuery = () => fetchPackagesQuery.refetch();
 
     const [assignPackageToCourierMutation] = useMutationGQL(assignPackageToCourier(), {
         ids: packagepayload?.ids,

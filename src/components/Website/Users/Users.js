@@ -1,28 +1,17 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Modal } from 'react-bootstrap';
-import { BiShowAlt } from 'react-icons/bi';
-import { IoMdClose } from 'react-icons/io';
 import { useHistory } from 'react-router-dom';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
-import Pagespaginatecomponent from '../../../Pagespaginatecomponent.js';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
-import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
-import { FaLayerGroup } from 'react-icons/fa';
-import { NotificationManager } from 'react-notifications';
-import { useMutation } from 'react-query';
-import reviewsstyles from './reviews.module.css';
-import Select, { components } from 'react-select';
+import { components } from 'react-select';
 
 // Icons
 import API from '../../../API/API.js';
-import UserInfo from './UserInfo.js';
-import { FiPlus } from 'react-icons/fi';
-import { defaultstyles } from '../Generalfiles/selectstyles.js';
-import UsersTable from './UsersTable.js';
 import Pagination from '../../Pagination.js';
+import UserInfo from './UserInfo.js';
+import UsersTable from './UsersTable.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -45,10 +34,6 @@ const Users = (props) => {
         phone: '',
         email: '',
     });
-    const [filterobj, setfilterobj] = useState({
-        page: 1,
-        search: '',
-    });
 
     const [filterUsers, setfilterUsers] = useState({
         isAsc: true,
@@ -58,6 +43,8 @@ const Users = (props) => {
     });
 
     const fetchusers = useQueryGQL('', fetchUsers(), filterUsers);
+    const { refetch: refetchUsers } = useQueryGQL('', fetchUsers(), filterUsers);
+
     useEffect(() => {
         setpageactive_context('/users');
         setpagetitle_context('Settings');
@@ -143,14 +130,22 @@ const Users = (props) => {
                                 />
                             </div>
                             <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
-                                <UsersTable fetchusers={fetchusers} card="col-lg-4" />
+                                <UsersTable
+                                    openModal={openModal}
+                                    setopenModal={setopenModal}
+                                    payload={payload}
+                                    setpayload={setpayload}
+                                    refetchUsers={refetchUsers()}
+                                    fetchusers={fetchusers}
+                                    card="col-lg-4"
+                                />
                             </div>
                         </>
                     )}
                 </div>
             </div>
 
-            <UserInfo openModal={openModal} setopenModal={setopenModal} payload={payload} setpayload={setpayload} refetchUsers={fetchusers.refetch} />
+            <UserInfo openModal={openModal} setopenModal={setopenModal} payload={payload} setpayload={setpayload} refetchUsers={refetchUsers()} />
         </div>
     );
 };

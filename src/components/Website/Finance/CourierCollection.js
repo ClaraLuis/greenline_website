@@ -66,16 +66,7 @@ const CourierCollection = (props) => {
         merchantIds: undefined,
     });
 
-    const [filterobj1, setfilterobj1] = useState({
-        isAsc: true,
-        limit: 20,
-        afterCursor: undefined,
-        beforeCursor: undefined,
-        merchantIds: undefined,
-    });
-
     const fetchCourierCollectionTransactionsQuery = useQueryGQL('', fetchCourierCollectionTransactions(), filterobj);
-    const fetchCourierCollectionTransactionsQuery1 = useQueryGQL('', fetchCourierCollectionTransactions(), filterobj1);
     const { isAsc, limit, processing, ...filteredFilterObj } = filterobj;
     const calculateFinancialTransactionsTotalQuery = useQueryGQL('', calculateFinancialTransactionsTotal(), { ...filteredFilterObj, category: 'courierCollection' });
     const [filterAllFinancialAccountsObj, setfilterAllFinancialAccountsObj] = useState({
@@ -106,7 +97,8 @@ const CourierCollection = (props) => {
     });
 
     const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
-    const { refetch: refetchCourierCollectionTransactionsQuery } = useQueryGQL('', fetchCourierCollectionTransactions(), filterobj);
+    // const { refetch: refetchCourierCollectionTransactionsQuery } = useQueryGQL('', fetchCourierCollectionTransactions(), filterobj);
+    const refetchCourierCollectionTransactionsQuery = () => fetchCourierCollectionTransactionsQuery.refetch();
 
     const [transferMyCourierCollectionFundsutation] = useMutationGQL(transferMyCourierCollectionFunds(), {
         transactionIds: selectedArray,
@@ -140,10 +132,10 @@ const CourierCollection = (props) => {
     }, [fetchCourierCollectionTransactionsQuery?.data?.paginateCourierCollectionTransactions?.data, selectedArray]);
 
     useEffect(() => {
-        if (fetchCourierCollectionTransactionsQuery1?.data?.paginateCourierCollectionTransactions?.data?.length > 0) {
+        if (fetchCourierCollectionTransactionsQuery?.data?.paginateCourierCollectionTransactions?.data?.length > 0) {
             sethasTransactions(true);
         }
-    }, [fetchCourierCollectionTransactionsQuery1?.data?.paginateCourierCollectionTransactions?.data]);
+    }, [fetchCourierCollectionTransactionsQuery?.data?.paginateCourierCollectionTransactions?.data]);
 
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">

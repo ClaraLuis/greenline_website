@@ -28,23 +28,6 @@ const UsersTable = (props) => {
 
     const { lang, langdetect } = useContext(LanguageContext);
 
-    const [openModal, setopenModal] = useState(false);
-
-    const [payload, setpayload] = useState({
-        functype: 'add',
-        id: 'add',
-        name: '',
-        type: '',
-        phone: '',
-        email: '',
-    });
-    const [filterobj, setfilterobj] = useState({
-        page: 1,
-        search: '',
-    });
-
-    // const fetchusers = [];
-
     return (
         <>
             {props?.fetchusers?.loading && (
@@ -97,14 +80,14 @@ const UsersTable = (props) => {
                                                                     var temp = { ...item };
 
                                                                     temp.functype = 'edit';
-                                                                    setpayload({
+                                                                    props?.setpayload({
                                                                         ...temp,
                                                                         employeeType: item?.employee?.type,
                                                                         salary: item?.employee?.salary,
                                                                         commission: item?.employee?.commission,
                                                                         modaltype: 'view',
                                                                     });
-                                                                    setopenModal(true);
+                                                                    props?.setopenModal(true);
                                                                 }}
                                                                 class="py-2"
                                                             >
@@ -243,7 +226,6 @@ const UsersTable = (props) => {
                             /> */}
                 </>
             )}
-            <UserInfo openModal={openModal} setopenModal={setopenModal} payload={payload} setpayload={setpayload} />
         </>
     );
 };

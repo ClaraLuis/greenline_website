@@ -68,7 +68,8 @@ const Expenses = (props) => {
     });
 
     const fetchExpensesQuery = useQueryGQL('', fetchExpenses(), filterExpensesObj);
-    const { refetch: refetchExpensesQuery } = useQueryGQL('', fetchExpenses(), filterExpensesObj);
+    // const { refetch: refetchExpensesQuery } = useQueryGQL('', fetchExpenses(), filterExpensesObj);
+    const refetchExpensesQuery = () => fetchExpensesQuery.refetch();
 
     const fetchAllFinancialAccountsQuery = useQueryGQL('', fetchFinancialAccounts(), filterTransactionsObj);
 

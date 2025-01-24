@@ -51,7 +51,8 @@ const FinanceSheets = (props) => {
         statuses: ['inProgress', 'waitingForAdminApproval', 'waitingForFinanceApproval'],
     });
     const fetchSheetsQuery = useQueryGQL('', fetchCourierSheets(), filter);
-    const { refetch: refetchCourierSheets } = useQueryGQL('', fetchCourierSheets(), filter);
+    // const { refetch: refetchCourierSheets } = useQueryGQL('', fetchCourierSheets(), filter);
+    const refetchCourierSheets = () => fetchSheetsQuery.refetch();
 
     const [filterCouriers, setfilterCouriers] = useState({
         isAsc: true,

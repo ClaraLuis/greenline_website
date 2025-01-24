@@ -24,7 +24,6 @@ const AddSheetNew = (props) => {
     const { useQueryGQL, updateupdateOrderIdsStatus, addCourierSheet, addOrdersToCourierSheet, useMutationGQL, fetchCouriers, fetchCourierSheet, useLazyQueryGQL, fetchHubs } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
-    const [submit, setsubmit] = useState(false);
 
     const [fetchCourierSheetQuery, setfetchCourierSheetQuery] = useState({});
 
@@ -37,7 +36,6 @@ const AddSheetNew = (props) => {
     });
 
     const [search, setsearch] = useState('');
-    const [openModal, setopenModal] = useState(false);
     const [assignOpenModal, setassignOpenModal] = useState(false);
 
     const [filterCouriers, setfilterCouriers] = useState({
