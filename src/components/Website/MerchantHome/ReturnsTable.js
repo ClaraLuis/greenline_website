@@ -1,18 +1,17 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
-import { FaCheck, FaLayerGroup, FaPlus } from 'react-icons/fa';
+import { FaLayerGroup } from 'react-icons/fa';
 import { components } from 'react-select';
 
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
 import API from '../../../API/API.js';
 import ImportNewItem from '../InventoryItems/ImportNewItem.js';
-import { FiCheckCircle } from 'react-icons/fi';
 
 const { ValueContainer, Placeholder } = components;
 

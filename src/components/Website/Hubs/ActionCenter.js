@@ -41,7 +41,7 @@ const ActionCenter = (props) => {
     });
 
     const paginateUnresolvedOrdersQuery = useQueryGQL('', paginateUnresolvedOrders(), filterorders);
-    const { refetch: repaginateUnresolvedOrders } = useQueryGQL('', paginateUnresolvedOrders(), filterorders);
+
     const [selectedOrders, setSelectedOrders] = useState([]);
 
     const [filterHubs, setfilterHubs] = useState({

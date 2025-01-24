@@ -4,25 +4,23 @@ import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
+import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 import { Modal } from 'react-bootstrap';
 import { components } from 'react-select';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
-import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
-import * as XLSX from 'xlsx';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
+import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import { IoMdClose } from 'react-icons/io';
 import { NotificationManager } from 'react-notifications';
 import Cookies from 'universal-cookie';
 import API from '../../../API/API.js';
 import Inputfield from '../../Inputfield.js';
 import Pagination from '../../Pagination.js';
+import SelectComponent from '../../SelectComponent.js';
 import MerchantSelect from '../MerchantHome/MerchantSelect.js';
 import ItemsTable from './ItemsTable.js';
-import SkuPrint from './SkuPrint.js';
-import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
-import SelectComponent from '../../SelectComponent.js';
 
 const { ValueContainer, Placeholder } = components;
 

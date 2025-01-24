@@ -6,26 +6,26 @@ import { LanguageContext } from '../../../LanguageContext.js';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
+import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 import { Modal } from 'react-bootstrap';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
-import { FaRegClock } from 'react-icons/fa';
-import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
-import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
+import { FaRegClock } from 'react-icons/fa';
+import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 
 // Icons
+import { CiExport, CiImport } from 'react-icons/ci';
 import { IoMdClose } from 'react-icons/io';
 import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md';
 import { NotificationManager } from 'react-notifications';
+import Cookies from 'universal-cookie';
 import API from '../../../API/API.js';
+import MultiSelect from '../../MultiSelect.js';
 import Pagination from '../../Pagination.js';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
+import SkuPrint from '../MerchantItems/SkuPrint.js';
 import ImportNewItem from './ImportNewItem.js';
 import ItemInfo from './ItemInfo.js';
-import MultiSelect from '../../MultiSelect.js';
-import { CiExport, CiImport } from 'react-icons/ci';
-import SkuPrint from '../MerchantItems/SkuPrint.js';
-import Cookies from 'universal-cookie';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -148,12 +148,8 @@ const InventoryItems = (props) => {
     const fetchItemsInBoxQuery = useQueryGQL('', fetchItemsInBox(), filterItemInBox);
     const { refetch: refetchfetchItemsInBox } = useQueryGQL('', fetchItemsInBox(), filterItemInBox);
 
-    // let fetchItemHistoryQuery;
-    // let refetchItemHistory;
-
     const [fetchItemHistorLazyQuery] = useLazyQueryGQL(fetchItemHistory());
-    const { refetch } = useQueryGQL('', fetchItemHistory({ itemInBoxId: parseInt(chosenitem.id), limit: 10 }));
-    const refetchItemHistory = refetch;
+
     useEffect(() => {
         setpageactive_context('/inventoryitems');
         setpagetitle_context('Warehouses');
@@ -806,7 +802,6 @@ const InventoryItems = (props) => {
                                             const { data } = await importMutation();
                                             setimportmodal({ open: false, type: '' });
                                             refetchfetchItemsInBox();
-                                            refetchItemHistory();
                                         } catch (error) {
                                             let errorMessage = 'An unexpected error occurred';
                                             if (error.graphQLErrors && error.graphQLErrors.length > 0) {

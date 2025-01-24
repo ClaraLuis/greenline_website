@@ -50,7 +50,7 @@ const MerchantOrders = (props) => {
     const fetchGovernoratesQuery = useQueryGQL('', fetchGovernorates());
 
     const [fetchOrdersLazyQuey] = useLazyQueryGQL(fetchOrders(), 'cache-first');
-    const [fetchOrdersLazyQuey1] = useLazyQueryGQL(fetchOrders(), 'network-only');
+    // const [fetchOrdersLazyQuey1] = useLazyQueryGQL(fetchOrders(), 'network-only');
     // const { refetch: refetchOrdersQuery } = useQueryGQL('cache-and-network', fetchOrders(), filterorders);
     //
     const [filterMerchants, setfilterMerchants] = useState({
@@ -72,10 +72,10 @@ const MerchantOrders = (props) => {
     useEffect(async () => {
         setpageactive_context('/merchantorders');
         setpagetitle_context('Merchant');
-        var { data } = await fetchOrdersLazyQuey1({
-            variables: { input: filterorders },
-        });
-        setfetchOrdersQuery({ data: data });
+        // var { data } = await fetchOrdersLazyQuey1({
+        //     variables: { input: filterorders },
+        // });
+        // setfetchOrdersQuery({ data: data });
     }, []);
     const [selectedOrders, setSelectedOrders] = useState([]);
 

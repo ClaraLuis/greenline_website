@@ -55,7 +55,7 @@ const UserInfo = (props) => {
         afterCursor: null,
         beforeCursor: null,
     });
-    const fetchinventories = useQueryGQL('', fetchInventories(), filterInventories);
+    const fetchinventories = useQueryGQL('cache-first', fetchInventories(), filterInventories);
 
     const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
 
@@ -87,14 +87,6 @@ const UserInfo = (props) => {
         id: props?.payload?.id,
     });
 
-    const [filterUsers, setfilterUsers] = useState({
-        isAsc: true,
-        limit: 20,
-        afterCursor: undefined,
-        beforeCursor: undefined,
-    });
-
-    const { refetch: refetchUsers } = useQueryGQL('', fetchUsers(), filterUsers);
     const [filterHubs, setfilterHubs] = useState({
         isAsc: true,
         limit: 20,
@@ -102,7 +94,7 @@ const UserInfo = (props) => {
         beforeCursor: undefined,
     });
 
-    const fetchHubsQuery = useQueryGQL('', fetchHubs(), filterHubs);
+    const fetchHubsQuery = useQueryGQL('cache-first', fetchHubs(), filterHubs);
 
     const handleAddUser = async () => {
         if (buttonLoadingContext) return;
@@ -115,7 +107,7 @@ const UserInfo = (props) => {
                     props?.setopenModal(false);
                     setedit(false);
 
-                    refetchUsers();
+                    props?.refetchUsers();
                     NotificationManager.success('', 'Success');
                 } else {
                     NotificationManager.warning(data?.updateEmployeeInfo?.message, 'Warning!');
@@ -126,7 +118,7 @@ const UserInfo = (props) => {
                     props?.setopenModal(false);
                     setedit(false);
 
-                    refetchUsers();
+                    props?.refetchUsers();
                     NotificationManager.success('', 'Success');
                 } else {
                     NotificationManager.warning(data?.createUser?.message, 'Warning!');

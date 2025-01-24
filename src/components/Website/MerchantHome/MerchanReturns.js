@@ -58,7 +58,7 @@ const MerchanReturns = (props) => {
         merchantId: undefined,
     });
     const fetchMerchantItemReturnsQuery = useQueryGQL('', fetchMerchantItemReturns(), filter);
-    const { refetch: refetchMerchantItemReturnsQuery } = useQueryGQL('', fetchMerchantItemReturns(), filter);
+    const refetchMerchantItemReturnsQuery = () => fetchMerchantItemReturnsQuery.refetch();
 
     const [createReturnPackageMutation] = useMutationGQL(createReturnPackage(), {
         orderItemIds: cartItems,

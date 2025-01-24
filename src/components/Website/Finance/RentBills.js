@@ -93,7 +93,7 @@ const RentBills = (props) => {
         });
     }, []);
 
-    const { refetch: refetchInventoryRentBillsQuery } = useQueryGQL('', fetchInventoryRentBills(), filterobj);
+    const refetchInventoryRentBillsQuery = () => fetchInventoryRentBillsQuery.refetch();
 
     const [completeInventoryRentTransactionsutation] = useMutationGQL(completeInventoryRentTransactions(), {
         transactionIds: selectedArray,
