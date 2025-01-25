@@ -1967,6 +1967,28 @@ const API = () => {
                 paginateInventoryReturns(input: $input) {
                     data {
                         id
+                        type
+                        createdAt
+                        shippingPrice
+                        merchant {
+                            name
+                        }
+                        address {
+                            country
+                            city
+                            streetAddress
+                            buildingNumber
+                            apartmentFloor
+                        }
+                        courier {
+                            id
+                            name
+                        }
+                        price
+                        paymentType
+                        status
+                        orderDate
+                        currency
                         merchantId
                         orderItems {
                             id
