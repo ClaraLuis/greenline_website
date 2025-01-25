@@ -169,7 +169,12 @@ const CourierSheet = (props) => {
     }, [statuspayload]);
 
     const [updateOrdersStatusMutation] = useMutationGQL(updateOrdersStatus(), {
-        status: !statuspayload?.fullDelivery && statuspayload?.status == 'delivered' ? 'partiallyDelivered' : statuspayload?.status,
+        status:
+            !statuspayload?.fullDelivery && statuspayload?.status == 'delivered'
+                ? 'partiallyDelivered'
+                : !statuspayload?.fullDelivery && statuspayload?.status == 'returned'
+                ? 'partiallyReturned'
+                : statuspayload?.status,
         sheetOrderId: parseInt(statuspayload?.orderid),
         amountCollected: calculateAmountCollected(),
         description: statuspayload?.description,
@@ -501,7 +506,7 @@ const CourierSheet = (props) => {
                                                                             step: 0,
                                                                             orderid: item.id,
                                                                             status: '',
-                                                                            type: tempsheetpayload?.orderStatus?.split(/(?=[A-Z])/).join(' '),
+                                                                            type: item?.order?.type,
                                                                             order: item?.order,
                                                                             previousOrder: sheetOrders?.filter((ii) => ii.orderId == item?.order?.previousOrderId)[0]?.order,
                                                                             fullDelivery: true,
@@ -1425,19 +1430,37 @@ const CourierSheet = (props) => {
                                     {statuspayload.type} Status
                                 </label>
                                 <Select
-                                    options={[
-                                        { label: 'Delivered', value: 'delivered' },
-                                        { label: 'Postponed', value: 'postponed' },
-                                        { label: 'Failed Delivery Attempt', value: 'failedDeliveryAttempt' },
-                                        { label: 'Cancelled', value: 'cancelled' },
-                                    ]}
+                                    options={
+                                        statuspayload.type == 'return'
+                                            ? [
+                                                  { label: 'Returned', value: 'returned' },
+                                                  { label: 'Postponed', value: 'postponed' },
+                                                  { label: 'Failed Delivery Attempt', value: 'failedDeliveryAttempt' },
+                                                  { label: 'Cancelled', value: 'cancelled' },
+                                              ]
+                                            : [
+                                                  { label: 'Delivered', value: 'delivered' },
+                                                  { label: 'Postponed', value: 'postponed' },
+                                                  { label: 'Failed Delivery Attempt', value: 'failedDeliveryAttempt' },
+                                                  { label: 'Cancelled', value: 'cancelled' },
+                                              ]
+                                    }
                                     styles={defaultstyles}
-                                    value={[
-                                        { label: 'Delivered', value: 'delivered' },
-                                        { label: 'Postponed', value: 'postponed' },
-                                        { label: 'Failed Delivery Attempt', value: 'failedDeliveryAttempt' },
-                                        { label: 'Cancelled', value: 'cancelled' },
-                                    ].filter((option) => option.value == statuspayload?.status)}
+                                    value={
+                                        statuspayload.type == 'return'
+                                            ? [
+                                                  { label: 'Returned', value: 'returned' },
+                                                  { label: 'Postponed', value: 'postponed' },
+                                                  { label: 'Failed Delivery Attempt', value: 'failedDeliveryAttempt' },
+                                                  { label: 'Cancelled', value: 'cancelled' },
+                                              ]
+                                            : [
+                                                  { label: 'Delivered', value: 'delivered' },
+                                                  { label: 'Postponed', value: 'postponed' },
+                                                  { label: 'Failed Delivery Attempt', value: 'failedDeliveryAttempt' },
+                                                  { label: 'Cancelled', value: 'cancelled' },
+                                              ].filter((option) => option.value == statuspayload?.status)
+                                    }
                                     onChange={(option) => {
                                         setstatuspayload({
                                             ...statuspayload,
@@ -1662,7 +1685,7 @@ const CourierSheet = (props) => {
                                     />
                                 </div>
                             )}
-                            {statuspayload?.status == 'delivered' && (
+                            {(statuspayload?.status == 'delivered' || statuspayload?.status == 'returned') && (
                                 <div class={'col-lg-12 mb-3'}>
                                     <div class="row m-0 w-100">
                                         <div class={'col-lg-12 mb-3 p-0 '}>
@@ -1689,7 +1712,9 @@ const CourierSheet = (props) => {
                                                     />
                                                     <span className={`${formstyles.slider} ${formstyles.round}`}></span>
                                                 </label>
-                                                <p className={`${generalstyles.checkbox_label} mb-0 text-focus text-capitalize cursor-pointer font_14 ml-1 mr-1 wordbreak`}>Full delivery</p>
+                                                <p className={`${generalstyles.checkbox_label} mb-0 text-focus text-capitalize cursor-pointer font_14 ml-1 mr-1 wordbreak`}>
+                                                    {statuspayload?.status == 'returned' ? 'Full return' : 'Full delivery'}{' '}
+                                                </p>
                                             </div>
                                         </div>
                                         {statuspayload?.order?.orderItems?.map((subitem, subindex) => {
@@ -2000,6 +2025,7 @@ const CourierSheet = (props) => {
                                     </div>
                                 </div>
                             )}
+
                             {statuspayload?.status == 'failedDeliveryAttempt' && (
                                 <div class={'col-lg-12 mb-3'}>
                                     <label for="name" class={formstyles.form__label}>
@@ -2052,7 +2078,11 @@ const CourierSheet = (props) => {
                                                 temp.updateSheetOrderstemp.map((i, ii) => {
                                                     if (i.orderId == statuspayload.order.id) {
                                                         temp.updateSheetOrderstemp[ii].orderStatus =
-                                                            !statuspayload?.fullDelivery && statuspayload?.status == 'delivered' ? 'partiallyDelivered' : statuspayload?.status;
+                                                            !statuspayload?.fullDelivery && statuspayload?.status == 'delivered'
+                                                                ? 'partiallyDelivered'
+                                                                : !statuspayload?.fullDelivery && statuspayload?.status == 'returned'
+                                                                ? 'partiallyReturned'
+                                                                : statuspayload?.status;
                                                     }
 
                                                     if (i.orderId == statuspayload?.previousOrder?.id) {
@@ -2072,7 +2102,11 @@ const CourierSheet = (props) => {
                                                     sheetOrders?.forEach((sheet, sheetIndex) => {
                                                         if (sheet.order.id === statuspayload.order.id) {
                                                             sheetOrdersTemp[sheetIndex].order.status =
-                                                                !statuspayload?.fullDelivery && statuspayload?.status == 'delivered' ? 'partiallyDelivered' : statuspayload?.status;
+                                                                !statuspayload?.fullDelivery && statuspayload?.status == 'delivered'
+                                                                    ? 'partiallyDelivered'
+                                                                    : !statuspayload?.fullDelivery && statuspayload?.status == 'returned'
+                                                                    ? 'partiallyReturned'
+                                                                    : statuspayload?.status;
                                                             sheet?.order?.orderItems?.forEach((orderitem, orderitemindex) => {
                                                                 const matchingSuborder = statuspayload?.partialItems?.find((suborderitem) => suborderitem.id === orderitem.id);
                                                                 // if (matchingSuborder) {
