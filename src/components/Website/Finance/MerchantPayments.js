@@ -144,7 +144,7 @@ const MerchantPayments = (props) => {
                         <div class="col-lg-6 co-mf-6 p-0 d-flex justify-content-end">
                             <button
                                 style={{ height: '35px' }}
-                                class={generalstyles.roundbutton + '  mb-1 mx-1'}
+                                class={generalstyles.roundbutton + '  mb-1 mx-1 text-capitalize'}
                                 onClick={() => {
                                     const merchantTransactions = fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data;
 

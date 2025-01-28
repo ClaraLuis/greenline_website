@@ -516,6 +516,11 @@ const API = () => {
                         base
                         extra
                     }
+                    governorate {
+                        id
+                        name
+                        arabicName
+                    }
                 }
             }
         `;
@@ -740,6 +745,7 @@ const API = () => {
                         createdAt
                         shippingPrice
                         originalPrice
+                        paidToMerchant
                         merchant {
                             id
                             name
@@ -1434,6 +1440,7 @@ const API = () => {
                 type
                 createdAt
                 shippingPrice
+                paidToMerchant
                 merchant {
                     id
                     name
@@ -1561,6 +1568,7 @@ const API = () => {
                     type
                     createdAt
                     shippingPrice
+                    paidToMerchant
                     merchant {
                         id
                         name
@@ -1760,6 +1768,7 @@ const API = () => {
                     type
                     createdAt
                     shippingPrice
+                    paidToMerchant
                     merchant {
                         id
                         name
@@ -1896,6 +1905,7 @@ const API = () => {
                         type
                         createdAt
                         shippingPrice
+                        paidToMerchant
                         merchant {
                             name
                         }
@@ -1930,6 +1940,51 @@ const API = () => {
                             streetAddress
                             buildingNumber
                             apartmentFloor
+                        }
+                        returnPackage {
+                            id
+                            sku
+                            type
+                            hubId
+                            courierId
+                            toInventoryId
+                            toMerchantId
+                            status
+                            createdAt
+                            lastModified
+                            inventory {
+                                name
+                                id
+                            }
+                            merchant {
+                                name
+                                id
+                            }
+                            courier {
+                                name
+                                id
+                            }
+                            countAndSum
+                        }
+                        sheetOrder {
+                            id
+                            sheetId
+                            orderId
+                            adminPass
+                            financePass
+                            shippingCollected
+                            amountCollected
+                            transactionId
+                            createdAt
+                            lastModified
+                            sheet {
+                                status
+                                user {
+                                    name
+                                    email
+                                    id
+                                }
+                            }
                         }
                         orderItems {
                             id
@@ -1970,6 +2025,7 @@ const API = () => {
                         type
                         createdAt
                         shippingPrice
+                        paidToMerchant
                         merchant {
                             name
                         }
@@ -2297,7 +2353,7 @@ const API = () => {
                             currency
                             shippingPrice
                             price
-
+                            paidToMerchant
                             merchant {
                                 id
                                 name
@@ -2545,6 +2601,7 @@ const API = () => {
                                 status
                                 currency
                                 shippingPrice
+                                paidToMerchant
                                 price
                                 merchantCustomer {
                                     id

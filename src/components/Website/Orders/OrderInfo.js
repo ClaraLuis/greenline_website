@@ -594,10 +594,10 @@ const OrderInfo = (props) => {
                                                         // style={{ cursor: 'pointer' }}
                                                         className={
                                                             chosenOrderContext?.status == 'delivered'
-                                                                ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 '
+                                                                ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 text-capitalize'
                                                                 : chosenOrderContext?.status == 'postponed' || chosenOrderContext?.status == 'failedDeliveryAttempt'
-                                                                ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 '
-                                                                : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 '
+                                                                ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 text-capitalize'
+                                                                : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 text-capitalize'
                                                         }
                                                     >
                                                         {/* {orderStatusEnumContext?.map((i, ii) => {
@@ -612,7 +612,7 @@ const OrderInfo = (props) => {
                                                         //     setchangestatusmodal(true);
                                                         // }}
                                                         style={{ color: 'white' }}
-                                                        className={'ml-1 wordbreak bg-primary rounded-pill font-weight-600 '}
+                                                        className={'ml-1 wordbreak bg-primary rounded-pill font-weight-600 text-capitalize'}
                                                     >
                                                         {/* {orderTypeContext?.map((i, ii) => {
                                                             if (i.value == chosenOrderContext?.type) {
@@ -622,7 +622,7 @@ const OrderInfo = (props) => {
                                                         {chosenOrderContext?.type?.split(/(?=[A-Z])/).join(' ')}
                                                     </div>
                                                     <div style={{ background: 'var(--primary)', color: 'white' }} className={' wordbreak rounded-pill font-weight-600 allcentered mx-1 '}>
-                                                        {chosenOrderContext?.paymentType == 'cash' ? 'Not Paid' : 'Paid'}
+                                                        {chosenOrderContext?.paidToMerchant ? 'Paid' : 'Not Paid'}
                                                     </div>
                                                     {chosenOrderContext?.failsCount > 0 && (
                                                         <div style={{ background: 'var(--danger)', color: 'white' }} className={' wordbreak rounded-pill font-weight-600 allcentered mx-1 '}>
@@ -765,7 +765,7 @@ const OrderInfo = (props) => {
                                                                     fontSize: '11px',
                                                                     background: 'var(--primary)',
                                                                 }}
-                                                                class="allcentered mx-2 p-1 px-2"
+                                                                class="allcentered mx-2 p-1 px-2 text-capitalize"
                                                             >
                                                                 {chosenOrderContext?.returnPackage?.type.split(/(?=[A-Z])/).join(' ')}
                                                             </div>
@@ -779,8 +779,8 @@ const OrderInfo = (props) => {
                                                                 }}
                                                                 class={
                                                                     chosenOrderContext?.returnPackage?.status == 'delivered'
-                                                                        ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered  '
-                                                                        : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered '
+                                                                        ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered  text-capitalize'
+                                                                        : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered text-capitalize'
                                                                 }
                                                             >
                                                                 {chosenOrderContext?.returnPackage?.status.split(/(?=[A-Z])/).join(' ')}
@@ -967,7 +967,7 @@ const OrderInfo = (props) => {
                                                                                         )}
                                                                                     </span>
                                                                                     {/* <br /> */}
-                                                                                    <span style={{ fontSize: '14px', fontWeight: 400 }}>
+                                                                                    <span style={{ fontSize: '14px', fontWeight: 400 }} class="text-capitalize">
                                                                                         {historyItem?.status?.split(/(?=[A-Z])/).join(' ')}, {historyItem?.amount} {historyItem?.currency}
                                                                                     </span>{' '}
                                                                                     <br />
@@ -2377,7 +2377,7 @@ const OrderInfo = (props) => {
                                         <div
                                             className={
                                                 transactionModel?.item?.status == 'completed'
-                                                    ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 '
+                                                    ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 text-capitalize'
                                                     : transactionModel?.item?.status == 'cancelled' ||
                                                       transactionModel?.item?.status == 'failed' ||
                                                       transactionModel?.item?.status == 'rejectedByReceiver' ||
@@ -2385,8 +2385,8 @@ const OrderInfo = (props) => {
                                                       transactionModel?.item?.status == 'cancelledByReceiver' ||
                                                       transactionModel?.item?.status == 'rejectedBySender' ||
                                                       transactionModel?.item?.status == 'rejected'
-                                                    ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600'
-                                                    : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 '
+                                                    ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 text-capitalize'
+                                                    : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 text-capitalize'
                                             }
                                         >
                                             <p className={' m-0 p-0 wordbreak '}>{transactionModel?.item?.status?.split(/(?=[A-Z])/).join(' ')}</p>

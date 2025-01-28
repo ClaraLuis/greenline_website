@@ -182,10 +182,10 @@ const TrackActivity = (props) => {
                                                         // style={{ cursor: 'pointer' }}
                                                         className={
                                                             chosenOrderContext?.status == 'delivered'
-                                                                ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 '
+                                                                ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 text-capitalize '
                                                                 : chosenOrderContext?.status == 'postponed' || chosenOrderContext?.status == 'failedDeliveryAttempt'
-                                                                ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 '
-                                                                : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 '
+                                                                ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 text-capitalize '
+                                                                : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 text-capitalize'
                                                         }
                                                     >
                                                         {/* {orderStatusEnumContext?.map((i, ii) => {
@@ -200,7 +200,7 @@ const TrackActivity = (props) => {
                                                         //     setchangestatusmodal(true);
                                                         // }}
                                                         style={{ color: 'white' }}
-                                                        className={'ml-1 wordbreak bg-primary rounded-pill font-weight-600 '}
+                                                        className={'ml-1 wordbreak bg-primary rounded-pill font-weight-600 text-capitalize '}
                                                     >
                                                         {/* {orderTypeContext?.map((i, ii) => {
                                                             if (i.value == chosenOrderContext?.type) {
