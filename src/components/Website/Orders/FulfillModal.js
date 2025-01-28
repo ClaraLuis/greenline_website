@@ -36,7 +36,7 @@ const FulfillModal = (props) => {
 
     const [updateOrdersStatusMutation] = useMutationGQL(updateOrdersStatus(), {
         status: 'fulfilled',
-        sheetOrderId: chosenOrderContext?.id,
+        sheetOrderId: chosenOrderContext?.sheetOrder?.id,
     });
 
     const [barcode, setBarcode] = useState('');

@@ -583,7 +583,7 @@ const OrderInfo = (props) => {
                                             </div>
                                             <div className="col-lg-8 d-flex justify-content-end align-items-center">
                                                 <div class="row m-0 w-100  d-flex justify-content-end align-items-center">
-                                                    {outOfStock && queryParameters?.get('type') == 'inventory' && (
+                                                    {outOfStock && queryParameters?.get('type') == 'inventory' && chosenOrderContext.status === 'idle' && (
                                                         <div className={'mr-1 wordbreak text-danger bg-light-danger rounded-pill font-weight-600 '}>Out Of Stock</div>
                                                     )}
 
