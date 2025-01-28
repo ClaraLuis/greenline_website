@@ -181,7 +181,7 @@ const OrdersTable = (props) => {
                                             </div>
                                             <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
                                                 <div class="row m-0 w-100  d-flex justify-content-end align-items-center">
-                                                    {props?.srcFrom == 'inventory' && outOfStock && (
+                                                    {props?.srcFrom == 'inventory' && outOfStock && item.status === 'idle' && (
                                                         <div className={'mr-1 wordbreak text-danger bg-light-danger rounded-pill font-weight-600 '}>Out Of Stock</div>
                                                     )}
                                                     <div
@@ -218,23 +218,14 @@ const OrdersTable = (props) => {
                                                             </div>
                                                         )}
                                                     </div>
-                                                    <div
-                                                        // onClick={() => {
-                                                        //     setchangestatusmodal(true);
-                                                        // }}
-                                                        style={{ color: 'white' }}
-                                                        className={'ml-1 wordbreak bg-primary rounded-pill font-weight-600 text-capitalize '}
-                                                    >
-                                                        {/* {orderTypeContext?.map((i, ii) => {
-                                                            if (i.value == item?.type) {
-                                                                return <span>{i.label}</span>;
-                                                            }
-                                                        })} */}
+                                                    <div style={{ color: 'white' }} className={'ml-1 wordbreak bg-primary rounded-pill font-weight-600 text-capitalize '}>
                                                         {item?.type?.split(/(?=[A-Z])/).join(' ')}
                                                     </div>
+
                                                     <div style={{ color: 'white' }} className={'ml-1 wordbreak bg-primary rounded-pill font-weight-600 '}>
                                                         {item?.paidToMerchant ? 'Paid' : 'Not Paid'}
                                                     </div>
+
                                                     <div>
                                                         <Dropdown
                                                             onClick={(e) => {
