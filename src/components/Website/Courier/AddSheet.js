@@ -194,10 +194,10 @@ const AddSheet = (props) => {
                                                         <div
                                                             className={
                                                                 item.status == 'delivered'
-                                                                    ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered  '
-                                                                    : item?.status == 'postponed' || item?.status == 'failedDeliveryAttempt'
-                                                                    ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 allcentered '
-                                                                    : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered '
+                                                                    ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered text-capitalize '
+                                                                    : item?.status == 'postponed' || item?.status == 'failedDeliveryAttempt text-capitalize'
+                                                                    ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 allcentered text-capitalize '
+                                                                    : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered text-capitalize '
                                                             }
                                                         >
                                                             {/* {orderStatusEnumContext?.map((i, ii) => {

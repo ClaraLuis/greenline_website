@@ -141,7 +141,7 @@ const TransactionsTable = (props) => {
                                                         style={{ cursor: item?.toAccount?.id == props?.accountId ? 'pointer' : '' }}
                                                         className={
                                                             item.status == 'completed'
-                                                                ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 '
+                                                                ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 text-capitalize '
                                                                 : item?.status == 'cancelled' ||
                                                                   item?.status == 'failed' ||
                                                                   item?.status == 'rejectedByReceiver' ||
@@ -149,8 +149,8 @@ const TransactionsTable = (props) => {
                                                                   item?.status == 'cancelledByReceiver' ||
                                                                   item?.status == 'rejectedBySender' ||
                                                                   item?.status == 'rejected'
-                                                                ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600'
-                                                                : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 '
+                                                                ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 text-capitalize'
+                                                                : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 text-capitalize'
                                                         }
                                                     >
                                                         <p className={' m-0 p-0 wordbreak '}>{item?.status?.split(/(?=[A-Z])/).join(' ')}</p>
@@ -428,7 +428,7 @@ const TransactionsTable = (props) => {
                                                             : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 '
                                                     }
                                                 >
-                                                    <p className={' m-0 p-0 wordbreak '}>
+                                                    <p className={' m-0 p-0 wordbreak text-capitalize '}>
                                                         {item?.status?.split(/(?=[A-Z])/).join(' ')}
                                                         {/* {i.label} */}
                                                     </p>

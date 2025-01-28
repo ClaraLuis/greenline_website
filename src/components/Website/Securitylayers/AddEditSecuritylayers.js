@@ -173,7 +173,7 @@ const AddEditSecuritylayers = (props) => {
                                                                                     ? 'grey'
                                                                                     : '',
                                                                         }}
-                                                                        className={`${generalstyles.checkbox_label} ml-2 mb-0 text-focus text-capitalize cursor-pointer font_14 ml-2 mr-2 wordbreak`}
+                                                                        className={`${generalstyles.checkbox_label} ml-2 mb-0 text-focus text-capitalize cursor-pointer font_14 ml-2 mr-2 wordbreak text-capitalize`}
                                                                     >
                                                                         {userRoleItem?.name.split(/(?=[A-Z])/).join(' ')}
                                                                     </p>

@@ -58,7 +58,7 @@ const UpdateShipping = (props) => {
                 data?.findMerchantDomesticShippings?.map((item, index) => {
                     temp.push({
                         rowId: item?.id,
-                        name: item?.domesticShipping?.name,
+                        name: item?.governorate?.name,
                         id: item?.domesticShipping?.id,
                         shipping: item?.domesticShipping?.total,
                         base: item?.domesticShipping?.base,

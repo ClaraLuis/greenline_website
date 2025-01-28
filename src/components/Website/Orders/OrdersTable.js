@@ -189,15 +189,15 @@ const OrdersTable = (props) => {
                                                         //     setchangestatusmodal(true);
                                                         // }}
                                                         // style={{ cursor: 'pointer' }}
-                                                        className={`wordbreak rounded-pill font-weight-600 ${
+                                                        className={`wordbreak rounded-pill font-weight-600 text-capitalize ${
                                                             item.status === 'delivered' || item.status === 'partiallyDelivered' || item.status === 'returned' || item.status === 'partiallyReturned'
-                                                                ? 'text-success bg-light-success'
+                                                                ? 'text-success bg-light-success text-capitalize'
                                                                 : item.status === 'cancelled' || item.status === 'failedDeliveryAttempt'
-                                                                ? 'text-danger bg-light-danger'
+                                                                ? 'text-danger bg-light-danger text-capitalize'
                                                                 : item.status === 'postponed'
-                                                                ? 'text-warning bg-light-warning rounded-pill-hover'
-                                                                : 'text-warning bg-light-warning'
-                                                        } ${item?.latestHistory?.description ? 'rounded-pill-hover' : ''}`}
+                                                                ? 'text-warning bg-light-warning rounded-pill-hover text-capitalize'
+                                                                : 'text-warning bg-light-warning text-capitalize'
+                                                        } ${item?.latestHistory?.description ? 'rounded-pill-hover text-capitalize' : ''}`}
                                                     >
                                                         {/* {orderStatusEnumContext?.map((i, ii) => {
                                                             if (i.value == item?.status) {
@@ -223,7 +223,7 @@ const OrdersTable = (props) => {
                                                         //     setchangestatusmodal(true);
                                                         // }}
                                                         style={{ color: 'white' }}
-                                                        className={'ml-1 wordbreak bg-primary rounded-pill font-weight-600 '}
+                                                        className={'ml-1 wordbreak bg-primary rounded-pill font-weight-600 text-capitalize '}
                                                     >
                                                         {/* {orderTypeContext?.map((i, ii) => {
                                                             if (i.value == item?.type) {
@@ -231,6 +231,9 @@ const OrdersTable = (props) => {
                                                             }
                                                         })} */}
                                                         {item?.type?.split(/(?=[A-Z])/).join(' ')}
+                                                    </div>
+                                                    <div style={{ color: 'white' }} className={'ml-1 wordbreak bg-primary rounded-pill font-weight-600 '}>
+                                                        {item?.paidToMerchant ? 'Paid' : 'Not Paid'}
                                                     </div>
                                                     <div>
                                                         <Dropdown

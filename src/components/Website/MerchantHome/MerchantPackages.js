@@ -278,8 +278,8 @@ const MerchantPackages = (props) => {
                                                         <div
                                                             className={
                                                                 item.status == 'delivered'
-                                                                    ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered  '
-                                                                    : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered '
+                                                                    ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered  text-capitalize'
+                                                                    : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered text-capitalize'
                                                             }
                                                         >
                                                             {/* {returnPackageStatusContext?.map((i, ii) => {
