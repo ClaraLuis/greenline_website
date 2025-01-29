@@ -114,7 +114,7 @@ const ActionCenter = (props) => {
                                 <AccordionItemPanel>
                                     <hr className="mt-2 mb-3" />
                                     <div class="row m-0 w-100">
-                                        {isAuth([1]) && (
+                                        {isAuth([1, 63]) && (
                                             <div class="col-lg-3" style={{ marginBottom: '15px' }}>
                                                 <SelectComponent
                                                     title="Hubs"
