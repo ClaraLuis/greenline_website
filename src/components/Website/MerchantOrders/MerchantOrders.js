@@ -36,7 +36,7 @@ const MerchantOrders = (props) => {
     const cookies = new Cookies();
 
     const { setpageactive_context, orderStatusEnumContext, orderTypeContext, paymentTypeContext, isAuth, courierSheetStatusesContext, setpagetitle_context } = useContext(Contexthandlerscontext);
-    const { fetchMerchants, useQueryGQL, useLazyQueryGQL, fetchOrders, fetchCouriers, fetchGovernorates, findAllZones } = API();
+    const { fetchMerchants, useQueryGQL, useLazyQueryGQL, fetchOrders, fetchCouriers, fetchGovernorates, findAllZones, fetchHubs } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [search, setsearch] = useState('');
@@ -69,6 +69,14 @@ const MerchantOrders = (props) => {
     const findAllZonesQuery = useQueryGQL('cache-and-network', findAllZones());
 
     const fetchCouriersQuery = useQueryGQL('cache-first', fetchCouriers(), filterCouriers);
+    const [filterHubs, setfilterHubs] = useState({
+        isAsc: true,
+        limit: 20,
+        afterCursor: undefined,
+        beforeCursor: undefined,
+    });
+
+    const fetchHubsQuery = useQueryGQL('', fetchHubs(), filterHubs);
     useEffect(async () => {
         setpageactive_context('/merchantorders');
         setpagetitle_context('Merchant');
@@ -176,6 +184,25 @@ const MerchantOrders = (props) => {
                                     <AccordionItemPanel>
                                         <hr className="mt-2 mb-3" />
                                         <div class="row m-0 w-100">
+                                            {isAuth([1, 63]) && (
+                                                <div class="col-lg-3" style={{ marginBottom: '15px' }}>
+                                                    <SelectComponent
+                                                        title="Hubs"
+                                                        filter={filterHubs}
+                                                        setfilter={setfilterHubs}
+                                                        options={fetchHubsQuery}
+                                                        attr="paginateHubs"
+                                                        label={'name'}
+                                                        value={'id'}
+                                                        payload={filterorders}
+                                                        payloadAttr={'hubId'}
+                                                        onClick={(option) => {
+                                                            setfilterorders({ ...filterorders, hubId: option?.id });
+                                                        }}
+                                                    />
+                                                </div>
+                                            )}
+
                                             {isAuth([1]) && (
                                                 <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
                                                     <MultiSelect

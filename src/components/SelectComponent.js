@@ -64,11 +64,13 @@ const SelectComponent = (props) => {
     // }, [props?.payload, data]);
     useEffect(() => {
         if (props?.payload && props?.payloadAttr) {
+            var matchingItem = undefined;
             data?.map((item, index) => {
                 if (item[props?.value] == props?.payload[props?.payloadAttr]) {
-                    setPlaceholder(item[props?.label]);
+                    matchingItem = item[props?.label];
                 }
             });
+            setPlaceholder(matchingItem ? matchingItem : props?.removeAll ? '' : 'All');
         }
     }, [props?.payload, data]);
 
