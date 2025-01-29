@@ -12,7 +12,7 @@ import Cookies from 'universal-cookie';
 import { Modal } from 'react-bootstrap';
 import API from '../../../API/API.js';
 
-import { FaLayerGroup } from 'react-icons/fa';
+import { FaLayerGroup, FaShopify } from 'react-icons/fa';
 import { IoMdClose, IoMdTime } from 'react-icons/io';
 import { MdClose, MdOutlineAccountCircle, MdOutlineCallMade, MdOutlineCallReceived, MdOutlineEditLocationAlt, MdOutlineInventory2, MdOutlineLocationOn } from 'react-icons/md';
 
@@ -575,10 +575,18 @@ const OrderInfo = (props) => {
                                                 )}
                                             </div>
                                             <div className="col-lg-4">
-                                                <div class="row m-0 w-100 d-flex align-items-center">
-                                                    <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
-                                                        # {chosenOrderContext?.id}
-                                                    </span>{' '}
+                                                <div style={{ fontSize: '12px', color: 'grey' }} class="row m-0 w-100 d-flex align-items-center">
+                                                    <div class="col-lg-12 p-0">
+                                                        <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
+                                                            # {chosenOrderContext?.id}
+                                                        </span>
+                                                    </div>
+                                                    {chosenOrderContext?.shopifyName && (
+                                                        <div class="col-lg-12 p-0">
+                                                            <FaShopify class="mt-1 mr-1" />
+                                                            {chosenOrderContext?.shopifyName}
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </div>
                                             <div className="col-lg-8 d-flex justify-content-end align-items-center">
@@ -1218,6 +1226,9 @@ const OrderInfo = (props) => {
                                                         >
                                                             <MdOutlineEditLocationAlt />
                                                         </div>
+                                                    </div>
+                                                    <div className="col-lg-12 p-0 mb-1 d-flex align-items-center">
+                                                        <span style={{ fontWeight: 400, fontSize: '13px' }}>{chosenOrderContext?.merchantCustomer?.customer?.phone}</span>
                                                     </div>
                                                     <div className="col-lg-12 p-0 mb-1 d-flex align-items-center">
                                                         <MdOutlineLocationOn className="mr-1" />

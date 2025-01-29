@@ -1440,6 +1440,7 @@ const API = () => {
                 type
                 createdAt
                 shippingPrice
+                shopifyName
                 paidToMerchant
                 merchant {
                     id
