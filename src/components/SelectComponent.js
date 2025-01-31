@@ -55,13 +55,6 @@ const SelectComponent = (props) => {
         return () => searchMenuRef.current?.removeEventListener('scroll', handleScroll);
     }, [props]);
 
-    // Update placeholder on payload change
-    // useEffect(() => {
-    //     if (props?.payload) {
-    //         const matchingItem = filteredData.find((item) => item[props?.value] === props?.payload[props?.payloadAttr]);
-    //         setPlaceholder(matchingItem ? matchingItem[props?.label] : props?.removeAll ? '' : 'All');
-    //     }
-    // }, [props?.payload, data]);
     useEffect(() => {
         if (props?.payload && props?.payloadAttr) {
             var matchingItem = undefined;
@@ -74,7 +67,6 @@ const SelectComponent = (props) => {
         }
     }, [props?.payload, data]);
 
-    // Handle search input
     const handleInputChange = (event) => {
         const value = event.target.value;
         setSearch(value);
@@ -85,8 +77,6 @@ const SelectComponent = (props) => {
             setFilteredData(data);
         }
     };
-
-    // Debounce search filter update
     useEffect(() => {
         const timer = setTimeout(() => {
             if (props?.setfilter) {
@@ -100,14 +90,12 @@ const SelectComponent = (props) => {
     }, [search, props]);
 
     useEffect(() => {
-        // Disable body scroll when the menu is open
         if (showMenu) {
             document.body.style.overflow = 'hidden';
         } else {
             document.body.style.overflow = 'auto';
         }
 
-        // Cleanup to restore scroll when component unmounts
         return () => {
             document.body.style.overflow = 'auto';
         };

@@ -665,6 +665,9 @@ const API = () => {
                         user {
                             name
                         }
+                        courier {
+                            name
+                        }
                     }
                     cursor
                 }
@@ -750,7 +753,7 @@ const API = () => {
                             id
                             name
                         }
-                        failsCount
+                        failsAndAssigns
                         returnPackage {
                             id
                             sku
@@ -873,7 +876,7 @@ const API = () => {
                             id
                             name
                         }
-                        failsCount
+                        failsAndAssigns
                         returnPackage {
                             id
                             sku
@@ -1453,7 +1456,7 @@ const API = () => {
                     buildingNumber
                     apartmentFloor
                 }
-                failsCount
+                failsAndAssigns
                 courier {
                     id
                     name

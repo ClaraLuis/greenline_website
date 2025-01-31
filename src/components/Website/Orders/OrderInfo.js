@@ -243,18 +243,18 @@ const OrderInfo = (props) => {
     };
     const [requestReturnPayload, setrequestReturnPayload] = useState({
         orderId: '',
-        orderDate: '',
+        orderDate: new Date().toISOString().split('T')[0],
         returnAmount: '',
         freeShipping: true,
         originalPrice: true,
     });
 
     const [requestOrderReturnMutation] = useMutationGQL(requestOrderReturn(), {
-        orderId: queryParameters.get('orderId'),
+        orderId: parseInt(queryParameters.get('orderId')),
         orderDate: requestReturnPayload?.orderDate,
         returnAmount: requestReturnPayload?.originalPrice ? undefined : requestReturnPayload?.returnAmount,
         freeShipping: requestReturnPayload?.freeShipping == 0 ? false : true,
-        merchantId: isAuth([1]) ? requestReturnPayload?.item?.merchant?.id : undefined,
+        merchantId: isAuth([1]) ? requestReturnPayload?.chosenOrderContext?.merchant?.id : undefined,
     });
     const fetchOrder = async () => {
         if (queryParameters.get('orderId')) {
@@ -552,7 +552,7 @@ const OrderInfo = (props) => {
                                                         class={generalstyles.roundbutton + ' allcentered mx-1'}
                                                         onClick={() => {
                                                             if (chosenOrderContext?.status == 'delivered' || chosenOrderContext?.status == 'partiallyDelivered') {
-                                                                setrequestReturnPayload({ ...requestReturnPayload, chosenOrderContext });
+                                                                setrequestReturnPayload({ ...requestReturnPayload, chosenOrderContext, orderId: chosenOrderContext.id });
                                                                 setreturnOrderModal(true);
                                                             } else {
                                                                 NotificationManager.warning('Order is not yet delivered', 'Warning!');
@@ -632,9 +632,14 @@ const OrderInfo = (props) => {
                                                     <div style={{ background: 'var(--primary)', color: 'white' }} className={' wordbreak rounded-pill font-weight-600 allcentered mx-1 '}>
                                                         {chosenOrderContext?.paidToMerchant ? 'Paid' : 'Not Paid'}
                                                     </div>
-                                                    {chosenOrderContext?.failsCount > 0 && (
+                                                    {chosenOrderContext?.failsAndAssigns?.fails > 0 && (
                                                         <div style={{ background: 'var(--danger)', color: 'white' }} className={' wordbreak rounded-pill font-weight-600 allcentered mx-1 '}>
-                                                            Failed Attempts {chosenOrderContext?.failsCount}
+                                                            Failed Attempts {chosenOrderContext?.failsAndAssigns?.fails}
+                                                        </div>
+                                                    )}
+                                                    {chosenOrderContext?.failsAndAssigns?.assigns > 0 && (
+                                                        <div style={{ background: 'var(--danger)', color: 'white' }} className={' wordbreak rounded-pill font-weight-600 allcentered mx-1 '}>
+                                                            Failed Trials {chosenOrderContext?.failsAndAssigns?.assigns}
                                                         </div>
                                                     )}
                                                 </div>
@@ -2320,14 +2325,14 @@ const OrderInfo = (props) => {
 
                                 try {
                                     const data = await requestOrderReturnMutation();
-                                    if (data?.equestOrderReturn?.success == true) {
+                                    if (data?.requestOrderReturn?.success == true) {
                                         setTimeout(() => {
                                             findOneOrder();
                                             NotificationManager.success('Request Return submmited', 'success!');
                                             setreturnOrderModal(false);
                                         }, 1000);
                                     } else {
-                                        NotificationManager.warning(data?.equestOrderReturn?.message, 'Warning!');
+                                        NotificationManager.warning(data?.requestOrderReturn?.message, 'Warning!');
                                     }
                                 } catch (error) {
                                     let errorMessage = 'An unexpected error occurred';
