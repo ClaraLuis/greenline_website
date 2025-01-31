@@ -66,7 +66,7 @@ const AddSheetNew = (props) => {
                 : window.location.pathname == '/fulfilled'
                 ? 'dispatched'
                 : window.location.pathname == '/sortfacilities'
-                ? 'transferred'
+                ? 'transferring'
                 : 'arrivedAtHub',
         ids: sheetpayload?.orderIds,
         toHubId: sheetpayload?.toHubId,

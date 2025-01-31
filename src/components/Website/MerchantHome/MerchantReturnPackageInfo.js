@@ -207,6 +207,13 @@ const MerchantReturnPackageInfo = (props) => {
                                                     <TimelineContent style={{ fontWeight: 600, color: 'black', textTransform: 'capitalize' }}>
                                                         {historyItem?.status.split(/(?=[A-Z])/).join(' ')} <br />
                                                         <span style={{ fontWeight: 500 }}>{historyItem?.user?.name}</span>
+                                                        {historyItem?.courier?.name && (
+                                                            <>
+                                                                {' '}
+                                                                <br />
+                                                                <span style={{ fontWeight: 400 }}>{historyItem?.courier?.name}</span>
+                                                            </>
+                                                        )}
                                                     </TimelineContent>
                                                 </TimelineItem>
                                             );

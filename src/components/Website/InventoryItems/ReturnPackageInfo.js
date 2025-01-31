@@ -246,6 +246,13 @@ const ReturnPackageInfo = (props) => {
                                                     </TimelineSeparator>
                                                     <TimelineContent style={{ fontWeight: 600, color: 'black', textTransform: 'capitalize' }}>
                                                         {historyItem?.status.split(/(?=[A-Z])/).join(' ')}{' '}
+                                                        {historyItem?.courier?.name && (
+                                                            <>
+                                                                {' '}
+                                                                <br />
+                                                                <span style={{ fontWeight: 400 }}>{historyItem?.courier?.name}</span>
+                                                            </>
+                                                        )}
                                                     </TimelineContent>
                                                 </TimelineItem>
                                             );

@@ -366,8 +366,8 @@ const FinanceTransactions = (props) => {
                                 <Pagination
                                     beforeCursor={fetchAllTransactionsQuery?.data?.paginateFinancialTransaction?.cursor?.beforeCursor}
                                     afterCursor={fetchAllTransactionsQuery?.data?.paginateFinancialTransaction?.cursor?.afterCursor}
-                                    filter={filterAllFinancialAccountsObj}
-                                    setfilter={setfilterAllFinancialAccountsObj}
+                                    filter={filterTransactionsObj}
+                                    setfilter={setfilterTransactionsObj}
                                 />
                             </div>
                             <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
