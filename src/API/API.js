@@ -2341,6 +2341,7 @@ const API = () => {
                         amountCollected
                         orderId
                         order {
+                            failsAndAssigns
                             previousOrderId
                             previousOrder {
                                 id

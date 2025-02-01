@@ -498,25 +498,39 @@ const CourierSheet = (props) => {
                                                                 >
                                                                     {item?.order?.type?.split(/(?=[A-Z])/).join(' ')}
                                                                 </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-12 p-0 d-flex justify-content-start mb-1">
+                                                            <div className="row m-0 w-100 d-flex align-items-center justify-content-start">
                                                                 <div
                                                                     onClick={(e) => {
                                                                         e.stopPropagation();
-
-                                                                        setstatuspayload({
-                                                                            step: 0,
-                                                                            orderid: item.id,
-                                                                            status: '',
-                                                                            type: item?.order?.type,
-                                                                            order: item?.order,
-                                                                            previousOrder: sheetOrders?.filter((ii) => ii.orderId == item?.order?.previousOrderId)[0]?.order,
-                                                                            fullDelivery: true,
-                                                                            fullReturn: true,
-                                                                            returnStatus: 'returned',
-                                                                        });
-                                                                        if (tempsheetpayload?.status == 'financeAccepted' || tempsheetpayload?.status == 'adminAccepted') {
-                                                                            return;
+                                                                        if (
+                                                                            tempsheetpayload?.orderStatus == 'assignedToCourier' ||
+                                                                            tempsheetpayload?.orderStatus == 'delivered' ||
+                                                                            tempsheetpayload?.orderStatus == 'partiallyDelivered' ||
+                                                                            tempsheetpayload?.orderStatus == 'returned' ||
+                                                                            tempsheetpayload?.orderStatus == 'partiallyReturned' ||
+                                                                            tempsheetpayload?.orderStatus == 'postponed' ||
+                                                                            tempsheetpayload?.orderStatus == 'cancelled' ||
+                                                                            tempsheetpayload?.orderStatus == 'failedToDeliver'
+                                                                        ) {
+                                                                            setstatuspayload({
+                                                                                step: 0,
+                                                                                orderid: item.id,
+                                                                                status: '',
+                                                                                type: item?.order?.type,
+                                                                                order: item?.order,
+                                                                                previousOrder: sheetOrders?.filter((ii) => ii.orderId == item?.order?.previousOrderId)[0]?.order,
+                                                                                fullDelivery: true,
+                                                                                fullReturn: true,
+                                                                                returnStatus: 'returned',
+                                                                            });
+                                                                            if (tempsheetpayload?.status == 'financeAccepted' || tempsheetpayload?.status == 'adminAccepted') {
+                                                                                return;
+                                                                            }
+                                                                            setchangestatusmodal(true);
                                                                         }
-                                                                        setchangestatusmodal(true);
                                                                     }}
                                                                     style={{ cursor: 'pointer', marginInlineEnd: '5px' }}
                                                                     className={
@@ -532,6 +546,22 @@ const CourierSheet = (props) => {
                                                                 >
                                                                     <span>{tempsheetpayload?.orderStatus?.split(/(?=[A-Z])/).join(' ')}</span>
                                                                 </div>
+                                                                {item?.order?.failsAndAssigns?.fails > 0 && (
+                                                                    <div
+                                                                        style={{ background: 'var(--danger)', color: 'white' }}
+                                                                        className={' wordbreak rounded-pill font-weight-600 allcentered mr-1 '}
+                                                                    >
+                                                                        Failed Attempts {item?.order?.failsAndAssigns?.fails}
+                                                                    </div>
+                                                                )}
+                                                                {item?.order?.failsAndAssigns?.assigns > 0 && (
+                                                                    <div
+                                                                        style={{ background: 'var(--danger)', color: 'white' }}
+                                                                        className={' wordbreak rounded-pill font-weight-600 allcentered mr-1 '}
+                                                                    >
+                                                                        Failed Trials {item?.order?.failsAndAssigns?.assigns}
+                                                                    </div>
+                                                                )}
                                                                 {item?.order?.merchant?.name}
                                                             </div>
                                                         </div>
@@ -767,25 +797,11 @@ const CourierSheet = (props) => {
                                                                         >
                                                                             {previousOrder?.order?.type?.split(/(?=[A-Z])/).join(' ')}
                                                                         </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-12 p-0 d-flex justify-content-start mb-1">
+                                                                    <div className="row m-0 w-100 d-flex align-items-center justify-content-start">
                                                                         <div
-                                                                            // onClick={(e) => {
-                                                                            //     e.stopPropagation();
-
-                                                                            //     setstatuspayload({
-                                                                            //         step: 0,
-                                                                            //         orderid: item.id,
-                                                                            //         status: '',
-                                                                            //         order: item?.order,
-                                                                            //         previousOrder: sheetOrders?.filter(
-                                                                            //             (ii) => ii.orderId == item?.order?.previousOrderId,
-                                                                            //         )[0]?.order,
-                                                                            //         fullDelivery: true,
-                                                                            //         fullReturn: true,
-                                                                            //         returnStatus: 'returned',
-                                                                            //     });
-
-                                                                            //     setchangestatusmodal(true);
-                                                                            // }}
                                                                             style={{ cursor: 'pointer', marginInlineEnd: '5px' }}
                                                                             className={
                                                                                 tempsheetpayloadPreviousOrder?.orderStatus == 'delivered' ||
@@ -801,6 +817,22 @@ const CourierSheet = (props) => {
                                                                         >
                                                                             <span>{tempsheetpayloadPreviousOrder?.orderStatus?.split(/(?=[A-Z])/).join(' ')}</span>
                                                                         </div>
+                                                                        {previousOrder?.order?.failsAndAssigns?.fails > 0 && (
+                                                                            <div
+                                                                                style={{ background: 'var(--danger)', color: 'white' }}
+                                                                                className={' wordbreak rounded-pill font-weight-600 allcentered mr-1 '}
+                                                                            >
+                                                                                Failed Attempts {previousOrder?.order?.failsAndAssigns?.fails}
+                                                                            </div>
+                                                                        )}
+                                                                        {previousOrder?.order?.failsAndAssigns?.assigns > 0 && (
+                                                                            <div
+                                                                                style={{ background: 'var(--danger)', color: 'white' }}
+                                                                                className={' wordbreak rounded-pill font-weight-600 allcentered mr-1 '}
+                                                                            >
+                                                                                Failed Trials {previousOrder?.order?.failsAndAssigns?.assigns}
+                                                                            </div>
+                                                                        )}
                                                                         {item?.order?.merchant?.name}
                                                                     </div>
                                                                 </div>
