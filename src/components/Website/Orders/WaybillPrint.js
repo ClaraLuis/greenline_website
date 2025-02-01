@@ -59,7 +59,8 @@ const WaybillPrint = ({ waybills }) => {
     const printToPDF = async () => {
         // Create a new PDF document with A4 size
 
-        const pdf = new jsPDF('l', 'pc', 'a5'); // 'p' for portrait orientation, 'mm' for units, 'a4' for A4 size
+        // const pdf = new jsPDF('l', 'pc', 'a5'); // 'p' for portrait orientation, 'mm' for units, 'a4' for A4 size
+        const pdf = new jsPDF('l', 'mm', 'a5');
 
         const pdfWidth = pdf.internal.pageSize.getWidth();
 
@@ -85,10 +86,13 @@ const WaybillPrint = ({ waybills }) => {
             });
 
             const imgData = canvas.toDataURL('image/png');
+            const imgWidth = pdfWidth;
+            const imgHeight = (canvas.height * pdfWidth) / canvas.width;
+            pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
 
             // Add the image to the PDF, filling the A4 page size
 
-            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            // pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
 
             // Add a new page if there are more waybills
 
@@ -135,7 +139,7 @@ const WaybillPrint = ({ waybills }) => {
                 className="col-lg-12"
             >
                 {currentWaybill && (
-                    <div ref={componentRef} style={{ height: '100%' }}>
+                    <div ref={componentRef} style={{ width: '210mm', height: '148mm', overflow: 'hidden' }}>
                         <Waybill order={currentWaybill} />
                     </div>
                 )}
