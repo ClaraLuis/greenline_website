@@ -505,7 +505,7 @@ const CourierSheet = (props) => {
                                                                 <div
                                                                     onClick={(e) => {
                                                                         e.stopPropagation();
-                                                                        console.log(`ORDER STATUS: "${tempsheetpayload?.orderStatus}"`);
+
                                                                         if (
                                                                             tempsheetpayload?.orderStatus == 'assignedToCourier' ||
                                                                             tempsheetpayload?.orderStatus == 'delivered' ||
@@ -516,7 +516,6 @@ const CourierSheet = (props) => {
                                                                             tempsheetpayload?.orderStatus == 'cancelled' ||
                                                                             tempsheetpayload?.orderStatus == 'failedToDeliver'
                                                                         ) {
-                                                                            console.log('entered 3adi');
                                                                             setstatuspayload({
                                                                                 step: 0,
                                                                                 orderid: item.id,
