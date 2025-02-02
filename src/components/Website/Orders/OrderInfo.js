@@ -634,12 +634,12 @@ const OrderInfo = (props) => {
                                                     </div>
                                                     {chosenOrderContext?.failsAndAssigns?.fails > 0 && (
                                                         <div style={{ background: 'var(--danger)', color: 'white' }} className={' wordbreak rounded-pill font-weight-600 allcentered mx-1 '}>
-                                                            Failed Attempts {chosenOrderContext?.failsAndAssigns?.fails}
+                                                            {chosenOrderContext?.failsAndAssigns?.fails} Failed Attempts
                                                         </div>
                                                     )}
                                                     {chosenOrderContext?.failsAndAssigns?.assigns > 0 && (
                                                         <div style={{ background: 'var(--danger)', color: 'white' }} className={' wordbreak rounded-pill font-weight-600 allcentered mx-1 '}>
-                                                            Failed Trials {chosenOrderContext?.failsAndAssigns?.assigns}
+                                                            {chosenOrderContext?.failsAndAssigns?.assigns} Trials
                                                         </div>
                                                     )}
                                                 </div>

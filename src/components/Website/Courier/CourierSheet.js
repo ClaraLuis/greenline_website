@@ -505,6 +505,7 @@ const CourierSheet = (props) => {
                                                                 <div
                                                                     onClick={(e) => {
                                                                         e.stopPropagation();
+                                                                        console.log(`ORDER STATUS: "${tempsheetpayload?.orderStatus}"`);
                                                                         if (
                                                                             tempsheetpayload?.orderStatus == 'assignedToCourier' ||
                                                                             tempsheetpayload?.orderStatus == 'delivered' ||
@@ -515,6 +516,7 @@ const CourierSheet = (props) => {
                                                                             tempsheetpayload?.orderStatus == 'cancelled' ||
                                                                             tempsheetpayload?.orderStatus == 'failedToDeliver'
                                                                         ) {
+                                                                            console.log('entered 3adi');
                                                                             setstatuspayload({
                                                                                 step: 0,
                                                                                 orderid: item.id,
@@ -551,15 +553,7 @@ const CourierSheet = (props) => {
                                                                         style={{ background: 'var(--danger)', color: 'white' }}
                                                                         className={' wordbreak rounded-pill font-weight-600 allcentered mr-1 '}
                                                                     >
-                                                                        Failed Attempts {item?.order?.failsAndAssigns?.fails}
-                                                                    </div>
-                                                                )}
-                                                                {item?.order?.failsAndAssigns?.assigns > 0 && (
-                                                                    <div
-                                                                        style={{ background: 'var(--danger)', color: 'white' }}
-                                                                        className={' wordbreak rounded-pill font-weight-600 allcentered mr-1 '}
-                                                                    >
-                                                                        Failed Trials {item?.order?.failsAndAssigns?.assigns}
+                                                                        {item?.order?.failsAndAssigns?.fails} Failed Attempts
                                                                     </div>
                                                                 )}
                                                                 {item?.order?.merchant?.name}
@@ -822,15 +816,7 @@ const CourierSheet = (props) => {
                                                                                 style={{ background: 'var(--danger)', color: 'white' }}
                                                                                 className={' wordbreak rounded-pill font-weight-600 allcentered mr-1 '}
                                                                             >
-                                                                                Failed Attempts {previousOrder?.order?.failsAndAssigns?.fails}
-                                                                            </div>
-                                                                        )}
-                                                                        {previousOrder?.order?.failsAndAssigns?.assigns > 0 && (
-                                                                            <div
-                                                                                style={{ background: 'var(--danger)', color: 'white' }}
-                                                                                className={' wordbreak rounded-pill font-weight-600 allcentered mr-1 '}
-                                                                            >
-                                                                                Failed Trials {previousOrder?.order?.failsAndAssigns?.assigns}
+                                                                                {previousOrder?.order?.failsAndAssigns?.fails} Failed Attempts
                                                                             </div>
                                                                         )}
                                                                         {item?.order?.merchant?.name}
