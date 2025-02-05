@@ -205,30 +205,6 @@ export const Contexthandlerscontext_provider = (props) => {
                         permissionpage: [1],
                         show: isAuth([1, 54]),
                     },
-                    {
-                        name: 'Receive At Sort Facilities',
-                        isselected: false,
-                        icon: (
-                            <i class={'allcentered'}>
-                                <LuPackageOpen size={18} />
-                            </i>
-                        ),
-                        path: '/dispatched',
-                        permissionpage: [1],
-                        show: isAuth([1, 53, 36]),
-                    },
-                    {
-                        name: 'Transfer',
-                        isselected: false,
-                        icon: (
-                            <i class={'allcentered'}>
-                                <LuPackageOpen size={18} />
-                            </i>
-                        ),
-                        path: '/sortfacilities',
-                        permissionpage: [1],
-                        show: isAuth([1]),
-                    },
                 ],
             },
             {
@@ -419,6 +395,30 @@ export const Contexthandlerscontext_provider = (props) => {
                         path: '/arrivedathub',
                         permissionpage: [1],
                         show: isAuth([1, 53, 36, 65, 66, 67]),
+                    },
+                    {
+                        name: 'Receive At Sort Facilities',
+                        isselected: false,
+                        icon: (
+                            <i class={'allcentered'}>
+                                <LuPackageOpen size={18} />
+                            </i>
+                        ),
+                        path: '/dispatched',
+                        permissionpage: [1],
+                        show: isAuth([1, 53, 36]),
+                    },
+                    {
+                        name: 'Transfer',
+                        isselected: false,
+                        icon: (
+                            <i class={'allcentered'}>
+                                <LuPackageOpen size={18} />
+                            </i>
+                        ),
+                        path: '/sortfacilities',
+                        permissionpage: [1],
+                        show: isAuth([1]),
                     },
                     {
                         name: 'Action Center',

@@ -126,6 +126,9 @@ const TransactionsTable = (props) => {
                                             class={generalstyles.card + ' p-2 px-3 row m-0 w-100 allcentered'}
                                         >
                                             <div className="col-lg-3 p-0">
+                                                <span style={{ fontWeight: 500, fontSize: '12px', color: 'grey' }} class=" d-flex align-items-center">
+                                                    {/* <FaMoneyBill class="mr-1" /> */}#{item?.id}
+                                                </span>
                                                 <span style={{ fontWeight: 700, fontSize: '16px' }} class=" d-flex align-items-center">
                                                     {/* <FaMoneyBill class="mr-1" /> */}
                                                     {item?.amount} {item?.currency}

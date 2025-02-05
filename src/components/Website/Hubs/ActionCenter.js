@@ -228,6 +228,7 @@ const ActionCenter = (props) => {
                                                             try {
                                                                 const { data } = await updateupdateOrderIdsStatusMutation();
                                                                 if (data?.updateOrdersStatus?.success == true) {
+                                                                    paginateUnresolvedOrdersQuery.refetch();
                                                                     NotificationManager.success('Orders status updated successfully', 'Success');
                                                                 } else {
                                                                     NotificationManager.warning(data?.updateOrdersStatus?.message, 'Warning!');
