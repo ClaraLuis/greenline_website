@@ -760,17 +760,20 @@ const OrderInfo = (props) => {
                                                             </div>
                                                         </div>
                                                         <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
-                                                            <div
-                                                                style={{
-                                                                    color: 'white',
-                                                                    borderRadius: '0.25rem',
-                                                                    fontSize: '11px',
-                                                                    background: 'var(--primary)',
-                                                                }}
-                                                                class="allcentered  p-1 px-2"
-                                                            >
-                                                                {chosenOrderContext?.returnPackage?.count}
-                                                            </div>
+                                                            {chosenOrderContext?.returnPackage?.count && (
+                                                                <div
+                                                                    style={{
+                                                                        color: 'white',
+                                                                        borderRadius: '0.25rem',
+                                                                        fontSize: '11px',
+                                                                        background: 'var(--primary)',
+                                                                    }}
+                                                                    class="allcentered  p-1 px-2"
+                                                                >
+                                                                    {chosenOrderContext?.returnPackage?.count}
+                                                                </div>
+                                                            )}
+
                                                             <div
                                                                 style={{
                                                                     color: 'white',
@@ -2325,15 +2328,10 @@ const OrderInfo = (props) => {
 
                                 try {
                                     const data = await requestOrderReturnMutation();
-                                    if (data?.requestOrderReturn?.success == true) {
-                                        setTimeout(() => {
-                                            findOneOrder();
-                                            NotificationManager.success('Request Return submmited', 'success!');
-                                            setreturnOrderModal(false);
-                                        }, 1000);
-                                    } else {
-                                        NotificationManager.warning(data?.requestOrderReturn?.message, 'Warning!');
-                                    }
+
+                                    fetchOrder();
+                                    NotificationManager.success('Request Return submmited', 'success!');
+                                    setreturnOrderModal(false);
                                 } catch (error) {
                                     let errorMessage = 'An unexpected error occurred';
                                     if (error.graphQLErrors && error.graphQLErrors.length > 0) {

@@ -529,7 +529,7 @@ const MerchantOrders = (props) => {
                     </div>
                 </div>
 
-                {isAuth([1, 52, 14]) && (
+                {isAuth([1, 52, 14, 63]) && (
                     <div class={' row m-0 w-100'}>
                         <div class="col-lg-12 px-3">
                             <div class={generalstyles.card + ' row m-0 w-100'}>
