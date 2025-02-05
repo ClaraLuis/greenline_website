@@ -57,36 +57,36 @@ const ReturnPackageInfo = (props) => {
 
         inventory.forEach((item) => {
             const box = item.box;
-            const ballot = box.ballot;
-            const rack = ballot.rack;
+            const pallet = box.pallet;
+            const rack = pallet.rack;
 
             const rackId = rack.id;
             if (!racks[rackId]) {
                 racks[rackId] = {
                     rack,
-                    ballots: {},
+                    pallets: {},
                 };
             }
 
-            const ballotId = ballot.id;
-            const ballotLevel = ballot.level;
-            if (!racks[rackId].ballots[ballotLevel]) {
-                racks[rackId].ballots[ballotLevel] = {};
+            const palletId = pallet.id;
+            const palletLevel = pallet.level;
+            if (!racks[rackId].pallets[palletLevel]) {
+                racks[rackId].pallets[palletLevel] = {};
             }
 
-            if (!racks[rackId].ballots[ballotLevel][ballotId]) {
-                racks[rackId].ballots[ballotLevel][ballotId] = {
-                    ballot,
+            if (!racks[rackId].pallets[palletLevel][palletId]) {
+                racks[rackId].pallets[palletLevel][palletId] = {
+                    pallet,
                     boxes: [],
                 };
             }
 
-            racks[rackId].ballots[ballotLevel][ballotId].boxes.push({ box: box, count: item.count });
+            racks[rackId].pallets[palletLevel][palletId].boxes.push({ box: box, count: item.count });
         });
 
-        // Sort ballots within each rack by level
+        // Sort pallets within each rack by level
         Object.values(racks).forEach((rack) => {
-            rack.ballots = Object.fromEntries(Object.entries(rack.ballots).sort(([levelA], [levelB]) => levelA - levelB));
+            rack.pallets = Object.fromEntries(Object.entries(rack.pallets).sort(([levelA], [levelB]) => levelA - levelB));
         });
 
         return racks;

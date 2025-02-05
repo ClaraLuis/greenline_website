@@ -54,7 +54,7 @@ const InventoryItems = (props) => {
     const [importItemPayload, setimportItemPayload] = useState({
         itemVariantId: 'item.e',
         ownedByOneMerchant: true,
-        ballotId: '',
+        palletId: '',
         inventoryId: '',
         boxName: '',
         count: 0,
@@ -67,8 +67,8 @@ const InventoryItems = (props) => {
         location: { long: 0, lat: 0 },
         numberOfRacks: 0,
         rackLevel: 0,
-        ballotPerRack: 0,
-        boxPerBallot: 0,
+        palletPerRack: 0,
+        boxPerPallet: 0,
         inventoryPrices: [],
     });
     const [inventoryPricePayload, setinventoryPricePayload] = useState({
@@ -97,8 +97,8 @@ const InventoryItems = (props) => {
         location: { long: 0.0, lat: 0.0 },
         numberOfRacks: parseInt(inventoryPayload?.numberOfRacks),
         rackLevel: parseInt(inventoryPayload?.rackLevel),
-        ballotPerRack: parseInt(inventoryPayload?.ballotPerRack),
-        boxPerBallot: parseInt(inventoryPayload?.boxPerBallot),
+        palletPerRack: parseInt(inventoryPayload?.palletPerRack),
+        boxPerPallet: parseInt(inventoryPayload?.boxPerPallet),
     });
 
     const [importMutation] = useMutationGQL(importItem(), {
@@ -361,7 +361,7 @@ const InventoryItems = (props) => {
                                             setimportItemPayload({
                                                 itemVariantId: '',
                                                 ownedByOneMerchant: true,
-                                                ballotId: '',
+                                                palletId: '',
                                                 inventoryId: '',
                                                 boxName: '',
                                                 count: 0,
@@ -672,13 +672,13 @@ const InventoryItems = (props) => {
                         <div class="col-lg-6">
                             <div class="row m-0 w-100  ">
                                 <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                    <label class={formstyles.form__label}>Ballot Per Rack</label>
+                                    <label class={formstyles.form__label}>Pallet Per Rack</label>
                                     <input
                                         type={'number'}
                                         class={formstyles.form__field}
-                                        value={inventoryPayload.ballotPerRack}
+                                        value={inventoryPayload.palletPerRack}
                                         onChange={(event) => {
-                                            setinventoryPayload({ ...inventoryPayload, ballotPerRack: event.target.value });
+                                            setinventoryPayload({ ...inventoryPayload, palletPerRack: event.target.value });
                                         }}
                                     />
                                 </div>
@@ -688,13 +688,13 @@ const InventoryItems = (props) => {
                         <div class="col-lg-6">
                             <div class="row m-0 w-100  ">
                                 <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                    <label class={formstyles.form__label}>Box Per Ballot</label>
+                                    <label class={formstyles.form__label}>Box Per Pallet</label>
                                     <input
                                         type={'number'}
                                         class={formstyles.form__field}
-                                        value={inventoryPayload.boxPerBallot}
+                                        value={inventoryPayload.boxPerPallet}
                                         onChange={(event) => {
-                                            setinventoryPayload({ ...inventoryPayload, boxPerBallot: event.target.value });
+                                            setinventoryPayload({ ...inventoryPayload, boxPerPallet: event.target.value });
                                         }}
                                     />
                                 </div>

@@ -78,10 +78,10 @@ const API = () => {
         `;
     };
 
-    const updateBallotName = () => {
+    const updatePalletName = () => {
         return gql`
-            mutation updateBallotName($input: UpdateBallotNameInput!) {
-                updateBallotName(input: $input)
+            mutation updatePalletName($input: UpdatePalletNameInput!) {
+                updatePalletName(input: $input)
             }
         `;
     };
@@ -1079,7 +1079,7 @@ const API = () => {
                                 box {
                                     id
                                     name
-                                    ballot {
+                                    pallet {
                                         id
                                         level
                                         name
@@ -1411,7 +1411,7 @@ const API = () => {
         merchant{name}
           id
           name
-          ballots {
+          pallets {
         merchant{name}
 
             rackId
@@ -1421,8 +1421,8 @@ const API = () => {
             boxes {
         merchant{name}
 
-              ballotId
-              ballot {
+              palletId
+              pallet {
                 rackId
               }
               name
@@ -1525,7 +1525,7 @@ const API = () => {
                         box {
                             id
                             name
-                            ballot {
+                            pallet {
                                 id
                                 level
                                 name
@@ -1836,7 +1836,7 @@ const API = () => {
                             box {
                                 id
                                 name
-                                ballot {
+                                pallet {
                                     id
                                     level
                                     name
@@ -2071,7 +2071,7 @@ const API = () => {
                                 box {
                                     id
                                     name
-                                    ballot {
+                                    pallet {
                                         id
                                         level
                                         name
@@ -2100,7 +2100,7 @@ const API = () => {
                     data {
                         name
                         id
-                        ballots {
+                        pallets {
                             id
                             name
                             level
@@ -2124,7 +2124,7 @@ const API = () => {
                     data {
                         id
                         merchantId
-                        ballotId
+                        palletId
                         name
                         createdAt
                         lastModified
@@ -2137,10 +2137,10 @@ const API = () => {
         `;
     };
 
-    const paginateBallots = () => {
+    const paginatePallets = () => {
         return gql`
-            query paginateBallots($input: BallotPaginationInput!) {
-                paginateBallots(input: $input) {
+            query paginatePallets($input: PalletPaginationInput!) {
+                paginatePallets(input: $input) {
                     data {
                         id
                         name
@@ -2782,7 +2782,7 @@ const API = () => {
         paginateUnresolvedOrders,
         fetchRacks,
         paginateBoxes,
-        paginateBallots,
+        paginatePallets,
         inventoryRentSummary,
         merchantPaymentsSummary,
         fetchItemHistory,
@@ -2864,7 +2864,7 @@ const API = () => {
         assignMerchantToInventory,
         removeMerchantAssignmentFromInventory,
         updateRackName,
-        updateBallotName,
+        updatePalletName,
         updateBoxName,
         addRackLevels,
         findOneMerchant,

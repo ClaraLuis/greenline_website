@@ -514,7 +514,7 @@ const CourierSheet = (props) => {
                                                                             tempsheetpayload?.orderStatus == 'partiallyReturned' ||
                                                                             tempsheetpayload?.orderStatus == 'postponed' ||
                                                                             tempsheetpayload?.orderStatus == 'cancelled' ||
-                                                                            tempsheetpayload?.orderStatus == 'failedToDeliver'
+                                                                            tempsheetpayload?.orderStatus == 'failedDeliveryAttempt'
                                                                         ) {
                                                                             setstatuspayload({
                                                                                 step: 0,
@@ -618,7 +618,8 @@ const CourierSheet = (props) => {
                                                                                 e.stopPropagation();
                                                                                 if (
                                                                                     item?.amountCollected == null &&
-                                                                                    (item.order.status !== 'postponed' || item.order.status !== 'failedDeliveryAttempt')
+                                                                                    item.order.status !== 'postponed' &&
+                                                                                    item.order.status !== 'failedDeliveryAttempt'
                                                                                 ) {
                                                                                     NotificationManager.warning(`Can not update order`, 'Warning!');
                                                                                     return;

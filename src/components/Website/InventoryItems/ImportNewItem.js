@@ -57,11 +57,11 @@ const ImportNewItem = (props) => {
     const [importNewMutation] = useMutationGQL(importNew(), {
         itemVariantId: props?.importItemPayload?.itemVariantId,
         ownedByOneMerchant: props?.importItemPayload?.ownedByOneMerchant,
-        ballotId: props?.importItemPayload?.ballotId?.length == 0 ? undefined : props?.importItemPayload?.ballotId,
+        palletId: props?.importItemPayload?.palletId?.length == 0 ? undefined : props?.importItemPayload?.palletId,
         inventoryId: props?.importItemPayload?.inventoryId,
         boxName: props?.importItemPayload?.boxName,
-        ballotName: props?.importItemPayload?.ballotName,
-        ballotLevel: parseInt(props?.importItemPayload?.ballotLevel),
+        palletName: props?.importItemPayload?.palletName,
+        palletLevel: parseInt(props?.importItemPayload?.palletLevel),
         rackId: props?.importItemPayload?.rackId,
         boxId: props?.importItemPayload?.boxId,
         count: parseInt(props?.importItemPayload?.count),
@@ -78,7 +78,7 @@ const ImportNewItem = (props) => {
             props?.setimportItemPayload({
                 itemVariantId: undefined,
                 ownedByOneMerchant: true,
-                ballotId: undefined,
+                palletId: undefined,
                 inventoryId: undefined,
                 boxName: undefined,
                 count: 0,
@@ -128,7 +128,7 @@ const ImportNewItem = (props) => {
                 props?.setimportItemPayload({
                     itemVariantId: undefined,
                     ownedByOneMerchant: true,
-                    ballotId: undefined,
+                    palletId: undefined,
                     inventoryId: undefined,
                     boxName: undefined,
                     count: 0,
@@ -152,8 +152,8 @@ const ImportNewItem = (props) => {
                                         setstep(step - 1);
                                         props?.setimportItemPayload({
                                             ...props?.importItemPayload,
-                                            ballotName: undefined,
-                                            ballotId: undefined,
+                                            palletName: undefined,
+                                            palletId: undefined,
                                             boxId: undefined,
                                             rackId: undefined,
                                             boxName: undefined,
@@ -172,7 +172,7 @@ const ImportNewItem = (props) => {
                                 props?.setimportItemPayload({
                                     itemVariantId: undefined,
                                     ownedByOneMerchant: true,
-                                    ballotId: undefined,
+                                    palletId: undefined,
                                     inventoryId: undefined,
                                     boxName: undefined,
                                     count: 0,
@@ -340,24 +340,24 @@ const ImportNewItem = (props) => {
                                         {fetchRacksQuery?.paginateRacks?.data?.map((item, index) => {
                                             // var levels = [];
                                             // var exist = false;
-                                            // var chosenballot = {};
+                                            // var chosenpallet = {};
                                             // var chosenlevelindex = null;
-                                            const levels1 = _.groupBy(item?.ballots, 'level');
-                                            var levels = _.map(levels1, (ballots, level) => {
-                                                return { level: level, ballots: ballots };
+                                            const levels1 = _.groupBy(item?.pallets, 'level');
+                                            var levels = _.map(levels1, (pallets, level) => {
+                                                return { level: level, pallets: pallets };
                                             });
-                                            // item?.ballots?.map((ballot, ballotindex) => {
-                                            //     chosenballot = ballot;
+                                            // item?.pallets?.map((pallet, palletindex) => {
+                                            //     chosenpallet = pallet;
                                             //     levels?.map((level, levelindex) => {
-                                            //         if (level?.level == ballot?.level) {
+                                            //         if (level?.level == pallet?.level) {
                                             //             exist = true;
                                             //             chosenlevelindex = levelindex;
                                             //         }
                                             //     });
                                             //     if (exist) {
-                                            //         levels[chosenlevelindex].boxes.push(chosenballot);
+                                            //         levels[chosenlevelindex].boxes.push(chosenpallet);
                                             //     } else {
-                                            //         levels.push({ level: chosenballot?.level, ballots: [chosenballot] });
+                                            //         levels.push({ level: chosenpallet?.level, pallets: [chosenpallet] });
                                             //     }
                                             // });
 
@@ -393,7 +393,7 @@ const ImportNewItem = (props) => {
                                                                         <div class="col-lg-12 p-0">
                                                                             <div class="row m-0 w-100 d-flex align-items-center">
                                                                                 Level {level?.level}:
-                                                                                {level?.ballots?.map((ballot, ballotindex) => {
+                                                                                {level?.pallets?.map((pallet, palletindex) => {
                                                                                     return (
                                                                                         <div class="col-lg-12 p-0 mt-1">
                                                                                             <div
@@ -401,12 +401,12 @@ const ImportNewItem = (props) => {
                                                                                                 class="row m-0 p-1 w-100 d-flex align-items-center"
                                                                                             >
                                                                                                 <div class="col-lg-6 p-0" style={{ fontWeight: 700 }}>
-                                                                                                    {ballot?.name}
+                                                                                                    {pallet?.name}
                                                                                                 </div>
                                                                                                 <div class="col-lg-6 p-0 d-flex justify-content-end">
                                                                                                     <div
                                                                                                         onClick={() => {
-                                                                                                            props?.setimportItemPayload({ ...props?.importItemPayload, ballotId: ballot.id });
+                                                                                                            props?.setimportItemPayload({ ...props?.importItemPayload, palletId: pallet.id });
                                                                                                             setstep(step + 1);
                                                                                                         }}
                                                                                                         class={'searchpill allcentered'}
@@ -415,7 +415,7 @@ const ImportNewItem = (props) => {
                                                                                                         <BiPlus />
                                                                                                     </div>
                                                                                                 </div>
-                                                                                                {ballot?.boxes?.map((box, boxIndex) => {
+                                                                                                {pallet?.boxes?.map((box, boxIndex) => {
                                                                                                     return (
                                                                                                         <div
                                                                                                             onClick={() => {
@@ -454,13 +454,13 @@ const ImportNewItem = (props) => {
                             <div class="col-lg-6">
                                 <div class="row m-0 w-100  ">
                                     <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                        <label class={formstyles.form__label}>Ballot Name</label>
+                                        <label class={formstyles.form__label}>Pallet Name</label>
                                         <input
                                             type={'text'}
                                             class={formstyles.form__field}
-                                            value={props?.importItemPayload.ballotName}
+                                            value={props?.importItemPayload.palletName}
                                             onChange={(event) => {
-                                                props?.setimportItemPayload({ ...props?.importItemPayload, ballotName: event.target.value });
+                                                props?.setimportItemPayload({ ...props?.importItemPayload, palletName: event.target.value });
                                             }}
                                         />
                                     </div>
@@ -468,7 +468,7 @@ const ImportNewItem = (props) => {
                             </div>
                         )}
 
-                        {(props?.importItemPayload?.ballotId || props?.importItemPayload?.rackId) && (
+                        {(props?.importItemPayload?.palletId || props?.importItemPayload?.rackId) && (
                             <div class="col-lg-6">
                                 <div class="row m-0 w-100  ">
                                     <div class={`${formstyles.form__group} ${formstyles.field}`}>
@@ -493,9 +493,9 @@ const ImportNewItem = (props) => {
                                         <input
                                             type={'number'}
                                             class={formstyles.form__field}
-                                            value={props?.importItemPayload.ballotLevel}
+                                            value={props?.importItemPayload.palletLevel}
                                             onChange={(event) => {
-                                                props?.setimportItemPayload({ ...props?.importItemPayload, ballotLevel: event.target.value });
+                                                props?.setimportItemPayload({ ...props?.importItemPayload, palletLevel: event.target.value });
                                             }}
                                         />
                                     </div>
@@ -564,16 +564,16 @@ const ImportNewItem = (props) => {
                                                 </div>
                                                 <div class="col-lg-12 p-0 mt-1">
                                                     <div class="row m-0 w-100">
-                                                        {item?.ballots?.map((ballot, ballotindex) => {
+                                                        {item?.pallets?.map((pallet, palletindex) => {
                                                             return (
                                                                 <div
                                                                     onClick={() => {
-                                                                        props?.setimportItemPayload({ ...props?.importItemPayload, ballotId: ballot.id });
+                                                                        props?.setimportItemPayload({ ...props?.importItemPayload, palletId: pallet.id });
                                                                     }}
-                                                                    class={props?.importItemPayload.ballotId == ballot.id ? 'searchpillselected' : 'searchpill'}
+                                                                    class={props?.importItemPayload.palletId == pallet.id ? 'searchpillselected' : 'searchpill'}
                                                                 >
                                                                     {' '}
-                                                                    {ballot?.name}
+                                                                    {pallet?.name}
                                                                 </div>
                                                             );
                                                         })}

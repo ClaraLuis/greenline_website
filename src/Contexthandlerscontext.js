@@ -862,7 +862,7 @@ export const Contexthandlerscontext_provider = (props) => {
         { label: 'Item', value: 'item' },
         { label: 'Order', value: 'order' },
         { label: 'Box', value: 'box' },
-        { label: 'Ballot', value: 'ballot' },
+        { label: 'Pallet', value: 'pallet' },
         { label: 'Rack', value: 'rack' },
         { label: 'Inventory', value: 'inventory' },
         { label: 'Meter', value: 'meter' },

@@ -26,7 +26,7 @@ const ItemsTable = (props) => {
     const [importItemPayload, setimportItemPayload] = useState({
         itemSku: '',
         ownedByOneMerchant: true,
-        ballotId: '',
+        palletId: '',
         inventoryId: '',
         boxName: '',
         count: 0,
@@ -131,7 +131,7 @@ const ItemsTable = (props) => {
                                                     setimportItemPayload({
                                                         itemSku: item?.orderItem?.info?.sku,
                                                         ownedByOneMerchant: true,
-                                                        ballotId: '',
+                                                        palletId: '',
                                                         inventoryId: '',
                                                         boxName: '',
                                                         count: 0,

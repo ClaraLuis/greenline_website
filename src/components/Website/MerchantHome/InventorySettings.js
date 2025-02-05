@@ -42,7 +42,7 @@ const InventorySettings = (props) => {
         useLazyQueryGQL,
         fetchRacks,
         paginateBoxes,
-        paginateBallots,
+        paginatePallets,
         removeMerchantAssignmentFromInventory,
         useMutationGQL,
         inventoryRentSummary,
@@ -60,12 +60,12 @@ const InventorySettings = (props) => {
     const [fetchRacksQuery, setfetchRacksQuery] = useState(null);
     const [fetchBoxesQuery, setfetchBoxesQuery] = useState(null);
     const [sumInventoryRent, setsumInventoryRent] = useState(null);
-    const [fetchBallotsQuery, setfetchBallotsQuery] = useState(null);
+    const [fetchPalletsQuery, setfetchPalletsQuery] = useState(null);
     const [inventoryRentSummaryData, setinventoryRentSummaryData] = useState(null);
 
     const [idsToBeRemoved, setidsToBeRemoved] = useState({
         rackIds: undefined,
-        ballotIds: undefined,
+        palletIds: undefined,
         boxIds: undefined,
     });
 
@@ -83,7 +83,7 @@ const InventorySettings = (props) => {
     const [findOneMerchantQuery] = useLazyQueryGQL(findOneMerchant());
     const [fetchRacksLazyQuery] = useLazyQueryGQL(fetchRacks());
     const [paginateBoxesLazyQuery] = useLazyQueryGQL(paginateBoxes());
-    const [paginateBallotsLazyQuery] = useLazyQueryGQL(paginateBallots());
+    const [paginatePalletsLazyQuery] = useLazyQueryGQL(paginatePallets());
     const [inventoryRentSummaryLazyQuery] = useLazyQueryGQL(inventoryRentSummary());
 
     const [createInventoryRentMutation] = useMutationGQL(createInventoryRent(), {
@@ -104,7 +104,7 @@ const InventorySettings = (props) => {
 
     const [removeMerchantAssignmentFromInventoryMutation] = useMutationGQL(removeMerchantAssignmentFromInventory(), {
         rackIds: idsToBeRemoved?.rackIds,
-        ballotIds: idsToBeRemoved?.ballotIds,
+        palletIds: idsToBeRemoved?.palletIds,
         boxIds: idsToBeRemoved?.boxIds,
     });
 
@@ -156,8 +156,8 @@ const InventorySettings = (props) => {
                         },
                     });
                     setfetchBoxesQuery(data);
-                } else if (data?.findOneMerchant?.inventoryRent?.type == 'ballot') {
-                    var { data } = await paginateBallotsLazyQuery({
+                } else if (data?.findOneMerchant?.inventoryRent?.type == 'pallet') {
+                    var { data } = await paginatePalletsLazyQuery({
                         variables: {
                             input: {
                                 limit: 50,
@@ -165,7 +165,7 @@ const InventorySettings = (props) => {
                             },
                         },
                     });
-                    setfetchBallotsQuery(data);
+                    setfetchPalletsQuery(data);
                 }
             }
         } catch (e) {
@@ -739,7 +739,7 @@ const InventorySettings = (props) => {
                             </div>
                         )}
                     </div>
-                    {(inventorySettings?.type == 'rack' || inventorySettings?.type == 'box' || inventorySettings?.type == 'ballot') && (
+                    {(inventorySettings?.type == 'rack' || inventorySettings?.type == 'box' || inventorySettings?.type == 'pallet') && (
                         <div class="col-lg-12 p-0 d-flex align-items-center justify-content-end">
                             <button
                                 style={{ height: '35px' }}
@@ -873,31 +873,31 @@ const InventorySettings = (props) => {
                         </div>
                     )}
 
-                    {inventorySettings?.type == 'ballot' && (
+                    {inventorySettings?.type == 'pallet' && (
                         <div className="col-lg-12 p-0">
-                            {fetchBallotsQuery?.loading && (
+                            {fetchPalletsQuery?.loading && (
                                 <div style={{ height: '70vh' }} className="row w-100 allcentered m-0">
                                     <CircularProgress color="var(--primary)" width="60px" height="60px" duration="1s" />
                                 </div>
                             )}
-                            {fetchBallotsQuery?.paginateBallots != undefined && (
+                            {fetchPalletsQuery?.paginatePallets != undefined && (
                                 <>
-                                    {fetchBallotsQuery?.paginateBallots?.data?.length === 0 && (
+                                    {fetchPalletsQuery?.paginatePallets?.data?.length === 0 && (
                                         <div style={{ height: '70vh' }} className="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
                                             <div className="row m-0 w-100">
                                                 <FaLayerGroup size={40} className=" col-lg-12" />
                                                 <div className="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
-                                                    No Ballots
+                                                    No Pallets
                                                 </div>
                                             </div>
                                         </div>
                                     )}
                                     <div className="row w-100 allcentered m-0">
-                                        {fetchBallotsQuery?.paginateBallots?.data?.map((item) => {
-                                            const isSelected = idsToBeRemoved.ballotIds.includes(item.id);
+                                        {fetchPalletsQuery?.paginatePallets?.data?.map((item) => {
+                                            const isSelected = idsToBeRemoved.palletIds.includes(item.id);
 
                                             return (
-                                                <div key={item.id} className="col-lg-6 mb-2" onClick={() => toggleSelection('ballot', item.id)}>
+                                                <div key={item.id} className="col-lg-6 mb-2" onClick={() => toggleSelection('pallet', item.id)}>
                                                     <div
                                                         className="row m-0 w-100 p-2"
                                                         style={{

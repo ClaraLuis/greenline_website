@@ -207,36 +207,36 @@ const OrderInfo = (props) => {
 
         inventory?.forEach((item) => {
             const box = item.box;
-            const ballot = box.ballot;
-            const rack = ballot.rack;
+            const pallet = box.pallet;
+            const rack = pallet.rack;
 
             const rackId = rack.id;
             if (!racks[rackId]) {
                 racks[rackId] = {
                     rack,
-                    ballots: {},
+                    pallets: {},
                 };
             }
 
-            const ballotId = ballot.id;
-            const ballotLevel = ballot.level;
-            if (!racks[rackId].ballots[ballotLevel]) {
-                racks[rackId].ballots[ballotLevel] = {};
+            const palletId = pallet.id;
+            const palletLevel = pallet.level;
+            if (!racks[rackId].pallets[palletLevel]) {
+                racks[rackId].pallets[palletLevel] = {};
             }
 
-            if (!racks[rackId].ballots[ballotLevel][ballotId]) {
-                racks[rackId].ballots[ballotLevel][ballotId] = {
-                    ballot,
+            if (!racks[rackId].pallets[palletLevel][palletId]) {
+                racks[rackId].pallets[palletLevel][palletId] = {
+                    pallet,
                     boxes: [],
                 };
             }
 
-            racks[rackId].ballots[ballotLevel][ballotId].boxes.push({ box: box, count: item.count });
+            racks[rackId].pallets[palletLevel][palletId].boxes.push({ box: box, count: item.count });
         });
 
-        // Sort ballots within each rack by level
+        // Sort pallets within each rack by level
         Object.values(racks).forEach((rack) => {
-            rack.ballots = Object.fromEntries(Object.entries(rack.ballots).sort(([levelA], [levelB]) => levelA - levelB));
+            rack.pallets = Object.fromEntries(Object.entries(rack.pallets).sort(([levelA], [levelB]) => levelA - levelB));
         });
 
         return racks;
@@ -2199,18 +2199,18 @@ const OrderInfo = (props) => {
                                     </div>
                                     <div class="col-lg-12 p-0 mt-1">
                                         <div class="row m-0 w-100 p-1">
-                                            {Object.entries(rackData.ballots).map(([level, ballots]) => {
+                                            {Object.entries(rackData.pallets).map(([level, pallets]) => {
                                                 return (
                                                     <div class="col-lg-12 p-0 mb-2">
                                                         <div class="row m-0 w-100 d-flex align-items-center p-2" style={{ border: '1px solid #eee', borderRadius: '0.25rem', fontSize: '12px' }}>
                                                             Level {level}:
-                                                            {Object.values(ballots).map((ballotData) => {
+                                                            {Object.values(pallets).map((palletData) => {
                                                                 return (
                                                                     <div class="col-lg-12">
-                                                                        <div key={ballotData.ballot.id}>
-                                                                            <p class="p-0 m-0">Ballot: {ballotData.ballot.name}</p>
+                                                                        <div key={palletData.pallet.id}>
+                                                                            <p class="p-0 m-0">Pallet: {palletData.pallet.name}</p>
                                                                             <div class="row m-0 w-100">
-                                                                                {ballotData.boxes.map((box) => (
+                                                                                {palletData.boxes.map((box) => (
                                                                                     <div class={'searchpill'}>
                                                                                         {' '}
                                                                                         {box?.box.name} ({box.count})

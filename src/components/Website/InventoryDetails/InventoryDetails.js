@@ -41,7 +41,7 @@ const InventoryDetails = (props) => {
         useMutationGQL,
         removeMerchantAssignmentFromInventory,
         updateRackName,
-        updateBallotName,
+        updatePalletName,
         updateBoxName,
         addRackLevels,
     } = API();
@@ -52,9 +52,9 @@ const InventoryDetails = (props) => {
     const [openModal, setopenModal] = useState(false);
     const [inventoryId, setinventoryId] = useState('');
 
-    const [chosenBallotBoxes, setchosenBallotBoxes] = useState([]);
+    const [chosenPalletBoxes, setchosenPalletBoxes] = useState([]);
     const [racks, setracks] = useState([]);
-    const [ballots, setballots] = useState([]);
+    const [pallets, setpallets] = useState([]);
     const [boxes, setboxes] = useState([]);
     const fetcOneInventoryQuery = useQueryGQL('', fetcOneInventory(parseInt(inventoryId)));
     const { refetch: refetcOneInventory } = useQueryGQL('', fetcOneInventory(parseInt(inventoryId)));
@@ -62,14 +62,14 @@ const InventoryDetails = (props) => {
     const [assignMerchantToInventoryMutation] = useMutationGQL(assignMerchantToInventory(), {
         merchantId: merchantModal?.merchantId,
         rackIds: racks?.length == 0 ? undefined : racks,
-        ballotIds: ballots?.length == 0 ? undefined : ballots,
+        palletIds: pallets?.length == 0 ? undefined : pallets,
         boxIds: boxes?.length == 0 ? undefined : boxes,
     });
     const [updateRackNameMutation] = useMutationGQL(updateRackName(), {
         id: merchantModal?.id,
         name: merchantModal?.name,
     });
-    const [updateBallotNameMutation] = useMutationGQL(updateBallotName(), {
+    const [updatePalletNameMutation] = useMutationGQL(updatePalletName(), {
         id: merchantModal?.id,
         name: merchantModal?.name,
     });
@@ -83,7 +83,7 @@ const InventoryDetails = (props) => {
     });
     const [removeMerchantAssignmentFromInventoryMutation] = useMutationGQL(removeMerchantAssignmentFromInventory(), {
         rackIds: racks?.length == 0 ? undefined : racks,
-        ballotIds: ballots?.length == 0 ? undefined : ballots,
+        palletIds: pallets?.length == 0 ? undefined : pallets,
         boxIds: boxes?.length == 0 ? undefined : boxes,
     });
 
@@ -126,7 +126,7 @@ const InventoryDetails = (props) => {
                             </p>
                         </div>
                         <div class="col-lg-6 d-flex justify-content-end ">
-                            {(racks?.length != 0 || ballots?.length != 0 || boxes?.length != 0) && (
+                            {(racks?.length != 0 || pallets?.length != 0 || boxes?.length != 0) && (
                                 <div class="row m-0 w-100 d-flex justify-content-end">
                                     <button
                                         style={{ height: '35px' }}
@@ -173,15 +173,15 @@ const InventoryDetails = (props) => {
                             <div class={'col-lg-12 px-3'}>
                                 <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
                                     {fetcOneInventoryQuery?.data?.findOneInventory?.racks?.map((item, index) => {
-                                        // var ballotsCount = 0;
-                                        const levels1 = _.groupBy(item?.ballots, 'level');
-                                        let ballotsCount = 0;
+                                        // var palletsCount = 0;
+                                        const levels1 = _.groupBy(item?.pallets, 'level');
+                                        let palletsCount = 0;
 
                                         const levels = _.map(_.range(1, item.levels + 1), (level) => {
-                                            const ballots = levels1[level] || []; // Get the ballots for the level, or an empty array if none exist
-                                            ballotsCount += ballots.length;
+                                            const pallets = levels1[level] || []; // Get the pallets for the level, or an empty array if none exist
+                                            palletsCount += pallets.length;
 
-                                            return { level: level, ballots: ballots };
+                                            return { level: level, pallets: pallets };
                                         });
 
                                         return (
@@ -217,7 +217,7 @@ const InventoryDetails = (props) => {
                                                                         style={{ color: 'white' }}
                                                                         className={'  wordbreak text-success bg-light-success rounded-pill font-weight-600 '}
                                                                     >
-                                                                        {ballotsCount} Ballots
+                                                                        {palletsCount} Pallets
                                                                     </div>
                                                                     {item?.merchant && (
                                                                         <span style={{ color: 'white' }} className={' mx-1 wordbreak text-success bg-light-success rounded-pill font-weight-600 '}>
@@ -230,21 +230,21 @@ const InventoryDetails = (props) => {
                                                                             e.stopPropagation();
                                                                             setracks((prevRacks) => {
                                                                                 if (prevRacks.includes(item?.id)) {
-                                                                                    // If the rack is already selected, remove it and all associated ballots and boxes
+                                                                                    // If the rack is already selected, remove it and all associated pallets and boxes
                                                                                     const filteredRacks = prevRacks.filter((id) => id !== item?.id);
 
                                                                                     return filteredRacks;
                                                                                 } else {
                                                                                     // If the rack is not selected, add it to the selected racks
-                                                                                    const updatedBallots = ballots.filter((ballotId) => {
-                                                                                        const ballot = item.ballots.find((b) => b.id === ballotId);
-                                                                                        return !ballot;
+                                                                                    const updatedPallets = pallets.filter((palletId) => {
+                                                                                        const pallet = item.pallets.find((b) => b.id === palletId);
+                                                                                        return !pallet;
                                                                                     });
                                                                                     const updatedBoxes = boxes.filter((boxId) => {
-                                                                                        const box = item.ballots.flatMap((b) => b.boxes).find((box) => box.id === boxId);
+                                                                                        const box = item.pallets.flatMap((b) => b.boxes).find((box) => box.id === boxId);
                                                                                         return !box;
                                                                                     });
-                                                                                    setballots(updatedBallots);
+                                                                                    setpallets(updatedPallets);
                                                                                     setboxes(updatedBoxes);
                                                                                     return [...prevRacks, item?.id];
                                                                                 }
@@ -291,33 +291,33 @@ const InventoryDetails = (props) => {
                                                                             <div className="col-lg-12">
                                                                                 <div className="row m-0 w-100 d-flex justify-content-between align-items-center">
                                                                                     <span style={{ fontWeight: 700 }}>Level {level?.level}</span>
-                                                                                    {level?.ballots?.length != 0 && (
+                                                                                    {level?.pallets?.length != 0 && (
                                                                                         <div
                                                                                             onClick={(e) => {
                                                                                                 e.stopPropagation();
-                                                                                                if (!level?.ballots?.every((ballot) => ballots.includes(ballot.id))) {
-                                                                                                    // Add all ballots of this level to the ballots array
-                                                                                                    const updatedBallots = [...ballots, ...level.ballots.map((ballot) => ballot.id)];
+                                                                                                if (!level?.pallets?.every((pallet) => pallets.includes(pallet.id))) {
+                                                                                                    // Add all pallets of this level to the pallets array
+                                                                                                    const updatedPallets = [...pallets, ...level.pallets.map((pallet) => pallet.id)];
 
-                                                                                                    // Remove all boxes associated with this level's ballots from the boxes array
+                                                                                                    // Remove all boxes associated with this level's pallets from the boxes array
                                                                                                     const updatedBoxes = boxes.filter(
-                                                                                                        (boxId) => !level.ballots.flatMap((b) => b.boxes).some((box) => box.id === boxId),
+                                                                                                        (boxId) => !level.pallets.flatMap((b) => b.boxes).some((box) => box.id === boxId),
                                                                                                     );
 
-                                                                                                    setballots(updatedBallots);
+                                                                                                    setpallets(updatedPallets);
                                                                                                     setboxes(updatedBoxes);
 
                                                                                                     // Mark the level's rack as selected
                                                                                                     // setracks([...racks, item?.id]);
                                                                                                 } else {
-                                                                                                    const updatedBallots = ballots.filter(
-                                                                                                        (ballotId) => !level.ballots.some((ballot) => ballot.id === ballotId),
+                                                                                                    const updatedPallets = pallets.filter(
+                                                                                                        (palletId) => !level.pallets.some((pallet) => pallet.id === palletId),
                                                                                                     );
                                                                                                     const updatedBoxes = boxes.filter(
-                                                                                                        (boxId) => !level.ballots.flatMap((b) => b.boxes).some((box) => box.id === boxId),
+                                                                                                        (boxId) => !level.pallets.flatMap((b) => b.boxes).some((box) => box.id === boxId),
                                                                                                     );
 
-                                                                                                    setballots(updatedBallots);
+                                                                                                    setpallets(updatedPallets);
                                                                                                     setboxes(updatedBoxes);
                                                                                                 }
                                                                                             }}
@@ -325,10 +325,10 @@ const InventoryDetails = (props) => {
                                                                                             style={{
                                                                                                 width: '35px',
                                                                                                 height: '35px',
-                                                                                                // pointerEvents: level?.ballots?.every((ballot) => ballots.includes(ballot.id)) ? 'none' : 'auto',
+                                                                                                // pointerEvents: level?.pallets?.every((pallet) => pallets.includes(pallet.id)) ? 'none' : 'auto',
                                                                                             }}
                                                                                         >
-                                                                                            {level?.ballots?.every((ballot) => ballots.includes(ballot.id)) ? (
+                                                                                            {level?.pallets?.every((pallet) => pallets.includes(pallet.id)) ? (
                                                                                                 <TbSquareCheck size={18} color={'var(--success)'} />
                                                                                             ) : (
                                                                                                 <TbSquare size={18} color={''} />
@@ -351,10 +351,10 @@ const InventoryDetails = (props) => {
                                                                                         background: '#EBF0F4',
                                                                                     }}
                                                                                 >
-                                                                                    {level?.ballots?.length == 0 && <div class="text-danger">Empty</div>}
+                                                                                    {level?.pallets?.length == 0 && <div class="text-danger">Empty</div>}
 
-                                                                                    {level?.ballots?.map((ballot, ballotindex) => (
-                                                                                        <div className="col-lg-9 p-0" key={ballot.id}>
+                                                                                    {level?.pallets?.map((pallet, palletindex) => (
+                                                                                        <div className="col-lg-9 p-0" key={pallet.id}>
                                                                                             <div
                                                                                                 style={{
                                                                                                     border: '1px solid #eee',
@@ -367,7 +367,7 @@ const InventoryDetails = (props) => {
                                                                                             >
                                                                                                 <div className="row m-0 w-100 justify-content-between align-items-center">
                                                                                                     <div className="row m-0 d-flex align-items-center">
-                                                                                                        {ballot?.name}
+                                                                                                        {pallet?.name}
 
                                                                                                         <TbEdit
                                                                                                             onClick={(e) => {
@@ -375,41 +375,41 @@ const InventoryDetails = (props) => {
                                                                                                                 setmerchantModal({
                                                                                                                     open: true,
                                                                                                                     type: 'edit',
-                                                                                                                    id: ballot?.id,
-                                                                                                                    name: ballot?.name,
-                                                                                                                    editType: 'ballot',
+                                                                                                                    id: pallet?.id,
+                                                                                                                    name: pallet?.name,
+                                                                                                                    editType: 'pallet',
                                                                                                                 });
                                                                                                             }}
                                                                                                             class="ml-1 text-secondaryhover"
                                                                                                         />
                                                                                                     </div>
                                                                                                     <div class="row m-0 d-flex align-items-center">
-                                                                                                        {ballot?.merchant && (
+                                                                                                        {pallet?.merchant && (
                                                                                                             <span
                                                                                                                 style={{ color: 'white' }}
                                                                                                                 className={' wordbreak text-success bg-light-success rounded-pill font-weight-600 '}
                                                                                                             >
                                                                                                                 {' '}
-                                                                                                                {ballot?.merchant?.name}
+                                                                                                                {pallet?.merchant?.name}
                                                                                                             </span>
                                                                                                         )}
                                                                                                         <div
                                                                                                             onClick={() => {
-                                                                                                                if (!racks?.includes(ballot?.rackId)) {
-                                                                                                                    setballots((prevBallots) => {
-                                                                                                                        if (prevBallots.includes(ballot?.id)) {
-                                                                                                                            // If the ballot is already selected, remove it and all associated boxes
-                                                                                                                            const filteredBallots = prevBallots.filter((id) => id !== ballot?.id);
+                                                                                                                if (!racks?.includes(pallet?.rackId)) {
+                                                                                                                    setpallets((prevPallets) => {
+                                                                                                                        if (prevPallets.includes(pallet?.id)) {
+                                                                                                                            // If the pallet is already selected, remove it and all associated boxes
+                                                                                                                            const filteredPallets = prevPallets.filter((id) => id !== pallet?.id);
 
                                                                                                                             const updatedBoxes = boxes.filter((boxId) => {
-                                                                                                                                const box = ballot.boxes.find((b) => b.id === boxId);
+                                                                                                                                const box = pallet.boxes.find((b) => b.id === boxId);
                                                                                                                                 return !box;
                                                                                                                             });
 
                                                                                                                             setboxes(updatedBoxes);
-                                                                                                                            return filteredBallots;
+                                                                                                                            return filteredPallets;
                                                                                                                         } else {
-                                                                                                                            return [...prevBallots, ballot?.id];
+                                                                                                                            return [...prevPallets, pallet?.id];
                                                                                                                         }
                                                                                                                     });
                                                                                                                 }
@@ -417,7 +417,7 @@ const InventoryDetails = (props) => {
                                                                                                             className="iconhover allcentered"
                                                                                                             style={{ width: '35px', height: '35px' }}
                                                                                                         >
-                                                                                                            {ballots.includes(ballot?.id) ? (
+                                                                                                            {pallets.includes(pallet?.id) ? (
                                                                                                                 <TbSquareCheck size={16} color={'var(--success)'} />
                                                                                                             ) : (
                                                                                                                 <TbSquare size={16} color={''} />
@@ -438,7 +438,7 @@ const InventoryDetails = (props) => {
                                                                                                             background: '#EBF0F4',
                                                                                                         }}
                                                                                                     >
-                                                                                                        {ballot?.boxes?.map((box, boxindex) => {
+                                                                                                        {pallet?.boxes?.map((box, boxindex) => {
                                                                                                             if (boxindex % 2 === 0) {
                                                                                                                 return (
                                                                                                                     <div
@@ -493,8 +493,8 @@ const InventoryDetails = (props) => {
                                                                                                                                         <div
                                                                                                                                             onClick={() => {
                                                                                                                                                 if (
-                                                                                                                                                    !racks?.includes(box?.ballot?.rackId) &&
-                                                                                                                                                    !ballots?.includes(box?.ballotId)
+                                                                                                                                                    !racks?.includes(box?.pallet?.rackId) &&
+                                                                                                                                                    !pallets?.includes(box?.palletId)
                                                                                                                                                 ) {
                                                                                                                                                     setboxes((prevBoxes) => {
                                                                                                                                                         if (prevBoxes.includes(box?.id)) {
@@ -520,7 +520,7 @@ const InventoryDetails = (props) => {
                                                                                                                                 </div>
                                                                                                                             </div>
                                                                                                                         </div>
-                                                                                                                        {ballot?.boxes[boxindex + 1] && (
+                                                                                                                        {pallet?.boxes[boxindex + 1] && (
                                                                                                                             <div
                                                                                                                                 className="box-container"
                                                                                                                                 style={{
@@ -533,7 +533,7 @@ const InventoryDetails = (props) => {
                                                                                                                             >
                                                                                                                                 <div className="row m-0 w-100 justify-content-between align-items-center">
                                                                                                                                     <div className="row m-0 d-flex align-items-center">
-                                                                                                                                        {ballot?.boxes[boxindex + 1]?.name}
+                                                                                                                                        {pallet?.boxes[boxindex + 1]?.name}
 
                                                                                                                                         <TbEdit
                                                                                                                                             onClick={(e) => {
@@ -541,8 +541,8 @@ const InventoryDetails = (props) => {
                                                                                                                                                 setmerchantModal({
                                                                                                                                                     open: true,
                                                                                                                                                     type: 'edit',
-                                                                                                                                                    id: ballot?.boxes[boxindex + 1]?.id,
-                                                                                                                                                    name: ballot?.boxes[boxindex + 1]?.name,
+                                                                                                                                                    id: pallet?.boxes[boxindex + 1]?.id,
+                                                                                                                                                    name: pallet?.boxes[boxindex + 1]?.name,
                                                                                                                                                     editType: 'box',
                                                                                                                                                 });
                                                                                                                                             }}
@@ -550,7 +550,7 @@ const InventoryDetails = (props) => {
                                                                                                                                         />
                                                                                                                                     </div>
                                                                                                                                     <div class="row m-0 d-flex align-items-center">
-                                                                                                                                        {ballot?.boxes[boxindex + 1]?.merchant && (
+                                                                                                                                        {pallet?.boxes[boxindex + 1]?.merchant && (
                                                                                                                                             <span
                                                                                                                                                 style={{ color: 'white' }}
                                                                                                                                                 className={
@@ -558,34 +558,34 @@ const InventoryDetails = (props) => {
                                                                                                                                                 }
                                                                                                                                             >
                                                                                                                                                 {' '}
-                                                                                                                                                {ballot?.boxes[boxindex + 1]?.merchant?.name}
+                                                                                                                                                {pallet?.boxes[boxindex + 1]?.merchant?.name}
                                                                                                                                             </span>
                                                                                                                                         )}
                                                                                                                                         <div
                                                                                                                                             onClick={() => {
                                                                                                                                                 if (
                                                                                                                                                     !racks?.includes(
-                                                                                                                                                        ballot?.boxes[boxindex + 1]?.ballot?.rackId,
+                                                                                                                                                        pallet?.boxes[boxindex + 1]?.pallet?.rackId,
                                                                                                                                                     ) &&
-                                                                                                                                                    !ballots?.includes(
-                                                                                                                                                        ballot?.boxes[boxindex + 1]?.ballotId,
+                                                                                                                                                    !pallets?.includes(
+                                                                                                                                                        pallet?.boxes[boxindex + 1]?.palletId,
                                                                                                                                                     )
                                                                                                                                                 ) {
                                                                                                                                                     setboxes((prevBoxes) => {
                                                                                                                                                         if (
                                                                                                                                                             prevBoxes.includes(
-                                                                                                                                                                ballot?.boxes[boxindex + 1]?.id,
+                                                                                                                                                                pallet?.boxes[boxindex + 1]?.id,
                                                                                                                                                             )
                                                                                                                                                         ) {
                                                                                                                                                             return prevBoxes.filter(
                                                                                                                                                                 (id) =>
                                                                                                                                                                     id !==
-                                                                                                                                                                    ballot?.boxes[boxindex + 1]?.id,
+                                                                                                                                                                    pallet?.boxes[boxindex + 1]?.id,
                                                                                                                                                             );
                                                                                                                                                         } else {
                                                                                                                                                             return [
                                                                                                                                                                 ...prevBoxes,
-                                                                                                                                                                ballot?.boxes[boxindex + 1]?.id,
+                                                                                                                                                                pallet?.boxes[boxindex + 1]?.id,
                                                                                                                                                             ];
                                                                                                                                                         }
                                                                                                                                                     });
@@ -594,7 +594,7 @@ const InventoryDetails = (props) => {
                                                                                                                                             className="iconhover allcentered"
                                                                                                                                             style={{ width: '35px', height: '35px' }}
                                                                                                                                         >
-                                                                                                                                            {boxes.includes(ballot?.boxes[boxindex + 1]?.id) ? (
+                                                                                                                                            {boxes.includes(pallet?.boxes[boxindex + 1]?.id) ? (
                                                                                                                                                 <TbSquareCheck size={14} color={'var(--success)'} />
                                                                                                                                             ) : (
                                                                                                                                                 <TbSquare size={14} color={''} />
@@ -659,8 +659,8 @@ const InventoryDetails = (props) => {
                     </Modal.Header>
                     <Modal.Body>
                         <div class="row m-0 w-100 pb-3">
-                            {chosenBallotBoxes?.map((ballotBoxItem, ballotBoxIndex) => {
-                                return <div class={'searchpill'}> {ballotBoxItem?.name}</div>;
+                            {chosenPalletBoxes?.map((palletBoxItem, palletBoxIndex) => {
+                                return <div class={'searchpill'}> {palletBoxItem?.name}</div>;
                             })}
                         </div>
                     </Modal.Body>
@@ -729,7 +729,7 @@ const InventoryDetails = (props) => {
                                                         // history.push('/couriersheets');
                                                         await refetcOneInventory();
                                                         setracks([]);
-                                                        setballots([]);
+                                                        setpallets([]);
                                                         setboxes([]);
                                                         setmerchantModal({ open: false });
                                                         NotificationManager.success('', 'Success');
@@ -742,7 +742,7 @@ const InventoryDetails = (props) => {
                                                         // history.push('/couriersheets');
                                                         await refetcOneInventory();
                                                         setracks([]);
-                                                        setballots([]);
+                                                        setpallets([]);
                                                         setboxes([]);
                                                         setmerchantModal({ open: false });
                                                         NotificationManager.success('', 'Success');
@@ -803,15 +803,15 @@ const InventoryDetails = (props) => {
                                                     } else {
                                                         NotificationManager.warning(data?.updateRackName?.message, 'Warning!');
                                                     }
-                                                } else if (merchantModal?.editType == 'ballot') {
-                                                    const { data } = await updateBallotNameMutation();
-                                                    if (data?.updateBallotName?.success == true) {
+                                                } else if (merchantModal?.editType == 'pallet') {
+                                                    const { data } = await updatePalletNameMutation();
+                                                    if (data?.updatePalletName?.success == true) {
                                                         await refetcOneInventory();
 
                                                         setmerchantModal({ open: false });
                                                         NotificationManager.success('', 'Success');
                                                     } else {
-                                                        NotificationManager.warning(data?.updateBallotName?.message, 'Warning!');
+                                                        NotificationManager.warning(data?.updatePalletName?.message, 'Warning!');
                                                     }
                                                 } else if (merchantModal?.editType == 'box') {
                                                     const { data } = await updateBoxNameMutation();
