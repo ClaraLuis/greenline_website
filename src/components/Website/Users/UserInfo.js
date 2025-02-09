@@ -558,19 +558,34 @@ const UserInfo = (props) => {
                                     button1class={generalstyles.roundbutton + '  mr-2 '}
                                     button1placeholder={props?.payload?.functype == 'add' ? lang.add : lang.edit}
                                     button1onClick={() => {
-                                        if (!isPhoneValidContext(props?.payload?.phone)) {
-                                            NotificationManager.warning('', 'Please enter valid phone');
+                                        const payload = props?.payload || {};
+
+                                        let requiredFields = ['name', 'email', 'phone']; // Default required fields
+
+                                        if (payload.type === 'merchant') {
+                                            requiredFields.push('type', 'merchant');
+                                        } else if (payload.type === 'employee' && payload.employeeType !== 'inventory') {
+                                            requiredFields.push('type', 'employeeType', 'hubID', 'commission', 'salary', 'currency');
+                                        } else if (payload.type === 'employee' && payload.employeeType === 'inventory') {
+                                            requiredFields.push('type', 'employeeType', 'hubID', 'inventoryId', 'commission', 'salary', 'currency');
+                                        } else {
+                                            requiredFields.push('type');
+                                        }
+
+                                        const emptyFields = requiredFields.filter((field) => !payload[field]);
+
+                                        if (emptyFields.length > 0) {
+                                            NotificationManager.warning('', `Please fill in all required fields: ${emptyFields.join(', ')}`);
                                             return;
                                         }
+
+                                        if (!isPhoneValidContext(payload.phone)) {
+                                            NotificationManager.warning('', 'Please enter a valid phone number');
+                                            return;
+                                        }
+
                                         handleAddUser();
                                     }}
-                                    // button2={props?.payload?.functype == 'add' ? false : true}
-                                    // // button2disabled={DeleteUserMutation.isLoading}
-                                    // button2class={generalstyles.roundbutton + '  bg-danger bg-dangerhover mr-2 '}
-                                    // button2placeholder={lang.delete}
-                                    // button2onClick={() => {
-                                    //     // DeleteUserMutation.mutate(props?.payload);
-                                    // }}
                                 />
                             )}
                             {props?.payload?.functype == 'edit' && props?.payload?.modaltype == 'roles' && (
