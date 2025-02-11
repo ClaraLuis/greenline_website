@@ -68,6 +68,7 @@ import UserRoles from './Users/UserRoles.js';
 import NotFound from './NotFound.js';
 import RentBills from './Finance/RentBills.js';
 import ActionCenter from './Hubs/ActionCenter.js';
+import InventoryRent from './InventoryItems/InventoryRent.js';
 const App = (props) => {
     const history = useHistory();
     const location = useLocation();
@@ -338,6 +339,8 @@ const App = (props) => {
                                                                 <Route exact path="/merchants" component={Merchants} />
                                                                 <Route exact path="/merchantreturns" component={MerchanReturns} />
                                                                 <Route exact path="/packages" component={Packages} />
+                                                                <Route exact path="/inventoryrent" component={InventoryRent} />
+
                                                                 <Route exact path="/inventoryreturns" component={InventoryReturns} />
                                                                 <Route exact path="/inventorypackages" component={InventoryPackages} />
                                                                 <Route exact path="/merchantpackages" component={MerchantPackages} />
