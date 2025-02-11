@@ -237,7 +237,7 @@ const InventoryPackages = (props) => {
                             </div>
                         </div>
 
-                        {isAuth([61, 54, 1]) && (
+                        {isAuth([1, 54, 64, 2]) && (
                             <>
                                 {' '}
                                 <div class="col-lg-12 p-0 mb-3">

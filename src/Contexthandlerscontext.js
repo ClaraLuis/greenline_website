@@ -191,7 +191,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/inventorypackages',
                         permissionpage: [1],
-                        show: isAuth([1, 54, 64]) && isAuth([1, 54, 2]),
+                        show: isAuth([1, 54, 64, 2]),
                     },
                     {
                         name: 'Dispatch',
@@ -202,6 +202,18 @@ export const Contexthandlerscontext_provider = (props) => {
                             </i>
                         ),
                         path: '/fulfilled',
+                        permissionpage: [1],
+                        show: isAuth([1, 54]),
+                    },
+                    {
+                        name: 'Inventory Rent',
+                        isselected: false,
+                        icon: (
+                            <i class={'allcentered'}>
+                                <LuPackageOpen size={18} />
+                            </i>
+                        ),
+                        path: '/inventoryrent',
                         permissionpage: [1],
                         show: isAuth([1, 54]),
                     },
