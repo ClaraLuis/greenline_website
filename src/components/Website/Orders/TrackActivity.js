@@ -53,6 +53,7 @@ const TrackActivity = (props) => {
     const [inventoryModal, setinventoryModal] = useState({ open: false, items: [] });
     const [outOfStock, setoutOfStock] = useState(false);
     const [diffInDays, setdiffInDays] = useState(0);
+    const [loading, setloading] = useState(true);
     const [historyType, sethistoryType] = useState('order');
     const { loggedincontext } = useContext(Loggedincontext);
 
@@ -118,6 +119,11 @@ const TrackActivity = (props) => {
         // Convert milliseconds to days
         setdiffInDays(Math.floor(diffInMs / (1000 * 60 * 60 * 24)));
     }, [chosenOrderContext]);
+    useEffect(() => {
+        setTimeout(() => {
+            setloading(false);
+        }, 1000);
+    }, []);
 
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
@@ -442,9 +448,14 @@ const TrackActivity = (props) => {
                                     </div>
                                 </>
                             )}
-                            {(chosenOrderContext == undefined || !chosenOrderContext || JSON.stringify(chosenOrderContext) == '{}') && (
+                            {(chosenOrderContext == undefined || !chosenOrderContext || JSON.stringify(chosenOrderContext) == '{}') && !loading && (
                                 <div class="col-lg-12 p-0 alllcentered">
                                     <NotFound />
+                                </div>
+                            )}
+                            {(chosenOrderContext == undefined || !chosenOrderContext || JSON.stringify(chosenOrderContext) == '{}') && loading && (
+                                <div style={{ height: '70vh' }} class="row w-100 allcentered m-0">
+                                    <CircularProgress color="var(--primary)" width="60px" height="60px" duration="1s" />
                                 </div>
                             )}
                         </div>

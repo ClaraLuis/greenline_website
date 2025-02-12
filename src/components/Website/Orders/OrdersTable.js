@@ -99,7 +99,7 @@ const OrdersTable = (props) => {
         merchantId: isAuth([1]) ? requestReturnPayload?.item?.merchant?.id : undefined,
     });
     const [updateOrdersStatusMutation] = useMutationGQL(updateOrdersStatus(), {
-        status: 'fulfilled',
+        status: 'cancelled',
         sheetOrderId: chosenOrderContext?.id,
     });
 
@@ -255,6 +255,31 @@ const OrdersTable = (props) => {
                                                                 >
                                                                     <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>View order</p>
                                                                 </Dropdown.Item>
+                                                                {window.location.pathname == '/actioncenter' && (
+                                                                    <Dropdown.Item
+                                                                        onClick={async (e) => {
+                                                                            e.stopPropagation();
+                                                                            try {
+                                                                                await setchosenOrderContext(item);
+                                                                                const data = await updateOrdersStatusMutation();
+                                                                            } catch (error) {
+                                                                                let errorMessage = 'An unexpected error occurred';
+                                                                                if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                                                                    errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                                                                } else if (error.networkError) {
+                                                                                    errorMessage = error.networkError.message || errorMessage;
+                                                                                } else if (error.message) {
+                                                                                    errorMessage = error.message;
+                                                                                }
+
+                                                                                NotificationManager.warning(errorMessage, 'Warning!');
+                                                                            }
+                                                                        }}
+                                                                        class="py-2"
+                                                                    >
+                                                                        <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Cancel order</p>
+                                                                    </Dropdown.Item>
+                                                                )}
                                                                 {window.location.pathname == '/handpicked' && (
                                                                     <Dropdown.Item
                                                                         onClick={async (e) => {

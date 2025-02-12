@@ -62,7 +62,7 @@ const ItemsTable = (props) => {
                         var selected = false;
                         var count = 0;
                         props?.selectedItems?.map((i) => {
-                            if (i.item.sku == item.sku) {
+                            if (i?.item?.sku == item?.sku) {
                                 selected = true;
                                 count = i?.count;
                             }

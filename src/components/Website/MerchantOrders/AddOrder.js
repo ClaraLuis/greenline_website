@@ -75,7 +75,7 @@ const AddOrder = (props) => {
         returnOrderItems: [],
         user: '',
         address: '',
-        ordertype: 'delivery',
+        ordertype: queryParameters.get('merchantId') ?? 'delivery',
         paymenttype: 'cash',
         shippingprice: '',
         canbeoppened: 1,
@@ -1973,7 +1973,7 @@ const AddOrder = (props) => {
                                                                     orderpayload?.items
                                                                         ?.reduce((acc, orderItem) => {
                                                                             const count = parseInt(orderItem?.count);
-                                                                            const price = new Decimal(orderItem?.item?.price);
+                                                                            const price = orderItem?.item?.price ? new Decimal(orderItem?.item?.price) : 0;
                                                                             return acc.plus(price.times(count)); // Use Decimal for multiplication
                                                                         }, new Decimal(0))
                                                                         .toFixed(2),
@@ -1988,8 +1988,9 @@ const AddOrder = (props) => {
                                                                             orderpayload?.returnOrderItems
                                                                                 ?.reduce((acc, orderItem) => {
                                                                                     const count = parseInt(orderItem?.count);
-                                                                                    const price = new Decimal(orderItem?.item?.price);
-                                                                                    return acc.plus(price.times(count)); // Use Decimal for multiplication
+                                                                                    console.log('orderItem?.item?.price', orderItem?.item?.price);
+                                                                                    const price = orderItem?.item?.price ? new Decimal(orderItem?.item?.price) : 0;
+                                                                                    return acc.plus(price ? price?.times(count) : 0); // Use Decimal for multiplication
                                                                                 }, new Decimal(0))
                                                                                 .toFixed(2),
                                                                         )
@@ -2005,8 +2006,8 @@ const AddOrder = (props) => {
                                                               orderpayload?.items
                                                                   ?.reduce((acc, orderItem) => {
                                                                       const count = parseInt(orderItem?.count);
-                                                                      const price = new Decimal(orderItem?.item?.price);
-                                                                      return acc.plus(price.times(count)); // Use Decimal for multiplication
+                                                                      const price = orderItem?.item?.price ? new Decimal(orderItem?.item?.price) : 0;
+                                                                      return acc.plus(price ? price.times(count) : 0); // Use Decimal for multiplication
                                                                   }, new Decimal(0))
                                                                   .toFixed(2),
                                                           )
@@ -2042,8 +2043,8 @@ const AddOrder = (props) => {
                                                                     orderpayload?.items
                                                                         ?.reduce((acc, orderItem) => {
                                                                             const count = parseInt(orderItem?.count);
-                                                                            const price = new Decimal(orderItem?.item?.price);
-                                                                            return acc.plus(price.times(count)); // Use Decimal for multiplication
+                                                                            const price = orderItem?.item?.price ? new Decimal(orderItem?.item?.price) : 0;
+                                                                            return acc.plus(price ? price.times(count) : 0); // Use Decimal for multiplication
                                                                         }, new Decimal(0))
                                                                         .toFixed(2), // Start with a Decimal of 0
                                                                 )
@@ -2057,8 +2058,8 @@ const AddOrder = (props) => {
                                                                             orderpayload?.returnOrderItems
                                                                                 ?.reduce((acc, orderItem) => {
                                                                                     const count = parseInt(orderItem?.count);
-                                                                                    const price = new Decimal(orderItem?.item?.price);
-                                                                                    return acc.plus(price.times(count)); // Use Decimal for multiplication
+                                                                                    const price = orderItem?.item?.price ? new Decimal(orderItem?.item?.price) : 0;
+                                                                                    return acc.plus(price ? price.times(count) : 0); // Use Decimal for multiplication
                                                                                 }, new Decimal(0))
                                                                                 .toFixed(2), // Start with a Decimal of 0
                                                                         )
@@ -2074,8 +2075,8 @@ const AddOrder = (props) => {
                                                               orderpayload?.items
                                                                   ?.reduce((acc, orderItem) => {
                                                                       const count = parseInt(orderItem?.count);
-                                                                      const price = new Decimal(orderItem?.item?.price);
-                                                                      return acc.plus(price.times(count)); // Use Decimal for multiplication
+                                                                      const price = orderItem?.item?.price ? new Decimal(orderItem?.item?.price) : 0;
+                                                                      return acc.plus(price ? price.times(count) : 0); // Use Decimal for multiplication
                                                                   }, new Decimal(0))
                                                                   .toFixed(2), // Start with a Decimal of 0
                                                           )
