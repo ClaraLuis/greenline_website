@@ -260,20 +260,23 @@ const InventoryPackages = (props) => {
                                 )}
                                 {fetchPackagesQuery?.data?.paginateReturnPackages?.data?.map((item, index) => {
                                     return (
-                                        <div className="col-lg-4">
+                                        <div
+                                            onClick={() => {
+                                                history.push('/returnpackageinfo?packageId=' + item?.id);
+                                            }}
+                                            style={{ cursor: 'pointer' }}
+                                            className="col-lg-4 "
+                                        >
                                             <div
-                                                onClick={() => {
-                                                    history.push('/returnpackageinfo?packageId=' + item?.id);
-                                                }}
-                                                style={{ background: 'white', cursor: 'pointer' }}
+                                                style={{ background: 'white', transition: 'all 0.4s', cursor: 'pointer' }}
                                                 class={generalstyles.card + ' p-3 row m-0 w-100   d-flex align-items-center'}
                                             >
-                                                <div className="col-lg-4 p-0">
-                                                    <span style={{ fontSize: '12px', color: 'grey' }}>
-                                                        # {item?.id}, {item.type == 'merchant' ? item?.merchant?.name : item?.inventory?.name}
+                                                <div className="col-lg-2 p-0">
+                                                    <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
+                                                        # {item?.id}
                                                     </span>
                                                 </div>
-                                                <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
+                                                <div className="col-lg-10 p-0 d-flex justify-content-end align-items-center">
                                                     <div class="row m-0 w-100 d-fex justify-content-end align-items-center">
                                                         <div
                                                             className={
@@ -282,43 +285,57 @@ const InventoryPackages = (props) => {
                                                                     : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered text-capitalize'
                                                             }
                                                         >
-                                                            {/* {returnPackageStatusContext?.map((i, ii) => {
-                                                                if (i.value == item?.status) {
-                                                                    return <span>{i.label}</span>;
-                                                                }
-                                                            })} */}
                                                             {item?.status?.split(/(?=[A-Z])/).join(' ')}
                                                         </div>
-                                                        {/* <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered mx-1 '}>
-                                                    {returnPackageTypeContext?.map((i, ii) => {
-                                                        if (i.value == item?.type) {
-                                                            return <span>{i.label}</span>;
-                                                        }
-                                                    })}
-                                                </div> */}
                                                     </div>
                                                 </div>
                                                 <div className="col-lg-12 p-0 my-2">
                                                     <hr className="m-0" />
                                                 </div>
-                                                <div className="col-lg-12 p-0 mb-2">
-                                                    SKU:{' '}
-                                                    <span style={{ fontWeight: 600 }} class="text-capitalize">
-                                                        {item?.sku}
-                                                    </span>
-                                                </div>
-                                                {item?.courier && (
-                                                    <div className="col-lg-12 p-0 mb-2 d-flex align-items-center">
-                                                        <TbTruckDelivery size={20} class="mr-1" />
-
-                                                        <span style={{ fontWeight: 600 }} class="text-capitalize">
-                                                            {item?.courier?.name}
-                                                        </span>
+                                                <div class="col-lg-12 p-0 mb-2">
+                                                    <div class="row m-0 w-100 d-flex align-items-center">
+                                                        <div class="col-lg-8 p-0">{item.type == 'merchant' ? item?.merchant?.name : item?.inventory?.name}</div>
+                                                        <div class="col-lg-4 p-0 d-flex justify-content-end">
+                                                            <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
+                                                                {item?.countAndSum?.sum} items
+                                                            </span>
+                                                        </div>
                                                     </div>
-                                                )}
+                                                </div>
+                                                <div class="col-lg-12 p-0 mb-2">
+                                                    <div class="row m-0 w-100 d-flex align-items-center">
+                                                        <div class="col-lg-8 p-0">
+                                                            {' '}
+                                                            <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
+                                                                {item?.sku}
+                                                            </span>
+                                                        </div>
+                                                        <div class="col-lg-4 p-0 d-flex justify-content-end">
+                                                            <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
+                                                                {item?.countAndSum?.count} orders
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-12 p-0">
+                                                    <div class="row m-0 w-100 d-flex align-items-center">
+                                                        <div class="col-lg-6 p-0">
+                                                            {item?.courier && (
+                                                                <div className="col-lg-12 p-0 mb-2 d-flex align-items-center">
+                                                                    <TbTruckDelivery size={20} class="mr-1" />
 
-                                                <div class="col-lg-12 p-0 d-flex justify-content-end" style={{ fontSize: '12px', color: 'grey' }}>
-                                                    {dateformatter(item?.createdAt)}
+                                                                    <span style={{ fontWeight: 600 }} class="text-capitalize">
+                                                                        {item?.courier?.name}
+                                                                    </span>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        <div class="col-lg-6 p-0 d-flex justify-content-end">
+                                                            <span style={{ fontSize: '12px', color: 'grey' }} class="text-capitalize">
+                                                                {dateformatter(item?.createdAt)}
+                                                            </span>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

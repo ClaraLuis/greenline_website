@@ -375,7 +375,7 @@ const CourierSheet = (props) => {
                                 }
                             }
                         });
-                        if (item?.order?.previousOrderId) {
+                        if (item?.order?.previousOrderId && item?.order?.type == 'exchange') {
                             previousOrder = sheetOrders?.filter((ii) => ii.orderId == item?.order?.previousOrderId)[0];
                             submitSheetPayload?.updateSheetOrderstemp?.map((i, ii) => {
                                 if (item?.order?.previousOrderId == i.orderId) {

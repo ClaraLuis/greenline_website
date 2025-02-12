@@ -234,6 +234,7 @@ const Form = (props) => {
                                 defaultValue={item?.options?.filter((option) =>
                                     item?.optionValue ? option[item?.optionValue] == props?.payload[item?.attr] : option.value == props?.payload[item?.attr],
                                 )}
+                                value={item?.options?.filter((option) => (item?.optionValue ? option[item?.optionValue] == props?.payload[item?.attr] : option.value == props?.payload[item?.attr]))}
                                 getOptionLabel={(option) => (item?.optionLabel ? option[item?.optionLabel] : option.label)}
                                 getOptionValue={(option) => (item?.optionValue ? option[item?.optionValue] : option.value)}
                                 onChange={(option) => {
