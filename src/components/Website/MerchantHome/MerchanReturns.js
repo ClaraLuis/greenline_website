@@ -128,6 +128,9 @@ const MerchanReturns = (props) => {
             if (e.ctrlKey || e.altKey || e.metaKey || e.key === 'CapsLock' || e.key === 'Shift' || e.key === 'Tab' || e.key === 'Backspace' || e.key === 'Control' || e.key === 'Alt') {
                 return;
             }
+            if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') {
+                return; // Don't process barcode scanning when typing in an input field
+            }
 
             if (e.key === 'Enter') {
                 addItemRetun(barcode);

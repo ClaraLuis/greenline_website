@@ -71,7 +71,9 @@ const MerchantPackages = (props) => {
             if (e.ctrlKey || e.altKey || e.metaKey || e.key === 'CapsLock' || e.key === 'Shift' || e.key === 'Tab' || e.key === 'Backspace' || e.key === 'Control' || e.key === 'Alt') {
                 return;
             }
-
+            if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') {
+                return; // Don't process barcode scanning when typing in an input field
+            }
             if (e.key === 'Enter') {
                 const finalBarcode = barcode; // Add the last character (Enter) before clearing
                 setBarcode(''); // Clear the barcode state
@@ -237,7 +239,7 @@ const MerchantPackages = (props) => {
                             </div>
                         </div>
 
-                        {isAuth([61, 52, 1]) && (
+                        {isAuth([1, 52, 64]) && (
                             <>
                                 <div class="col-lg-12 p-0 mb-3">
                                     <Pagination
