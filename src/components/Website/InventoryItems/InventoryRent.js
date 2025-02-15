@@ -16,37 +16,49 @@ import API from '../../../API/API.js';
 import Pagination from '../../Pagination.js';
 import SelectComponent from '../../SelectComponent.js';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
+import { Modal } from 'react-bootstrap';
 
 import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
-import { TbTruckDelivery } from 'react-icons/tb';
+import { TbEdit, TbTruckDelivery } from 'react-icons/tb';
 import Cookies from 'universal-cookie';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
+import { IoMdClose, IoMdTime } from 'react-icons/io';
+import Decimal from 'decimal.js';
 
 const InventoryRent = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, returnPackageStatusContext, returnPackageTypeContext, dateformatter, buttonLoadingContext, setbuttonLoadingContext, setchosenPackageContext } =
+    const { setpageactive_context, setpagetitle_context, inventoryRentTypeContext, returnPackageTypeContext, dateformatter, buttonLoadingContext, setbuttonLoadingContext, setchosenPackageContext } =
         useContext(Contexthandlerscontext);
-    const { useMutationGQL, fetchMerchants, assignPackageToCourier, fetchCouriers, fetchPackages, useQueryGQL, fetchInventories } = API();
+    const { useMutationGQL, fetchMerchants, useLazyQueryGQL, paginateInventoryRentTransaction, paginateInventoryRents, useQueryGQL, fetchInventories, updateInventoryRent } = API();
     const { lang, langdetect } = useContext(LanguageContext);
     const [cartItems, setcartItems] = useState([]);
-    const [search, setSearch] = useState('');
+    const [transactionsModal, settransactionsModal] = useState(false);
+    const [inventoryModal, setinventoryModal] = useState(false);
+
     const cookies = new Cookies();
+    const [inventorySettings, setinventorySettings] = useState({
+        inInventory: '',
+        type: '',
+        price: '',
+        startDate: new Date().toISOString().split('T')[0],
+    });
 
     const [packagepayload, setpackagepayload] = useState({
         ids: [],
         userId: '',
     });
+    const [fetchSenttTransactionsQuery, setfetchSenttTransactionsQuery] = useState([]);
 
-    const [filterCouriers, setfilterCouriers] = useState({
+    const [filterSentTransactionsObj, setfilterSentTransactionsObj] = useState({
         isAsc: true,
-        limit: 10,
+        limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
     });
-    const fetchCouriersQuery = useQueryGQL('cache-first', fetchCouriers(), filterCouriers);
+    const [fetchSenttTransactionsLazyQuery] = useLazyQueryGQL(paginateInventoryRentTransaction());
 
     const [filter, setfilter] = useState({
         limit: 20,
@@ -56,13 +68,8 @@ const InventoryRent = (props) => {
         assigned: undefined,
     });
 
-    const fetchPackagesQuery = useQueryGQL('', fetchPackages(), filter);
-    const refetchPackagesQuery = () => fetchPackagesQuery.refetch();
+    const paginateInventoryRentsQuery = useQueryGQL('', paginateInventoryRents(), filter);
 
-    const [assignPackageToCourierMutation] = useMutationGQL(assignPackageToCourier(), {
-        ids: packagepayload?.ids,
-        userId: packagepayload?.userId,
-    });
     const [filterMerchants, setfilterMerchants] = useState({
         isAsc: true,
         limit: 10,
@@ -78,11 +85,20 @@ const InventoryRent = (props) => {
     });
     const fetchinventories = useQueryGQL('', fetchInventories(), filterInventories);
 
+    const [updateInventoryRentMutation] = useMutationGQL(updateInventoryRent(), {
+        pricePerUnit: inventorySettings?.pricePerUnit,
+        currency: inventorySettings?.currency,
+        squareMeter: inventorySettings?.sqaureMeter,
+        merchantId: inventorySettings?.merchantId,
+    });
+
     useEffect(() => {
         setpageactive_context('/inventoryrent');
         setpagetitle_context('Warehouses');
     }, []);
-
+    const formatDate = (isoDate) => {
+        return isoDate.split('T')[0];
+    };
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div class="row m-0 w-100 d-flex  justify-content-start mt-sm-2 pb-5 pb-md-0">
@@ -122,69 +138,6 @@ const InventoryRent = (props) => {
                                     <AccordionItemPanel>
                                         <hr className="mt-2 mb-3" />
                                         <div class="row m-0 w-100">
-                                            <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                                <SelectComponent
-                                                    title={'Courier'}
-                                                    filter={filterCouriers}
-                                                    setfilter={setfilterCouriers}
-                                                    options={fetchCouriersQuery}
-                                                    attr={'paginateCouriers'}
-                                                    label={'name'}
-                                                    value={'id'}
-                                                    payload={filter}
-                                                    payloadAttr={'courierId'}
-                                                    onClick={(option) => {
-                                                        setfilter({ ...filter, courierId: option?.id });
-                                                    }}
-                                                />
-                                            </div>
-                                            <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                                <label for="name" class={formstyles.form__label}>
-                                                    Type
-                                                </label>
-                                                <Select
-                                                    options={[{ label: 'All', value: undefined }, ...returnPackageTypeContext]}
-                                                    styles={defaultstyles}
-                                                    value={[{ label: 'All', value: undefined }, ...returnPackageTypeContext].filter((option) => option.value == filter?.type)}
-                                                    onChange={(option) => {
-                                                        setfilter({ ...filter, type: option.value });
-                                                    }}
-                                                />
-                                            </div>
-                                            <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                                <label for="name" class={formstyles.form__label}>
-                                                    Status
-                                                </label>
-                                                <Select
-                                                    options={[{ label: 'All', value: undefined }, ...returnPackageStatusContext]}
-                                                    styles={defaultstyles}
-                                                    value={[{ label: 'All', value: undefined }, ...returnPackageStatusContext].filter((option) => option.value == filter?.status)}
-                                                    onChange={(option) => {
-                                                        setfilter({ ...filter, status: option.value });
-                                                    }}
-                                                />
-                                            </div>
-                                            <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                                <label for="name" class={formstyles.form__label}>
-                                                    Assigned
-                                                </label>
-                                                <Select
-                                                    options={[
-                                                        { label: 'All', value: undefined },
-                                                        { label: 'Assigned', value: true },
-                                                        { label: 'Not Assigned', value: false },
-                                                    ]}
-                                                    styles={defaultstyles}
-                                                    value={[
-                                                        { label: 'All', value: undefined },
-                                                        { label: 'Assigned', value: true },
-                                                        { label: 'Not Assigned', value: false },
-                                                    ].filter((option) => option.value == filter?.assigned)}
-                                                    onChange={(option) => {
-                                                        setfilter({ ...filter, assigned: option.value });
-                                                    }}
-                                                />
-                                            </div>
                                             {!cookies.get('userInfo')?.merchantId && (
                                                 <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
                                                     <SelectComponent
@@ -226,44 +179,15 @@ const InventoryRent = (props) => {
                                 </AccordionItem>
                             </Accordion>
                         </div>
-                        <div class={generalstyles.card + ' row m-0 w-100 my-2 p-2 px-0'}>
-                            <div class="col-lg-12 p-0 ">
-                                <div class="row m-0 w-100 d-flex align-items-center">
-                                    <div class="col-lg-10">
-                                        <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
-                                            <input
-                                                class={formstyles.form__field}
-                                                value={search}
-                                                placeholder={'Search by name or SKU'}
-                                                onChange={(event) => {
-                                                    setSearch(event.target.value);
-                                                }}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-2 p-0 allcenered">
-                                        <button
-                                            onClick={() => {
-                                                setfilter({ ...filter, sku: search?.length == 0 ? undefined : search });
-                                            }}
-                                            style={{ height: '35px', marginInlineStart: '5px' }}
-                                            class={generalstyles.roundbutton + '  allcentered bg-primary-light'}
-                                        >
-                                            search
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                         <div class="col-lg-12 p-0 mb-3">
                             <Pagination
-                                beforeCursor={fetchPackagesQuery?.data?.paginateReturnPackages?.cursor?.beforeCursor}
-                                afterCursor={fetchPackagesQuery?.data?.paginateReturnPackages?.cursor?.afterCursor}
+                                beforeCursor={paginateInventoryRentsQuery?.data?.paginateInventoryRents?.cursor?.beforeCursor}
+                                afterCursor={paginateInventoryRentsQuery?.data?.paginateInventoryRents?.cursor?.afterCursor}
                                 filter={filter}
                                 setfilter={setfilter}
                             />
                         </div>
-                        {fetchPackagesQuery?.data?.paginateReturnPackages?.data?.length == 0 && (
+                        {paginateInventoryRentsQuery?.data?.paginateInventoryRents?.data?.length == 0 && (
                             <div style={{ height: '70vh' }} class="col-lg-12 p-0 w-100 allcentered align-items-center m-0 text-lightprimary">
                                 <div class="row m-0 w-100">
                                     <FaLayerGroup size={40} class=" col-lg-12" />
@@ -273,7 +197,7 @@ const InventoryRent = (props) => {
                                 </div>
                             </div>
                         )}
-                        {fetchPackagesQuery?.data?.paginateReturnPackages?.data?.map((item, index) => {
+                        {paginateInventoryRentsQuery?.data?.paginateInventoryRents?.data?.map((item, index) => {
                             var selected = false;
                             packagepayload?.ids?.map((packageitem) => {
                                 if (packageitem == item.id) {
@@ -282,22 +206,25 @@ const InventoryRent = (props) => {
                             });
                             return (
                                 <div
-                                    onClick={() => {
-                                        var temp = { ...packagepayload };
-                                        var exist = false;
-                                        var chosenindex = null;
-                                        temp.ids.map((i, ii) => {
-                                            if (i == item.id) {
-                                                exist = true;
-                                                chosenindex = ii;
+                                    onClick={async () => {
+                                        try {
+                                            var { data } = await fetchSenttTransactionsLazyQuery({
+                                                variables: { input: { ...filterSentTransactionsObj, merchantIds: [parseInt(item?.merchantId)] } },
+                                            });
+                                            setfetchSenttTransactionsQuery({ data: data });
+                                            setinventorySettings({ ...item });
+                                            settransactionsModal(true);
+                                        } catch (e) {
+                                            let errorMessage = 'An unexpected error occurred';
+                                            if (e.graphQLErrors && e.graphQLErrors.length > 0) {
+                                                errorMessage = e.graphQLErrors[0].message || errorMessage;
+                                            } else if (e.networkError) {
+                                                errorMessage = e.networkError.message || errorMessage;
+                                            } else if (e.message) {
+                                                errorMessage = e.message;
                                             }
-                                        });
-                                        if (!exist) {
-                                            temp.ids.push(item.id);
-                                        } else {
-                                            temp.ids.splice(chosenindex, 1);
+                                            NotificationManager.warning(errorMessage, 'Warning!');
                                         }
-                                        setpackagepayload({ ...temp });
                                     }}
                                     style={{ cursor: 'pointer' }}
                                     className="col-lg-6 "
@@ -313,51 +240,20 @@ const InventoryRent = (props) => {
                                         </div>
                                         <div className="col-lg-10 p-0 d-flex justify-content-end align-items-center">
                                             <div class="row m-0 w-100 d-fex justify-content-end align-items-center">
-                                                <div
-                                                    className={
-                                                        item.status == 'delivered'
-                                                            ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered  text-capitalize'
-                                                            : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered text-capitalize'
-                                                    }
-                                                >
-                                                    {item?.status?.split(/(?=[A-Z])/).join(' ')}
-                                                </div>
                                                 <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered mx-1 text-capitalize '}>
                                                     {item?.type?.split(/(?=[A-Z])/).join(' ')}
                                                 </div>
-                                                <Dropdown>
-                                                    <Dropdown.Toggle>
-                                                        <div
-                                                            class="iconhover allcentered"
-                                                            style={{
-                                                                color: 'var(--primary)',
-                                                                // borderRadius: '10px',
-                                                                width: '28px',
-                                                                height: '28px',
-                                                                transition: 'all 0.4s',
-                                                            }}
-                                                        >
-                                                            <FaEllipsisV />
-                                                        </div>
-                                                    </Dropdown.Toggle>
-                                                    <Dropdown.Menu style={{ minWidth: '170px', fontSize: '12px' }}>
-                                                        <Dropdown.Item
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                setchosenPackageContext(item);
-
-                                                                if (item.type == 'merchant') {
-                                                                    history.push('/merchantreturnpackageinfo?packageId=' + item.id);
-                                                                } else {
-                                                                    history.push('/returnpackageinfo?packageId=' + item.id);
-                                                                }
-                                                            }}
-                                                            class="py-2"
-                                                        >
-                                                            <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Show Package</p>
-                                                        </Dropdown.Item>
-                                                    </Dropdown.Menu>
-                                                </Dropdown>
+                                                <div
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setinventorySettings({ ...item });
+                                                        setinventoryModal(true);
+                                                    }}
+                                                    style={{ width: '40px', height: '40px' }}
+                                                    class="iconhover allcentered"
+                                                >
+                                                    <TbEdit />
+                                                </div>
                                             </div>
                                         </div>
                                         <div className="col-lg-12 p-0 my-2">
@@ -365,43 +261,40 @@ const InventoryRent = (props) => {
                                         </div>
                                         <div class="col-lg-12 p-0 mb-2">
                                             <div class="row m-0 w-100 d-flex align-items-center">
-                                                <div class="col-lg-8 p-0">{item.type == 'merchant' ? item?.merchant?.name : item?.inventory?.name}</div>
-                                                <div class="col-lg-4 p-0 d-flex justify-content-end">
+                                                <div class="col-lg-12 p-0 d-flex">
                                                     <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
-                                                        {item?.countAndSum?.sum} items
+                                                        {dateformatter(item?.startDate)}
+                                                    </span>
+                                                </div>
+                                                <div class="col-lg-12 p-0 d-flex">
+                                                    <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
+                                                        {item?.lastBill ?? 'No bills issued yet.'}
+                                                    </span>
+                                                </div>
+                                                <div class="col-lg-12 p-0 d-flex">
+                                                    <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
+                                                        {item?.pricePerUnit} {item?.currency} /{' '}
+                                                        {item?.type == 'order'
+                                                            ? 'order'
+                                                            : item?.type == 'item'
+                                                            ? 'import'
+                                                            : item?.type == 'box'
+                                                            ? 'inventory box'
+                                                            : item?.type == 'rack'
+                                                            ? 'inventory rack'
+                                                            : item?.type == 'pallet'
+                                                            ? 'pallet'
+                                                            : item?.type == 'inventory'
+                                                            ? 'warehouse unit'
+                                                            : 'month'}
                                                     </span>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-lg-12 p-0 mb-2">
-                                            <div class="row m-0 w-100 d-flex align-items-center">
-                                                <div class="col-lg-8 p-0">
-                                                    {' '}
-                                                    <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
-                                                        {item?.sku}
-                                                    </span>
-                                                </div>
-                                                <div class="col-lg-4 p-0 d-flex justify-content-end">
-                                                    <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
-                                                        {item?.countAndSum?.count} orders
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
+
                                         <div class="col-lg-12 p-0">
                                             <div class="row m-0 w-100 d-flex align-items-center">
-                                                <div class="col-lg-6 p-0">
-                                                    {item?.courier && (
-                                                        <div className="col-lg-12 p-0 mb-2 d-flex align-items-center">
-                                                            <TbTruckDelivery size={20} class="mr-1" />
-
-                                                            <span style={{ fontWeight: 600 }} class="text-capitalize">
-                                                                {item?.courier?.name}
-                                                            </span>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                                <div class="col-lg-6 p-0 d-flex justify-content-end">
+                                                <div class="col-lg-12 p-0 d-flex justify-content-end">
                                                     <span style={{ fontSize: '12px', color: 'grey' }} class="text-capitalize">
                                                         {dateformatter(item?.createdAt)}
                                                     </span>
@@ -414,8 +307,8 @@ const InventoryRent = (props) => {
                         })}
                         <div class="col-lg-12 p-0">
                             <Pagination
-                                beforeCursor={fetchPackagesQuery?.data?.paginateReturnPackages?.cursor?.beforeCursor}
-                                afterCursor={fetchPackagesQuery?.data?.paginateReturnPackages?.cursor?.afterCursor}
+                                beforeCursor={paginateInventoryRentsQuery?.data?.paginateInventoryRents?.cursor?.beforeCursor}
+                                afterCursor={paginateInventoryRentsQuery?.data?.paginateInventoryRents?.cursor?.afterCursor}
                                 filter={filter}
                                 setfilter={setfilter}
                             />
@@ -423,6 +316,272 @@ const InventoryRent = (props) => {
                     </div>
                 </div>
             </div>
+            <Modal
+                show={inventoryModal}
+                onHide={() => {
+                    setinventoryModal(false);
+                }}
+                centered
+                size={'md'}
+            >
+                <Modal.Header>
+                    <div className="row w-100 m-0 p-0">
+                        <div class="col-lg-6 pt-3 "></div>
+                        <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
+                            <div
+                                class={'close-modal-container'}
+                                onClick={() => {
+                                    setinventoryModal(false);
+                                }}
+                            >
+                                <IoMdClose />
+                            </div>
+                        </div>{' '}
+                    </div>
+                </Modal.Header>
+                <Modal.Body>
+                    <div class="row m-0 w-100 py-2">
+                        <div class={' row m-0 w-100'}>
+                            <div class={'col-lg-12 mb-3'}>
+                                <label for="name" class={formstyles.form__label}>
+                                    Rent Type
+                                </label>
+                                <Select
+                                    isDisabled={inventorySettings?.functype == 'edit'}
+                                    options={inventoryRentTypeContext}
+                                    styles={defaultstyles}
+                                    value={inventoryRentTypeContext.filter((option) => option.value == inventorySettings?.type)}
+                                    onChange={(option) => {
+                                        setinventorySettings({ ...inventorySettings, type: option.value });
+                                    }}
+                                />
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="row m-0 w-100  ">
+                                    <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                        <label class={formstyles.form__label}>Start Date</label>
+                                        <input
+                                            disabled={inventorySettings?.functype == 'edit'}
+                                            type={'date'}
+                                            class={formstyles.form__field}
+                                            value={inventorySettings.startDate ? formatDate(inventorySettings.startDate) : ''}
+                                            onChange={(event) => {
+                                                setinventorySettings({ ...inventorySettings, startDate: event.target.value });
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <div class="row m-0 w-100  ">
+                                    <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                        <label class={formstyles.form__label}>Currency</label>
+                                        <Select
+                                            options={[
+                                                { label: 'EGP', value: 'EGP' },
+                                                { label: 'USD', value: 'USD' },
+                                            ]}
+                                            styles={defaultstyles}
+                                            value={[
+                                                { label: 'EGP', value: 'EGP' },
+                                                { label: 'USD', value: 'USD' },
+                                            ].filter((option) => option.value == inventorySettings.currency)}
+                                            onChange={(option) => {
+                                                setinventorySettings({ ...inventorySettings, currency: option.value });
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            {inventorySettings?.type == 'meter' && (
+                                <div class="col-lg-12">
+                                    <div class="row m-0 w-100  ">
+                                        <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                            <label class={formstyles.form__label}>Sqaure Meter</label>
+                                            <input
+                                                type={'number'}
+                                                class={formstyles.form__field}
+                                                value={inventorySettings.sqaureMeter}
+                                                onChange={(event) => {
+                                                    setinventorySettings({ ...inventorySettings, sqaureMeter: event.target.value });
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                            <div class="col-lg-12">
+                                <div class="row m-0 w-100  ">
+                                    <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                        <label class={formstyles.form__label}>
+                                            {inventorySettings?.type === 'item'
+                                                ? 'Price Per Item'
+                                                : inventorySettings?.type == 'order'
+                                                ? 'Price Per Order'
+                                                : inventorySettings?.type == 'meter'
+                                                ? 'Price Per Meter'
+                                                : 'Price Per Unit Per Month'}
+                                        </label>
+                                        <input
+                                            type={'number'}
+                                            step="any"
+                                            class={formstyles.form__field}
+                                            value={inventorySettings.pricePerUnit}
+                                            onChange={(event) => {
+                                                setinventorySettings({ ...inventorySettings, pricePerUnit: event.target.value });
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class={'col-lg-12 d-flex justify-content-center mt-5'}>
+                                <button
+                                    disabled={buttonLoadingContext}
+                                    class={generalstyles.roundbutton + ' allcentered'}
+                                    onClick={async () => {
+                                        if (buttonLoadingContext) return;
+                                        setbuttonLoadingContext(true);
+                                        try {
+                                            if (
+                                                inventorySettings?.type &&
+                                                inventorySettings?.type?.length != 0 &&
+                                                inventorySettings?.startDate &&
+                                                inventorySettings?.startDate?.length != 0 &&
+                                                inventorySettings?.merchantId &&
+                                                inventorySettings?.merchantId?.length != 0 &&
+                                                inventorySettings?.currency &&
+                                                inventorySettings?.currency?.length != 0 &&
+                                                inventorySettings?.pricePerUnit &&
+                                                inventorySettings?.pricePerUnit?.length != 0
+                                            ) {
+                                                const { data } = await updateInventoryRentMutation();
+                                                paginateInventoryRentsQuery.refetch();
+                                                setinventoryModal(false);
+                                                NotificationManager.success('', 'Success');
+                                            } else {
+                                                NotificationManager.warning('Please Complete all fields', 'Warning');
+                                            }
+                                        } catch (error) {
+                                            let errorMessage = 'An unexpected error occurred';
+                                            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                                errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                            } else if (error.networkError) {
+                                                errorMessage = error.networkError.message || errorMessage;
+                                            } else if (error.message) {
+                                                errorMessage = error.message;
+                                            }
+
+                                            NotificationManager.warning(errorMessage, 'Warning!');
+                                            console.error('Error adding Merchant:', error);
+                                        }
+                                        setbuttonLoadingContext(false);
+                                    }}
+                                    style={{ padding: '0px' }}
+                                >
+                                    {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                    {!buttonLoadingContext && <span>{'Edit'}</span>}
+                                </button>
+                            </div>
+                        </div>
+                        {/* )} */}
+                    </div>
+                </Modal.Body>
+            </Modal>
+            <Modal
+                show={transactionsModal}
+                onHide={() => {
+                    settransactionsModal(false);
+                }}
+                centered
+                size={'lg'}
+            >
+                <Modal.Header>
+                    <div className="row w-100 m-0 p-0">
+                        <div class="col-lg-6 pt-3 "></div>
+                        <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
+                            <div
+                                class={'close-modal-container'}
+                                onClick={() => {
+                                    settransactionsModal(false);
+                                }}
+                            >
+                                <IoMdClose />
+                            </div>
+                        </div>{' '}
+                    </div>
+                </Modal.Header>
+                <Modal.Body>
+                    <div class="row m-0 w-100 py-2">
+                        <>
+                            {fetchSenttTransactionsQuery.data?.paginateInventoryRentTransaction?.data?.length == 0 && (
+                                <div style={{ height: '70vh' }} class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
+                                    <div class="row m-0 w-100">
+                                        <FaLayerGroup size={40} class=" col-lg-12" />
+                                        <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
+                                            {props?.srctype == 'expenses' ? 'No Expenses' : 'No Transactions'}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                            {fetchSenttTransactionsQuery.data?.paginateInventoryRentTransaction?.data?.length != 0 && (
+                                <div class="row m-0 w-100">
+                                    <div class="col-lg-12 p-0 mb-3">
+                                        <Pagination
+                                            beforeCursor={fetchSenttTransactionsQuery?.data?.paginateInventoryRentTransaction?.cursor?.beforeCursor}
+                                            afterCursor={fetchSenttTransactionsQuery?.data?.paginateInventoryRentTransaction?.cursor?.afterCursor}
+                                            filter={filterSentTransactionsObj}
+                                            setfilter={setfilterSentTransactionsObj}
+                                        />
+                                    </div>
+                                    {fetchSenttTransactionsQuery.data?.paginateInventoryRentTransaction?.data?.map((item, index) => {
+                                        return (
+                                            <div style={{ fontSize: '13px', position: 'relative', padding: 'auto' }} className={'col-lg-6'}>
+                                                <div class={generalstyles.card + ' p-2 px-3 row m-0 w-100 allcentered'}>
+                                                    <div className="col-lg-3 p-0">
+                                                        <span style={{ fontWeight: 700, fontSize: '16px' }} class=" d-flex align-items-center">
+                                                            {/* <FaMoneyBill class="mr-1" /> */}
+                                                            {new Decimal(item?.quantity ?? 0).times(inventorySettings?.pricePerUnit ?? 0).toFixed(2)}
+                                                            {inventorySettings?.currency}
+                                                        </span>
+                                                    </div>
+
+                                                    <div className="col-lg-9 p-0 d-flex justify-content-end align-items-center">
+                                                        <div class="row m-0 w-100 d-flex justify-content-end align-items-center">
+                                                            <div style={{ color: 'white' }} className={' wordbreak bg-primary rounded-pill font-weight-600 allcentered mx-1 text-capitalize'}>
+                                                                {item?.type?.split(/(?=[A-Z])/).join(' ')}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-12 p-0 mt-2">
+                                                        <div class="row m-0 w-100 justify-content-end">
+                                                            <div className="col-lg-12 p-0 mb-1 d-flex justify-content-end">
+                                                                <span class="d-flex align-items-center" style={{ fontWeight: 500, color: 'grey', fontSize: '12px' }}>
+                                                                    <IoMdTime class="mr-1" />
+                                                                    {dateformatter(item?.createdAt)}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                    <div class="col-lg-12 p-0 mb-3">
+                                        <Pagination
+                                            beforeCursor={fetchSenttTransactionsQuery?.data?.paginateInventoryRentTransaction?.cursor?.beforeCursor}
+                                            afterCursor={fetchSenttTransactionsQuery?.data?.paginateInventoryRentTransaction?.cursor?.afterCursor}
+                                            filter={filterSentTransactionsObj}
+                                            setfilter={setfilterSentTransactionsObj}
+                                        />
+                                    </div>
+                                </div>
+                            )}
+                        </>
+                    </div>
+                </Modal.Body>
+            </Modal>
         </div>
     );
 };
