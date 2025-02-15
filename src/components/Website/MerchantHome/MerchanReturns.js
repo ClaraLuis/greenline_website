@@ -1,27 +1,22 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 import { useHistory } from 'react-router-dom';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
-import { Accordion, AccordionItem, AccordionItemHeading, AccordionItemButton, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 // import { fetch_collection_data } from '../../../API/API';
-import { FaPlus, FaWindowMinimize } from 'react-icons/fa';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
-import Select from 'react-select';
+import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
+import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
+import { IoMdClose } from 'react-icons/io';
+import { NotificationManager } from 'react-notifications';
 import API from '../../../API/API.js';
-import Form from '../../Form.js';
 import Pagination from '../../Pagination.js';
 import SelectComponent from '../../SelectComponent.js';
-import { defaultstyles } from '../Generalfiles/selectstyles.js';
-import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
-import ItemsTable from './ItemsTable.js';
-import { NotificationManager } from 'react-notifications';
-import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
 import ReturnsTable from './ReturnsTable.js';
-import { IoMdClose } from 'react-icons/io';
 
 const MerchanReturns = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -247,7 +242,8 @@ const MerchanReturns = (props) => {
                                             {item?.orderItems?.map((subitem, subindex) => {
                                                 return (
                                                     <div class="row m-0">
-                                                        {subitem?.count}{' '}
+                                                        {subitem?.itemReturn?.count ?? ''}
+                                                        {subitem?.inventoryReturn?.count ?? ''}{' '}
                                                         <div style={{ width: '25px', height: '25px', borderRadius: '2px', marginInline: '5px', border: '1px solid #eee' }}>
                                                             <img
                                                                 src={

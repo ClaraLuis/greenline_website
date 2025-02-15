@@ -75,7 +75,7 @@ const AddOrder = (props) => {
         returnOrderItems: [],
         user: '',
         address: '',
-        ordertype: queryParameters.get('merchantId') ?? 'delivery',
+        ordertype: queryParameters.get('order') ? 'exchange' : 'delivery',
         paymenttype: 'cash',
         shippingprice: '',
         canbeoppened: 1,
@@ -116,6 +116,7 @@ const AddOrder = (props) => {
         statuses: ['delivered', 'partiallyDelivered'], //arrivedToHub
         limit: 20,
         orderIds: undefined,
+        merchantIds: [parseInt(queryParameters.get('merchantId'))],
     });
 
     const [fetchOrdersQueryLazyQuery] = useLazyQueryGQL(fetchOrders(), 'network-only');
@@ -170,8 +171,8 @@ const AddOrder = (props) => {
         paymentType: orderpayload?.paymenttype,
         returnAmount: orderpayload?.returnAmount ? new Decimal(orderpayload?.returnAmount) : undefined,
         returnOrderItems: orderpayload?.returnOrderItems?.length == 0 ? undefined : orderpayload?.returnOrderItems,
-        previousOrderId: orderpayload?.previousOrderId?.length == 0 ? undefined : parseInt(orderpayload?.previousOrderId),
-        returnOrderId: orderpayload?.returnOrderId?.length == 0 ? undefined : parseInt(orderpayload?.returnOrderId),
+        previousOrderId: orderpayload?.previousOrderId?.length == 0 || orderpayload?.previousOrderId == null ? undefined : parseInt(orderpayload?.previousOrderId),
+        returnOrderId: orderpayload?.returnOrderId?.length == 0 || orderpayload?.returnOrderId == null ? undefined : parseInt(orderpayload?.returnOrderId),
         // currency: 'EGP',
         orderItems: cartItems,
         // shippingPrice: '0.0',
@@ -351,7 +352,10 @@ const AddOrder = (props) => {
         if (orderpayload?.ordertype == 'exchange' && previousOrderType != 'e') {
             var { data } = await fetchOrdersQueryLazyQuery({
                 variables: {
-                    input: previousOrderType == 'd' ? filterorders : { ...filterorders, statuses: undefined, notStatuses: ['returned', 'partiallyReturned', 'assignedToCourier'], types: ['return'] },
+                    input:
+                        previousOrderType == 'd'
+                            ? filterorders
+                            : { ...filterorders, statuses: undefined, notStatuses: ['returned', 'partiallyReturned', 'assignedToCourier'], types: ['return'], merchantIds: [parseInt(merchantId)] },
                 },
             });
             setfetchOrdersQuery({ data: data });

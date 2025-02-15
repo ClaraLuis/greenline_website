@@ -1812,6 +1812,12 @@ const API = () => {
                         unitPrice
                         unitDiscount
                         partialCount
+                        itemReturn {
+                            count
+                        }
+                        inventoryReturn {
+                            count
+                        }
                         info {
                             item {
                                 name
@@ -2087,6 +2093,32 @@ const API = () => {
                             id
                         }
                         createdAt
+                    }
+                    cursor
+                }
+            }
+        `;
+    };
+    const paginateInventoryRents = (payload) => {
+        return gql`
+            query paginateInventoryRents($input: PaginateInventoryRentInput!) {
+                paginateInventoryRents(input: $input) {
+                    data {
+                        id
+                        merchantId
+                        type
+                        startDate
+                        lastBill
+                        pricePerUnit
+                        sqaureMeter
+                        currency
+                        createdAt
+                        lastModified
+                        deletedAt
+                        merchant {
+                            name
+                            id
+                        }
                     }
                     cursor
                 }
@@ -2780,6 +2812,7 @@ const API = () => {
         importNew,
         fetchOrders,
         paginateUnresolvedOrders,
+        paginateInventoryRents,
         fetchRacks,
         paginateBoxes,
         paginatePallets,
