@@ -130,7 +130,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/inventoryitems',
                         permissionpage: [1],
-                        show: isAuth([1, 54, 2, 4, 6, 7, 8]),
+                        show: isAuth([1, 54, 2, 4, 6, 7, 8, 52]),
                     },
                     {
                         name: 'Inventory Rent',
