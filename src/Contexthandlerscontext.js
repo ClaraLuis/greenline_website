@@ -299,7 +299,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/merchantfinance',
                         permissionpage: [1],
-                        show: isAuth([1, 52]),
+                        show: isAuth([1, 51]),
                     },
                     {
                         name: 'Merchant Payments',

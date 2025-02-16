@@ -51,21 +51,6 @@ const CourierSheet = (props) => {
         outOfStock: false,
     });
 
-    const [filterInventories, setfilterInventories] = useState({
-        limit: 10,
-        afterCursor: null,
-        beforeCursor: null,
-    });
-    const fetchinventories = useQueryGQL('', fetchInventories(), filterInventories);
-
-    const [filterMerchants, setfilterMerchants] = useState({
-        isAsc: true,
-        limit: 20,
-        afterCursor: undefined,
-        beforeCursor: undefined,
-    });
-    const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
-
     const [updateStatusbuttonLoadingContext, setupdateStatusbuttonLoadingContext] = useState(false);
 
     const [fetchCourierSheetLazyQuery] = useLazyQueryGQL(fetchCourierSheet());
@@ -118,13 +103,13 @@ const CourierSheet = (props) => {
         }
 
         if (statuspayload?.order?.originalPrice) {
-            if (statuspayload?.shippingCollected) {
+            if (statuspayload?.shippingCollected == 'collected') {
                 amount = new Decimal(statuspayload?.order?.shippingPrice ?? 0).plus(orderItemsAmount);
             } else {
                 amount = orderItemsAmount;
             }
         } else if (!statuspayload?.order?.originalPrice) {
-            if (statuspayload?.shippingCollected) {
+            if (statuspayload?.shippingCollected == 'collected') {
                 amount = new Decimal(statuspayload?.order?.shippingPrice ?? 0).plus(new Decimal(statuspayload?.amountCollected ?? 0));
             } else {
                 amount = new Decimal(statuspayload?.amountCollected ?? 0);
@@ -269,7 +254,7 @@ const CourierSheet = (props) => {
                 sheetOrderId: item?.id,
                 expanded: type == 'admin' ? (item?.adminPass ? false : true) : false,
                 status: type == 'admin' ? (item?.adminPass ? 'adminAccepted' : 'adminRejected') : item?.financePass ? 'financeAccepted' : 'financeRejected',
-                shippingCollected: item?.shippingCollected === 'collected',
+                shippingCollected: item?.shippingCollected,
                 description: '',
                 price: item?.order?.price,
                 shippingPrice: item?.order?.shippingPrice,
@@ -282,7 +267,7 @@ const CourierSheet = (props) => {
                 temp.updateSheetOrders.push({
                     sheetOrderId: item?.id,
                     status: type == 'admin' ? (item?.adminPass ? 'adminAccepted' : 'adminRejected') : item?.financePass ? 'financeAccepted' : 'financeRejected',
-                    shippingCollected: item?.shippingCollected === 'collected',
+                    shippingCollected: item?.shippingCollected,
                     description: '',
                     orderId: item?.order?.id,
                 });
@@ -441,7 +426,7 @@ const CourierSheet = (props) => {
                                     <AccordionItem uuid={index} style={{}} className={generalstyles.card + ' col-lg-12 p-4 mb-3'}>
                                         <div id={'id' + JSON.stringify(item.id)} className={' col-lg-12 p-0'}>
                                             <div className="row m-0 w-100">
-                                                <div className="col-lg-9 p-0">
+                                                <div className="col-lg-8 p-0">
                                                     <div className="row m-0 w-100">
                                                         <div className="col-lg-12 p-0">
                                                             <label style={{}} className={`${formstyles.checkbox} ${formstyles.checkbox_sub} ${formstyles.path}` + ' d-flex my-0 '}>
@@ -561,39 +546,46 @@ const CourierSheet = (props) => {
                                                     </div>{' '}
                                                 </div>
 
-                                                <div className="col-lg-3 p-0">
+                                                <div className="col-lg-4 p-0">
                                                     <div className="row m-0 w-100">
                                                         {type == 'finance' && (
                                                             <div className="col-lg-12 p-0 mb-2 d-flex justify-content-end">
                                                                 <div className="row m-0 w-100 d-flex justify-content-end">
-                                                                    <label className={`${formstyles.switch} mx-2 my-0`}>
-                                                                        <input
-                                                                            type="checkbox"
-                                                                            checked={!tempsheetpayload?.shippingCollected}
-                                                                            onChange={(e) => {
-                                                                                e.stopPropagation();
+                                                                    <div class={'col-lg-12 mb-3'}>
+                                                                        <label for="name" class={formstyles.form__label + ' text-capitalize'}>
+                                                                            Shipping
+                                                                        </label>
+                                                                        <Select
+                                                                            options={[
+                                                                                { label: 'Dismissed', value: 'dismissed' },
+                                                                                { label: 'Collected', value: 'collected' },
+                                                                                { label: 'Not Collected', value: 'notCollected' },
+                                                                            ]}
+                                                                            styles={defaultstyles}
+                                                                            value={[
+                                                                                { label: 'Dismissed', value: 'dismissed' },
+                                                                                { label: 'Collected', value: 'collected' },
+                                                                                { label: 'Not Collected', value: 'notCollected' },
+                                                                            ].filter((option) => option.value == tempsheetpayload?.shippingCollected)}
+                                                                            onChange={(option) => {
                                                                                 var temp = { ...submitSheetPayload };
 
                                                                                 temp.updateSheetOrders.map((i, ii) => {
                                                                                     if (i.sheetOrderId == item.id) {
-                                                                                        temp.updateSheetOrders[ii].shippingCollected = !temp.updateSheetOrders[ii].shippingCollected;
+                                                                                        temp.updateSheetOrders[ii].shippingCollected = option.value;
                                                                                     }
                                                                                 });
 
                                                                                 temp.updateSheetOrderstemp.map((i, ii) => {
                                                                                     if (i.sheetOrderId == item.id) {
-                                                                                        temp.updateSheetOrderstemp[ii].shippingCollected = !temp.updateSheetOrders[ii].shippingCollected;
+                                                                                        temp.updateSheetOrderstemp[ii].shippingCollected = option.value;
                                                                                     }
                                                                                 });
 
                                                                                 setsubmitSheetPayload({ ...temp });
                                                                             }}
                                                                         />
-                                                                        <span className={`${formstyles.slider} ${formstyles.round}`}></span>
-                                                                    </label>
-                                                                    <p className={`${generalstyles.checkbox_label} mb-0 text-focus text-capitalize cursor-pointer font_14 ml-1 mr-1 wordbreak`}>
-                                                                        Shipping on merchant
-                                                                    </p>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         )}
@@ -830,34 +822,41 @@ const CourierSheet = (props) => {
                                                                 {type == 'finance' && (
                                                                     <div className="col-lg-12 p-0 mb-2 d-flex justify-content-end">
                                                                         <div className="row m-0 w-100 d-flex justify-content-end">
-                                                                            <label className={`${formstyles.switch} mx-2 my-0`}>
-                                                                                <input
-                                                                                    type="checkbox"
-                                                                                    checked={!tempsheetpayloadPreviousOrder?.shippingCollected}
-                                                                                    onChange={(e) => {
-                                                                                        e.stopPropagation();
+                                                                            <div class={'col-lg-12 mb-3'}>
+                                                                                <label for="name" class={formstyles.form__label + ' text-capitalize'}>
+                                                                                    Shipping
+                                                                                </label>
+                                                                                <Select
+                                                                                    options={[
+                                                                                        { label: 'Dismissed', value: 'dismissed' },
+                                                                                        { label: 'Collected', value: 'collected' },
+                                                                                        { label: 'Not Collected', value: 'notCollected' },
+                                                                                    ]}
+                                                                                    styles={defaultstyles}
+                                                                                    value={[
+                                                                                        { label: 'Dismissed', value: 'dismissed' },
+                                                                                        { label: 'Collected', value: 'collected' },
+                                                                                        { label: 'Not Collected', value: 'notCollected' },
+                                                                                    ].filter((option) => option.value == tempsheetpayloadPreviousOrder?.shippingCollected)}
+                                                                                    onChange={(option) => {
                                                                                         var temp = { ...submitSheetPayload };
 
                                                                                         temp.updateSheetOrders.map((i, ii) => {
                                                                                             if (i.sheetOrderId == previousOrder.id) {
-                                                                                                temp.updateSheetOrders[ii].shippingCollected = !temp.updateSheetOrders[ii].shippingCollected;
+                                                                                                temp.updateSheetOrders[ii].shippingCollected = option.value;
                                                                                             }
                                                                                         });
 
                                                                                         temp.updateSheetOrderstemp.map((i, ii) => {
                                                                                             if (i.sheetOrderId == previousOrder.id) {
-                                                                                                temp.updateSheetOrderstemp[ii].shippingCollected = !temp.updateSheetOrders[ii].shippingCollected;
+                                                                                                temp.updateSheetOrderstemp[ii].shippingCollected = option.value;
                                                                                             }
                                                                                         });
 
                                                                                         setsubmitSheetPayload({ ...temp });
                                                                                     }}
                                                                                 />
-                                                                                <span className={`${formstyles.slider} ${formstyles.round}`}></span>
-                                                                            </label>
-                                                                            <p className={`${generalstyles.checkbox_label} mb-0 text-focus text-capitalize cursor-pointer font_14 ml-1 mr-1 wordbreak`}>
-                                                                                Shipping on merchant
-                                                                            </p>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 )}
@@ -1370,7 +1369,7 @@ const CourierSheet = (props) => {
                                         <span class="px-2" style={{ borderInlineStart: '1px solid rgba(238, 238, 238, 0.6)' }}>
                                             {submitSheetPayload?.updateSheetOrderstemp
                                                 ?.filter((item) => item.status == 'adminAccepted' || item.status == 'financeAccepted')
-                                                .map((e) => new Decimal(e?.amountCollected ?? '0').plus(e?.shippingCollected ? new Decimal(e?.shippingPrice ?? '0') : 0))
+                                                .map((e) => new Decimal(e?.amountCollected ?? '0').plus(e?.shippingCollected == 'collected' ? new Decimal(e?.shippingPrice ?? '0') : 0))
                                                 .reduce((sum, current) => sum.plus(current), new Decimal(0))
                                                 .toFixed(2)}{' '}
                                             {submitSheetPayload?.orderCurrency}
@@ -1502,13 +1501,15 @@ const CourierSheet = (props) => {
                                         </label>
                                         <Select
                                             options={[
-                                                { label: 'Collected', value: true },
-                                                { label: 'Not Collected', value: false },
+                                                { label: 'Dismissed', value: 'dismissed' },
+                                                { label: 'Collected', value: 'collected' },
+                                                { label: 'Not Collected', value: 'notCollected' },
                                             ]}
                                             styles={defaultstyles}
                                             value={[
-                                                { label: 'Collected', value: true },
-                                                { label: 'Not Collected', value: false },
+                                                { label: 'Dismissed', value: 'dismissed' },
+                                                { label: 'Collected', value: 'collected' },
+                                                { label: 'Not Collected', value: 'notCollected' },
                                             ].filter((option) => option.value == statuspayload?.shippingCollected)}
                                             onChange={(option) => {
                                                 setstatuspayload({ ...statuspayload, shippingCollected: option.value });
@@ -1835,20 +1836,27 @@ const CourierSheet = (props) => {
                                         })}
                                         <div class={'col-lg-12 mb-3 p-0 '}>
                                             <div className="row m-0 w-100 d-flex align-items-center">
-                                                <label className={`${formstyles.switch} mx-2 my-0`}>
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={statuspayload?.shippingCollected}
-                                                        onChange={(e) => {
-                                                            setstatuspayload({
-                                                                ...statuspayload,
-                                                                shippingCollected: !statuspayload?.shippingCollected,
-                                                            });
+                                                <div class={'col-lg-12 mb-3'}>
+                                                    <label for="name" class={formstyles.form__label}>
+                                                        Shipping
+                                                    </label>
+                                                    <Select
+                                                        options={[
+                                                            { label: 'Dismissed', value: 'dismissed' },
+                                                            { label: 'Collected', value: 'collected' },
+                                                            { label: 'Not Collected', value: 'notCollected' },
+                                                        ]}
+                                                        styles={defaultstyles}
+                                                        value={[
+                                                            { label: 'Dismissed', value: 'dismissed' },
+                                                            { label: 'Collected', value: 'collected' },
+                                                            { label: 'Not Collected', value: 'notCollected' },
+                                                        ].filter((option) => option.value == statuspayload?.shippingCollected)}
+                                                        onChange={(option) => {
+                                                            setstatuspayload({ ...statuspayload, shippingCollected: option.value });
                                                         }}
                                                     />
-                                                    <span className={`${formstyles.slider} ${formstyles.round}`}></span>
-                                                </label>
-                                                <p className={`${generalstyles.checkbox_label} mb-0 text-focus text-capitalize cursor-pointer font_14 ml-1 mr-1 wordbreak`}>Shipping Collected</p>
+                                                </div>
                                             </div>
                                         </div>
                                         {!statuspayload?.order?.originalPrice && !statuspayload?.fullDelivery && (
