@@ -2096,6 +2096,10 @@ const CourierSheet = (props) => {
                                             NotificationManager.warning('Enter Amount Collected.', 'Warning!');
                                             return;
                                         }
+                                        if (statuspayload?.shippingCollected?.length == 0 || !statuspayload?.shippingCollected) {
+                                            NotificationManager.warning('Enter Shipping.', 'Warning!');
+                                            return;
+                                        }
                                         try {
                                             setupdateStatusbuttonLoadingContext(true);
                                             const { data } = await updateOrdersStatusMutation();
