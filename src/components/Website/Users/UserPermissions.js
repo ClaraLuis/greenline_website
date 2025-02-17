@@ -24,7 +24,7 @@ import { TbEdit } from 'react-icons/tb';
 
 const { ValueContainer, Placeholder } = components;
 
-const UserRoles = (props) => {
+const UserPermissions = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const cookies = new Cookies();
@@ -34,13 +34,13 @@ const UserRoles = (props) => {
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [userPayload, setuserPayload] = useState(undefined);
-    const [changerolesmodal, setchangerolesmodal] = useState(false);
-    const groupedRoles = _.groupBy(userPayload?.userRoles, (role) => role.role.type);
+    const [changepermissionsmodal, setchangepermissionsmodal] = useState(false);
+    const groupedPermissions = _.groupBy(userPayload?.userPermissions, (permission) => permission.permission.type);
 
     // Transform into desired format
-    const userRoles = Object.keys(groupedRoles).map((type) => ({
+    const userPermissions = Object.keys(groupedPermissions).map((type) => ({
         type,
-        roles: groupedRoles[type],
+        permissions: groupedPermissions[type],
     }));
 
     const [findOneUserQuery] = useLazyQueryGQL(findOneUser());
@@ -96,36 +96,36 @@ const UserRoles = (props) => {
                                 </div>
                             </div>
                         </div>
-                        {!changerolesmodal && (
+                        {!changepermissionsmodal && (
                             <div class="col-lg-6 d-flex justify-content-end py-0">
                                 <div
                                     onClick={() => {
-                                        setchangerolesmodal(true);
+                                        setchangepermissionsmodal(true);
                                     }}
                                     class={generalstyles.roundbutton + ' allcentered'}
                                     // style={{ textDecoration: 'underline', fontSize: '12px' }}
                                 >
-                                    Update roles
+                                    Update permissions
                                 </div>
                             </div>
                         )}
                     </div>
                 </div>
-                {!changerolesmodal && (
+                {!changepermissionsmodal && (
                     <>
                         <div class="col-lg-12 px-3">
                             <div class={generalstyles.card + ' row m-0 w-100'}>
-                                {userRoles?.map((item, index) => {
+                                {userPermissions?.map((item, index) => {
                                     return (
                                         <div class="col-lg-12 p-0 mb-2">
                                             <div class="row m-0 w-100">
                                                 <div class="col-lg-12 p-0 mb-2 text-capitalize" style={{ fontWeight: 500 }}>
                                                     {item?.type}
                                                 </div>
-                                                {item?.roles?.map((role, roleIndex) => {
+                                                {item?.permissions?.map((permission, permissionIndex) => {
                                                     return (
                                                         <div class={' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 mr-2 mb-2 text-capitalize '}>
-                                                            {role?.role?.name?.split(/(?=[A-Z])/).join(' ')}
+                                                            {permission?.permission?.name?.split(/(?=[A-Z])/).join(' ')}
                                                         </div>
                                                     );
                                                 })}
@@ -137,10 +137,16 @@ const UserRoles = (props) => {
                         </div>
                     </>
                 )}
-                {changerolesmodal && (
+                {changepermissionsmodal && (
                     <div class="col-lg-12 px-3">
                         <div class={generalstyles.card + ' row m-0 w-100 py-2'}>
-                            <AddEditSecuritylayers payload={userPayload} setopenModal={props?.setopenModal} setchangerolesmodal={setchangerolesmodal} edit={true} fetchUserInfo={fetchUserInfo} />
+                            <AddEditSecuritylayers
+                                payload={userPayload}
+                                setopenModal={props?.setopenModal}
+                                setchangepermissionsmodal={setchangepermissionsmodal}
+                                edit={true}
+                                fetchUserInfo={fetchUserInfo}
+                            />
                         </div>
                     </div>
                 )}
@@ -148,4 +154,4 @@ const UserRoles = (props) => {
         </div>
     );
 };
-export default UserRoles;
+export default UserPermissions;

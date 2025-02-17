@@ -64,12 +64,12 @@ export const Contexthandlerscontext_provider = (props) => {
         const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', hour12: true };
         return new Date(date).toLocaleDateString(undefined, options);
     };
-    const isAuth = (roles) => {
+    const isAuth = (permissions) => {
         var show = false;
         const cookies = new Cookies();
         var user = cookies.get('userInfo');
-        var acceptedRoles = roles.filter((e) => user?.roles?.map((x) => x.roleId).includes(e));
-        show = acceptedRoles?.length > 0;
+        var acceptedPermissions = permissions.filter((e) => user?.permissions?.map((x) => x.permissionId).includes(e));
+        show = acceptedPermissions?.length > 0;
 
         return show;
     };
@@ -921,7 +921,7 @@ export const Contexthandlerscontext_provider = (props) => {
         { label: 'Restocked', value: 'restocked' },
     ];
 
-    const roleTypeContext = [
+    const permissionTypeContext = [
         { label: 'Super Admin', value: 'super' },
         { label: 'Inventory', value: 'inventory' },
         { label: 'Merchant', value: 'merchant' },
@@ -933,7 +933,7 @@ export const Contexthandlerscontext_provider = (props) => {
         { label: 'Management', value: 'management' },
         { label: 'Return Package', value: 'returnPackage' },
     ];
-    const userRolesContext = [
+    const userPermissionsContext = [
         { label: 'Admin', value: 'admin' },
         { label: 'Access Inventory', value: 'accessInventory' },
         { label: 'View Inventories', value: 'viewInventories' },
@@ -979,11 +979,11 @@ export const Contexthandlerscontext_provider = (props) => {
         { label: 'Access User Management', value: 'accessUserManagement' },
         { label: 'Create User', value: 'createUser' },
         { label: 'Edit User', value: 'editUser' },
-        { label: 'Edit User Roles', value: 'editUserRoles' },
+        { label: 'Edit User Permissions', value: 'editUserPermissions' },
         { label: 'View Merchant Finance', value: 'viewMerchantFinance' },
         { label: 'Create Merchant User', value: 'createMerchantUser' },
         { label: 'Edit Merchant User', value: 'editMerchantUser' },
-        { label: 'Edit Merchant User Roles', value: 'editMerchantUserRoles' },
+        { label: 'Edit Merchant User Permissions', value: 'editMerchantUserPermissions' },
         { label: 'Finance Admin', value: 'financeAdmin' },
         { label: 'Merchant Admin', value: 'merchantAdmin' },
         { label: 'Courier Admin', value: 'courierAdmin' },
@@ -1053,7 +1053,7 @@ export const Contexthandlerscontext_provider = (props) => {
                 merchantVisitTypeContext,
 
                 financialAccountTypeContext,
-                userRolesContext,
+                userPermissionsContext,
                 transactionStatusesSelectContext,
                 returnPackageTypeContext,
                 returnPackageStatusContext,

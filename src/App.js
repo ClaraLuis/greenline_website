@@ -145,8 +145,8 @@ async function refreshAuthToken() {
                                 createdAt
                                 lastModified
                                 deletedAt
-                                roles {
-                                    roleId
+                                permissions {
+                                    permissionId
                                 }
                                 merchant {
                                     name

@@ -15,12 +15,12 @@ import Cookies from 'universal-cookie';
 const AddEditSecuritylayers = (props) => {
     const cookies = new Cookies();
     const { lang, langdetect } = useContext(LanguageContext);
-    const { useQueryGQL, fetchUsers, useMutationGQL, updateUserRoles, findRoles } = API();
+    const { useQueryGQL, fetchUsers, useMutationGQL, updateUserPermissions, findPermissions } = API();
     const { buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
-    const [selectedroles, setselectedroles] = useState([]);
-    const [rolesarray, setrolesarray] = useState([]);
-    const [updateUserRolesMutation] = useMutationGQL(updateUserRoles(), {
-        roles: selectedroles,
+    const [selectedpermissions, setselectedpermissions] = useState([]);
+    const [permissionsarray, setpermissionsarray] = useState([]);
+    const [updateUserPermissionsMutation] = useMutationGQL(updateUserPermissions(), {
+        permissions: selectedpermissions,
         id: props?.payload?.id,
     });
 
@@ -32,89 +32,89 @@ const AddEditSecuritylayers = (props) => {
     });
 
     const { refetch: refetchUsers } = useQueryGQL('', fetchUsers(), filterUsers);
-    const findRolesQuery = useQueryGQL('', findRoles());
+    const findPermissionsQuery = useQueryGQL('', findPermissions());
 
     useEffect(() => {
-        const roleIds = props?.payload?.userRoles?.map((role) => role.roleId) || [];
-        setselectedroles(roleIds);
+        const permissionIds = props?.payload?.userPermissions?.map((permission) => permission.permissionId) || [];
+        setselectedpermissions(permissionIds);
     }, [props?.payload]);
 
     useEffect(() => {
-        if (findRolesQuery?.data?.findRoles) {
-            const roles = _.groupBy(findRolesQuery?.data?.findRoles, 'type');
-            const rolestemp = _.map(roles, (roles, type) => {
-                // Filter out 'editOrderStatus' from the 'roles' array under 'order' type
+        if (findPermissionsQuery?.data?.findPermissions) {
+            const permissions = _.groupBy(findPermissionsQuery?.data?.findPermissions, 'type');
+            const permissionstemp = _.map(permissions, (permissions, type) => {
+                // Filter out 'editOrderStatus' from the 'permissions' array under 'order' type
                 if (type === 'order' && cookies.get('merchantId')) {
-                    roles = roles.filter((role) => role.name !== 'editOrderStatus');
+                    permissions = permissions.filter((permission) => permission.name !== 'editOrderStatus');
                 }
-                return { type, roles };
+                return { type, permissions };
             });
 
             if (cookies.get('merchantId')) {
-                setrolesarray(rolestemp?.filter((e) => e.type == 'merchant' || e.type == 'order'));
+                setpermissionsarray(permissionstemp?.filter((e) => e.type == 'merchant' || e.type == 'order'));
             } else {
-                setrolesarray(rolestemp);
+                setpermissionsarray(permissionstemp);
             }
         }
-    }, [findRolesQuery?.data?.findRoles]);
+    }, [findPermissionsQuery?.data?.findPermissions]);
 
-    const handleRoleChange = (userRoleItem, type) => {
-        let newSelectedRoles = [...selectedroles];
+    const handlePermissionChange = (userPermissionItem, type) => {
+        let newSelectedPermissions = [...selectedpermissions];
 
-        const sectionRoles = rolesarray.find((item) => item.type === type).roles.map((role) => role.id);
+        const sectionPermissions = permissionsarray.find((item) => item.type === type).permissions.map((permission) => permission.id);
 
-        if (newSelectedRoles.includes(1)) {
-            if (userRoleItem?.id == 1) {
-                if (newSelectedRoles.includes(userRoleItem.id)) {
-                    newSelectedRoles = newSelectedRoles.filter((roleId) => roleId !== userRoleItem.id);
+        if (newSelectedPermissions.includes(1)) {
+            if (userPermissionItem?.id == 1) {
+                if (newSelectedPermissions.includes(userPermissionItem.id)) {
+                    newSelectedPermissions = newSelectedPermissions.filter((permissionId) => permissionId !== userPermissionItem.id);
                 } else {
-                    newSelectedRoles = [1];
+                    newSelectedPermissions = [1];
                 }
             }
         } else {
-            if (userRoleItem?.id == 1) {
-                if (newSelectedRoles.includes(userRoleItem.id)) {
-                    newSelectedRoles = newSelectedRoles.filter((roleId) => roleId !== userRoleItem.id);
+            if (userPermissionItem?.id == 1) {
+                if (newSelectedPermissions.includes(userPermissionItem.id)) {
+                    newSelectedPermissions = newSelectedPermissions.filter((permissionId) => permissionId !== userPermissionItem.id);
                 } else {
-                    newSelectedRoles = [1];
+                    newSelectedPermissions = [1];
                 }
             } else {
-                if (userRoleItem.name.includes('Admin')) {
-                    if (newSelectedRoles.includes(userRoleItem.id)) {
-                        newSelectedRoles = newSelectedRoles.filter((roleId) => roleId !== userRoleItem.id);
+                if (userPermissionItem.name.includes('Admin')) {
+                    if (newSelectedPermissions.includes(userPermissionItem.id)) {
+                        newSelectedPermissions = newSelectedPermissions.filter((permissionId) => permissionId !== userPermissionItem.id);
                     } else {
-                        newSelectedRoles = newSelectedRoles.filter((roleId) => !sectionRoles.includes(roleId));
-                        newSelectedRoles.push(userRoleItem.id);
+                        newSelectedPermissions = newSelectedPermissions.filter((permissionId) => !sectionPermissions.includes(permissionId));
+                        newSelectedPermissions.push(userPermissionItem.id);
                     }
                 } else {
-                    if (newSelectedRoles.includes(userRoleItem.id)) {
-                        newSelectedRoles = newSelectedRoles.filter((roleId) => roleId !== userRoleItem.id);
+                    if (newSelectedPermissions.includes(userPermissionItem.id)) {
+                        newSelectedPermissions = newSelectedPermissions.filter((permissionId) => permissionId !== userPermissionItem.id);
                     } else {
-                        const adminRole = rolesarray.find((item) => item.type === type)?.roles.find((role) => role.name.includes('Admin'));
-                        if (!newSelectedRoles.includes(adminRole?.id)) {
-                            newSelectedRoles.push(userRoleItem.id);
+                        const adminPermission = permissionsarray.find((item) => item.type === type)?.permissions.find((permission) => permission.name.includes('Admin'));
+                        if (!newSelectedPermissions.includes(adminPermission?.id)) {
+                            newSelectedPermissions.push(userPermissionItem.id);
                         }
                     }
                 }
             }
         }
 
-        // alert(JSON.stringify(newSelectedRoles));
-        setselectedroles([...newSelectedRoles]);
+        // alert(JSON.stringify(newSelectedPermissions));
+        setselectedpermissions([...newSelectedPermissions]);
     };
 
-    const isRoleSelected = (roleId) => selectedroles.includes(roleId);
+    const isPermissionSelected = (permissionId) => selectedpermissions.includes(permissionId);
 
     const isSectionAdminSelected = (type) => {
-        const sectionRoles = rolesarray.find((item) => item.type === type)?.roles || [];
-        return sectionRoles.some((role) => role.name.includes('Admin') && isRoleSelected(role.id));
+        const sectionPermissions = permissionsarray.find((item) => item.type === type)?.permissions || [];
+        return sectionPermissions.some((permission) => permission.name.includes('Admin') && isPermissionSelected(permission.id));
     };
 
     return (
         <div className="row m-0 w-100 p-md-2 pt-0">
             <div className="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
                 <div className="row m-0 w-100">
-                    {rolesarray.map((mainitem, mainindex) => (
+                    {permissionsarray.map((mainitem, mainindex) => (
                         <div key={mainindex} style={{ border: '1px solid #e4e6ee', borderRadius: '10px' }} className="mb-3 col-lg-12 p-2">
                             <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
                                 <AccordionItem className={`${generalstyles.innercard} p-2`}>
@@ -135,16 +135,16 @@ const AddEditSecuritylayers = (props) => {
                                     <AccordionItemPanel>
                                         <hr className="mt-2 mb-3" />
                                         <div className="row p-0 w-100 mb-3 m-auto">
-                                            {mainitem?.roles?.map((userRoleItem, userRoleIndex) => {
-                                                const selected = isRoleSelected(userRoleItem.id);
+                                            {mainitem?.permissions?.map((userPermissionItem, userPermissionIndex) => {
+                                                const selected = isPermissionSelected(userPermissionItem.id);
                                                 const adminSelected = isSectionAdminSelected(mainitem.type);
 
                                                 return (
-                                                    <div key={userRoleIndex} className="col-xl-4 col-lg-4 col-md-12 col-sm-12 m-0 mb-1 p-sm-0">
+                                                    <div key={userPermissionIndex} className="col-xl-4 col-lg-4 col-md-12 col-sm-12 m-0 mb-1 p-sm-0">
                                                         <div className="m-0 pt-1 pb-1 pl-2 pr-2" style={{ borderRadius: '5px' }}>
                                                             {!props?.edit && (
                                                                 <p className={`${generalstyles.checkbox_label} ml-2 mb-0 text-focus text-capitalize cursor-pointer font_14 ml-2 mr-2 wordbreak`}>
-                                                                    {userRoleItem?.label}
+                                                                    {userPermissionItem?.label}
                                                                 </p>
                                                             )}
                                                             {props?.edit && (
@@ -158,9 +158,10 @@ const AddEditSecuritylayers = (props) => {
                                                                         className="mt-auto mb-auto"
                                                                         checked={selected}
                                                                         disabled={
-                                                                            (adminSelected && !userRoleItem.name.includes('Admin')) || (selectedroles?.includes(1) && parseInt(userRoleItem?.id) != 1)
+                                                                            (adminSelected && !userPermissionItem.name.includes('Admin')) ||
+                                                                            (selectedpermissions?.includes(1) && parseInt(userPermissionItem?.id) != 1)
                                                                         }
-                                                                        onChange={() => handleRoleChange(userRoleItem, mainitem.type)}
+                                                                        onChange={() => handlePermissionChange(userPermissionItem, mainitem.type)}
                                                                     />
                                                                     <svg viewBox="0 0 21 21" className="h-100">
                                                                         <path d="M5,10.75 L8.5,14.25 L19.4,2.3 C18.8333333,1.43333333 18.0333333,1 17,1 L4,1 C2.35,1 1,2.35 1,4 L1,17 C1,18.65 2.35,20 4,20 L17,20 C18.65,20 20,18.65 20,17 L20,7.99769186"></path>
@@ -168,14 +169,14 @@ const AddEditSecuritylayers = (props) => {
                                                                     <p
                                                                         style={{
                                                                             color:
-                                                                                (adminSelected && !userRoleItem.name.includes('Admin')) ||
-                                                                                (selectedroles?.includes(1) && parseInt(userRoleItem?.id) != 1)
+                                                                                (adminSelected && !userPermissionItem.name.includes('Admin')) ||
+                                                                                (selectedpermissions?.includes(1) && parseInt(userPermissionItem?.id) != 1)
                                                                                     ? 'grey'
                                                                                     : '',
                                                                         }}
                                                                         className={`${generalstyles.checkbox_label} ml-2 mb-0 text-focus text-capitalize cursor-pointer font_14 ml-2 mr-2 wordbreak text-capitalize`}
                                                                     >
-                                                                        {userRoleItem?.name.split(/(?=[A-Z])/).join(' ')}
+                                                                        {userPermissionItem?.name.split(/(?=[A-Z])/).join(' ')}
                                                                     </p>
                                                                 </label>
                                                             )}
@@ -198,12 +199,12 @@ const AddEditSecuritylayers = (props) => {
                                 if (buttonLoadingContext) return;
                                 setbuttonLoadingContext(true);
                                 try {
-                                    const { data } = await updateUserRolesMutation();
+                                    const { data } = await updateUserPermissionsMutation();
                                     if (props?.setopenModal) {
                                         props?.setopenModal(false);
                                     }
-                                    if (props?.setchangerolesmodal) {
-                                        props?.setchangerolesmodal(false);
+                                    if (props?.setchangepermissionsmodal) {
+                                        props?.setchangepermissionsmodal(false);
                                     }
                                     if (props?.fetchUserInfo) {
                                         props?.fetchUserInfo();

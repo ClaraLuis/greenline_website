@@ -188,10 +188,10 @@ const API = () => {
         `;
     };
 
-    const updateUserRoles = () => {
+    const updateUserPermissions = () => {
         return gql`
-            mutation updateUserRolesOptimized($input: UpdateUserRoleInputAdvanced!) {
-                updateUserRolesOptimized(input: $input)
+            mutation updateUserPermissionsOptimized($input: UpdateUserPermissionInputAdvanced!) {
+                updateUserPermissionsOptimized(input: $input)
             }
         `;
     };
@@ -478,8 +478,8 @@ const API = () => {
                         createdAt
                         lastModified
                         deletedAt
-                        roles {
-                            roleId
+                        permissions {
+                            permissionId
                         }
                         merchant {
                             name
@@ -1154,9 +1154,9 @@ const API = () => {
                         merchant {
                             name
                         }
-                        userRoles {
-                            roleId
-                            role {
+                        userPermissions {
+                            permissionId
+                            permission {
                                 type
                                 name
                                 id
@@ -1306,9 +1306,9 @@ const API = () => {
                     merchant {
                         name
                     }
-                    userRoles {
-                        roleId
-                        role {
+                    userPermissions {
+                        permissionId
+                        permission {
                             type
                             name
                             id
@@ -2687,10 +2687,10 @@ const API = () => {
         `;
     };
 
-    const findRoles = (payload) => {
+    const findPermissions = (payload) => {
         return gql`
-            query findRoles {
-                findRoles {
+            query findPermissions {
+                findPermissions {
                     id
                     name
                     type
@@ -2801,7 +2801,7 @@ const API = () => {
         useQueryGQL,
         fetchUsers,
         isValidEmailMutation,
-        findRoles,
+        findPermissions,
         useLazyQueryGQL,
         requestLoginResponse,
         fetchMerchantItems,
@@ -2848,7 +2848,7 @@ const API = () => {
         addCompoundItem,
         fetchMerchantItemVariants,
         editUserType,
-        updateUserRoles,
+        updateUserPermissions,
         fetchFinancialAccounts,
         fetchTransactions,
         createFinancialAccount,

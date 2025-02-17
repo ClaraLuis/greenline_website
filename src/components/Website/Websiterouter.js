@@ -64,7 +64,7 @@ import RentPage from './MerchantHome/RentPage.js';
 import WebToken from './WebToken/WebToken.js';
 import { TbApi, TbLogout } from 'react-icons/tb';
 import ItemDetails from './MerchantItems/ItemDetails.js';
-import UserRoles from './Users/UserRoles.js';
+import UserPermissions from './Users/UserPermissions.js';
 import NotFound from './NotFound.js';
 import RentBills from './Finance/RentBills.js';
 import ActionCenter from './Hubs/ActionCenter.js';
@@ -250,7 +250,7 @@ const App = (props) => {
         <div class="row m-0 w-100">
             <Router>
                 <div class="row m-0 w-100 d-flex " style={{ maxHeight: '100vh', paddingRight: 0 }}>
-                    {user?.roles?.length != 0 && (
+                    {user?.permissions?.length != 0 && (
                         <>
                             <div style={{ width: hidesidenav_context ? '4%' : '20%', transition: 'all 0.4s' }}>
                                 <div class={sidenavstyles.app_sidebar} style={{ width: hidesidenav_context ? '4%' : '20%', transition: 'all 0.4s' }}>
@@ -283,7 +283,7 @@ const App = (props) => {
                                                                 />
 
                                                                 <Route exact path="/users" component={Users} />
-                                                                <Route exact path="/userroles" component={UserRoles} />
+                                                                <Route exact path="/userpermissions" component={UserPermissions} />
 
                                                                 <Route exact path="/hubs" component={Hubs} />
                                                                 <Route exact path="/inventorydetails" component={InventoryDetails} />
@@ -356,12 +356,12 @@ const App = (props) => {
                             </div>
                         </>
                     )}
-                    {user?.roles?.length == 0 && (
+                    {user?.permissions?.length == 0 && (
                         <div class="w-100" style={{ height: '100vh' }}>
                             {headerSection()}
 
                             <div class={generalstyles.card + ' mt-4 row m-0 w-100 allcentered'} style={{ fontWeight: 700, fontSize: '20px' }}>
-                                <div class="col-lg-6 text-center">You are not assignd to any roles please contact Admin.</div>
+                                <div class="col-lg-6 text-center">You are not assignd to any permissions please contact Admin.</div>
                             </div>
                         </div>
                     )}

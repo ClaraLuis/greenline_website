@@ -35,14 +35,14 @@ const UserInfo = (props) => {
     const { lang, langdetect } = useContext(LanguageContext);
     const [submit, setsubmit] = useState(false);
     const [edit, setedit] = useState(false);
-    const [changerolesmodal, setchangerolesmodal] = useState(false);
+    const [changepermissionsmodal, setchangepermissionsmodal] = useState(false);
 
-    const groupedRoles = _.groupBy(props?.payload?.userRoles, (role) => role.role.type);
+    const groupedPermissions = _.groupBy(props?.payload?.userPermissions, (permission) => permission.permission.type);
 
     // Transform into desired format
-    const userRoles = Object.keys(groupedRoles).map((type) => ({
+    const userPermissions = Object.keys(groupedPermissions).map((type) => ({
         type,
-        roles: groupedRoles[type],
+        permissions: groupedPermissions[type],
     }));
     const [filterMerchants, setfilterMerchants] = useState({
         isAsc: true,
@@ -146,7 +146,7 @@ const UserInfo = (props) => {
 
     return (
         <>
-            {!changerolesmodal && (
+            {!changepermissionsmodal && (
                 <Modal
                     show={props?.openModal}
                     onHide={() => {
@@ -379,16 +379,16 @@ const UserInfo = (props) => {
                                     />
                                 </>
                             )}
-                            {props?.payload.functype == 'edit' && props?.payload?.modaltype == 'roles' && (
+                            {props?.payload.functype == 'edit' && props?.payload?.modaltype == 'permissions' && (
                                 <div class="col-lg-12 d-flex justify-content-end py-0">
                                     <div
                                         onClick={() => {
-                                            setchangerolesmodal(true);
+                                            setchangepermissionsmodal(true);
                                         }}
                                         class={generalstyles.roundbutton + ' allcentered'}
                                         // style={{ textDecoration: 'underline', fontSize: '12px' }}
                                     >
-                                        Update roles
+                                        Update permissions
                                     </div>
                                 </div>
                             )}
@@ -588,19 +588,19 @@ const UserInfo = (props) => {
                                     }}
                                 />
                             )}
-                            {props?.payload?.functype == 'edit' && props?.payload?.modaltype == 'roles' && (
+                            {props?.payload?.functype == 'edit' && props?.payload?.modaltype == 'permissions' && (
                                 <div class="row m-0 w-100">
-                                    {userRoles?.map((item, index) => {
+                                    {userPermissions?.map((item, index) => {
                                         return (
                                             <div class="col-lg-12 p-0 mb-2">
                                                 <div class="row m-0 w-100">
                                                     <div class="col-lg-12 p-0 mb-2 text-capitalize" style={{ fontWeight: 500 }}>
                                                         {item?.type}
                                                     </div>
-                                                    {item?.roles?.map((role, roleIndex) => {
+                                                    {item?.permissions?.map((permission, permissionIndex) => {
                                                         return (
                                                             <div class={' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 mr-2 mb-2 text-capitalize '}>
-                                                                {role?.role?.name?.split(/(?=[A-Z])/).join(' ')}
+                                                                {permission?.permission?.name?.split(/(?=[A-Z])/).join(' ')}
                                                             </div>
                                                         );
                                                     })}
@@ -616,9 +616,9 @@ const UserInfo = (props) => {
             )}
 
             <Modal
-                show={changerolesmodal}
+                show={changepermissionsmodal}
                 onHide={() => {
-                    setchangerolesmodal(false);
+                    setchangepermissionsmodal(false);
                 }}
                 centered
                 size={'xl'}
@@ -626,13 +626,13 @@ const UserInfo = (props) => {
                 <Modal.Header>
                     <div className="row w-100 m-0 p-0">
                         <div class="col-lg-6 pt-3 ">
-                            <div className="row w-100 m-0 p-0">Change Roles</div>
+                            <div className="row w-100 m-0 p-0">Change Permissions</div>
                         </div>
                         <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
                             <div
                                 class={'close-modal-container'}
                                 onClick={() => {
-                                    setchangerolesmodal(false);
+                                    setchangepermissionsmodal(false);
                                 }}
                             >
                                 <IoMdClose />
@@ -642,7 +642,7 @@ const UserInfo = (props) => {
                 </Modal.Header>
                 <Modal.Body>
                     <div class="row m-0 w-100 py-2">
-                        <AddEditSecuritylayers payload={props?.payload} setopenModal={props?.setopenModal} setchangerolesmodal={setchangerolesmodal} edit={true} />
+                        <AddEditSecuritylayers payload={props?.payload} setopenModal={props?.setopenModal} setchangepermissionsmodal={setchangepermissionsmodal} edit={true} />
                     </div>
                 </Modal.Body>
             </Modal>

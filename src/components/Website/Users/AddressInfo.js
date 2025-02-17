@@ -27,7 +27,7 @@ const AddressInfo = (props) => {
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [submit, setsubmit] = useState(false);
-    const [changerolesmodal, setchangerolesmodal] = useState(false);
+    const [changepermissionsmodal, setchangepermissionsmodal] = useState(false);
     const [newpassword, setnewpassword] = useState('');
 
     const [addUser1] = useMutationGQL(addUser(props?.addresspayload));

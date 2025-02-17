@@ -132,14 +132,14 @@ const UsersTable = (props) => {
                                                                     //         employeeType: item?.employee?.type,
                                                                     //         salary: item?.employee?.salary,
                                                                     //         commission: item?.employee?.commission,
-                                                                    //         modaltype: 'roles',
+                                                                    //         modaltype: 'permissions',
                                                                     //     });
                                                                     //     setopenModal(true);
-                                                                    history.push('/userroles?id=' + item?.id);
+                                                                    history.push('/userpermissions?id=' + item?.id);
                                                                 }}
                                                                 class="py-2"
                                                             >
-                                                                <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Update Roles</p>
+                                                                <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Update Permissions</p>
                                                             </Dropdown.Item>
                                                         </Dropdown.Menu>
                                                     </Dropdown>

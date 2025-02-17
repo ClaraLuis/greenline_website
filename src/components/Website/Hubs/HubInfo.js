@@ -22,12 +22,12 @@ const { ValueContainer, Placeholder } = components;
 const HubInfo = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { userRolesContext, userTypeContext, employeeTypeContext, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
+    const { userPermissionsContext, userTypeContext, employeeTypeContext, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
     const { useQueryGQL, fetchUsers, useMutationGQL, createHub, editUserType, fetchMerchants, fetchInventories, fetchGovernorates } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [submit, setsubmit] = useState(false);
-    const [changerolesmodal, setchangerolesmodal] = useState(false);
+    const [changepermissionsmodal, setchangepermissionsmodal] = useState(false);
 
     const [createHubMutation] = useMutationGQL(createHub(), {
         name: props?.payload?.name,
