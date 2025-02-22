@@ -58,7 +58,10 @@ const MerchantHome = (props) => {
         afterCursor: undefined,
         beforeCursor: undefined,
     });
-    const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
+    var fetchMerchantsQuery = undefined;
+    if (isAuth([1])) {
+        fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
+    }
     useEffect(() => {
         const temp = []; // Array to track all unique statuses
         const tempvalues = [{ name: props?.type, data: [] }]; // Data for bar chart
@@ -322,12 +325,12 @@ const MerchantHome = (props) => {
                             ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data &&
                             Object.keys(ordersDeliverableSummaryQuery.data.ordersDeliverableSummary.data).length > 0 && (
                                 <div class={generalstyles.card + ' row m-0 w-100 '}>
-                                    <Piechart height={mostSoldItemsQuery?.data ? '250' : 300} xAxis={barchartaxis?.xAxis} yAxis={barchartaxis?.yAxis1} title={'Orders'} total={barchartaxis?.total} />
+                                    <Piechart height={mostSoldItemsQuery?.data ? '250' : 300} xAxis={barchartaxis?.xAxis} yAxis={barchartaxis?.yAxis1} title={''} total={barchartaxis?.total} />
                                 </div>
                             )}
 
                         {mostSoldItemsQuery?.data && (
-                            <div class={generalstyles.card + ' row m-0 w-100 '}>
+                            <div class={generalstyles.card + ' row m-0 w-100  '}>
                                 <div class={'col-lg-12 my-2'} style={{ fontSize: '17px', fontWeight: 700 }}>
                                     Most Sold Items
                                 </div>
@@ -341,35 +344,41 @@ const MerchantHome = (props) => {
                                         </div>
                                     </div>
                                 )}
-
-                                {mostSoldItemsQuery?.data?.mostSoldItems?.data.map((subitem, subindex) => {
-                                    return (
-                                        <div class={'col-lg-12 mb-2'}>
-                                            <div style={{ border: '1px solid #eee', borderRadius: '0.25rem' }} class="row m-0 w-100 p-2">
-                                                <div style={{ width: '35px', height: '35px', borderRadius: '7px', marginInlineEnd: '5px' }}>
-                                                    <img
-                                                        src={
-                                                            subitem?.itemVariant?.imageUrl
-                                                                ? subitem?.itemVariant?.imageUrl
-                                                                : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'
-                                                        }
-                                                        style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
-                                                    />
-                                                </div>
-                                                <div class="col-lg-10 d-flex align-items-center">
-                                                    <div className="row m-0 w-100">
-                                                        <div style={{ fontSize: '14px', fontWeight: 500 }} className={' col-lg-12 p-0 wordbreak wordbreak1'}>
-                                                            {subitem?.itemVariant?.fullName ?? '-'}
+                                <div class="col-lg-12 p-0">
+                                    <div class="row m-0 w-100 scrollmenuclasssubscrollbar" style={{ maxHeight: '330px', overflow: 'scroll' }}>
+                                        {mostSoldItemsQuery?.data?.mostSoldItems?.data.map((subitem, subindex) => {
+                                            return (
+                                                <div class={'col-lg-12 mb-2'}>
+                                                    <div style={{ border: '1px solid #eee', borderRadius: '0.25rem' }} class="row m-0 w-100 p-2">
+                                                        <div style={{ width: '35px', height: '35px', borderRadius: '7px', marginInlineEnd: '5px' }}>
+                                                            <img
+                                                                src={
+                                                                    subitem?.itemVariant?.imageUrl
+                                                                        ? subitem?.itemVariant?.imageUrl
+                                                                        : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'
+                                                                }
+                                                                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
+                                                            />
                                                         </div>
-                                                        <div style={{ fontSize: '12px' }} className={' col-lg-12 p-0 wordbreak wordbreak1'}>
-                                                            {subitem?.itemVariant?.sku ?? '-'}
+                                                        <div class="col-lg-10 d-flex align-items-center">
+                                                            <div className="row m-0 w-100">
+                                                                <div style={{ fontSize: '14px', fontWeight: 500 }} className={' col-lg-10 p-0 wordbreak wordbreak1'}>
+                                                                    {subitem?.itemVariant?.fullName ?? '-'}
+                                                                </div>
+                                                                <div style={{ fontSize: '14px', fontWeight: 500 }} className={' col-lg-2 d-flex justify-content-end p-0'}>
+                                                                    {subitem?.soldCount ?? '-'}
+                                                                </div>
+                                                                <div style={{ fontSize: '12px' }} className={' col-lg-12 p-0 wordbreak wordbreak1'}>
+                                                                    {subitem?.itemVariant?.sku ?? '-'}
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    );
-                                })}
+                                            );
+                                        })}
+                                    </div>
+                                </div>
                             </div>
                         )}
                     </div>

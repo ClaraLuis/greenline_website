@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Chart from 'react-apexcharts';
 
 const Barchart = (props) => {
@@ -23,7 +23,6 @@ const Barchart = (props) => {
                     },
                 },
                 fill: {
-                    // opacity: [0.85, 0.25, 1],
                     gradient: {
                         inverseColors: false,
                         shade: 'light',
@@ -38,7 +37,6 @@ const Barchart = (props) => {
                     size: 0,
                 },
                 xaxis: {
-                    // type: 'datetime',
                     labels: {
                         style: {
                             fontSize: '8px',
@@ -47,19 +45,26 @@ const Barchart = (props) => {
                     },
                 },
                 yaxis: {
+                    labels: {
+                        formatter: (value) => `${value} EGP`,
+                    },
                     title: {
                         show: false,
-                        // text: 'Points',
                     },
-                    min: 0,
                 },
                 tooltip: {
-                    shared: true,
-                    intersect: false,
+                    y: {
+                        formatter: function (value, context) {
+                            console.log('Tooltip Context:', context); // Debugging
+                            const seriesName = context.w.config.labels[context.dataPointIndex] || 'Unknown';
+                            return `${value} EGP per ${seriesName}`;
+                        },
+                    },
                 },
             },
         });
     }, [props]);
+
     if (state) {
         return (
             <div className="app w-100 px-1">

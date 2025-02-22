@@ -36,7 +36,10 @@ const Finance = (props) => {
         afterCursor: undefined,
         beforeCursor: undefined,
     });
-    const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
+    var fetchMerchantsQuery = undefined;
+    if (isAuth([1])) {
+        fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
+    }
     const [filterobj, setfilterobj] = useState({
         isAsc: true,
         limit: 3,
@@ -50,7 +53,7 @@ const Finance = (props) => {
 
     useEffect(() => {
         setpageactive_context('/merchantfinance');
-        setpagetitle_context('Merchant');
+        setpagetitle_context(isAuth([1]) ? 'Finance' : 'Merchant');
     }, []);
 
     return (
@@ -91,34 +94,37 @@ const Finance = (props) => {
                                 <AccordionItemPanel>
                                     <hr className="mt-2 mb-3" />
                                     <div class="row m-0 w-100">
-                                        <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                            <MultiSelect
-                                                title={'Merchants'}
-                                                filter={filterMerchants}
-                                                setfilter={setfilterMerchants}
-                                                options={fetchMerchantsQuery}
-                                                attr={'paginateMerchants'}
-                                                label={'name'}
-                                                value={'id'}
-                                                selected={filterMerchanrPaymentSummaryObj?.merchantIds}
-                                                onClick={(option) => {
-                                                    const tempArray = [...(filterMerchanrPaymentSummaryObj?.merchantIds ?? [])];
+                                        {isAuth([1]) && (
+                                            <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                                <MultiSelect
+                                                    title={'Merchants'}
+                                                    filter={filterMerchants}
+                                                    setfilter={setfilterMerchants}
+                                                    options={fetchMerchantsQuery}
+                                                    attr={'paginateMerchants'}
+                                                    label={'name'}
+                                                    value={'id'}
+                                                    selected={filterMerchanrPaymentSummaryObj?.merchantIds}
+                                                    onClick={(option) => {
+                                                        const tempArray = [...(filterMerchanrPaymentSummaryObj?.merchantIds ?? [])];
 
-                                                    if (option === 'All') {
-                                                        setfilterMerchanrPaymentSummaryObj({ ...filterMerchanrPaymentSummaryObj, merchantIds: undefined });
-                                                    } else {
-                                                        const index = tempArray.indexOf(option?.id);
-                                                        if (index === -1) {
-                                                            tempArray.push(option?.id);
+                                                        if (option === 'All') {
+                                                            setfilterMerchanrPaymentSummaryObj({ ...filterMerchanrPaymentSummaryObj, merchantIds: undefined });
                                                         } else {
-                                                            tempArray.splice(index, 1);
-                                                        }
+                                                            const index = tempArray.indexOf(option?.id);
+                                                            if (index === -1) {
+                                                                tempArray.push(option?.id);
+                                                            } else {
+                                                                tempArray.splice(index, 1);
+                                                            }
 
-                                                        setfilterMerchanrPaymentSummaryObj({ ...filterMerchanrPaymentSummaryObj, merchantIds: tempArray.length ? tempArray : undefined });
-                                                    }
-                                                }}
-                                            />
-                                        </div>
+                                                            setfilterMerchanrPaymentSummaryObj({ ...filterMerchanrPaymentSummaryObj, merchantIds: tempArray.length ? tempArray : undefined });
+                                                        }
+                                                    }}
+                                                />
+                                            </div>
+                                        )}
+
                                         <div class="col-lg-3 mb-md-2">
                                             <span>Date Range</span>
                                             <div class="mt-1" style={{ width: '100%' }}>
@@ -195,7 +201,7 @@ const Finance = (props) => {
                             </div>
                         </div>
                     )}
-                    <div class="col-lg-12">
+                    {/* <div class="col-lg-12">
                         <div class={generalstyles.card + ' row m-0 w-100'}>
                             <div class={' col-lg-6 col-md-6 col-sm-12 d-flex align-items-center justify-content-start '}>
                                 <p class=" p-0 m-0 text-uppercase" style={{ fontSize: '15px' }}>
@@ -214,7 +220,7 @@ const Finance = (props) => {
                                 </span>
                             </div>
                         </div>{' '}
-                    </div>
+                    </div> */}
                     <div className={' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
                         <div class="row m-0 w-100">
                             <TransactionsTable width={'50%'} query={fetchMerchantPaymentTransactionsQuery} paginationAttr="paginateMerchantPaymentTransactions" srctype="all" />
