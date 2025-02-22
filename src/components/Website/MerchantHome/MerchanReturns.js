@@ -211,6 +211,12 @@ const MerchanReturns = (props) => {
                                         class={formstyles.form__field}
                                         value={search}
                                         placeholder={'Search by order ID'}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter') {
+                                                addItemRetun(search);
+                                                setsearch('');
+                                            }
+                                        }}
                                         onChange={(event) => {
                                             setsearch(event.target.value);
                                         }}

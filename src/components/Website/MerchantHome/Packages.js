@@ -394,7 +394,7 @@ const Packages = (props) => {
                                         <div class="col-lg-12 p-0">
                                             <div class="row m-0 w-100 d-flex align-items-center">
                                                 <div class="col-lg-6 p-0">
-                                                    {item?.courier && (
+                                                    {item?.courier && cookies.get('userInfo')?.type != 'merchant' && (
                                                         <div className="col-lg-12 p-0 mb-2 d-flex align-items-center">
                                                             <TbTruckDelivery size={20} class="mr-1" />
 

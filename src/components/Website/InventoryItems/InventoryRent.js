@@ -6,6 +6,7 @@ import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
 import { FaEllipsisV, FaLayerGroup } from 'react-icons/fa';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
+import MultiSelect from '../../MultiSelect.js';
 
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
@@ -140,25 +141,36 @@ const InventoryRent = (props) => {
                                         <div class="row m-0 w-100">
                                             {!cookies.get('userInfo')?.merchantId && (
                                                 <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                                    <SelectComponent
-                                                        title={'Merchant'}
+                                                    <MultiSelect
+                                                        title={'Merchants'}
                                                         filter={filterMerchants}
                                                         setfilter={setfilterMerchants}
                                                         options={fetchMerchantsQuery}
                                                         attr={'paginateMerchants'}
                                                         label={'name'}
                                                         value={'id'}
-                                                        payload={filter}
-                                                        payloadAttr={'toMerchantId'}
+                                                        selected={filter?.merchantIds}
                                                         onClick={(option) => {
-                                                            setfilter({ ...filter, toMerchantId: option?.id ?? undefined });
+                                                            const tempArray = [...(filter?.merchantIds ?? [])];
+
+                                                            if (option === 'All') {
+                                                                setfilter({ ...filter, merchantIds: undefined });
+                                                            } else {
+                                                                const index = tempArray.indexOf(option?.id);
+                                                                if (index === -1) {
+                                                                    tempArray.push(option?.id);
+                                                                } else {
+                                                                    tempArray.splice(index, 1);
+                                                                }
+                                                                setfilter({ ...filter, merchantIds: tempArray.length ? tempArray : undefined });
+                                                            }
                                                         }}
                                                     />
                                                 </div>
                                             )}
                                             {!cookies.get('userInfo')?.inventoryId && (
                                                 <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                                    <SelectComponent
+                                                    <MultiSelect
                                                         title={'Inventory'}
                                                         filter={filterInventories}
                                                         setfilter={setfilterInventories}
@@ -166,10 +178,21 @@ const InventoryRent = (props) => {
                                                         attr={'paginateInventories'}
                                                         label={'name'}
                                                         value={'id'}
-                                                        payload={filter}
-                                                        payloadAttr={'toInventoryId'}
+                                                        selected={filter?.inventoryIds}
                                                         onClick={(option) => {
-                                                            setfilter({ ...filter, toInventoryId: option?.id });
+                                                            const tempArray = [...(filter?.inventoryIds ?? [])];
+
+                                                            if (option === 'All') {
+                                                                setfilter({ ...filter, inventoryIds: undefined });
+                                                            } else {
+                                                                const index = tempArray.indexOf(option?.id);
+                                                                if (index === -1) {
+                                                                    tempArray.push(option?.id);
+                                                                } else {
+                                                                    tempArray.splice(index, 1);
+                                                                }
+                                                                setfilter({ ...filter, inventoryIds: tempArray.length ? tempArray : undefined });
+                                                            }
                                                         }}
                                                     />
                                                 </div>
@@ -233,12 +256,12 @@ const InventoryRent = (props) => {
                                         style={{ background: selected ? 'var(--secondary)' : 'white', transition: 'all 0.4s', cursor: 'pointer' }}
                                         class={generalstyles.card + ' p-3 row  w-100   d-flex align-items-center'}
                                     >
-                                        <div className="col-lg-2 p-0">
+                                        <div className="col-lg-4 p-0">
                                             <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
-                                                # {item?.id}
+                                                # {item?.id}, {item?.merchant?.name}
                                             </span>
                                         </div>
-                                        <div className="col-lg-10 p-0 d-flex justify-content-end align-items-center">
+                                        <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
                                             <div class="row m-0 w-100 d-fex justify-content-end align-items-center">
                                                 <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered mx-1 text-capitalize '}>
                                                     {item?.type?.split(/(?=[A-Z])/).join(' ')}
@@ -261,17 +284,17 @@ const InventoryRent = (props) => {
                                         </div>
                                         <div class="col-lg-12 p-0 mb-2">
                                             <div class="row m-0 w-100 d-flex align-items-center">
-                                                <div class="col-lg-12 p-0 d-flex">
+                                                {/* <div class="col-lg-12 p-0 d-flex">
                                                     <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
                                                         {dateformatter(item?.startDate)}
                                                     </span>
-                                                </div>
+                                                </div> */}
                                                 <div class="col-lg-12 p-0 d-flex">
                                                     <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
                                                         {item?.lastBill ?? 'No bills issued yet.'}
                                                     </span>
                                                 </div>
-                                                <div class="col-lg-12 p-0 d-flex">
+                                                <div class="col-lg-6 p-0 d-flex">
                                                     <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
                                                         {item?.pricePerUnit} {item?.currency} /{' '}
                                                         {item?.type == 'order'
@@ -289,12 +312,7 @@ const InventoryRent = (props) => {
                                                             : 'month'}
                                                     </span>
                                                 </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-lg-12 p-0">
-                                            <div class="row m-0 w-100 d-flex align-items-center">
-                                                <div class="col-lg-12 p-0 d-flex justify-content-end">
+                                                <div class="col-lg-6 p-0 d-flex justify-content-end">
                                                     <span style={{ fontSize: '12px', color: 'grey' }} class="text-capitalize">
                                                         {dateformatter(item?.createdAt)}
                                                     </span>

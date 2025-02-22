@@ -753,6 +753,14 @@ const API = () => {
                             id
                             name
                         }
+                        previousOrder {
+                            id
+                            type
+                        }
+                        parentOrder {
+                            id
+                            type
+                        }
                         failsAndAssigns
                         returnPackage {
                             id
@@ -765,6 +773,13 @@ const API = () => {
                             status
                             createdAt
                             lastModified
+                            signatureId
+                            signatureFile {
+                                id
+                                key
+                                url
+                                name
+                            }
                             inventory {
                                 name
                                 id
@@ -888,6 +903,13 @@ const API = () => {
                             status
                             createdAt
                             lastModified
+                            signatureId
+                            signatureFile {
+                                id
+                                key
+                                url
+                                name
+                            }
                             inventory {
                                 name
                                 id
@@ -1010,6 +1032,14 @@ const API = () => {
                         canOpen
                         fragile
                         deliveryPart
+                        previousOrder {
+                            id
+                            type
+                        }
+                        parentOrder {
+                            id
+                            type
+                        }
                         sheetOrder {
                             id
                             sheetId
@@ -1110,7 +1140,14 @@ const API = () => {
                         }
                         price
                         paymentType
-
+                        previousOrder {
+                            id
+                            type
+                        }
+                        parentOrder {
+                            id
+                            type
+                        }
                         address {
                             apartmentFloor
                             streetAddress
@@ -1384,6 +1421,13 @@ const API = () => {
                     status
                     createdAt
                     lastModified
+                    signatureId
+                    signatureFile {
+                        id
+                        key
+                        url
+                        name
+                    }
                     merchant {
                         id
                         name
@@ -1461,6 +1505,14 @@ const API = () => {
                     id
                     name
                 }
+                previousOrder {
+                    id
+                    type
+                }
+                parentOrder {
+                    id
+                    type
+                }
                 returnPackage {
                     id
                     sku
@@ -1472,6 +1524,13 @@ const API = () => {
                     status
                     createdAt
                     lastModified
+                    signatureId
+                    signatureFile {
+                        id
+                        key
+                        url
+                        name
+                    }
                     inventory {
                         name
                         id
@@ -1688,6 +1747,13 @@ const API = () => {
                 toMerchantId
                 status
                 countAndSum
+                signatureId
+                signatureFile {
+                    id
+                    key
+                    url
+                    name
+                }
                 courier {
                     name
                 }
@@ -1962,6 +2028,13 @@ const API = () => {
                             status
                             createdAt
                             lastModified
+                            signatureId
+                            signatureFile {
+                                id
+                                key
+                                url
+                                name
+                            }
                             inventory {
                                 name
                                 id
@@ -2381,6 +2454,7 @@ const API = () => {
                             parentOrder {
                                 id
                             }
+                            paymentType
                             otherId
                             shopifyName
                             id
@@ -2714,6 +2788,13 @@ const API = () => {
                         toMerchantId
                         status
                         countAndSum
+                        signatureId
+                        signatureFile {
+                            id
+                            key
+                            url
+                            name
+                        }
                         courier {
                             name
                         }

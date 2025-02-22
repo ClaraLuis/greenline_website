@@ -86,6 +86,9 @@ const CourierSheet = (props) => {
     const calculateAmountCollected = () => {
         let amount = new Decimal(0);
         let orderItemsAmount = new Decimal(0);
+        if (statuspayload?.order?.paymentType == 'card') {
+            return;
+        }
 
         if (statuspayload?.fullDelivery) {
             statuspayload?.order?.orderItems?.forEach((i) => {
@@ -121,6 +124,9 @@ const CourierSheet = (props) => {
     const calculateAmountCollectedReturn = () => {
         let amount = new Decimal(0);
         let orderItemsAmountReturn = new Decimal(0);
+        if (statuspayload?.previousOrder?.paymentType == 'card') {
+            return;
+        }
 
         if (statuspayload?.fullReturn) {
             statuspayload?.previousOrder?.orderItems?.forEach((i) => {
@@ -347,11 +353,7 @@ const CourierSheet = (props) => {
                         submitSheetPayload?.updateSheetOrderstemp?.map((i, ii) => {
                             if (item?.order?.id == i.orderId) {
                                 tempsheetpayload = i;
-                                if (
-                                    status == 'Accepted' &&
-                                    ((type == 'admin' && i?.status == 'adminAccepted') ||
-                                        (type != 'admin' && i?.status == 'financeAccepted' && submitSheetPayload?.updateSheetOrders?.find((e) => e.sheetOrderId == item.id)))
-                                ) {
+                                if (status == 'Accepted' && ((type == 'admin' && i?.status == 'adminAccepted') || (type != 'admin' && i?.status == 'financeAccepted'))) {
                                     show = true;
                                 }
 
@@ -482,6 +484,17 @@ const CourierSheet = (props) => {
                                                                     class="allcentered mx-2 p-1 px-2 text-capitalize"
                                                                 >
                                                                     {item?.order?.type?.split(/(?=[A-Z])/).join(' ')}
+                                                                </div>
+                                                                <div
+                                                                    style={{
+                                                                        color: 'white',
+                                                                        borderRadius: '0.25rem',
+                                                                        fontSize: '11px',
+                                                                        background: 'var(--primary)',
+                                                                    }}
+                                                                    class="allcentered p-1 px-2 text-capitalize"
+                                                                >
+                                                                    {item?.order?.paymentType?.split(/(?=[A-Z])/).join(' ')}
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -782,6 +795,17 @@ const CourierSheet = (props) => {
                                                                             class="allcentered mx-2 p-1 px-2 text-capitalize"
                                                                         >
                                                                             {previousOrder?.order?.type?.split(/(?=[A-Z])/).join(' ')}
+                                                                        </div>
+                                                                        <div
+                                                                            style={{
+                                                                                color: 'white',
+                                                                                borderRadius: '0.25rem',
+                                                                                fontSize: '11px',
+                                                                                background: 'var(--primary)',
+                                                                            }}
+                                                                            class="allcentered p-1 px-2 text-capitalize"
+                                                                        >
+                                                                            {previousOrder?.order?.paymentType?.split(/(?=[A-Z])/).join(' ')}
                                                                         </div>
                                                                     </div>
                                                                 </div>

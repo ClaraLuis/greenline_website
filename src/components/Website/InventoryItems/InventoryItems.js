@@ -10,7 +10,7 @@ import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, Ac
 import { Modal } from 'react-bootstrap';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
-import { FaRegClock } from 'react-icons/fa';
+import { FaLayerGroup, FaRegClock } from 'react-icons/fa';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 
 // Icons
@@ -400,6 +400,11 @@ const InventoryItems = (props) => {
                                                 class={formstyles.form__field}
                                                 value={search}
                                                 placeholder={'Search by name or SKU'}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') {
+                                                        setfilterItemInBox({ ...filterItemInBox, name: search?.length == 0 ? undefined : search });
+                                                    }
+                                                }}
                                                 onChange={(event) => {
                                                     setBarcode(event.target.value);
                                                     setSearch(event.target.value);
@@ -439,135 +444,149 @@ const InventoryItems = (props) => {
                                     setfilter={setfilterItemInBox}
                                 />
                             </div>
-                            {fetchItemsInBoxQuery?.data?.paginateItemInBox?.data?.map((element, arrayindex) => {
-                                var selected = false;
-                                var count = 0;
-                                selectedVariants?.map((i) => {
-                                    if (i.id == element.id) {
-                                        selected = true;
-                                        count = i?.count;
-                                    }
-                                });
-                                return (
-                                    <div style={{ fontSize: '13px' }} class=" col-lg-4 ">
-                                        <div
-                                            onClick={() => {
-                                                var temp = [...selectedVariants];
-                                                var exist = false;
-                                                var chosenindex = null;
-                                                temp.map((i, ii) => {
-                                                    if (i?.id == element?.id) {
-                                                        exist = true;
-                                                        chosenindex = ii;
-                                                    }
-                                                });
-                                                if (!exist) {
-                                                    temp.push({ item: element.itemVariant, id: element.id });
-                                                } else {
-                                                    temp.splice(chosenindex, 1);
-                                                }
-                                                // alert(JSON.stringify(temp));
-                                                setselectedVariants([...temp]);
-                                            }}
-                                            style={{
-                                                cursor: 'pointer',
-
-                                                backgroundColor: selected ? 'var(--secondary)' : '',
-                                                transition: 'all 0.4s',
-                                            }}
-                                            class={generalstyles.card + ' row m-0 w-100 '}
-                                        >
-                                            <div class="col-lg-12 p-0">
-                                                <div class="row m-0 w-100 d-flex align-items-center">
-                                                    <div class=" mr-2" style={{ width: '50px', height: '50px', borderRadius: '5px' }}>
-                                                        <img
-                                                            src={
-                                                                element?.itemVariant?.imageUrl?.length != 0 && element?.itemVariant?.imageUrl != null
-                                                                    ? element?.itemVariant?.imageUrl
-                                                                    : 'https://www.shutterstock.com/image-vector/new-label-shopping-icon-vector-260nw-1894227709.jpg'
-                                                            }
-                                                            style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '5px' }}
-                                                        />
-                                                    </div>
-                                                    <div class="col-lg-9 p-0 ">
-                                                        {cookies.get('userInfo')?.type == 'employee' && (
-                                                            <div class="col-lg-12 p-0 " style={{ fontSize: '11px', fontWeight: 600, color: 'grey' }}>
-                                                                {element?.merchant?.name}
-                                                            </div>
-                                                        )}
-
-                                                        <div class="col-lg-12 p-0 " style={{ fontSize: '14px', fontWeight: 600 }}>
-                                                            {element?.itemVariant?.fullName}
-                                                        </div>
-                                                        <div class="col-lg-12 p-0 " style={{ fontSize: '11px', fontWeight: 600, color: 'grey' }}>
-                                                            {element?.itemVariant?.sku}
-                                                        </div>
-                                                        <div className="row m-0 w-100">
-                                                            <div class="col-lg-8 p-0 " style={{ fontSize: '13px', fontWeight: 500 }}>
-                                                                {element?.itemVariant?.name}
-                                                            </div>
-                                                            <div class="col-lg-4 p-0 d-flex justify-content-end">{element?.count}</div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-lg-12 p-0 my-3">
-                                                <div class="row m-0 w-100 d-flex align-items-center justify-content-center">
-                                                    <button
-                                                        onClick={async () => {
-                                                            var { data } = await fetchItemHistorLazyQuery({
-                                                                variables: {
-                                                                    input: { itemInBoxId: parseInt(element.id), limit: 20 },
-                                                                },
-                                                            });
-                                                            setfetchItemHistoryQuery(data);
-                                                            setchosenitem(element);
-                                                            setopenModal(true);
-                                                        }}
-                                                        style={{ height: '25px', minWidth: 'fit-content', marginInlineEnd: '5px', background: 'grey' }}
-                                                        class={generalstyles.roundbutton + '  allcentered'}
-                                                    >
-                                                        <FaRegClock />
-                                                    </button>
-
-                                                    <button
-                                                        onClick={() => {
-                                                            setchosenitem(element);
-                                                            // setopenModal(true);
-                                                            setimportpayload({
-                                                                id: '',
-                                                                count: '',
-                                                                type: '',
-                                                            });
-                                                            setimportmodal({ open: true, type: 'import' });
-                                                        }}
-                                                        style={{ height: '25px', minWidth: 'fit-content', marginInlineEnd: '5px' }}
-                                                        class={generalstyles.roundbutton + '  allcentered'}
-                                                    >
-                                                        <CiImport size={18} />
-                                                    </button>
-                                                    <button
-                                                        onClick={() => {
-                                                            setchosenitem(element);
-                                                            setimportpayload({
-                                                                id: '',
-                                                                count: '',
-                                                                type: '',
-                                                            });
-                                                            setimportmodal({ open: true, type: 'export' });
-                                                        }}
-                                                        style={{ height: '25px', minWidth: 'fit-content', marginInlineEnd: '5px' }}
-                                                        class={generalstyles.roundbutton + '  allcentered bg-danger bg-dangerhover'}
-                                                    >
-                                                        <CiExport size={18} />
-                                                    </button>
-                                                </div>
-                                            </div>
+                            {fetchItemsInBoxQuery?.data?.paginateItemInBox?.data?.length == 0 && (
+                                <div style={{ height: '70vh' }} class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
+                                    <div class="row m-0 w-100">
+                                        <FaLayerGroup size={40} class=" col-lg-12" />
+                                        <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
+                                            No Items
                                         </div>
                                     </div>
-                                );
-                            })}
+                                </div>
+                            )}
+                            {fetchItemsInBoxQuery?.data?.paginateItemInBox?.data?.length != 0 && (
+                                <>
+                                    {fetchItemsInBoxQuery?.data?.paginateItemInBox?.data?.map((element, arrayindex) => {
+                                        var selected = false;
+                                        var count = 0;
+                                        selectedVariants?.map((i) => {
+                                            if (i.id == element.id) {
+                                                selected = true;
+                                                count = i?.count;
+                                            }
+                                        });
+                                        return (
+                                            <div style={{ fontSize: '13px' }} class=" col-lg-4 ">
+                                                <div
+                                                    onClick={() => {
+                                                        var temp = [...selectedVariants];
+                                                        var exist = false;
+                                                        var chosenindex = null;
+                                                        temp.map((i, ii) => {
+                                                            if (i?.id == element?.id) {
+                                                                exist = true;
+                                                                chosenindex = ii;
+                                                            }
+                                                        });
+                                                        if (!exist) {
+                                                            temp.push({ item: element.itemVariant, id: element.id });
+                                                        } else {
+                                                            temp.splice(chosenindex, 1);
+                                                        }
+                                                        // alert(JSON.stringify(temp));
+                                                        setselectedVariants([...temp]);
+                                                    }}
+                                                    style={{
+                                                        cursor: 'pointer',
+
+                                                        backgroundColor: selected ? 'var(--secondary)' : '',
+                                                        transition: 'all 0.4s',
+                                                    }}
+                                                    class={generalstyles.card + ' row m-0 w-100 '}
+                                                >
+                                                    <div class="col-lg-12 p-0">
+                                                        <div class="row m-0 w-100 d-flex align-items-center">
+                                                            <div class=" mr-2" style={{ width: '50px', height: '50px', borderRadius: '5px' }}>
+                                                                <img
+                                                                    src={
+                                                                        element?.itemVariant?.imageUrl?.length != 0 && element?.itemVariant?.imageUrl != null
+                                                                            ? element?.itemVariant?.imageUrl
+                                                                            : 'https://www.shutterstock.com/image-vector/new-label-shopping-icon-vector-260nw-1894227709.jpg'
+                                                                    }
+                                                                    style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '5px' }}
+                                                                />
+                                                            </div>
+                                                            <div class="col-lg-9 p-0 ">
+                                                                {cookies.get('userInfo')?.type == 'employee' && (
+                                                                    <div class="col-lg-12 p-0 " style={{ fontSize: '11px', fontWeight: 600, color: 'grey' }}>
+                                                                        {element?.merchant?.name}
+                                                                    </div>
+                                                                )}
+
+                                                                <div class="col-lg-12 p-0 " style={{ fontSize: '14px', fontWeight: 600 }}>
+                                                                    {element?.itemVariant?.fullName}
+                                                                </div>
+                                                                <div class="col-lg-12 p-0 " style={{ fontSize: '11px', fontWeight: 600, color: 'grey' }}>
+                                                                    {element?.itemVariant?.sku}
+                                                                </div>
+                                                                <div className="row m-0 w-100">
+                                                                    <div class="col-lg-8 p-0 " style={{ fontSize: '13px', fontWeight: 500 }}>
+                                                                        {element?.itemVariant?.name}
+                                                                    </div>
+                                                                    <div class="col-lg-4 p-0 d-flex justify-content-end">{element?.count}</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-12 p-0 my-3">
+                                                        <div class="row m-0 w-100 d-flex align-items-center justify-content-center">
+                                                            <button
+                                                                onClick={async () => {
+                                                                    var { data } = await fetchItemHistorLazyQuery({
+                                                                        variables: {
+                                                                            input: { itemInBoxId: parseInt(element.id), limit: 20 },
+                                                                        },
+                                                                    });
+                                                                    setfetchItemHistoryQuery(data);
+                                                                    setchosenitem(element);
+                                                                    setopenModal(true);
+                                                                }}
+                                                                style={{ height: '25px', minWidth: 'fit-content', marginInlineEnd: '5px', background: 'grey' }}
+                                                                class={generalstyles.roundbutton + '  allcentered'}
+                                                            >
+                                                                <FaRegClock />
+                                                            </button>
+
+                                                            <button
+                                                                onClick={() => {
+                                                                    setchosenitem(element);
+                                                                    // setopenModal(true);
+                                                                    setimportpayload({
+                                                                        id: '',
+                                                                        count: '',
+                                                                        type: '',
+                                                                    });
+                                                                    setimportmodal({ open: true, type: 'import' });
+                                                                }}
+                                                                style={{ height: '25px', minWidth: 'fit-content', marginInlineEnd: '5px' }}
+                                                                class={generalstyles.roundbutton + '  allcentered'}
+                                                            >
+                                                                <CiImport size={18} />
+                                                            </button>
+                                                            <button
+                                                                onClick={() => {
+                                                                    setchosenitem(element);
+                                                                    setimportpayload({
+                                                                        id: '',
+                                                                        count: '',
+                                                                        type: '',
+                                                                    });
+                                                                    setimportmodal({ open: true, type: 'export' });
+                                                                }}
+                                                                style={{ height: '25px', minWidth: 'fit-content', marginInlineEnd: '5px' }}
+                                                                class={generalstyles.roundbutton + '  allcentered bg-danger bg-dangerhover'}
+                                                            >
+                                                                <CiExport size={18} />
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </>
+                            )}
                         </>
                     )}
                 </div>
@@ -830,7 +849,6 @@ const InventoryItems = (props) => {
                                             const { data } = await exportMutation();
                                             setimportmodal({ open: false, type: '' });
                                             refetchfetchItemsInBox();
-                                            refetchItemHistory();
                                         } catch (error) {
                                             let errorMessage = 'An unexpected error occurred';
                                             if (error.graphQLErrors && error.graphQLErrors.length > 0) {

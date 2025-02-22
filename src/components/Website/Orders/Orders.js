@@ -348,6 +348,11 @@ const Orders = (props) => {
                                             class={formstyles.form__field}
                                             value={search}
                                             placeholder={'Search by name or SKU'}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter') {
+                                                    setfilterorders({ ...filterorders, name: search?.length == 0 ? undefined : search });
+                                                }
+                                            }}
                                             onChange={(event) => {
                                                 setBarcode(event.target.value);
                                                 setSearch(event.target.value);

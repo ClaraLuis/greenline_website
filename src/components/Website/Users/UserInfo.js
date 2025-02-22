@@ -579,6 +579,14 @@ const UserInfo = (props) => {
                                             return;
                                         }
 
+                                        // Email validation
+                                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                                        if (!emailRegex.test(payload.email)) {
+                                            NotificationManager.warning('', 'Please enter a valid email address');
+                                            return;
+                                        }
+
+                                        // Phone number validation
                                         if (!isPhoneValidContext(payload.phone)) {
                                             NotificationManager.warning('', 'Please enter a valid phone number');
                                             return;

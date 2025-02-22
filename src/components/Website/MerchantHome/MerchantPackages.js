@@ -216,6 +216,11 @@ const MerchantPackages = (props) => {
                                                     class={formstyles.form__field}
                                                     value={search}
                                                     placeholder={'Search by name or SKU'}
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === 'Enter') {
+                                                            setfilter({ ...filter, sku: search?.length == 0 ? undefined : search });
+                                                        }
+                                                    }}
                                                     onChange={(event) => {
                                                         setBarcode(event.target.value);
                                                         setSearch(event.target.value);
@@ -322,7 +327,7 @@ const MerchantPackages = (props) => {
                                                 <div class="col-lg-12 p-0">
                                                     <div class="row m-0 w-100 d-flex align-items-center">
                                                         <div class="col-lg-6 p-0">
-                                                            {item?.courier && (
+                                                            {item?.courier && cookies.get('userInfo')?.type != 'merchant' && (
                                                                 <div className="col-lg-12 p-0 mb-2 d-flex align-items-center">
                                                                     <TbTruckDelivery size={20} class="mr-1" />
 

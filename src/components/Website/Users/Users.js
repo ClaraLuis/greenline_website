@@ -6,20 +6,24 @@ import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
 import { components } from 'react-select';
+import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
+import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 
 // Icons
 import API from '../../../API/API.js';
 import Pagination from '../../Pagination.js';
 import UserInfo from './UserInfo.js';
 import UsersTable from './UsersTable.js';
+import SelectComponent from '../../SelectComponent.js';
+import MultiSelect from '../../MultiSelect.js';
 
 const { ValueContainer, Placeholder } = components;
 
 const Users = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, dateformatter, isAuth } = useContext(Contexthandlerscontext);
-    const { fetchUsers, useQueryGQL } = API();
+    const { setpageactive_context, setpagetitle_context, dateformatter, isAuth, userTypeContext, employeeTypeContext } = useContext(Contexthandlerscontext);
+    const { fetchUsers, useQueryGQL, fetchMerchants, fetchHubs } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
 
@@ -30,7 +34,7 @@ const Users = (props) => {
         functype: 'add',
         id: 'add',
         name: '',
-        type: '',
+        type: 'merchant',
         phone: '',
         email: '',
     });
@@ -44,6 +48,23 @@ const Users = (props) => {
 
     const fetchusers = useQueryGQL('', fetchUsers(), filterUsers);
     const { refetch: refetchUsers } = useQueryGQL('', fetchUsers(), filterUsers);
+
+    const [filterMerchants, setfilterMerchants] = useState({
+        isAsc: true,
+        limit: 10,
+        afterCursor: undefined,
+        beforeCursor: undefined,
+    });
+    const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filterMerchants);
+
+    const [filterHubs, setfilterHubs] = useState({
+        isAsc: true,
+        limit: 20,
+        afterCursor: undefined,
+        beforeCursor: undefined,
+    });
+
+    const fetchHubsQuery = useQueryGQL('cache-first', fetchHubs(), filterHubs);
 
     useEffect(() => {
         setpageactive_context('/users');
@@ -77,7 +98,7 @@ const Users = (props) => {
                                                 functype: 'add',
                                                 id: 'add',
                                                 name: '',
-                                                type: '',
+                                                type: 'merchant',
                                                 phone: '',
                                                 email: '',
                                             });
@@ -88,6 +109,131 @@ const Users = (props) => {
                                     </button>
                                 </div>
                             )}
+                        </div>
+                    </div>
+                    <div class="col-lg-12 px-3">
+                        <div class="row m-0 w-100">
+                            <div style={{ borderRadius: '0.25rem', background: 'white' }} class={generalstyles.card + ' col-lg-12'}>
+                                <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
+                                    <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
+                                        <AccordionItemHeading>
+                                            <AccordionItemButton>
+                                                <div class="row m-0 w-100">
+                                                    <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
+                                                        <p class={generalstyles.cardTitle + '  m-0 p-0 '}>Filter:</p>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-4 col-sm-4 p-0 d-flex align-items-center justify-content-end">
+                                                        <AccordionItemState>
+                                                            {(state) => {
+                                                                if (state.expanded == true) {
+                                                                    return (
+                                                                        <i class="h-100 d-flex align-items-center justify-content-center">
+                                                                            <BsChevronUp />
+                                                                        </i>
+                                                                    );
+                                                                } else {
+                                                                    return (
+                                                                        <i class="h-100 d-flex align-items-center justify-content-center">
+                                                                            <BsChevronDown />
+                                                                        </i>
+                                                                    );
+                                                                }
+                                                            }}
+                                                        </AccordionItemState>
+                                                    </div>
+                                                </div>
+                                            </AccordionItemButton>
+                                        </AccordionItemHeading>
+                                        <AccordionItemPanel>
+                                            <hr className="mt-2 mb-3" />
+                                            <div class="row m-0 w-100">
+                                                <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                                    <SelectComponent
+                                                        title={'Merchant'}
+                                                        filter={filterMerchants}
+                                                        setfilter={setfilterMerchants}
+                                                        options={fetchMerchantsQuery}
+                                                        attr={'paginateMerchants'}
+                                                        payload={filterUsers}
+                                                        payloadAttr={'merchantId'}
+                                                        label={'name'}
+                                                        value={'id'}
+                                                        onClick={(option) => {
+                                                            setfilterUsers({ ...filterUsers, merchantId: option?.id });
+                                                        }}
+                                                    />
+                                                </div>
+                                                <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                                    <SelectComponent
+                                                        title={'Hub'}
+                                                        filter={filterHubs}
+                                                        setfilter={setfilterHubs}
+                                                        options={fetchHubsQuery}
+                                                        attr={'paginateHubs'}
+                                                        payload={filterUsers}
+                                                        payloadAttr={'hubId'}
+                                                        label={'name'}
+                                                        value={'id'}
+                                                        onClick={(option) => {
+                                                            setfilterUsers({ ...filterUsers, hubId: option?.id });
+                                                        }}
+                                                    />
+                                                </div>
+                                                <div class="col-lg-3" style={{ marginBottom: '15px' }}>
+                                                    <MultiSelect
+                                                        title="Types"
+                                                        options={employeeTypeContext}
+                                                        label="label"
+                                                        value="value"
+                                                        selected={filterUsers?.employeeTypes}
+                                                        onClick={(option) => {
+                                                            const tempArray = [...(filterUsers?.employeeTypes ?? [])];
+
+                                                            if (option === 'All') {
+                                                                setfilterUsers({ ...filterUsers, employeeTypes: undefined });
+                                                            } else {
+                                                                const index = tempArray.indexOf(option?.value);
+                                                                if (index === -1) {
+                                                                    tempArray.push(option?.value);
+                                                                } else {
+                                                                    tempArray.splice(index, 1);
+                                                                }
+
+                                                                setfilterUsers({ ...filterUsers, employeeTypes: tempArray.length ? tempArray : undefined });
+                                                            }
+                                                        }}
+                                                    />
+                                                </div>
+                                                <div class="col-lg-3" style={{ marginBottom: '15px' }}>
+                                                    <MultiSelect
+                                                        title="Emplyee Type"
+                                                        options={userTypeContext}
+                                                        label="label"
+                                                        value="value"
+                                                        selected={filterUsers?.types}
+                                                        onClick={(option) => {
+                                                            const tempArray = [...(filterUsers?.types ?? [])];
+
+                                                            if (option === 'All') {
+                                                                setfilterUsers({ ...filterUsers, types: undefined });
+                                                            } else {
+                                                                const index = tempArray.indexOf(option?.value);
+                                                                if (index === -1) {
+                                                                    tempArray.push(option?.value);
+                                                                } else {
+                                                                    tempArray.splice(index, 1);
+                                                                }
+
+                                                                setfilterUsers({ ...filterUsers, types: tempArray.length ? tempArray : undefined });
+                                                            }
+                                                        }}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </AccordionItemPanel>
+                                    </AccordionItem>
+                                </Accordion>
+                            </div>
                         </div>
                     </div>
                     <div class={' col-lg-12 px-3 '}>

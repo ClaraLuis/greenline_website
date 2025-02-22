@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
+import { Modal } from 'react-bootstrap';
 
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
@@ -20,9 +21,14 @@ import TimelineSeparator from '@mui/lab/TimelineSeparator';
 
 import TimelineOppositeContent, { timelineOppositeContentClasses } from '@mui/lab/TimelineOppositeContent';
 import { TbTruckDelivery } from 'react-icons/tb';
+import Cookies from 'universal-cookie';
+import { IoMdClose } from 'react-icons/io';
+
 const MerchantReturnPackageInfo = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
+    const cookies = new Cookies();
+
     const { setpageactive_context, chosenPackageContext, setchosenPackageContext, dateformatter, setchosenOrderContext, returnPackageStatusContext, setpagetitle_context } =
         useContext(Contexthandlerscontext);
     const { useQueryGQL, fetchPackages, fetchGovernorates, fetchMerchantItemReturns, updateMerchantDomesticShipping, findOneReturnPackage, useLazyQueryGQL, paginateReturnPackageHistory } = API();
@@ -30,7 +36,7 @@ const MerchantReturnPackageInfo = (props) => {
         setpageactive_context('/packages');
         setpagetitle_context('Hubs');
     }, []);
-
+    const [signaturemodal, setsignaturemodal] = useState(false);
     const [filter, setfilter] = useState({
         limit: 20,
         isAsc: true,
@@ -102,16 +108,22 @@ const MerchantReturnPackageInfo = (props) => {
                                                     : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered text-capitalize'
                                             }
                                         >
-                                            {/* {returnPackageStatusContext?.map((i, ii) => {
-                                                if (i.value == chosenPackageContext?.status) {
-                                                    return <span>{i.label}</span>;
-                                                }
-                                            })} */}
                                             {chosenPackageContext?.status?.split(/(?=[A-Z])/).join(' ')}
                                         </div>
                                         <div style={{ color: 'white' }} className={' wordbreak  bg-primary rounded-pill font-weight-600 allcentered mx-1 text-capitalize'}>
                                             {chosenPackageContext?.type?.split(/(?=[A-Z])/).join(' ')}
                                         </div>
+                                        {chosenPackageContext?.signatureFile && (
+                                            <div
+                                                onClick={() => {
+                                                    setsignaturemodal(true);
+                                                }}
+                                                style={{ color: 'white' }}
+                                                className={' wordbreak  bg-primary rounded-pill font-weight-600 allcentered text-capitalize'}
+                                            >
+                                                Signature
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                                 <div className="col-lg-12 p-0 my-2">
@@ -122,7 +134,7 @@ const MerchantReturnPackageInfo = (props) => {
                                         #{chosenPackageContext?.merchant?.id}, {chosenPackageContext?.merchant?.name}
                                     </span>
                                 </div>
-                                {chosenPackageContext?.courier && (
+                                {chosenPackageContext?.courier && cookies.get('userInfo')?.type != 'merchant' && (
                                     <div className="col-lg-12 p-0 mb-2 d-flex align-items-center">
                                         <TbTruckDelivery size={20} class="mr-1" />
 
@@ -206,8 +218,8 @@ const MerchantReturnPackageInfo = (props) => {
                                                     </TimelineSeparator>
                                                     <TimelineContent style={{ fontWeight: 600, color: 'black', textTransform: 'capitalize' }}>
                                                         {historyItem?.status.split(/(?=[A-Z])/).join(' ')} <br />
-                                                        <span style={{ fontWeight: 500 }}>{historyItem?.user?.name}</span>
-                                                        {historyItem?.courier?.name && (
+                                                        {cookies.get('userInfo')?.type != 'merchant' && <span style={{ fontWeight: 500 }}>{historyItem?.user?.name}</span>}
+                                                        {historyItem?.courier?.name && cookies.get('userInfo')?.type != 'merchant' && (
                                                             <>
                                                                 {' '}
                                                                 <br />
@@ -235,6 +247,43 @@ const MerchantReturnPackageInfo = (props) => {
                     </div>
                 </div>
             </div>
+            <Modal
+                show={signaturemodal}
+                onHide={() => {
+                    setsignaturemodal(false);
+                }}
+                centered
+                size={'md'}
+            >
+                <Modal.Header>
+                    <div className="row w-100 m-0 p-0">
+                        <div class="col-lg-612 col-md-12 col-sm-12 d-flex align-items-center justify-content-end p-2">
+                            <div
+                                class={'close-modal-container'}
+                                onClick={() => {
+                                    setsignaturemodal(false);
+                                }}
+                            >
+                                <IoMdClose />
+                            </div>
+                        </div>{' '}
+                    </div>
+                </Modal.Header>
+                <Modal.Body>
+                    <div class="row m-0 w-100 py-2">
+                        <div style={{ width: '200px', height: '200px', borderRadius: '7px', marginInlineEnd: '5px' }}>
+                            <img
+                                src={
+                                    chosenPackageContext?.signatureFile?.url
+                                        ? chosenPackageContext?.signatureFile?.url
+                                        : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'
+                                }
+                                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
+                            />
+                        </div>
+                    </div>
+                </Modal.Body>
+            </Modal>
         </div>
     );
 };
