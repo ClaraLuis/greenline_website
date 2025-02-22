@@ -45,14 +45,22 @@ const Piechart = (props) => {
 
                 tooltip: {
                     y: {
-                        formatter: function (value, { series, seriesIndex, dataPointIndex, w }) {
+                        title: {
+                            display: 'none',
+                            formatter: (seriesName) => '',
+                        },
+                        formatter: function (value, context) {
                             const totalValue = new Decimal(props?.total || 0);
                             const calculatedValue = new Decimal(value).dividedBy(100).times(totalValue);
 
-                            return `${calculatedValue.toDecimalPlaces(0).toString()} ${props?.title}`;
+                            // Get series name safely
+                            const seriesName = context.config.labels[context.seriesIndex] || 'Unknown';
+
+                            return `${props?.title} ${calculatedValue.toDecimalPlaces(0).toString()} per ${seriesName}`;
                         },
                     },
                 },
+
                 labels: props?.xAxis,
                 responsive: [
                     {

@@ -290,18 +290,6 @@ export const Contexthandlerscontext_provider = (props) => {
                     },
 
                     {
-                        name: 'Finance',
-                        isselected: false,
-                        icon: (
-                            <i class={'allcentered'}>
-                                <BiSolidCoinStack size={18} />
-                            </i>
-                        ),
-                        path: '/merchantfinance',
-                        permissionpage: [1],
-                        show: isAuth([1, 51]),
-                    },
-                    {
                         name: 'Merchant Payments',
                         isselected: false,
                         icon: (
@@ -309,7 +297,7 @@ export const Contexthandlerscontext_provider = (props) => {
                                 <MdSwitchAccount size={18} />
                             </i>
                         ),
-                        path: '/merchantpayment',
+                        path: '/merchantfinance',
                         permissionpage: [1],
                         show: isAuth([1, 51, 19, 52]) && cookies.get('merchantId') != undefined,
                     },
@@ -560,19 +548,30 @@ export const Contexthandlerscontext_provider = (props) => {
                         permissionpage: [1],
                         show: isAuth([1, 51, 19]),
                     },
+                    // {
+                    //     name: 'Merchant Payments',
+                    //     isselected: false,
+                    //     icon: (
+                    //         <i class={'allcentered'}>
+                    //             <MdSwitchAccount size={18} />
+                    //         </i>
+                    //     ),
+                    //     path: '/merchantpayments',
+                    //     permissionpage: [1],
+                    //     show: isAuth([1, 51, 19]),
+                    // },
                     {
-                        name: 'Merchant Payments',
+                        name: 'Merchant Order Payments',
                         isselected: false,
                         icon: (
                             <i class={'allcentered'}>
-                                <MdSwitchAccount size={18} />
+                                <BiSolidCoinStack size={18} />
                             </i>
                         ),
-                        path: '/merchantpayments',
+                        path: '/merchantfinance',
                         permissionpage: [1],
-                        show: isAuth([1, 51, 19]),
+                        show: isAuth([1, 51]),
                     },
-
                     {
                         name: 'Transactions',
                         isselected: false,
