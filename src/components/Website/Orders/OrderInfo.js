@@ -44,8 +44,18 @@ const OrderInfo = (props) => {
     let history = useHistory();
     const cookies = new Cookies();
 
-    const { setchosenOrderContext, chosenOrderContext, dateformatter, isPhoneValidContext, orderTypeContext, setpagetitle_context, isAuth, buttonLoadingContext, setbuttonLoadingContext } =
-        useContext(Contexthandlerscontext);
+    const {
+        setchosenOrderContext,
+        chosenOrderContext,
+        dateformatter,
+        isPhoneValidContext,
+        orderTypeContext,
+        setpagetitle_context,
+        isAuth,
+        buttonLoadingContext,
+        setbuttonLoadingContext,
+        setchosenPackageContext,
+    } = useContext(Contexthandlerscontext);
     const {
         useQueryGQL,
         useMutationGQL,
@@ -502,12 +512,106 @@ const OrderInfo = (props) => {
                                 <>
                                     <div class="col-lg-12">
                                         <div class={generalstyles.card + ' row m-0 w-100'}>
+                                            <div className="col-lg-4 mb-2">
+                                                <div style={{ fontSize: '12px', color: 'grey' }} class="row m-0 w-100 d-flex align-items-center">
+                                                    <div class="col-lg-12 p-0">
+                                                        <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
+                                                            # {chosenOrderContext?.id}
+                                                        </span>
+                                                    </div>
+                                                    {chosenOrderContext?.shopifyName && (
+                                                        <div class="col-lg-12 p-0">
+                                                            <FaShopify class="mt-1 mr-1" />
+                                                            {chosenOrderContext?.shopifyName}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <div className="col-lg-8 mb-2 d-flex justify-content-end align-items-center">
+                                                <div class="row m-0 w-100  d-flex justify-content-end align-items-center">
+                                                    {outOfStock && queryParameters?.get('type') == 'inventory' && chosenOrderContext.status === 'idle' && (
+                                                        <div className={'mr-1 wordbreak text-danger bg-light-danger rounded-pill font-weight-600 '}>Out Of Stock</div>
+                                                    )}
+
+                                                    <div
+                                                        // onClick={() => {
+                                                        //     setchangestatusmodal(true);
+                                                        // }}
+                                                        // style={{ cursor: 'pointer' }}
+                                                        className={
+                                                            chosenOrderContext?.status == 'delivered'
+                                                                ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 text-capitalize'
+                                                                : chosenOrderContext?.status == 'postponed' || chosenOrderContext?.status == 'failedDeliveryAttempt'
+                                                                ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 text-capitalize'
+                                                                : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 text-capitalize'
+                                                        }
+                                                    >
+                                                        {/* {orderStatusEnumContext?.map((i, ii) => {
+                                                            if (i.value == chosenOrderContext?.status) {
+                                                                return <span>{i.label}</span>;
+                                                            }
+                                                        })} */}
+                                                        {chosenOrderContext?.status?.split(/(?=[A-Z])/).join(' ')}
+                                                    </div>
+                                                    <div
+                                                        // onClick={() => {
+                                                        //     setchangestatusmodal(true);
+                                                        // }}
+                                                        style={{ color: 'white' }}
+                                                        className={'ml-1 wordbreak bg-primary rounded-pill font-weight-600 text-capitalize'}
+                                                    >
+                                                        {/* {orderTypeContext?.map((i, ii) => {
+                                                            if (i.value == chosenOrderContext?.type) {
+                                                                return <span>{i.label}</span>;
+                                                            }
+                                                        })} */}
+                                                        {chosenOrderContext?.type?.split(/(?=[A-Z])/).join(' ')}
+                                                    </div>
+                                                    <div style={{ background: 'var(--primary)', color: 'white' }} className={' wordbreak rounded-pill font-weight-600 allcentered mx-1 '}>
+                                                        {chosenOrderContext?.paidToMerchant ? 'Paid' : 'Not Paid'}
+                                                    </div>
+                                                    {chosenOrderContext?.failsAndAssigns?.fails > 0 && (
+                                                        <div style={{ background: 'var(--danger)', color: 'white' }} className={' wordbreak rounded-pill font-weight-600 allcentered mx-1 '}>
+                                                            {chosenOrderContext?.failsAndAssigns?.fails} Failed Attempts
+                                                        </div>
+                                                    )}
+                                                    {chosenOrderContext?.failsAndAssigns?.assigns > 0 && (
+                                                        <div style={{ background: 'var(--danger)', color: 'white' }} className={' wordbreak rounded-pill font-weight-600 allcentered mx-1 '}>
+                                                            {chosenOrderContext?.failsAndAssigns?.assigns} Trials
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
                                             <div class="col-lg-4">
                                                 <div class="row m-0 w-100 d-flex align-items-center">
                                                     <div class="col-lg-12 p-0">
-                                                        <p class=" p-0 m-0" style={{ fontSize: '23px' }}>
-                                                            <span style={{ color: 'var(--info)' }}>{chosenOrderContext?.merchant?.name}</span>
-                                                        </p>
+                                                        <div class=" row w-100 p-0 m-0 d-flex align-items-center" style={{}}>
+                                                            <span style={{ color: 'var(--info)', fontSize: '23px' }}>{chosenOrderContext?.merchant?.name}</span>
+                                                            {chosenOrderContext?.previousOrder && (
+                                                                <div
+                                                                    onClick={() => {
+                                                                        setchosenOrderContext(undefined);
+                                                                        window.open('/orderinfo?orderId=' + chosenOrderContext?.previousOrder?.id, '_self');
+                                                                    }}
+                                                                    style={{ background: 'var(--primary)', color: 'white', cursor: 'pointer' }}
+                                                                    className={' wordbreak rounded-pill font-weight-600 allcentered mx-1 text-capitalize'}
+                                                                >
+                                                                    #{chosenOrderContext?.previousOrder?.id} {chosenOrderContext?.previousOrder?.type}
+                                                                </div>
+                                                            )}
+                                                            {chosenOrderContext?.parentOrder && (
+                                                                <div
+                                                                    onClick={() => {
+                                                                        setchosenOrderContext(undefined);
+                                                                        window.open('/orderinfo?orderId=' + chosenOrderContext?.parentOrder?.id, '_self');
+                                                                    }}
+                                                                    style={{ background: 'var(--primary)', color: 'white', cursor: 'pointer' }}
+                                                                    className={' wordbreak rounded-pill font-weight-600 allcentered mx-1 text-capitalize'}
+                                                                >
+                                                                    #{chosenOrderContext?.parentOrder?.id} {chosenOrderContext?.parentOrder?.type}
+                                                                </div>
+                                                            )}
+                                                        </div>
                                                     </div>
                                                     {/* {chosenOrderContext?.orderDate && (
                                                         <div class="col-lg-12 p-0">
@@ -573,76 +677,6 @@ const OrderInfo = (props) => {
                                                         <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Attach Exhange Order</p>
                                                     </button>
                                                 )}
-                                            </div>
-                                            <div className="col-lg-4">
-                                                <div style={{ fontSize: '12px', color: 'grey' }} class="row m-0 w-100 d-flex align-items-center">
-                                                    <div class="col-lg-12 p-0">
-                                                        <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
-                                                            # {chosenOrderContext?.id}
-                                                        </span>
-                                                    </div>
-                                                    {chosenOrderContext?.shopifyName && (
-                                                        <div class="col-lg-12 p-0">
-                                                            <FaShopify class="mt-1 mr-1" />
-                                                            {chosenOrderContext?.shopifyName}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                            <div className="col-lg-8 d-flex justify-content-end align-items-center">
-                                                <div class="row m-0 w-100  d-flex justify-content-end align-items-center">
-                                                    {outOfStock && queryParameters?.get('type') == 'inventory' && chosenOrderContext.status === 'idle' && (
-                                                        <div className={'mr-1 wordbreak text-danger bg-light-danger rounded-pill font-weight-600 '}>Out Of Stock</div>
-                                                    )}
-
-                                                    <div
-                                                        // onClick={() => {
-                                                        //     setchangestatusmodal(true);
-                                                        // }}
-                                                        // style={{ cursor: 'pointer' }}
-                                                        className={
-                                                            chosenOrderContext?.status == 'delivered'
-                                                                ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 text-capitalize'
-                                                                : chosenOrderContext?.status == 'postponed' || chosenOrderContext?.status == 'failedDeliveryAttempt'
-                                                                ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 text-capitalize'
-                                                                : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 text-capitalize'
-                                                        }
-                                                    >
-                                                        {/* {orderStatusEnumContext?.map((i, ii) => {
-                                                            if (i.value == chosenOrderContext?.status) {
-                                                                return <span>{i.label}</span>;
-                                                            }
-                                                        })} */}
-                                                        {chosenOrderContext?.status?.split(/(?=[A-Z])/).join(' ')}
-                                                    </div>
-                                                    <div
-                                                        // onClick={() => {
-                                                        //     setchangestatusmodal(true);
-                                                        // }}
-                                                        style={{ color: 'white' }}
-                                                        className={'ml-1 wordbreak bg-primary rounded-pill font-weight-600 text-capitalize'}
-                                                    >
-                                                        {/* {orderTypeContext?.map((i, ii) => {
-                                                            if (i.value == chosenOrderContext?.type) {
-                                                                return <span>{i.label}</span>;
-                                                            }
-                                                        })} */}
-                                                        {chosenOrderContext?.type?.split(/(?=[A-Z])/).join(' ')}
-                                                    </div>
-                                                    <div style={{ background: 'var(--primary)', color: 'white' }} className={' wordbreak rounded-pill font-weight-600 allcentered mx-1 '}>
-                                                        {chosenOrderContext?.paidToMerchant ? 'Paid' : 'Not Paid'}
-                                                    </div>
-                                                    {chosenOrderContext?.failsAndAssigns?.fails > 0 && (
-                                                        <div style={{ background: 'var(--danger)', color: 'white' }} className={' wordbreak rounded-pill font-weight-600 allcentered mx-1 '}>
-                                                            {chosenOrderContext?.failsAndAssigns?.fails} Failed Attempts
-                                                        </div>
-                                                    )}
-                                                    {chosenOrderContext?.failsAndAssigns?.assigns > 0 && (
-                                                        <div style={{ background: 'var(--danger)', color: 'white' }} className={' wordbreak rounded-pill font-weight-600 allcentered mx-1 '}>
-                                                            {chosenOrderContext?.failsAndAssigns?.assigns} Trials
-                                                        </div>
-                                                    )}
-                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -735,13 +769,27 @@ const OrderInfo = (props) => {
                                                     <div>Return Package</div>
                                                 </div>
                                             </div>
-                                            <div class={generalstyles.card + ' row m-0 w-100'}>
+                                            <div
+                                                onClick={() => {
+                                                    if (chosenOrderContext?.returnPackage) {
+                                                        setchosenPackageContext(chosenOrderContext?.returnPackage);
+
+                                                        if (chosenOrderContext?.returnPackage?.type == 'merchant') {
+                                                            history.push('/merchantreturnpackageinfo?packageId=' + chosenOrderContext?.returnPackage?.id);
+                                                        } else {
+                                                            history.push('/returnpackageinfo?packageId=' + chosenOrderContext?.returnPackage?.id);
+                                                        }
+                                                    }
+                                                }}
+                                                style={{ cursor: chosenOrderContext?.returnPackage != null ? 'pointer' : '' }}
+                                                class={generalstyles.card + ' row m-0 w-100'}
+                                            >
                                                 {chosenOrderContext?.returnPackage == null && (
                                                     <div class="col-lg-12">
                                                         <div class="row m-0 w-100 d-flex align-items-center">
                                                             <div class="col-lg-12 p-0">
                                                                 <p class=" p-0 m-0" style={{ fontSize: '17px' }}>
-                                                                    <span style={{ color: 'var(--danger)' }}>Not Return Package</span>
+                                                                    <span style={{ color: 'var(--danger)' }}>No Return Package</span>
                                                                 </p>
                                                             </div>
                                                         </div>

@@ -137,13 +137,7 @@ const AddSheetNew = (props) => {
     };
     useEffect(() => {
         setpageactive_context(window.location.pathname);
-        setpagetitle_context(
-            window.location.pathname == '/addsheet'
-                ? 'Courier'
-                : window.location.pathname === '/dispatched' || window.location.pathname === '/sortfacilities' || window.location.pathname === '/fulfilled'
-                ? 'Warehouses'
-                : 'Hubs',
-        );
+        setpagetitle_context(window.location.pathname == '/addsheet' ? 'Courier' : window.location.pathname === '/fulfilled' ? 'Warehouses' : 'Hubs');
     }, []);
     const [fetchCourierSheetLazyQuery] = useLazyQueryGQL(fetchCourierSheet());
 

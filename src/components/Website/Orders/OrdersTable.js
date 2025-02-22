@@ -21,12 +21,15 @@ import API from '../../../API/API.js';
 import { NotificationManager } from 'react-notifications';
 import FulfillModal from './FulfillModal.js';
 import Decimal from 'decimal.js';
+import Cookies from 'universal-cookie';
 
 const { ValueContainer, Placeholder } = components;
 
 const OrdersTable = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
+    const cookies = new Cookies();
+
     const { orderStatusEnumContext, dateformatter, orderTypeContext, setchosenOrderContext, chosenOrderContext, isAuth, buttonLoadingContext, setbuttonLoadingContext } =
         useContext(Contexthandlerscontext);
     const { requestOrderReturn, useMutationGQL, updateOrdersStatus } = API();
@@ -524,12 +527,16 @@ const OrdersTable = (props) => {
 
                                             <div style={{ fontSize: '12px' }} class="col-lg-12 p-0 mt-2 d-flex justify-content-end ">
                                                 <div class="row m-0 w-100 d-flex align-items-center d-flex justify-content-end ">
-                                                    {props?.srcFrom != 'inventory' && item?.courier?.name?.length != 0 && item?.courier != undefined && item?.courier != null && (
-                                                        <div class="col-lg-6 p-0 d-flex align-items-center">
-                                                            <BiUser class="mr-1" />
-                                                            <span style={{ fontWeight: 600 }}>{item?.courier?.name}</span>
-                                                        </div>
-                                                    )}
+                                                    {props?.srcFrom != 'inventory' &&
+                                                        item?.courier?.name?.length != 0 &&
+                                                        item?.courier != undefined &&
+                                                        item?.courier != null &&
+                                                        cookies.get('userInfo')?.type != 'merchant' && (
+                                                            <div class="col-lg-6 p-0 d-flex align-items-center">
+                                                                <BiUser class="mr-1" />
+                                                                <span style={{ fontWeight: 600 }}>{item?.courier?.name}</span>
+                                                            </div>
+                                                        )}
                                                     {/* {outOfStock && props?.srcFrom == 'inventory' && (
                                                         <div class="col-lg-6 p-0 d-flex align-items-center">
                                                             <div className={' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 mr-1 '}>{diffInDays} days late</div>
