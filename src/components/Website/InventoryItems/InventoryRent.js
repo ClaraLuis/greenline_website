@@ -289,11 +289,11 @@ const InventoryRent = (props) => {
                                                         {dateformatter(item?.startDate)}
                                                     </span>
                                                 </div> */}
-                                                <div class="col-lg-12 p-0 d-flex">
+                                                {/* <div class="col-lg-12 p-0 d-flex">
                                                     <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
                                                         {item?.lastBill ?? 'No bills issued yet.'}
                                                     </span>
-                                                </div>
+                                                </div> */}
                                                 {item?.lastBillTransaction && (
                                                     <div class="col-lg-12 p-0 d-flex">
                                                         <div class="row m-0 w-100 " style={{ border: '1px solid #eee' }}>
