@@ -364,25 +364,26 @@ const InventoryItems = (props) => {
                                 <div class={' col-lg-6 col-md-6 col-sm-12 p-0 d-flex align-items-center justify-content-end mb-2 px-2 '}>
                                     <div className="row m-0 w-100 d-flex align-items-center justify-content-end">
                                         {selectedVariants?.length > 0 && <SkuPrint skus={selectedVariants} />}
-
-                                        <button
-                                            onClick={() => {
-                                                setimportItemPayload({
-                                                    itemVariantId: '',
-                                                    ownedByOneMerchant: true,
-                                                    palletId: '',
-                                                    inventoryId: '',
-                                                    boxName: '',
-                                                    count: 0,
-                                                    minCount: 0,
-                                                });
-                                                setimportItemModel(true);
-                                            }}
-                                            style={{ height: '35px' }}
-                                            class={generalstyles.roundbutton + ' mx-2 '}
-                                        >
-                                            Import new item
-                                        </button>
+                                        {isAuth([1, 52, 81]) && (
+                                            <button
+                                                onClick={() => {
+                                                    setimportItemPayload({
+                                                        itemVariantId: '',
+                                                        ownedByOneMerchant: true,
+                                                        palletId: '',
+                                                        inventoryId: '',
+                                                        boxName: '',
+                                                        count: 0,
+                                                        minCount: 0,
+                                                    });
+                                                    setimportItemModel(true);
+                                                }}
+                                                style={{ height: '35px' }}
+                                                class={generalstyles.roundbutton + ' mx-2 '}
+                                            >
+                                                Import new item
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -454,7 +455,7 @@ const InventoryItems = (props) => {
                                     </div>
                                 </div>
                             )}
-                            {fetchItemsInBoxQuery?.data?.paginateItemInBox?.data?.length != 0 && (
+                            {fetchItemsInBoxQuery?.data?.paginateItemInBox?.data?.length != 0 && isAuth([1, 52, 6]) && (
                                 <>
                                     {fetchItemsInBoxQuery?.data?.paginateItemInBox?.data?.map((element, arrayindex) => {
                                         var selected = false;
@@ -531,54 +532,59 @@ const InventoryItems = (props) => {
 
                                                     <div class="col-lg-12 p-0 my-3">
                                                         <div class="row m-0 w-100 d-flex align-items-center justify-content-center">
-                                                            <button
-                                                                onClick={async () => {
-                                                                    var { data } = await fetchItemHistorLazyQuery({
-                                                                        variables: {
-                                                                            input: { itemInBoxId: parseInt(element.id), limit: 20 },
-                                                                        },
-                                                                    });
-                                                                    setfetchItemHistoryQuery(data);
-                                                                    setchosenitem(element);
-                                                                    setopenModal(true);
-                                                                }}
-                                                                style={{ height: '25px', minWidth: 'fit-content', marginInlineEnd: '5px', background: 'grey' }}
-                                                                class={generalstyles.roundbutton + '  allcentered'}
-                                                            >
-                                                                <FaRegClock />
-                                                            </button>
-
-                                                            <button
-                                                                onClick={() => {
-                                                                    setchosenitem(element);
-                                                                    // setopenModal(true);
-                                                                    setimportpayload({
-                                                                        id: '',
-                                                                        count: '',
-                                                                        type: '',
-                                                                    });
-                                                                    setimportmodal({ open: true, type: 'import' });
-                                                                }}
-                                                                style={{ height: '25px', minWidth: 'fit-content', marginInlineEnd: '5px' }}
-                                                                class={generalstyles.roundbutton + '  allcentered'}
-                                                            >
-                                                                <CiImport size={18} />
-                                                            </button>
-                                                            <button
-                                                                onClick={() => {
-                                                                    setchosenitem(element);
-                                                                    setimportpayload({
-                                                                        id: '',
-                                                                        count: '',
-                                                                        type: '',
-                                                                    });
-                                                                    setimportmodal({ open: true, type: 'export' });
-                                                                }}
-                                                                style={{ height: '25px', minWidth: 'fit-content', marginInlineEnd: '5px' }}
-                                                                class={generalstyles.roundbutton + '  allcentered bg-danger bg-dangerhover'}
-                                                            >
-                                                                <CiExport size={18} />
-                                                            </button>
+                                                            {isAuth([1, 54, 82]) && (
+                                                                <button
+                                                                    onClick={async () => {
+                                                                        var { data } = await fetchItemHistorLazyQuery({
+                                                                            variables: {
+                                                                                input: { itemInBoxId: parseInt(element.id), limit: 20 },
+                                                                            },
+                                                                        });
+                                                                        setfetchItemHistoryQuery(data);
+                                                                        setchosenitem(element);
+                                                                        setopenModal(true);
+                                                                    }}
+                                                                    style={{ height: '25px', minWidth: 'fit-content', marginInlineEnd: '5px', background: 'grey' }}
+                                                                    class={generalstyles.roundbutton + '  allcentered'}
+                                                                >
+                                                                    <FaRegClock />
+                                                                </button>
+                                                            )}
+                                                            {isAuth([1, 52, 77]) && (
+                                                                <button
+                                                                    onClick={() => {
+                                                                        setchosenitem(element);
+                                                                        // setopenModal(true);
+                                                                        setimportpayload({
+                                                                            id: '',
+                                                                            count: '',
+                                                                            type: '',
+                                                                        });
+                                                                        setimportmodal({ open: true, type: 'import' });
+                                                                    }}
+                                                                    style={{ height: '25px', minWidth: 'fit-content', marginInlineEnd: '5px' }}
+                                                                    class={generalstyles.roundbutton + '  allcentered'}
+                                                                >
+                                                                    <CiImport size={18} />
+                                                                </button>
+                                                            )}
+                                                            {isAuth([1, 52, 83]) && (
+                                                                <button
+                                                                    onClick={() => {
+                                                                        setchosenitem(element);
+                                                                        setimportpayload({
+                                                                            id: '',
+                                                                            count: '',
+                                                                            type: '',
+                                                                        });
+                                                                        setimportmodal({ open: true, type: 'export' });
+                                                                    }}
+                                                                    style={{ height: '25px', minWidth: 'fit-content', marginInlineEnd: '5px' }}
+                                                                    class={generalstyles.roundbutton + '  allcentered bg-danger bg-dangerhover'}
+                                                                >
+                                                                    <CiExport size={18} />
+                                                                </button>
+                                                            )}
                                                         </div>
                                                     </div>
                                                 </div>

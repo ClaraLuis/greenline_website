@@ -20,7 +20,7 @@ const { ValueContainer, Placeholder } = components;
 const ItemsTable = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setchosenItemContext, setpagetitle_context, dateformatter } = useContext(Contexthandlerscontext);
+    const { setchosenItemContext, setpagetitle_context, dateformatter, isAuth } = useContext(Contexthandlerscontext);
     const { useQueryGQL } = API();
     const [importItemModel, setimportItemModel] = useState(false);
     const cookies = new Cookies();
@@ -96,18 +96,20 @@ const ItemsTable = (props) => {
                                                     <TbEye color="white" size={17} />
                                                 </i>
                                             </a>
-                                            <a
-                                                class={generalstyles.buttonxs + ' allcentered ml-2'}
-                                                onClick={async (e) => {
-                                                    e.stopPropagation();
-                                                    await setchosenItemContext(item);
-                                                    history.push(`/updateitem?id=` + item.id);
-                                                }}
-                                            >
-                                                <i>
-                                                    <TbEdit color="white" size={17} />
-                                                </i>
-                                            </a>
+                                            {isAuth([1, 52, 13]) && (
+                                                <a
+                                                    class={generalstyles.buttonxs + ' allcentered ml-2'}
+                                                    onClick={async (e) => {
+                                                        e.stopPropagation();
+                                                        await setchosenItemContext(item);
+                                                        history.push(`/updateitem?id=` + item.id);
+                                                    }}
+                                                >
+                                                    <i>
+                                                        <TbEdit color="white" size={17} />
+                                                    </i>
+                                                </a>
+                                            )}
                                         </div>
                                     )}
 

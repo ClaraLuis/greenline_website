@@ -15,12 +15,15 @@ import API from '../../../API/API.js';
 import MultiSelect from '../../MultiSelect.js';
 import TransactionsTable from './TransactionsTable.js';
 import * as XLSX from 'xlsx';
+import Cookies from 'universal-cookie';
 
 const { ValueContainer, Placeholder } = components;
 
 const Finance = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
+    const cookies = new Cookies();
+
     const { setpageactive_context, setpagetitle_context, dateformatter, isAuth } = useContext(Contexthandlerscontext);
     const { useQueryGQL, merchantPaymentsSummary, fetchMerchants, fetchMerchantPaymentTransactions } = API();
     const { lang, langdetect } = useContext(LanguageContext);
@@ -161,7 +164,7 @@ const Finance = (props) => {
                     </div>
                 </div>{' '}
                 <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
-                    {!filterMerchanrPaymentSummaryObj?.merchantIds && (
+                    {!filterMerchanrPaymentSummaryObj?.merchantIds && cookies.get('userInfo')?.type != 'merchant' && (
                         <div class="col-lg-12 p-0">
                             <div class="row m-0 w-100">
                                 {merchantPaymentsSummaryQuery?.data?.merchantPaymentsSummary?.data?.map((item, index) => {
@@ -183,7 +186,7 @@ const Finance = (props) => {
                             </div>
                         </div>
                     )}
-                    {filterMerchanrPaymentSummaryObj?.merchantIds && (
+                    {(filterMerchanrPaymentSummaryObj?.merchantIds || cookies.get('userInfo')?.type == 'merchant') && (
                         <div className="col-lg-12 p-0">
                             <div className="row m-0 w-100">
                                 {Object.keys(merchantPaymentsSummaryQuery?.data?.merchantPaymentsSummary?.data || {}).map((merchantId) => {

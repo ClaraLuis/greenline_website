@@ -2192,6 +2192,21 @@ const API = () => {
                             name
                             id
                         }
+                        lastBillTransaction {
+                            id
+                            type
+                            description
+                            fromAccountId
+                            sheetOrderId
+                            toAccountId
+                            amount
+                            currency
+                            receipt
+                            status
+                            auditedById
+                            createdAt
+                            lastModified
+                        }
                     }
                     cursor
                 }
