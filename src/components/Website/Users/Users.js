@@ -265,7 +265,7 @@ const Users = (props) => {
                             </div>
                         </div>
                     </div>
-                    {isAuth([1, 43, 52]) && (
+                    {isAuth([1, 43, 52, 78, 79]) && (
                         <>
                             <div class="col-lg-12 p-0 mb-2">
                                 <Pagination

@@ -14,6 +14,7 @@ import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import API from '../../../API/API.js';
 import MultiSelect from '../../MultiSelect.js';
 import TransactionsTable from './TransactionsTable.js';
+import * as XLSX from 'xlsx';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -55,7 +56,12 @@ const Finance = (props) => {
         setpageactive_context('/merchantfinance');
         setpagetitle_context(isAuth([1]) ? 'Finance' : 'Merchant');
     }, []);
-
+    const exportToExcel = (data, fileName) => {
+        const worksheet = XLSX.utils.json_to_sheet(data);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+        XLSX.writeFile(workbook, `${fileName}.xlsx`);
+    };
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div class="row m-0 w-100 d-flex align-items-start justify-content-start mt-sm-2 pb-5 pb-md-0">
@@ -201,26 +207,38 @@ const Finance = (props) => {
                             </div>
                         </div>
                     )}
-                    {/* <div class="col-lg-12">
-                        <div class={generalstyles.card + ' row m-0 w-100'}>
-                            <div class={' col-lg-6 col-md-6 col-sm-12 d-flex align-items-center justify-content-start '}>
-                                <p class=" p-0 m-0 text-uppercase" style={{ fontSize: '15px' }}>
-                                    <span style={{ color: 'var(--info)' }}>Transactions</span>
-                                </p>
-                            </div>
-                            <div class="col-lg-6  d-flex justify-content-end">
-                                <span
-                                    onClick={() => {
-                                        history.push('/merchantpayments');
-                                    }}
-                                    style={{ height: '35px' }}
-                                    class={generalstyles.roundbutton + '  allcentered'}
-                                >
-                                    View all
-                                </span>
-                            </div>
-                        </div>{' '}
-                    </div> */}
+                    {isAuth([1]) && (
+                        <div class="col-lg-12 co-md-12 p-0 d-flex justify-content-end mb-3">
+                            <button
+                                style={{ height: '35px' }}
+                                class={generalstyles.roundbutton + '  mb-1 mx-1 text-capitalize'}
+                                onClick={() => {
+                                    const merchantTransactions = fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data;
+
+                                    // const exportData = merchantTransactions.map((transaction) => ({
+                                    const exportData = merchantTransactions.map(({ id, createdAt, __typename, fromAccount, toAccount, auditedBy, sheetOrder, type, reciept, status, ...rest }) => ({
+                                        ...rest,
+
+                                        orderId: sheetOrder?.order?.id,
+                                        // type: type
+                                        //     .split(/(?=[A-Z])/)
+                                        //     .join(' ')
+                                        //     .replace(/^\w/, (c) => c.toUpperCase()),
+                                        status: status
+                                            .split(/(?=[A-Z])/)
+                                            .join(' ')
+                                            .replace(/^\w/, (c) => c.toUpperCase()),
+                                        createdAt: createdAt,
+                                    }));
+
+                                    exportToExcel(exportData, 'merchantTransactions');
+                                }}
+                            >
+                                Export
+                            </button>
+                        </div>
+                    )}
+
                     <div className={' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
                         <div class="row m-0 w-100">
                             <TransactionsTable width={'50%'} query={fetchMerchantPaymentTransactionsQuery} paginationAttr="paginateMerchantPaymentTransactions" srctype="all" />
