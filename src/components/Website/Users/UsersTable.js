@@ -58,7 +58,7 @@ const UsersTable = (props) => {
                                             </div>
 
                                             <div className="col-lg-4 p-0 mb-2 d-flex justify-content-end">
-                                                {item?.id?.length != 7 && isAuth([1, 46, 52]) && (
+                                                {item?.id?.length != 7 && (
                                                     <Dropdown>
                                                         <Dropdown.Toggle>
                                                             <div
@@ -75,24 +75,27 @@ const UsersTable = (props) => {
                                                             </div>
                                                         </Dropdown.Toggle>
                                                         <Dropdown.Menu style={{ minWidth: '170px', fontSize: '12px' }}>
-                                                            <Dropdown.Item
-                                                                onClick={() => {
-                                                                    var temp = { ...item };
+                                                            {isAuth([1, 45, 52]) && (
+                                                                <Dropdown.Item
+                                                                    onClick={() => {
+                                                                        var temp = { ...item };
 
-                                                                    temp.functype = 'edit';
-                                                                    props?.setpayload({
-                                                                        ...temp,
-                                                                        employeeType: item?.employee?.type,
-                                                                        salary: item?.employee?.salary,
-                                                                        commission: item?.employee?.commission,
-                                                                        modaltype: 'view',
-                                                                    });
-                                                                    props?.setopenModal(true);
-                                                                }}
-                                                                class="py-2"
-                                                            >
-                                                                <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>View</p>
-                                                            </Dropdown.Item>
+                                                                        temp.functype = 'edit';
+                                                                        props?.setpayload({
+                                                                            ...temp,
+                                                                            employeeType: item?.employee?.type,
+                                                                            salary: item?.employee?.salary,
+                                                                            commission: item?.employee?.commission,
+                                                                            modaltype: 'view',
+                                                                        });
+                                                                        props?.setopenModal(true);
+                                                                    }}
+                                                                    class="py-2"
+                                                                >
+                                                                    <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>View</p>
+                                                                </Dropdown.Item>
+                                                            )}
+
                                                             {item?.type == 'merchant' && !cookies.get('merchantId') && (
                                                                 <Dropdown.Item
                                                                     onClick={() => {
@@ -103,6 +106,7 @@ const UsersTable = (props) => {
                                                                     <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>View Merchant</p>
                                                                 </Dropdown.Item>
                                                             )}
+
                                                             <Dropdown.Item
                                                                 onClick={() => {
                                                                     const auth = getAuth();
