@@ -106,45 +106,47 @@ const UsersTable = (props) => {
                                                                     <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>View Merchant</p>
                                                                 </Dropdown.Item>
                                                             )}
+                                                            {isAuth([1, 80]) && (
+                                                                <Dropdown.Item
+                                                                    onClick={() => {
+                                                                        const auth = getAuth();
+                                                                        sendPasswordResetEmail(auth, item.email)
+                                                                            .then(() => {
+                                                                                NotificationManager.success('Password reset email sent!', 'Success');
+                                                                            })
+                                                                            .catch((error) => {
+                                                                                const errorCode = error.code;
+                                                                                const errorMessage = error.message;
+                                                                                NotificationManager.warning(errorMessage, 'Warning');
 
-                                                            <Dropdown.Item
-                                                                onClick={() => {
-                                                                    const auth = getAuth();
-                                                                    sendPasswordResetEmail(auth, item.email)
-                                                                        .then(() => {
-                                                                            NotificationManager.success('Password reset email sent!', 'Success');
-                                                                        })
-                                                                        .catch((error) => {
-                                                                            const errorCode = error.code;
-                                                                            const errorMessage = error.message;
-                                                                            NotificationManager.warning(errorMessage, 'Warning');
-
-                                                                            // ..
-                                                                        });
-                                                                }}
-                                                                class="py-2"
-                                                            >
-                                                                <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Change Password</p>
-                                                            </Dropdown.Item>
-
-                                                            <Dropdown.Item
-                                                                onClick={() => {
-                                                                    //     var temp = { ...item };
-                                                                    //     temp.functype = 'edit';
-                                                                    //     setpayload({
-                                                                    //         ...temp,
-                                                                    //         employeeType: item?.employee?.type,
-                                                                    //         salary: item?.employee?.salary,
-                                                                    //         commission: item?.employee?.commission,
-                                                                    //         modaltype: 'permissions',
-                                                                    //     });
-                                                                    //     setopenModal(true);
-                                                                    history.push('/userpermissions?id=' + item?.id);
-                                                                }}
-                                                                class="py-2"
-                                                            >
-                                                                <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Update Permissions</p>
-                                                            </Dropdown.Item>
+                                                                                // ..
+                                                                            });
+                                                                    }}
+                                                                    class="py-2"
+                                                                >
+                                                                    <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Change Password</p>
+                                                                </Dropdown.Item>
+                                                            )}
+                                                            {isAuth([1, 46]) && (
+                                                                <Dropdown.Item
+                                                                    onClick={() => {
+                                                                        //     var temp = { ...item };
+                                                                        //     temp.functype = 'edit';
+                                                                        //     setpayload({
+                                                                        //         ...temp,
+                                                                        //         employeeType: item?.employee?.type,
+                                                                        //         salary: item?.employee?.salary,
+                                                                        //         commission: item?.employee?.commission,
+                                                                        //         modaltype: 'permissions',
+                                                                        //     });
+                                                                        //     setopenModal(true);
+                                                                        history.push('/userpermissions?id=' + item?.id);
+                                                                    }}
+                                                                    class="py-2"
+                                                                >
+                                                                    <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Update Permissions</p>
+                                                                </Dropdown.Item>
+                                                            )}
                                                         </Dropdown.Menu>
                                                     </Dropdown>
                                                     // <div

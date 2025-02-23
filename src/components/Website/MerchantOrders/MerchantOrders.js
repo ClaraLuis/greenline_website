@@ -148,7 +148,7 @@ const MerchantOrders = (props) => {
                     </div>
                 </div>
                 {/* {waybills?.length > 0 && <WaybillPrint waybills={waybills} />} */}
-                {(cookies.get('userInfo')?.type != 'merchant' || isAuth([1, 52])) && (
+                {(cookies.get('userInfo')?.type != 'merchant' || isAuth([1, 52, 14])) && (
                     <div class="col-lg-12 px-3">
                         <div class={generalstyles.card + ' mb-3 col-lg-12 p-2'}>
                             <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>

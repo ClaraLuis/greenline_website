@@ -294,6 +294,41 @@ const InventoryRent = (props) => {
                                                         {item?.lastBill ?? 'No bills issued yet.'}
                                                     </span>
                                                 </div>
+                                                {item?.lastBillTransaction && (
+                                                    <div class="col-lg-12 p-0 d-flex">
+                                                        <div class="row m-0 w-100 " style={{ border: '1px solid #eee' }}>
+                                                            <div className="col-lg-4 p-0">
+                                                                <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
+                                                                    # {item?.lastBillTransaction?.id}
+                                                                </span>
+                                                            </div>
+                                                            <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
+                                                                <div class="row m-0 w-100 d-fex justify-content-end align-items-center">
+                                                                    <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered mx-1 text-capitalize '}>
+                                                                        {item?.lastBillTransaction?.status?.split(/(?=[A-Z])/).join(' ')}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="col-lg-12 p-0 my-2">
+                                                                <hr className="m-0" />
+                                                            </div>
+                                                            <div class="col-lg-12 p-0 mb-2">
+                                                                <div class="row m-0 w-100 d-flex align-items-center">
+                                                                    <div class="col-lg-6 p-0 d-flex">
+                                                                        <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
+                                                                            {item?.lastBillTransaction?.amount} {item?.lastBillTransaction?.currency} /{' '}
+                                                                        </span>
+                                                                    </div>
+                                                                    <div class="col-lg-6 p-0 d-flex justify-content-end">
+                                                                        <span style={{ fontSize: '12px', color: 'grey' }} class="text-capitalize">
+                                                                            {dateformatter(item?.lastBillTransaction?.createdAt)}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )}
                                                 <div class="col-lg-6 p-0 d-flex">
                                                     <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
                                                         {item?.pricePerUnit} {item?.currency} /{' '}

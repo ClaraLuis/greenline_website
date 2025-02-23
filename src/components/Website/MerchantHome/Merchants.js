@@ -123,7 +123,7 @@ const Merchants = (props) => {
                                 <p class=" p-0 m-0" style={{ fontSize: '14px' }}>
                                     <span
                                         onClick={() => {
-                                            if (isAuth([48, 1, 52])) {
+                                            if (isAuth([87, 1, 52])) {
                                                 history.push('/addmerchant' + '?type=add' + '&step=0');
                                             } else {
                                                 NotificationManager.warning('Not Authorized', 'Warning');
@@ -176,111 +176,124 @@ const Merchants = (props) => {
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-12 mb-2 p-0">
-                            <Pagination
-                                beforeCursor={fetchMerchantsQuery?.data?.paginateMerchants?.cursor?.beforeCursor}
-                                afterCursor={fetchMerchantsQuery?.data?.paginateMerchants?.cursor?.afterCursor}
-                                filter={filterMerchants}
-                                setfilter={setfilterMerchants}
-                            />
-                        </div>
-                        <div style={{ minHeight: '60vh' }} class="row m-0 w-100 d-flex align-items-start align-content-start">
-                            {fetchMerchantsQuery?.data?.paginateMerchants?.data?.map((item, index) => {
-                                return (
-                                    <div onClick={() => {}} style={{ fontSize: '13px' }} class=" col-lg-4">
-                                        <div
-                                            style={{ backgroundColor: 'white', border: chosenMerchantContext?.id == item?.id ? '1px solid var(--success)' : '' }}
-                                            class={generalstyles.card + ' row m-0 w-100 p-3  d-flex align-items-center'}
-                                        >
-                                            <div class="col-lg-8 p-0 mb-1 ">
-                                                <div class="row m-0 w-100 d-flex align-items-center">
-                                                    <div style={{ width: '30px', height: '30px', marginInlineEnd: '10px' }}>
-                                                        <img src={user} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-                                                    </div>
-                                                    <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
-                                                        {' '}
-                                                        {item?.name}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4 p-0 mb-1 d-flex justify-content-end align-items-center">
-                                                <Dropdown>
-                                                    <Dropdown.Toggle>
-                                                        <div
-                                                            style={{
-                                                                color: 'var(--primary)',
-                                                                borderRadius: '10px',
-                                                                transition: 'all 0.4s',
-                                                            }}
-                                                        >
-                                                            <FaEllipsisV />
+                        {isAuth([1, 52, 91]) && (
+                            <>
+                                {' '}
+                                <div class="col-lg-12 mb-2 p-0">
+                                    <Pagination
+                                        beforeCursor={fetchMerchantsQuery?.data?.paginateMerchants?.cursor?.beforeCursor}
+                                        afterCursor={fetchMerchantsQuery?.data?.paginateMerchants?.cursor?.afterCursor}
+                                        filter={filterMerchants}
+                                        setfilter={setfilterMerchants}
+                                    />
+                                </div>
+                                <div style={{ minHeight: '60vh' }} class="row m-0 w-100 d-flex align-items-start align-content-start">
+                                    {fetchMerchantsQuery?.data?.paginateMerchants?.data?.map((item, index) => {
+                                        return (
+                                            <div onClick={() => {}} style={{ fontSize: '13px' }} class=" col-lg-4">
+                                                <div
+                                                    style={{ backgroundColor: 'white', border: chosenMerchantContext?.id == item?.id ? '1px solid var(--success)' : '' }}
+                                                    class={generalstyles.card + ' row m-0 w-100 p-3  d-flex align-items-center'}
+                                                >
+                                                    <div class="col-lg-8 p-0 mb-1 ">
+                                                        <div class="row m-0 w-100 d-flex align-items-center">
+                                                            <div style={{ width: '30px', height: '30px', marginInlineEnd: '10px' }}>
+                                                                <img src={user} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                                                            </div>
+                                                            <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
+                                                                {' '}
+                                                                {item?.name}
+                                                            </span>
                                                         </div>
-                                                    </Dropdown.Toggle>
-                                                    <Dropdown.Menu>
-                                                        <Dropdown.Item
-                                                            class="py-2"
-                                                            onClick={() => {
-                                                                setinventoryModal(true);
-                                                                setinventorySettings({
-                                                                    ...item?.inventoryRent,
-                                                                    merchantId: item?.id,
-                                                                    functype: item?.inventoryRent == null ? 'add' : 'edit',
-                                                                    inInventory: item?.inventoryRent == null ? false : true,
-                                                                    startDate: item.inventoryRent == null ? new Date().toISOString().split('T')[0] : item?.inventoryRent?.startDate,
-                                                                });
-                                                            }}
-                                                        >
-                                                            <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Inventory Rent</p>
-                                                        </Dropdown.Item>
-                                                        <Dropdown.Item
-                                                            class="py-2"
-                                                            onClick={() => {
-                                                                history.push('/inventorysettings?merchantId=' + item.id);
-                                                            }}
-                                                        >
-                                                            <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>View Inventory</p>
-                                                        </Dropdown.Item>
-                                                        <Dropdown.Item
-                                                            class="py-2"
-                                                            onClick={() => {
-                                                                history.push('/updateshipping?merchantId=' + item.id + '&n=' + item?.name);
-                                                            }}
-                                                        >
-                                                            <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Shipping Prices</p>
-                                                        </Dropdown.Item>
-                                                        <Dropdown.Item
-                                                            class="py-2"
-                                                            onClick={() => {
-                                                                // history.push('/governorates?merchantId=' + item.id);
-                                                            }}
-                                                        >
-                                                            <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Terminate Merchant</p>
-                                                        </Dropdown.Item>
-                                                    </Dropdown.Menu>
-                                                </Dropdown>
-                                            </div>
-                                            <div class="col-lg-12 p-0 mt-3">
-                                                <div class="row m-0 w-100 allcentered">
-                                                    <button
-                                                        onClick={() => {
-                                                            // setchosenMerchantContext(item);
-                                                            // const cookies = new Cookies();
-                                                            // cookies.set('merchantId', item?.id);
-                                                            // window.location.reload();
-                                                            history.push('/updatemerchant?merchantId=' + item.id);
-                                                        }}
-                                                        style={{ minWidth: '200px', maxWidth: '200px', height: '35px' }}
-                                                        class={generalstyles.roundbutton + ' p-1 px-3 allcentered'}
-                                                    >
-                                                        View
-                                                    </button>
+                                                    </div>
+                                                    <div class="col-lg-4 p-0 mb-1 d-flex justify-content-end align-items-center">
+                                                        <Dropdown>
+                                                            <Dropdown.Toggle>
+                                                                <div
+                                                                    style={{
+                                                                        color: 'var(--primary)',
+                                                                        borderRadius: '10px',
+                                                                        transition: 'all 0.4s',
+                                                                    }}
+                                                                >
+                                                                    <FaEllipsisV />
+                                                                </div>
+                                                            </Dropdown.Toggle>
+                                                            <Dropdown.Menu>
+                                                                {isAuth([1, 52, 88]) && (
+                                                                    <Dropdown.Item
+                                                                        class="py-2"
+                                                                        onClick={() => {
+                                                                            setinventoryModal(true);
+                                                                            setinventorySettings({
+                                                                                ...item?.inventoryRent,
+                                                                                merchantId: item?.id,
+                                                                                functype: item?.inventoryRent == null ? 'add' : 'edit',
+                                                                                inInventory: item?.inventoryRent == null ? false : true,
+                                                                                startDate: item.inventoryRent == null ? new Date().toISOString().split('T')[0] : item?.inventoryRent?.startDate,
+                                                                            });
+                                                                        }}
+                                                                    >
+                                                                        <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Inventory Rent</p>
+                                                                    </Dropdown.Item>
+                                                                )}
+                                                                {isAuth([1, 52, 84]) && (
+                                                                    <Dropdown.Item
+                                                                        class="py-2"
+                                                                        onClick={() => {
+                                                                            history.push('/inventorysettings?merchantId=' + item.id);
+                                                                        }}
+                                                                    >
+                                                                        <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>View Inventory</p>
+                                                                    </Dropdown.Item>
+                                                                )}
+                                                                {isAuth([1, 52, 89]) && (
+                                                                    <Dropdown.Item
+                                                                        class="py-2"
+                                                                        onClick={() => {
+                                                                            history.push('/updateshipping?merchantId=' + item.id + '&n=' + item?.name);
+                                                                        }}
+                                                                    >
+                                                                        <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Shipping Prices</p>
+                                                                    </Dropdown.Item>
+                                                                )}
+                                                                {isAuth([1, 52, 90]) && (
+                                                                    <Dropdown.Item
+                                                                        class="py-2"
+                                                                        onClick={() => {
+                                                                            // history.push('/governorates?merchantId=' + item.id);
+                                                                        }}
+                                                                    >
+                                                                        <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Terminate Merchant</p>
+                                                                    </Dropdown.Item>
+                                                                )}
+                                                            </Dropdown.Menu>
+                                                        </Dropdown>
+                                                    </div>
+                                                    <div class="col-lg-12 p-0 mt-3">
+                                                        <div class="row m-0 w-100 allcentered">
+                                                            <button
+                                                                onClick={() => {
+                                                                    // setchosenMerchantContext(item);
+                                                                    // const cookies = new Cookies();
+                                                                    // cookies.set('merchantId', item?.id);
+                                                                    // window.location.reload();
+                                                                    history.push('/updatemerchant?merchantId=' + item.id);
+                                                                }}
+                                                                style={{ minWidth: '200px', maxWidth: '200px', height: '35px' }}
+                                                                class={generalstyles.roundbutton + ' p-1 px-3 allcentered'}
+                                                            >
+                                                                View
+                                                            </button>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
+                                        );
+                                    })}
+                                </div>
+                            </>
+                        )}
                     </div>
                 </div>
             </div>

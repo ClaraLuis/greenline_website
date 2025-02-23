@@ -182,12 +182,14 @@ const UserInfo = (props) => {
                                     <div class="col-lg-12 mb-1" style={{ color: 'grey', fontSize: '12px' }}>
                                         <div class="row m-0 w-100 d-flex align-items-center justify-content-between">
                                             <div> Main Info</div>
-                                            <TbEdit
-                                                onClick={() => {
-                                                    setedit(true);
-                                                }}
-                                                class="text-secondaryhover"
-                                            />
+                                            {isAuth([1, 45]) && (
+                                                <TbEdit
+                                                    onClick={() => {
+                                                        setedit(true);
+                                                    }}
+                                                    class="text-secondaryhover"
+                                                />
+                                            )}
                                         </div>
                                     </div>
 

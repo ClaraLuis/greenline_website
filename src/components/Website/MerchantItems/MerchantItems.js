@@ -898,40 +898,38 @@ keep data consistent.</span></p>
                                         Merchant Items
                                     </p>
                                 </div>
-                                {isAuth([1, 52, 13]) && (
-                                    <div class={' col-lg-6 col-md-6 col-sm-6 p-0 pr-3 pr-md-1 pr-sm-0 d-flex align-items-center justify-content-end pb-1 '}>
-                                        <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
-                                            <button
-                                                style={{ height: '35px' }}
-                                                class={generalstyles.roundbutton + '  mb-1 mx-2'}
-                                                onClick={() => {
-                                                    if (isAuth([1])) {
-                                                        setmerchantModal(true);
-                                                        settype('additem');
-                                                    } else {
-                                                        history.push('/additem');
-                                                    }
-                                                }}
-                                            >
-                                                Add New Item
-                                            </button>
-                                            <button
-                                                style={{ height: '35px' }}
-                                                class={generalstyles.roundbutton + '  mb-1 '}
-                                                onClick={() => {
-                                                    if (isAuth([1])) {
-                                                        setmerchantModal(true);
-                                                        settype('importbulk');
-                                                    } else {
-                                                        setimportModal(true);
-                                                    }
-                                                }}
-                                            >
-                                                Import Bulk
-                                            </button>
-                                        </div>
+                                <div class={' col-lg-6 col-md-6 col-sm-6 p-0 pr-3 pr-md-1 pr-sm-0 d-flex align-items-center justify-content-end pb-1 '}>
+                                    <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
+                                        <button
+                                            style={{ height: '35px' }}
+                                            class={generalstyles.roundbutton + '  mb-1 mx-2'}
+                                            onClick={() => {
+                                                if (isAuth([1, 52, 74])) {
+                                                    setmerchantModal(true);
+                                                    settype('additem');
+                                                } else {
+                                                    history.push('/additem');
+                                                }
+                                            }}
+                                        >
+                                            Add New Item
+                                        </button>
+                                        <button
+                                            style={{ height: '35px' }}
+                                            class={generalstyles.roundbutton + '  mb-1 '}
+                                            onClick={() => {
+                                                if (isAuth([1, 52, 75])) {
+                                                    setmerchantModal(true);
+                                                    settype('importbulk');
+                                                } else {
+                                                    setimportModal(true);
+                                                }
+                                            }}
+                                        >
+                                            Import Bulk
+                                        </button>
                                     </div>
-                                )}
+                                </div>
                             </div>
                         </div>
                         {cookies.get('merchantId') == undefined && <MerchantSelect fiter={payload} setFilter={setPayload} />}
