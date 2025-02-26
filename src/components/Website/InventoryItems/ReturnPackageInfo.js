@@ -151,20 +151,23 @@ const ReturnPackageInfo = (props) => {
                                         >
                                             {chosenPackageContext?.status?.split(/(?=[A-Z])/).join(' ')}
                                         </div>
-                                        <div style={{ color: 'white' }} className={' wordbreak  bg-primary rounded-pill font-weight-600 allcentered mx-1 text-capitalize '}>
-                                            {chosenPackageContext?.type?.split(/(?=[A-Z])/).join(' ')}
-                                        </div>
                                         {chosenPackageContext?.signatureFile && (
                                             <div
                                                 onClick={() => {
                                                     setsignaturemodal(true);
                                                 }}
-                                                style={{ color: 'white' }}
-                                                className={' wordbreak  bg-primary rounded-pill font-weight-600 allcentered text-capitalize'}
+                                                style={{ color: 'white', cursor: 'pointer' }}
+                                                className={' wordbreak  bg-primary rounded-pill mx-1 font-weight-600 allcentered text-capitalize'}
                                             >
                                                 Signature
                                             </div>
                                         )}
+                                        <div
+                                            style={{ color: 'white' }}
+                                            className={` wordbreak  bg-primary rounded-pill font-weight-600 allcentered ${chosenPackageContext?.signatureFile ? '' : 'mx-1'}  text-capitalize `}
+                                        >
+                                            {chosenPackageContext?.type?.split(/(?=[A-Z])/).join(' ')}
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="col-lg-12 p-0 my-2">
@@ -307,8 +310,8 @@ const ReturnPackageInfo = (props) => {
                     </div>
                 </Modal.Header>
                 <Modal.Body>
-                    <div class="row m-0 w-100 py-2">
-                        <div style={{ width: '200px', height: '200px', borderRadius: '7px', marginInlineEnd: '5px' }}>
+                    <div class="row m-0 w-100 py-2 allcentered">
+                        <div style={{ width: '1000px', height: '1000px', borderRadius: '7px', marginInlineEnd: '5px' }}>
                             <img
                                 src={
                                     chosenPackageContext?.signatureFile?.url

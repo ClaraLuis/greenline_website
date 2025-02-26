@@ -163,7 +163,10 @@ const MerchantHome = (props) => {
 
             Object.keys(graphOrdersQuery?.data?.graphOrders?.data).forEach((type) => {
                 graphOrdersQuery?.data?.graphOrders?.data[type].forEach((item) => {
-                    const dateFormatted = new Date(item.createdAt).toLocaleString();
+                    // const dateFormatted = new Date(item.createdAt).toLocaleString();
+                    const dateObj = new Date(item.createdAt);
+                    const dateFormatted = `${dateObj.toLocaleDateString([], { weekday: 'long' })}, ${dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+
                     if (!tempCategories.includes(dateFormatted)) {
                         tempCategories.push(dateFormatted);
                     }

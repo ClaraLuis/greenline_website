@@ -30,8 +30,17 @@ import Cookies from 'universal-cookie';
 const Packages = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, returnPackageStatusContext, returnPackageTypeContext, dateformatter, buttonLoadingContext, setbuttonLoadingContext, setchosenPackageContext } =
-        useContext(Contexthandlerscontext);
+    const {
+        setpageactive_context,
+        setpagetitle_context,
+        returnPackageStatusContext,
+        returnPackageTypeContext,
+        dateformatter,
+        buttonLoadingContext,
+        setbuttonLoadingContext,
+        setchosenPackageContext,
+        isAuth,
+    } = useContext(Contexthandlerscontext);
     const { useMutationGQL, fetchMerchants, assignPackageToCourier, fetchCouriers, fetchPackages, useQueryGQL, fetchInventories } = API();
     const { lang, langdetect } = useContext(LanguageContext);
     const [cartItems, setcartItems] = useState([]);
@@ -258,171 +267,175 @@ const Packages = (props) => {
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-12 p-0 mb-3">
-                            <Pagination
-                                beforeCursor={fetchPackagesQuery?.data?.paginateReturnPackages?.cursor?.beforeCursor}
-                                afterCursor={fetchPackagesQuery?.data?.paginateReturnPackages?.cursor?.afterCursor}
-                                filter={filter}
-                                setfilter={setfilter}
-                            />
-                        </div>
-                        {fetchPackagesQuery?.data?.paginateReturnPackages?.data?.length == 0 && (
-                            <div style={{ height: '70vh' }} class="col-lg-12 p-0 w-100 allcentered align-items-center m-0 text-lightprimary">
-                                <div class="row m-0 w-100">
-                                    <FaLayerGroup size={40} class=" col-lg-12" />
-                                    <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
-                                        No Packages
-                                    </div>
+                        {isAuth([1, 94, 64]) && (
+                            <>
+                                <div class="col-lg-12 p-0 mb-3">
+                                    <Pagination
+                                        beforeCursor={fetchPackagesQuery?.data?.paginateReturnPackages?.cursor?.beforeCursor}
+                                        afterCursor={fetchPackagesQuery?.data?.paginateReturnPackages?.cursor?.afterCursor}
+                                        filter={filter}
+                                        setfilter={setfilter}
+                                    />
                                 </div>
-                            </div>
-                        )}
-                        {fetchPackagesQuery?.data?.paginateReturnPackages?.data?.map((item, index) => {
-                            var selected = false;
-                            packagepayload?.ids?.map((packageitem) => {
-                                if (packageitem == item.id) {
-                                    selected = true;
-                                }
-                            });
-                            return (
-                                <div
-                                    onClick={() => {
-                                        var temp = { ...packagepayload };
-                                        var exist = false;
-                                        var chosenindex = null;
-                                        temp.ids.map((i, ii) => {
-                                            if (i == item.id) {
-                                                exist = true;
-                                                chosenindex = ii;
-                                            }
-                                        });
-                                        if (!exist) {
-                                            temp.ids.push(item.id);
-                                        } else {
-                                            temp.ids.splice(chosenindex, 1);
+                                {fetchPackagesQuery?.data?.paginateReturnPackages?.data?.length == 0 && (
+                                    <div style={{ height: '70vh' }} class="col-lg-12 p-0 w-100 allcentered align-items-center m-0 text-lightprimary">
+                                        <div class="row m-0 w-100">
+                                            <FaLayerGroup size={40} class=" col-lg-12" />
+                                            <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
+                                                No Packages
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                                {fetchPackagesQuery?.data?.paginateReturnPackages?.data?.map((item, index) => {
+                                    var selected = false;
+                                    packagepayload?.ids?.map((packageitem) => {
+                                        if (packageitem == item.id) {
+                                            selected = true;
                                         }
-                                        setpackagepayload({ ...temp });
-                                    }}
-                                    style={{ cursor: 'pointer' }}
-                                    className="col-lg-6 "
-                                >
-                                    <div
-                                        style={{ background: selected ? 'var(--secondary)' : 'white', transition: 'all 0.4s', cursor: 'pointer' }}
-                                        class={generalstyles.card + ' p-3 row  w-100   d-flex align-items-center'}
-                                    >
-                                        <div className="col-lg-2 p-0">
-                                            <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
-                                                # {item?.id}
-                                            </span>
-                                        </div>
-                                        <div className="col-lg-10 p-0 d-flex justify-content-end align-items-center">
-                                            <div class="row m-0 w-100 d-fex justify-content-end align-items-center">
-                                                <div
-                                                    className={
-                                                        item.status == 'delivered'
-                                                            ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered  text-capitalize'
-                                                            : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered text-capitalize'
+                                    });
+                                    return (
+                                        <div
+                                            onClick={() => {
+                                                var temp = { ...packagepayload };
+                                                var exist = false;
+                                                var chosenindex = null;
+                                                temp.ids.map((i, ii) => {
+                                                    if (i == item.id) {
+                                                        exist = true;
+                                                        chosenindex = ii;
                                                     }
-                                                >
-                                                    {item?.status?.split(/(?=[A-Z])/).join(' ')}
+                                                });
+                                                if (!exist) {
+                                                    temp.ids.push(item.id);
+                                                } else {
+                                                    temp.ids.splice(chosenindex, 1);
+                                                }
+                                                setpackagepayload({ ...temp });
+                                            }}
+                                            style={{ cursor: 'pointer' }}
+                                            className="col-lg-6 "
+                                        >
+                                            <div
+                                                style={{ background: selected ? 'var(--secondary)' : 'white', transition: 'all 0.4s', cursor: 'pointer' }}
+                                                class={generalstyles.card + ' p-3 row  w-100   d-flex align-items-center'}
+                                            >
+                                                <div className="col-lg-2 p-0">
+                                                    <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
+                                                        # {item?.id}
+                                                    </span>
                                                 </div>
-                                                <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered mx-1 text-capitalize '}>
-                                                    {item?.type?.split(/(?=[A-Z])/).join(' ')}
-                                                </div>
-                                                <Dropdown>
-                                                    <Dropdown.Toggle>
+                                                <div className="col-lg-10 p-0 d-flex justify-content-end align-items-center">
+                                                    <div class="row m-0 w-100 d-fex justify-content-end align-items-center">
                                                         <div
-                                                            class="iconhover allcentered"
-                                                            style={{
-                                                                color: 'var(--primary)',
-                                                                // borderRadius: '10px',
-                                                                width: '28px',
-                                                                height: '28px',
-                                                                transition: 'all 0.4s',
-                                                            }}
+                                                            className={
+                                                                item.status == 'delivered'
+                                                                    ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered  text-capitalize'
+                                                                    : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered text-capitalize'
+                                                            }
                                                         >
-                                                            <FaEllipsisV />
+                                                            {item?.status?.split(/(?=[A-Z])/).join(' ')}
                                                         </div>
-                                                    </Dropdown.Toggle>
-                                                    <Dropdown.Menu style={{ minWidth: '170px', fontSize: '12px' }}>
-                                                        <Dropdown.Item
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                setchosenPackageContext(item);
+                                                        <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered mx-1 text-capitalize '}>
+                                                            {item?.type?.split(/(?=[A-Z])/).join(' ')}
+                                                        </div>
+                                                        <Dropdown>
+                                                            <Dropdown.Toggle>
+                                                                <div
+                                                                    class="iconhover allcentered"
+                                                                    style={{
+                                                                        color: 'var(--primary)',
+                                                                        // borderRadius: '10px',
+                                                                        width: '28px',
+                                                                        height: '28px',
+                                                                        transition: 'all 0.4s',
+                                                                    }}
+                                                                >
+                                                                    <FaEllipsisV />
+                                                                </div>
+                                                            </Dropdown.Toggle>
+                                                            <Dropdown.Menu style={{ minWidth: '170px', fontSize: '12px' }}>
+                                                                <Dropdown.Item
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        setchosenPackageContext(item);
 
-                                                                if (item.type == 'merchant') {
-                                                                    history.push('/merchantreturnpackageinfo?packageId=' + item.id);
-                                                                } else {
-                                                                    history.push('/returnpackageinfo?packageId=' + item.id);
-                                                                }
-                                                            }}
-                                                            class="py-2"
-                                                        >
-                                                            <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Show Package</p>
-                                                        </Dropdown.Item>
-                                                    </Dropdown.Menu>
-                                                </Dropdown>
-                                            </div>
-                                        </div>
-                                        <div className="col-lg-12 p-0 my-2">
-                                            <hr className="m-0" />
-                                        </div>
-                                        <div class="col-lg-12 p-0 mb-2">
-                                            <div class="row m-0 w-100 d-flex align-items-center">
-                                                <div class="col-lg-8 p-0">{item.type == 'merchant' ? item?.merchant?.name : item?.inventory?.name}</div>
-                                                <div class="col-lg-4 p-0 d-flex justify-content-end">
-                                                    <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
-                                                        {item?.countAndSum?.sum} items
-                                                    </span>
+                                                                        if (item.type == 'merchant') {
+                                                                            history.push('/merchantreturnpackageinfo?packageId=' + item.id);
+                                                                        } else {
+                                                                            history.push('/returnpackageinfo?packageId=' + item.id);
+                                                                        }
+                                                                    }}
+                                                                    class="py-2"
+                                                                >
+                                                                    <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Show Package</p>
+                                                                </Dropdown.Item>
+                                                            </Dropdown.Menu>
+                                                        </Dropdown>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-12 p-0 mb-2">
-                                            <div class="row m-0 w-100 d-flex align-items-center">
-                                                <div class="col-lg-8 p-0">
-                                                    {' '}
-                                                    <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
-                                                        {item?.sku}
-                                                    </span>
+                                                <div className="col-lg-12 p-0 my-2">
+                                                    <hr className="m-0" />
                                                 </div>
-                                                <div class="col-lg-4 p-0 d-flex justify-content-end">
-                                                    <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
-                                                        {item?.countAndSum?.count} orders
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-12 p-0">
-                                            <div class="row m-0 w-100 d-flex align-items-center">
-                                                <div class="col-lg-6 p-0">
-                                                    {item?.courier && cookies.get('userInfo')?.type != 'merchant' && (
-                                                        <div className="col-lg-12 p-0 mb-2 d-flex align-items-center">
-                                                            <TbTruckDelivery size={20} class="mr-1" />
-
-                                                            <span style={{ fontWeight: 600 }} class="text-capitalize">
-                                                                {item?.courier?.name}
+                                                <div class="col-lg-12 p-0 mb-2">
+                                                    <div class="row m-0 w-100 d-flex align-items-center">
+                                                        <div class="col-lg-8 p-0">{item.type == 'merchant' ? item?.merchant?.name : item?.inventory?.name}</div>
+                                                        <div class="col-lg-4 p-0 d-flex justify-content-end">
+                                                            <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
+                                                                {item?.countAndSum?.sum} items
                                                             </span>
                                                         </div>
-                                                    )}
+                                                    </div>
                                                 </div>
-                                                <div class="col-lg-6 p-0 d-flex justify-content-end">
-                                                    <span style={{ fontSize: '12px', color: 'grey' }} class="text-capitalize">
-                                                        {dateformatter(item?.createdAt)}
-                                                    </span>
+                                                <div class="col-lg-12 p-0 mb-2">
+                                                    <div class="row m-0 w-100 d-flex align-items-center">
+                                                        <div class="col-lg-8 p-0">
+                                                            {' '}
+                                                            <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
+                                                                {item?.sku}
+                                                            </span>
+                                                        </div>
+                                                        <div class="col-lg-4 p-0 d-flex justify-content-end">
+                                                            <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
+                                                                {item?.countAndSum?.count} orders
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-12 p-0">
+                                                    <div class="row m-0 w-100 d-flex align-items-center">
+                                                        <div class="col-lg-6 p-0">
+                                                            {item?.courier && cookies.get('userInfo')?.type != 'merchant' && (
+                                                                <div className="col-lg-12 p-0 mb-2 d-flex align-items-center">
+                                                                    <TbTruckDelivery size={20} class="mr-1" />
+
+                                                                    <span style={{ fontWeight: 600 }} class="text-capitalize">
+                                                                        {item?.courier?.name}
+                                                                    </span>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        <div class="col-lg-6 p-0 d-flex justify-content-end">
+                                                            <span style={{ fontSize: '12px', color: 'grey' }} class="text-capitalize">
+                                                                {dateformatter(item?.createdAt)}
+                                                            </span>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    );
+                                })}
+                                <div class="col-lg-12 p-0">
+                                    <Pagination
+                                        beforeCursor={fetchPackagesQuery?.data?.paginateReturnPackages?.cursor?.beforeCursor}
+                                        afterCursor={fetchPackagesQuery?.data?.paginateReturnPackages?.cursor?.afterCursor}
+                                        filter={filter}
+                                        setfilter={setfilter}
+                                    />
                                 </div>
-                            );
-                        })}
-                        <div class="col-lg-12 p-0">
-                            <Pagination
-                                beforeCursor={fetchPackagesQuery?.data?.paginateReturnPackages?.cursor?.beforeCursor}
-                                afterCursor={fetchPackagesQuery?.data?.paginateReturnPackages?.cursor?.afterCursor}
-                                filter={filter}
-                                setfilter={setfilter}
-                            />
-                        </div>
+                            </>
+                        )}
                     </div>
                 </div>
                 <div class="col-lg-4 mb-3">
@@ -461,6 +474,10 @@ const Packages = (props) => {
                         <div class="col-lg-12 p-0 allcentered">
                             <button
                                 onClick={async () => {
+                                    if (isAuth([1, 100])) {
+                                        NotificationManager.warning('Not Authorized', 'Warning!');
+                                        return;
+                                    }
                                     if (buttonLoadingContext) return;
                                     setbuttonLoadingContext(true);
                                     try {

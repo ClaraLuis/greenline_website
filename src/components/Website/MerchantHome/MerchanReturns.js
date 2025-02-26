@@ -21,7 +21,7 @@ import ReturnsTable from './ReturnsTable.js';
 const MerchanReturns = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, paymentTypeContext, returnPackageTypeContext, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, isAuth, returnPackageTypeContext, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
     const { useMutationGQL, fetchMerchants, findItemReturnByOrder, useLazyQueryGQL, fetchMerchantItemReturns, useQueryGQL, createReturnPackage } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -279,46 +279,48 @@ const MerchanReturns = (props) => {
                                 );
                             })}
                         </div>
+                        {isAuth([1, 62]) && (
+                            <>
+                                {' '}
+                                <div class="col-lg-12 p-0 mb-3">
+                                    <Pagination
+                                        beforeCursor={fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.cursor?.beforeCursor}
+                                        afterCursor={fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.cursor?.afterCursor}
+                                        filter={filter}
+                                        setfilter={setfilter}
+                                    />
+                                </div>
+                                <ReturnsTable
+                                    clickable={true}
+                                    selectedItems={packagepayload?.ids}
+                                    actiononclick={(item) => {
+                                        if (filter?.merchantId == undefined || filter.merchantId?.length == 0 || filter.merchantId == null) {
+                                            NotificationManager.warning('Filter by merchant first', 'Warning');
+                                        } else {
+                                            const temp = { ...packagepayload };
+                                            const existingIndex = temp.ids.findIndex((i) => i?.id === item?.id);
 
-                        <div class="col-lg-12 p-0 mb-3">
-                            <Pagination
-                                beforeCursor={fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.cursor?.beforeCursor}
-                                afterCursor={fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.cursor?.afterCursor}
-                                filter={filter}
-                                setfilter={setfilter}
-                            />
-                        </div>
-
-                        <ReturnsTable
-                            clickable={true}
-                            selectedItems={packagepayload?.ids}
-                            actiononclick={(item) => {
-                                if (filter?.merchantId == undefined || filter.merchantId?.length == 0 || filter.merchantId == null) {
-                                    NotificationManager.warning('Filter by merchant first', 'Warning');
-                                } else {
-                                    const temp = { ...packagepayload };
-                                    const existingIndex = temp.ids.findIndex((i) => i?.id === item?.id);
-
-                                    if (existingIndex === -1) {
-                                        temp.ids.push(item); // Add item if not already in the list
-                                    } else {
-                                        temp.ids.splice(existingIndex, 1); // Remove item if already in the list
-                                    }
-                                    setpackagepayload({ ...temp });
-                                }
-                            }}
-                            card="col-lg-6 "
-                            items={fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.data?.filter((item) => !packagepayload?.ids?.some((selected) => selected?.id === item?.id))}
-                        />
-
-                        <div class="col-lg-12 p-0">
-                            <Pagination
-                                beforeCursor={fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.cursor?.beforeCursor}
-                                afterCursor={fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.cursor?.afterCursor}
-                                filter={filter}
-                                setfilter={setfilter}
-                            />
-                        </div>
+                                            if (existingIndex === -1) {
+                                                temp.ids.push(item); // Add item if not already in the list
+                                            } else {
+                                                temp.ids.splice(existingIndex, 1); // Remove item if already in the list
+                                            }
+                                            setpackagepayload({ ...temp });
+                                        }
+                                    }}
+                                    card="col-lg-6 "
+                                    items={fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.data?.filter((item) => !packagepayload?.ids?.some((selected) => selected?.id === item?.id))}
+                                />
+                                <div class="col-lg-12 p-0">
+                                    <Pagination
+                                        beforeCursor={fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.cursor?.beforeCursor}
+                                        afterCursor={fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.cursor?.afterCursor}
+                                        filter={filter}
+                                        setfilter={setfilter}
+                                    />
+                                </div>
+                            </>
+                        )}
                     </div>
                 </div>
                 <div class="col-lg-4 mb-3 " style={{}}>
@@ -376,6 +378,10 @@ const MerchanReturns = (props) => {
                         <div class="col-lg-12 p-0 allcentered">
                             <button
                                 onClick={async () => {
+                                    if (!isAuth([1, 98])) {
+                                        NotificationManager.warning('Not Authorized', 'Warning!');
+                                        return;
+                                    }
                                     if (buttonLoadingContext) return;
                                     setbuttonLoadingContext(true);
                                     try {
