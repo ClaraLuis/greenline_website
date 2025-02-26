@@ -313,12 +313,18 @@ const MerchantHome = (props) => {
                             ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data &&
                             Object.keys(ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data).length > 0 && (
                                 <div class={generalstyles.card + ' row m-0 w-100 '}>
+                                    <div class={'col-lg-12 my-2'} style={{ fontSize: '17px', fontWeight: 700 }}>
+                                        Total amount per delivery type
+                                    </div>
                                     <Barchart xAxis={barchartaxis?.xAxis} yAxis={barchartaxis?.yAxis} />
                                 </div>
                             )}
 
                         {chartData && xaxisCategories && mostSoldItemsQuery?.data && graphOrdersQuery?.data?.graphOrders?.data && Object.keys(graphOrdersQuery.data.graphOrders.data).length > 0 && (
                             <div class={generalstyles.card + ' row m-0 w-100 '}>
+                                <div class={'col-lg-12 my-2'} style={{ fontSize: '17px', fontWeight: 700 }}>
+                                    Timeline per delivery type
+                                </div>
                                 <Multilinechart chartData={chartData} xaxisCategories={xaxisCategories} />
                             </div>
                         )}
@@ -329,6 +335,9 @@ const MerchantHome = (props) => {
                                 ordersDeliverableSummaryQuery?.data?.ordersDeliverableSummary?.data &&
                                 Object.keys(ordersDeliverableSummaryQuery.data.ordersDeliverableSummary.data).length > 0 && (
                                     <div class={generalstyles.card + ' row m-0 w-100 '}>
+                                        <div class={'col-lg-12 my-2'} style={{ fontSize: '17px', fontWeight: 700 }}>
+                                            Total amount per delivery type
+                                        </div>
                                         <Piechart height={mostSoldItemsQuery?.data ? '250' : 300} xAxis={barchartaxis?.xAxis} yAxis={barchartaxis?.yAxis1} title={''} total={barchartaxis?.total} />
                                     </div>
                                 )}
@@ -390,6 +399,9 @@ const MerchantHome = (props) => {
                     {chartData && xaxisCategories && !mostSoldItemsQuery?.data && graphOrdersQuery?.data?.graphOrders?.data && Object.keys(graphOrdersQuery.data.graphOrders.data).length > 0 && (
                         <div class="col-lg-12 ">
                             <div class={generalstyles.card + ' row m-0 w-100 '}>
+                                <div class={'col-lg-12 my-2'} style={{ fontSize: '17px', fontWeight: 700 }}>
+                                    Timeline per delivery type
+                                </div>
                                 <Multilinechart chartData={chartData} xaxisCategories={xaxisCategories} />
                             </div>
                         </div>
