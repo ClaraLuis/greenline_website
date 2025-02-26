@@ -32,7 +32,7 @@ const OrdersTable = (props) => {
 
     const { orderStatusEnumContext, dateformatter, orderTypeContext, setchosenOrderContext, chosenOrderContext, isAuth, buttonLoadingContext, setbuttonLoadingContext } =
         useContext(Contexthandlerscontext);
-    const { requestOrderReturn, useMutationGQL, updateOrdersStatus } = API();
+    const { requestOrderReturn, useMutationGQL, updateOrdersStatus, cancelUnresolvedOrders } = API();
     const { lang, langdetect } = useContext(LanguageContext);
 
     const [changestatusmodal, setchangestatusmodal] = useState(false);
@@ -104,6 +104,9 @@ const OrdersTable = (props) => {
     const [updateOrdersStatusMutation] = useMutationGQL(updateOrdersStatus(), {
         status: 'cancelled',
         sheetOrderId: chosenOrderContext?.id,
+    });
+    const [cancelUnresolvedOrdersMutation] = useMutationGQL(cancelUnresolvedOrders(), {
+        orderIds: [chosenOrderContext?.id],
     });
 
     const [search, setsearch] = useState('');
@@ -264,7 +267,8 @@ const OrdersTable = (props) => {
                                                                             e.stopPropagation();
                                                                             try {
                                                                                 await setchosenOrderContext(item);
-                                                                                const data = await updateOrdersStatusMutation();
+                                                                                const data = await cancelUnresolvedOrdersMutation();
+                                                                                NotificationManager.success('Order is cancelled', 'Success!');
                                                                             } catch (error) {
                                                                                 let errorMessage = 'An unexpected error occurred';
                                                                                 if (error.graphQLErrors && error.graphQLErrors.length > 0) {

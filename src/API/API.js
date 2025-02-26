@@ -242,10 +242,19 @@ const API = () => {
             }
         `;
     };
+
     const createInventory = () => {
         return gql`
             mutation createInventoryRent($input: CreateInventoryRentInput!) {
                 createInventoryRent(input: $input)
+            }
+        `;
+    };
+
+    const cancelUnresolvedOrders = () => {
+        return gql`
+            mutation cancelUnresolvedOrders($input: cancelUnresolvedOrdersInput!) {
+                cancelUnresolvedOrders(input: $input)
             }
         `;
     };
@@ -3013,6 +3022,7 @@ const API = () => {
         emailTaken,
         findItemReturnByOrder,
         findPublicOrder,
+        cancelUnresolvedOrders,
     };
 };
 export default API;

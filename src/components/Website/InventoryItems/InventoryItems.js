@@ -364,7 +364,7 @@ const InventoryItems = (props) => {
                                 <div class={' col-lg-6 col-md-6 col-sm-12 p-0 d-flex align-items-center justify-content-end mb-2 px-2 '}>
                                     <div className="row m-0 w-100 d-flex align-items-center justify-content-end">
                                         {selectedVariants?.length > 0 && <SkuPrint skus={selectedVariants} />}
-                                        {isAuth([1, 52, 81]) && (
+                                        {isAuth([1, 54, 81]) && (
                                             <button
                                                 onClick={() => {
                                                     setimportItemPayload({
@@ -389,208 +389,212 @@ const InventoryItems = (props) => {
                             </div>
                         </div>
                     )}
-                    <div class="col-lg-12 px-3">
-                        <div class={generalstyles.card + ' row m-0 w-100 p-2'}>
-                            <div class="col-lg-12 p-0 ">
-                                <div class="row m-0 w-100 d-flex align-items-center">
-                                    <div class="col-lg-10">
-                                        <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
-                                            <input
-                                                // disabled={props?.disabled}
-                                                // type={props?.type}
-                                                class={formstyles.form__field}
-                                                value={search}
-                                                placeholder={'Search by name or SKU'}
-                                                onKeyDown={(e) => {
-                                                    if (e.key === 'Enter') {
-                                                        setfilterItemInBox({ ...filterItemInBox, name: search?.length == 0 ? undefined : search });
-                                                    }
-                                                }}
-                                                onChange={(event) => {
-                                                    setBarcode(event.target.value);
-                                                    setSearch(event.target.value);
-                                                }}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-2 allcenered">
-                                        <button
-                                            onClick={() => {
-                                                setfilterItemInBox({ ...filterItemInBox, name: search?.length == 0 ? undefined : search });
-                                            }}
-                                            style={{ height: '35px', marginInlineStart: '5px' }}
-                                            class={generalstyles.roundbutton + '  allcentered bg-primary-light'}
-                                        >
-                                            search
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
-                        {fetchItemsInBoxQuery?.loading && (
-                            <div style={{ height: '70vh' }} class="row w-100 allcentered m-0">
-                                <CircularProgress color="var(--primary)" width="60px" height="60px" duration="1s" />
-                            </div>
-                        )}
-                    </div>
-                    {!fetchItemsInBoxQuery?.loading && fetchItemsInBoxQuery?.data?.paginateItemInBox && (
+                    {isAuth([1, 54, 6]) && (
                         <>
-                            <div class="col-lg-12 p-0 mb-2">
-                                <Pagination
-                                    beforeCursor={fetchItemsInBoxQuery?.data?.paginateItemInBox?.cursor?.beforeCursor}
-                                    afterCursor={fetchItemsInBoxQuery?.data?.paginateItemInBox?.cursor?.afterCursor}
-                                    filter={filterItemInBox}
-                                    setfilter={setfilterItemInBox}
-                                />
-                            </div>
-                            {fetchItemsInBoxQuery?.data?.paginateItemInBox?.data?.length == 0 && (
-                                <div style={{ height: '70vh' }} class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
-                                    <div class="row m-0 w-100">
-                                        <FaLayerGroup size={40} class=" col-lg-12" />
-                                        <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
-                                            No Items
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-                            {fetchItemsInBoxQuery?.data?.paginateItemInBox?.data?.length != 0 && isAuth([1, 52, 6]) && (
-                                <>
-                                    {fetchItemsInBoxQuery?.data?.paginateItemInBox?.data?.map((element, arrayindex) => {
-                                        var selected = false;
-                                        var count = 0;
-                                        selectedVariants?.map((i) => {
-                                            if (i.id == element.id) {
-                                                selected = true;
-                                                count = i?.count;
-                                            }
-                                        });
-                                        return (
-                                            <div style={{ fontSize: '13px' }} class=" col-lg-4 ">
-                                                <div
-                                                    onClick={() => {
-                                                        var temp = [...selectedVariants];
-                                                        var exist = false;
-                                                        var chosenindex = null;
-                                                        temp.map((i, ii) => {
-                                                            if (i?.id == element?.id) {
-                                                                exist = true;
-                                                                chosenindex = ii;
+                            <div class="col-lg-12 px-3">
+                                <div class={generalstyles.card + ' row m-0 w-100 p-2'}>
+                                    <div class="col-lg-12 p-0 ">
+                                        <div class="row m-0 w-100 d-flex align-items-center">
+                                            <div class="col-lg-10">
+                                                <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
+                                                    <input
+                                                        // disabled={props?.disabled}
+                                                        // type={props?.type}
+                                                        class={formstyles.form__field}
+                                                        value={search}
+                                                        placeholder={'Search by name or SKU'}
+                                                        onKeyDown={(e) => {
+                                                            if (e.key === 'Enter') {
+                                                                setfilterItemInBox({ ...filterItemInBox, name: search?.length == 0 ? undefined : search });
                                                             }
-                                                        });
-                                                        if (!exist) {
-                                                            temp.push({ item: element.itemVariant, id: element.id });
-                                                        } else {
-                                                            temp.splice(chosenindex, 1);
-                                                        }
-                                                        // alert(JSON.stringify(temp));
-                                                        setselectedVariants([...temp]);
-                                                    }}
-                                                    style={{
-                                                        cursor: 'pointer',
-
-                                                        backgroundColor: selected ? 'var(--secondary)' : '',
-                                                        transition: 'all 0.4s',
-                                                    }}
-                                                    class={generalstyles.card + ' row m-0 w-100 '}
-                                                >
-                                                    <div class="col-lg-12 p-0">
-                                                        <div class="row m-0 w-100 d-flex align-items-center">
-                                                            <div class=" mr-2" style={{ width: '50px', height: '50px', borderRadius: '5px' }}>
-                                                                <img
-                                                                    src={
-                                                                        element?.itemVariant?.imageUrl?.length != 0 && element?.itemVariant?.imageUrl != null
-                                                                            ? element?.itemVariant?.imageUrl
-                                                                            : 'https://www.shutterstock.com/image-vector/new-label-shopping-icon-vector-260nw-1894227709.jpg'
-                                                                    }
-                                                                    style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '5px' }}
-                                                                />
-                                                            </div>
-                                                            <div class="col-lg-9 p-0 ">
-                                                                {cookies.get('userInfo')?.type == 'employee' && (
-                                                                    <div class="col-lg-12 p-0 " style={{ fontSize: '11px', fontWeight: 600, color: 'grey' }}>
-                                                                        {element?.merchant?.name}
-                                                                    </div>
-                                                                )}
-
-                                                                <div class="col-lg-12 p-0 " style={{ fontSize: '14px', fontWeight: 600 }}>
-                                                                    {element?.itemVariant?.fullName}
-                                                                </div>
-                                                                <div class="col-lg-12 p-0 " style={{ fontSize: '11px', fontWeight: 600, color: 'grey' }}>
-                                                                    {element?.itemVariant?.sku}
-                                                                </div>
-                                                                <div className="row m-0 w-100">
-                                                                    <div class="col-lg-8 p-0 " style={{ fontSize: '13px', fontWeight: 500 }}>
-                                                                        {element?.itemVariant?.name}
-                                                                    </div>
-                                                                    <div class="col-lg-4 p-0 d-flex justify-content-end">{element?.count}</div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-lg-12 p-0 my-3">
-                                                        <div class="row m-0 w-100 d-flex align-items-center justify-content-center">
-                                                            {isAuth([1, 54, 82]) && (
-                                                                <button
-                                                                    onClick={async () => {
-                                                                        var { data } = await fetchItemHistorLazyQuery({
-                                                                            variables: {
-                                                                                input: { itemInBoxId: parseInt(element.id), limit: 20 },
-                                                                            },
-                                                                        });
-                                                                        setfetchItemHistoryQuery(data);
-                                                                        setchosenitem(element);
-                                                                        setopenModal(true);
-                                                                    }}
-                                                                    style={{ height: '25px', minWidth: 'fit-content', marginInlineEnd: '5px', background: 'grey' }}
-                                                                    class={generalstyles.roundbutton + '  allcentered'}
-                                                                >
-                                                                    <FaRegClock />
-                                                                </button>
-                                                            )}
-                                                            {isAuth([1, 52, 77]) && (
-                                                                <button
-                                                                    onClick={() => {
-                                                                        setchosenitem(element);
-                                                                        // setopenModal(true);
-                                                                        setimportpayload({
-                                                                            id: '',
-                                                                            count: '',
-                                                                            type: '',
-                                                                        });
-                                                                        setimportmodal({ open: true, type: 'import' });
-                                                                    }}
-                                                                    style={{ height: '25px', minWidth: 'fit-content', marginInlineEnd: '5px' }}
-                                                                    class={generalstyles.roundbutton + '  allcentered'}
-                                                                >
-                                                                    <CiImport size={18} />
-                                                                </button>
-                                                            )}
-                                                            {isAuth([1, 52, 83]) && (
-                                                                <button
-                                                                    onClick={() => {
-                                                                        setchosenitem(element);
-                                                                        setimportpayload({
-                                                                            id: '',
-                                                                            count: '',
-                                                                            type: '',
-                                                                        });
-                                                                        setimportmodal({ open: true, type: 'export' });
-                                                                    }}
-                                                                    style={{ height: '25px', minWidth: 'fit-content', marginInlineEnd: '5px' }}
-                                                                    class={generalstyles.roundbutton + '  allcentered bg-danger bg-dangerhover'}
-                                                                >
-                                                                    <CiExport size={18} />
-                                                                </button>
-                                                            )}
-                                                        </div>
-                                                    </div>
+                                                        }}
+                                                        onChange={(event) => {
+                                                            setBarcode(event.target.value);
+                                                            setSearch(event.target.value);
+                                                        }}
+                                                    />
                                                 </div>
                                             </div>
-                                        );
-                                    })}
+                                            <div class="col-lg-2 allcenered">
+                                                <button
+                                                    onClick={() => {
+                                                        setfilterItemInBox({ ...filterItemInBox, name: search?.length == 0 ? undefined : search });
+                                                    }}
+                                                    style={{ height: '35px', marginInlineStart: '5px' }}
+                                                    class={generalstyles.roundbutton + '  allcentered bg-primary-light'}
+                                                >
+                                                    search
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
+                                {fetchItemsInBoxQuery?.loading && (
+                                    <div style={{ height: '70vh' }} class="row w-100 allcentered m-0">
+                                        <CircularProgress color="var(--primary)" width="60px" height="60px" duration="1s" />
+                                    </div>
+                                )}
+                            </div>
+                            {!fetchItemsInBoxQuery?.loading && fetchItemsInBoxQuery?.data?.paginateItemInBox && (
+                                <>
+                                    <div class="col-lg-12 p-0 mb-2">
+                                        <Pagination
+                                            beforeCursor={fetchItemsInBoxQuery?.data?.paginateItemInBox?.cursor?.beforeCursor}
+                                            afterCursor={fetchItemsInBoxQuery?.data?.paginateItemInBox?.cursor?.afterCursor}
+                                            filter={filterItemInBox}
+                                            setfilter={setfilterItemInBox}
+                                        />
+                                    </div>
+                                    {fetchItemsInBoxQuery?.data?.paginateItemInBox?.data?.length == 0 && (
+                                        <div style={{ height: '70vh' }} class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
+                                            <div class="row m-0 w-100">
+                                                <FaLayerGroup size={40} class=" col-lg-12" />
+                                                <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
+                                                    No Items
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+                                    {fetchItemsInBoxQuery?.data?.paginateItemInBox?.data?.length != 0 && (
+                                        <>
+                                            {fetchItemsInBoxQuery?.data?.paginateItemInBox?.data?.map((element, arrayindex) => {
+                                                var selected = false;
+                                                var count = 0;
+                                                selectedVariants?.map((i) => {
+                                                    if (i.id == element.id) {
+                                                        selected = true;
+                                                        count = i?.count;
+                                                    }
+                                                });
+                                                return (
+                                                    <div style={{ fontSize: '13px' }} class=" col-lg-4 ">
+                                                        <div
+                                                            onClick={() => {
+                                                                var temp = [...selectedVariants];
+                                                                var exist = false;
+                                                                var chosenindex = null;
+                                                                temp.map((i, ii) => {
+                                                                    if (i?.id == element?.id) {
+                                                                        exist = true;
+                                                                        chosenindex = ii;
+                                                                    }
+                                                                });
+                                                                if (!exist) {
+                                                                    temp.push({ item: element.itemVariant, id: element.id });
+                                                                } else {
+                                                                    temp.splice(chosenindex, 1);
+                                                                }
+                                                                // alert(JSON.stringify(temp));
+                                                                setselectedVariants([...temp]);
+                                                            }}
+                                                            style={{
+                                                                cursor: 'pointer',
+
+                                                                backgroundColor: selected ? 'var(--secondary)' : '',
+                                                                transition: 'all 0.4s',
+                                                            }}
+                                                            class={generalstyles.card + ' row m-0 w-100 '}
+                                                        >
+                                                            <div class="col-lg-12 p-0">
+                                                                <div class="row m-0 w-100 d-flex align-items-center">
+                                                                    <div class=" mr-2" style={{ width: '50px', height: '50px', borderRadius: '5px' }}>
+                                                                        <img
+                                                                            src={
+                                                                                element?.itemVariant?.imageUrl?.length != 0 && element?.itemVariant?.imageUrl != null
+                                                                                    ? element?.itemVariant?.imageUrl
+                                                                                    : 'https://www.shutterstock.com/image-vector/new-label-shopping-icon-vector-260nw-1894227709.jpg'
+                                                                            }
+                                                                            style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '5px' }}
+                                                                        />
+                                                                    </div>
+                                                                    <div class="col-lg-9 p-0 ">
+                                                                        {cookies.get('userInfo')?.type == 'employee' && (
+                                                                            <div class="col-lg-12 p-0 " style={{ fontSize: '11px', fontWeight: 600, color: 'grey' }}>
+                                                                                {element?.merchant?.name}
+                                                                            </div>
+                                                                        )}
+
+                                                                        <div class="col-lg-12 p-0 " style={{ fontSize: '14px', fontWeight: 600 }}>
+                                                                            {element?.itemVariant?.fullName}
+                                                                        </div>
+                                                                        <div class="col-lg-12 p-0 " style={{ fontSize: '11px', fontWeight: 600, color: 'grey' }}>
+                                                                            {element?.itemVariant?.sku}
+                                                                        </div>
+                                                                        <div className="row m-0 w-100">
+                                                                            <div class="col-lg-8 p-0 " style={{ fontSize: '13px', fontWeight: 500 }}>
+                                                                                {element?.itemVariant?.name}
+                                                                            </div>
+                                                                            <div class="col-lg-4 p-0 d-flex justify-content-end">{element?.count}</div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-lg-12 p-0 my-3">
+                                                                <div class="row m-0 w-100 d-flex align-items-center justify-content-center">
+                                                                    {isAuth([1, 54, 82, 6]) && (
+                                                                        <button
+                                                                            onClick={async () => {
+                                                                                var { data } = await fetchItemHistorLazyQuery({
+                                                                                    variables: {
+                                                                                        input: { itemInBoxId: parseInt(element.id), limit: 20 },
+                                                                                    },
+                                                                                });
+                                                                                setfetchItemHistoryQuery(data);
+                                                                                setchosenitem(element);
+                                                                                setopenModal(true);
+                                                                            }}
+                                                                            style={{ height: '25px', minWidth: 'fit-content', marginInlineEnd: '5px', background: 'grey' }}
+                                                                            class={generalstyles.roundbutton + '  allcentered'}
+                                                                        >
+                                                                            <FaRegClock />
+                                                                        </button>
+                                                                    )}
+                                                                    {isAuth([1, 77]) && (
+                                                                        <button
+                                                                            onClick={() => {
+                                                                                setchosenitem(element);
+                                                                                // setopenModal(true);
+                                                                                setimportpayload({
+                                                                                    id: '',
+                                                                                    count: '',
+                                                                                    type: '',
+                                                                                });
+                                                                                setimportmodal({ open: true, type: 'import' });
+                                                                            }}
+                                                                            style={{ height: '25px', minWidth: 'fit-content', marginInlineEnd: '5px' }}
+                                                                            class={generalstyles.roundbutton + '  allcentered'}
+                                                                        >
+                                                                            <CiImport size={18} />
+                                                                        </button>
+                                                                    )}
+                                                                    {isAuth([1, 83]) && (
+                                                                        <button
+                                                                            onClick={() => {
+                                                                                setchosenitem(element);
+                                                                                setimportpayload({
+                                                                                    id: '',
+                                                                                    count: '',
+                                                                                    type: '',
+                                                                                });
+                                                                                setimportmodal({ open: true, type: 'export' });
+                                                                            }}
+                                                                            style={{ height: '25px', minWidth: 'fit-content', marginInlineEnd: '5px' }}
+                                                                            class={generalstyles.roundbutton + '  allcentered bg-danger bg-dangerhover'}
+                                                                        >
+                                                                            <CiExport size={18} />
+                                                                        </button>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </>
+                                    )}
                                 </>
                             )}
                         </>

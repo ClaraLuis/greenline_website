@@ -576,8 +576,11 @@ const UserInfo = (props) => {
 
                                         const emptyFields = requiredFields.filter((field) => !payload[field]);
 
-                                        if (emptyFields.length > 0) {
-                                            NotificationManager.warning('', `Please fill in all required fields: ${emptyFields.join(', ')}`);
+                                        // Replace "hubID" with "hub" in the warning message
+                                        const formattedFields = emptyFields.map((field) => (field === 'hubID' ? 'hub' : field));
+
+                                        if (formattedFields.length > 0) {
+                                            NotificationManager.warning('', `Please fill in all required fields: ${formattedFields.join(', ')}`);
                                             return;
                                         }
 
