@@ -20,7 +20,7 @@ import ReturnsTable from '../MerchantHome/ReturnsTable.js';
 const InventoryReturns = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, paymentTypeContext, returnPackageTypeContext, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, paymentTypeContext, isAuth, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
     const { useMutationGQL, fetchMerchants, fetchInventories, fetchCustomerAddresses, fetchInventoryItemReturns, useQueryGQL, createReturnPackage } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -124,45 +124,49 @@ const InventoryReturns = (props) => {
                                 </AccordionItem>
                             </Accordion>
                         </div>
-
-                        <div class="col-lg-12 p-0 mb-3">
-                            <Pagination
-                                beforeCursor={fetchInventoryItemReturnsQuery?.data?.paginateInventoryReturns?.cursor?.beforeCursor}
-                                afterCursor={fetchInventoryItemReturnsQuery?.data?.paginateInventoryReturns?.cursor?.afterCursor}
-                                filter={filter}
-                                setfilter={setfilter}
-                            />
-                        </div>
-                        <ReturnsTable
-                            clickable={true}
-                            actiononclick={(item) => {
-                                var temp = { ...packagepayload };
-                                var exist = false;
-                                var chosenindex = null;
-                                temp.ids.map((i, ii) => {
-                                    if (i?.id == item?.id) {
-                                        exist = true;
-                                        chosenindex = ii;
-                                        temp.ids.splice(ii, 1);
-                                    }
-                                });
-                                if (!exist) {
-                                    temp.ids.push(item);
-                                }
-                                setpackagepayload({ ...temp });
-                            }}
-                            selectedItems={packagepayload.ids}
-                            card="col-lg-4 px-1"
-                            items={fetchInventoryItemReturnsQuery?.data?.paginateInventoryReturns?.data}
-                        />
-                        <div class="col-lg-12 p-0">
-                            <Pagination
-                                beforeCursor={fetchInventoryItemReturnsQuery?.data?.paginateInventoryReturns?.cursor?.beforeCursor}
-                                afterCursor={fetchInventoryItemReturnsQuery?.data?.paginateInventoryReturns?.cursor?.afterCursor}
-                                filter={filter}
-                                setfilter={setfilter}
-                            />
-                        </div>
+                        {isAuth([1, 94, 61]) && (
+                            <>
+                                {' '}
+                                <div class="col-lg-12 p-0 mb-3">
+                                    <Pagination
+                                        beforeCursor={fetchInventoryItemReturnsQuery?.data?.paginateInventoryReturns?.cursor?.beforeCursor}
+                                        afterCursor={fetchInventoryItemReturnsQuery?.data?.paginateInventoryReturns?.cursor?.afterCursor}
+                                        filter={filter}
+                                        setfilter={setfilter}
+                                    />
+                                </div>
+                                <ReturnsTable
+                                    clickable={true}
+                                    actiononclick={(item) => {
+                                        var temp = { ...packagepayload };
+                                        var exist = false;
+                                        var chosenindex = null;
+                                        temp.ids.map((i, ii) => {
+                                            if (i?.id == item?.id) {
+                                                exist = true;
+                                                chosenindex = ii;
+                                                temp.ids.splice(ii, 1);
+                                            }
+                                        });
+                                        if (!exist) {
+                                            temp.ids.push(item);
+                                        }
+                                        setpackagepayload({ ...temp });
+                                    }}
+                                    selectedItems={packagepayload.ids}
+                                    card="col-lg-4 px-1"
+                                    items={fetchInventoryItemReturnsQuery?.data?.paginateInventoryReturns?.data}
+                                />
+                                <div class="col-lg-12 p-0">
+                                    <Pagination
+                                        beforeCursor={fetchInventoryItemReturnsQuery?.data?.paginateInventoryReturns?.cursor?.beforeCursor}
+                                        afterCursor={fetchInventoryItemReturnsQuery?.data?.paginateInventoryReturns?.cursor?.afterCursor}
+                                        filter={filter}
+                                        setfilter={setfilter}
+                                    />
+                                </div>
+                            </>
+                        )}
                     </div>
                 </div>
                 <div class="col-lg-4 mb-3 ">
@@ -239,6 +243,10 @@ const InventoryReturns = (props) => {
                             <button
                                 disabled={buttonLoadingContext}
                                 onClick={async () => {
+                                    if (isAuth([1, 99])) {
+                                        NotificationManager.warning('Not Authorized', 'Warning!');
+                                        return;
+                                    }
                                     if (buttonLoadingContext) return;
                                     setbuttonLoadingContext(true);
                                     try {

@@ -78,26 +78,27 @@ const HubsTable = (props) => {
                                             <div className="col-lg-6 p-0  text-capitalize mb-2">
                                                 <span style={{ fontWeight: 700 }}>{item?.name}</span>
                                             </div>
-
-                                            <div className="col-lg-6 p-0 mb-2 d-flex justify-content-end">
-                                                <div
-                                                    onClick={async () => {
-                                                        var temp = { ...item };
-                                                        temp.functype = 'edit';
-                                                        setpayload({ ...temp });
-                                                        await setchosenHubContext({ ...temp });
-                                                        history.push('/hubdetails?id=' + item?.id);
-                                                        // setopenModal(true);
-                                                    }}
-                                                    style={{
-                                                        width: '35px',
-                                                        height: '35px',
-                                                    }}
-                                                    className="iconhover allcentered"
-                                                >
-                                                    <BiShow style={{ transition: 'all 0.4s' }} size={20} />
+                                            {isAuth([1, 97]) && (
+                                                <div className="col-lg-6 p-0 mb-2 d-flex justify-content-end">
+                                                    <div
+                                                        onClick={async () => {
+                                                            var temp = { ...item };
+                                                            temp.functype = 'edit';
+                                                            setpayload({ ...temp });
+                                                            await setchosenHubContext({ ...temp });
+                                                            history.push('/hubdetails?id=' + item?.id);
+                                                            // setopenModal(true);
+                                                        }}
+                                                        style={{
+                                                            width: '35px',
+                                                            height: '35px',
+                                                        }}
+                                                        className="iconhover allcentered"
+                                                    >
+                                                        <BiShow style={{ transition: 'all 0.4s' }} size={20} />
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            )}
                                         </div>
                                     </div>
                                 );

@@ -34,24 +34,42 @@ const Multilinechart = (props) => {
             xaxis: {
                 categories: [], // Dynamic categories from props
             },
+            // yaxis: {
+            //     min: 0,
+            //     title: {
+            //         text: 'Total',
+            //     },
+            // },
             yaxis: {
                 min: 0,
+                labels: {
+                    formatter: (value) => `${value} EGP`,
+                },
                 title: {
-                    text: 'Total',
+                    show: false,
                 },
             },
             tooltip: {
-                shared: true,
-                intersect: false,
                 y: {
-                    formatter: function (y) {
-                        if (typeof y !== 'undefined') {
-                            return y.toFixed(2) + ' Total';
-                        }
-                        return y;
+                    formatter: function (value, context) {
+                        console.log('Tooltip Context111:', context); // Debugging
+                        const seriesName = context.w.config.series[context.seriesIndex]?.name || 'Unknown';
+                        return `${value} EGP per ${seriesName}`;
                     },
                 },
             },
+            // tooltip: {
+            //     shared: true,
+            //     intersect: false,
+            //     y: {
+            //         formatter: function (y) {
+            //             if (typeof y !== 'undefined') {
+            //                 return y.toFixed(2) + ' Total';
+            //             }
+            //             return y;
+            //         },
+            //     },
+            // },
         },
     });
 

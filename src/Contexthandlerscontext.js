@@ -346,7 +346,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/hubs',
                         permissionpage: [1],
-                        show: isAuth([1]),
+                        show: isAuth([1, 94, 95]),
                     },
                     {
                         name: 'Item Returns',
@@ -358,7 +358,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/merchantreturns',
                         permissionpage: [1],
-                        show: isAuth([1]),
+                        show: isAuth([1, 94, 62]),
                     },
                     {
                         name: 'Inventory Returns',
@@ -370,7 +370,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/inventoryreturns',
                         permissionpage: [1],
-                        show: isAuth([1]),
+                        show: isAuth([1, 94, 61]),
                     },
                     {
                         name: 'Return Packages',
@@ -382,7 +382,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/packages',
                         permissionpage: [1],
-                        show: isAuth([1]),
+                        show: isAuth([1, 94, 64]),
                     },
                     {
                         name: 'Receive At Hub',
@@ -394,7 +394,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/arrivedathub',
                         permissionpage: [1],
-                        show: isAuth([1, 53, 36, 65, 66, 67]),
+                        show: isAuth([1, 101]),
                     },
                     {
                         name: 'Receive At Sort Facilities',
@@ -406,7 +406,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/dispatched',
                         permissionpage: [1],
-                        show: isAuth([1, 53, 36]),
+                        show: isAuth([1, 102]),
                     },
                     {
                         name: 'Transfer',

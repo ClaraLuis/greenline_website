@@ -82,7 +82,7 @@ const Hubs = (props) => {
                                     <span style={{ color: 'var(--info)' }}> {fetchHubsQuery?.data?.paginateHubs?.data?.length} </span>
                                 </p>
                             </div>
-                            {isAuth([1, 44]) && (
+                            {isAuth([1, 96]) && (
                                 <div class={' col-lg-6 col-md-6 col-sm-6 p-0 pr-3 pr-md-1 pr-sm-0 d-flex align-items-center justify-content-end pb-1 '}>
                                     <button
                                         style={{ height: '35px' }}
@@ -106,7 +106,7 @@ const Hubs = (props) => {
                         </div>
                     </div>
 
-                    {isAuth([1, 43]) && (
+                    {isAuth([1, 95]) && (
                         <>
                             <div class="col-lg-12 p-0 mb-2">
                                 <Pagination
