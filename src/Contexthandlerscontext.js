@@ -418,7 +418,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/sortfacilities',
                         permissionpage: [1],
-                        show: isAuth([1]),
+                        show: isAuth([1, 103]),
                     },
                     {
                         name: 'Action Center',
@@ -430,7 +430,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/actioncenter',
                         permissionpage: [1],
-                        show: isAuth([1]),
+                        show: isAuth([1, 104]),
                     },
                 ],
             },
@@ -546,7 +546,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/couriercollections',
                         permissionpage: [1],
-                        show: isAuth([1, 51, 19]),
+                        show: isAuth([1, 51, 107]),
                     },
                     // {
                     //     name: 'Merchant Payments',
@@ -570,7 +570,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/merchantfinance',
                         permissionpage: [1],
-                        show: isAuth([1, 51]),
+                        show: isAuth([1, 51, 110]),
                     },
                     {
                         name: 'Transactions',
@@ -582,7 +582,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/financetransactions',
                         permissionpage: [1],
-                        show: isAuth([1, 51]),
+                        show: isAuth([1, 51, 27]),
                     },
                     {
                         name: 'Expenses',
@@ -606,7 +606,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/rentbills',
                         permissionpage: [1],
-                        show: isAuth([1, 51]),
+                        show: isAuth([1, 51, 114]),
                     },
                 ],
             },
