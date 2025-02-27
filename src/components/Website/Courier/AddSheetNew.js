@@ -414,6 +414,15 @@ const AddSheetNew = (props) => {
                                 style={{ height: '30px', minWidth: '170px' }}
                                 class={generalstyles.roundbutton + ' allcentered  p-0'}
                                 onClick={async () => {
+                                    if (
+                                        (window.location.pathname == '/dispatched' && !isAuth([1, 102])) ||
+                                        (window.location.pathname == '/fulfilled' && !isAuth([1, 54, 86])) ||
+                                        (window.location.pathname == '/sortfacilities' && !isAuth([1, 103])) ||
+                                        (window.location.pathname == '/arrivedathub' && !isAuth([1, 101]))
+                                    ) {
+                                        NotificationManager.warning('Not Authorized', 'Warning!');
+                                        return;
+                                    }
                                     if (buttonLoadingContext) return;
                                     setbuttonLoadingContext(true);
                                     if (sheetpayload?.orderIds?.length != 0) {

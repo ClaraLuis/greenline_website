@@ -123,108 +123,109 @@ const Expenses = (props) => {
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-12 p-0 px-2">
-                    <div class={generalstyles.card + ' mb-3 col-lg-12 p-2'}>
-                        <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
-                            <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
-                                <AccordionItemHeading>
-                                    <AccordionItemButton>
+                {isAuth([1, 51, 22]) && (
+                    <div class="col-lg-12 p-0 px-2">
+                        <div class={generalstyles.card + ' mb-3 col-lg-12 p-2'}>
+                            <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
+                                <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
+                                    <AccordionItemHeading>
+                                        <AccordionItemButton>
+                                            <div class="row m-0 w-100">
+                                                <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
+                                                    <p class={generalstyles.cardTitle + '  m-0 p-0 '}>Filter:</p>
+                                                </div>
+                                                <div class="col-lg-4 col-md-4 col-sm-4 p-0 d-flex align-items-center justify-content-end">
+                                                    <AccordionItemState>
+                                                        {(state) => {
+                                                            if (state.expanded == true) {
+                                                                return (
+                                                                    <i class="h-100 d-flex align-items-center justify-content-center">
+                                                                        <BsChevronUp />
+                                                                    </i>
+                                                                );
+                                                            } else {
+                                                                return (
+                                                                    <i class="h-100 d-flex align-items-center justify-content-center">
+                                                                        <BsChevronDown />
+                                                                    </i>
+                                                                );
+                                                            }
+                                                        }}
+                                                    </AccordionItemState>
+                                                </div>
+                                            </div>
+                                        </AccordionItemButton>
+                                    </AccordionItemHeading>
+                                    <AccordionItemPanel>
+                                        <hr className="mt-2 mb-3" />
                                         <div class="row m-0 w-100">
-                                            <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
-                                                <p class={generalstyles.cardTitle + '  m-0 p-0 '}>Filter:</p>
-                                            </div>
-                                            <div class="col-lg-4 col-md-4 col-sm-4 p-0 d-flex align-items-center justify-content-end">
-                                                <AccordionItemState>
-                                                    {(state) => {
-                                                        if (state.expanded == true) {
-                                                            return (
-                                                                <i class="h-100 d-flex align-items-center justify-content-center">
-                                                                    <BsChevronUp />
-                                                                </i>
-                                                            );
+                                            <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                                <MultiSelect
+                                                    title={'Type'}
+                                                    options={expenseTypeContext}
+                                                    label={'label'}
+                                                    value={'value'}
+                                                    selected={filterExpensesObj?.types}
+                                                    onClick={(option) => {
+                                                        var tempArray = [...(filterExpensesObj?.types ?? [])];
+                                                        if (option == 'All') {
+                                                            tempArray = undefined;
                                                         } else {
-                                                            return (
-                                                                <i class="h-100 d-flex align-items-center justify-content-center">
-                                                                    <BsChevronDown />
-                                                                </i>
-                                                            );
+                                                            if (!tempArray?.includes(option.value)) {
+                                                                tempArray.push(option.value);
+                                                            } else {
+                                                                tempArray.splice(tempArray?.indexOf(option?.value), 1);
+                                                            }
                                                         }
-                                                    }}
-                                                </AccordionItemState>
-                                            </div>
-                                        </div>
-                                    </AccordionItemButton>
-                                </AccordionItemHeading>
-                                <AccordionItemPanel>
-                                    <hr className="mt-2 mb-3" />
-                                    <div class="row m-0 w-100">
-                                        <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                            <MultiSelect
-                                                title={'Type'}
-                                                options={expenseTypeContext}
-                                                label={'label'}
-                                                value={'value'}
-                                                selected={filterExpensesObj?.types}
-                                                onClick={(option) => {
-                                                    var tempArray = [...(filterExpensesObj?.types ?? [])];
-                                                    if (option == 'All') {
-                                                        tempArray = undefined;
-                                                    } else {
-                                                        if (!tempArray?.includes(option.value)) {
-                                                            tempArray.push(option.value);
-                                                        } else {
-                                                            tempArray.splice(tempArray?.indexOf(option?.value), 1);
-                                                        }
-                                                    }
-                                                    setfilterExpensesObj({ ...filterExpensesObj, types: tempArray?.length != 0 ? tempArray : undefined });
-                                                }}
-                                            />
-                                        </div>
-                                        <div class=" col-lg-3 mb-md-2">
-                                            <span>Date Range</span>
-                                            <div class="mt-1" style={{ width: '100%' }}>
-                                                <DateRangePicker
-                                                    // disabledDate={allowedMaxDays(30)}
-                                                    // value={[filterExpensesObj?.fromDate, filterExpensesObj?.toDate]}
-                                                    onChange={(event) => {
-                                                        if (event != null) {
-                                                            const start = event[0];
-                                                            const startdate = new Date(start);
-                                                            const year1 = startdate.getFullYear();
-                                                            const month1 = startdate.getMonth() + 1; // Months are zero-indexed
-                                                            const day1 = startdate.getDate();
-
-                                                            const end = event[1];
-                                                            const enddate = new Date(end);
-                                                            const year2 = enddate.getFullYear();
-                                                            const month2 = enddate.getMonth() + 1; // Months are zero-indexed
-                                                            const day2 = enddate.getDate();
-                                                            setfilterExpensesObj({
-                                                                ...filterExpensesObj,
-                                                                fromDate: event[0],
-                                                                toDate: event[1],
-                                                                // from_date: year1 + '-' + month1 + '-' + day1,
-                                                                // to_date: year2 + '-' + month2 + '-' + day2,
-                                                            });
-                                                        }
-                                                    }}
-                                                    onClean={() => {
-                                                        setfilterExpensesObj({
-                                                            ...filterExpensesObj,
-                                                            fromDate: null,
-                                                            toDate: null,
-                                                        });
+                                                        setfilterExpensesObj({ ...filterExpensesObj, types: tempArray?.length != 0 ? tempArray : undefined });
                                                     }}
                                                 />
                                             </div>
-                                        </div>
-                                    </div>
-                                </AccordionItemPanel>
-                            </AccordionItem>
-                        </Accordion>
-                    </div>
-                </div>
+                                            <div class=" col-lg-3 mb-md-2">
+                                                <span>Date Range</span>
+                                                <div class="mt-1" style={{ width: '100%' }}>
+                                                    <DateRangePicker
+                                                        // disabledDate={allowedMaxDays(30)}
+                                                        // value={[filterExpensesObj?.fromDate, filterExpensesObj?.toDate]}
+                                                        onChange={(event) => {
+                                                            if (event != null) {
+                                                                const start = event[0];
+                                                                const startdate = new Date(start);
+                                                                const year1 = startdate.getFullYear();
+                                                                const month1 = startdate.getMonth() + 1; // Months are zero-indexed
+                                                                const day1 = startdate.getDate();
 
+                                                                const end = event[1];
+                                                                const enddate = new Date(end);
+                                                                const year2 = enddate.getFullYear();
+                                                                const month2 = enddate.getMonth() + 1; // Months are zero-indexed
+                                                                const day2 = enddate.getDate();
+                                                                setfilterExpensesObj({
+                                                                    ...filterExpensesObj,
+                                                                    fromDate: event[0],
+                                                                    toDate: event[1],
+                                                                    // from_date: year1 + '-' + month1 + '-' + day1,
+                                                                    // to_date: year2 + '-' + month2 + '-' + day2,
+                                                                });
+                                                            }
+                                                        }}
+                                                        onClean={() => {
+                                                            setfilterExpensesObj({
+                                                                ...filterExpensesObj,
+                                                                fromDate: null,
+                                                                toDate: null,
+                                                            });
+                                                        }}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </AccordionItemPanel>
+                                </AccordionItem>
+                            </Accordion>
+                        </div>
+                    </div>
+                )}
                 <div class={' row m-0 w-100 mb-2 p-0 px-0'}>
                     {isAuth([1, 51, 22]) && (
                         <>

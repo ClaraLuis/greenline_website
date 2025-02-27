@@ -140,24 +140,27 @@ const TransactionsTable = (props) => {
                                                     {/* {transactionStatusTypeContext?.map((i, ii) => {
                                                         if (i.value == item.status) { */}
                                                     {/* return ( */}
-                                                    <div
-                                                        style={{ cursor: item?.toAccount?.id == props?.accountId ? 'pointer' : '' }}
-                                                        className={
-                                                            item.status == 'completed'
-                                                                ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 text-capitalize '
-                                                                : item?.status == 'cancelled' ||
-                                                                  item?.status == 'failed' ||
-                                                                  item?.status == 'rejectedByReceiver' ||
-                                                                  item?.status == 'cancelledBySender' ||
-                                                                  item?.status == 'cancelledByReceiver' ||
-                                                                  item?.status == 'rejectedBySender' ||
-                                                                  item?.status == 'rejected'
-                                                                ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 text-capitalize'
-                                                                : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 text-capitalize'
-                                                        }
-                                                    >
-                                                        <p className={' m-0 p-0 wordbreak '}>{item?.status?.split(/(?=[A-Z])/).join(' ')}</p>
-                                                    </div>
+                                                    {item?.status && (
+                                                        <div
+                                                            style={{ cursor: item?.toAccount?.id == props?.accountId ? 'pointer' : '' }}
+                                                            className={
+                                                                item.status == 'completed'
+                                                                    ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 text-capitalize '
+                                                                    : item?.status == 'cancelled' ||
+                                                                      item?.status == 'failed' ||
+                                                                      item?.status == 'rejectedByReceiver' ||
+                                                                      item?.status == 'cancelledBySender' ||
+                                                                      item?.status == 'cancelledByReceiver' ||
+                                                                      item?.status == 'rejectedBySender' ||
+                                                                      item?.status == 'rejected'
+                                                                    ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 text-capitalize'
+                                                                    : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 text-capitalize'
+                                                            }
+                                                        >
+                                                            <p className={' m-0 p-0 wordbreak '}>{item?.status?.split(/(?=[A-Z])/).join(' ')}</p>
+                                                        </div>
+                                                    )}
+
                                                     {/* ); */}
                                                     {/* } */}
                                                     {/* })} */}
@@ -167,6 +170,10 @@ const TransactionsTable = (props) => {
                                                     {item?.toAccount?.id == props?.accountId && (
                                                         <button
                                                             onClick={() => {
+                                                                if (props?.srctype == 'expenses' && !isAuth([1, 51, 24])) {
+                                                                    NotificationManager.warning('Not Authorized', 'Warning!');
+                                                                    return;
+                                                                }
                                                                 setstatuspayload({ ...statuspayload, id: item?.id });
                                                                 setchangestatusmodal(true);
                                                             }}
@@ -291,13 +298,14 @@ const TransactionsTable = (props) => {
                                                     </span>
                                                 </div>
                                             )}
-
-                                            <div className="col-lg-12 p-0 mb-1">
-                                                <span class="d-flex align-items-center" style={{ fontWeight: 600 }}>
-                                                    <TbFileDescription class="mr-1" />
-                                                    {props?.srctype == 'expenses' ? item?.comment : item?.description}
-                                                </span>
-                                            </div>
+                                            {(item?.comment || item?.description) && (
+                                                <div className="col-lg-12 p-0 mb-1">
+                                                    <span class="d-flex align-items-center" style={{ fontWeight: 600 }}>
+                                                        <TbFileDescription class="mr-1" />
+                                                        {props?.srctype == 'expenses' ? item?.comment : item?.description}
+                                                    </span>
+                                                </div>
+                                            )}
 
                                             {/* {!props?.allowSelect && ( */}
                                             <div class="col-lg-12 p-0">

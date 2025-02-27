@@ -186,7 +186,7 @@ const CourierSheets = (props) => {
                     </div>
                 </div>
                 <div class="col-lg-12 px-3">
-                    {isAuth([1, 34, 53]) && (
+                    {isAuth([1, 34, 53, 51]) && (
                         <>
                             <div class="col-lg-12 p-0 mb-3">
                                 <Pagination
