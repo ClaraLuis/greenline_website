@@ -581,23 +581,11 @@ const API = () => {
                 paginateItemInBox(input: $input) {
                     data {
                         id
-                        inventoryId
-                        count
-                        totalCount
-                        merchant {
-                            name
-                        }
-                        itemVariant {
-                            name
-                            merchantId
-                            imageUrl
+                        sku
+                        blocksCountSum
+                        blocks {
                             id
-                            sku
-                            fullName
-                            shopifyId
-                            item {
-                                name
-                            }
+                            count
                         }
                     }
                     cursor
@@ -2318,10 +2306,33 @@ const API = () => {
             query paginateItemHistory($input: PaginateItemHistoryInput!) {
                 paginateItemHistory(input: $input) {
                     data {
+                        id
                         amount
+                        amountBefore
+                        orderId
                         description
+                        order {
+                            id
+                            status
+                        }
+                        itemInBox {
+                            inventory {
+                                name
+                            }
+                            merchant {
+                                name
+                            }
+                            itemVariant {
+                                sku
+                                stockCount
+                            }
+                        }
                         user {
                             name
+                        }
+                        order {
+                            id
+                            status
                         }
                         createdAt
                     }

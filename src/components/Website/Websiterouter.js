@@ -69,6 +69,7 @@ import NotFound from './NotFound.js';
 import RentBills from './Finance/RentBills.js';
 import ActionCenter from './Hubs/ActionCenter.js';
 import InventoryRent from './InventoryItems/InventoryRent.js';
+import ItemHistory from './InventoryItems/ItemHistory.js';
 const App = (props) => {
     const history = useHistory();
     const location = useLocation();
@@ -114,7 +115,7 @@ const App = (props) => {
                         </div>
                     </div>
                     <div class="col-lg-6 d-flex justify-content-end align-items-center ">
-                        <Dropdown show={isOpen1} onToggle={() => setIsOpen1(!isOpen1)}>
+                        {/* <Dropdown show={isOpen1} onToggle={() => setIsOpen1(!isOpen1)}>
                             <Dropdown.Toggle>
                                 <div
                                     style={{
@@ -157,7 +158,7 @@ const App = (props) => {
                                     </div>
                                 </div>
                             </Dropdown.Menu>
-                        </Dropdown>
+                        </Dropdown> */}
                         <Dropdown show={isOpen} onToggle={() => setIsOpen(!isOpen)}>
                             <Dropdown.Toggle>
                                 <div
@@ -181,7 +182,6 @@ const App = (props) => {
                                 <div style={{ paddingBottom: '10px' }}>
                                     <div class="col-lg-12 py-0 pt-2">
                                         <span style={{ fontWeight: 600 }}>
-                                            Good Morning,
                                             <span style={{ fontWeight: 400 }}> {user?.name}</span>
                                         </span>
                                     </div>
@@ -313,6 +313,7 @@ const App = (props) => {
                                                                 <Route exact path="/arrivedathub" component={AddSheetNew} />
                                                                 <Route exact path="/dispatched" component={AddSheetNew} />
                                                                 <Route exact path="/rentpage" component={RentPage} />
+                                                                <Route exact path="/itemhistory" component={ItemHistory} />
 
                                                                 <Route exact path="/financehome" component={FinanceHome} />
                                                                 <Route exact path="/additem" component={AddItem} />
