@@ -217,6 +217,18 @@ export const Contexthandlerscontext_provider = (props) => {
                         permissionpage: [1],
                         show: isAuth([1, 54]),
                     },
+                    {
+                        name: 'Inventory Logs',
+                        isselected: false,
+                        icon: (
+                            <i class={'allcentered'}>
+                                <CiShop size={18} />
+                            </i>
+                        ),
+                        path: '/itemhistory',
+                        permissionpage: [1],
+                        show: isAuth([1]),
+                    },
                 ],
             },
             {
