@@ -259,11 +259,41 @@ const TransactionsTable = (props) => {
                                             </div>
                                             {props?.srctype == 'all' && (
                                                 <>
-                                                    <div className="col-lg-12 p-0 mb-1">
+                                                    <div className="col-lg-7 p-0 mb-1">
                                                         <span class="d-flex align-items-center" style={{ fontWeight: 600, color: '#4C8CF5' }}>
                                                             <MdOutlineCallMade class="mr-1" />
                                                             {item?.fromAccount?.name ?? '-'}
                                                         </span>
+                                                    </div>{' '}
+                                                    <div className="col-lg-5 p-0 mb-1 d-flex justify-content-end">
+                                                        <div class="row m-0 w-100d-flex justify-content-end">
+                                                            {item?.sheetOrder?.order?.id && (
+                                                                <div
+                                                                    style={{ color: 'black', backgroundColor: '#eee' }}
+                                                                    className={' wordbreak  rounded-pill font-weight-600 allcentered mx-1 text-capitalize'}
+                                                                >
+                                                                    #{item?.sheetOrder?.order?.id}
+                                                                </div>
+                                                            )}
+                                                            {item?.sheetOrder?.order?.status && (
+                                                                <div
+                                                                    className={`wordbreak rounded-pill font-weight-600 text-capitalize ${
+                                                                        item?.sheetOrder?.order?.status === 'delivered' ||
+                                                                        item?.sheetOrder?.order?.status === 'partiallyDelivered' ||
+                                                                        item?.sheetOrder?.order?.status === 'returned' ||
+                                                                        item?.sheetOrder?.order?.status === 'partiallyReturned'
+                                                                            ? 'text-success bg-light-success text-capitalize'
+                                                                            : item?.sheetOrder?.order?.status === 'cancelled' || item?.sheetOrder?.order?.status === 'failedDeliveryAttempt'
+                                                                            ? 'text-danger bg-light-danger text-capitalize'
+                                                                            : item?.sheetOrder?.order?.status === 'postponed'
+                                                                            ? 'text-warning bg-light-warning rounded-pill-hover text-capitalize'
+                                                                            : 'text-warning bg-light-warning text-capitalize'
+                                                                    }`}
+                                                                >
+                                                                    <p className={' m-0 p-0 wordbreak '}>{item?.sheetOrder?.order?.status?.split(/(?=[A-Z])/).join(' ')}</p>
+                                                                </div>
+                                                            )}
+                                                        </div>
                                                     </div>{' '}
                                                     <div className="col-lg-12 p-0 mb-1">
                                                         <span class="d-flex align-items-center" style={{ fontWeight: 600, color: '#1EC000' }}>

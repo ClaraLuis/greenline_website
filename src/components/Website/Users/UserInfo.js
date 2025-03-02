@@ -565,7 +565,11 @@ const UserInfo = (props) => {
                                         let requiredFields = ['name', 'email', 'phone']; // Default required fields
 
                                         if (payload.type === 'merchant') {
-                                            requiredFields.push('type', 'merchant');
+                                            if (cookies.get('merchantId') != undefined) {
+                                                requiredFields.push('type');
+                                            } else {
+                                                requiredFields.push('type', 'merchant');
+                                            }
                                         } else if (payload.type === 'employee' && payload.employeeType !== 'inventory') {
                                             requiredFields.push('type', 'employeeType', 'hubID', 'commission', 'salary', 'currency');
                                         } else if (payload.type === 'employee' && payload.employeeType === 'inventory') {
