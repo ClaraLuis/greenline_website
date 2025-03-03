@@ -191,7 +191,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/inventorypackages',
                         permissionpage: [1],
-                        show: isAuth([1, 54, 64, 2]),
+                        show: cookies.get('userInfo')?.type != 'merchant' && isAuth([1, 54, 64, 2]),
                     },
                     {
                         name: 'Dispatch',
@@ -394,7 +394,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/packages',
                         permissionpage: [1],
-                        show: isAuth([1, 94, 64]),
+                        show: cookies.get('userInfo')?.type != 'merchant' && isAuth([1, 94, 64]),
                     },
                     {
                         name: 'Receive At Hub',
