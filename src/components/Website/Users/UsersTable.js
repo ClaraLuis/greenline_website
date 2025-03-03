@@ -127,7 +127,8 @@ const UsersTable = (props) => {
                                                                     <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Change Password</p>
                                                                 </Dropdown.Item>
                                                             )}
-                                                            {isAuth([1, 46]) && (
+                                                            {isAuth([1, 46, 52]) && (
+                                                                // {isAuth([1, 46]) && (
                                                                 <Dropdown.Item
                                                                     onClick={() => {
                                                                         //     var temp = { ...item };
