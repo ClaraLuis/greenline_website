@@ -50,11 +50,11 @@ const AddEditSecuritylayers = (props) => {
                 return { type, permissions };
             });
 
-            if (cookies.get('merchantId')) {
-                setpermissionsarray(permissionstemp?.filter((e) => e.type == 'merchant' || e.type == 'order'));
-            } else {
-                setpermissionsarray(permissionstemp);
-            }
+            // if (cookies.get('merchantId')) {
+            //     setpermissionsarray(permissionstemp?.filter((e) => e.type == 'merchant' || e.type == 'order'));
+            // } else {
+            setpermissionsarray(permissionstemp);
+            // }
         }
     }, [findPermissionsQuery?.data?.findPermissions]);
 
