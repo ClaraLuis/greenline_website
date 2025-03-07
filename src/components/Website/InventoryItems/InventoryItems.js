@@ -507,6 +507,9 @@ const InventoryItems = (props) => {
                                                                             {element?.sku}
                                                                         </div>
                                                                     </div>
+                                                                    <div className="col-lg-12 p-0" style={{ fontSize: '14px', fontWeight: 600 }}>
+                                                                        Crrent count: {element.stockCount}
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                             <div class="col-lg-2 p-0">

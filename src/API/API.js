@@ -460,6 +460,14 @@ const API = () => {
         `;
     };
 
+    const deleteItems = () => {
+        return gql`
+            mutation deleteItems($input: DeleteItemsInput!) {
+                deleteItems(input: $input)
+            }
+        `;
+    };
+
     // const removeFinancialAccount = () => {
     //     return gql`
     //         mutation removeFinancialAccount($input: UpdateFinancialAccountInput!) {
@@ -583,6 +591,7 @@ const API = () => {
                         id
                         sku
                         blocksCountSum
+                        stockCount
                         blocks {
                             id
                             count
@@ -3021,6 +3030,7 @@ const API = () => {
         useMutationNoInputGQL,
         updateMerchantItem,
         updateMerchant,
+        deleteItems,
         findAllZones,
         deleteCourierSheet,
         createMerchantToken,

@@ -564,7 +564,7 @@ const CourierSheet = (props) => {
                                                         {type == 'finance' && (
                                                             <div className="col-lg-12 p-0 mb-2 d-flex justify-content-end">
                                                                 <div className="row m-0 w-100 d-flex justify-content-end">
-                                                                    <div class={'col-lg-12 mb-3'}>
+                                                                    <div class={'col-lg-12'}>
                                                                         <label for="name" class={formstyles.form__label + ' text-capitalize'}>
                                                                             Shipping
                                                                         </label>
@@ -598,6 +598,12 @@ const CourierSheet = (props) => {
                                                                                 setsubmitSheetPayload({ ...temp });
                                                                             }}
                                                                         />
+                                                                    </div>
+                                                                    <div className="col-lg-12">
+                                                                        <span style={{ fontWeight: 400, fontSize: '11px' }}>Collected</span>:{' '}
+                                                                        <span style={{ fontWeight: 600, fontSize: '12px' }}>
+                                                                            {item?.amountCollected ? new Decimal(item?.amountCollected).toFixed(2) : '0.00'} {item?.order?.currency}
+                                                                        </span>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -721,11 +727,14 @@ const CourierSheet = (props) => {
                                                     <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-3">
                                                         <div className="row m-0 w-100">
                                                             <div className="col-lg-12 p-0 allcentered text-center">
-                                                                <span style={{ fontWeight: 400, fontSize: '11px' }}>Collected</span>
+                                                                <span style={{ fontWeight: 400, fontSize: '11px' }}>Finance Recieved</span>
                                                             </div>
                                                             <div className="col-lg-12 p-0 allcentered text-center">
                                                                 <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                    {item?.amountCollected ? new Decimal(item?.amountCollected).toFixed(2) : '0.00'} {item?.order?.currency}
+                                                                    {type != 'admin' && tempsheetpayload?.status == 'financeAccepted'
+                                                                        ? new Decimal(item?.amountCollected || 0).plus(new Decimal(item?.order?.shippingPrice || 0)).toFixed(2)
+                                                                        : '0.00'}{' '}
+                                                                    {item?.order?.currency}
                                                                 </span>
                                                             </div>
                                                         </div>
@@ -772,7 +781,7 @@ const CourierSheet = (props) => {
 
                                         {previousOrder && (
                                             <>
-                                                <div className={' col-lg-12 p-0'}>
+                                                <div className={' col-lg-12 p-0 mb-2'}>
                                                     <hr class="mb-0" />
                                                 </div>
                                                 <div className={' col-lg-12 p-0'}>
@@ -846,7 +855,7 @@ const CourierSheet = (props) => {
                                                                 {type == 'finance' && (
                                                                     <div className="col-lg-12 p-0 mb-2 d-flex justify-content-end">
                                                                         <div className="row m-0 w-100 d-flex justify-content-end">
-                                                                            <div class={'col-lg-12 mb-3'}>
+                                                                            <div class={'col-lg-12 '}>
                                                                                 <label for="name" class={formstyles.form__label + ' text-capitalize'}>
                                                                                     Shipping
                                                                                 </label>
@@ -881,6 +890,13 @@ const CourierSheet = (props) => {
                                                                                     }}
                                                                                 />
                                                                             </div>
+                                                                            <div className="col-lg-12">
+                                                                                <span style={{ fontWeight: 400, fontSize: '11px' }}>Collected</span>:{' '}
+                                                                                <span style={{ fontWeight: 600, fontSize: '12px' }}>
+                                                                                    {previousOrder?.amountCollected ? new Decimal(previousOrder?.amountCollected).toFixed(2) : '0.00'}{' '}
+                                                                                    {previousOrder?.order?.currency}
+                                                                                </span>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 )}
@@ -894,11 +910,15 @@ const CourierSheet = (props) => {
                                                             <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-3">
                                                                 <div className="row m-0 w-100">
                                                                     <div className="col-lg-12 p-0 allcentered text-center">
-                                                                        <span style={{ fontWeight: 400, fontSize: '11px' }}>Collected</span>
+                                                                        <span style={{ fontWeight: 400, fontSize: '11px' }}>Finance Recieved</span>
                                                                     </div>
                                                                     <div className="col-lg-12 p-0 allcentered text-center">
                                                                         <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                            {previousOrder?.amountCollected ? new Decimal(previousOrder?.amountCollected).toFixed(2) : '0.00'}{' '}
+                                                                            {type != 'admin' && tempsheetpayload?.status == 'financeAccepted'
+                                                                                ? new Decimal(previousOrder?.amountCollected || 0)
+                                                                                      .plus(new Decimal(previousOrder?.order?.shippingPrice || 0))
+                                                                                      .toFixed(2)
+                                                                                : '0.00'}{' '}
                                                                             {previousOrder?.order?.currency}
                                                                         </span>
                                                                     </div>

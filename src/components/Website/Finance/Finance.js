@@ -210,37 +210,37 @@ const Finance = (props) => {
                             </div>
                         </div>
                     )}
-                    {isAuth([1, 51, 52, 111]) && (
-                        <div class="col-lg-12 co-md-12 p-0 d-flex justify-content-end mb-3">
-                            <button
-                                style={{ height: '35px' }}
-                                class={generalstyles.roundbutton + '  mb-1 mx-1 text-capitalize'}
-                                onClick={() => {
-                                    const merchantTransactions = fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data;
+                    {/* {isAuth([1, 51, 52, 111]) && ( */}
+                    <div class="col-lg-12 co-md-12 p-0 d-flex justify-content-end mb-3">
+                        <button
+                            style={{ height: '35px' }}
+                            class={generalstyles.roundbutton + '  mb-1 mx-1 text-capitalize'}
+                            onClick={() => {
+                                const merchantTransactions = fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.data;
 
-                                    // const exportData = merchantTransactions.map((transaction) => ({
-                                    const exportData = merchantTransactions.map(({ id, createdAt, __typename, fromAccount, toAccount, auditedBy, sheetOrder, type, reciept, status, ...rest }) => ({
-                                        ...rest,
+                                // const exportData = merchantTransactions.map((transaction) => ({
+                                const exportData = merchantTransactions.map(({ id, createdAt, __typename, fromAccount, toAccount, auditedBy, sheetOrder, type, reciept, status, ...rest }) => ({
+                                    ...rest,
 
-                                        orderId: sheetOrder?.order?.id,
-                                        // type: type
-                                        //     .split(/(?=[A-Z])/)
-                                        //     .join(' ')
-                                        //     .replace(/^\w/, (c) => c.toUpperCase()),
-                                        status: status
-                                            .split(/(?=[A-Z])/)
-                                            .join(' ')
-                                            .replace(/^\w/, (c) => c.toUpperCase()),
-                                        createdAt: createdAt,
-                                    }));
+                                    orderId: sheetOrder?.order?.id,
+                                    // type: type
+                                    //     .split(/(?=[A-Z])/)
+                                    //     .join(' ')
+                                    //     .replace(/^\w/, (c) => c.toUpperCase()),
+                                    status: status
+                                        .split(/(?=[A-Z])/)
+                                        .join(' ')
+                                        .replace(/^\w/, (c) => c.toUpperCase()),
+                                    createdAt: createdAt,
+                                }));
 
-                                    exportToExcel(exportData, 'merchantTransactions');
-                                }}
-                            >
-                                Export
-                            </button>
-                        </div>
-                    )}
+                                exportToExcel(exportData, 'merchantTransactions');
+                            }}
+                        >
+                            Export
+                        </button>
+                    </div>
+                    {/* )} */}
 
                     <div className={' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
                         <div class="row m-0 w-100">

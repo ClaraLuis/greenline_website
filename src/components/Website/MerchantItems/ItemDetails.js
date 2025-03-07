@@ -28,8 +28,9 @@ import ItemsTable from './ItemsTable.js';
 const ItemDetails = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setchosenItemContext, chosenItemContext, importedDataContext, isAuth, setpagetitle_context } = useContext(Contexthandlerscontext);
-    const { fetchMerchantItems, useQueryGQL, useMutationGQL, fetchMerchants, addCompoundItem, updateMerchantItem, findOneItem, useLazyQueryGQL } = API();
+    const { setpageactive_context, setchosenItemContext, chosenItemContext, importedDataContext, isAuth, setpagetitle_context, setbuttonLoadingContext, buttonLoadingContext } =
+        useContext(Contexthandlerscontext);
+    const { fetchMerchantItems, useQueryGQL, useMutationGQL, fetchMerchants, addCompoundItem, updateMerchantItem, findOneItem, useLazyQueryGQL, deleteItems } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const cookies = new Cookies();
@@ -60,8 +61,35 @@ const ItemDetails = (props) => {
     const [itemVariants, setitemVariants] = useState({});
     const [chosenvariant, setchosenvariant] = useState(undefined);
     const [selectedVariants, setselectedVariants] = useState([]);
+    const [deleteItemsMutation] = useMutationGQL(deleteItems(), {
+        itemIds: chosenItemContext?.itemVariants?.map((variant) => variant.id) || undefined,
+    });
 
     const [findOneItemLazyQuery] = useLazyQueryGQL(findOneItem());
+    const findOneItemFunc = async () => {
+        try {
+            var { data } = await findOneItemLazyQuery({
+                variables: {
+                    input: {
+                        id: parseInt(queryParameters?.get('id')),
+                    },
+                },
+            });
+            if (data?.findOneItem) {
+                setchosenItemContext(data?.findOneItem);
+            }
+        } catch (e) {
+            let errorMessage = 'An unexpected error occurred';
+            if (e.graphQLErrors && e.graphQLErrors.length > 0) {
+                errorMessage = e.graphQLErrors[0].message || errorMessage;
+            } else if (e.networkError) {
+                errorMessage = e.networkError.message || errorMessage;
+            } else if (e.message) {
+                errorMessage = e.message;
+            }
+            NotificationManager.warning(errorMessage, 'Warning!');
+        }
+    };
     class VariantName {
         constructor(name, variantOptions) {
             this.name = name;
@@ -93,28 +121,7 @@ const ItemDetails = (props) => {
     }
     useEffect(async () => {
         if (JSON.stringify(chosenItemContext) == '{}') {
-            try {
-                var { data } = await findOneItemLazyQuery({
-                    variables: {
-                        input: {
-                            id: parseInt(queryParameters?.get('id')),
-                        },
-                    },
-                });
-                if (data?.findOneItem) {
-                    setchosenItemContext(data?.findOneItem);
-                }
-            } catch (e) {
-                let errorMessage = 'An unexpected error occurred';
-                if (e.graphQLErrors && e.graphQLErrors.length > 0) {
-                    errorMessage = e.graphQLErrors[0].message || errorMessage;
-                } else if (e.networkError) {
-                    errorMessage = e.networkError.message || errorMessage;
-                } else if (e.message) {
-                    errorMessage = e.message;
-                }
-                NotificationManager.warning(errorMessage, 'Warning!');
-            }
+            await findOneItemFunc();
         }
 
         if (chosenItemContext?.itemVariants?.length) {
@@ -251,6 +258,38 @@ const ItemDetails = (props) => {
                             </div>
                         </div>
                     )}
+                    <button
+                        onClick={async () => {
+                            if (buttonLoadingContext) return;
+                            setbuttonLoadingContext(true);
+                            try {
+                                const { data } = await deleteItemsMutation();
+                                if (data?.deleteItems?.success) {
+                                    await findOneItemFunc();
+                                } else {
+                                    NotificationManager.warning(data?.deleteItems?.message, 'Warning!');
+                                }
+                            } catch (error) {
+                                let errorMessage = 'An unexpected error occurred';
+                                if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                    errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                } else if (error.networkError) {
+                                    errorMessage = error.networkError.message || errorMessage;
+                                } else if (error.message) {
+                                    errorMessage = error.message;
+                                }
+
+                                NotificationManager.warning(errorMessage, 'Warning!');
+                                console.error('Error adding Inventory:', error);
+                            }
+                            setbuttonLoadingContext(false);
+                        }}
+                        style={{ height: '35px' }}
+                        class={generalstyles.roundbutton + '   mx-2'}
+                    >
+                        {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                        {!buttonLoadingContext && <span>Delete</span>}
+                    </button>
                     <button
                         onClick={() => {
                             setselectedVariants([]);
