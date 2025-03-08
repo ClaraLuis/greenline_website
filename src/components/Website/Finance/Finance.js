@@ -244,7 +244,7 @@ const Finance = (props) => {
 
                     <div className={' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
                         <div class="row m-0 w-100">
-                            <TransactionsTable width={'50%'} query={fetchMerchantPaymentTransactionsQuery} paginationAttr="paginateMerchantPaymentTransactions" srctype="all" />
+                            <TransactionsTable hasOrder={true} width={'50%'} query={fetchMerchantPaymentTransactionsQuery} paginationAttr="paginateMerchantPaymentTransactions" srctype="all" />
                         </div>
                     </div>
                     {/* <div class={generalstyles.card + ' row m-0 w-100'}>

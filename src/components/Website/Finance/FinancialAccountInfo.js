@@ -238,6 +238,7 @@ const FinancialAccountInfo = (props) => {
                                         </div>
                                         <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
                                             <TransactionsTable
+                                                hasOrder={true}
                                                 width={'50%'}
                                                 query={fetchSenttTransactionsQuery}
                                                 paginationAttr="paginateFinancialTransaction"

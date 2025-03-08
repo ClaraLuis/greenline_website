@@ -940,7 +940,7 @@ const OrderInfo = (props) => {
                                                                                         <br />
                                                                                     </>
                                                                                 )}
-                                                                                {historyItem?.description && (
+                                                                                {historyItem?.description && cookies.get('userInfo')?.type != 'merchant' && (
                                                                                     <>
                                                                                         <span style={{ fontSize: '13px', fontWeight: 400 }}>{historyItem?.description}</span>
                                                                                         <br />

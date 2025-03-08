@@ -218,7 +218,7 @@ const TransactionsTable = (props) => {
                                                             <FcCancel size={25} />
                                                         </button>
                                                     )}
-                                                    {props?.hasOrder && (
+                                                    {props?.hasOrder && item?.sheetOrder?.order?.id && (
                                                         <div>
                                                             <Dropdown
                                                                 onClick={(e) => {
