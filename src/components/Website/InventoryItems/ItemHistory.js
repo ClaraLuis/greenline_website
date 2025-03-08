@@ -86,6 +86,9 @@ const ItemHistory = (props) => {
     useEffect(() => {
         fetchitemhistorfunc();
     }, [queryParameters?.get('id'), fetchItemHistoryfilter]);
+    useEffect(() => {
+        setfetchItemHistoryfilter({ ...fetchItemHistoryfilter, merchantId: parseInt(cookies.get('merchantId')) });
+    }, [cookies.get('merchantId')]);
 
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
@@ -125,22 +128,25 @@ const ItemHistory = (props) => {
                                 <AccordionItemPanel>
                                     <hr className="mt-2 mb-3" />
                                     <div class="row m-0 w-100">
-                                        <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                            <SelectComponent
-                                                title={'Merchant'}
-                                                filter={filterMerchants}
-                                                setfilter={setfilterMerchants}
-                                                options={fetchMerchantsQuery}
-                                                attr={'paginateMerchants'}
-                                                label={'name'}
-                                                value={'id'}
-                                                payload={fetchItemHistoryfilter}
-                                                payloadAttr={'merchantId'}
-                                                onClick={(option) => {
-                                                    setfetchItemHistoryfilter({ ...fetchItemHistoryfilter, merchantId: option?.id });
-                                                }}
-                                            />
-                                        </div>
+                                        {cookies.get('merchantId') == undefined && cookies.get('userInfo')?.type != 'merchant' && (
+                                            <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                                <SelectComponent
+                                                    title={'Merchant'}
+                                                    filter={filterMerchants}
+                                                    setfilter={setfilterMerchants}
+                                                    options={fetchMerchantsQuery}
+                                                    attr={'paginateMerchants'}
+                                                    label={'name'}
+                                                    value={'id'}
+                                                    payload={fetchItemHistoryfilter}
+                                                    payloadAttr={'merchantId'}
+                                                    onClick={(option) => {
+                                                        setfetchItemHistoryfilter({ ...fetchItemHistoryfilter, merchantId: option?.id });
+                                                    }}
+                                                />
+                                            </div>
+                                        )}
+
                                         <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
                                             <SelectComponent
                                                 title={'Inventory'}
@@ -284,13 +290,13 @@ const ItemHistory = (props) => {
                                                             <th>id</th>
                                                             <th>SKU</th>
                                                             <th>Inventory</th>
-                                                            <th>Merchant</th>
+                                                            {cookies.get('merchantId') == undefined && cookies.get('userInfo')?.type != 'merchant' && <th>Merchant</th>}
                                                             <th>Current Stock</th>
                                                             <th>Amount</th>
                                                             <th>Stock Before</th>
                                                             <th>Order</th>
                                                             <th style={{ minWidth: '400px' }}>Description</th>
-                                                            <th>User</th>
+                                                            {cookies.get('merchantId') == undefined && cookies.get('userInfo')?.type != 'merchant' && <th>User</th>}
                                                             <th>Timestamp</th>
                                                         </thead>
                                                         <tbody>
@@ -306,16 +312,19 @@ const ItemHistory = (props) => {
                                                                         <td>
                                                                             <p className={' m-0 p-0 wordbreak '}>{item?.inventory?.name ?? '-'}</p>
                                                                         </td>
-                                                                        <td>
-                                                                            <p className={' m-0 p-0 wordbreak '}>{item?.merchant?.name ?? '-'}</p>
-                                                                        </td>
+                                                                        {cookies.get('merchantId') == undefined && cookies.get('userInfo')?.type != 'merchant' && (
+                                                                            <td>
+                                                                                <p className={' m-0 p-0 wordbreak '}>{item?.merchant?.name ?? '-'}</p>
+                                                                            </td>
+                                                                        )}
+
                                                                         <td>
                                                                             <p className={' m-0 p-0 wordbreak '}>{item?.stockCount ?? '-'}</p>
                                                                         </td>
                                                                         <td>
-                                                                            <p className="m-0 p-0 wordbreak">
+                                                                            <p style={{ color: item.amount < 0 ? 'var(--danger)' : 'var(--success)' }} className="m-0 p-0 wordbreak">
                                                                                 {item?.amount !== undefined ? (
-                                                                                    <>{item.amount < 0 ? <span>{Math.abs(item.amount)} ↓</span> : <span>{item.amount} ↑ </span>}</>
+                                                                                    <>{item.amount < 0 ? <span>- {Math.abs(item.amount)}</span> : <span>+ {item.amount} </span>}</>
                                                                                 ) : (
                                                                                     '-'
                                                                                 )}
@@ -332,9 +341,11 @@ const ItemHistory = (props) => {
                                                                         <td style={{ minWidth: '400px' }}>
                                                                             <p className={' m-0 p-0 wordbreak '}>{item?.description}</p>
                                                                         </td>
-                                                                        <td>
-                                                                            <p className={' m-0 p-0 wordbreak '}>{item?.user?.name}</p>
-                                                                        </td>
+                                                                        {cookies.get('merchantId') == undefined && cookies.get('userInfo')?.type != 'merchant' && (
+                                                                            <td>
+                                                                                <p className={' m-0 p-0 wordbreak '}>{item?.user?.name}</p>
+                                                                            </td>
+                                                                        )}
                                                                         <td>
                                                                             <p className={' m-0 p-0 wordbreak '}>{dateformatter(item?.createdAt)}</p>
                                                                         </td>
