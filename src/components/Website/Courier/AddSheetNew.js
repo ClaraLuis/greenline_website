@@ -287,6 +287,33 @@ const AddSheetNew = (props) => {
                             <button
                                 style={{ height: '30px', minWidth: '80%' }}
                                 class={generalstyles.roundbutton + ' allcentered p-0'}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        var temp = { ...sheetpayload };
+                                        var exist = false;
+                                        temp.orderIds.map((i, ii) => {
+                                            if (i == search) {
+                                                exist = true;
+                                            }
+                                        });
+                                        temp?.orderIdsOld?.map((i, ii) => {
+                                            if (i == search) {
+                                                exist = true;
+                                            }
+                                        });
+                                        if (!exist) {
+                                            if (search?.length != 0 && !isNaN(parseInt(search))) {
+                                                temp.orderIds.push(parseInt(search));
+                                            } else {
+                                                NotificationManager.warning('Order has to be numbers', 'Warning!');
+                                            }
+                                        } else {
+                                            NotificationManager.warning('Order already added', 'Warning!');
+                                        }
+                                        setsheetpayload({ ...temp });
+                                        setsearch('');
+                                    }
+                                }}
                                 onClick={() => {
                                     var temp = { ...sheetpayload };
                                     var exist = false;

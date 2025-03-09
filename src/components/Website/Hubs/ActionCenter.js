@@ -95,6 +95,16 @@ const ActionCenter = (props) => {
                                 Orders
                             </p>
                         </div>
+                        <div className="col-lg-6 p-0 d-flex align-items-center justify-content-end">
+                            <button
+                                class={generalstyles.roundbutton + ' allcentered  p-0'}
+                                onClick={() => {
+                                    history.push('/batchscan');
+                                }}
+                            >
+                                <span>Batch Scan</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
                 {isAuth([1, 104]) && (
