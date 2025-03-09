@@ -16,6 +16,10 @@ import MultiSelect from '../../MultiSelect.js';
 import TransactionsTable from './TransactionsTable.js';
 import * as XLSX from 'xlsx';
 import Cookies from 'universal-cookie';
+import Pagination from '../../Pagination.js';
+import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
+import { defaultstyles } from '../Generalfiles/selectstyles.js';
+import Select from 'react-select';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -31,6 +35,7 @@ const Finance = (props) => {
     const [filterMerchanrPaymentSummaryObj, setfilterMerchanrPaymentSummaryObj] = useState({
         // merchantIds: [1],
         startDate: '2024-01-28T18:56:15.242Z',
+        endDate: '2025-01-28T18:56:15.242Z',
     });
 
     const merchantPaymentsSummaryQuery = useQueryGQL('', merchantPaymentsSummary(), filterMerchanrPaymentSummaryObj);
@@ -46,11 +51,13 @@ const Finance = (props) => {
     }
     const [filterobj, setfilterobj] = useState({
         isAsc: true,
-        limit: 3,
+        limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
         merchantIds: undefined,
         processing: undefined,
+        fromDate: '2024-01-28T18:56:15.242Z',
+        toDate: '2025-01-28T18:56:15.242Z',
     });
 
     const fetchMerchantPaymentTransactionsQuery = useQueryGQL('', fetchMerchantPaymentTransactions(), filterobj);
@@ -145,6 +152,11 @@ const Finance = (props) => {
                                                                 startDate: event[0],
                                                                 endDate: event[1],
                                                             });
+                                                            setfilterobj({
+                                                                ...filterobj,
+                                                                fromDate: event[0],
+                                                                toDate: event[1],
+                                                            });
                                                         }
                                                     }}
                                                     onClean={() => {
@@ -153,9 +165,35 @@ const Finance = (props) => {
                                                             startDate: null,
                                                             endDate: null,
                                                         });
+                                                        setfilterobj({
+                                                            ...filterobj,
+                                                            fromDate: null,
+                                                            toDate: null,
+                                                        });
                                                     }}
                                                 />
                                             </div>
+                                        </div>
+                                        <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                            <label for="name" class={formstyles.form__label}>
+                                                Status
+                                            </label>
+                                            <Select
+                                                options={[
+                                                    { label: 'All', value: undefined },
+                                                    { label: 'Processing', value: true },
+                                                    { label: 'Completed', value: false },
+                                                ]}
+                                                styles={defaultstyles}
+                                                defaultValue={[
+                                                    { label: 'All', value: undefined },
+                                                    { label: 'Processing', value: true },
+                                                    { label: 'Completed', value: false },
+                                                ].filter((option) => option?.id == filterobj?.processing)}
+                                                onChange={(option) => {
+                                                    setfilterobj({ ...filterobj, processing: option.value });
+                                                }}
+                                            />
                                         </div>
                                     </div>
                                 </AccordionItemPanel>
@@ -169,7 +207,7 @@ const Finance = (props) => {
                             <div class="row m-0 w-100">
                                 {merchantPaymentsSummaryQuery?.data?.merchantPaymentsSummary?.data?.map((item, index) => {
                                     return (
-                                        <div class="col-lg-3">
+                                        <div class="col-lg-4">
                                             <div class={generalstyles.card + ' row m-0 p-3 w-100'}>
                                                 <div style={{ fontSize: '17px' }} class="col-lg-12 mb-1">
                                                     {item?.status}
@@ -241,7 +279,14 @@ const Finance = (props) => {
                         </button>
                     </div>
                     {/* )} */}
-
+                    <div class="col-lg-12 p-0 mb-3">
+                        <Pagination
+                            beforeCursor={fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.cursor?.beforeCursor}
+                            afterCursor={fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.cursor?.afterCursor}
+                            filter={filterobj}
+                            setfilter={setfilterobj}
+                        />
+                    </div>
                     <div className={' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
                         <div class="row m-0 w-100">
                             <TransactionsTable hasOrder={true} width={'50%'} query={fetchMerchantPaymentTransactionsQuery} paginationAttr="paginateMerchantPaymentTransactions" srctype="all" />
