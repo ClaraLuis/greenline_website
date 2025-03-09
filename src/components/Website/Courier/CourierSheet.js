@@ -267,6 +267,7 @@ const CourierSheet = (props) => {
                 orderStatus: item?.order?.status,
                 amountCollected: item?.amountCollected,
                 orderId: item?.order?.id,
+                paymentType: item?.order?.paymentType,
             });
 
             if (!(item?.adminPass && type == 'admin') && !(item?.financePass && type == 'finance')) {
@@ -1412,7 +1413,7 @@ const CourierSheet = (props) => {
                                     {type == 'finance' && (
                                         <span class="px-2" style={{ borderInlineStart: '1px solid rgba(238, 238, 238, 0.6)' }}>
                                             {submitSheetPayload?.updateSheetOrderstemp
-                                                ?.filter((item) => item.status == 'adminAccepted' || item.status == 'financeAccepted')
+                                                ?.filter((item) => (item.status == 'adminAccepted' || item.status == 'financeAccepted') && item.paymentType != 'card')
                                                 .map((e) => new Decimal(e?.amountCollected ?? '0').plus(e?.shippingCollected == 'collected' ? new Decimal(e?.shippingPrice ?? '0') : 0))
                                                 .reduce((sum, current) => sum.plus(current), new Decimal(0))
                                                 .toFixed(2)}{' '}
