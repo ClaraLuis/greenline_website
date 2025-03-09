@@ -70,6 +70,7 @@ import RentBills from './Finance/RentBills.js';
 import ActionCenter from './Hubs/ActionCenter.js';
 import InventoryRent from './InventoryItems/InventoryRent.js';
 import ItemHistory from './InventoryItems/ItemHistory.js';
+import BatchScan from './Hubs/BatchScan.js';
 const App = (props) => {
     const history = useHistory();
     const location = useLocation();
@@ -311,6 +312,7 @@ const App = (props) => {
                                                                 <Route exact path="/orderinfo" component={OrderInfo} />
                                                                 <Route exact path="/addsheet" component={AddSheetNew} />
                                                                 <Route exact path="/arrivedathub" component={AddSheetNew} />
+                                                                <Route exact path="/batchscan" component={BatchScan} />
                                                                 <Route exact path="/dispatched" component={AddSheetNew} />
                                                                 <Route exact path="/rentpage" component={RentPage} />
                                                                 <Route exact path="/itemhistory" component={ItemHistory} />
