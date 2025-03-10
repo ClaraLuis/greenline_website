@@ -2489,12 +2489,16 @@ const API = () => {
                         shippingCollected
                         amountCollected
                         orderId
+                        assignedBy {
+                            name
+                        }
                         order {
                             failsAndAssigns
                             previousOrderId
                             previousOrder {
                                 id
                             }
+
                             parentOrder {
                                 id
                             }
