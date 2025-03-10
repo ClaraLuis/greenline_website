@@ -20,7 +20,8 @@ const { ValueContainer, Placeholder } = components;
 const AddSheetNew = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, dateformatter, orderStatusEnumContext, user, isAuth, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, setchosenOrderContext, orderStatusEnumContext, user, isAuth, buttonLoadingContext, setbuttonLoadingContext } =
+        useContext(Contexthandlerscontext);
     const { useQueryGQL, updateupdateOrderIdsStatus, addCourierSheet, addOrdersToCourierSheet, useMutationGQL, fetchCouriers, fetchCourierSheet, useLazyQueryGQL, fetchHubs } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -149,10 +150,12 @@ const AddSheetNew = (props) => {
                 },
             });
             var orderIdstemp = [];
+            var ordersOldtemp = [];
             data?.CourierSheet?.sheetOrders?.map((order) => {
                 orderIdstemp.push(order.orderId);
+                ordersOldtemp.push({ ...order.order, assignedBy: order.assignedBy });
             });
-            setsheetpayload({ ...sheetpayload, orderIdsOld: orderIdstemp });
+            setsheetpayload({ ...sheetpayload, orderIdsOld: orderIdstemp, ordersOld: ordersOldtemp });
             setfetchCourierSheetQuery({ data: data });
         }
     }, [queryParameters.get('sheetId')]);
@@ -277,6 +280,33 @@ const AddSheetNew = (props) => {
                                     class={formstyles.form__field}
                                     value={search}
                                     placeholder={'Search by order ID'}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            var temp = { ...sheetpayload };
+                                            var exist = false;
+                                            temp.orderIds.map((i, ii) => {
+                                                if (i == search) {
+                                                    exist = true;
+                                                }
+                                            });
+                                            temp?.orderIdsOld?.map((i, ii) => {
+                                                if (i == search) {
+                                                    exist = true;
+                                                }
+                                            });
+                                            if (!exist) {
+                                                if (search?.length != 0 && !isNaN(parseInt(search))) {
+                                                    temp.orderIds.push(parseInt(search));
+                                                } else {
+                                                    NotificationManager.warning('Order has to be numbers', 'Warning!');
+                                                }
+                                            } else {
+                                                NotificationManager.warning('Order already added', 'Warning!');
+                                            }
+                                            setsheetpayload({ ...temp });
+                                            setsearch('');
+                                        }
+                                    }}
                                     onChange={(event) => {
                                         setsearch(event.target.value);
                                     }}
@@ -287,33 +317,6 @@ const AddSheetNew = (props) => {
                             <button
                                 style={{ height: '30px', minWidth: '80%' }}
                                 class={generalstyles.roundbutton + ' allcentered p-0'}
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter') {
-                                        var temp = { ...sheetpayload };
-                                        var exist = false;
-                                        temp.orderIds.map((i, ii) => {
-                                            if (i == search) {
-                                                exist = true;
-                                            }
-                                        });
-                                        temp?.orderIdsOld?.map((i, ii) => {
-                                            if (i == search) {
-                                                exist = true;
-                                            }
-                                        });
-                                        if (!exist) {
-                                            if (search?.length != 0 && !isNaN(parseInt(search))) {
-                                                temp.orderIds.push(parseInt(search));
-                                            } else {
-                                                NotificationManager.warning('Order has to be numbers', 'Warning!');
-                                            }
-                                        } else {
-                                            NotificationManager.warning('Order already added', 'Warning!');
-                                        }
-                                        setsheetpayload({ ...temp });
-                                        setsearch('');
-                                    }
-                                }}
                                 onClick={() => {
                                     var temp = { ...sheetpayload };
                                     var exist = false;
@@ -349,7 +352,7 @@ const AddSheetNew = (props) => {
                     <div class={generalstyles.card + ' row m-0 w-100'}>
                         <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
                             <p class=" p-0 m-0" style={{ fontSize: '17px' }}>
-                                Orders ({sheetpayload?.orderIds?.length})
+                                Orders ({parseInt(sheetpayload?.orderIds?.length) + parseInt(sheetpayload?.orderIdsOld?.length)})
                             </p>
                         </div>
                     </div>
@@ -359,15 +362,41 @@ const AddSheetNew = (props) => {
                     <div class={' row m-0 w-100 scrollmenuclasssubscrollbar'} style={{ overflow: 'scroll' }}>
                         <div class="col-lg-12 p-0">
                             <>
-                                {sheetpayload?.orderIdsOld?.length != 0 && (
+                                {sheetpayload?.ordersOld?.length != 0 && (
                                     <div class="col-lg-12 p-0">
                                         <div style={{ maxHeight: '40vh', overflow: 'scroll' }} class="row m-0 w-100 scrollmenuclasssubscrollbar">
-                                            {sheetpayload?.orderIdsOld?.map((item, index) => {
+                                            {sheetpayload?.ordersOld?.map((item, index) => {
                                                 return (
                                                     <div class={' col-lg-3 '}>
-                                                        <div class={generalstyles.card + ' p-2 row m-0 mb-3 w-100 allcentered'}>
-                                                            <div style={{ fontWeight: 700 }} class="col-lg-10 p-0 mb-2">
-                                                                # {item}
+                                                        <div
+                                                            style={{ cursor: 'pointer' }}
+                                                            onClick={async () => {
+                                                                await setchosenOrderContext(undefined);
+                                                                window.open('/orderinfo?orderId=' + item?.id, '_self');
+                                                            }}
+                                                            class={generalstyles.card + ' p-2 row m-0 mb-3 w-100 allcentered'}
+                                                        >
+                                                            <div className="col-lg-4 p-0">
+                                                                <span style={{ fontWeight: 700 }}># {item?.id}</span>
+                                                            </div>
+                                                            <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
+                                                                <div
+                                                                    className={
+                                                                        item.status == 'delivered'
+                                                                            ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered text-capitalize '
+                                                                            : item?.status == 'postponed' || item?.status == 'failedDeliveryAttempt text-capitalize'
+                                                                            ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 allcentered text-capitalize '
+                                                                            : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered text-capitalize '
+                                                                    }
+                                                                >
+                                                                    {item?.status?.split(/(?=[A-Z])/).join(' ')}
+                                                                </div>
+                                                            </div>
+                                                            <div className="col-lg-12 p-0 my-2">
+                                                                <hr className="m-0" />
+                                                            </div>
+                                                            <div className="col-lg-12 p-0 mb-2">
+                                                                <span style={{ fontWeight: 600, fontSize: '16px' }}>{item?.assignedBy?.name}</span>
                                                             </div>
                                                         </div>
                                                     </div>
