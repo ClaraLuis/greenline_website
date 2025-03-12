@@ -119,7 +119,7 @@ const TransactionsTable = (props) => {
                                                 handleSelect(item);
                                             }
                                         }}
-                                        className={props?.width == '50%' ? 'col-lg-6' : props?.width == '40%' ? 'col-lg-5' : 'col-lg-6'}
+                                        className={props?.width == '50%' ? 'col-lg-6' : props?.width == '100%' ? 'col-lg-12' : props?.width == '40%' ? 'col-lg-5' : 'col-lg-6'}
                                     >
                                         <div
                                             style={{ background: props?.allowSelect && selected ? 'var(--secondary)' : '', transition: 'all 0.4s' }}
