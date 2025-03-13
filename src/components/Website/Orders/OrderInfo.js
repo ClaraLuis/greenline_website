@@ -568,7 +568,7 @@ const OrderInfo = (props) => {
                                                         {chosenOrderContext?.type?.split(/(?=[A-Z])/).join(' ')}
                                                     </div>
                                                     <div style={{ background: 'var(--primary)', color: 'white' }} className={' wordbreak rounded-pill font-weight-600 allcentered mx-1 '}>
-                                                        {chosenOrderContext?.paidToMerchant ? 'Paid' : 'Not Paid'}
+                                                        {chosenOrderContext?.paidToMerchant ? (chosenOrderContext?.paymentType == 'card' ? 'Paid Online' : 'Paid') : 'Not Paid'}
                                                     </div>
                                                     {chosenOrderContext?.failsAndAssigns?.fails > 0 && (
                                                         <div style={{ background: 'var(--danger)', color: 'white' }} className={' wordbreak rounded-pill font-weight-600 allcentered mx-1 '}>

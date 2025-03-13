@@ -77,73 +77,77 @@ const SheetsTable = (props) => {
                                                         })} */}
                                                         {item?.status?.split(/(?=[A-Z])/).join(' ')}
                                                     </div>
-                                                    <Dropdown>
-                                                        <Dropdown.Toggle>
-                                                            <div
-                                                                class="iconhover allcentered ml-1"
-                                                                style={{
-                                                                    color: 'var(--primary)',
-                                                                    // borderRadius: '10px',
-                                                                    width: '28px',
-                                                                    height: '28px',
-                                                                    transition: 'all 0.4s',
-                                                                }}
-                                                            >
-                                                                <FaEllipsisV />
-                                                            </div>
-                                                        </Dropdown.Toggle>
-
-                                                        <Dropdown.Menu style={{ minWidth: '170px', fontSize: '12px' }}>
-                                                            {parseInt(item?.orderCount) == 0 && (
-                                                                <Dropdown.Item
-                                                                    onClick={async () => {
-                                                                        if (!buttonLoadingContext) {
-                                                                            if (buttonLoadingContext) return;
-                                                                            setbuttonLoadingContext(true);
-                                                                            await setsheetID(item?.id);
-                                                                            try {
-                                                                                const { data } = await deleteCourierSheetMutation();
-
-                                                                                if (data?.deleteCourierSheet?.success == true) {
-                                                                                    if (props?.refetchCourierSheets) {
-                                                                                        props?.refetchCourierSheets();
-                                                                                    }
-                                                                                    NotificationManager.success('', 'Success');
-                                                                                } else {
-                                                                                    NotificationManager.warning(data?.deleteCourierSheet?.message, 'Warning!');
-                                                                                }
-                                                                            } catch (error) {
-                                                                                let errorMessage = 'An unexpected error occurred';
-                                                                                if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-                                                                                    errorMessage = error.graphQLErrors[0].message || errorMessage;
-                                                                                } else if (error.networkError) {
-                                                                                    errorMessage = error.networkError.message || errorMessage;
-                                                                                } else if (error.message) {
-                                                                                    errorMessage = error.message;
-                                                                                }
-                                                                                NotificationManager.warning(errorMessage, 'Warning!');
-                                                                            }
-                                                                            setbuttonLoadingContext(false);
-                                                                        }
+                                                    {(parseInt(item?.orderCount) == 0 || item.status == 'idle') && (
+                                                        <Dropdown>
+                                                            <Dropdown.Toggle>
+                                                                <div
+                                                                    class="iconhover allcentered ml-1"
+                                                                    style={{
+                                                                        color: 'var(--primary)',
+                                                                        // borderRadius: '10px',
+                                                                        width: '28px',
+                                                                        height: '28px',
+                                                                        transition: 'all 0.4s',
                                                                     }}
-                                                                    class="py-2"
                                                                 >
-                                                                    <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>
-                                                                        {buttonLoadingContext && <CircularProgress color="var(--primary)" width="15px" height="15px" duration="1s" />}
-                                                                        {!buttonLoadingContext && <span>Delete Manifest</span>}
-                                                                    </p>
-                                                                </Dropdown.Item>
-                                                            )}
-                                                            <Dropdown.Item
-                                                                onClick={() => {
-                                                                    history.push('/addsheet?sheetId=' + item?.id);
-                                                                }}
-                                                                class="py-2"
-                                                            >
-                                                                <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}> Add orders</p>
-                                                            </Dropdown.Item>
-                                                        </Dropdown.Menu>
-                                                    </Dropdown>
+                                                                    <FaEllipsisV />
+                                                                </div>
+                                                            </Dropdown.Toggle>
+
+                                                            <Dropdown.Menu style={{ minWidth: '170px', fontSize: '12px' }}>
+                                                                {parseInt(item?.orderCount) == 0 && (
+                                                                    <Dropdown.Item
+                                                                        onClick={async () => {
+                                                                            if (!buttonLoadingContext) {
+                                                                                if (buttonLoadingContext) return;
+                                                                                setbuttonLoadingContext(true);
+                                                                                await setsheetID(item?.id);
+                                                                                try {
+                                                                                    const { data } = await deleteCourierSheetMutation();
+
+                                                                                    if (data?.deleteCourierSheet?.success == true) {
+                                                                                        if (props?.refetchCourierSheets) {
+                                                                                            props?.refetchCourierSheets();
+                                                                                        }
+                                                                                        NotificationManager.success('', 'Success');
+                                                                                    } else {
+                                                                                        NotificationManager.warning(data?.deleteCourierSheet?.message, 'Warning!');
+                                                                                    }
+                                                                                } catch (error) {
+                                                                                    let errorMessage = 'An unexpected error occurred';
+                                                                                    if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                                                                        errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                                                                    } else if (error.networkError) {
+                                                                                        errorMessage = error.networkError.message || errorMessage;
+                                                                                    } else if (error.message) {
+                                                                                        errorMessage = error.message;
+                                                                                    }
+                                                                                    NotificationManager.warning(errorMessage, 'Warning!');
+                                                                                }
+                                                                                setbuttonLoadingContext(false);
+                                                                            }
+                                                                        }}
+                                                                        class="py-2"
+                                                                    >
+                                                                        <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>
+                                                                            {buttonLoadingContext && <CircularProgress color="var(--primary)" width="15px" height="15px" duration="1s" />}
+                                                                            {!buttonLoadingContext && <span>Delete Manifest</span>}
+                                                                        </p>
+                                                                    </Dropdown.Item>
+                                                                )}
+                                                                {item.status == 'idle' && (
+                                                                    <Dropdown.Item
+                                                                        onClick={() => {
+                                                                            history.push('/addsheet?sheetId=' + item?.id);
+                                                                        }}
+                                                                        class="py-2"
+                                                                    >
+                                                                        <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}> Add orders</p>
+                                                                    </Dropdown.Item>
+                                                                )}
+                                                            </Dropdown.Menu>
+                                                        </Dropdown>
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>

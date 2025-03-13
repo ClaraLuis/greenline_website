@@ -312,6 +312,12 @@ const TransactionsTable = (props) => {
                                                         </span>
                                                     </div>{' '}
                                                     <div className="col-lg-12 p-0 mb-1">
+                                                        <span class="d-flex align-items-center" style={{ fontWeight: 600, color: '#4C8CF5' }}>
+                                                            <MdOutlineCallMade class="mr-1" />
+                                                            {item?.fromAccount?.name ?? '-'}
+                                                        </span>
+                                                    </div>
+                                                    <div className="col-lg-12 p-0 mb-1">
                                                         <span class="d-flex align-items-center" style={{ fontWeight: 600, color: '#1EC000' }}>
                                                             <MdOutlineCallReceived class="mr-1" />
                                                             {item?.toAccount?.name ?? '-'}

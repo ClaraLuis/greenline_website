@@ -260,7 +260,7 @@ const CourierSheet = (props) => {
                 sheetOrderId: item?.id,
                 expanded: type == 'admin' ? (item?.adminPass ? false : true) : false,
                 status: type == 'admin' ? (item?.adminPass ? 'adminAccepted' : 'adminRejected') : item?.financePass ? 'financeAccepted' : 'financeRejected',
-                shippingCollected: item?.shippingCollected,
+                shippingCollected: item?.order?.status == 'postponed' ? 'notCollected' : item?.shippingCollected,
                 description: '',
                 price: item?.order?.price,
                 shippingPrice: item?.order?.shippingPrice,
@@ -274,7 +274,7 @@ const CourierSheet = (props) => {
                 temp.updateSheetOrders.push({
                     sheetOrderId: item?.id,
                     status: type == 'admin' ? (item?.adminPass ? 'adminAccepted' : 'adminRejected') : item?.financePass ? 'financeAccepted' : 'financeRejected',
-                    shippingCollected: item?.shippingCollected,
+                    shippingCollected: item?.order?.status == 'postponed' ? 'notCollected' : item?.shippingCollected,
                     description: '',
                     orderId: item?.order?.id,
                 });
@@ -733,7 +733,9 @@ const CourierSheet = (props) => {
                                                             <div className="col-lg-12 p-0 allcentered text-center">
                                                                 <span style={{ fontWeight: 600, fontSize: '13px' }}>
                                                                     {type != 'admin' && tempsheetpayload?.status == 'financeAccepted'
-                                                                        ? new Decimal(item?.amountCollected || 0).plus(new Decimal(item?.order?.shippingPrice || 0)).toFixed(2)
+                                                                        ? new Decimal(item?.amountCollected || 0)
+                                                                              .plus(new Decimal(item?.order?.shippingCollected == 'collected' ? item?.order?.shippingPrice || 0 : 0))
+                                                                              .toFixed(2)
                                                                         : '0.00'}{' '}
                                                                     {item?.order?.currency}
                                                                 </span>
