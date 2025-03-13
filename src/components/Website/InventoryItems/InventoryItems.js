@@ -146,8 +146,6 @@ const InventoryItems = (props) => {
     const fetchItemsInBoxQuery = useQueryGQL('', fetchItemsInBox(), filterItemInBox);
     const { refetch: refetchfetchItemsInBox } = useQueryGQL('', fetchItemsInBox(), filterItemInBox);
 
-    const [fetchItemHistorLazyQuery] = useLazyQueryGQL(fetchItemHistory());
-
     useEffect(() => {
         setpageactive_context('/inventoryitems');
         setpagetitle_context('Warehouses');
@@ -482,7 +480,7 @@ const InventoryItems = (props) => {
                                                                     }
                                                                 });
                                                                 if (!exist) {
-                                                                    temp.push({ item: element.itemVariant, id: element.id });
+                                                                    temp.push({ item: element, id: element.id });
                                                                 } else {
                                                                     temp.splice(chosenindex, 1);
                                                                 }
@@ -497,26 +495,27 @@ const InventoryItems = (props) => {
                                                             }}
                                                             class={generalstyles.card + ' row m-0 w-100 '}
                                                         >
-                                                            <div class="col-lg-10 p-0">
+                                                            <div class="col-lg-10 p-0 mb-2">
                                                                 <div class="row m-0 w-100 d-flex align-items-center">
                                                                     <div class="col-lg-12 p-0 ">
-                                                                        <div class="col-lg-12 p-0 " style={{ fontSize: '14px', fontWeight: 600 }}>
+                                                                        {/* <div class="col-lg-12 p-0 " style={{ fontSize: '14px', fontWeight: 600 }}>
                                                                             {element?.id}
+                                                                        </div> */}
+                                                                        <div className="col-lg-12 p-0" style={{ fontSize: '14px', fontWeight: 600 }}>
+                                                                            {element.stockCount} Pieces
                                                                         </div>
                                                                         <div class="col-lg-12 p-0 " style={{ fontSize: '11px', fontWeight: 600, color: 'grey' }}>
                                                                             {element?.sku}
                                                                         </div>
                                                                     </div>
-                                                                    <div className="col-lg-12 p-0" style={{ fontSize: '14px', fontWeight: 600 }}>
-                                                                        Crrent count: {element.stockCount}
-                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-lg-2 p-0">
+                                                            <div class="col-lg-2 p-0 mb-2">
                                                                 {isAuth([1, 54, 82, 6]) && (
                                                                     <button
-                                                                        onClick={async () => {
-                                                                            history.push('/itemhistory?id=' + element?.id);
+                                                                        onClick={async (e) => {
+                                                                            e.stopPropagation();
+                                                                            history.push('/itemhistory?id=' + element?.sku);
 
                                                                             // var { data } = await fetchItemHistorLazyQuery({
                                                                             //     variables: {
@@ -536,18 +535,19 @@ const InventoryItems = (props) => {
                                                             </div>
                                                             {element?.blocks?.map((blockitem, blockindex) => {
                                                                 return (
-                                                                    <div class="col-lg-12 p-0">
-                                                                        <div class="row m-0 w-100 d-flex align-items-center">
-                                                                            <div class="col-lg-3 p-0" style={{ fontSize: '14px', fontWeight: 600 }}>
-                                                                                {blockitem.count}
+                                                                    <div class="col-lg-12 p-0 mb-2">
+                                                                        <div class="row m-0 w-100 d-flex align-items-center p-1 px-2" style={{ background: '#F0F5F9', borderRadius: '0.5rem' }}>
+                                                                            <div class="col-lg-6 p-0" style={{ fontSize: '14px', fontWeight: 600 }}>
+                                                                                {blockitem.count} Pieces
                                                                             </div>
-                                                                            <div className="col-lg-9 p-0">
+                                                                            <div className="col-lg-6 p-0">
                                                                                 <div class="row m-0 w-100">
-                                                                                    <div class="col-lg-12 p-0 my-3">
+                                                                                    <div class="col-lg-12 p-0 my-2">
                                                                                         <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
                                                                                             {isAuth([1, 77]) && (
                                                                                                 <button
-                                                                                                    onClick={() => {
+                                                                                                    onClick={(e) => {
+                                                                                                        e.stopPropagation();
                                                                                                         setchosenitem(element);
                                                                                                         // setopenModal(true);
                                                                                                         setimportpayload({
@@ -557,15 +557,17 @@ const InventoryItems = (props) => {
                                                                                                         });
                                                                                                         setimportmodal({ open: true, type: 'import' });
                                                                                                     }}
-                                                                                                    style={{ height: '25px', minWidth: 'fit-content', marginInlineEnd: '5px' }}
-                                                                                                    class={generalstyles.roundbutton + '  allcentered'}
+                                                                                                    style={{ minWidth: 'fit-content', marginInlineEnd: '5px' }}
+                                                                                                    class={'  allcentered'}
                                                                                                 >
-                                                                                                    <CiImport size={18} />
+                                                                                                    <CiImport size={18} class="text-success text-successhover" />
                                                                                                 </button>
                                                                                             )}
                                                                                             {isAuth([1, 83]) && (
                                                                                                 <button
-                                                                                                    onClick={() => {
+                                                                                                    onClick={(e) => {
+                                                                                                        e.stopPropagation();
+
                                                                                                         setchosenitem(element);
                                                                                                         setimportpayload({
                                                                                                             id: '',
@@ -574,10 +576,10 @@ const InventoryItems = (props) => {
                                                                                                         });
                                                                                                         setimportmodal({ open: true, type: 'export' });
                                                                                                     }}
-                                                                                                    style={{ height: '25px', minWidth: 'fit-content', marginInlineEnd: '5px' }}
-                                                                                                    class={generalstyles.roundbutton + '  allcentered bg-danger bg-dangerhover'}
+                                                                                                    style={{ minWidth: 'fit-content', marginInlineEnd: '5px' }}
+                                                                                                    class={'  allcentered'}
                                                                                                 >
-                                                                                                    <CiExport size={18} />
+                                                                                                    <CiExport size={18} class="text-danger text-dangerhover" />
                                                                                                 </button>
                                                                                             )}
                                                                                         </div>

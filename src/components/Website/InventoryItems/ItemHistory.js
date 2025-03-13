@@ -70,7 +70,7 @@ const ItemHistory = (props) => {
     const fetchitemhistorfunc = async () => {
         var { data } = await fetchItemHistorLazyQuery({
             variables: {
-                input: { ...fetchItemHistoryfilter, itemInBoxId: parseInt(queryParameters?.get('id')) },
+                input: { ...fetchItemHistoryfilter, name: queryParameters?.get('id') },
             },
         });
         setfetchItemHistoryQuery(data);
@@ -307,19 +307,19 @@ const ItemHistory = (props) => {
                                                                             <p className={' m-0 p-0 wordbreak '}>{item?.id}</p>
                                                                         </td>
                                                                         <td>
-                                                                            <p className={' m-0 p-0 wordbreak '}>{item?.sku ?? '-'}</p>
+                                                                            <p className={' m-0 p-0 wordbreak '}>{item?.itemInBox?.itemVariant?.sku ?? '-'}</p>
                                                                         </td>
                                                                         <td>
-                                                                            <p className={' m-0 p-0 wordbreak '}>{item?.inventory?.name ?? '-'}</p>
+                                                                            <p className={' m-0 p-0 wordbreak '}>{item?.itemInBox?.inventory?.name ?? '-'}</p>
                                                                         </td>
                                                                         {cookies.get('merchantId') == undefined && cookies.get('userInfo')?.type != 'merchant' && (
                                                                             <td>
-                                                                                <p className={' m-0 p-0 wordbreak '}>{item?.merchant?.name ?? '-'}</p>
+                                                                                <p className={' m-0 p-0 wordbreak '}>{item?.itemInBox?.merchant?.name ?? '-'}</p>
                                                                             </td>
                                                                         )}
 
                                                                         <td>
-                                                                            <p className={' m-0 p-0 wordbreak '}>{item?.stockCount ?? '-'}</p>
+                                                                            <p className={' m-0 p-0 wordbreak '}>{item?.itemInBox?.itemVariant?.stockCount ?? '-'}</p>
                                                                         </td>
                                                                         <td>
                                                                             <p style={{ color: item.amount < 0 ? 'var(--danger)' : 'var(--success)' }} className="m-0 p-0 wordbreak">

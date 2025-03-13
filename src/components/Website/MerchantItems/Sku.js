@@ -24,7 +24,7 @@ const Sku = ({ item }) => {
         }
     }, [item?.sku, bwipjs]);
     return (
-        <div style={{ fontSize: '11px', width: '5cm', height: '3cm', overflow: 'hidden' }} className="print-item p-1 ">
+        <div style={{ fontSize: '6px', width: '5cm', height: '3cm', overflow: 'hidden' }} className="print-item p-1 ">
             <div class="row m-0 w-100">
                 <div class="col-lg-12 allcentered">
                     <img src={src} alt={`data matrix from ${item.sku}`} />

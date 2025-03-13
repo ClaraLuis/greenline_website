@@ -229,7 +229,7 @@ const OrdersTable = (props) => {
                                                     </div>
 
                                                     <div style={{ color: 'white' }} className={'ml-1 wordbreak bg-primary rounded-pill font-weight-600 '}>
-                                                        {item?.paidToMerchant ? 'Paid' : 'Not Paid'}
+                                                        {item?.paidToMerchant ? (item?.paymentType == 'card' ? 'Paid Online' : 'Paid') : 'Not Paid'}
                                                     </div>
 
                                                     <div>
@@ -268,7 +268,11 @@ const OrdersTable = (props) => {
                                                                             try {
                                                                                 await setchosenOrderContext(item);
                                                                                 const data = await cancelUnresolvedOrdersMutation();
-                                                                                NotificationManager.success('Order is cancelled', 'Success!');
+                                                                                if (data?.data?.cancelUnresolvedOrders?.success) {
+                                                                                    NotificationManager.success('Order is cancelled', 'Success!');
+                                                                                } else {
+                                                                                    NotificationManager.warning(data?.data?.cancelUnresolvedOrders?.message, 'Warning!');
+                                                                                }
                                                                             } catch (error) {
                                                                                 let errorMessage = 'An unexpected error occurred';
                                                                                 if (error.graphQLErrors && error.graphQLErrors.length > 0) {
