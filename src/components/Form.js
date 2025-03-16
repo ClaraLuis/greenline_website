@@ -521,6 +521,7 @@ const Form = (props) => {
                                     <input
                                         type="checkbox"
                                         class="mt-1 mb-1"
+                                        disabled={item?.disabled}
                                         checked={props?.payload[item.attr] == 0 ? false : true}
                                         onChange={() => {
                                             var temp = { ...props?.payload };
