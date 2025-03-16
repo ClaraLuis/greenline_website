@@ -283,9 +283,9 @@ const MerchantOrders = (props) => {
                                                     options={paymentTypeContext}
                                                     label={'label'}
                                                     value={'value'}
-                                                    selected={filterorders?.paymentTypeContext}
+                                                    selected={filterorders?.paymentTypes}
                                                     onClick={(option) => {
-                                                        var tempArray = [...(filterorders?.paymentTypeContext ?? [])];
+                                                        var tempArray = [...(filterorders?.paymentTypes ?? [])];
                                                         if (option == 'All') {
                                                             tempArray = undefined;
                                                         } else {
@@ -295,7 +295,7 @@ const MerchantOrders = (props) => {
                                                                 tempArray.splice(tempArray?.indexOf(option?.value), 1);
                                                             }
                                                         }
-                                                        setfilterorders({ ...filterorders, paymentTypeContext: tempArray?.length != 0 ? tempArray : undefined });
+                                                        setfilterorders({ ...filterorders, paymentTypes: tempArray?.length != 0 ? tempArray : undefined });
                                                     }}
                                                 />
                                             </div>
