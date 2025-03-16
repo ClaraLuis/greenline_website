@@ -76,9 +76,9 @@ const AddOrder = (props) => {
         user: '',
         address: '',
         ordertype: queryParameters.get('order') ? 'exchange' : 'delivery',
-        paymenttype: 'cash',
+        paymentType: 'cash',
         shippingprice: '',
-        canbeoppened: 1,
+        canbeopened: 1,
         fragile: 0,
         partialdelivery: 1,
         original: 1,
@@ -163,12 +163,12 @@ const AddOrder = (props) => {
         addressId: parseInt(orderpayload?.address),
         type: orderpayload?.ordertype,
         merchantId: parseInt(merchantId),
-        canOpen: orderpayload?.canbeoppened == 1 ? true : false,
+        canOpen: orderpayload?.canbeopened == 1 ? true : false,
         fragile: orderpayload?.fragile == 1 ? true : false,
         deliveryPart: orderpayload?.partialdelivery == 1 ? true : false,
         original: orderpayload?.original == 1 ? true : false,
         price: orderpayload?.price ? new Decimal(orderpayload?.price) : undefined,
-        paymentType: orderpayload?.paymenttype,
+        paymentType: orderpayload?.paymentType,
         returnAmount: orderpayload?.returnAmount ? new Decimal(orderpayload?.returnAmount) : undefined,
         returnOrderItems: orderpayload?.returnOrderItems?.length == 0 ? undefined : orderpayload?.returnOrderItems,
         previousOrderId: orderpayload?.previousOrderId?.length == 0 || orderpayload?.previousOrderId == null ? undefined : parseInt(orderpayload?.previousOrderId),
@@ -418,9 +418,9 @@ const AddOrder = (props) => {
                 user: '',
                 address: '',
                 ordertype: 'exchange',
-                paymenttype: 'cash',
+                paymentType: 'cash',
                 shippingprice: '',
-                canbeoppened: 1,
+                canbeopened: 1,
                 fragile: 0,
                 partialdelivery: 1,
                 original: 1,
@@ -434,6 +434,14 @@ const AddOrder = (props) => {
             setpreviousOrderType('r');
         }
     }, []);
+    useEffect(() => {
+        if (orderpayload?.paymentType == 'card') {
+            setorderpayload({
+                ...orderpayload,
+                partialdelivery: 0,
+            });
+        }
+    }, [orderpayload.paymentType]);
 
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
@@ -486,7 +494,7 @@ const AddOrder = (props) => {
                                             orderpayload?.customerId?.length != 0 &&
                                             orderpayload?.address?.length != 0 &&
                                             orderpayload?.ordertype?.length != 0 &&
-                                            orderpayload?.canbeoppened?.length != 0 &&
+                                            orderpayload?.canbeopened?.length != 0 &&
                                             orderpayload?.fragile?.length != 0 &&
                                             orderpayload?.partialdelivery?.length != 0 &&
                                             orderpayload?.items?.length != 0
@@ -1778,18 +1786,18 @@ const AddOrder = (props) => {
                                 orderpayload?.original == 1
                                     ? [
                                           { name: 'Order type', attr: 'ordertype', type: 'select', options: orderTypeContext, size: '12' },
-                                          { name: 'Payment method', attr: 'paymenttype', type: 'select', options: paymentTypeContext, size: '12' },
-                                          { name: 'Can be oppened', attr: 'canbeoppened', type: 'checkbox', size: '12' },
+                                          { name: 'Payment method', attr: 'paymentType', type: 'select', options: paymentTypeContext, size: '12' },
+                                          { name: 'Can be opened', attr: 'canbeopened', type: 'checkbox', size: '12' },
                                           { name: 'Fragile', attr: 'fragile', type: 'checkbox', size: '12' },
-                                          { name: 'Partial delivery', attr: 'partialdelivery', type: 'checkbox', size: '12' },
+                                          { name: 'Partial delivery', attr: 'partialdelivery', type: 'checkbox', size: '12', disabled: orderpayload?.paymentType == 'card' },
                                           { name: 'Original Price', attr: 'original', type: 'checkbox', size: '12' },
                                       ]
                                     : [
                                           { name: 'Order type', attr: 'ordertype', type: 'select', options: orderTypeContext, size: '12' },
-                                          { name: 'Payment type', attr: 'paymenttype', type: 'select', options: paymentTypeContext, size: '12' },
-                                          { name: 'Can be oppened', attr: 'canbeoppened', type: 'checkbox', size: '12' },
+                                          { name: 'Payment type', attr: 'paymentType', type: 'select', options: paymentTypeContext, size: '12' },
+                                          { name: 'Can be opened', attr: 'canbeopened', type: 'checkbox', size: '12' },
                                           { name: 'Fragile', attr: 'fragile', type: 'checkbox', size: '12' },
-                                          { name: 'Partial delivery', attr: 'partialdelivery', type: 'checkbox', size: '12' },
+                                          { name: 'Partial delivery', attr: 'partialdelivery', type: 'checkbox', size: '12', disabled: orderpayload?.paymentType == 'card' },
                                           { name: 'Original Price', attr: 'original', type: 'checkbox', size: '12' },
                                           { name: 'Price', attr: 'price', type: 'number', size: '12' },
                                       ]
