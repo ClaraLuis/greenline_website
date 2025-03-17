@@ -9,6 +9,7 @@ import { FaLayerGroup } from 'react-icons/fa';
 import Select, { components } from 'react-select';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
+import { DateRangePicker } from 'rsuite';
 
 import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
@@ -178,6 +179,29 @@ const CourierSheets = (props) => {
                                                     setfilter({ ...filter, statuses: tempArray?.length != 0 ? tempArray : undefined });
                                                 }}
                                             />
+                                        </div>
+                                        <div class="col-lg-3 mb-md-2">
+                                            <span>Date Range</span>
+                                            <div class="mt-1" style={{ width: '100%' }}>
+                                                <DateRangePicker
+                                                    onChange={(event) => {
+                                                        if (event != null) {
+                                                            setfilter({
+                                                                ...filter,
+                                                                fromDate: event[0],
+                                                                toDate: event[1],
+                                                            });
+                                                        }
+                                                    }}
+                                                    onClean={() => {
+                                                        setfilter({
+                                                            ...filter,
+                                                            fromDate: null,
+                                                            toDate: null,
+                                                        });
+                                                    }}
+                                                />
+                                            </div>
                                         </div>
                                     </div>
                                 </AccordionItemPanel>

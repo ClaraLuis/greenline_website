@@ -18,11 +18,12 @@ import Pagination from '../../Pagination.js';
 import SelectComponent from '../../SelectComponent.js';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
 import { Modal } from 'react-bootstrap';
+import { DateRangePicker } from 'rsuite';
 
 import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
-import { TbEdit, TbTruckDelivery } from 'react-icons/tb';
+import { TbEdit, TbTrash, TbTruckDelivery } from 'react-icons/tb';
 import Cookies from 'universal-cookie';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 import { IoMdClose, IoMdTime } from 'react-icons/io';
@@ -33,7 +34,18 @@ const InventoryRent = (props) => {
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, inventoryRentTypeContext, returnPackageTypeContext, dateformatter, buttonLoadingContext, setbuttonLoadingContext, setchosenPackageContext } =
         useContext(Contexthandlerscontext);
-    const { useMutationGQL, fetchMerchants, useLazyQueryGQL, paginateInventoryRentTransaction, paginateInventoryRents, useQueryGQL, fetchInventories, updateInventoryRent } = API();
+    const {
+        useMutationGQL,
+        fetchMerchants,
+        useLazyQueryGQL,
+        paginateInventoryRentTransaction,
+        paginateInventoryRents,
+        useQueryGQL,
+        fetchInventories,
+        updateInventoryRent,
+        useMutationNoInputGQL,
+        removeInventoryRent,
+    } = API();
     const { lang, langdetect } = useContext(LanguageContext);
     const [cartItems, setcartItems] = useState([]);
     const [transactionsModal, settransactionsModal] = useState(false);
@@ -93,10 +105,31 @@ const InventoryRent = (props) => {
         merchantId: inventorySettings?.merchantId,
     });
 
+    const [removeInventoryRentMutation] = useMutationNoInputGQL(removeInventoryRent(), { id: parseInt(inventorySettings?.id) });
+
     useEffect(() => {
         setpageactive_context('/inventoryrent');
         setpagetitle_context('Warehouses');
     }, []);
+    useEffect(async () => {
+        try {
+            var { data } = await fetchSenttTransactionsLazyQuery({
+                variables: { input: { ...filterSentTransactionsObj } },
+            });
+            setfetchSenttTransactionsQuery({ data: data });
+        } catch (e) {
+            let errorMessage = 'An unexpected error occurred';
+            if (e.graphQLErrors && e.graphQLErrors.length > 0) {
+                errorMessage = e.graphQLErrors[0].message || errorMessage;
+            } else if (e.networkError) {
+                errorMessage = e.networkError.message || errorMessage;
+            } else if (e.message) {
+                errorMessage = e.message;
+            }
+            NotificationManager.warning(errorMessage, 'Warning!');
+        }
+    }, [filterSentTransactionsObj]);
+
     const formatDate = (isoDate) => {
         return isoDate.split('T')[0];
     };
@@ -272,10 +305,46 @@ const InventoryRent = (props) => {
                                                         setinventorySettings({ ...item });
                                                         setinventoryModal(true);
                                                     }}
-                                                    style={{ width: '40px', height: '40px' }}
+                                                    style={{ width: '30px', height: '30px' }}
                                                     class="iconhover allcentered"
                                                 >
                                                     <TbEdit />
+                                                </div>
+                                                <div
+                                                    onClick={async (e) => {
+                                                        e.stopPropagation();
+                                                        await setinventorySettings({ ...item });
+                                                        if (window.confirm('Are you sure you want to delete this inventory rent?')) {
+                                                            if (buttonLoadingContext) return;
+                                                            setbuttonLoadingContext(true);
+                                                            try {
+                                                                const { data } = await removeInventoryRentMutation();
+                                                                if (data?.removeOrderItems?.success == true) {
+                                                                    NotificationManager.success('Success!', '');
+                                                                    paginateInventoryRentsQuery.refetch();
+                                                                } else {
+                                                                    NotificationManager.warning(data?.removeOrderItems?.message, 'Warning!');
+                                                                }
+                                                            } catch (error) {
+                                                                let errorMessage = 'An unexpected error occurred';
+                                                                if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                                                    errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                                                } else if (error.networkError) {
+                                                                    errorMessage = error.networkError.message || errorMessage;
+                                                                } else if (error.message) {
+                                                                    errorMessage = error.message;
+                                                                }
+
+                                                                NotificationManager.warning(errorMessage, 'Warning!');
+                                                                console.error('Error adding Inventory Rent:', error);
+                                                            }
+                                                            setbuttonLoadingContext(false);
+                                                        }
+                                                    }}
+                                                    style={{ width: '30px', height: '30px' }}
+                                                    class="iconhover allcentered text-danger"
+                                                >
+                                                    <TbTrash />
                                                 </div>
                                             </div>
                                         </div>
@@ -289,10 +358,17 @@ const InventoryRent = (props) => {
                                                         {dateformatter(item?.startDate)}
                                                     </span>
                                                 </div> */}
-                                                {!item?.lastBillTransaction && (
+                                                {!item?.lastBillTransaction && !item?.lastBill && (
                                                     <div class="col-lg-12 p-0 d-flex">
                                                         <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
                                                             {'No bills issued yet.'}
+                                                        </span>
+                                                    </div>
+                                                )}
+                                                {item?.lastBill && (
+                                                    <div class="col-lg-12 p-0 d-flex">
+                                                        <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
+                                                            {dateformatter(item?.lastBill)}
                                                         </span>
                                                     </div>
                                                 )}
@@ -569,6 +645,29 @@ const InventoryRent = (props) => {
                 <Modal.Body>
                     <div class="row m-0 w-100 py-2">
                         <>
+                            <div class="col-lg-4 mb-md-2">
+                                <span>Date Range</span>
+                                <div class="mt-1" style={{ width: '100%' }}>
+                                    <DateRangePicker
+                                        onChange={(event) => {
+                                            if (event != null) {
+                                                setfilterSentTransactionsObj({
+                                                    ...filterSentTransactionsObj,
+                                                    startDate: event[0],
+                                                    endDate: event[1],
+                                                });
+                                            }
+                                        }}
+                                        onClean={() => {
+                                            setfilterSentTransactionsObj({
+                                                ...filterSentTransactionsObj,
+                                                startDate: null,
+                                                endDate: null,
+                                            });
+                                        }}
+                                    />
+                                </div>
+                            </div>
                             {fetchSenttTransactionsQuery.data?.paginateInventoryRentTransaction?.data?.length == 0 && (
                                 <div style={{ height: '70vh' }} class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
                                     <div class="row m-0 w-100">
@@ -579,6 +678,7 @@ const InventoryRent = (props) => {
                                     </div>
                                 </div>
                             )}
+
                             {fetchSenttTransactionsQuery.data?.paginateInventoryRentTransaction?.data?.length != 0 && (
                                 <div class="row m-0 w-100">
                                     <div class="col-lg-12 p-0 mb-3">

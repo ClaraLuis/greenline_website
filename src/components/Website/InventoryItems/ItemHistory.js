@@ -1,33 +1,27 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import Select, { components } from 'react-select';
+import { components } from 'react-select';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
 import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
-import { Modal } from 'react-bootstrap';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
-import { FaLayerGroup, FaRegClock } from 'react-icons/fa';
-import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
+import { FaLayerGroup } from 'react-icons/fa';
 import { DateRangePicker } from 'rsuite';
+import Inputfield from '../../Inputfield.js';
+import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 
 // Icons
-import { CiExport, CiImport } from 'react-icons/ci';
 import { IoMdClose } from 'react-icons/io';
-import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md';
 import { NotificationManager } from 'react-notifications';
 import Cookies from 'universal-cookie';
 import API from '../../../API/API.js';
-import MultiSelect from '../../MultiSelect.js';
 import Pagination from '../../Pagination.js';
-import { defaultstyles } from '../Generalfiles/selectstyles.js';
-import SkuPrint from '../MerchantItems/SkuPrint.js';
-import ImportNewItem from './ImportNewItem.js';
-import ItemInfo from './ItemInfo.js';
 import SelectComponent from '../../SelectComponent.js';
+import { AiOutlineClose } from 'react-icons/ai';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -168,7 +162,7 @@ const ItemHistory = (props) => {
                                             <div class="mt-1" style={{ width: '100%' }}>
                                                 <DateRangePicker
                                                     // disabledDate={allowedMaxDays(30)}
-                                                    // value={[filterorders?.fromDate, filterorders?.toDate]}
+                                                    // value={[fetchItemHistoryfilter?.fromDate, fetchItemHistoryfilter?.toDate]}
                                                     onChange={(event) => {
                                                         if (event != null) {
                                                             const start = event[0];
@@ -208,6 +202,60 @@ const ItemHistory = (props) => {
                                                 </span>
                                             </div>
                                         )}
+                                        <div class="col-lg-3">
+                                            <Inputfield
+                                                placeholder={'Order Ids'}
+                                                onKeyDown={(e) => {
+                                                    if (e.key == 'Enter' && e.target.value?.length != 0) {
+                                                        var exists = fetchItemHistoryfilter?.orderIds?.includes(parseInt(e?.target?.value));
+                                                        if (exists) {
+                                                            NotificationManager.warning('', 'Already exists');
+                                                        } else {
+                                                            var temp = [...(fetchItemHistoryfilter?.orderIds ?? [])];
+                                                            temp.push(parseInt(e.target.value));
+                                                            setfetchItemHistoryfilter({
+                                                                ...fetchItemHistoryfilter,
+                                                                orderIds: temp,
+                                                            });
+                                                            e.target.value = '';
+                                                        }
+                                                    }
+                                                }}
+                                                type={'number'}
+                                            />
+                                            <div class="col-lg-12 p-0">
+                                                <div class="row m-0 w-100 scrollmenuclasssubscrollbar" style={{ overflow: 'scroll', flexWrap: 'nowrap' }}>
+                                                    {fetchItemHistoryfilter?.orderIds?.map((orderItem, orderIndex) => {
+                                                        return (
+                                                            <div
+                                                                style={{
+                                                                    background: '#ECECEC',
+                                                                    padding: '5px 10px',
+                                                                    cursor: 'pointer',
+                                                                    borderRadius: '8px',
+                                                                    justifyContent: 'space-between',
+                                                                    width: 'fit-content',
+                                                                    fontSize: '11px',
+                                                                    minWidth: 'fit-content',
+                                                                }}
+                                                                className="d-flex align-items-center mr-2 mb-1"
+                                                                onClick={() => {
+                                                                    var temp = fetchItemHistoryfilter.orderIds ?? [];
+                                                                    temp.splice(orderIndex, 1);
+                                                                    setfetchItemHistoryfilter({
+                                                                        ...fetchItemHistoryfilter,
+                                                                        orderIds: temp?.length != 0 ? temp : undefined,
+                                                                    });
+                                                                }}
+                                                            >
+                                                                {orderItem}
+                                                                <AiOutlineClose size={12} color="#6C757D" className="ml-2" />
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </AccordionItemPanel>
                             </AccordionItem>
@@ -287,7 +335,7 @@ const ItemHistory = (props) => {
                                                 <>
                                                     <table style={{}} className={'table text-capitalize'}>
                                                         <thead>
-                                                            <th>id</th>
+                                                            {/* <th>id</th> */}
                                                             <th>SKU</th>
                                                             <th>Inventory</th>
                                                             {cookies.get('merchantId') == undefined && cookies.get('userInfo')?.type != 'merchant' && <th>Merchant</th>}
@@ -303,9 +351,9 @@ const ItemHistory = (props) => {
                                                             {fetchItemHistoryQuery?.paginateItemHistory?.data?.map((item, index) => {
                                                                 return (
                                                                     <tr>
-                                                                        <td>
+                                                                        {/* <td>
                                                                             <p className={' m-0 p-0 wordbreak '}>{item?.id}</p>
-                                                                        </td>
+                                                                        </td> */}
                                                                         <td>
                                                                             <p className={' m-0 p-0 wordbreak '}>{item?.itemInBox?.itemVariant?.sku ?? '-'}</p>
                                                                         </td>

@@ -5084,7 +5084,7 @@ ul {
 }
 
 .rs-picker-popup.rs-picker-popup-daterange {
-    z-index: 1000;
+    z-index: 100000000000;
 }
 
 [dir='rtl'] .rs-calendar-header-backward .rs-icon,
