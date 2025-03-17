@@ -141,6 +141,16 @@ const API = () => {
         `;
     };
 
+    const removeInventoryRent = () => {
+        return gql`
+            mutation removeInventoryRent($id: Int!) {
+                removeInventoryRent(id: $id) {
+                    deletedAt
+                }
+            }
+        `;
+    };
+
     const addOrderItems = () => {
         return gql`
             mutation addOrderItems($input: AddOrderItemsInput!) {
@@ -3007,6 +3017,7 @@ const API = () => {
         createInventoryRent,
         updateInventoryRent,
         removeOrderItems,
+        removeInventoryRent,
         addOrderItems,
         changeOrderCustomerInfo,
         fetchHubs,
