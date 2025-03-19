@@ -116,6 +116,13 @@ const API = () => {
             }
         `;
     };
+    const removeItemInBox = () => {
+        return gql`
+            mutation RemoveItemInBox($id: Int!) {
+                removeItemInBox(id: $id)
+            }
+        `;
+    };
 
     const createMerchantToken = () => {
         return gql`
@@ -143,10 +150,8 @@ const API = () => {
 
     const removeInventoryRent = () => {
         return gql`
-            mutation removeInventoryRent($id: Int!) {
-                removeInventoryRent(id: $id) {
-                    deletedAt
-                }
+            mutation removeInventoryRent($input: RemoveInventoryRentInput!) {
+                removeInventoryRent(input: $input)
             }
         `;
     };
@@ -602,6 +607,7 @@ const API = () => {
                         sku
                         blocksCountSum
                         stockCount
+                        imageUrl
                         blocks {
                             id
                             count
@@ -3048,6 +3054,7 @@ const API = () => {
         deleteItems,
         findAllZones,
         deleteCourierSheet,
+        removeItemInBox,
         createMerchantToken,
         findReturnPackageBySku,
         findOneItem,

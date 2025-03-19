@@ -68,6 +68,7 @@ export const Contexthandlerscontext_provider = (props) => {
         var show = false;
         const cookies = new Cookies();
         var user = cookies.get('userInfo');
+        // alert(JSON.stringify(user?.permissions));
         var acceptedPermissions = permissions.filter((e) => user?.permissions?.map((x) => x.permissionId).includes(e));
         show = acceptedPermissions?.length > 0;
 
@@ -108,18 +109,18 @@ export const Contexthandlerscontext_provider = (props) => {
                 ),
                 maintitle: 'Warehouses',
                 subitems: [
-                    {
-                        name: 'Rent',
-                        isselected: false,
-                        icon: (
-                            <i class={'allcentered'}>
-                                <MdOutlineInventory2 size={18} />
-                            </i>
-                        ),
-                        path: '/rentpage',
-                        permissionpage: [1],
-                        show: isAuth([1]),
-                    },
+                    // {
+                    //     name: 'Rent',
+                    //     isselected: false,
+                    //     icon: (
+                    //         <i class={'allcentered'}>
+                    //             <MdOutlineInventory2 size={18} />
+                    //         </i>
+                    //     ),
+                    //     path: '/rentpage',
+                    //     permissionpage: [1],
+                    //     show: isAuth([1]),
+                    // },
                     {
                         name: 'Warehouses',
                         isselected: false,
