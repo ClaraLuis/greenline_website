@@ -14,7 +14,7 @@ import { FaLayerGroup, FaRegClock } from 'react-icons/fa';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 
 // Icons
-import { CiExport, CiImport } from 'react-icons/ci';
+import { CiExport, CiImport, CiTrash } from 'react-icons/ci';
 import { IoMdClose } from 'react-icons/io';
 import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md';
 import { NotificationManager } from 'react-notifications';
@@ -33,7 +33,21 @@ const InventoryItems = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, dateformatter, isAuth, setpagetitle_context, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
-    const { fetchUsers, useQueryGQL, fetchInventories, useMutationGQL, addInventory, fetchItemsInBox, fetchMerchants, importNew, fetchItemHistory, exportItem, importItem, useLazyQueryGQL } = API();
+    const {
+        useMutationNoInputGQL,
+        useQueryGQL,
+        fetchInventories,
+        useMutationGQL,
+        addInventory,
+        fetchItemsInBox,
+        fetchMerchants,
+        importNew,
+        fetchItemHistory,
+        exportItem,
+        importItem,
+        useLazyQueryGQL,
+        removeItemInBox,
+    } = API();
 
     const cookies = new Cookies();
 
@@ -101,6 +115,9 @@ const InventoryItems = (props) => {
     const [importMutation] = useMutationGQL(importItem(), {
         id: chosenitem?.id,
         count: parseInt(importpayload?.count),
+    });
+    const [removeItemInBoxMutation] = useMutationNoInputGQL(removeItemInBox(), {
+        id: chosenitem?.id,
     });
     const [exportMutation] = useMutationGQL(exportItem(), {
         id: chosenitem?.id,
@@ -484,7 +501,6 @@ const InventoryItems = (props) => {
                                                                 } else {
                                                                     temp.splice(chosenindex, 1);
                                                                 }
-                                                                // alert(JSON.stringify(temp));
                                                                 setselectedVariants([...temp]);
                                                             }}
                                                             style={{
@@ -495,7 +511,17 @@ const InventoryItems = (props) => {
                                                             }}
                                                             class={generalstyles.card + ' row m-0 w-100 '}
                                                         >
-                                                            <div class="col-lg-10 p-0 mb-2">
+                                                            <div style={{ width: '35px', height: '35px', borderRadius: '7px', marginInlineEnd: '5px' }}>
+                                                                <img
+                                                                    src={
+                                                                        element?.imageUrl
+                                                                            ? element?.imageUrl
+                                                                            : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'
+                                                                    }
+                                                                    style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
+                                                                />
+                                                            </div>
+                                                            <div class="col-lg-8 p-0 mb-2">
                                                                 <div class="row m-0 w-100 d-flex align-items-center">
                                                                     <div class="col-lg-12 p-0 ">
                                                                         {/* <div class="col-lg-12 p-0 " style={{ fontSize: '14px', fontWeight: 600 }}>
@@ -533,63 +559,87 @@ const InventoryItems = (props) => {
                                                                     </button>
                                                                 )}
                                                             </div>
-                                                            {element?.blocks?.map((blockitem, blockindex) => {
-                                                                return (
-                                                                    <div class="col-lg-12 p-0 mb-2">
-                                                                        <div class="row m-0 w-100 d-flex align-items-center p-1 px-2" style={{ background: '#F0F5F9', borderRadius: '0.5rem' }}>
-                                                                            <div class="col-lg-6 p-0" style={{ fontSize: '14px', fontWeight: 600 }}>
-                                                                                {blockitem.count} Pieces
-                                                                            </div>
-                                                                            <div className="col-lg-6 p-0">
-                                                                                <div class="row m-0 w-100">
-                                                                                    <div class="col-lg-12 p-0 my-2">
-                                                                                        <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
-                                                                                            {isAuth([1, 77]) && (
-                                                                                                <button
-                                                                                                    onClick={(e) => {
-                                                                                                        e.stopPropagation();
-                                                                                                        setchosenitem(element);
-                                                                                                        // setopenModal(true);
-                                                                                                        setimportpayload({
-                                                                                                            id: '',
-                                                                                                            count: '',
-                                                                                                            type: '',
-                                                                                                        });
-                                                                                                        setimportmodal({ open: true, type: 'import' });
-                                                                                                    }}
-                                                                                                    style={{ minWidth: 'fit-content', marginInlineEnd: '5px' }}
-                                                                                                    class={'  allcentered'}
-                                                                                                >
-                                                                                                    <CiImport size={18} class="text-success text-successhover" />
-                                                                                                </button>
-                                                                                            )}
-                                                                                            {isAuth([1, 83]) && (
-                                                                                                <button
-                                                                                                    onClick={(e) => {
-                                                                                                        e.stopPropagation();
+                                                            {isAuth([1]) && (
+                                                                <>
+                                                                    {' '}
+                                                                    {element?.blocks?.map((blockitem, blockindex) => {
+                                                                        return (
+                                                                            <div class="col-lg-12 p-0 mb-2">
+                                                                                <div class="row m-0 w-100 d-flex align-items-center p-1 px-2" style={{ background: '#F0F5F9', borderRadius: '0.5rem' }}>
+                                                                                    <div class="col-lg-6 p-0" style={{ fontSize: '14px', fontWeight: 600 }}>
+                                                                                        {blockitem.count} Pieces
+                                                                                    </div>
+                                                                                    <div className="col-lg-6 p-0">
+                                                                                        <div class="row m-0 w-100">
+                                                                                            <div class="col-lg-12 p-0 my-2">
+                                                                                                <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
+                                                                                                    {isAuth([1, 77]) && (
+                                                                                                        <button
+                                                                                                            onClick={(e) => {
+                                                                                                                e.stopPropagation();
+                                                                                                                setchosenitem(blockitem);
+                                                                                                                // setopenModal(true);
+                                                                                                                setimportpayload({
+                                                                                                                    id: '',
+                                                                                                                    count: '',
+                                                                                                                    type: '',
+                                                                                                                });
+                                                                                                                setimportmodal({ open: true, type: 'import' });
+                                                                                                            }}
+                                                                                                            style={{ minWidth: 'fit-content', marginInlineEnd: '5px' }}
+                                                                                                            class={'  allcentered'}
+                                                                                                        >
+                                                                                                            <CiImport size={18} class="text-success text-successhover" />
+                                                                                                        </button>
+                                                                                                    )}
+                                                                                                    {isAuth([1, 83]) && (
+                                                                                                        <button
+                                                                                                            onClick={(e) => {
+                                                                                                                e.stopPropagation();
 
-                                                                                                        setchosenitem(element);
-                                                                                                        setimportpayload({
-                                                                                                            id: '',
-                                                                                                            count: '',
-                                                                                                            type: '',
-                                                                                                        });
-                                                                                                        setimportmodal({ open: true, type: 'export' });
-                                                                                                    }}
-                                                                                                    style={{ minWidth: 'fit-content', marginInlineEnd: '5px' }}
-                                                                                                    class={'  allcentered'}
-                                                                                                >
-                                                                                                    <CiExport size={18} class="text-danger text-dangerhover" />
-                                                                                                </button>
-                                                                                            )}
+                                                                                                                setchosenitem(blockitem);
+                                                                                                                setimportpayload({
+                                                                                                                    id: '',
+                                                                                                                    count: '',
+                                                                                                                    type: '',
+                                                                                                                });
+                                                                                                                setimportmodal({ open: true, type: 'export' });
+                                                                                                            }}
+                                                                                                            style={{ minWidth: 'fit-content', marginInlineEnd: '5px' }}
+                                                                                                            class={'  allcentered'}
+                                                                                                        >
+                                                                                                            <CiExport size={18} class="text-danger text-dangerhover" />
+                                                                                                        </button>
+                                                                                                    )}
+                                                                                                    {isAuth([1]) && blockitem.count == 0 && (
+                                                                                                        <button
+                                                                                                            onClick={async (e) => {
+                                                                                                                e.stopPropagation();
+
+                                                                                                                setchosenitem(blockitem);
+                                                                                                                setimportpayload({
+                                                                                                                    id: '',
+                                                                                                                    count: '',
+                                                                                                                    type: '',
+                                                                                                                });
+                                                                                                                setimportmodal({ open: true, type: 'delete' });
+                                                                                                            }}
+                                                                                                            style={{ minWidth: 'fit-content', marginInlineEnd: '5px' }}
+                                                                                                            class={'  allcentered'}
+                                                                                                        >
+                                                                                                            <CiTrash size={18} class="text-danger text-dangerhover" />
+                                                                                                        </button>
+                                                                                                    )}
+                                                                                                </div>
+                                                                                            </div>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                        </div>
-                                                                    </div>
-                                                                );
-                                                            })}
+                                                                        );
+                                                                    })}
+                                                                </>
+                                                            )}
                                                         </div>
                                                     </div>
                                                 );
@@ -770,117 +820,174 @@ const InventoryItems = (props) => {
                 centered
                 size={'md'}
             >
-                <Modal.Header>
-                    <div className="row w-100 m-0 p-0">
-                        <div class="col-lg-6 pt-3 ">
-                            <div className="row w-100 m-0 p-0">{importmodal?.type}</div>
-                        </div>
-                        <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
-                            <div
-                                class={'close-modal-container'}
-                                onClick={() => {
-                                    setimportmodal({ open: false, type: '' });
-                                }}
-                            >
-                                <IoMdClose />
+                {importmodal.type != 'delete' && (
+                    <Modal.Header>
+                        <div className="row w-100 m-0 p-0">
+                            <div class="col-lg-6 pt-3 ">
+                                <div className="row w-100 m-0 p-0">{importmodal?.type}</div>
                             </div>
-                        </div>{' '}
-                    </div>
-                </Modal.Header>
+                            <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
+                                <div
+                                    class={'close-modal-container'}
+                                    onClick={() => {
+                                        setimportmodal({ open: false, type: '' });
+                                    }}
+                                >
+                                    <IoMdClose />
+                                </div>
+                            </div>{' '}
+                        </div>
+                    </Modal.Header>
+                )}
                 <Modal.Body>
                     <div class="row m-0 w-100 py-2">
-                        <div class="col-lg-12">
-                            <div class="row m-0 w-100  ">
-                                <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                    <label class={formstyles.form__label}>Count</label>
-                                    <input
-                                        type={'number'}
-                                        class={formstyles.form__field}
-                                        value={importpayload.count}
-                                        onChange={(event) => {
-                                            setimportpayload({ ...importpayload, count: event.target.value });
-                                        }}
-                                    />
+                        {importmodal.type != 'delete' && (
+                            <>
+                                {' '}
+                                <div class="col-lg-12">
+                                    <div class="row m-0 w-100  ">
+                                        <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                            <label class={formstyles.form__label}>Count</label>
+                                            <input
+                                                type={'number'}
+                                                class={formstyles.form__field}
+                                                value={importpayload.count}
+                                                onChange={(event) => {
+                                                    setimportpayload({ ...importpayload, count: event.target.value });
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        {importmodal?.type == 'export' && (
-                            <div class={'col-lg-12'} style={{ marginBottom: '15px' }}>
-                                <label for="name" class={formstyles.form__label}>
-                                    Export Type
-                                </label>
-                                <Select
-                                    options={[
-                                        { label: 'Export', value: 'export' },
-                                        // { label: 'Order Export', value: 'orderExport' },
-                                    ]}
-                                    styles={defaultstyles}
-                                    value={[
-                                        { label: 'Export', value: 'export' },
-                                        // { label: 'Order Export', value: 'orderExport' },
-                                    ]?.filter((option) => option.value == importpayload?.type)}
-                                    onChange={(option) => {
-                                        var temp = { ...importpayload };
-                                        temp.type = option.value;
-                                        setimportpayload({ ...temp });
-                                    }}
-                                />
-                            </div>
+                                {importmodal?.type == 'export' && (
+                                    <div class={'col-lg-12'} style={{ marginBottom: '15px' }}>
+                                        <label for="name" class={formstyles.form__label}>
+                                            Export Type
+                                        </label>
+                                        <Select
+                                            options={[
+                                                { label: 'Export', value: 'export' },
+                                                // { label: 'Order Export', value: 'orderExport' },
+                                            ]}
+                                            styles={defaultstyles}
+                                            value={[
+                                                { label: 'Export', value: 'export' },
+                                                // { label: 'Order Export', value: 'orderExport' },
+                                            ]?.filter((option) => option.value == importpayload?.type)}
+                                            onChange={(option) => {
+                                                var temp = { ...importpayload };
+                                                temp.type = option.value;
+                                                setimportpayload({ ...temp });
+                                            }}
+                                        />
+                                    </div>
+                                )}
+                                <div class="col-lg-12 p-0 allcentered">
+                                    <button
+                                        style={{ height: '35px' }}
+                                        class={generalstyles.roundbutton + '  mb-1 text-capitalize'}
+                                        disabled={buttonLoadingContext}
+                                        onClick={async () => {
+                                            if (buttonLoadingContext) return;
+                                            setbuttonLoadingContext(true);
+
+                                            if (importmodal?.type == 'import') {
+                                                try {
+                                                    const { data } = await importMutation();
+                                                    if (data.importItem?.success) {
+                                                        setimportmodal({ open: false, type: '' });
+                                                        refetchfetchItemsInBox();
+                                                        NotificationManager.success('item imported', 'Success!');
+                                                    } else {
+                                                        NotificationManager.warning(data?.importItem?.message, 'Warning!');
+                                                    }
+                                                } catch (error) {
+                                                    let errorMessage = 'An unexpected error occurred';
+                                                    if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                                        errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                                    } else if (error.networkError) {
+                                                        errorMessage = error.networkError.message || errorMessage;
+                                                    } else if (error.message) {
+                                                        errorMessage = error.message;
+                                                    }
+
+                                                    NotificationManager.warning(errorMessage, 'Warning!');
+                                                    console.error('Error importing item:', error);
+                                                }
+                                            } else {
+                                                try {
+                                                    const { data } = await exportMutation();
+                                                    if (data.exportItem?.success) {
+                                                        setimportmodal({ open: false, type: '' });
+                                                        refetchfetchItemsInBox();
+                                                        NotificationManager.success('item imported', 'Success!');
+                                                    } else {
+                                                        NotificationManager.warning(data?.exportItem?.message, 'Warning!');
+                                                    }
+                                                } catch (error) {
+                                                    let errorMessage = 'An unexpected error occurred';
+                                                    if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                                        errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                                    } else if (error.networkError) {
+                                                        errorMessage = error.networkError.message || errorMessage;
+                                                    } else if (error.message) {
+                                                        errorMessage = error.message;
+                                                    }
+
+                                                    NotificationManager.warning(errorMessage, 'Warning!');
+                                                    console.error('Error exporting item:', error);
+                                                }
+                                            }
+                                            setbuttonLoadingContext(false);
+                                        }}
+                                    >
+                                        {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                        {!buttonLoadingContext && <span>{importmodal?.type} item</span>}
+                                    </button>
+                                </div>
+                            </>
                         )}
+                        {importmodal.type == 'delete' && (
+                            <>
+                                <div class="col-lg-12 text-center allcentered my-4 text-danger">Are you sure you want to delete this item</div>
 
-                        <div class="col-lg-12 p-0 allcentered">
-                            <button
-                                style={{ height: '35px' }}
-                                class={generalstyles.roundbutton + '  mb-1 text-capitalize'}
-                                disabled={buttonLoadingContext}
-                                onClick={async () => {
-                                    if (buttonLoadingContext) return;
-                                    setbuttonLoadingContext(true);
+                                <div class="col-lg-12 p-0 allcentered">
+                                    <button
+                                        style={{ height: '35px' }}
+                                        class={generalstyles.roundbutton + '  mb-1 text-capitalize bg-danger bg-dangerhover'}
+                                        disabled={buttonLoadingContext}
+                                        onClick={async () => {
+                                            if (buttonLoadingContext) return;
+                                            setbuttonLoadingContext(true);
+                                            try {
+                                                const { data } = await removeItemInBoxMutation();
+                                                if (data?.removeItemInBox?.success) {
+                                                    await refetchfetchItemsInBox();
+                                                    NotificationManager.success('item deleted', 'Success!');
+                                                } else {
+                                                    NotificationManager.warning(data?.removeItemInBox?.message, 'Warning!');
+                                                }
+                                            } catch (error) {
+                                                let errorMessage = 'An unexpected error occurred';
+                                                if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                                    errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                                } else if (error.networkError) {
+                                                    errorMessage = error.networkError.message || errorMessage;
+                                                } else if (error.message) {
+                                                    errorMessage = error.message;
+                                                }
 
-                                    if (importmodal?.type == 'import') {
-                                        try {
-                                            const { data } = await importMutation();
-                                            setimportmodal({ open: false, type: '' });
-                                            refetchfetchItemsInBox();
-                                        } catch (error) {
-                                            let errorMessage = 'An unexpected error occurred';
-                                            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-                                                errorMessage = error.graphQLErrors[0].message || errorMessage;
-                                            } else if (error.networkError) {
-                                                errorMessage = error.networkError.message || errorMessage;
-                                            } else if (error.message) {
-                                                errorMessage = error.message;
+                                                NotificationManager.warning(errorMessage, 'Warning!');
                                             }
-
-                                            NotificationManager.warning(errorMessage, 'Warning!');
-                                            console.error('Error importing item:', error);
-                                        }
-                                    } else {
-                                        try {
-                                            const { data } = await exportMutation();
-                                            setimportmodal({ open: false, type: '' });
-                                            refetchfetchItemsInBox();
-                                        } catch (error) {
-                                            let errorMessage = 'An unexpected error occurred';
-                                            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-                                                errorMessage = error.graphQLErrors[0].message || errorMessage;
-                                            } else if (error.networkError) {
-                                                errorMessage = error.networkError.message || errorMessage;
-                                            } else if (error.message) {
-                                                errorMessage = error.message;
-                                            }
-
-                                            NotificationManager.warning(errorMessage, 'Warning!');
-                                            console.error('Error exporting item:', error);
-                                        }
-                                    }
-                                    setbuttonLoadingContext(false);
-                                }}
-                            >
-                                {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                {!buttonLoadingContext && <span>{importmodal?.type} item</span>}
-                            </button>
-                        </div>
+                                            setbuttonLoadingContext(false);
+                                        }}
+                                    >
+                                        {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                        {!buttonLoadingContext && <span>Delete</span>}
+                                    </button>
+                                </div>
+                            </>
+                        )}
                     </div>
                 </Modal.Body>
             </Modal>

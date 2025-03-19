@@ -105,8 +105,9 @@ const InventoryRent = (props) => {
         merchantId: inventorySettings?.merchantId,
     });
 
-    const [removeInventoryRentMutation] = useMutationNoInputGQL(removeInventoryRent(), { id: parseInt(inventorySettings?.id) });
-
+    const [removeInventoryRentMutation] = useMutationGQL(removeInventoryRent(), {
+        id: inventorySettings?.id,
+    });
     useEffect(() => {
         setpageactive_context('/inventoryrent');
         setpagetitle_context('Warehouses');
@@ -319,11 +320,11 @@ const InventoryRent = (props) => {
                                                             setbuttonLoadingContext(true);
                                                             try {
                                                                 const { data } = await removeInventoryRentMutation();
-                                                                if (data?.removeOrderItems?.success == true) {
+                                                                if (data?.removeInventoryRent?.success == true) {
                                                                     NotificationManager.success('Success!', '');
                                                                     paginateInventoryRentsQuery.refetch();
                                                                 } else {
-                                                                    NotificationManager.warning(data?.removeOrderItems?.message, 'Warning!');
+                                                                    NotificationManager.warning(data?.removeInventoryRent?.message, 'Warning!');
                                                                 }
                                                             } catch (error) {
                                                                 let errorMessage = 'An unexpected error occurred';

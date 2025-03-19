@@ -680,8 +680,8 @@ const OrderInfo = (props) => {
                                             </div>
                                         </div>
                                     </div>
-                                    {cookies.get('userInfo')?.type != 'merchant' && (
-                                        <div class="col-lg-7">
+                                    {isAuth([1, 34]) && (
+                                        <div class={!isAuth([1, 62, 64]) ? 'col-lg-12' : 'col-lg-7'}>
                                             <div class="col-lg-12 mb-1 p-0" style={{ color: 'grey', fontSize: '11px', fontWeight: 700 }}>
                                                 <div class="row m-0 w-100 d-flex align-items-center justify-content-between">
                                                     <div>Manifest</div>
@@ -762,8 +762,8 @@ const OrderInfo = (props) => {
                                             </div>
                                         </div>
                                     )}
-                                    {cookies.get('userInfo')?.type != 'merchant' && (
-                                        <div class="col-lg-5">
+                                    {isAuth([1, 62, 64]) && (
+                                        <div class={!isAuth([1, 34]) ? 'col-lg-12' : 'col-lg-5'}>
                                             <div class="col-lg-12 mb-1 p-0" style={{ color: 'grey', fontSize: '11px', fontWeight: 700 }}>
                                                 <div class="row m-0 w-100 d-flex align-items-center justify-content-between">
                                                     <div>Return Package</div>
