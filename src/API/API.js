@@ -720,16 +720,41 @@ const API = () => {
                         }
 
                         fromAccount {
+                            merchantId
                             id
                             name
                         }
                         toAccount {
+                            merchantId
                             id
                             name
                         }
                         sheetOrder {
                             order {
                                 id
+                                type
+                                status
+                                shopifyName
+                                otherId
+                                merchant {
+                                    name
+                                }
+                                address {
+                                    country
+                                    city
+                                    streetAddress
+                                    buildingNumber
+                                    apartmentFloor
+                                }
+                                merchantCustomer {
+                                    id
+                                    customerName
+                                    customer {
+                                        email
+                                        phone
+                                        id
+                                    }
+                                }
                             }
                         }
                     }
@@ -2636,16 +2661,38 @@ const API = () => {
                             name
                         }
                         fromAccount {
+                            merchantId
                             id
                             name
                         }
                         toAccount {
+                            merchantId
                             id
                             name
                         }
                         sheetOrder {
                             order {
                                 id
+                                type
+                                status
+                                shopifyName
+                                otherId
+                                address {
+                                    country
+                                    city
+                                    streetAddress
+                                    buildingNumber
+                                    apartmentFloor
+                                }
+                                merchantCustomer {
+                                    id
+                                    customerName
+                                    customer {
+                                        email
+                                        phone
+                                        id
+                                    }
+                                }
                             }
                         }
                         createdAt
@@ -2672,19 +2719,56 @@ const API = () => {
                             name
                         }
                         fromAccount {
+                            merchantId
                             id
                             name
                         }
                         toAccount {
+                            merchantId
                             id
                             name
                         }
+                        order {
+                            id
+                            type
+                            status
+                            shopifyName
+                            otherId
+                            merchantCustomer {
+                                id
+                                customerName
+                                customer {
+                                    email
+                                    phone
+                                    id
+                                }
+                            }
+                        }
                         sheetOrder {
                             order {
-                                otherId
+                                id
+                                type
+                                status
                                 shopifyName
+                                otherId
                                 merchant {
                                     name
+                                }
+                                address {
+                                    country
+                                    city
+                                    streetAddress
+                                    buildingNumber
+                                    apartmentFloor
+                                }
+                                merchantCustomer {
+                                    id
+                                    customerName
+                                    customer {
+                                        email
+                                        phone
+                                        id
+                                    }
                                 }
                             }
                         }
@@ -2712,19 +2796,40 @@ const API = () => {
                             name
                         }
                         fromAccount {
+                            merchantId
                             id
                             name
                         }
                         toAccount {
+                            merchantId
                             id
                             name
                         }
                         sheetOrder {
                             order {
-                                otherId
+                                id
+                                type
+                                status
                                 shopifyName
+                                otherId
                                 merchant {
                                     name
+                                }
+                                address {
+                                    country
+                                    city
+                                    streetAddress
+                                    buildingNumber
+                                    apartmentFloor
+                                }
+                                merchantCustomer {
+                                    id
+                                    customerName
+                                    customer {
+                                        email
+                                        phone
+                                        id
+                                    }
                                 }
                             }
                         }
@@ -2752,15 +2857,24 @@ const API = () => {
                             name
                         }
                         fromAccount {
+                            merchantId
                             id
                             name
                         }
                         toAccount {
+                            merchantId
                             id
                             name
                         }
                         sheetOrder {
                             order {
+                                address {
+                                    country
+                                    city
+                                    streetAddress
+                                    buildingNumber
+                                    apartmentFloor
+                                }
                                 previousOrderId
                                 previousOrder {
                                     id

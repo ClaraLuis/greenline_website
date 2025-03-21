@@ -34,7 +34,7 @@ const MerchantPayment = (props) => {
     const [total, setTotal] = useState(0);
 
     const { setpageactive_context, isAuth, setpagetitle_context } = useContext(Contexthandlerscontext);
-    const { useQueryGQL, fetchMerchantPaymentTransactions } = API();
+    const { useQueryGQL, fetchMerchantPaymentTransactions, merchantPaymentsSummary } = API();
     const cookies = new Cookies();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -50,6 +50,12 @@ const MerchantPayment = (props) => {
     });
 
     const fetchMerchantPaymentTransactionsQuery = useQueryGQL('', fetchMerchantPaymentTransactions(), filterobj);
+    const [filterMerchanrPaymentSummaryObj, setfilterMerchanrPaymentSummaryObj] = useState({
+        // merchantIds: [1],
+        startDate: undefined,
+        endDate: undefined,
+    });
+    const merchantPaymentsSummaryQuery = useQueryGQL('', merchantPaymentsSummary(), filterMerchanrPaymentSummaryObj);
 
     useEffect(() => {
         setpageactive_context('/merchantpayment');
@@ -133,10 +139,20 @@ const MerchantPayment = (props) => {
                                                         <DateRangePicker
                                                             onChange={(event) => {
                                                                 if (event != null) {
+                                                                    setfilterMerchanrPaymentSummaryObj({
+                                                                        ...filterMerchanrPaymentSummaryObj,
+                                                                        startDate: event[0],
+                                                                        endDate: event[1],
+                                                                    });
                                                                     setfilterobj({ ...filterobj, fromDate: event[0], toDate: event[1] });
                                                                 }
                                                             }}
                                                             onClean={() => {
+                                                                setfilterMerchanrPaymentSummaryObj({
+                                                                    ...filterMerchanrPaymentSummaryObj,
+                                                                    startDate: null,
+                                                                    endDate: null,
+                                                                });
                                                                 setfilterobj({ ...filterobj, fromDate: null, toDate: null });
                                                             }}
                                                         />
@@ -149,6 +165,52 @@ const MerchantPayment = (props) => {
                             </div>
                         </div>
                     </div>
+                    {!filterMerchanrPaymentSummaryObj?.merchantIds && cookies.get('userInfo')?.type != 'merchant' && (
+                        <div class="col-lg-12 p-0 px-1">
+                            <div class="row m-0 w-100">
+                                {merchantPaymentsSummaryQuery?.data?.merchantPaymentsSummary?.data?.map((item, index) => {
+                                    return (
+                                        <div class="col-lg-4">
+                                            <div class={generalstyles.card + ' row m-0 p-3 w-100'}>
+                                                <div style={{ fontSize: '17px' }} class="col-lg-12 mb-1">
+                                                    {item?.status}
+                                                </div>
+                                                <div class="col-lg-12">
+                                                    <span style={{ fontWeight: 800, fontSize: '23px' }}>
+                                                        {item?.sum} {item?.currency}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    )}
+                    {(filterMerchanrPaymentSummaryObj?.merchantIds || cookies.get('userInfo')?.type == 'merchant') && (
+                        <div className="col-lg-12 p-0 px-1">
+                            <div className="row m-0 w-100">
+                                {Object.keys(merchantPaymentsSummaryQuery?.data?.merchantPaymentsSummary?.data || {}).map((merchantId) => {
+                                    const payments = merchantPaymentsSummaryQuery?.data?.merchantPaymentsSummary?.data[merchantId];
+
+                                    return payments.map((item, index) => (
+                                        <div className="col-lg-3" key={index}>
+                                            <div className={`${generalstyles.card} row m-0 p-3 w-100`}>
+                                                <div style={{ fontSize: '17px' }} className="col-lg-12 mb-1">
+                                                    {item?.status}
+                                                </div>
+                                                <div className="col-lg-12">
+                                                    <span style={{ fontWeight: 800, fontSize: '23px' }}>
+                                                        {item?.sum} {item?.currency}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ));
+                                })}
+                            </div>
+                        </div>
+                    )}
 
                     <div class="col-lg-12 p-0">
                         <Pagination

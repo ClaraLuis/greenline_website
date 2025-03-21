@@ -9,13 +9,15 @@ import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
 import { FaLayerGroup } from 'react-icons/fa';
 import { components } from 'react-select';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
+import Cookies from 'universal-cookie';
+
 // Icons
 import { TbEdit, TbUserDollar } from 'react-icons/tb';
 import { BiEdit } from 'react-icons/bi';
 import { FaEllipsisV } from 'react-icons/fa';
 import { FcCancel } from 'react-icons/fc';
 import { IoMdClose, IoMdTime } from 'react-icons/io';
-import { MdOutlineAccountCircle, MdOutlineCallMade, MdOutlineCallReceived } from 'react-icons/md';
+import { MdOutlineAccountCircle, MdOutlineCallMade, MdOutlineCallReceived, MdOutlineLocationOn } from 'react-icons/md';
 import { TbFileDescription } from 'react-icons/tb';
 import { NotificationManager } from 'react-notifications';
 import API from '../../../API/API.js';
@@ -27,6 +29,8 @@ const { ValueContainer, Placeholder } = components;
 const TransactionsTable = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
+    const cookies = new Cookies();
+
     const { transactionStatusTypeContext, setchosenOrderContext, isAuth, transactionStatusesSelectContext, dateformatter, buttonLoadingContext, setbuttonLoadingContext } =
         useContext(Contexthandlerscontext);
     const { fetchUsers, useQueryGQL, updateAnyFinancialTransaction, updateMyFinancialTransaction, useMutationGQL } = API();
@@ -260,10 +264,12 @@ const TransactionsTable = (props) => {
                                             {props?.srctype == 'all' && (
                                                 <>
                                                     <div className="col-lg-7 p-0 mb-1">
-                                                        <span class="d-flex align-items-center" style={{ fontWeight: 600, color: '#4C8CF5' }}>
-                                                            <MdOutlineCallMade class="mr-1" />
-                                                            {item?.fromAccount?.name ?? '-'}
-                                                        </span>
+                                                        {(cookies.get('userInfo')?.type != 'merchant' || cookies.get('merchantId') == item?.fromAccount?.merchantId) && (
+                                                            <span class="d-flex align-items-center" style={{ fontWeight: 600, color: '#4C8CF5' }}>
+                                                                <MdOutlineCallMade class="mr-1" />
+                                                                {item?.fromAccount?.name ?? '-'}
+                                                            </span>
+                                                        )}
                                                     </div>{' '}
                                                     <div className="col-lg-5 p-0 mb-1 d-flex justify-content-end">
                                                         <div class="row m-0 w-100d-flex justify-content-end">
@@ -296,10 +302,12 @@ const TransactionsTable = (props) => {
                                                         </div>
                                                     </div>{' '}
                                                     <div className="col-lg-12 p-0 mb-1">
-                                                        <span class="d-flex align-items-center" style={{ fontWeight: 600, color: '#1EC000' }}>
-                                                            <MdOutlineCallReceived class="mr-1" />
-                                                            {item?.toAccount?.name ?? '-'}
-                                                        </span>
+                                                        {(cookies.get('userInfo')?.type != 'merchant' || cookies.get('merchantId') == item?.toAccount?.merchantId) && (
+                                                            <span class="d-flex align-items-center" style={{ fontWeight: 600, color: '#1EC000' }}>
+                                                                <MdOutlineCallReceived class="mr-1" />
+                                                                {item?.toAccount?.name ?? '-'}
+                                                            </span>
+                                                        )}
                                                     </div>
                                                 </>
                                             )}
@@ -312,34 +320,107 @@ const TransactionsTable = (props) => {
                                                         </span>
                                                     </div>{' '}
                                                     <div className="col-lg-12 p-0 mb-1">
-                                                        <span class="d-flex align-items-center" style={{ fontWeight: 600, color: '#4C8CF5' }}>
-                                                            <MdOutlineCallMade class="mr-1" />
-                                                            {item?.fromAccount?.name ?? '-'}
-                                                        </span>
+                                                        {(cookies.get('userInfo')?.type != 'merchant' || cookies.get('merchantId') == item?.fromAccount?.merchantId) && (
+                                                            <span class="d-flex align-items-center" style={{ fontWeight: 600, color: '#4C8CF5' }}>
+                                                                <MdOutlineCallMade class="mr-1" />
+                                                                {item?.fromAccount?.name ?? '-'}
+                                                            </span>
+                                                        )}
                                                     </div>
                                                     <div className="col-lg-12 p-0 mb-1">
-                                                        <span class="d-flex align-items-center" style={{ fontWeight: 600, color: '#1EC000' }}>
-                                                            <MdOutlineCallReceived class="mr-1" />
-                                                            {item?.toAccount?.name ?? '-'}
-                                                        </span>
+                                                        {(cookies.get('userInfo')?.type != 'merchant' || cookies.get('merchantId') == item?.toAccount?.merchantId) && (
+                                                            <span class="d-flex align-items-center" style={{ fontWeight: 600, color: '#1EC000' }}>
+                                                                <MdOutlineCallReceived class="mr-1" />
+                                                                {item?.toAccount?.name ?? '-'}
+                                                            </span>
+                                                        )}
                                                     </div>
                                                 </>
                                             )}
 
-                                            {props?.srctype != 'all' && props?.srctype != 'courierCollection' && props?.srctype != 'expenses' && (
-                                                <div className="col-lg-12 p-0 mb-1">
-                                                    <span class="d-flex align-items-center" style={{ fontWeight: 600, color: item?.toAccount?.id == props?.accountId ? '#4C8CF5' : '#1EC000' }}>
-                                                        <MdOutlineAccountCircle class="mr-1" />
-                                                        {item?.toAccount?.id == props?.accountId ? item?.fromAccount?.name ?? '-' : item?.toAccount?.name ?? '-'}
-                                                    </span>
-                                                </div>
-                                            )}
+                                            {props?.srctype != 'all' &&
+                                                props?.srctype != 'courierCollection' &&
+                                                props?.srctype != 'expenses' &&
+                                                (cookies.get('userInfo')?.type != 'merchant' || cookies.get('merchantId') == item?.toAccount?.merchantId) && (
+                                                    <div className="col-lg-12 p-0 mb-1">
+                                                        <span class="d-flex align-items-center" style={{ fontWeight: 600, color: item?.toAccount?.id == props?.accountId ? '#4C8CF5' : '#1EC000' }}>
+                                                            <MdOutlineAccountCircle class="mr-1" />
+                                                            {item?.toAccount?.id == props?.accountId ? item?.fromAccount?.name ?? '-' : item?.toAccount?.name ?? '-'}
+                                                        </span>
+                                                    </div>
+                                                )}
                                             {(item?.comment || item?.description) && (
                                                 <div className="col-lg-12 p-0 mb-1">
                                                     <span class="d-flex align-items-center" style={{ fontWeight: 600 }}>
                                                         <TbFileDescription class="mr-1" />
                                                         {props?.srctype == 'expenses' ? item?.comment : item?.description}
                                                     </span>
+                                                </div>
+                                            )}
+                                            {cookies.get('userInfo')?.type == 'merchant' && item?.sheetOrder?.order && (
+                                                <div className="col-lg-12 p-0">
+                                                    <div style={{ border: '1px solid #eee' }} class={generalstyles.card + ' p-3 row m-0 w-100 '}>
+                                                        <div className="col-lg-4 p-0">
+                                                            <div class="row m-0 w-100 d-flex align-items-center">
+                                                                <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
+                                                                    # {item?.sheetOrder?.order?.id}
+                                                                </span>{' '}
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
+                                                            <div class="row m-0 w-100  d-flex justify-content-end align-items-center">
+                                                                <div
+                                                                    className={`wordbreak rounded-pill font-weight-600 text-capitalize ${
+                                                                        item?.sheetOrder?.order?.status === 'delivered' ||
+                                                                        item?.sheetOrder?.order?.status === 'partiallyDelivered' ||
+                                                                        item?.sheetOrder?.order?.status === 'returned' ||
+                                                                        item?.sheetOrder?.order?.status === 'partiallyReturned'
+                                                                            ? 'text-success bg-light-success text-capitalize'
+                                                                            : item?.sheetOrder?.order?.status === 'cancelled' || item?.sheetOrder?.order?.status === 'failedDeliveryAttempt'
+                                                                            ? 'text-danger bg-light-danger text-capitalize'
+                                                                            : item?.sheetOrder?.order?.status === 'postponed'
+                                                                            ? 'text-warning bg-light-warning rounded-pill-hover text-capitalize'
+                                                                            : 'text-warning bg-light-warning text-capitalize'
+                                                                    } `}
+                                                                >
+                                                                    {item?.sheetOrder?.order?.status?.split(/(?=[A-Z])/).join(' ')}
+                                                                </div>
+                                                                <div style={{ color: 'white' }} className={'ml-1 wordbreak bg-primary rounded-pill font-weight-600 text-capitalize '}>
+                                                                    {item?.sheetOrder?.order?.type?.split(/(?=[A-Z])/).join(' ')}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-lg-12 p-0 my-2">
+                                                            <hr className="m-0" />
+                                                        </div>
+                                                        <div class="col-lg-12 p-0 ">
+                                                            <div class="row m-0 w-100" style={{ position: 'relative' }}>
+                                                                {item?.sheetOrder?.order?.shopifyName && (
+                                                                    <div style={{ position: 'absolute', right: 10 }}>
+                                                                        <div class="row m-0 w-100 aign-items-center">
+                                                                            <FaShopify class="mt-1 mr-1" /> {item?.sheetOrder?.order?.shopifyName}
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-12 p-0 mb-0 text-capitalize">
+                                                            <span style={{ fontWeight: 600 }}>{item?.sheetOrder?.order?.merchantCustomer?.customerName}</span>
+                                                        </div>
+                                                        <div class="col-lg-12 p-0 mb-1 text-capitalize">
+                                                            <span style={{ fontWeight: 500, fontSize: '12px' }}>{item?.sheetOrder?.order?.merchantCustomer?.customer?.phone}</span>
+                                                        </div>
+                                                        <div className="col-lg-12 p-0 mb-1 d-flex align-items-center">
+                                                            <MdOutlineLocationOn class="mr-1" />
+                                                            <span style={{ fontWeight: 400, fontSize: '13px' }}>
+                                                                {item?.sheetOrder?.order?.address?.country}, {item?.sheetOrder?.order?.address?.city},{' '}
+                                                                <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                    {item?.sheetOrder?.order?.address?.streetAddress}, Building {item?.sheetOrder?.order?.address?.buildingNumber}, Floor{' '}
+                                                                    {item?.sheetOrder?.order?.address?.apartmentFloor}
+                                                                </span>
+                                                            </span>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             )}
 

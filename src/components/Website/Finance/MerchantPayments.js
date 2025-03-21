@@ -43,6 +43,7 @@ const MerchantPayments = (props) => {
         updateFinancialAccount,
         fetchMerchantPaymentTransactions,
         completeMerchantPayments,
+        merchantPaymentsSummary,
         fetchFinancialAccounts,
     } = API();
     const cookies = new Cookies();
@@ -70,6 +71,12 @@ const MerchantPayments = (props) => {
         merchantIds: undefined,
         processing: undefined,
     });
+    const [filterMerchanrPaymentSummaryObj, setfilterMerchanrPaymentSummaryObj] = useState({
+        // merchantIds: [1],
+        startDate: undefined,
+        endDate: undefined,
+    });
+    const merchantPaymentsSummaryQuery = useQueryGQL('', merchantPaymentsSummary(), filterMerchanrPaymentSummaryObj);
 
     const fetchMerchantPaymentTransactionsQuery = useQueryGQL('', fetchMerchantPaymentTransactions(), filterobj);
     const { isAsc, limit, processing, ...filteredFilterObj } = filterobj;
@@ -169,6 +176,7 @@ const MerchantPayments = (props) => {
                         </div>
                     </div>
                 </div>
+
                 <div class="col-lg-12 px-3">
                     <div class="row m-0 w-100">
                         <div style={{ borderRadius: '0.25rem', background: 'white' }} class={generalstyles.card + ' col-lg-12'}>
@@ -266,22 +274,20 @@ const MerchantPayments = (props) => {
                                                         // value={[filterorders?.fromDate, filterorders?.toDate]}
                                                         onChange={(event) => {
                                                             if (event != null) {
-                                                                const start = event[0];
-                                                                const startdate = new Date(start);
-                                                                const year1 = startdate.getFullYear();
-                                                                const month1 = startdate.getMonth() + 1; // Months are zero-indexed
-                                                                const day1 = startdate.getDate();
-
-                                                                const end = event[1];
-                                                                const enddate = new Date(end);
-                                                                const year2 = enddate.getFullYear();
-                                                                const month2 = enddate.getMonth() + 1; // Months are zero-indexed
-                                                                const day2 = enddate.getDate();
-
+                                                                setfilterMerchanrPaymentSummaryObj({
+                                                                    ...filterMerchanrPaymentSummaryObj,
+                                                                    startDate: event[0],
+                                                                    endDate: event[1],
+                                                                });
                                                                 setfilterobj({ ...filterobj, fromDate: event[0], toDate: event[1] });
                                                             }
                                                         }}
                                                         onClean={() => {
+                                                            setfilterMerchanrPaymentSummaryObj({
+                                                                ...filterMerchanrPaymentSummaryObj,
+                                                                startDate: null,
+                                                                endDate: null,
+                                                            });
                                                             setfilterobj({ ...filterobj, fromDate: null, toDate: null });
                                                         }}
                                                     />
@@ -324,6 +330,52 @@ const MerchantPayments = (props) => {
                         </div>
                     </div>
                 </div>
+                {!filterMerchanrPaymentSummaryObj?.merchantIds && cookies.get('userInfo')?.type != 'merchant' && (
+                    <div class="col-lg-12 p-0 px-1">
+                        <div class="row m-0 w-100">
+                            {merchantPaymentsSummaryQuery?.data?.merchantPaymentsSummary?.data?.map((item, index) => {
+                                return (
+                                    <div class="col-lg-4">
+                                        <div class={generalstyles.card + ' row m-0 p-3 w-100'}>
+                                            <div style={{ fontSize: '17px' }} class="col-lg-12 mb-1">
+                                                {item?.status}
+                                            </div>
+                                            <div class="col-lg-12">
+                                                <span style={{ fontWeight: 800, fontSize: '23px' }}>
+                                                    {item?.sum} {item?.currency}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                )}
+                {(filterMerchanrPaymentSummaryObj?.merchantIds || cookies.get('userInfo')?.type == 'merchant') && (
+                    <div className="col-lg-12 p-0 px-1">
+                        <div className="row m-0 w-100">
+                            {Object.keys(merchantPaymentsSummaryQuery?.data?.merchantPaymentsSummary?.data || {}).map((merchantId) => {
+                                const payments = merchantPaymentsSummaryQuery?.data?.merchantPaymentsSummary?.data[merchantId];
+
+                                return payments.map((item, index) => (
+                                    <div className="col-lg-3" key={index}>
+                                        <div className={`${generalstyles.card} row m-0 p-3 w-100`}>
+                                            <div style={{ fontSize: '17px' }} className="col-lg-12 mb-1">
+                                                {item?.status}
+                                            </div>
+                                            <div className="col-lg-12">
+                                                <span style={{ fontWeight: 800, fontSize: '23px' }}>
+                                                    {item?.sum} {item?.currency}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ));
+                            })}
+                        </div>
+                    </div>
+                )}
                 <div class="col-lg-12 p-0 ">
                     <div class="row m-0 w-100">
                         <div class="col-lg-9 p-0">
