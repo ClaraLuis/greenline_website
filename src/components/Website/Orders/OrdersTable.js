@@ -420,7 +420,10 @@ const OrdersTable = (props) => {
                                                                             </div>
                                                                             <div className="col-lg-12 p-0 allcentered text-center">
                                                                                 <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                                    {new Decimal(item?.shippingPrice || 0).toFixed(2)} {item?.currency}
+                                                                                    {new Decimal(
+                                                                                        item?.shippingCollected == 'collected' && item?.paymentType == 'cash' ? 0 : item?.shippingPrice || 0,
+                                                                                    ).toFixed(2)}{' '}
+                                                                                    {item?.currency}
                                                                                 </span>
                                                                             </div>
                                                                         </div>
@@ -432,7 +435,14 @@ const OrdersTable = (props) => {
                                                                             </div>
                                                                             <div className="col-lg-12 p-0 allcentered text-center">
                                                                                 <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                                    {new Decimal(item?.price || 0).plus(new Decimal(item?.shippingPrice || 0)).toFixed(2)} {item?.currency}
+                                                                                    {new Decimal(item?.price || 0)
+                                                                                        .plus(
+                                                                                            new Decimal(
+                                                                                                item?.shippingCollected == 'collected' && item?.paymentType == 'cash' ? 0 : item?.shippingPrice || 0,
+                                                                                            ),
+                                                                                        )
+                                                                                        .toFixed(2)}{' '}
+                                                                                    {item?.currency}
                                                                                 </span>
                                                                             </div>
                                                                         </div>

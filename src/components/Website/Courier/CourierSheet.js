@@ -734,7 +734,13 @@ const CourierSheet = (props) => {
                                                                 <span style={{ fontWeight: 600, fontSize: '13px' }}>
                                                                     {type != 'admin' && tempsheetpayload?.status == 'financeAccepted'
                                                                         ? new Decimal(item?.amountCollected || 0)
-                                                                              .plus(new Decimal(item?.order?.shippingCollected == 'collected' ? item?.order?.shippingPrice || 0 : 0))
+                                                                              .plus(
+                                                                                  new Decimal(
+                                                                                      item?.order?.shippingCollected == 'collected' && item?.order?.paymentType == 'cash'
+                                                                                          ? 0
+                                                                                          : item?.order?.shippingPrice || 0,
+                                                                                  ),
+                                                                              )
                                                                               .toFixed(2)
                                                                         : '0.00'}{' '}
                                                                     {item?.order?.currency}
@@ -761,7 +767,10 @@ const CourierSheet = (props) => {
                                                             </div>
                                                             <div className="col-lg-12 p-0 allcentered text-center">
                                                                 <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                    {new Decimal(item?.order?.shippingPrice || 0).toFixed(2)} {item?.order?.currency}
+                                                                    {item?.order?.paymentType != 'card'
+                                                                        ? new Decimal(item?.order?.paymentType == 'cash' ? item?.order?.shippingPrice || 0 : 0).toFixed(2)
+                                                                        : 0}{' '}
+                                                                    {item?.order?.currency}
                                                                 </span>
                                                             </div>
                                                         </div>
@@ -773,7 +782,10 @@ const CourierSheet = (props) => {
                                                             </div>
                                                             <div className="col-lg-12 p-0 allcentered text-center">
                                                                 <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                    {new Decimal(item?.order?.price || 0).plus(new Decimal(item?.order?.shippingPrice || 0)).toFixed(2)} {item?.order?.currency}
+                                                                    {new Decimal(item?.order?.price || 0)
+                                                                        .plus(new Decimal(item?.order?.paymentType == 'cash' ? item?.order?.shippingPrice || 0 : 0))
+                                                                        .toFixed(2)}{' '}
+                                                                    {item?.order?.currency}
                                                                 </span>
                                                             </div>
                                                         </div>
@@ -919,7 +931,13 @@ const CourierSheet = (props) => {
                                                                         <span style={{ fontWeight: 600, fontSize: '13px' }}>
                                                                             {type != 'admin' && tempsheetpayload?.status == 'financeAccepted'
                                                                                 ? new Decimal(previousOrder?.amountCollected || 0)
-                                                                                      .plus(new Decimal(previousOrder?.order?.shippingPrice || 0))
+                                                                                      .plus(
+                                                                                          new Decimal(
+                                                                                              previousOrder?.order?.shippingCollected == 'collected' && previousOrder?.order?.paymentType == 'cash'
+                                                                                                  ? 0
+                                                                                                  : previousOrder?.order?.shippingPrice || 0,
+                                                                                          ),
+                                                                                      )
                                                                                       .toFixed(2)
                                                                                 : '0.00'}{' '}
                                                                             {previousOrder?.order?.currency}
@@ -946,7 +964,8 @@ const CourierSheet = (props) => {
                                                                     </div>
                                                                     <div className="col-lg-12 p-0 allcentered text-center">
                                                                         <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                            {new Decimal(previousOrder?.order?.shippingPrice || 0).toFixed(2)} {previousOrder?.order?.currency}
+                                                                            {new Decimal(previousOrder?.order?.paymentType == 'cash' ? previousOrder?.order?.shippingPrice || 0 : 0).toFixed(2)}{' '}
+                                                                            {previousOrder?.order?.currency}
                                                                         </span>
                                                                     </div>
                                                                 </div>
@@ -958,7 +977,9 @@ const CourierSheet = (props) => {
                                                                     </div>
                                                                     <div className="col-lg-12 p-0 allcentered text-center">
                                                                         <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                            {new Decimal(previousOrder?.order?.price || 0).plus(new Decimal(previousOrder?.order?.shippingPrice || 0)).toFixed(2)}{' '}
+                                                                            {new Decimal(previousOrder?.order?.price || 0)
+                                                                                .plus(new Decimal(previousOrder?.order?.paymentType == 'cash' ? previousOrder?.order?.shippingPrice || 0 : 0))
+                                                                                .toFixed(2)}{' '}
                                                                             {previousOrder?.order?.currency}
                                                                         </span>
                                                                     </div>
