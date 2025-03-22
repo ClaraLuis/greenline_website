@@ -11,6 +11,7 @@ import { Routedispatcherprovider } from './Routedispatcher';
 import './components/Website/Generalfiles/CSS_GENERAL/bootstrap.css';
 import './components/Website/Generalfiles/CSS_GENERAL/dropdown.css';
 import './trans.css';
+import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
 // import pepsicologoresp from './components/Website/Generalfiles/images/pepsicologoresp.png';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
@@ -193,7 +194,16 @@ async function refreshAuthToken() {
 
 const App = (props) => {
     let history = useHistory();
+    const [nointernetconnection, setnointernetconnection] = useState(false);
+
     const { loggedincontext, loggedincontextLoading } = useContext(Loggedincontext);
+    window.addEventListener('offline', function (e) {
+        setnointernetconnection(true);
+    });
+
+    window.addEventListener('online', function (e) {
+        setnointernetconnection(false);
+    });
     useEffect(() => {
         document.title = 'Greenline';
         // alert();
@@ -236,6 +246,29 @@ const App = (props) => {
                                                     //     return <Redirect to={'/users'} />;
                                                     // }}
                                                 />
+                                                {nointernetconnection && (
+                                                    <div
+                                                        class="w-100 text-center h-100 d-flex mx-auto justify-content-center"
+                                                        style={{
+                                                            backgroundColor: 'white',
+                                                            position: 'fixed',
+                                                            height: '100%',
+                                                            zIndex: 99999999999,
+                                                            color: 'red',
+                                                            opacity: 0.5,
+                                                            alignContent: 'center',
+                                                            justifyContent: 'center',
+                                                            verticalAlign: 'center',
+                                                            fontSize: '25px',
+                                                            fontWeight: 500,
+                                                        }}
+                                                    >
+                                                        <div class="text-center  mt-auto mb-auto m-auto align-items-center d-flex">
+                                                            Trying To Connect To The Internet...
+                                                            <CircularProgress color="red" width="30px" height="30px" />
+                                                        </div>
+                                                    </div>
+                                                )}
                                                 {!loggedincontext && window.location.pathname != '/privacypolicy' && window.location.pathname != '/trackorderactivity' && !loggedincontextLoading && (
                                                     <Login />
                                                 )}
