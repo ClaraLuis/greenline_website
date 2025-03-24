@@ -26,6 +26,7 @@ import { defaultstyles } from '../Generalfiles/selectstyles.js';
 import Select from 'react-select';
 import Decimal from 'decimal.js';
 import { NotificationManager } from 'react-notifications';
+import MerchantSelectComponent from '../../selectComponents/MerchantSelectComponent.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -59,16 +60,7 @@ const Finance = (props) => {
     });
 
     const merchantPaymentsSummaryQuery = useQueryGQL('', merchantPaymentsSummary(), filterMerchanrPaymentSummaryObj);
-    const [filterMerchants, setfilterMerchants] = useState({
-        isAsc: true,
-        limit: 20,
-        afterCursor: undefined,
-        beforeCursor: undefined,
-    });
-    var fetchMerchantsQuery = undefined;
-    if (isAuth([1])) {
-        fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
-    }
+
     const [filterobj, setfilterobj] = useState({
         isAsc: true,
         limit: 20,
@@ -161,11 +153,8 @@ const Finance = (props) => {
                                             <div class="row m-0 w-100">
                                                 {isAuth([1]) && (
                                                     <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                                        <MultiSelect
-                                                            title={'Merchants'}
-                                                            filter={filterMerchants}
-                                                            setfilter={setfilterMerchants}
-                                                            options={fetchMerchantsQuery}
+                                                        <MerchantSelectComponent
+                                                            type="multi"
                                                             attr={'paginateMerchants'}
                                                             label={'name'}
                                                             value={'id'}

@@ -21,6 +21,7 @@ import Pagination from '../../Pagination.js';
 import SelectComponent from '../../SelectComponent.js';
 import MerchantSelect from '../MerchantHome/MerchantSelect.js';
 import ItemsTable from './ItemsTable.js';
+import MerchantSelectComponent from '../../selectComponents/MerchantSelectComponent.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -784,15 +785,6 @@ keep data consistent.</span></p>
     });
     const fetchMerchantItemsQuery = useQueryGQL('', fetchMerchantItems(), payload);
 
-    const [filterMerchants, setfilterMerchants] = useState({
-        isAsc: true,
-        limit: 10,
-        afterCursor: undefined,
-        beforeCursor: undefined,
-    });
-
-    const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
-
     const { refetch: refetchItems } = useQueryGQL('', fetchMerchantItems(), payload);
     const [uploadExcelFileMutation] = useMutationNoInputGQL(uploadExcelFile(), { base64File: csvFile });
     useEffect(() => {
@@ -1022,12 +1014,8 @@ keep data consistent.</span></p>
                 <Modal.Body>
                     <div class="row m-0 w-100 py-2">
                         <div class={'col-lg-12'} style={{ marginBottom: '15px' }}>
-                            <SelectComponent
-                                title={'Merchant'}
-                                filter={filterMerchants}
-                                setfilter={setfilterMerchants}
-                                options={fetchMerchantsQuery}
-                                attr={'paginateMerchants'}
+                            <MerchantSelectComponent
+                                type="single"
                                 label={'name'}
                                 value={'id'}
                                 onClick={(option) => {

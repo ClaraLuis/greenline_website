@@ -26,6 +26,8 @@ import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
 import { TbTruckDelivery } from 'react-icons/tb';
 import Cookies from 'universal-cookie';
+import MerchantSelectComponent from '../../selectComponents/MerchantSelectComponent.js';
+import InventorySelectComponent from '../../selectComponents/InventorySelectComponent.js';
 
 const Packages = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -75,13 +77,6 @@ const Packages = (props) => {
         ids: packagepayload?.ids,
         userId: packagepayload?.userId,
     });
-    const [filterMerchants, setfilterMerchants] = useState({
-        isAsc: true,
-        limit: 10,
-        afterCursor: undefined,
-        beforeCursor: undefined,
-    });
-    const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filterMerchants);
 
     const [filterInventories, setfilterInventories] = useState({
         limit: 20,
@@ -199,12 +194,8 @@ const Packages = (props) => {
                                             </div>
                                             {!cookies.get('userInfo')?.merchantId && (
                                                 <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                                    <SelectComponent
-                                                        title={'Merchant'}
-                                                        filter={filterMerchants}
-                                                        setfilter={setfilterMerchants}
-                                                        options={fetchMerchantsQuery}
-                                                        attr={'paginateMerchants'}
+                                                    <MerchantSelectComponent
+                                                        type="single"
                                                         label={'name'}
                                                         value={'id'}
                                                         payload={filter}
@@ -217,12 +208,8 @@ const Packages = (props) => {
                                             )}
                                             {!cookies.get('userInfo')?.inventoryId && (
                                                 <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                                    <SelectComponent
-                                                        title={'Inventory'}
-                                                        filter={filterInventories}
-                                                        setfilter={setfilterInventories}
-                                                        options={fetchinventories}
-                                                        attr={'paginateInventories'}
+                                                    <InventorySelectComponent
+                                                        type="single"
                                                         label={'name'}
                                                         value={'id'}
                                                         payload={filter}

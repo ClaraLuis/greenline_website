@@ -27,6 +27,7 @@ import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import SelectComponent from '../../SelectComponent.js';
 import Inputfield from '../../Inputfield.js';
+import MerchantSelectComponent from '../../selectComponents/MerchantSelectComponent.js';
 const { ValueContainer, Placeholder } = components;
 var _ = require('lodash');
 const InventoryDetails = (props) => {
@@ -88,13 +89,7 @@ const InventoryDetails = (props) => {
     });
 
     // const fetchusers = [];
-    const [filterMerchants, setfilterMerchants] = useState({
-        isAsc: true,
-        limit: 20,
-        afterCursor: undefined,
-        beforeCursor: undefined,
-    });
-    const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
+
     useEffect(() => {
         setpageactive_context('/inventorydetails');
         setpagetitle_context('Hubs');
@@ -694,12 +689,8 @@ const InventoryDetails = (props) => {
                         {merchantModal?.type == 1 && (
                             <div class="row m-0 w-100 py-2">
                                 <div class={'col-lg-12'} style={{ marginBottom: '15px' }}>
-                                    <SelectComponent
-                                        title={'Merchant'}
-                                        filter={filterMerchants}
-                                        setfilter={setfilterMerchants}
-                                        options={fetchMerchantsQuery}
-                                        attr={'paginateMerchants'}
+                                    <MerchantSelectComponent
+                                        type="single"
                                         label={'name'}
                                         value={'id'}
                                         onClick={(option) => {

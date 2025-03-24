@@ -15,6 +15,7 @@ import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import API from '../../../API/API.js';
 import Cookies from 'universal-cookie';
 import SelectComponent from '../../SelectComponent.js';
+import MerchantSelectComponent from '../../selectComponents/MerchantSelectComponent.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -26,14 +27,6 @@ const MerchantSelect = (props) => {
     const { useQueryGQL, fetchMerchants } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
-    const [filterMerchants, setfilterMerchants] = useState({
-        isAsc: true,
-        limit: 20,
-        afterCursor: undefined,
-        beforeCursor: undefined,
-    });
-
-    const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
 
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
@@ -73,12 +66,8 @@ const MerchantSelect = (props) => {
                                 <hr className="mt-2 mb-3" />
                                 <div class="row m-0 w-100">
                                     <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                        <SelectComponent
-                                            title={'Merchant'}
-                                            filter={filterMerchants}
-                                            setfilter={setfilterMerchants}
-                                            options={fetchMerchantsQuery}
-                                            attr={'paginateMerchants'}
+                                        <MerchantSelectComponent
+                                            type="single"
                                             payload={props?.filter}
                                             payloadAttr={'merchantId'}
                                             label={'name'}

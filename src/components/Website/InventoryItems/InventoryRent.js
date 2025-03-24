@@ -28,6 +28,8 @@ import Cookies from 'universal-cookie';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 import { IoMdClose, IoMdTime } from 'react-icons/io';
 import Decimal from 'decimal.js';
+import MerchantSelectComponent from '../../selectComponents/MerchantSelectComponent.js';
+import InventorySelectComponent from '../../selectComponents/InventorySelectComponent.js';
 
 const InventoryRent = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -82,21 +84,6 @@ const InventoryRent = (props) => {
     });
 
     const paginateInventoryRentsQuery = useQueryGQL('', paginateInventoryRents(), filter);
-
-    const [filterMerchants, setfilterMerchants] = useState({
-        isAsc: true,
-        limit: 10,
-        afterCursor: undefined,
-        beforeCursor: undefined,
-    });
-    const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filterMerchants);
-
-    const [filterInventories, setfilterInventories] = useState({
-        limit: 20,
-        afterCursor: null,
-        beforeCursor: null,
-    });
-    const fetchinventories = useQueryGQL('', fetchInventories(), filterInventories);
 
     const [updateInventoryRentMutation] = useMutationGQL(updateInventoryRent(), {
         pricePerUnit: inventorySettings?.pricePerUnit,
@@ -175,12 +162,8 @@ const InventoryRent = (props) => {
                                         <div class="row m-0 w-100">
                                             {!cookies.get('userInfo')?.merchantId && (
                                                 <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                                    <MultiSelect
-                                                        title={'Merchants'}
-                                                        filter={filterMerchants}
-                                                        setfilter={setfilterMerchants}
-                                                        options={fetchMerchantsQuery}
-                                                        attr={'paginateMerchants'}
+                                                    <MerchantSelectComponent
+                                                        type="multi"
                                                         label={'name'}
                                                         value={'id'}
                                                         selected={filter?.merchantIds}
@@ -204,12 +187,8 @@ const InventoryRent = (props) => {
                                             )}
                                             {!cookies.get('userInfo')?.inventoryId && (
                                                 <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                                    <MultiSelect
-                                                        title={'Inventory'}
-                                                        filter={filterInventories}
-                                                        setfilter={setfilterInventories}
-                                                        options={fetchinventories}
-                                                        attr={'paginateInventories'}
+                                                    <InventorySelectComponent
+                                                        type="multi"
                                                         label={'name'}
                                                         value={'id'}
                                                         selected={filter?.inventoryIds}

@@ -30,6 +30,7 @@ import SelectComponent from '../../SelectComponent.js';
 import * as XLSX from 'xlsx';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
 import Decimal from 'decimal.js';
+import MerchantSelectComponent from '../../selectComponents/MerchantSelectComponent.js';
 
 const MerchantPayments = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -95,13 +96,7 @@ const MerchantPayments = (props) => {
             processing: undefined,
         });
     }, []);
-    const [filterMerchants, setfilterMerchants] = useState({
-        isAsc: true,
-        limit: 10,
-        afterCursor: undefined,
-        beforeCursor: undefined,
-    });
-    const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filterMerchants);
+
     const { refetch: refetchMerchantPaymentTransactionsQuery } = useQueryGQL('', fetchMerchantPaymentTransactions(), filterobj);
 
     const [completeMerchantPaymentsMutation] = useMutationGQL(completeMerchantPayments(), {
@@ -214,12 +209,8 @@ const MerchantPayments = (props) => {
                                         <hr className="mt-2 mb-3" />
                                         <div class="row m-0 w-100">
                                             <div class={'col-lg-2'} style={{ marginBottom: '15px' }}>
-                                                <SelectComponent
-                                                    title={'Merchant'}
-                                                    filter={filterMerchants}
-                                                    setfilter={setfilterMerchants}
-                                                    options={fetchMerchantsQuery}
-                                                    attr={'paginateMerchants'}
+                                                <MerchantSelectComponent
+                                                    type="single"
                                                     label={'name'}
                                                     value={'id'}
                                                     onClick={(option) => {

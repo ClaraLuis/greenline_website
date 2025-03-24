@@ -20,6 +20,7 @@ import MultiSelect from '../../MultiSelect.js';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import { FaLayerGroup } from 'react-icons/fa';
 import Decimal from 'decimal.js';
+import MerchantSelectComponent from '../../selectComponents/MerchantSelectComponent.js';
 const { ValueContainer, Placeholder } = components;
 
 const MerchantHome = (props) => {
@@ -52,16 +53,6 @@ const MerchantHome = (props) => {
     const [filtermostSoldItems, setfiltermostSoldItems] = useState({});
     const mostSoldItemsQuery = useQueryGQL('cache-first', mostSoldItems(), filtermostSoldItems);
 
-    const [filterMerchants, setfilterMerchants] = useState({
-        isAsc: true,
-        limit: 20,
-        afterCursor: undefined,
-        beforeCursor: undefined,
-    });
-    var fetchMerchantsQuery = undefined;
-    if (isAuth([1])) {
-        fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
-    }
     useEffect(() => {
         const temp = []; // Array to track all unique statuses
         const tempvalues = [{ name: props?.type, data: [] }]; // Data for bar chart
@@ -239,12 +230,8 @@ const MerchantHome = (props) => {
                                         <div class="row m-0 w-100">
                                             {isAuth([1]) && (
                                                 <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                                    <MultiSelect
-                                                        title={'Merchants'}
-                                                        filter={filterMerchants}
-                                                        setfilter={setfilterMerchants}
-                                                        options={fetchMerchantsQuery}
-                                                        attr={'paginateMerchants'}
+                                                    <MerchantSelectComponent
+                                                        type="multi"
                                                         label={'name'}
                                                         value={'id'}
                                                         selected={filterordersDeliverableSummary?.merchantIds}

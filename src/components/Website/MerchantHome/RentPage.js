@@ -80,24 +80,6 @@ const RentPage = (props) => {
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
-                {/* {!queryParameters.get('merchantId') && (
-                <div class="col-lg-12 p-0">
-                    <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                        <SelectComponent
-                            title={'Merchant'}
-                            filter={filterMerchants}
-                            setfilter={setfilterMerchants}
-                            options={fetchMerchantsQuery}
-                            attr={'paginateMerchants'}
-                            label={'name'}
-                            value={'id'}
-                            onClick={(option) => {
-                                history.push('/inventorysettings?merchantId=' + option.id);
-                            }}
-                        />
-                    </div>
-                </div>
-            )} */}
                 <>
                     <div class="col-lg-12 px-3">
                         <div class="row m-0 w-100">

@@ -2728,22 +2728,7 @@ const API = () => {
                             id
                             name
                         }
-                        order {
-                            id
-                            type
-                            status
-                            shopifyName
-                            otherId
-                            merchantCustomer {
-                                id
-                                customerName
-                                customer {
-                                    email
-                                    phone
-                                    id
-                                }
-                            }
-                        }
+
                         sheetOrder {
                             order {
                                 id
