@@ -736,7 +736,8 @@ const CourierSheet = (props) => {
                                                                         ? new Decimal(item?.amountCollected || 0)
                                                                               .plus(
                                                                                   new Decimal(
-                                                                                      item?.order?.shippingCollected == 'collected' && item?.order?.paymentType == 'cash'
+                                                                                      (item?.order?.shippingCollected == 'collected' && item?.order?.paymentType == 'cash') ||
+                                                                                      item?.order?.paymentType == 'card'
                                                                                           ? 0
                                                                                           : item?.order?.shippingPrice || 0,
                                                                                   ),
@@ -933,7 +934,8 @@ const CourierSheet = (props) => {
                                                                                 ? new Decimal(previousOrder?.amountCollected || 0)
                                                                                       .plus(
                                                                                           new Decimal(
-                                                                                              previousOrder?.order?.shippingCollected == 'collected' && previousOrder?.order?.paymentType == 'cash'
+                                                                                              (previousOrder?.order?.shippingCollected == 'collected' && previousOrder?.order?.paymentType == 'cash') ||
+                                                                                              previousOrder?.order?.paymentType == 'card'
                                                                                                   ? 0
                                                                                                   : previousOrder?.order?.shippingPrice || 0,
                                                                                           ),
