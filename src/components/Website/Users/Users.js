@@ -16,6 +16,7 @@ import UserInfo from './UserInfo.js';
 import UsersTable from './UsersTable.js';
 import SelectComponent from '../../SelectComponent.js';
 import MultiSelect from '../../MultiSelect.js';
+import MerchantSelectComponent from '../../selectComponents/MerchantSelectComponent.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -48,14 +49,6 @@ const Users = (props) => {
 
     const fetchusers = useQueryGQL('', fetchUsers(), filterUsers);
     const { refetch: refetchUsers } = useQueryGQL('', fetchUsers(), filterUsers);
-
-    const [filterMerchants, setfilterMerchants] = useState({
-        isAsc: true,
-        limit: 10,
-        afterCursor: undefined,
-        beforeCursor: undefined,
-    });
-    const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filterMerchants);
 
     const [filterHubs, setfilterHubs] = useState({
         isAsc: true,
@@ -148,12 +141,8 @@ const Users = (props) => {
                                             <hr className="mt-2 mb-3" />
                                             <div class="row m-0 w-100">
                                                 <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                                    <SelectComponent
-                                                        title={'Merchant'}
-                                                        filter={filterMerchants}
-                                                        setfilter={setfilterMerchants}
-                                                        options={fetchMerchantsQuery}
-                                                        attr={'paginateMerchants'}
+                                                    <MerchantSelectComponent
+                                                        type="single"
                                                         payload={filterUsers}
                                                         payloadAttr={'merchantId'}
                                                         label={'name'}

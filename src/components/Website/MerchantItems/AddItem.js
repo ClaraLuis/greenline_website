@@ -22,6 +22,7 @@ import API from '../../../API/API.js';
 import SelectComponent from '../../SelectComponent.js';
 import Decimal from 'decimal.js';
 import FilesPopup from '../FilesPopup.js';
+import MerchantSelectComponent from '../../selectComponents/MerchantSelectComponent.js';
 
 const AddItem = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -319,15 +320,6 @@ const AddItem = (props) => {
     const handleColorClick = (color) => {
         setActiveColor(activeColor === color ? null : color);
     };
-
-    const [filterMerchants, setfilterMerchants] = useState({
-        isAsc: true,
-        limit: 10,
-        afterCursor: undefined,
-        beforeCursor: undefined,
-    });
-
-    const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
 
     useEffect(() => {
         const itemVariantsTemp = createVariantOptions([], 0);
@@ -1339,13 +1331,8 @@ const AddItem = (props) => {
 
                             {isAuth([1]) && (
                                 <div class="col-lg-6">
-                                    <SelectComponent
-                                        title={'Merchant'}
-                                        filter={filterMerchants}
-                                        setfilter={setfilterMerchants}
-                                        options={fetchMerchantsQuery}
-                                        // disabled={window.location.pathname == '/updateitem'}
-                                        attr={'paginateMerchants'}
+                                    <MerchantSelectComponent
+                                        type="single"
                                         label={'name'}
                                         value={'id'}
                                         removeAll={true}

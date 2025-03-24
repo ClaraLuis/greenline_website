@@ -16,6 +16,7 @@ import API from '../../../API/API.js';
 import Pagination from '../../Pagination.js';
 import SelectComponent from '../../SelectComponent.js';
 import ReturnsTable from '../MerchantHome/ReturnsTable.js';
+import InventorySelectComponent from '../../selectComponents/InventorySelectComponent.js';
 
 const InventoryReturns = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -31,13 +32,6 @@ const InventoryReturns = (props) => {
         toInventoryId: undefined,
         toMerchantId: undefined,
     });
-
-    const [filterInventories, setfilterInventories] = useState({
-        limit: 20,
-        afterCursor: null,
-        beforeCursor: null,
-    });
-    const fetchinventories = useQueryGQL('', fetchInventories(), filterInventories);
 
     const [filter, setfilter] = useState({
         limit: 20,
@@ -103,12 +97,8 @@ const InventoryReturns = (props) => {
                                         <hr className="mt-2 mb-3" />
                                         <div class="row m-0 w-100">
                                             <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                                <SelectComponent
-                                                    title={'Inventory'}
-                                                    filter={filterInventories}
-                                                    setfilter={setfilterInventories}
-                                                    options={fetchinventories}
-                                                    attr={'paginateInventories'}
+                                                <InventorySelectComponent
+                                                    type="single"
                                                     label={'name'}
                                                     value={'id'}
                                                     payload={filter}
@@ -222,12 +212,8 @@ const InventoryReturns = (props) => {
                         </div>
 
                         <div class={'col-lg-12'} style={{ marginBottom: '15px' }}>
-                            <SelectComponent
-                                title={'Inventory'}
-                                filter={filterInventories}
-                                setfilter={setfilterInventories}
-                                options={fetchinventories}
-                                attr={'paginateInventories'}
+                            <InventorySelectComponent
+                                type="single"
                                 label={'name'}
                                 value={'id'}
                                 payload={packagepayload}

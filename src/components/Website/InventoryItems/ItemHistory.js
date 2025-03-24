@@ -22,6 +22,8 @@ import API from '../../../API/API.js';
 import Pagination from '../../Pagination.js';
 import SelectComponent from '../../SelectComponent.js';
 import { AiOutlineClose } from 'react-icons/ai';
+import MerchantSelectComponent from '../../selectComponents/MerchantSelectComponent.js';
+import InventorySelectComponent from '../../selectComponents/InventorySelectComponent.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -43,16 +45,6 @@ const ItemHistory = (props) => {
     });
     const fetchinventories = useQueryGQL('', fetchInventories(), filterInventories);
 
-    const [filterMerchants, setfilterMerchants] = useState({
-        isAsc: true,
-        limit: 20,
-        afterCursor: undefined,
-        beforeCursor: undefined,
-    });
-    var fetchMerchantsQuery = undefined;
-    if (cookies.get('userInfo')?.type != 'merchant') {
-        fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
-    }
     const [fetchItemHistoryQuery, setfetchItemHistoryQuery] = useState({});
     const [fetchItemHistoryfilter, setfetchItemHistoryfilter] = useState({
         isAsc: true,
@@ -124,12 +116,8 @@ const ItemHistory = (props) => {
                                     <div class="row m-0 w-100">
                                         {cookies.get('merchantId') == undefined && cookies.get('userInfo')?.type != 'merchant' && (
                                             <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                                <SelectComponent
-                                                    title={'Merchant'}
-                                                    filter={filterMerchants}
-                                                    setfilter={setfilterMerchants}
-                                                    options={fetchMerchantsQuery}
-                                                    attr={'paginateMerchants'}
+                                                <MerchantSelectComponent
+                                                    type="single"
                                                     label={'name'}
                                                     value={'id'}
                                                     payload={fetchItemHistoryfilter}
@@ -142,12 +130,8 @@ const ItemHistory = (props) => {
                                         )}
 
                                         <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                            <SelectComponent
-                                                title={'Inventory'}
-                                                filter={filterInventories}
-                                                setfilter={setfilterInventories}
-                                                options={fetchinventories}
-                                                attr={'paginateInventories'}
+                                            <InventorySelectComponent
+                                                type="single"
                                                 label={'name'}
                                                 value={'id'}
                                                 payload={fetchItemHistoryfilter}

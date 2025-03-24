@@ -19,6 +19,8 @@ import API from '../../../API/API.js';
 import Pagination from '../../Pagination.js';
 import SelectComponent from '../../SelectComponent.js';
 import ItemsTable from '../MerchantItems/ItemsTable.js';
+import MerchantSelectComponent from '../../selectComponents/MerchantSelectComponent.js';
+import InventorySelectComponent from '../../selectComponents/InventorySelectComponent.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -39,20 +41,6 @@ const ImportNewItem = (props) => {
     });
     const [step, setstep] = useState(0);
     const [itemChosen, setitemChosen] = useState({});
-
-    const [filterInventories, setfilterInventories] = useState({
-        limit: 10,
-        afterCursor: null,
-        beforeCursor: null,
-    });
-    const [filterMerchants, setfilterMerchants] = useState({
-        isAsc: true,
-        limit: 10,
-        afterCursor: undefined,
-        beforeCursor: undefined,
-    });
-
-    const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filterMerchants);
 
     const [importNewMutation] = useMutationGQL(importNew(), {
         itemVariantId: props?.importItemPayload?.itemVariantId,
@@ -104,7 +92,6 @@ const ImportNewItem = (props) => {
         }
         setbuttonLoadingContext(false);
     };
-    const fetchinventories = useQueryGQL('', fetchInventories(), filterInventories);
     // const fetchRacksQuery = useQueryGQL('', fetchRacks(filter));
 
     const [merchantFilter, setmerchantFilter] = useState({
@@ -191,12 +178,8 @@ const ImportNewItem = (props) => {
                 {step == 0 && (
                     <div class="row m-0 w-100 py-2 pb-3">
                         <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                            <SelectComponent
-                                title={'Merchant'}
-                                filter={filterMerchants}
-                                setfilter={setfilterMerchants}
-                                options={fetchMerchantsQuery}
-                                attr={'paginateMerchants'}
+                            <MerchantSelectComponent
+                                type="single"
                                 label={'name'}
                                 value={'id'}
                                 payload={merchantFilter}
@@ -292,12 +275,8 @@ const ImportNewItem = (props) => {
                 {step == 1 && (
                     <div class="row m-0 w-100">
                         <div class={'col-lg-6'} style={{ marginBottom: '15px' }}>
-                            <SelectComponent
-                                title={'Inventory'}
-                                filter={filterInventories}
-                                setfilter={setfilterInventories}
-                                options={fetchinventories}
-                                attr={'paginateInventories'}
+                            <InventorySelectComponent
+                                type="single"
                                 label={'name'}
                                 value={'id'}
                                 payload={props?.importItemPayload}
@@ -534,12 +513,8 @@ const ImportNewItem = (props) => {
                             </div>
                         </div>
                         <div class={'col-lg-6'} style={{ marginBottom: '15px' }}>
-                            <SelectComponent
-                                title={'Inventory'}
-                                filter={filterInventories}
-                                setfilter={setfilterInventories}
-                                options={fetchinventories}
-                                attr={'paginateInventories'}
+                            <InventorySelectComponent
+                                type="single"
                                 label={'name'}
                                 value={'id'}
                                 payload={props?.importItemPayload}

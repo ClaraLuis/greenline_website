@@ -27,6 +27,7 @@ import MultiSelect from '../../MultiSelect.js';
 import { NotificationManager } from 'react-notifications';
 import Inputfield from '../../Inputfield.js';
 import { AiOutlineClose } from 'react-icons/ai';
+import MerchantSelectComponent from '../../selectComponents/MerchantSelectComponent.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -53,13 +54,7 @@ const MerchantOrders = (props) => {
     // const [fetchOrdersLazyQuey1] = useLazyQueryGQL(fetchOrders(), 'network-only');
     // const { refetch: refetchOrdersQuery } = useQueryGQL('cache-and-network', fetchOrders(), filterorders);
     //
-    const [filterMerchants, setfilterMerchants] = useState({
-        isAsc: true,
-        limit: 20,
-        afterCursor: undefined,
-        beforeCursor: undefined,
-    });
-    const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
+
     const [filterCouriers, setfilterCouriers] = useState({
         isAsc: true,
         limit: 10,
@@ -205,12 +200,8 @@ const MerchantOrders = (props) => {
 
                                             {isAuth([1]) && (
                                                 <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                                    <MultiSelect
-                                                        title={'Merchants'}
-                                                        filter={filterMerchants}
-                                                        setfilter={setfilterMerchants}
-                                                        options={fetchMerchantsQuery}
-                                                        attr={'paginateMerchants'}
+                                                    <MerchantSelectComponent
+                                                        type="multi"
                                                         label={'name'}
                                                         value={'id'}
                                                         selected={filterorders?.merchantIds}
@@ -637,12 +628,8 @@ const MerchantOrders = (props) => {
                 <Modal.Body>
                     <div class="row m-0 w-100 py-2">
                         <div class={'col-lg-12'} style={{ marginBottom: '15px' }}>
-                            <SelectComponent
-                                title={'Merchant'}
-                                filter={filterMerchants}
-                                setfilter={setfilterMerchants}
-                                options={fetchMerchantsQuery}
-                                attr={'paginateMerchants'}
+                            <MerchantSelectComponent
+                                type="single"
                                 label={'name'}
                                 value={'id'}
                                 onClick={(option) => {

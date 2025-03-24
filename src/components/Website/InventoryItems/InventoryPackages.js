@@ -20,6 +20,7 @@ import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 import { TbTruckDelivery } from 'react-icons/tb';
 import SelectComponent from '../../SelectComponent.js';
 import Cookies from 'universal-cookie';
+import InventorySelectComponent from '../../selectComponents/InventorySelectComponent.js';
 
 const InventoryPackages = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -54,13 +55,6 @@ const InventoryPackages = (props) => {
 
     const [barcode, setBarcode] = useState('');
     const [search, setSearch] = useState('');
-
-    const [filterInventories, setfilterInventories] = useState({
-        limit: 20,
-        afterCursor: null,
-        beforeCursor: null,
-    });
-    const fetchinventories = useQueryGQL('', fetchInventories(), filterInventories);
 
     useEffect(() => {
         const handleKeyDown = async (e) => {
@@ -181,12 +175,8 @@ const InventoryPackages = (props) => {
                                                 </div>
                                                 {!cookies.get('userInfo')?.inventoryId && (
                                                     <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                                        <SelectComponent
-                                                            title={'Inventory'}
-                                                            filter={filterInventories}
-                                                            setfilter={setfilterInventories}
-                                                            options={fetchinventories}
-                                                            attr={'paginateInventories'}
+                                                        <InventorySelectComponent
+                                                            type="single"
                                                             label={'name'}
                                                             value={'id'}
                                                             payload={filter}

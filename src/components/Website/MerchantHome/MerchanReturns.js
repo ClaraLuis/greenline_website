@@ -17,6 +17,7 @@ import API from '../../../API/API.js';
 import Pagination from '../../Pagination.js';
 import SelectComponent from '../../SelectComponent.js';
 import ReturnsTable from './ReturnsTable.js';
+import MerchantSelectComponent from '../../selectComponents/MerchantSelectComponent.js';
 
 const MerchanReturns = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -35,13 +36,6 @@ const MerchanReturns = (props) => {
         toMerchantId: undefined,
     });
 
-    const [filterMerchants, setfilterMerchants] = useState({
-        isAsc: true,
-        limit: 10,
-        afterCursor: undefined,
-        beforeCursor: undefined,
-    });
-    const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
     const [findItemReturnByOrderQuery] = useLazyQueryGQL(findItemReturnByOrder());
 
     const [filter, setfilter] = useState({
@@ -182,12 +176,8 @@ const MerchanReturns = (props) => {
                                         <hr className="mt-2 mb-3" />
                                         <div class="row m-0 w-100">
                                             <div class={'col-lg-4'} style={{ marginBottom: '15px' }}>
-                                                <SelectComponent
-                                                    title={'Merchant'}
-                                                    filter={filterMerchants}
-                                                    setfilter={setfilterMerchants}
-                                                    options={fetchMerchantsQuery}
-                                                    attr={'paginateMerchants'}
+                                                <MerchantSelectComponent
+                                                    type="single"
                                                     label={'name'}
                                                     value={'id'}
                                                     payload={filter}

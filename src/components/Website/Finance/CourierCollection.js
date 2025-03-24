@@ -24,6 +24,7 @@ import SelectComponent from '../../SelectComponent.js';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 import TransactionsTable from './TransactionsTable.js';
 import Decimal from 'decimal.js';
+import MerchantSelectComponent from '../../selectComponents/MerchantSelectComponent.js';
 const CourierCollection = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
@@ -89,14 +90,7 @@ const CourierCollection = (props) => {
             merchantIds: undefined,
         });
     }, []);
-    const [filterMerchants, setfilterMerchants] = useState({
-        isAsc: true,
-        limit: 10,
-        afterCursor: undefined,
-        beforeCursor: undefined,
-    });
 
-    const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
     // const { refetch: refetchCourierCollectionTransactionsQuery } = useQueryGQL('', fetchCourierCollectionTransactions(), filterobj);
     const refetchCourierCollectionTransactionsQuery = () => fetchCourierCollectionTransactionsQuery.refetch();
 
@@ -182,12 +176,8 @@ const CourierCollection = (props) => {
                                         <hr className="mt-2 mb-3" />
                                         <div class="row m-0 w-100">
                                             <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                                <SelectComponent
-                                                    title={'Merchant'}
-                                                    filter={filterMerchants}
-                                                    setfilter={setfilterMerchants}
-                                                    options={fetchMerchantsQuery}
-                                                    attr={'paginateMerchants'}
+                                                <MerchantSelectComponent
+                                                    type="single"
                                                     label={'name'}
                                                     value={'id'}
                                                     onClick={(option) => {

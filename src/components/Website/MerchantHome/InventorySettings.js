@@ -26,6 +26,7 @@ import { IoMdTime } from 'react-icons/io';
 import Decimal from 'decimal.js';
 import Cookies from 'universal-cookie';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
+import MerchantSelectComponent from '../../selectComponents/MerchantSelectComponent.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -226,19 +227,14 @@ const InventorySettings = (props) => {
             };
         });
     };
-    const [filterMerchants, setfilterMerchants] = useState({
-        isAsc: true,
-        limit: 10,
-        afterCursor: undefined,
-        beforeCursor: undefined,
-    });
+
     const dateformatterDayAndMonth = (date) => {
         const d = new Date(date);
         const day = d.getDate();
         const month = d.toLocaleString('default', { month: 'long' });
         return `${day} ${month}`;
     };
-    const fetchMerchantsQuery = useQueryGQL('', fetchMerchants(), filterMerchants);
+
     const getFirstDayOfNextMonth = () => {
         const today = new Date();
         const firstDayNextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1);
@@ -254,12 +250,8 @@ const InventorySettings = (props) => {
             {!queryParameters.get('merchantId') && (
                 <div class="col-lg-12 p-0">
                     <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                        <SelectComponent
-                            title={'Merchant'}
-                            filter={filterMerchants}
-                            setfilter={setfilterMerchants}
-                            options={fetchMerchantsQuery}
-                            attr={'paginateMerchants'}
+                        <MerchantSelectComponent
+                            type="single"
                             label={'name'}
                             value={'id'}
                             onClick={(option) => {

@@ -26,6 +26,7 @@ import { defaultstyles } from '../Generalfiles/selectstyles.js';
 import SkuPrint from '../MerchantItems/SkuPrint.js';
 import ImportNewItem from './ImportNewItem.js';
 import ItemInfo from './ItemInfo.js';
+import MerchantSelectComponent from '../../selectComponents/MerchantSelectComponent.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -40,7 +41,6 @@ const InventoryItems = (props) => {
         useMutationGQL,
         addInventory,
         fetchItemsInBox,
-        fetchMerchants,
         importNew,
         fetchItemHistory,
         exportItem,
@@ -93,16 +93,7 @@ const InventoryItems = (props) => {
         afterCursor: null,
         beforeCursor: null,
     });
-    const [filterMerchants, setfilterMerchants] = useState({
-        isAsc: true,
-        limit: 20,
-        afterCursor: undefined,
-        beforeCursor: undefined,
-    });
-    var fetchMerchantsQuery = undefined;
-    if (cookies.get('userInfo')?.type != 'merchant') {
-        fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
-    }
+
     const [addInvrntoryMutation] = useMutationGQL(addInventory(), {
         name: inventoryPayload?.name,
         location: { long: 0.0, lat: 0.0 },
@@ -334,11 +325,8 @@ const InventoryItems = (props) => {
                                         <hr className="mt-2 mb-3" />
                                         <div class="row m-0 w-100">
                                             <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                                <MultiSelect
-                                                    title={'Merchants'}
-                                                    filter={filterMerchants}
-                                                    setfilter={setfilterMerchants}
-                                                    options={fetchMerchantsQuery}
+                                                <MerchantSelectComponent
+                                                    type="multi"
                                                     attr={'paginateMerchants'}
                                                     label={'name'}
                                                     value={'id'}
