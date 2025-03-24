@@ -4,17 +4,16 @@ import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
+import { Modal } from 'react-bootstrap';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
 import { FaLayerGroup } from 'react-icons/fa';
 import { components } from 'react-select';
-import { Modal } from 'react-bootstrap';
 
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
-import API from '../../../API/API.js';
-import ImportNewItem from '../InventoryItems/ImportNewItem.js';
-import { MdOutlineInventory2 } from 'react-icons/md';
 import { IoMdClose } from 'react-icons/io';
+import { MdOutlineInventory2 } from 'react-icons/md';
+import API from '../../../API/API.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -25,15 +24,6 @@ const ReturnsTable = (props) => {
     const { useQueryGQL } = API();
     const [importItemModel, setimportItemModel] = useState(false);
 
-    const [importItemPayload, setimportItemPayload] = useState({
-        itemSku: '',
-        ownedByOneMerchant: true,
-        palletId: '',
-        inventoryId: '',
-        boxName: '',
-        count: 0,
-        minCount: 0,
-    });
     const [inventoryModal, setinventoryModal] = useState({ open: false, items: [] });
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -297,7 +287,6 @@ const ReturnsTable = (props) => {
                     </div>
                 </Modal.Body>
             </Modal>
-            <ImportNewItem openModal={importItemModel} setopenModal={setimportItemModel} importItemPayload={importItemPayload} setimportItemPayload={setimportItemPayload} />
         </>
     );
 };

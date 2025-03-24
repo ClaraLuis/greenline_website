@@ -13,7 +13,6 @@ import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 import { TbEdit, TbEye, TbMinus, TbPlus } from 'react-icons/tb';
 import Cookies from 'universal-cookie';
 import API from '../../../API/API.js';
-import ImportNewItem from '../InventoryItems/ImportNewItem.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -24,16 +23,6 @@ const ItemsTable = (props) => {
     const { useQueryGQL } = API();
     const [importItemModel, setimportItemModel] = useState(false);
     const cookies = new Cookies();
-
-    const [importItemPayload, setimportItemPayload] = useState({
-        itemSku: '',
-        ownedByOneMerchant: true,
-        palletId: '',
-        inventoryId: '',
-        boxName: '',
-        count: 0,
-        minCount: 0,
-    });
 
     const { lang, langdetect } = useContext(LanguageContext);
 
@@ -226,7 +215,6 @@ const ItemsTable = (props) => {
                     })}
                 </div>
             )}
-            <ImportNewItem openModal={importItemModel} setopenModal={setimportItemModel} importItemPayload={importItemPayload} setimportItemPayload={setimportItemPayload} />
         </>
     );
 };
