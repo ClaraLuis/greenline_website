@@ -368,7 +368,7 @@ const MerchanReturns = (props) => {
                         <div class="col-lg-12 p-0 allcentered">
                             <button
                                 onClick={async () => {
-                                    if (!isAuth([1, 98])) {
+                                    if (!isAuth([1, 98, 100])) {
                                         NotificationManager.warning('Not Authorized', 'Warning!');
                                         return;
                                     }
