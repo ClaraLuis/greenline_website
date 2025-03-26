@@ -334,10 +334,10 @@ const API = () => {
             }
         `;
     };
-    const addOrdersToCourierSheet = () => {
+    const updateOrdersInCourierSheet = () => {
         return gql`
-            mutation addOrdersToCourierSheet($input: AddOrdersToCourierSheetInput!) {
-                addOrdersToCourierSheet(input: $input)
+            mutation updateOrdersInCourierSheet($input: UpdateOrdersInCourierSheetInput!) {
+                updateOrdersInCourierSheet(input: $input)
             }
         `;
     };
@@ -3081,7 +3081,7 @@ const API = () => {
         fetchCourierOrders,
         createInventory,
         addCourierSheet,
-        addOrdersToCourierSheet,
+        updateOrdersInCourierSheet,
         fetchCourierSheets,
         fetchCourierSheet,
         updateCourierSheet,

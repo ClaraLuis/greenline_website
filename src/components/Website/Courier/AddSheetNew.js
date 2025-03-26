@@ -22,7 +22,7 @@ const AddSheetNew = (props) => {
     let history = useHistory();
     const { setpageactive_context, setpagetitle_context, setchosenOrderContext, orderStatusEnumContext, user, isAuth, buttonLoadingContext, setbuttonLoadingContext } =
         useContext(Contexthandlerscontext);
-    const { useQueryGQL, updateupdateOrderIdsStatus, addCourierSheet, addOrdersToCourierSheet, useMutationGQL, fetchCouriers, fetchCourierSheet, useLazyQueryGQL, fetchHubs } = API();
+    const { useQueryGQL, updateupdateOrderIdsStatus, addCourierSheet, updateOrdersInCourierSheet, useMutationGQL, fetchCouriers, fetchCourierSheet, useLazyQueryGQL, fetchHubs } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
 
@@ -34,6 +34,7 @@ const AddSheetNew = (props) => {
         courier: '',
         orders: [],
         orderIds: [],
+        orderIdsToRemove: [],
     });
 
     const [search, setsearch] = useState('');
@@ -73,9 +74,10 @@ const AddSheetNew = (props) => {
         toHubId: sheetpayload?.toHubId,
     });
 
-    const [addOrdersToCourierSheetMutation] = useMutationGQL(addOrdersToCourierSheet(), {
+    const [updateOrdersInCourierSheetMutation] = useMutationGQL(updateOrdersInCourierSheet(), {
         sheetId: parseInt(queryParameters.get('sheetId')),
         orderIds: sheetpayload?.orderIds,
+        orderIdsToRemove: sheetpayload?.orderIdsToRemove?.length ? sheetpayload?.orderIdsToRemove : undefined,
     });
 
     const handleAddCourierSheet = async () => {
@@ -83,12 +85,12 @@ const AddSheetNew = (props) => {
         setbuttonLoadingContext(true);
         if (queryParameters.get('sheetId')) {
             try {
-                const { data } = await addOrdersToCourierSheetMutation();
-                if (data?.addOrdersToCourierSheet?.success == true) {
+                const { data } = await updateOrdersInCourierSheetMutation();
+                if (data?.updateOrdersInCourierSheet?.success == true) {
                     NotificationManager.success('Manifest Updated Successfully', 'Success');
                     history.push('/couriersheets');
                 } else {
-                    NotificationManager.warning(data?.addOrdersToCourierSheet?.message, 'Warning!');
+                    NotificationManager.warning(data?.updateOrdersInCourierSheet?.message, 'Warning!');
                 }
             } catch (error) {
                 // alert(JSON.stringify(error));
@@ -359,37 +361,70 @@ const AddSheetNew = (props) => {
                 </div>
 
                 <div class="col-lg-12">
-                    <div class={' row m-0 w-100 scrollmenuclasssubscrollbar'} style={{ overflow: 'scroll' }}>
-                        <div class="col-lg-12 p-0">
+                    <div class={' row m-0 w-100 scrollmenuclasssubscrollbar pb-5'} style={{ overflow: 'scroll', maxHeight: '40vh' }}>
+                        <div class="col-lg-12 p-0 pb-5">
                             <>
                                 {sheetpayload?.ordersOld?.length != 0 && (
                                     <div class="col-lg-12 p-0">
-                                        <div style={{ maxHeight: '40vh', overflow: 'scroll' }} class="row m-0 w-100 scrollmenuclasssubscrollbar">
+                                        <div class="row m-0 w-100 ">
                                             {sheetpayload?.ordersOld?.map((item, index) => {
+                                                var selected = sheetpayload?.orderIdsToRemove?.includes(item.id) || false;
+
                                                 return (
                                                     <div class={' col-lg-3 '}>
                                                         <div
-                                                            style={{ cursor: 'pointer' }}
-                                                            onClick={async () => {
+                                                            style={{ cursor: 'pointer', background: selected ? '#fdede8' : 'white', transition: '0.4s' }}
+                                                            onClick={async (e) => {
+                                                                e.stopPropagation();
                                                                 await setchosenOrderContext(undefined);
                                                                 window.open('/orderinfo?orderId=' + item?.id, '_self');
                                                             }}
                                                             class={generalstyles.card + ' p-2 row m-0 mb-3 w-100 allcentered'}
                                                         >
-                                                            <div className="col-lg-4 p-0">
+                                                            <div className="col-lg-2 p-0">
                                                                 <span style={{ fontWeight: 700 }}># {item?.id}</span>
                                                             </div>
-                                                            <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
+                                                            <div className="col-lg-10 p-0 d-flex justify-content-end align-items-center">
                                                                 <div
-                                                                    className={
+                                                                    className={`${
                                                                         item.status == 'delivered'
                                                                             ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered text-capitalize '
                                                                             : item?.status == 'postponed' || item?.status == 'failedDeliveryAttempt text-capitalize'
                                                                             ? ' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 allcentered text-capitalize '
                                                                             : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered text-capitalize '
-                                                                    }
+                                                                    } mx-2`}
                                                                 >
                                                                     {item?.status?.split(/(?=[A-Z])/).join(' ')}
+                                                                </div>
+                                                                <div
+                                                                    style={{ width: '20px', height: '20px' }}
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        var temp = { ...sheetpayload };
+                                                                        var exist = false;
+                                                                        var ind = undefined;
+                                                                        temp?.orderIdsToRemove?.map((i, ii) => {
+                                                                            if (i == item.id) {
+                                                                                exist = true;
+                                                                                ind = ii;
+                                                                            }
+                                                                        });
+
+                                                                        if (!exist) {
+                                                                            temp?.orderIdsToRemove?.push(parseInt(item.id));
+                                                                        } else {
+                                                                            temp.orderIdsToRemove.splice(ind, 1);
+                                                                        }
+
+                                                                        setsheetpayload({ ...temp });
+                                                                    }}
+                                                                    class="text-danger text-dangerhover allcentered "
+                                                                >
+                                                                    {' '}
+                                                                    <BsTrash
+
+                                                                    // size={12}
+                                                                    />
                                                                 </div>
                                                             </div>
                                                             <div className="col-lg-12 p-0 my-2">
@@ -407,7 +442,7 @@ const AddSheetNew = (props) => {
                                 )}
                                 {sheetpayload?.orderIds?.length != 0 && (
                                     <div class="col-lg-12 p-0">
-                                        <div style={{ maxHeight: '40vh', overflow: 'scroll' }} class="row m-0 w-100 scrollmenuclasssubscrollbar">
+                                        <div class="row m-0 w-100 ">
                                             {sheetpayload?.orderIds?.map((item, index) => {
                                                 return (
                                                     <div class={' col-lg-3 '}>
