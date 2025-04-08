@@ -1259,7 +1259,11 @@ const OrderInfo = (props) => {
                                                             style={{ height: '30px', width: '30px' }}
                                                             class="iconhover allcentered"
                                                             onClick={async () => {
-                                                                setorderpayload({ ...orderpayload, customerId: chosenOrderContext?.merchantCustomer?.customer?.id });
+                                                                setorderpayload({
+                                                                    ...orderpayload,
+                                                                    customerIdForAddress: chosenOrderContext?.merchantCustomer?.customer?.id,
+                                                                    customerId: chosenOrderContext?.merchantCustomer?.customer?.id,
+                                                                });
                                                                 if (chosenOrderContext?.merchantCustomer?.customer?.id) {
                                                                     var { data } = await fetchCustomerAddressesQuery({
                                                                         variables: {
