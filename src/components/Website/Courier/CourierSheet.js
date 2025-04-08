@@ -354,13 +354,14 @@ const CourierSheet = (props) => {
                         submitSheetPayload?.updateSheetOrderstemp?.map((i, ii) => {
                             if (item?.order?.id == i.orderId) {
                                 tempsheetpayload = i;
-                                if (status == 'Accepted' && ((type == 'admin' && i?.status == 'adminAccepted') || (type != 'admin' && i?.status == 'financeAccepted'))) {
-                                    show = true;
-                                }
+                                // if (status == 'Accepted' && ((type == 'admin' && i?.status == 'adminAccepted') || (type != 'admin' && i?.status == 'financeAccepted'))) {
+                                //     show = true;
+                                // }
 
-                                if (status == 'Not' && ((type == 'admin' && i?.status != 'adminAccepted') || (type != 'admin' && i?.status != 'financeAccepted'))) {
-                                    show = true;
-                                }
+                                // if (status == 'Not' && ((type == 'admin' && i?.status != 'adminAccepted') || (type != 'admin' && i?.status != 'financeAccepted'))) {
+                                //     show = true;
+                                // }
+                                show = true;
                             }
                         });
                         if (item?.order?.previousOrderId && item?.order?.type == 'exchange') {
@@ -1419,7 +1420,7 @@ const CourierSheet = (props) => {
                 <div class={'col-lg-12 p-0'}>
                     <Accordion allowMultipleExpanded expanded={expandedItems} preExpanded={expandedItems}>
                         <div class="row m-0 w-100">
-                            {fetchCourierSheets('Not')}
+                            {/* {fetchCourierSheets('Not')} */}
                             {fetchCourierSheets('Accepted')}
                         </div>{' '}
                     </Accordion>
