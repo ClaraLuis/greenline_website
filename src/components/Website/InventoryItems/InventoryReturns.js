@@ -229,7 +229,7 @@ const InventoryReturns = (props) => {
                             <button
                                 disabled={buttonLoadingContext}
                                 onClick={async () => {
-                                    if (isAuth([1, 99, 100])) {
+                                    if (!isAuth([1, 99, 100])) {
                                         NotificationManager.warning('Not Authorized', 'Warning!');
                                         return;
                                     }
