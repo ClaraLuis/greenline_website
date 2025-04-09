@@ -38,13 +38,6 @@ const ItemHistory = (props) => {
     const { lang, langdetect } = useContext(LanguageContext);
     const [search, setSearch] = useState('');
 
-    const [filterInventories, setfilterInventories] = useState({
-        limit: 10,
-        afterCursor: null,
-        beforeCursor: null,
-    });
-    const fetchinventories = useQueryGQL('', fetchInventories(), filterInventories);
-
     const [fetchItemHistoryQuery, setfetchItemHistoryQuery] = useState({});
     const [fetchItemHistoryfilter, setfetchItemHistoryfilter] = useState({
         isAsc: true,
@@ -54,12 +47,21 @@ const ItemHistory = (props) => {
     });
 
     const fetchitemhistorfunc = async () => {
-        var { data } = await fetchItemHistorLazyQuery({
-            variables: {
-                input: { ...fetchItemHistoryfilter, name: queryParameters?.get('id') },
-            },
-        });
-        setfetchItemHistoryQuery(data);
+        if (fetchItemHistoryfilter?.name == undefined) {
+            var { data } = await fetchItemHistorLazyQuery({
+                variables: {
+                    input: { ...fetchItemHistoryfilter, name: queryParameters?.get('id') },
+                },
+            });
+            setfetchItemHistoryQuery(data);
+        } else {
+            var { data } = await fetchItemHistorLazyQuery({
+                variables: {
+                    input: { ...fetchItemHistoryfilter },
+                },
+            });
+            setfetchItemHistoryQuery(data);
+        }
     };
 
     const [fetchItemHistorLazyQuery] = useLazyQueryGQL(fetchItemHistory());
@@ -70,10 +72,17 @@ const ItemHistory = (props) => {
     }, []);
 
     useEffect(() => {
-        fetchitemhistorfunc();
-    }, [queryParameters?.get('id'), fetchItemHistoryfilter]);
+        if (queryParameters?.get('id')) {
+            fetchitemhistorfunc();
+        }
+    }, [queryParameters?.get('id')]);
     useEffect(() => {
-        setfetchItemHistoryfilter({ ...fetchItemHistoryfilter, merchantId: parseInt(cookies.get('merchantId')) });
+        fetchitemhistorfunc();
+    }, [fetchItemHistoryfilter]);
+    useEffect(() => {
+        if (cookies.get('merchantId')) {
+            setfetchItemHistoryfilter({ ...fetchItemHistoryfilter, merchantId: parseInt(cookies.get('merchantId')) });
+        }
     }, [cookies.get('merchantId')]);
 
     return (
