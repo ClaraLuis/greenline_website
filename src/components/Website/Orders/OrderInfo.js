@@ -80,6 +80,7 @@ const OrderInfo = (props) => {
         findAllZones,
         fetchCustomerAddresses,
         createAddress,
+        addCustomer,
     } = API();
     const steps = ['Merchant Info', 'Shipping', 'Inventory Settings'];
     const [inventoryModal, setinventoryModal] = useState({ open: false, items: [] });
@@ -266,6 +267,12 @@ const OrderInfo = (props) => {
         freeShipping: requestReturnPayload?.freeShipping == 0 ? false : true,
         merchantId: isAuth([1]) ? requestReturnPayload?.chosenOrderContext?.merchant?.id : undefined,
     });
+    const [addCustomerMutation] = useMutationGQL(addCustomer(), {
+        name: orderpayload?.user,
+        phone: orderpayload?.phone,
+        email: orderpayload?.email,
+        merchantId: chosenOrderContext?.merchant?.id,
+    });
     const fetchOrder = async () => {
         if (queryParameters.get('orderId')) {
             var { data } = await fetchOneOrderLazyQuery({
@@ -280,6 +287,26 @@ const OrderInfo = (props) => {
             }
             console.log(data);
         }
+    };
+    const handleAddCustomer = async () => {
+        if (buttonLoadingContext) return;
+        setbuttonLoadingContext(true);
+        try {
+            const { data } = await addCustomerMutation();
+        } catch (error) {
+            let errorMessage = 'An unexpected error occurred';
+            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                errorMessage = error.graphQLErrors[0].message || errorMessage;
+            } else if (error.networkError) {
+                errorMessage = error.networkError.message || errorMessage;
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+
+            NotificationManager.warning(errorMessage, 'Warning!');
+            console.error('Error adding user:', error);
+        }
+        setbuttonLoadingContext(false);
     };
     useEffect(() => {
         setpagetitle_context('Merchant');
@@ -703,9 +730,12 @@ const OrderInfo = (props) => {
                                                     <>
                                                         <div className="col-lg-3 p-0">
                                                             <div class="row m-0 w-100 d-flex align-items-center">
-                                                                <span style={{ fontWeight: 600 }} class="text-capitalize">
-                                                                    {chosenOrderContext?.courier?.name}{' '}
-                                                                </span>
+                                                                {cookies.get('userInfo')?.type == 'merchant' && (
+                                                                    <span style={{ fontWeight: 600 }} class="text-capitalize">
+                                                                        {chosenOrderContext?.courier?.name}{' '}
+                                                                    </span>
+                                                                )}
+
                                                                 <div style={{ background: '#eee', color: 'black' }} className={' wordbreak rounded-pill font-weight-600 allcentered mx-1 '}>
                                                                     # {chosenOrderContext?.sheetOrder?.sheetId}
                                                                 </div>
@@ -799,9 +829,11 @@ const OrderInfo = (props) => {
                                                     <>
                                                         <div className="col-lg-4 p-0">
                                                             <div class="row m-0 w-100 d-flex align-items-center">
-                                                                <span style={{ fontWeight: 600 }} class="text-capitalize">
-                                                                    {chosenOrderContext?.returnPackage?.courier?.name}{' '}
-                                                                </span>
+                                                                {cookies.get('userInfo')?.type == 'merchant' && (
+                                                                    <span style={{ fontWeight: 600 }} class="text-capitalize">
+                                                                        {chosenOrderContext?.returnPackage?.courier?.name}{' '}
+                                                                    </span>
+                                                                )}
                                                                 <div style={{ background: '#eee', color: 'black' }} className={' wordbreak rounded-pill font-weight-600 allcentered mx-1 '}>
                                                                     # {chosenOrderContext?.returnPackage?.id}
                                                                 </div>

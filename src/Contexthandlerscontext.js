@@ -69,10 +69,15 @@ export const Contexthandlerscontext_provider = (props) => {
         const cookies = new Cookies();
         var user = cookies.get('userInfo');
         // alert(JSON.stringify(user?.permissions));
+        const admin = user?.permissions?.some((x) => x.permissionId === 1) || false;
+
         var acceptedPermissions = permissions.filter((e) => user?.permissions?.map((x) => x.permissionId).includes(e));
         show = acceptedPermissions?.length > 0;
-
-        return show;
+        if (admin) {
+            return true;
+        } else {
+            return show;
+        }
     };
 
     const [chosenMerchantContext, setchosenMerchantContext] = useState({});
@@ -228,7 +233,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/itemhistory',
                         permissionpage: [1],
-                        show: isAuth([1]),
+                        show: isAuth([1, 52]),
                     },
                 ],
             },

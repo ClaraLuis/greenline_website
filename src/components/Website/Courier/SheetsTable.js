@@ -77,7 +77,7 @@ const SheetsTable = (props) => {
                                                         })} */}
                                                         {item?.status?.split(/(?=[A-Z])/).join(' ')}
                                                     </div>
-                                                    {(parseInt(item?.orderCount) == 0 || item.status == 'idle') && (
+                                                    {(parseInt(item?.orderCount) == 0 || item.status == 'inProgress') && (
                                                         <Dropdown>
                                                             <Dropdown.Toggle>
                                                                 <div
@@ -135,7 +135,7 @@ const SheetsTable = (props) => {
                                                                         </p>
                                                                     </Dropdown.Item>
                                                                 )}
-                                                                {item.status == 'idle' && (
+                                                                {item.status == 'inProgress' && (
                                                                     <Dropdown.Item
                                                                         onClick={() => {
                                                                             history.push('/addsheet?sheetId=' + item?.id);
