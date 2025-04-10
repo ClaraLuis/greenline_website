@@ -31,6 +31,7 @@ import * as XLSX from 'xlsx';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
 import Decimal from 'decimal.js';
 import MerchantSelectComponent from '../../selectComponents/MerchantSelectComponent.js';
+import TransactionsTableView from './TransactionsTableView.js';
 
 const MerchantPayments = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -438,8 +439,8 @@ const MerchantPayments = (props) => {
                                             setfilter={setfilterobj}
                                         />
                                     </div>
-                                    <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
-                                        <TransactionsTable
+                                    <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar px-3 py-0 '}>
+                                        <TransactionsTableView
                                             width={'50%'}
                                             query={fetchMerchantPaymentTransactionsQuery}
                                             paginationAttr="paginateMerchantPaymentTransactions"

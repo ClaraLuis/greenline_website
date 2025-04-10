@@ -27,6 +27,7 @@ import { NotificationManager } from 'react-notifications';
 import Pagination from '../../Pagination.js';
 import SelectComponent from '../../SelectComponent.js';
 import * as XLSX from 'xlsx';
+import TransactionsTableView from './TransactionsTableView.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -376,8 +377,8 @@ const FinanceTransactions = (props) => {
                                     setfilter={setfilterTransactionsObj}
                                 />
                             </div>
-                            <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
-                                <TransactionsTable
+                            <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar py-0 px-3 '}>
+                                <TransactionsTableView
                                     hasOrder={true}
                                     width={'50%'}
                                     query={fetchAllTransactionsQuery}
