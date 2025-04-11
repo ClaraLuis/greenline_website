@@ -17,7 +17,7 @@ import { IoMdClose } from 'react-icons/io';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import API from '../../../API/API.js';
 import MultiSelect from '../../MultiSelect.js';
-import TransactionsTable from './TransactionsTable.js';
+import TransactionsTableView from './TransactionsTableView.js';
 import * as XLSX from 'xlsx';
 import Cookies from 'universal-cookie';
 import Pagination from '../../Pagination.js';
@@ -325,9 +325,9 @@ const Finance = (props) => {
                                     setfilter={setfilterobj}
                                 />
                             </div>
-                            <div className={' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
+                            <div className={' col-lg-12 table_responsive  scrollmenuclasssubscrollbar px-3 py-0 '}>
                                 <div class="row m-0 w-100">
-                                    <TransactionsTable
+                                    <TransactionsTableView
                                         width={'50%'}
                                         query={fetchMerchantPaymentTransactionsQuery}
                                         paginationAttr="paginateMerchantPaymentTransactions"

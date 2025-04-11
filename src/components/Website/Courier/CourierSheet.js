@@ -601,12 +601,12 @@ const CourierSheet = (props) => {
                                                                             }}
                                                                         />
                                                                     </div>
-                                                                    <div className="col-lg-12">
+                                                                    {/* <div className="col-lg-12">
                                                                         <span style={{ fontWeight: 400, fontSize: '11px' }}>Collected</span>:{' '}
                                                                         <span style={{ fontWeight: 600, fontSize: '12px' }}>
                                                                             {item?.amountCollected ? new Decimal(item?.amountCollected).toFixed(2) : '0.00'} {item?.order?.currency}
                                                                         </span>
-                                                                    </div>
+                                                                    </div> */}
                                                                 </div>
                                                             </div>
                                                         )}
@@ -729,6 +729,73 @@ const CourierSheet = (props) => {
                                                     <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-3">
                                                         <div className="row m-0 w-100">
                                                             <div className="col-lg-12 p-0 allcentered text-center">
+                                                                <span style={{ fontWeight: 400, fontSize: '11px' }}>Courier Collected</span>
+                                                            </div>
+                                                            <div className="col-lg-12 p-0 allcentered text-center">
+                                                                <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                    {item?.amountCollected ? new Decimal(item?.amountCollected).toFixed(2) : '0.00'} {item?.order?.currency}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-3">
+                                                        <div className="row m-0 w-100">
+                                                            <div className="col-lg-12 p-0 allcentered text-center">
+                                                                <span style={{ fontWeight: 400, fontSize: '11px' }}>Shipping Price</span>
+                                                            </div>
+                                                            <div className="col-lg-12 p-0 allcentered text-center">
+                                                                <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                    {item?.order?.paymentType != 'card'
+                                                                        ? new Decimal(item?.order?.paymentType == 'cash' ? item?.order?.shippingPrice || 0 : 0).toFixed(2)
+                                                                        : 0}{' '}
+                                                                    {item?.order?.currency}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div style={{ fontWeight: 600, fontSize: '15px', borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-3">
+                                                        <div className="row m-0 w-100">
+                                                            <div className="col-lg-12 p-0 allcentered text-center">
+                                                                <span style={{ fontWeight: 400, fontSize: '11px' }}>Total</span>
+                                                            </div>
+                                                            <div className="col-lg-12 p-0 allcentered text-center">
+                                                                <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                    {new Decimal(item?.order?.price || 0)
+                                                                        .plus(new Decimal(item?.order?.paymentType == 'cash' ? item?.order?.shippingPrice || 0 : 0))
+                                                                        .toFixed(2)}{' '}
+                                                                    {item?.order?.currency}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div style={{}} className="p-0 mb-2 allcentered col-lg-3">
+                                                        <div className="row m-0 w-100">
+                                                            <div className="col-lg-12 p-0 allcentered text-center">
+                                                                <span style={{ fontWeight: 400, fontSize: '11px' }}>Finance Received</span>
+                                                            </div>
+                                                            <div className="col-lg-12 p-0 allcentered text-center">
+                                                                <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                    {type != 'admin' && tempsheetpayload?.status == 'financeAccepted'
+                                                                        ? new Decimal(item?.amountCollected || 0)
+                                                                              .plus(
+                                                                                  new Decimal(
+                                                                                      item?.order?.paymentType == 'card' ||
+                                                                                      !(item?.order?.shippingCollected == 'collected' && item?.order?.paymentType == 'cash')
+                                                                                          ? 0
+                                                                                          : item?.order?.shippingPrice || 0,
+                                                                                  ),
+                                                                              )
+                                                                              .toFixed(2)
+                                                                        : '0.00'}{' '}
+                                                                    {item?.order?.currency}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {/* old */}
+                                                    {/* <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-3">
+                                                        <div className="row m-0 w-100">
+                                                            <div className="col-lg-12 p-0 allcentered text-center">
                                                                 <span style={{ fontWeight: 400, fontSize: '11px' }}>Finance Received</span>
                                                             </div>
                                                             <div className="col-lg-12 p-0 allcentered text-center">
@@ -791,7 +858,7 @@ const CourierSheet = (props) => {
                                                                 </span>
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    </div> */}
                                                 </div>
                                             </div>
                                         )}
@@ -907,13 +974,13 @@ const CourierSheet = (props) => {
                                                                                     }}
                                                                                 />
                                                                             </div>
-                                                                            <div className="col-lg-12">
+                                                                            {/* <div className="col-lg-12">
                                                                                 <span style={{ fontWeight: 400, fontSize: '11px' }}>Collected</span>:{' '}
                                                                                 <span style={{ fontWeight: 600, fontSize: '12px' }}>
                                                                                     {previousOrder?.amountCollected ? new Decimal(previousOrder?.amountCollected).toFixed(2) : '0.00'}{' '}
                                                                                     {previousOrder?.order?.currency}
                                                                                 </span>
-                                                                            </div>
+                                                                            </div> */}
                                                                         </div>
                                                                     </div>
                                                                 )}
@@ -925,6 +992,72 @@ const CourierSheet = (props) => {
                                                     <div className="col-lg-12 p-3 mt-2">
                                                         <div className="row m-0 w-100 d-flex">
                                                             <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-3">
+                                                                <div className="row m-0 w-100">
+                                                                    <div className="col-lg-12 p-0 allcentered text-center">
+                                                                        <span style={{ fontWeight: 400, fontSize: '11px' }}>Courier Collected</span>
+                                                                    </div>
+                                                                    <div className="col-lg-12 p-0 allcentered text-center">
+                                                                        <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                            {previousOrder?.amountCollected ? new Decimal(previousOrder?.amountCollected).toFixed(2) : '0.00'}{' '}
+                                                                            {previousOrder?.order?.currency}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-3">
+                                                                <div className="row m-0 w-100">
+                                                                    <div className="col-lg-12 p-0 allcentered text-center">
+                                                                        <span style={{ fontWeight: 400, fontSize: '11px' }}>Shipping Price</span>
+                                                                    </div>
+                                                                    <div className="col-lg-12 p-0 allcentered text-center">
+                                                                        <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                            {new Decimal(previousOrder?.order?.paymentType == 'cash' ? previousOrder?.order?.shippingPrice || 0 : 0).toFixed(2)}{' '}
+                                                                            {previousOrder?.order?.currency}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div style={{ fontWeight: 600, fontSize: '15px', borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-3">
+                                                                <div className="row m-0 w-100">
+                                                                    <div className="col-lg-12 p-0 allcentered text-center">
+                                                                        <span style={{ fontWeight: 400, fontSize: '11px' }}>Total</span>
+                                                                    </div>
+                                                                    <div className="col-lg-12 p-0 allcentered text-center">
+                                                                        <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                            {new Decimal(previousOrder?.order?.price || 0)
+                                                                                .plus(new Decimal(previousOrder?.order?.paymentType == 'cash' ? previousOrder?.order?.shippingPrice || 0 : 0))
+                                                                                .toFixed(2)}{' '}
+                                                                            {previousOrder?.order?.currency}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div style={{}} className="p-0 mb-2 allcentered col-lg-3">
+                                                                <div className="row m-0 w-100">
+                                                                    <div className="col-lg-12 p-0 allcentered text-center">
+                                                                        <span style={{ fontWeight: 400, fontSize: '11px' }}>Finance Received</span>
+                                                                    </div>
+                                                                    <div className="col-lg-12 p-0 allcentered text-center">
+                                                                        <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                                                            {type != 'admin' && tempsheetpayload?.status == 'financeAccepted'
+                                                                                ? new Decimal(previousOrder?.amountCollected || 0)
+                                                                                      .plus(
+                                                                                          new Decimal(
+                                                                                              previousOrder?.order?.paymentType == 'card' ||
+                                                                                              !(previousOrder?.order?.shippingCollected == 'collected' && previousOrder?.order?.paymentType == 'cash')
+                                                                                                  ? 0
+                                                                                                  : previousOrder?.order?.shippingPrice || 0,
+                                                                                          ),
+                                                                                      )
+                                                                                      .toFixed(2)
+                                                                                : '0.00'}
+                                                                            {previousOrder?.order?.currency}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            {/* old */}
+                                                            {/* <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-3">
                                                                 <div className="row m-0 w-100">
                                                                     <div className="col-lg-12 p-0 allcentered text-center">
                                                                         <span style={{ fontWeight: 400, fontSize: '11px' }}>Finance Received</span>
@@ -987,7 +1120,7 @@ const CourierSheet = (props) => {
                                                                         </span>
                                                                     </div>
                                                                 </div>
-                                                            </div>
+                                                            </div> */}
                                                         </div>
                                                     </div>
                                                 )}
