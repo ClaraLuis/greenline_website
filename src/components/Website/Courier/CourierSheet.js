@@ -729,7 +729,7 @@ const CourierSheet = (props) => {
                                                     <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-3">
                                                         <div className="row m-0 w-100">
                                                             <div className="col-lg-12 p-0 allcentered text-center">
-                                                                <span style={{ fontWeight: 400, fontSize: '11px' }}>Finance Recieved</span>
+                                                                <span style={{ fontWeight: 400, fontSize: '11px' }}>Finance Received</span>
                                                             </div>
                                                             <div className="col-lg-12 p-0 allcentered text-center">
                                                                 <span style={{ fontWeight: 600, fontSize: '13px' }}>
@@ -737,8 +737,8 @@ const CourierSheet = (props) => {
                                                                         ? new Decimal(item?.amountCollected || 0)
                                                                               .plus(
                                                                                   new Decimal(
-                                                                                      (item?.order?.shippingCollected == 'collected' && item?.order?.paymentType == 'cash') ||
-                                                                                      item?.order?.paymentType == 'card'
+                                                                                      item?.order?.paymentType == 'card' ||
+                                                                                      !(item?.order?.shippingCollected == 'collected' && item?.order?.paymentType == 'cash')
                                                                                           ? 0
                                                                                           : item?.order?.shippingPrice || 0,
                                                                                   ),
@@ -927,7 +927,7 @@ const CourierSheet = (props) => {
                                                             <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-3">
                                                                 <div className="row m-0 w-100">
                                                                     <div className="col-lg-12 p-0 allcentered text-center">
-                                                                        <span style={{ fontWeight: 400, fontSize: '11px' }}>Finance Recieved</span>
+                                                                        <span style={{ fontWeight: 400, fontSize: '11px' }}>Finance Received</span>
                                                                     </div>
                                                                     <div className="col-lg-12 p-0 allcentered text-center">
                                                                         <span style={{ fontWeight: 600, fontSize: '13px' }}>
@@ -1933,7 +1933,7 @@ const CourierSheet = (props) => {
                                         {!statuspayload?.order?.originalPrice && !statuspayload?.fullDelivery && (
                                             <div class={'col-lg-12 mb-3'}>
                                                 <Inputfield
-                                                    placeholder={'Amount Recieved'}
+                                                    placeholder={'Amount Received'}
                                                     value={statuspayload?.amountCollected}
                                                     onChange={(event) => {
                                                         setstatuspayload({ ...statuspayload, amountCollected: event.target.value });

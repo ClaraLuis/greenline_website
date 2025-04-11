@@ -75,7 +75,7 @@ const FinancialAccountInfo = (props) => {
         myHubOnly: isAuth([1, 51]) ? false : undefined,
     });
 
-    // const [filterRecievedTransactionsObj, setfilterRecievedTransactionsObj] = useState({
+    // const [filterReceivedTransactionsObj, setfilterReceivedTransactionsObj] = useState({
     //     isAsc: true,
     //     limit: 20,
     //     afterCursor: undefined,
@@ -86,7 +86,7 @@ const FinancialAccountInfo = (props) => {
 
     const fetchOneFinancialAccountsQuery = useQueryGQL('', fetchFinancialAccounts(), filterobj);
     const fetchSenttTransactionsQuery = useQueryGQL('', fetchTransactions(), filterSentTransactionsObj);
-    // const fetchRecievedTransactionsQuery = useQueryGQL('', fetchTransactions(), filterRecievedTransactionsObj);
+    // const fetchReceivedTransactionsQuery = useQueryGQL('', fetchTransactions(), filterReceivedTransactionsObj);
 
     const [filterAllFinancialAccountsObj, setfilterAllFinancialAccountsObj] = useState({
         isAsc: true,
@@ -99,13 +99,13 @@ const FinancialAccountInfo = (props) => {
 
     const { refetch: refetchOneFinancialAccountsQuery } = useQueryGQL('', fetchFinancialAccounts(), filterobj);
     const { refetch: refetchSenttTransactionsQuery } = useQueryGQL('', fetchTransactions(), filterSentTransactionsObj);
-    // const { refetch: refetchRecievedTransactionsQuery } = useQueryGQL('', fetchTransactions(), filterRecievedTransactionsObj);
+    // const { refetch: refetchReceivedTransactionsQuery } = useQueryGQL('', fetchTransactions(), filterReceivedTransactionsObj);
     const { refetch: refetchAllFinancialAccountsQuery } = useQueryGQL('', fetchFinancialAccounts(), filterAllFinancialAccountsObj);
 
     const Refetch = () => {
         refetchOneFinancialAccountsQuery();
         refetchSenttTransactionsQuery();
-        // refetchRecievedTransactionsQuery();
+        // refetchReceivedTransactionsQuery();
         refetchAllFinancialAccountsQuery();
     };
     useEffect(() => {
