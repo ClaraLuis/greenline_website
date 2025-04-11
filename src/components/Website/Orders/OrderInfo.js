@@ -288,26 +288,7 @@ const OrderInfo = (props) => {
             console.log(data);
         }
     };
-    const handleAddCustomer = async () => {
-        if (buttonLoadingContext) return;
-        setbuttonLoadingContext(true);
-        try {
-            const { data } = await addCustomerMutation();
-        } catch (error) {
-            let errorMessage = 'An unexpected error occurred';
-            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-                errorMessage = error.graphQLErrors[0].message || errorMessage;
-            } else if (error.networkError) {
-                errorMessage = error.networkError.message || errorMessage;
-            } else if (error.message) {
-                errorMessage = error.message;
-            }
 
-            NotificationManager.warning(errorMessage, 'Warning!');
-            console.error('Error adding user:', error);
-        }
-        setbuttonLoadingContext(false);
-    };
     useEffect(() => {
         setpagetitle_context('Merchant');
     }, []);
@@ -364,6 +345,36 @@ const OrderInfo = (props) => {
     });
 
     const fetchMerchantItemVariantsQuery = useQueryGQL('', fetchMerchantItemVariants(), filter);
+    const handleAddCustomer = async () => {
+        if (buttonLoadingContext) return;
+        setbuttonLoadingContext(true);
+        try {
+            const { data } = await addCustomerMutation();
+            await setorderpayload({
+                ...orderpayload,
+                customerId: data.createCustomer?.merchantCustomerId,
+                customerIdForAddress: data.createCustomer?.customerId,
+            });
+            seteditCustomer(true);
+            seteditAddress(true);
+            setopenModal(true);
+
+            console.log('data', data);
+        } catch (error) {
+            let errorMessage = 'An unexpected error occurred';
+            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                errorMessage = error.graphQLErrors[0].message || errorMessage;
+            } else if (error.networkError) {
+                errorMessage = error.networkError.message || errorMessage;
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+
+            NotificationManager.warning(errorMessage, 'Warning!');
+            console.error('Error adding user:', error);
+        }
+        setbuttonLoadingContext(false);
+    };
     const changePriceFunc = async () => {
         if (buttonLoadingContext) return;
         setbuttonLoadingContext(true);
@@ -1311,9 +1322,10 @@ const OrderInfo = (props) => {
                                                                     if (data?.paginateAddresses?.data) {
                                                                         setuserAddresses([...data?.paginateAddresses?.data]);
                                                                     }
+                                                                    seteditCustomer(true);
+                                                                    seteditAddress(true);
+                                                                    setopenModal(true);
                                                                 }
-                                                                seteditCustomer(true);
-                                                                seteditAddress(true);
                                                             }}
                                                         >
                                                             <MdOutlineEditLocationAlt />

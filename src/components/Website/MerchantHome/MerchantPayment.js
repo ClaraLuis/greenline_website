@@ -27,6 +27,7 @@ import TransactionsTable from '../Finance/TransactionsTable.js';
 import Pagination from '../../Pagination.js';
 import { FiCheckCircle, FiCircle } from 'react-icons/fi';
 import SelectComponent from '../../SelectComponent.js';
+import TransactionsTableView from '../Finance/TransactionsTableView.js';
 
 const MerchantPayment = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -220,8 +221,8 @@ const MerchantPayment = (props) => {
                             setfilter={setfilterobj}
                         />
                     </div>
-                    <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
-                        <TransactionsTable
+                    <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar py-0 px-3 '}>
+                        <TransactionsTableView
                             width={'50%'}
                             query={fetchMerchantPaymentTransactionsQuery}
                             paginationAttr="paginateMerchantPaymentTransactions"

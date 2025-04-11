@@ -15,6 +15,7 @@ import { Modal } from 'react-bootstrap';
 import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
+import * as XLSX from 'xlsx';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import API from '../../../API/API.js';
 import OrdersTable from './OrdersTable.js';
@@ -121,6 +122,12 @@ const Orders = (props) => {
 
         setWaybills(selectedOrdersDetails);
     }, [selectedOrders]);
+    const exportToExcel = (data, fileName) => {
+        const worksheet = XLSX.utils.json_to_sheet(data);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+        XLSX.writeFile(workbook, `${fileName}.xlsx`);
+    };
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
@@ -130,6 +137,75 @@ const Orders = (props) => {
                             <p class=" p-0 m-0" style={{ fontSize: '27px' }}>
                                 Orders
                             </p>
+                        </div>
+                        <div class={' col-lg-6 col-md-6 col-sm-6 p-0 pr-3 pr-md-1 pr-sm-0 d-flex align-items-center justify-content-end pb-1 '}>
+                            <div class="row m-0 w-100 d-flex align-items-center justify-content-end ">
+                                <button
+                                    style={{ height: '35px' }}
+                                    class={generalstyles.roundbutton + '  mb-1 mx-1'}
+                                    onClick={() => {
+                                        const orders = fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data;
+
+                                        const exportData = orders.map((order) => {
+                                            const {
+                                                id,
+                                                createdAt,
+                                                shippingPrice,
+                                                originalPrice,
+                                                paidToMerchant,
+                                                price,
+                                                paymentType,
+                                                status,
+                                                orderDate,
+                                                currency,
+                                                canOpen,
+                                                fragile,
+                                                deliveryPart,
+                                                latestHistory,
+                                                sheetOrder,
+                                                merchant,
+                                                address,
+                                                courier,
+                                                merchantCustomer,
+                                                orderItems,
+                                            } = order;
+
+                                            return {
+                                                ID: id,
+                                                'Created At': createdAt,
+                                                'Shipping Price': shippingPrice,
+                                                'Original Price?': originalPrice,
+                                                'Paid to Merchant?': paidToMerchant,
+                                                'Total Price': price,
+                                                'Payment Type': paymentType,
+                                                Status: status,
+                                                'Order Date': orderDate,
+                                                Currency: currency,
+                                                'Can Open': canOpen,
+                                                Fragile: fragile,
+                                                'Delivery Part': deliveryPart,
+                                                'Merchant Name': merchant?.name,
+                                                'Customer Name': merchantCustomer?.customerName,
+                                                'Customer Phone': merchantCustomer?.customer?.phone,
+                                                City: address?.city,
+                                                'Street Address': address?.streetAddress?.trim(),
+                                                'Building No.': address?.buildingNumber,
+                                                Floor: address?.apartmentFloor,
+                                                'Courier Name': courier?.name,
+                                                'History Description': latestHistory?.description,
+                                                'Sheet ID': sheetOrder?.sheetId,
+                                                'Shipping Collected': sheetOrder?.shippingCollected,
+                                                'Admin Pass': sheetOrder?.adminPass,
+                                                'Finance Pass': sheetOrder?.financePass,
+                                            };
+                                        });
+
+                                        exportToExcel(exportData, 'orders');
+                                    }}
+                                >
+                                    Export
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
