@@ -1043,14 +1043,14 @@ const CourierSheet = (props) => {
                                                                                 ? new Decimal(previousOrder?.amountCollected || 0)
                                                                                       .plus(
                                                                                           new Decimal(
-                                                                                              (previousOrder?.order?.shippingCollected == 'collected' && previousOrder?.order?.paymentType == 'cash') ||
-                                                                                              previousOrder?.order?.paymentType == 'card'
+                                                                                              previousOrder?.order?.paymentType == 'card' ||
+                                                                                              !(previousOrder?.order?.shippingCollected == 'collected' && previousOrder?.order?.paymentType == 'cash')
                                                                                                   ? 0
                                                                                                   : previousOrder?.order?.shippingPrice || 0,
                                                                                           ),
                                                                                       )
                                                                                       .toFixed(2)
-                                                                                : '0.00'}{' '}
+                                                                                : '0.00'}
                                                                             {previousOrder?.order?.currency}
                                                                         </span>
                                                                     </div>
