@@ -245,8 +245,9 @@ const InventoryRent = (props) => {
                                     onClick={async () => {
                                         try {
                                             var { data } = await fetchSenttTransactionsLazyQuery({
-                                                variables: { input: { ...filterSentTransactionsObj, merchantIds: [parseInt(item?.merchantId)] } },
+                                                variables: { input: { ...filterSentTransactionsObj, merchantIds: [parseInt(item?.merchantId)], afterCursor: undefined, beforeCursor: undefined } },
                                             });
+                                            setfilterSentTransactionsObj({ ...filterSentTransactionsObj, merchantIds: [parseInt(item?.merchantId)], afterCursor: undefined, beforeCursor: undefined });
                                             setfetchSenttTransactionsQuery({ data: data });
                                             setinventorySettings({ ...item });
                                             settransactionsModal(true);

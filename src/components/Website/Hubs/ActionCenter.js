@@ -36,8 +36,8 @@ const ActionCenter = (props) => {
 
     const [filterorders, setfilterorders] = useState({
         limit: 20,
-        fromDate: new Date(new Date().setDate(new Date().getDate() - 30)).toISOString().split('T')[0],
-        toDate: new Date().toISOString().split('T')[0],
+        // fromDate: new Date(new Date().setDate(new Date().getDate() - 30)).toISOString().split('T')[0],
+        // toDate: new Date().toISOString().split('T')[0],
     });
 
     const paginateUnresolvedOrdersQuery = useQueryGQL('', paginateUnresolvedOrders(), filterorders);

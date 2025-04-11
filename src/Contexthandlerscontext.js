@@ -329,7 +329,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/merchantpackages',
                         permissionpage: [1],
-                        show: isAuth([1, 52, 64]),
+                        show: isAuth([1, 52, 64]) && cookies.get('merchantId') != undefined,
                     },
                     // {
                     //     name: 'Webtoken',

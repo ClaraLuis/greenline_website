@@ -115,7 +115,8 @@ const TransactionsTableView = (props) => {
                                         <th>Amount</th>
                                         <th>Status</th>
                                         <th>Type</th>
-                                        {props?.srctype === 'all' && <th>From/To</th>}
+                                        {props?.srctype === 'all' && <th>From</th>}
+                                        {props?.srctype === 'all' && <th>To</th>}
                                         {props?.srctype !== 'all' && <th>Account</th>}
                                         {(props?.srctype === 'all' || props?.srctype === 'courierCollection') && <th>Order</th>}
                                         <th>Date</th>
@@ -171,6 +172,12 @@ const TransactionsTableView = (props) => {
                                                                 <MdOutlineCallMade className="me-1" />
                                                                 {item?.fromAccount?.name ?? '-'}
                                                             </small>
+                                                        </div>
+                                                    </td>
+                                                )}
+                                                {props?.srctype === 'all' && (
+                                                    <td>
+                                                        <div className="d-flex flex-column">
                                                             <small className="text-success">
                                                                 <MdOutlineCallReceived className="me-1" />
                                                                 {item?.toAccount?.name ?? '-'}
@@ -200,25 +207,25 @@ const TransactionsTableView = (props) => {
                                                         {item?.sheetOrder?.order?.id && (
                                                             <>
                                                                 <div className="d-flex align-items-center">
-                                                                    <span className="badge bg-secondary">
+                                                                    <span className="badge bg-secondary p-0 mr-1">
                                                                         #{item?.sheetOrder?.order?.id}
                                                                         {item?.sheetOrder?.order?.merchant?.name && <span className="text-muted">, {item?.sheetOrder?.order?.merchant?.name}</span>}
                                                                     </span>
+                                                                    <span
+                                                                        className={`badge text-capitalize ${
+                                                                            item?.sheetOrder?.order?.status === 'delivered' ||
+                                                                            item?.sheetOrder?.order?.status === 'partiallyDelivered' ||
+                                                                            item?.sheetOrder?.order?.status === 'returned' ||
+                                                                            item?.sheetOrder?.order?.status === 'partiallyReturned'
+                                                                                ? 'bg-light-success text-success'
+                                                                                : item?.sheetOrder?.order?.status === 'cancelled' || item?.sheetOrder?.order?.status === 'failedDeliveryAttempt'
+                                                                                ? 'bg-light-danger text-danger'
+                                                                                : 'bg-light-warning text-warning'
+                                                                        }`}
+                                                                    >
+                                                                        {item?.sheetOrder?.order?.status?.split(/(?=[A-Z])/).join(' ')}
+                                                                    </span>
                                                                 </div>
-                                                                <span
-                                                                    className={`badge text-capitalize ${
-                                                                        item?.sheetOrder?.order?.status === 'delivered' ||
-                                                                        item?.sheetOrder?.order?.status === 'partiallyDelivered' ||
-                                                                        item?.sheetOrder?.order?.status === 'returned' ||
-                                                                        item?.sheetOrder?.order?.status === 'partiallyReturned'
-                                                                            ? 'bg-light-success text-success'
-                                                                            : item?.sheetOrder?.order?.status === 'cancelled' || item?.sheetOrder?.order?.status === 'failedDeliveryAttempt'
-                                                                            ? 'bg-light-danger text-danger'
-                                                                            : 'bg-light-warning text-warning'
-                                                                    }`}
-                                                                >
-                                                                    {item?.sheetOrder?.order?.status?.split(/(?=[A-Z])/).join(' ')}
-                                                                </span>
                                                             </>
                                                         )}
                                                     </td>
