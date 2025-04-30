@@ -673,6 +673,82 @@ const API = () => {
         `;
     };
 
+    const paginateSettlementPayouts = () => {
+        return gql`
+            query paginateSettlementPayouts($input: PaginateSettlementPayoutsInput!) {
+                paginateSettlementPayouts(input: $input) {
+                    data {
+                        id
+                        sheetId
+                        orderId
+                        adminPass
+                        financePass
+                        shippingCollected
+                        amountCollected
+                        transactionId
+                        assignedById
+                        createdAt
+                        lastModified
+                        order {
+                            id
+                            otherId
+                            shopifyName
+                            currency
+                            previousOrderId
+                            hubId
+                            type
+                            paymentType
+                            status
+                            merchantCustomerId
+                            addressId
+                            merchantId
+                            isDomestic
+                            originalPrice
+                            canBeEdited
+                            shippingPrice
+                            weight
+                            price
+                            canOpen
+                            fragile
+                            deliveryPart
+                            orderDate
+                            initialDate
+                            createdAt
+                            lastModified
+                            failsAndAssigns
+                            paidToMerchant
+                        }
+                        sheet {
+                            id
+                            userId
+                            status
+                            createdAt
+                            lastModified
+                            orderCount
+                        }
+                        transactions {
+                            id
+                            type
+                            description
+                            fromAccountId
+                            sheetOrderId
+                            toAccountId
+                            merchantSettlementId
+                            amount
+                            currency
+                            receipt
+                            status
+                            auditedById
+                            createdAt
+                            lastModified
+                        }
+                    }
+                    cursor
+                }
+            }
+        `;
+    };
+
     const paginateReturnPackageHistory = () => {
         return gql`
             query paginateReturnPackageHistory($input: PaginateReturnPackageHistoryInput!) {
@@ -696,6 +772,33 @@ const API = () => {
             }
         `;
     };
+    const paginateMerchantDebts = () => {
+        return gql`
+            query PaginateMerchantDebts($input: PaginateMerchantDebtsInput!) {
+                paginateMerchantDebts(input: $input) {
+                    cursor
+                    totalCount
+                    data {
+                        id
+                        type
+                        description
+                        fromAccountId
+                        sheetOrderId
+                        toAccountId
+                        merchantSettlementId
+                        amount
+                        currency
+                        receipt
+                        status
+                        auditedById
+                        createdAt
+                        lastModified
+                    }
+                }
+            }
+        `;
+    };
+
     const fetchTransactionHistory = () => {
         return gql`
             query paginateOrderTransactionsHistory($input: PaginateOrderTransactionsInput!) {
@@ -3165,6 +3268,8 @@ const API = () => {
         findItemReturnByOrder,
         findPublicOrder,
         cancelUnresolvedOrders,
+        paginateSettlementPayouts,
+        paginateMerchantDebts,
     };
 };
 export default API;
