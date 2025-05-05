@@ -337,7 +337,7 @@ th {
     /* border: 2px solid #eceffa; */
     background-color: white;
     border-radius: 0.5rem;
-    z-index: 1000;
+    z-index: 10;
     /* border-bottom: 1px solid rgba(94, 38, 132, 0.4); */
 
     /* border-bottom: 2px solid #eceffa; */
