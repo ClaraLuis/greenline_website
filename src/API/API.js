@@ -2850,58 +2850,806 @@ const API = () => {
         return gql`
             query paginateFinancialTransaction($input: FinancialTransactionPaginationInput!) {
                 paginateFinancialTransaction(input: $input) {
+                    cursor
+                    totalCount
                     data {
-                        sheetOrderId
-                        currency
-                        auditedById
-                        lastModified
                         id
                         type
                         description
+                        fromAccountId
+                        sheetOrderId
+                        toAccountId
+                        merchantSettlementId
+                        amount
+                        currency
                         receipt
                         status
-                        amount
+                        auditedById
+                        createdAt
+                        lastModified
                         auditedBy {
+                            id
+                            type
+                            hubId
+                            merchantId
+                            inventoryId
                             name
+                            email
+                            phone
+                            refreshToken
+                            createdAt
+                            lastModified
+                            deletedAt
                         }
                         fromAccount {
-                            merchantId
                             id
                             name
-                        }
-                        toAccount {
+                            type
+                            userId
                             merchantId
-                            id
-                            name
+                            currency
+                            balance
+                            createdAt
+                            lastModified
+                            deletedAt
                         }
+
                         sheetOrder {
+                            id
+                            sheetId
+                            orderId
+                            adminPass
+                            financePass
+                            shippingCollected
+                            amountCollected
+                            transactionId
+                            assignedById
+                            createdAt
+                            lastModified
                             order {
                                 id
-                                type
-                                status
-                                shopifyName
                                 otherId
-                                address {
-                                    country
-                                    city
-                                    streetAddress
-                                    buildingNumber
-                                    apartmentFloor
+                                shopifyName
+                                currency
+                                previousOrderId
+                                hubId
+                                type
+                                paymentType
+                                status
+                                merchantCustomerId
+                                addressId
+                                merchantId
+                                isDomestic
+                                originalPrice
+                                canBeEdited
+                                shippingPrice
+                                weight
+                                price
+                                canOpen
+                                fragile
+                                deliveryPart
+                                orderDate
+                                initialDate
+                                createdAt
+                                lastModified
+                                failsAndAssigns
+                                paidToMerchant
+                                courier {
+                                    id
+                                    type
+                                    hubId
+                                    merchantId
+                                    inventoryId
+                                    name
+                                    email
+                                    phone
+                                    refreshToken
+                                    createdAt
+                                    lastModified
+                                    deletedAt
                                 }
                                 merchantCustomer {
                                     id
+                                    merchantId
+                                    customerId
                                     customerName
+                                    createdAt
                                     customer {
+                                        id
+                                        phone
+                                        email
+                                    }
+                                    merchant {
+                                        id
+                                        shopifyShop
+                                        name
+                                        currency
+                                        includesVat
+                                        taxId
+                                        bankNumber
+                                        bankName
+                                        ownerId
+                                        addressId
+                                        threshold
+                                        overShipping
+                                        webToken
+                                        webTokenExpiration
+                                        createdAt
+                                        lastModified
+                                    }
+                                }
+                                address {
+                                    id
+                                    country
+                                    governorateId
+                                    zoneId
+                                    city
+                                    state
+                                    streetAddress
+                                    zipCode
+                                    buildingNumber
+                                    apartmentFloor
+                                    createdAt
+                                    lastModified
+                                }
+                                orderItems {
+                                    id
+                                    orderId
+                                    itemVariantId
+                                    count
+                                    unitPrice
+                                    unitDiscount
+                                    partialCount
+                                    returnCount
+                                    inventoryId
+                                    createdAt
+                                    lastModified
+                                    deletedAt
+                                    countInInventory
+                                }
+                                previousOrder {
+                                    id
+                                    otherId
+                                    shopifyName
+                                    currency
+                                    previousOrderId
+                                    hubId
+                                    type
+                                    paymentType
+                                    status
+                                    merchantCustomerId
+                                    addressId
+                                    merchantId
+                                    isDomestic
+                                    originalPrice
+                                    canBeEdited
+                                    shippingPrice
+                                    weight
+                                    price
+                                    canOpen
+                                    fragile
+                                    deliveryPart
+                                    orderDate
+                                    initialDate
+                                    createdAt
+                                    lastModified
+                                    failsAndAssigns
+                                    paidToMerchant
+                                    sheetOrder {
+                                        id
+                                        sheetId
+                                        orderId
+                                        adminPass
+                                        financePass
+                                        shippingCollected
+                                        amountCollected
+                                        transactionId
+                                        assignedById
+                                        createdAt
+                                        lastModified
+                                        sheet {
+                                            id
+                                            userId
+                                            status
+                                            createdAt
+                                            lastModified
+                                            sheetOrders {
+                                                id
+                                                sheetId
+                                                orderId
+                                                adminPass
+                                                financePass
+                                                shippingCollected
+                                                amountCollected
+                                                transactionId
+                                                assignedById
+                                                createdAt
+                                                lastModified
+                                            }
+                                            userInfo {
+                                                id
+                                                type
+                                                hubId
+                                                merchantId
+                                                inventoryId
+                                                name
+                                                email
+                                                phone
+                                                refreshToken
+                                                createdAt
+                                                lastModified
+                                                deletedAt
+                                            }
+                                            orderCount
+                                        }
+                                        order {
+                                            id
+                                            otherId
+                                            shopifyName
+                                            currency
+                                            previousOrderId
+                                            hubId
+                                            type
+                                            paymentType
+                                            status
+                                            merchantCustomerId
+                                            addressId
+                                            merchantId
+                                            isDomestic
+                                            originalPrice
+                                            canBeEdited
+                                            shippingPrice
+                                            weight
+                                            price
+                                            canOpen
+                                            fragile
+                                            deliveryPart
+                                            orderDate
+                                            initialDate
+                                            createdAt
+                                            lastModified
+                                            failsAndAssigns
+                                            paidToMerchant
+                                        }
+                                        transactions {
+                                            id
+                                            type
+                                            description
+                                            fromAccountId
+                                            sheetOrderId
+                                            toAccountId
+                                            merchantSettlementId
+                                            amount
+                                            currency
+                                            receipt
+                                            status
+                                            auditedById
+                                            createdAt
+                                            lastModified
+                                            auditedBy {
+                                                id
+                                                type
+                                                hubId
+                                                merchantId
+                                                inventoryId
+                                                name
+                                                email
+                                                phone
+                                                refreshToken
+                                                createdAt
+                                                lastModified
+                                                deletedAt
+                                            }
+
+                                            taxedShipping {
+                                                id
+                                                transactionId
+                                                createdAt
+                                            }
+                                            toAccount {
+                                                id
+                                                name
+                                                type
+                                                userId
+                                                merchantId
+                                                currency
+                                                balance
+                                                createdAt
+                                                lastModified
+                                                deletedAt
+                                            }
+                                            fromAccount {
+                                                id
+                                                name
+                                                type
+                                                userId
+                                                merchantId
+                                                currency
+                                                balance
+                                                createdAt
+                                                lastModified
+                                                deletedAt
+                                            }
+                                        }
+                                        assignedBy {
+                                            id
+                                            type
+                                            hubId
+                                            merchantId
+                                            inventoryId
+                                            name
+                                            email
+                                            phone
+                                            refreshToken
+                                            createdAt
+                                            lastModified
+                                            deletedAt
+                                        }
+                                    }
+                                    merchantCustomer {
+                                        id
+                                        merchantId
+                                        customerId
+                                        customerName
+                                        createdAt
+                                        customer {
+                                            id
+                                            phone
+                                            email
+                                            details {
+                                                id
+                                                merchantId
+                                                customerId
+                                                customerName
+                                                createdAt
+                                            }
+                                            nameSuggestions {
+                                                id
+                                                merchantId
+                                                customerId
+                                                customerName
+                                                createdAt
+                                            }
+                                        }
+                                    }
+                                    address {
+                                        id
+                                        country
+                                        governorateId
+                                        zoneId
+                                        city
+                                        state
+                                        streetAddress
+                                        zipCode
+                                        buildingNumber
+                                        apartmentFloor
+                                        createdAt
+                                        lastModified
+                                        zone {
+                                            id
+                                            name
+                                            nameAr
+                                            governorateId
+                                        }
+                                        governorate {
+                                            id
+                                            name
+                                            arabicName
+                                            zones {
+                                                id
+                                                name
+                                                nameAr
+                                                governorateId
+                                            }
+                                        }
+                                    }
+                                    merchant {
+                                        id
+                                        shopifyShop
+                                        name
+                                        currency
+                                        includesVat
+                                        taxId
+                                        bankNumber
+                                        bankName
+                                        ownerId
+                                        addressId
+                                        threshold
+                                        overShipping
+                                        webToken
+                                        webTokenExpiration
+                                        createdAt
+                                        lastModified
+
+                                        inventoryRent {
+                                            id
+                                            merchantId
+                                            type
+                                            startDate
+                                            lastBill
+                                            pricePerUnit
+                                            sqaureMeter
+                                            currency
+                                            createdAt
+                                            lastModified
+                                            deletedAt
+                                            lastBillTransaction {
+                                                id
+                                                type
+                                                description
+                                                fromAccountId
+                                                sheetOrderId
+                                                toAccountId
+                                                merchantSettlementId
+                                                amount
+                                                currency
+                                                receipt
+                                                status
+                                                auditedById
+                                                createdAt
+                                                lastModified
+                                            }
+                                        }
+                                        owner {
+                                            id
+                                            type
+                                            hubId
+                                            merchantId
+                                            inventoryId
+                                            name
+                                            email
+                                            phone
+                                            refreshToken
+                                            createdAt
+                                            lastModified
+                                            deletedAt
+                                        }
+                                    }
+                                    orderItems {
+                                        id
+                                        orderId
+                                        itemVariantId
+                                        count
+                                        unitPrice
+                                        unitDiscount
+                                        partialCount
+                                        returnCount
+                                        inventoryId
+                                        createdAt
+                                        lastModified
+                                        deletedAt
+                                        itemReturn {
+                                            id
+                                            orderItemId
+                                            hubId
+                                            merchantId
+                                            packageId
+                                            count
+                                            createdAt
+                                            orderItem {
+                                                id
+                                                orderId
+                                                itemVariantId
+                                                count
+                                                unitPrice
+                                                unitDiscount
+                                                partialCount
+                                                returnCount
+                                                inventoryId
+                                                createdAt
+                                                lastModified
+                                                deletedAt
+                                                countInInventory
+                                            }
+                                        }
+                                        inventoryReturn {
+                                            id
+                                            inventoryId
+                                            hubId
+                                            restockedToId
+                                            packageId
+                                            orderItemId
+                                            count
+                                            status
+                                            createdAt
+                                            lastModified
+                                        }
+                                        info {
+                                            id
+                                            sku
+                                            name
+                                            shopifyId
+                                            merchantSku
+                                            merchantId
+                                            itemId
+                                            isEnabled
+                                            imageUrl
+                                            price
+                                            weight
+                                            createdAt
+                                            lastModified
+                                            deletedAt
+                                            item {
+                                                id
+                                                merchantId
+                                                name
+                                                shopifyId
+                                                description
+                                                currency
+                                                imageUrl
+                                                itemVariants {
+                                                    id
+                                                    sku
+                                                    name
+                                                    shopifyId
+                                                    merchantSku
+                                                    merchantId
+                                                    itemId
+                                                    isEnabled
+                                                    imageUrl
+                                                    price
+                                                    weight
+                                                    createdAt
+                                                    lastModified
+                                                    deletedAt
+                                                    fullName
+                                                    stockCount
+                                                    blocksCountSum
+                                                }
+                                                createdAt
+                                                lastModified
+                                                deletedAt
+                                            }
+                                            selectedOptions {
+                                                id
+                                                itemVariantId
+                                                variantNameId
+                                                variantOptionId
+                                                createdAt
+                                                lastModified
+                                                deletedAt
+                                                variantOption {
+                                                    id
+                                                    value
+                                                    colorCode
+                                                }
+                                                variantName {
+                                                    id
+                                                    name
+                                                }
+                                            }
+
+                                            fullName
+                                            stockCount
+                                            blocksCountSum
+                                        }
+                                        inventory {
+                                            id
+                                            inventoryId
+                                            merchantId
+                                            itemVariantId
+                                            boxId
+                                            count
+                                            minCount
+                                            createdAt
+                                            lastModified
+                                            deletedAt
+                                            box {
+                                                id
+                                                merchantId
+                                                palletId
+                                                name
+                                                createdAt
+                                                lastModified
+                                                deletedAt
+                                                pallet {
+                                                    id
+                                                    merchantId
+                                                    rackId
+                                                    level
+                                                    name
+                                                    createdAt
+                                                    lastModified
+                                                    deletedAt
+                                                    rack {
+                                                        id
+                                                        merchantId
+                                                        inventoryId
+                                                        levels
+                                                        name
+                                                        createdAt
+                                                        lastModified
+                                                        deletedAt
+                                                    }
+                                                    boxes {
+                                                        id
+                                                        merchantId
+                                                        palletId
+                                                        name
+                                                        createdAt
+                                                        lastModified
+                                                        deletedAt
+                                                    }
+                                                }
+                                            }
+                                            itemVariant {
+                                                id
+                                                sku
+                                                name
+                                                shopifyId
+                                                merchantSku
+                                                merchantId
+                                                itemId
+                                                isEnabled
+                                                imageUrl
+                                                price
+                                                weight
+                                                createdAt
+                                                lastModified
+                                                deletedAt
+                                                fullName
+                                                stockCount
+                                                blocksCountSum
+                                            }
+                                            totalCount
+                                        }
+                                        countInInventory
+                                    }
+                                    previousOrder {
+                                        id
+                                        otherId
+                                        shopifyName
+                                        currency
+                                        previousOrderId
+                                        hubId
+                                        type
+                                        paymentType
+                                        status
+                                        merchantCustomerId
+                                        addressId
+                                        merchantId
+                                        isDomestic
+                                        originalPrice
+                                        canBeEdited
+                                        shippingPrice
+                                        weight
+                                        price
+                                        canOpen
+                                        fragile
+                                        deliveryPart
+                                        orderDate
+                                        initialDate
+                                        createdAt
+                                        lastModified
+                                        failsAndAssigns
+                                        paidToMerchant
+                                    }
+                                    parentOrder {
+                                        id
+                                        otherId
+                                        shopifyName
+                                        currency
+                                        previousOrderId
+                                        hubId
+                                        type
+                                        paymentType
+                                        status
+                                        merchantCustomerId
+                                        addressId
+                                        merchantId
+                                        isDomestic
+                                        originalPrice
+                                        canBeEdited
+                                        shippingPrice
+                                        weight
+                                        price
+                                        canOpen
+                                        fragile
+                                        deliveryPart
+                                        orderDate
+                                        initialDate
+                                        createdAt
+                                        lastModified
+                                        failsAndAssigns
+                                        paidToMerchant
+                                    }
+                                    courier {
+                                        id
+                                        type
+                                        hubId
+                                        merchantId
+                                        inventoryId
+                                        name
                                         email
                                         phone
+                                        refreshToken
+                                        createdAt
+                                        lastModified
+                                        deletedAt
+
+                                        employee {
+                                            id
+                                            type
+                                            currency
+                                            salary
+                                            commission
+                                            createdAt
+                                            lastModified
+                                        }
+                                        courierSheets {
+                                            id
+                                            userId
+                                            status
+                                            createdAt
+                                            lastModified
+                                            orderCount
+                                        }
+                                        userPermissions {
+                                            userId
+                                            permissionId
+                                        }
+                                        inventory {
+                                            id
+                                            hubId
+                                            name
+                                            module
+                                            governorateId
+                                            createdAt
+                                            lastModified
+
+                                            racks {
+                                                id
+                                                merchantId
+                                                inventoryId
+                                                levels
+                                                name
+                                                createdAt
+                                                lastModified
+                                                deletedAt
+                                                pallets {
+                                                    id
+                                                    merchantId
+                                                    rackId
+                                                    level
+                                                    name
+                                                    createdAt
+                                                    lastModified
+                                                    deletedAt
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    returnPackage {
                                         id
+                                        sku
+                                        type
+                                        hubId
+                                        courierId
+                                        toInventoryId
+                                        toMerchantId
+                                        status
+                                        signatureId
+                                        createdAt
+                                        lastModified
+                                        countAndSum
+                                        signatureFile {
+                                            id
+                                            key
+                                            name
+                                            category
+                                            sizeInKiloBytes
+                                            merchantId
+                                            createdAt
+                                            lastModified
+                                            deletedAt
+                                            url
+                                        }
                                     }
                                 }
                             }
                         }
-                        createdAt
                     }
-                    cursor
                 }
             }
         `;

@@ -1242,7 +1242,9 @@ const OrderInfo = (props) => {
                                                                         </div>
                                                                         <div className="col-lg-12 p-0 allcentered text-center">
                                                                             <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                                {new Decimal(chosenOrderContext?.price).toFixed(2)} {chosenOrderContext?.currency}
+                                                                                {chosenOrderContext?.price != null && !isNaN(chosenOrderContext.price)
+                                                                                    ? `${new Decimal(chosenOrderContext.price).toFixed(2)} ${chosenOrderContext?.currency || ''}`
+                                                                                    : '—'}
                                                                             </span>
                                                                         </div>
                                                                     </div>
@@ -1254,7 +1256,9 @@ const OrderInfo = (props) => {
                                                                         </div>
                                                                         <div className="col-lg-12 p-0 allcentered text-center">
                                                                             <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                                {new Decimal(chosenOrderContext?.shippingPrice).toFixed(2)} {chosenOrderContext?.currency}
+                                                                                {chosenOrderContext?.shippingPrice != null && !isNaN(chosenOrderContext.shippingPrice)
+                                                                                    ? `${new Decimal(chosenOrderContext.shippingPrice).toFixed(2)} ${chosenOrderContext?.currency || ''}`
+                                                                                    : '—'}
                                                                             </span>
                                                                         </div>
                                                                     </div>
