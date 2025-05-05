@@ -627,7 +627,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         show: isAuth([1, 51, 114]),
                     },
                     {
-                        name: 'Settlements',
+                        name: 'Create Settlements',
                         isselected: false,
                         icon: (
                             <i class={'allcentered'}>
@@ -637,6 +637,18 @@ export const Contexthandlerscontext_provider = (props) => {
                         path: '/settlements',
                         permissionpage: [1],
                         show: isAuth([1, 122]),
+                    },
+                    {
+                        name: 'Shipping Taxes',
+                        isselected: false,
+                        icon: (
+                            <i class={'allcentered'}>
+                                <BiTransfer size={18} />
+                            </i>
+                        ),
+                        path: '/shippingcollections',
+                        permissionpage: [1],
+                        show: isAuth([1, 51, 124]),
                     },
                 ],
             },

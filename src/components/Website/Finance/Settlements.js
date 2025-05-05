@@ -29,15 +29,14 @@ const Settlements = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, isAuth, setpagetitle_context, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
-    const { useQueryGQL, useMutationGQL, fetchInventoryRentBills, completeInventoryRentTransactions, fetchFinancialAccounts, paginateSettlementPayouts, paginateMerchantDebts, useLazyQueryGQL } =
-        API();
+    const { useQueryGQL, useMutationGQL, createMerchantSettlement, paginateSettlementPayouts, paginateMerchantDebts, useLazyQueryGQL } = API();
     const cookies = new Cookies();
 
     const { lang, langdetect } = useContext(LanguageContext);
 
     const [settlementPayload, setsettlementPayload] = useState({
         sheetOrderIds: [],
-        transactionIds: [],
+        merchantDebtIds: [],
     });
 
     useEffect(() => {
@@ -45,6 +44,7 @@ const Settlements = (props) => {
         setpagetitle_context('Finance');
     }, []);
 
+    const [createsettlementModal, setcreatesettlementModal] = useState(false);
     const [fetchSettlementsQuery, setfetchSettlementsQuery] = useState([]);
     const [fetchMerchantDebtsQuery, setfetchMerchantDebtsQuery] = useState([]);
 
@@ -94,6 +94,12 @@ const Settlements = (props) => {
             NotificationManager.warning(errorMessage, 'Warning!');
         }
     }, [settlementsFilter]);
+
+    const [createMerchantSettlementMutation] = useMutationGQL(createMerchantSettlement(), {
+        merchantId: parseInt(settlementsFilter?.merchantId),
+        sheetOrderIds: settlementPayload?.sheetOrderIds?.map((item) => item.id)?.length != 0 ? settlementPayload?.sheetOrderIds?.map((item) => item.id) : undefined,
+        merchantDebtIds: settlementPayload?.merchantDebtIds?.map((item) => item.id)?.length != 0 ? settlementPayload?.merchantDebtIds?.map((item) => item.id) : undefined,
+    });
 
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
@@ -274,7 +280,7 @@ const Settlements = (props) => {
                                                                 {/* {alert(JSON.stringify(fetchMerchantDebtsQuery?.data?.paginateSettlementPayouts?.))} */}
                                                                 {fetchMerchantDebtsQuery?.data?.paginateMerchantDebts?.data?.map((item, index) => {
                                                                     var selected = false;
-                                                                    settlementPayload?.transactionIds?.map((orderitem, orderindex) => {
+                                                                    settlementPayload?.merchantDebtIds?.map((orderitem, orderindex) => {
                                                                         if (orderitem?.id == item?.id) {
                                                                             selected = true;
                                                                         }
@@ -286,16 +292,16 @@ const Settlements = (props) => {
                                                                                 var temp = { ...settlementPayload };
                                                                                 var exist = false;
                                                                                 var chosenindex = null;
-                                                                                temp.transactionIds.map((i, ii) => {
+                                                                                temp.merchantDebtIds.map((i, ii) => {
                                                                                     if (i.id == item.id) {
                                                                                         exist = true;
                                                                                         chosenindex = ii;
                                                                                     }
                                                                                 });
                                                                                 if (!exist) {
-                                                                                    temp.transactionIds.push(item);
+                                                                                    temp.merchantDebtIds.push(item);
                                                                                 } else {
-                                                                                    temp.transactionIds.splice(chosenindex, 1);
+                                                                                    temp.merchantDebtIds.splice(chosenindex, 1);
                                                                                 }
                                                                                 setsettlementPayload({ ...temp });
                                                                             }}
@@ -388,7 +394,7 @@ const Settlements = (props) => {
                                                 </div>
                                             </>
                                         )}
-                                        {settlementPayload?.transactionIds?.length != 0 && (
+                                        {settlementPayload?.merchantDebtIds?.length != 0 && (
                                             <>
                                                 <div
                                                     style={{ border: '1px solid #eee', borderRadius: '0.5rem' }}
@@ -401,7 +407,7 @@ const Settlements = (props) => {
                                                         </thead>
                                                         <tbody>
                                                             {/* {alert(JSON.stringify(fetchMerchantDebtsQuery?.data?.paginateSettlementPayouts?.))} */}
-                                                            {settlementPayload?.transactionIds?.map((item, index) => {
+                                                            {settlementPayload?.merchantDebtIds?.map((item, index) => {
                                                                 return (
                                                                     <tr>
                                                                         <td style={{ maxWidth: '150px', minWidth: '150px', width: '150px' }}>
@@ -445,7 +451,7 @@ const Settlements = (props) => {
                                                 <div class="row m-0 w-100 d-flex align-items-center justify-content-between">
                                                     <div>Services</div>
                                                     <div style={{ fontWeight: 700 }}>
-                                                        {settlementPayload?.transactionIds?.reduce((sum, item) => sum + new Decimal(item?.amount || 0).toNumber(), 0)}
+                                                        {settlementPayload?.merchantDebtIds?.reduce((sum, item) => sum + new Decimal(item?.amount || 0).toNumber(), 0)}
                                                     </div>
                                                 </div>
                                             </div>
@@ -461,7 +467,7 @@ const Settlements = (props) => {
                                                                     return acc + new Decimal(merchantAmount).plus(new Decimal(shippingAmount)).toNumber();
                                                                 }, 0),
                                                             )
-                                                                .plus(new Decimal(settlementPayload?.transactionIds?.reduce((sum, item) => sum + new Decimal(item?.amount || 0).toNumber(), 0)))
+                                                                .plus(new Decimal(settlementPayload?.merchantDebtIds?.reduce((sum, item) => sum + new Decimal(item?.amount || 0).toNumber(), 0)))
                                                                 .toFixed(2) /* Or use .toNumber() if you don't need fixed precision */
                                                         }
                                                     </div>
@@ -470,8 +476,35 @@ const Settlements = (props) => {
                                         </div>
                                     </div>
                                     <div class="col-lg-12 mb-3">
-                                        <button class={generalstyles.roundbutton + ' allcentered w-100'} onClick={async () => {}}>
-                                            {' '}
+                                        <button
+                                            class={generalstyles.roundbutton + ' allcentered w-100'}
+                                            onClick={async () => {
+                                                if (buttonLoadingContext) return;
+                                                setbuttonLoadingContext(true);
+                                                try {
+                                                    const { data } = await createMerchantSettlementMutation();
+                                                    if (data?.createMerchantSettlement?.success) {
+                                                        //    await refetchfetchItemsInBox();
+                                                        NotificationManager.success(data?.createMerchantSettlement?.message, 'Success!');
+                                                        setcreatesettlementModal({ open: true, data: data });
+                                                    } else {
+                                                        NotificationManager.warning(data?.createMerchantSettlement?.message, 'Warning!');
+                                                    }
+                                                } catch (error) {
+                                                    let errorMessage = 'An unexpected error occurred';
+                                                    if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                                        errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                                    } else if (error.networkError) {
+                                                        errorMessage = error.networkError.message || errorMessage;
+                                                    } else if (error.message) {
+                                                        errorMessage = error.message;
+                                                    }
+
+                                                    NotificationManager.warning(errorMessage, 'Warning!');
+                                                }
+                                                setbuttonLoadingContext(false);
+                                            }}
+                                        >
                                             Create Settlement
                                         </button>
                                     </div>
@@ -481,6 +514,47 @@ const Settlements = (props) => {
                     </div>
                 )}
             </div>
+            <Modal
+                show={createsettlementModal?.open}
+                onHide={() => {
+                    setcreatesettlementModal({ open: false });
+                }}
+                centered
+                size={'md'}
+            >
+                <Modal.Header>
+                    <div className="row w-100 m-0 p-0 d-flex align-items-center">
+                        <div class="col-lg-6 p-0 ">
+                            <div className="row w-100 m-0 p-0 d-flex align-items-center">Create Settlement</div>
+                        </div>
+                        <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
+                            <div
+                                class={'close-modal-container'}
+                                onClick={() => {
+                                    setcreatesettlementModal({ open: false });
+                                }}
+                            >
+                                <IoMdClose />
+                            </div>
+                        </div>{' '}
+                    </div>
+                </Modal.Header>
+                <Modal.Body>
+                    <div class="row m-0 w-100 p-4">
+                        <div class="col-lg-12 p-0 mb-3">Tota: {createsettlementModal?.data?.createMerchantSettlement?.data?.total}</div>
+                        <div class="col-lg-12 p-0 allcentered text-center">
+                            <button
+                                class={generalstyles.roundbutton + ' allcentered w-100'}
+                                onClick={async () => {
+                                    window.open(createsettlementModal?.data?.createMerchantSettlement?.data?.pdfUrl, '_blank');
+                                }}
+                            >
+                                Open PDF
+                            </button>
+                        </div>
+                    </div>
+                </Modal.Body>
+            </Modal>
         </div>
     );
 };

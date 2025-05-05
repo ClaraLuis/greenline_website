@@ -274,6 +274,22 @@ const API = () => {
         `;
     };
 
+    const createMerchantSettlement = () => {
+        return gql`
+            mutation createMerchantSettlement($input: CreateMerchantSettlementInput!) {
+                createMerchantSettlement(input: $input)
+            }
+        `;
+    };
+
+    const processShippingTaxes = () => {
+        return gql`
+            mutation processShippingTaxes($input: ProcessShippingTaxesInput!) {
+                processShippingTaxes(input: $input)
+            }
+        `;
+    };
+
     const createAddress = () => {
         return gql`
             mutation createNewAddress($input: CreateCustomerAddressInput!) {
@@ -1921,6 +1937,91 @@ const API = () => {
         }
     `;
 
+    const paginateShippingCollections = () => {
+        return gql`
+            query paginateShippingCollections($input: PaginateShippingCollectionsInput!) {
+                paginateShippingCollections(input: $input) {
+                    data {
+                        id
+                        type
+                        description
+                        fromAccountId
+                        sheetOrderId
+                        toAccountId
+                        merchantSettlementId
+                        amount
+                        currency
+                        receipt
+                        status
+                        auditedById
+                        createdAt
+                        lastModified
+                        fromAccount {
+                            id
+                            name
+                            type
+                            userId
+                            merchantId
+                            currency
+                            balance
+                            createdAt
+                            lastModified
+                            deletedAt
+                        }
+                        sheetOrder {
+                            id
+                            sheetId
+                            orderId
+                            adminPass
+                            financePass
+                            shippingCollected
+                            amountCollected
+                            transactionId
+                            assignedById
+                            createdAt
+                            lastModified
+                        }
+                        taxedShipping {
+                            id
+                            transactionId
+                            createdAt
+                            transaction {
+                                id
+                                type
+                                description
+                                fromAccountId
+                                sheetOrderId
+                                toAccountId
+                                merchantSettlementId
+                                amount
+                                currency
+                                receipt
+                                status
+                                auditedById
+                                createdAt
+                                lastModified
+                            }
+                        }
+                        toAccount {
+                            id
+                            name
+                            type
+                            userId
+                            merchantId
+                            currency
+                            balance
+                            createdAt
+                            lastModified
+                            deletedAt
+                        }
+                    }
+                    cursor
+                    totalCount
+                }
+            }
+        `;
+    };
+
     const emailTaken = () => gql`
         query emailTaken($input: EmailTakenInput!) {
             emailTaken(input: $input)
@@ -3270,6 +3371,9 @@ const API = () => {
         cancelUnresolvedOrders,
         paginateSettlementPayouts,
         paginateMerchantDebts,
+        createMerchantSettlement,
+        paginateShippingCollections,
+        processShippingTaxes,
     };
 };
 export default API;

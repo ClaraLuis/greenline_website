@@ -72,6 +72,7 @@ import InventoryRent from './InventoryItems/InventoryRent.js';
 import ItemHistory from './InventoryItems/ItemHistory.js';
 import BatchScan from './Hubs/BatchScan.js';
 import Settlements from './Finance/Settlements.js';
+import ShippingCollections from './Finance/ShippingCollections.js';
 const App = (props) => {
     const history = useHistory();
     const location = useLocation();
@@ -331,6 +332,7 @@ const App = (props) => {
                                                                 <Route exact path="/couriercollections" component={CourierCollection} />
                                                                 <Route exact path="/rentbills" component={RentBills} />
                                                                 <Route exact path="/settlements" component={Settlements} />
+                                                                <Route exact path="/shippingcollections" component={ShippingCollections} />
 
                                                                 <Route exact path="/merchantpayments" component={MerchantPayments} />
 
