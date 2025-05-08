@@ -174,6 +174,7 @@ const AddOrder = (props) => {
         previousOrderId: orderpayload?.previousOrderId?.length == 0 || orderpayload?.previousOrderId == null ? undefined : parseInt(orderpayload?.previousOrderId),
         returnOrderId: orderpayload?.returnOrderId?.length == 0 || orderpayload?.returnOrderId == null ? undefined : parseInt(orderpayload?.returnOrderId),
         // currency: 'EGP',
+        sameCustomerInfo: orderpayload?.sameCustomerInfo == true ? true : undefined,
         orderItems: cartItems,
         // shippingPrice: '0.0',
     });
@@ -541,8 +542,12 @@ const AddOrder = (props) => {
                         <div class="row m-0 w-100 mb-2">
                             {' '}
                             {orderpayload?.items?.length == 0 && <div class="col-lg-12">* Add order items</div>}
-                            {(orderpayload?.customerId?.length == 0 || orderpayload?.customerId == undefined) && <div class="col-lg-12">* Choose customer</div>}
-                            {(orderpayload?.address?.length == 0 || orderpayload?.address == undefined) && <div class="col-lg-12">* Choose customer address</div>}
+                            {(orderpayload?.customerId?.length == 0 || orderpayload?.customerId == undefined) && orderpayload?.sameCustomerInfo != true && (
+                                <div class="col-lg-12">* Choose customer</div>
+                            )}
+                            {(orderpayload?.address?.length == 0 || orderpayload?.address == undefined) && orderpayload?.sameCustomerInfo != true && (
+                                <div class="col-lg-12">* Choose customer address</div>
+                            )}
                             {orderpayload?.returnOrderItems?.length == 0 && externalOrder && orderpayload?.ordertype == 'exchange' && <div class="col-lg-12">* Add return items</div>}
                             {!externalOrder &&
                                 previousOrderType == 'd' &&
@@ -677,608 +682,240 @@ const AddOrder = (props) => {
                 )}
                 {tabs[1]?.isChecked && (
                     <div className={' col-lg-8 '}>
-                        <div class={generalstyles.card + ' row m-0 w-100 p-3'}>
-                            <div class="col-lg-12 p-0 mt-3 ">
-                                <div class="row m-0 w-100 d-flex align-items-center">
-                                    <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                        <label for="name" class={formstyles.form__label}>
-                                            Phone
-                                        </label>
-                                        <PhoneInput
-                                            defaultCountry="eg"
-                                            value={filterCustomerPayload?.phone}
-                                            onChange={(phone) => {
-                                                setcustomerFound(false);
-                                                setopenModal(false);
-                                                setnewCustomer(false);
-                                                setnameSuggestions([]);
-                                                setsimilarAddresses([]);
-                                                setuserAddresses([]);
-                                                setfilterCustomerPayload({ ...filterCustomerPayload, phone: phone, myCustomers: true });
-                                                setorderpayload({ ...orderpayload, phone: phone });
-                                            }}
-                                        />
-                                        {!isPhoneValidContext(filterCustomerPayload?.phone) && (
-                                            <div class="px-0 py-1" style={{ color: 'red', fontSize: '12px' }}>
-                                                Phone is not valid
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    <div class={'col-lg-6 '}>
-                                        <label style={{ fontSize: '1.8vh' }} class="m-0 mb-2">
-                                            Email
-                                        </label>
-                                        <Inputfield
-                                            hideLabel={true}
-                                            placeholder={'email'}
-                                            value={orderpayload?.email}
-                                            onChange={(event) => {
-                                                setcustomerFound(false);
-                                                setopenModal(false);
-                                                setnewCustomer(false);
-                                                setsimilarAddresses([]);
-                                                setnameSuggestions([]);
-                                                setuserAddresses([]);
-                                                setfilterCustomerPayload({ ...filterCustomerPayload, email: event.target.value, myCustomers: true });
-                                                setorderpayload({ ...orderpayload, email: event.target.value });
-                                            }}
-                                            type={'text'}
-                                        />
-                                    </div>
-                                    <div class="col-lg-12 p-0 ">
-                                        <button
-                                            onClick={async () => {
-                                                if (filterCustomerPayload?.phone?.length != 0 || filterCustomerPayload?.email?.length != 0) {
-                                                    if (!isPhoneValidContext(filterCustomerPayload?.phone)) {
-                                                        NotificationManager.warning('', 'Please enter valid phone');
-                                                        return;
-                                                    }
-                                                    try {
-                                                        setfetchSuggestions(false);
-                                                        setcustomerFound(false);
-                                                        setfetching(true);
-                                                        var { data } = await checkCustomer({
-                                                            variables: {
-                                                                input: {
-                                                                    phone: filterCustomerPayload?.phone,
-                                                                    email: filterCustomerPayload?.email,
-                                                                    myCustomers: true,
-                                                                    limit: filterCustomerPayload?.limit,
-                                                                    merchantId: merchantId,
-                                                                },
-                                                                merchantId: merchantId,
-                                                            },
-                                                        });
-                                                        setcustomerData({ ...data });
-                                                        setfetching(false);
-                                                    } catch (error) {
-                                                        let errorMessage = 'An unexpected error occurred';
-                                                        if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-                                                            errorMessage = error.graphQLErrors[0].message || errorMessage;
-                                                        } else if (error.networkError) {
-                                                            errorMessage = error.networkError.message || errorMessage;
-                                                        } else if (error.message) {
-                                                            errorMessage = error.message;
-                                                        }
-
-                                                        NotificationManager.warning(errorMessage, 'Warning!');
-                                                        console.error(':', error);
-                                                    }
-                                                } else {
-                                                    NotificationManager.warning('', 'Please fill email or phone');
-                                                }
-                                            }}
-                                            class={generalstyles.roundbutton + '  mx-2'}
-                                            disabled={loading || fetching}
-                                        >
-                                            {!loading && <>Search</>}
-                                            {loading && <CircularProgress color="var(--primary)" width="20px" height="20px" duration="1s" />}
-
-                                            {/* Search */}
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            {fetching && (
-                                <div class="col-lg-12 col-md-12 col-sm-12 mt-4 allcentered">
-                                    <CircularProgress color="var(--primary)" width="100px" height="100px" duration="1s" />
-                                </div>
-                            )}
-                            {!fetching && (
+                        {!externalOrder && orderpayload?.ordertype == 'exchange' && (orderpayload?.sameCustomerInfo == undefined || orderpayload?.sameCustomerInfo == true) && (
+                            <div class="row m-0 w-100 pt-4 allcentered">
                                 <>
-                                    {!customerFound && newCustomer && (
-                                        <div class="col-lg-12 col-md-12 col-sm-12 mt-4">
-                                            <>
-                                                <div class={'col-lg-6 '}>
-                                                    <label style={{ fontSize: '1.8vh' }} class="m-0 mb-2">
-                                                        Customer Name
-                                                    </label>
-                                                    <Inputfield
-                                                        hideLabel={true}
-                                                        placeholder={'name'}
-                                                        value={orderpayload?.user}
-                                                        onChange={(event) => {
-                                                            setorderpayload({ ...orderpayload, user: event.target.value });
-                                                        }}
-                                                        type={'text'}
-                                                    />
+                                    <button
+                                        style={{ width: '45%', height: 'fit-content', minHeight: '140px', textAlign: 'start' }}
+                                        class={orderpayload?.sameCustomerInfo == true ? generalstyles.roundbutton : generalstyles.roundbutton + ' m-3 py-4 bg-info bg-infohover'}
+                                        onClick={async () => {
+                                            setorderpayload({ ...orderpayload, sameCustomerInfo: true });
+                                        }}
+                                    >
+                                        <div class="col-lg-12 d-flex align-items-center justify-content-start">
+                                            <div class="row m-0 w-100">
+                                                <div class="col-lg-12 mb-2 d-flex align-items-center justify-content-start">
+                                                    <span style={{ fontSize: '18px', fontWeight: 700 }}>Same Customer</span>
                                                 </div>
-                                                <button
-                                                    onClick={() => {
-                                                        handleAddCustomer();
-                                                    }}
-                                                    style={{ height: '35px' }}
-                                                    class={generalstyles.roundbutton + '  mb-1 ,t-2'}
-                                                >
-                                                    Create customer
-                                                </button>
-                                            </>
-                                        </div>
-                                    )}
-                                    {customerFound && (
-                                        <div class="col-lg-12 col-md-12 p-0 col-sm-12 mt-4">
-                                            <div class="col-lg-12">
-                                                <div class="row m-0 w-100">
-                                                    {customerData?.findCustomer?.data?.map((item, index) => {
-                                                        return (
-                                                            <div class="col-lg-6">
-                                                                <div
-                                                                    onClick={() => {
-                                                                        setorderpayload({
-                                                                            ...orderpayload,
-                                                                            customerIdForAddress: item?.id,
-                                                                            customerId: item?.details?.id,
-                                                                            user: item?.details?.customerName,
-                                                                        });
-                                                                    }}
-                                                                    style={{
-                                                                        border: orderpayload?.customerId == item?.details?.id ? '1px solid var(--primary)' : '',
-                                                                    }}
-                                                                    class={generalstyles.card + ' row m-0 p-2 w-100'}
-                                                                >
-                                                                    <div class="col-lg-12">
-                                                                        Name: <span style={{ fontWeight: 600 }}>{item?.details?.customerName}</span>
-                                                                    </div>
-                                                                    <div class="col-lg-12">
-                                                                        Email: <span style={{ fontWeight: 600 }}>{item?.email}</span>
-                                                                    </div>
-                                                                    <div class="col-lg-12">
-                                                                        Phone Number: <span style={{ fontWeight: 600 }}>{item?.phone}</span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        );
-                                                    })}
+                                                <div class="col-lg-12 d-flex align-items-center justify-content-start">
+                                                    <span style={{ fontSize: '12px', color: orderpayload?.sameCustomerInfo == true ? 'white' : 'grey' }}>Same customer info as previous order.</span>
                                                 </div>
                                             </div>
                                         </div>
-                                    )}
-                                    {nameSuggestions?.length != 0 && !customerFound && (
-                                        <div class="col-lg-12 col-md-12 col-sm-12 mt-4">
-                                            <div class="col-lg-6 col-md-6 col-sm-12 p-0">
-                                                <label style={{ fontSize: '1.8vh' }} class="m-0 mb-2">
-                                                    Customer Name
-                                                </label>
-                                                <DynamicInputfield
-                                                    options={nameSuggestions}
-                                                    payload={orderpayload}
-                                                    setpayload={setorderpayload}
-                                                    attribute={'user'}
-                                                    optionLabel={'customerName'}
-                                                    optionValue={'customerName'}
-                                                />
-                                            </div>
-                                            <button
-                                                onClick={async () => {
-                                                    if (buttonLoadingContext) return;
-                                                    setbuttonLoadingContext(true);
-                                                    try {
-                                                        await linkCustomerMutation();
-                                                        var { data } = await checkCustomer({
-                                                            variables: {
-                                                                input: {
-                                                                    phone: filterCustomerPayload?.phone,
-                                                                    email: filterCustomerPayload?.email,
-                                                                    myCustomers: true,
-                                                                    limit: filterCustomerPayload?.limit,
-                                                                    merchantId: merchantId,
-                                                                },
-                                                                merchantId: merchantId,
-                                                            },
-                                                        });
-                                                        setcustomerData({ ...data });
-                                                    } catch (error) {
-                                                        let errorMessage = 'An unexpected error occurred';
-                                                        if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-                                                            errorMessage = error.graphQLErrors[0].message || errorMessage;
-                                                        } else if (error.networkError) {
-                                                            errorMessage = error.networkError.message || errorMessage;
-                                                        } else if (error.message) {
-                                                            errorMessage = error.message;
-                                                        }
+                                    </button>
 
-                                                        NotificationManager.warning(errorMessage, 'Warning!');
-                                                        console.error('Error adding Merchant:', error);
-                                                    }
-                                                    setbuttonLoadingContext(false);
+                                    <button
+                                        style={{ width: '45%', height: 'fit-content', minHeight: '140px', textAlign: 'start' }}
+                                        class={generalstyles.roundbutton + ' m-3 py-4 bg-info bg-infohover'}
+                                        onClick={async () => {
+                                            setorderpayload({ ...orderpayload, sameCustomerInfo: false });
+                                        }}
+                                    >
+                                        <div class="col-lg-12 d-flex align-items-center justify-content-start">
+                                            <div class="row m-0 w-100">
+                                                <div class="col-lg-12 mb-2 d-flex align-items-center justify-content-start">
+                                                    <span style={{ fontSize: '18px', fontWeight: 700 }}>Different Customer</span>
+                                                </div>
+                                                <div class="col-lg-12 d-flex align-items-center justify-content-start">
+                                                    <span style={{ fontSize: '12px', color: 'grey' }}>Diffrent customer info as previous order.</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </>
+                            </div>
+                        )}
+                        {(externalOrder || orderpayload?.ordertype != 'exchange' || orderpayload?.sameCustomerInfo == false) && (
+                            <div class={generalstyles.card + ' row m-0 w-100 p-3'}>
+                                {orderpayload?.sameCustomerInfo != undefined && (
+                                    <div class="col-lg-12 p-0 px-1 mt-2">
+                                        <div class="row m-0 w-100">
+                                            <button
+                                                class={orderpayload?.sameCustomerInfo == true ? generalstyles.roundbutton : generalstyles.roundbutton + ' bg-info bg-infohover'}
+                                                onClick={async () => {
+                                                    setorderpayload({ ...orderpayload, sameCustomerInfo: true });
                                                 }}
-                                                style={{ height: '35px' }}
-                                                class={generalstyles.roundbutton + '  mb-1 mt-2'}
-                                                disabled={buttonLoadingContext}
                                             >
-                                                {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
-                                                {!buttonLoadingContext && <span>Create customer</span>}
+                                                <span>Same Customer</span>
+                                            </button>
+                                            <button
+                                                class={orderpayload?.sameCustomerInfo == false ? generalstyles.roundbutton + '  mx-2' : generalstyles.roundbutton + ' bg-info bg-infohover mx-2'}
+                                                onClick={async () => {
+                                                    setorderpayload({ ...orderpayload, sameCustomerInfo: false });
+                                                }}
+                                            >
+                                                <span>Diffrent Customer</span>
                                             </button>
                                         </div>
-                                    )}
-
-                                    {orderpayload?.customerId?.length != 0 && orderpayload?.customerId && customerFound && (
-                                        <>
-                                            <div class="col-lg-6 p-3" style={{ fontSize: '17px', fontWeight: 700 }}>
-                                                Addresses
-                                            </div>
-                                            <div class={' col-lg-6 col-md-6 col-sm-6 p-0 pr-3 pr-md-1 pr-sm-0 d-flex align-items-center justify-content-end pb-1 '}>
-                                                <button
-                                                    style={{ height: '35px' }}
-                                                    class={generalstyles.roundbutton + '  mb-1'}
-                                                    onClick={() => {
-                                                        setaddresspayload({
-                                                            city: '',
-                                                            country: 'Egypt',
-                                                            streetAddress: '',
-                                                        });
-                                                        setopenModal(!openModal);
-                                                    }}
-                                                >
-                                                    {openModal ? 'Cancel' : 'Add Address'}
-                                                </button>
-                                            </div>
-                                            {openModal && (
-                                                <div class="row m-0 w-100 my-2">
-                                                    <Form
-                                                        size={'lg'}
-                                                        submit={submit}
-                                                        setsubmit={setsubmit}
-                                                        attr={
-                                                            addresspayload?.country == 'Egypt'
-                                                                ? [
-                                                                      {
-                                                                          title: 'Country',
-                                                                          options: fetchAllCountriesQuery,
-                                                                          optionsAttr: 'data',
-                                                                          label: 'country',
-                                                                          value: 'country',
-                                                                          size: '6',
-                                                                          attr: 'country',
-                                                                          type: 'fetchSelect',
-                                                                          payload: addresspayload,
-                                                                      },
-                                                                      {
-                                                                          name: 'City',
-                                                                          attr: 'city',
-                                                                          type: 'select',
-                                                                          options: fetchGovernoratesQuery?.data?.findAllDomesticGovernorates,
-                                                                          size: '6',
-                                                                          optionValue: 'name',
-                                                                          optionLabel: 'name',
-                                                                      },
-                                                                      {
-                                                                          name: 'Zone',
-                                                                          attr: 'zone',
-                                                                          type: 'select',
-                                                                          options: findAllZonesQuery?.data?.findAllZones?.filter(
-                                                                              (e) =>
-                                                                                  e.governorateId ==
-                                                                                  fetchGovernoratesQuery?.data?.findAllDomesticGovernorates?.find((i) => i.name == addresspayload?.city)?.id,
-                                                                          ),
-                                                                          size: '6',
-                                                                          optionValue: 'id',
-                                                                          optionLabel: 'name',
-                                                                      },
-                                                                      { name: 'Building Number', attr: 'buildingNumber', size: '6' },
-                                                                      { name: 'Apartment Floor', attr: 'apartmentFloor', size: '6' },
-                                                                      { name: 'Street Address', attr: 'streetAddress', type: 'textarea', size: '12' },
-                                                                  ]
-                                                                : [
-                                                                      {
-                                                                          title: 'Country',
-                                                                          options: fetchAllCountriesQuery,
-                                                                          optionsAttr: 'data',
-                                                                          label: 'country',
-                                                                          value: 'country',
-                                                                          size: '6',
-                                                                          attr: 'country',
-                                                                          type: 'fetchSelect',
-                                                                          payload: addresspayload,
-                                                                      },
-                                                                      {
-                                                                          name: 'City',
-                                                                          attr: 'city',
-                                                                          type: 'select',
-                                                                          options: cities,
-                                                                          size: '6',
-                                                                      },
-                                                                      {
-                                                                          name: 'Zone',
-                                                                          attr: 'zone',
-                                                                          type: 'select',
-                                                                          options: findAllZonesQuery?.data?.findAllZones?.filter(
-                                                                              (e) =>
-                                                                                  e.governorateId ==
-                                                                                  fetchGovernoratesQuery?.data?.findAllDomesticGovernorates?.find((i) => i.name == addresspayload?.city)?.id,
-                                                                          ),
-                                                                          size: '6',
-                                                                          optionValue: 'id',
-                                                                          optionLabel: 'name',
-                                                                      },
-                                                                      { name: 'Building Number', attr: 'buildingNumber', size: '6' },
-                                                                      { name: 'Apartment Floor', attr: 'apartmentFloor', size: '6' },
-                                                                      { name: 'Street Address', attr: 'streetAddress', type: 'textarea', size: '12' },
-                                                                  ]
-                                                        }
-                                                        payload={addresspayload}
-                                                        setpayload={setaddresspayload}
-                                                        button1disabled={buttonLoadingContext}
-                                                        button1class={generalstyles.roundbutton + '  mr-2 '}
-                                                        button1placeholder={'Add address'}
-                                                        button1onClick={async () => {
-                                                            if (buttonLoadingContext) return;
-                                                            setbuttonLoadingContext(true);
-                                                            if (addresspayload?.city?.length != 0 && addresspayload?.country?.length != 0 && addresspayload?.streetAddress?.length != 0) {
-                                                                var { data } = await fetchSimilarAddressesQuery({
-                                                                    variables: {
-                                                                        input: {
-                                                                            customerId: orderpayload?.customerIdForAddress,
-                                                                            city: addresspayload?.city,
-                                                                            country: addresspayload?.country,
-                                                                            streetAddress: addresspayload?.streetAddress,
-                                                                            buildingNumber: addresspayload?.buildingNumber,
-                                                                            apartmentFloor: addresspayload?.apartmentFloor,
-                                                                            zoneId: addresspayload?.zone,
-                                                                            merchantId: merchantId,
-                                                                        },
-                                                                    },
-                                                                });
-                                                                if (data?.findSimilarAddresses?.length != 0 && data?.findSimilarAddresses) {
-                                                                    setsimilarAddresses([...data?.findSimilarAddresses]);
-                                                                } else {
-                                                                    try {
-                                                                        var { data } = await createAddressMutation();
-                                                                        setorderpayload({ ...orderpayload, address: data?.createNewCustomerAddress });
-                                                                        if (orderpayload?.customerId) {
-                                                                            var { data } = await fetchCustomerAddressesQuery({
-                                                                                variables: {
-                                                                                    input: {
-                                                                                        customerId: orderpayload?.customerIdForAddress,
-                                                                                        merchantId: merchantId,
-                                                                                        limit: 20,
-                                                                                    },
-                                                                                    merchantId: merchantId,
-                                                                                },
-                                                                            });
-
-                                                                            if (data?.paginateAddresses?.data) {
-                                                                                setuserAddresses([...data?.paginateAddresses?.data]);
-                                                                            }
-                                                                        }
-                                                                    } catch (e) {
-                                                                        let errorMessage = 'An unexpected error occurred';
-                                                                        if (e.graphQLErrors && e.graphQLErrors.length > 0) {
-                                                                            errorMessage = e.graphQLErrors[0].message || errorMessage;
-                                                                        } else if (e.networkError) {
-                                                                            errorMessage = e.networkError.message || errorMessage;
-                                                                        } else if (e.message) {
-                                                                            errorMessage = e.message;
-                                                                        }
-
-                                                                        NotificationManager.warning(errorMessage, 'Warning!');
-                                                                        // alert(JSON.stringify(e));
-                                                                    }
-                                                                }
-                                                                setopenModal(false);
-                                                                // alert(JSON.stringify(data));
-                                                            } else {
-                                                                NotificationManager.warning('', 'Please complete the missing fields');
-                                                            }
-                                                            setbuttonLoadingContext(false);
-                                                        }}
-                                                    />
+                                    </div>
+                                )}
+                                <div class="col-lg-12 p-0 mt-3 ">
+                                    <div class="row m-0 w-100 d-flex align-items-center">
+                                        <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                            <label for="name" class={formstyles.form__label}>
+                                                Phone
+                                            </label>
+                                            <PhoneInput
+                                                defaultCountry="eg"
+                                                value={filterCustomerPayload?.phone}
+                                                onChange={(phone) => {
+                                                    setcustomerFound(false);
+                                                    setopenModal(false);
+                                                    setnewCustomer(false);
+                                                    setnameSuggestions([]);
+                                                    setsimilarAddresses([]);
+                                                    setuserAddresses([]);
+                                                    setfilterCustomerPayload({ ...filterCustomerPayload, phone: phone, myCustomers: true });
+                                                    setorderpayload({ ...orderpayload, phone: phone });
+                                                }}
+                                            />
+                                            {!isPhoneValidContext(filterCustomerPayload?.phone) && (
+                                                <div class="px-0 py-1" style={{ color: 'red', fontSize: '12px' }}>
+                                                    Phone is not valid
                                                 </div>
                                             )}
+                                        </div>
 
-                                            {similarAddresses?.length != 0 && (
+                                        <div class={'col-lg-6 '}>
+                                            <label style={{ fontSize: '1.8vh' }} class="m-0 mb-2">
+                                                Email
+                                            </label>
+                                            <Inputfield
+                                                hideLabel={true}
+                                                placeholder={'email'}
+                                                value={orderpayload?.email}
+                                                onChange={(event) => {
+                                                    setcustomerFound(false);
+                                                    setopenModal(false);
+                                                    setnewCustomer(false);
+                                                    setsimilarAddresses([]);
+                                                    setnameSuggestions([]);
+                                                    setuserAddresses([]);
+                                                    setfilterCustomerPayload({ ...filterCustomerPayload, email: event.target.value, myCustomers: true });
+                                                    setorderpayload({ ...orderpayload, email: event.target.value });
+                                                }}
+                                                type={'text'}
+                                            />
+                                        </div>
+                                        <div class="col-lg-12 p-0 ">
+                                            <button
+                                                onClick={async () => {
+                                                    if (filterCustomerPayload?.phone?.length != 0 || filterCustomerPayload?.email?.length != 0) {
+                                                        if (!isPhoneValidContext(filterCustomerPayload?.phone)) {
+                                                            NotificationManager.warning('', 'Please enter valid phone');
+                                                            return;
+                                                        }
+                                                        try {
+                                                            setfetchSuggestions(false);
+                                                            setcustomerFound(false);
+                                                            setfetching(true);
+                                                            var { data } = await checkCustomer({
+                                                                variables: {
+                                                                    input: {
+                                                                        phone: filterCustomerPayload?.phone,
+                                                                        email: filterCustomerPayload?.email,
+                                                                        myCustomers: true,
+                                                                        limit: filterCustomerPayload?.limit,
+                                                                        merchantId: merchantId,
+                                                                    },
+                                                                    merchantId: merchantId,
+                                                                },
+                                                            });
+                                                            setcustomerData({ ...data });
+                                                            setfetching(false);
+                                                        } catch (error) {
+                                                            let errorMessage = 'An unexpected error occurred';
+                                                            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                                                errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                                            } else if (error.networkError) {
+                                                                errorMessage = error.networkError.message || errorMessage;
+                                                            } else if (error.message) {
+                                                                errorMessage = error.message;
+                                                            }
+
+                                                            NotificationManager.warning(errorMessage, 'Warning!');
+                                                            console.error(':', error);
+                                                        }
+                                                    } else {
+                                                        NotificationManager.warning('', 'Please fill email or phone');
+                                                    }
+                                                }}
+                                                class={generalstyles.roundbutton + '  mx-2'}
+                                                disabled={loading || fetching}
+                                            >
+                                                {!loading && <>Search</>}
+                                                {loading && <CircularProgress color="var(--primary)" width="20px" height="20px" duration="1s" />}
+
+                                                {/* Search */}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                {fetching && (
+                                    <div class="col-lg-12 col-md-12 col-sm-12 mt-4 allcentered">
+                                        <CircularProgress color="var(--primary)" width="100px" height="100px" duration="1s" />
+                                    </div>
+                                )}
+                                {!fetching && (
+                                    <>
+                                        {!customerFound && newCustomer && (
+                                            <div class="col-lg-12 col-md-12 col-sm-12 mt-4">
                                                 <>
-                                                    {' '}
-                                                    <div class="col-lg-12 p-0">
-                                                        <div class="row m-0 w-100">
-                                                            <div class="col-lg-12">Strongly recommended:</div>
-                                                            {similarAddresses?.map((item, index) => {
-                                                                if (item?.score == 0) {
-                                                                    return (
-                                                                        <>
-                                                                            <div class="col-lg-6 mt-2 ">
-                                                                                <div
-                                                                                    onClick={async () => {
-                                                                                        try {
-                                                                                            await setorderpayload({ ...orderpayload, address: item?.address?.id });
-                                                                                            setaddresspayload({
-                                                                                                city: item?.address?.city,
-                                                                                                country: item?.address?.country,
-                                                                                            });
-                                                                                            await linkCurrentCustomerAddressMutation();
-
-                                                                                            setsimilarAddresses([]);
-                                                                                            if (orderpayload?.customerId) {
-                                                                                                var { data } = await fetchCustomerAddressesQuery({
-                                                                                                    variables: {
-                                                                                                        input: {
-                                                                                                            customerId: orderpayload?.customerIdForAddress,
-                                                                                                            merchantId: merchantId,
-                                                                                                            limit: 20,
-                                                                                                        },
-                                                                                                        merchantId: merchantId,
-                                                                                                    },
-                                                                                                });
-                                                                                                if (data?.paginateAddresses?.data) {
-                                                                                                    setuserAddresses([...data?.paginateAddresses?.data]);
-                                                                                                }
-                                                                                            }
-                                                                                        } catch (e) {
-                                                                                            if (
-                                                                                                e?.graphQLErrors[0]?.message.includes('Duplicate entry') &&
-                                                                                                e?.graphQLErrors[0]?.message.includes('merchant-customer-address.PRIMARY')
-                                                                                            ) {
-                                                                                                setopenModal(false);
-                                                                                                setsimilarAddresses([]);
-                                                                                            } else {
-                                                                                                NotificationManager.warning('', e?.graphQLErrors[0]?.message);
-                                                                                            }
-                                                                                        }
-                                                                                    }}
-                                                                                    style={{
-                                                                                        cursor: 'pointer',
-                                                                                        transition: 'all 0.4s',
-                                                                                        border: orderpayload?.address == item?.address?.id ? '1px solid var(--primary)' : '',
-                                                                                    }}
-                                                                                    class={generalstyles.card + ' row m-0 p-2 w-100'}
-                                                                                >
-                                                                                    <div class="col-lg-12">
-                                                                                        <span style={{ fontWeight: 600 }}>
-                                                                                            {item?.address?.country}, {item?.address?.city}
-                                                                                        </span>
-                                                                                    </div>
-
-                                                                                    <div class="col-lg-12">
-                                                                                        Building: <span style={{ fontWeight: 600 }}>{item?.address?.buildingNumber}</span>, Floor:{' '}
-                                                                                        <span style={{ fontWeight: 600 }}>{item?.address?.apartmentFloor}</span>
-                                                                                    </div>
-
-                                                                                    <div class="col-lg-12">
-                                                                                        Address: <span style={{ fontWeight: 600 }}>{item?.address?.streetAddress}</span>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </>
-                                                                    );
-                                                                }
-                                                            })}
-                                                        </div>
+                                                    <div class={'col-lg-6 '}>
+                                                        <label style={{ fontSize: '1.8vh' }} class="m-0 mb-2">
+                                                            Customer Name
+                                                        </label>
+                                                        <Inputfield
+                                                            hideLabel={true}
+                                                            placeholder={'name'}
+                                                            value={orderpayload?.user}
+                                                            onChange={(event) => {
+                                                                setorderpayload({ ...orderpayload, user: event.target.value });
+                                                            }}
+                                                            type={'text'}
+                                                        />
                                                     </div>
-                                                    <div class="col-lg-12 p-0">
-                                                        <div class="row m-0 w-100">
-                                                            <div class="col-lg-12">Suggestions:</div>
-                                                            {similarAddresses?.map((item, index) => {
-                                                                if (item?.score != 0) {
-                                                                    return (
-                                                                        <>
-                                                                            <div class="col-lg-6 mt-2 ">
-                                                                                <div
-                                                                                    onClick={async () => {
-                                                                                        try {
-                                                                                            await setorderpayload({ ...orderpayload, address: item?.address?.id });
-                                                                                            setaddresspayload({
-                                                                                                city: item?.address?.city,
-                                                                                                country: item?.address?.country,
-                                                                                            });
-                                                                                            await linkCurrentCustomerAddressMutation();
-
-                                                                                            setsimilarAddresses([]);
-                                                                                            if (orderpayload?.customerId) {
-                                                                                                var { data } = await fetchCustomerAddressesQuery({
-                                                                                                    variables: {
-                                                                                                        input: {
-                                                                                                            customerId: orderpayload?.customerIdForAddress,
-                                                                                                            merchantId: merchantId,
-                                                                                                            limit: 20,
-                                                                                                        },
-                                                                                                        merchantId: merchantId,
-                                                                                                    },
-                                                                                                });
-                                                                                                if (data?.paginateAddresses?.data) {
-                                                                                                    setuserAddresses([...data?.paginateAddresses?.data]);
-                                                                                                }
-                                                                                            }
-                                                                                        } catch (e) {
-                                                                                            if (
-                                                                                                e?.graphQLErrors[0]?.message.includes('Duplicate entry') &&
-                                                                                                e?.graphQLErrors[0]?.message.includes('merchant-customer-address.PRIMARY')
-                                                                                            ) {
-                                                                                                setopenModal(false);
-                                                                                                setsimilarAddresses([]);
-                                                                                            } else {
-                                                                                                NotificationManager.warning('', e?.graphQLErrors[0]?.message);
-                                                                                            }
-                                                                                        }
-                                                                                    }}
-                                                                                    style={{
-                                                                                        cursor: 'pointer',
-                                                                                        transition: 'all 0.4s',
-                                                                                        border: orderpayload?.address == item?.address?.id ? '1px solid var(--primary)' : '',
-                                                                                    }}
-                                                                                    class={generalstyles.card + ' row m-0 p-2 w-100'}
-                                                                                >
-                                                                                    <div class="col-lg-12">
-                                                                                        <span style={{ fontWeight: 600 }}>
-                                                                                            {item?.address?.country}, {item?.address?.city}
-                                                                                        </span>
-                                                                                    </div>
-                                                                                    <div class="col-lg-12">
-                                                                                        Building Number: <span style={{ fontWeight: 600 }}>{item?.address?.buildingNumber}</span>
-                                                                                    </div>
-                                                                                    <div class="col-lg-12">
-                                                                                        Floor: <span style={{ fontWeight: 600 }}>{item?.address?.apartmentFloor}</span>
-                                                                                    </div>
-
-                                                                                    <div class="col-lg-12">
-                                                                                        Address: <span style={{ fontWeight: 600 }}>{item?.address?.streetAddress}</span>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </>
-                                                                    );
-                                                                }
-                                                            })}
-                                                        </div>
-                                                    </div>
+                                                    <button
+                                                        onClick={() => {
+                                                            handleAddCustomer();
+                                                        }}
+                                                        style={{ height: '35px' }}
+                                                        class={generalstyles.roundbutton + '  mb-1 ,t-2'}
+                                                    >
+                                                        Create customer
+                                                    </button>
                                                 </>
-                                            )}
-
-                                            {similarAddresses?.length == 0 && (
-                                                <div class="col-lg-12 p-0">
+                                            </div>
+                                        )}
+                                        {customerFound && (
+                                            <div class="col-lg-12 col-md-12 p-0 col-sm-12 mt-4">
+                                                <div class="col-lg-12">
                                                     <div class="row m-0 w-100">
-                                                        {userAddresses?.map((item, index) => {
+                                                        {customerData?.findCustomer?.data?.map((item, index) => {
                                                             return (
-                                                                <div class="col-lg-6 mt-2 ">
+                                                                <div class="col-lg-6">
                                                                     <div
                                                                         onClick={() => {
-                                                                            setorderpayload({ ...orderpayload, address: item?.details?.id });
-                                                                            setaddresspayload({
-                                                                                city: item?.details?.city,
-                                                                                country: item?.details?.country,
+                                                                            setorderpayload({
+                                                                                ...orderpayload,
+                                                                                customerIdForAddress: item?.id,
+                                                                                customerId: item?.details?.id,
+                                                                                user: item?.details?.customerName,
                                                                             });
                                                                         }}
                                                                         style={{
-                                                                            cursor: 'pointer',
-                                                                            transition: 'all 0.4s',
-                                                                            border: orderpayload?.address == item?.details?.id ? '1px solid var(--primary)' : '',
+                                                                            border: orderpayload?.customerId == item?.details?.id ? '1px solid var(--primary)' : '',
                                                                         }}
                                                                         class={generalstyles.card + ' row m-0 p-2 w-100'}
                                                                     >
                                                                         <div class="col-lg-12">
-                                                                            <span style={{ fontWeight: 600 }}>
-                                                                                {item?.details?.country}, {item?.details?.city}
-                                                                            </span>
+                                                                            Name: <span style={{ fontWeight: 600 }}>{item?.details?.customerName}</span>
                                                                         </div>
                                                                         <div class="col-lg-12">
-                                                                            Building Number: <span style={{ fontWeight: 600 }}>{item?.details?.buildingNumber}</span>
+                                                                            Email: <span style={{ fontWeight: 600 }}>{item?.email}</span>
                                                                         </div>
                                                                         <div class="col-lg-12">
-                                                                            Floor: <span style={{ fontWeight: 600 }}>{item?.details?.apartmentFloor}</span>
-                                                                        </div>
-
-                                                                        <div class="col-lg-12">
-                                                                            Address: <span style={{ fontWeight: 600 }}>{item?.details?.streetAddress}</span>
+                                                                            Phone Number: <span style={{ fontWeight: 600 }}>{item?.phone}</span>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -1286,12 +923,447 @@ const AddOrder = (props) => {
                                                         })}
                                                     </div>
                                                 </div>
-                                            )}
-                                        </>
-                                    )}
-                                </>
-                            )}
-                        </div>
+                                            </div>
+                                        )}
+                                        {nameSuggestions?.length != 0 && !customerFound && (
+                                            <div class="col-lg-12 col-md-12 col-sm-12 mt-4">
+                                                <div class="col-lg-6 col-md-6 col-sm-12 p-0">
+                                                    <label style={{ fontSize: '1.8vh' }} class="m-0 mb-2">
+                                                        Customer Name
+                                                    </label>
+                                                    <DynamicInputfield
+                                                        options={nameSuggestions}
+                                                        payload={orderpayload}
+                                                        setpayload={setorderpayload}
+                                                        attribute={'user'}
+                                                        optionLabel={'customerName'}
+                                                        optionValue={'customerName'}
+                                                    />
+                                                </div>
+                                                <button
+                                                    onClick={async () => {
+                                                        if (buttonLoadingContext) return;
+                                                        setbuttonLoadingContext(true);
+                                                        try {
+                                                            await linkCustomerMutation();
+                                                            var { data } = await checkCustomer({
+                                                                variables: {
+                                                                    input: {
+                                                                        phone: filterCustomerPayload?.phone,
+                                                                        email: filterCustomerPayload?.email,
+                                                                        myCustomers: true,
+                                                                        limit: filterCustomerPayload?.limit,
+                                                                        merchantId: merchantId,
+                                                                    },
+                                                                    merchantId: merchantId,
+                                                                },
+                                                            });
+                                                            setcustomerData({ ...data });
+                                                        } catch (error) {
+                                                            let errorMessage = 'An unexpected error occurred';
+                                                            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                                                                errorMessage = error.graphQLErrors[0].message || errorMessage;
+                                                            } else if (error.networkError) {
+                                                                errorMessage = error.networkError.message || errorMessage;
+                                                            } else if (error.message) {
+                                                                errorMessage = error.message;
+                                                            }
+
+                                                            NotificationManager.warning(errorMessage, 'Warning!');
+                                                            console.error('Error adding Merchant:', error);
+                                                        }
+                                                        setbuttonLoadingContext(false);
+                                                    }}
+                                                    style={{ height: '35px' }}
+                                                    class={generalstyles.roundbutton + '  mb-1 mt-2'}
+                                                    disabled={buttonLoadingContext}
+                                                >
+                                                    {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                                    {!buttonLoadingContext && <span>Create customer</span>}
+                                                </button>
+                                            </div>
+                                        )}
+
+                                        {orderpayload?.customerId?.length != 0 && orderpayload?.customerId && customerFound && (
+                                            <>
+                                                <div class="col-lg-6 p-3" style={{ fontSize: '17px', fontWeight: 700 }}>
+                                                    Addresses
+                                                </div>
+                                                <div class={' col-lg-6 col-md-6 col-sm-6 p-0 pr-3 pr-md-1 pr-sm-0 d-flex align-items-center justify-content-end pb-1 '}>
+                                                    <button
+                                                        style={{ height: '35px' }}
+                                                        class={generalstyles.roundbutton + '  mb-1'}
+                                                        onClick={() => {
+                                                            setaddresspayload({
+                                                                city: '',
+                                                                country: 'Egypt',
+                                                                streetAddress: '',
+                                                            });
+                                                            setopenModal(!openModal);
+                                                        }}
+                                                    >
+                                                        {openModal ? 'Cancel' : 'Add Address'}
+                                                    </button>
+                                                </div>
+                                                {openModal && (
+                                                    <div class="row m-0 w-100 my-2">
+                                                        <Form
+                                                            size={'lg'}
+                                                            submit={submit}
+                                                            setsubmit={setsubmit}
+                                                            attr={
+                                                                addresspayload?.country == 'Egypt'
+                                                                    ? [
+                                                                          {
+                                                                              title: 'Country',
+                                                                              options: fetchAllCountriesQuery,
+                                                                              optionsAttr: 'data',
+                                                                              label: 'country',
+                                                                              value: 'country',
+                                                                              size: '6',
+                                                                              attr: 'country',
+                                                                              type: 'fetchSelect',
+                                                                              payload: addresspayload,
+                                                                          },
+                                                                          {
+                                                                              name: 'City',
+                                                                              attr: 'city',
+                                                                              type: 'select',
+                                                                              options: fetchGovernoratesQuery?.data?.findAllDomesticGovernorates,
+                                                                              size: '6',
+                                                                              optionValue: 'name',
+                                                                              optionLabel: 'name',
+                                                                          },
+                                                                          {
+                                                                              name: 'Zone',
+                                                                              attr: 'zone',
+                                                                              type: 'select',
+                                                                              options: findAllZonesQuery?.data?.findAllZones?.filter(
+                                                                                  (e) =>
+                                                                                      e.governorateId ==
+                                                                                      fetchGovernoratesQuery?.data?.findAllDomesticGovernorates?.find((i) => i.name == addresspayload?.city)?.id,
+                                                                              ),
+                                                                              size: '6',
+                                                                              optionValue: 'id',
+                                                                              optionLabel: 'name',
+                                                                          },
+                                                                          { name: 'Building Number', attr: 'buildingNumber', size: '6' },
+                                                                          { name: 'Apartment Floor', attr: 'apartmentFloor', size: '6' },
+                                                                          { name: 'Street Address', attr: 'streetAddress', type: 'textarea', size: '12' },
+                                                                      ]
+                                                                    : [
+                                                                          {
+                                                                              title: 'Country',
+                                                                              options: fetchAllCountriesQuery,
+                                                                              optionsAttr: 'data',
+                                                                              label: 'country',
+                                                                              value: 'country',
+                                                                              size: '6',
+                                                                              attr: 'country',
+                                                                              type: 'fetchSelect',
+                                                                              payload: addresspayload,
+                                                                          },
+                                                                          {
+                                                                              name: 'City',
+                                                                              attr: 'city',
+                                                                              type: 'select',
+                                                                              options: cities,
+                                                                              size: '6',
+                                                                          },
+                                                                          {
+                                                                              name: 'Zone',
+                                                                              attr: 'zone',
+                                                                              type: 'select',
+                                                                              options: findAllZonesQuery?.data?.findAllZones?.filter(
+                                                                                  (e) =>
+                                                                                      e.governorateId ==
+                                                                                      fetchGovernoratesQuery?.data?.findAllDomesticGovernorates?.find((i) => i.name == addresspayload?.city)?.id,
+                                                                              ),
+                                                                              size: '6',
+                                                                              optionValue: 'id',
+                                                                              optionLabel: 'name',
+                                                                          },
+                                                                          { name: 'Building Number', attr: 'buildingNumber', size: '6' },
+                                                                          { name: 'Apartment Floor', attr: 'apartmentFloor', size: '6' },
+                                                                          { name: 'Street Address', attr: 'streetAddress', type: 'textarea', size: '12' },
+                                                                      ]
+                                                            }
+                                                            payload={addresspayload}
+                                                            setpayload={setaddresspayload}
+                                                            button1disabled={buttonLoadingContext}
+                                                            button1class={generalstyles.roundbutton + '  mr-2 '}
+                                                            button1placeholder={'Add address'}
+                                                            button1onClick={async () => {
+                                                                if (buttonLoadingContext) return;
+                                                                setbuttonLoadingContext(true);
+                                                                if (addresspayload?.city?.length != 0 && addresspayload?.country?.length != 0 && addresspayload?.streetAddress?.length != 0) {
+                                                                    var { data } = await fetchSimilarAddressesQuery({
+                                                                        variables: {
+                                                                            input: {
+                                                                                customerId: orderpayload?.customerIdForAddress,
+                                                                                city: addresspayload?.city,
+                                                                                country: addresspayload?.country,
+                                                                                streetAddress: addresspayload?.streetAddress,
+                                                                                buildingNumber: addresspayload?.buildingNumber,
+                                                                                apartmentFloor: addresspayload?.apartmentFloor,
+                                                                                zoneId: addresspayload?.zone,
+                                                                                merchantId: merchantId,
+                                                                            },
+                                                                        },
+                                                                    });
+                                                                    if (data?.findSimilarAddresses?.length != 0 && data?.findSimilarAddresses) {
+                                                                        setsimilarAddresses([...data?.findSimilarAddresses]);
+                                                                    } else {
+                                                                        try {
+                                                                            var { data } = await createAddressMutation();
+                                                                            setorderpayload({ ...orderpayload, address: data?.createNewCustomerAddress });
+                                                                            if (orderpayload?.customerId) {
+                                                                                var { data } = await fetchCustomerAddressesQuery({
+                                                                                    variables: {
+                                                                                        input: {
+                                                                                            customerId: orderpayload?.customerIdForAddress,
+                                                                                            merchantId: merchantId,
+                                                                                            limit: 20,
+                                                                                        },
+                                                                                        merchantId: merchantId,
+                                                                                    },
+                                                                                });
+
+                                                                                if (data?.paginateAddresses?.data) {
+                                                                                    setuserAddresses([...data?.paginateAddresses?.data]);
+                                                                                }
+                                                                            }
+                                                                        } catch (e) {
+                                                                            let errorMessage = 'An unexpected error occurred';
+                                                                            if (e.graphQLErrors && e.graphQLErrors.length > 0) {
+                                                                                errorMessage = e.graphQLErrors[0].message || errorMessage;
+                                                                            } else if (e.networkError) {
+                                                                                errorMessage = e.networkError.message || errorMessage;
+                                                                            } else if (e.message) {
+                                                                                errorMessage = e.message;
+                                                                            }
+
+                                                                            NotificationManager.warning(errorMessage, 'Warning!');
+                                                                            // alert(JSON.stringify(e));
+                                                                        }
+                                                                    }
+                                                                    setopenModal(false);
+                                                                    // alert(JSON.stringify(data));
+                                                                } else {
+                                                                    NotificationManager.warning('', 'Please complete the missing fields');
+                                                                }
+                                                                setbuttonLoadingContext(false);
+                                                            }}
+                                                        />
+                                                    </div>
+                                                )}
+
+                                                {similarAddresses?.length != 0 && (
+                                                    <>
+                                                        {' '}
+                                                        <div class="col-lg-12 p-0">
+                                                            <div class="row m-0 w-100">
+                                                                <div class="col-lg-12">Strongly recommended:</div>
+                                                                {similarAddresses?.map((item, index) => {
+                                                                    if (item?.score == 0) {
+                                                                        return (
+                                                                            <>
+                                                                                <div class="col-lg-6 mt-2 ">
+                                                                                    <div
+                                                                                        onClick={async () => {
+                                                                                            try {
+                                                                                                await setorderpayload({ ...orderpayload, address: item?.address?.id });
+                                                                                                setaddresspayload({
+                                                                                                    city: item?.address?.city,
+                                                                                                    country: item?.address?.country,
+                                                                                                });
+                                                                                                await linkCurrentCustomerAddressMutation();
+
+                                                                                                setsimilarAddresses([]);
+                                                                                                if (orderpayload?.customerId) {
+                                                                                                    var { data } = await fetchCustomerAddressesQuery({
+                                                                                                        variables: {
+                                                                                                            input: {
+                                                                                                                customerId: orderpayload?.customerIdForAddress,
+                                                                                                                merchantId: merchantId,
+                                                                                                                limit: 20,
+                                                                                                            },
+                                                                                                            merchantId: merchantId,
+                                                                                                        },
+                                                                                                    });
+                                                                                                    if (data?.paginateAddresses?.data) {
+                                                                                                        setuserAddresses([...data?.paginateAddresses?.data]);
+                                                                                                    }
+                                                                                                }
+                                                                                            } catch (e) {
+                                                                                                if (
+                                                                                                    e?.graphQLErrors[0]?.message.includes('Duplicate entry') &&
+                                                                                                    e?.graphQLErrors[0]?.message.includes('merchant-customer-address.PRIMARY')
+                                                                                                ) {
+                                                                                                    setopenModal(false);
+                                                                                                    setsimilarAddresses([]);
+                                                                                                } else {
+                                                                                                    NotificationManager.warning('', e?.graphQLErrors[0]?.message);
+                                                                                                }
+                                                                                            }
+                                                                                        }}
+                                                                                        style={{
+                                                                                            cursor: 'pointer',
+                                                                                            transition: 'all 0.4s',
+                                                                                            border: orderpayload?.address == item?.address?.id ? '1px solid var(--primary)' : '',
+                                                                                        }}
+                                                                                        class={generalstyles.card + ' row m-0 p-2 w-100'}
+                                                                                    >
+                                                                                        <div class="col-lg-12">
+                                                                                            <span style={{ fontWeight: 600 }}>
+                                                                                                {item?.address?.country}, {item?.address?.city}
+                                                                                            </span>
+                                                                                        </div>
+
+                                                                                        <div class="col-lg-12">
+                                                                                            Building: <span style={{ fontWeight: 600 }}>{item?.address?.buildingNumber}</span>, Floor:{' '}
+                                                                                            <span style={{ fontWeight: 600 }}>{item?.address?.apartmentFloor}</span>
+                                                                                        </div>
+
+                                                                                        <div class="col-lg-12">
+                                                                                            Address: <span style={{ fontWeight: 600 }}>{item?.address?.streetAddress}</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </>
+                                                                        );
+                                                                    }
+                                                                })}
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-12 p-0">
+                                                            <div class="row m-0 w-100">
+                                                                <div class="col-lg-12">Suggestions:</div>
+                                                                {similarAddresses?.map((item, index) => {
+                                                                    if (item?.score != 0) {
+                                                                        return (
+                                                                            <>
+                                                                                <div class="col-lg-6 mt-2 ">
+                                                                                    <div
+                                                                                        onClick={async () => {
+                                                                                            try {
+                                                                                                await setorderpayload({ ...orderpayload, address: item?.address?.id });
+                                                                                                setaddresspayload({
+                                                                                                    city: item?.address?.city,
+                                                                                                    country: item?.address?.country,
+                                                                                                });
+                                                                                                await linkCurrentCustomerAddressMutation();
+
+                                                                                                setsimilarAddresses([]);
+                                                                                                if (orderpayload?.customerId) {
+                                                                                                    var { data } = await fetchCustomerAddressesQuery({
+                                                                                                        variables: {
+                                                                                                            input: {
+                                                                                                                customerId: orderpayload?.customerIdForAddress,
+                                                                                                                merchantId: merchantId,
+                                                                                                                limit: 20,
+                                                                                                            },
+                                                                                                            merchantId: merchantId,
+                                                                                                        },
+                                                                                                    });
+                                                                                                    if (data?.paginateAddresses?.data) {
+                                                                                                        setuserAddresses([...data?.paginateAddresses?.data]);
+                                                                                                    }
+                                                                                                }
+                                                                                            } catch (e) {
+                                                                                                if (
+                                                                                                    e?.graphQLErrors[0]?.message.includes('Duplicate entry') &&
+                                                                                                    e?.graphQLErrors[0]?.message.includes('merchant-customer-address.PRIMARY')
+                                                                                                ) {
+                                                                                                    setopenModal(false);
+                                                                                                    setsimilarAddresses([]);
+                                                                                                } else {
+                                                                                                    NotificationManager.warning('', e?.graphQLErrors[0]?.message);
+                                                                                                }
+                                                                                            }
+                                                                                        }}
+                                                                                        style={{
+                                                                                            cursor: 'pointer',
+                                                                                            transition: 'all 0.4s',
+                                                                                            border: orderpayload?.address == item?.address?.id ? '1px solid var(--primary)' : '',
+                                                                                        }}
+                                                                                        class={generalstyles.card + ' row m-0 p-2 w-100'}
+                                                                                    >
+                                                                                        <div class="col-lg-12">
+                                                                                            <span style={{ fontWeight: 600 }}>
+                                                                                                {item?.address?.country}, {item?.address?.city}
+                                                                                            </span>
+                                                                                        </div>
+                                                                                        <div class="col-lg-12">
+                                                                                            Building Number: <span style={{ fontWeight: 600 }}>{item?.address?.buildingNumber}</span>
+                                                                                        </div>
+                                                                                        <div class="col-lg-12">
+                                                                                            Floor: <span style={{ fontWeight: 600 }}>{item?.address?.apartmentFloor}</span>
+                                                                                        </div>
+
+                                                                                        <div class="col-lg-12">
+                                                                                            Address: <span style={{ fontWeight: 600 }}>{item?.address?.streetAddress}</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </>
+                                                                        );
+                                                                    }
+                                                                })}
+                                                            </div>
+                                                        </div>
+                                                    </>
+                                                )}
+
+                                                {similarAddresses?.length == 0 && (
+                                                    <div class="col-lg-12 p-0">
+                                                        <div class="row m-0 w-100">
+                                                            {userAddresses?.map((item, index) => {
+                                                                return (
+                                                                    <div class="col-lg-6 mt-2 ">
+                                                                        <div
+                                                                            onClick={() => {
+                                                                                setorderpayload({ ...orderpayload, address: item?.details?.id });
+                                                                                setaddresspayload({
+                                                                                    city: item?.details?.city,
+                                                                                    country: item?.details?.country,
+                                                                                });
+                                                                            }}
+                                                                            style={{
+                                                                                cursor: 'pointer',
+                                                                                transition: 'all 0.4s',
+                                                                                border: orderpayload?.address == item?.details?.id ? '1px solid var(--primary)' : '',
+                                                                            }}
+                                                                            class={generalstyles.card + ' row m-0 p-2 w-100'}
+                                                                        >
+                                                                            <div class="col-lg-12">
+                                                                                <span style={{ fontWeight: 600 }}>
+                                                                                    {item?.details?.country}, {item?.details?.city}
+                                                                                </span>
+                                                                            </div>
+                                                                            <div class="col-lg-12">
+                                                                                Building Number: <span style={{ fontWeight: 600 }}>{item?.details?.buildingNumber}</span>
+                                                                            </div>
+                                                                            <div class="col-lg-12">
+                                                                                Floor: <span style={{ fontWeight: 600 }}>{item?.details?.apartmentFloor}</span>
+                                                                            </div>
+
+                                                                            <div class="col-lg-12">
+                                                                                Address: <span style={{ fontWeight: 600 }}>{item?.details?.streetAddress}</span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                );
+                                                            })}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </>
+                                        )}
+                                    </>
+                                )}
+                            </div>
+                        )}
                     </div>
                 )}
                 {tabs[2]?.isChecked && (
@@ -1303,7 +1375,7 @@ const AddOrder = (props) => {
                                         <button
                                             class={previousOrderType == 'd' ? generalstyles.roundbutton : generalstyles.roundbutton + ' bg-info bg-infohover'}
                                             onClick={async () => {
-                                                setorderpayload({ ...orderpayload, previousOrderId: undefined, returnOrderId: undefined, returnOrderItems: [] });
+                                                setorderpayload({ ...orderpayload, previousOrderId: undefined, returnOrderId: undefined, returnOrderItems: [], sameCustomerInfo: undefined });
 
                                                 setpreviousOrderType('d');
                                                 setexternalOrder(false);
@@ -1314,7 +1386,7 @@ const AddOrder = (props) => {
                                         <button
                                             class={previousOrderType == 'r' ? generalstyles.roundbutton + '  mx-2' : generalstyles.roundbutton + ' bg-info bg-infohover mx-2'}
                                             onClick={async () => {
-                                                setorderpayload({ ...orderpayload, previousOrderId: undefined, returnOrderId: undefined, returnOrderItems: [] });
+                                                setorderpayload({ ...orderpayload, previousOrderId: undefined, returnOrderId: undefined, returnOrderItems: [], sameCustomerInfo: undefined });
 
                                                 setpreviousOrderType('r');
                                                 setexternalOrder(false);
@@ -1325,7 +1397,7 @@ const AddOrder = (props) => {
                                         <button
                                             class={previousOrderType == 'e' ? generalstyles.roundbutton : generalstyles.roundbutton + ' bg-info bg-infohover'}
                                             onClick={async () => {
-                                                setorderpayload({ ...orderpayload, previousOrderId: undefined, returnOrderId: undefined, returnOrderItems: [] });
+                                                setorderpayload({ ...orderpayload, previousOrderId: undefined, returnOrderId: undefined, returnOrderItems: [], sameCustomerInfo: undefined });
 
                                                 setpreviousOrderType('e');
                                                 setexternalOrder(true);
