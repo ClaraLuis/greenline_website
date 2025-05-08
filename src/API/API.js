@@ -614,6 +614,25 @@ const API = () => {
         `;
     };
 
+    const paginateMerchantSettlements = (payload) => {
+        return gql`
+            query paginateMerchantSettlements($input: PaginateMerchantSettlementsInput!) {
+                paginateMerchantSettlements(input: $input) {
+                    cursor
+                    totalCount
+                    data {
+                        id
+                        merchantId
+                        totalAmount
+                        pdfKey
+                        createdAt
+                        pdfUrl
+                    }
+                }
+            }
+        `;
+    };
+
     const fetchItemsInBox = () => {
         return gql`
             query paginateItemsInBox($input: ItemInBoxPageInput!) {
@@ -4110,6 +4129,7 @@ const API = () => {
         findReturnPackageBySku,
         findOneItem,
         paginateInventoryRentTransaction,
+        paginateMerchantSettlements,
         ordersDeliverableSummary,
         graphOrders,
         findOneUser,
