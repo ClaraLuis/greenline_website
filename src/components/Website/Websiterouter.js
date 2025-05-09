@@ -74,6 +74,7 @@ import BatchScan from './Hubs/BatchScan.js';
 import Settlements from './Finance/Settlements.js';
 import ShippingCollections from './Finance/ShippingCollections.js';
 import MerchantSettlements from './Finance/MerchantSettlements.js';
+import MerchantSettlement from './Finance/MerchantSettlement.js';
 const App = (props) => {
     const history = useHistory();
     const location = useLocation();
@@ -289,7 +290,7 @@ const App = (props) => {
                                                                 <Route exact path="/users" component={Users} />
                                                                 <Route exact path="/userpermissions" component={UserPermissions} />
                                                                 <Route exact path="/merchantsettlements" component={MerchantSettlements} />
-
+                                                                <Route exact path="/merchantsettlement" component={MerchantSettlement} />
                                                                 <Route exact path="/hubs" component={Hubs} />
                                                                 <Route exact path="/inventorydetails" component={InventoryDetails} />
                                                                 <Route exact path="/inventoryitems" component={InventoryItems} />

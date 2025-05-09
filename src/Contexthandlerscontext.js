@@ -31,6 +31,7 @@ export const Contexthandlerscontext_provider = (props) => {
     const [value, setValue] = useState(0);
     const [UserInfoContext, setUserInfoContext] = useState({});
     const [chosenOrderContext, setchosenOrderContext] = useState({});
+    const [chosenMerchantSettlemant, setchosenMerchantSettlemant] = useState({});
     const [chosenItemContext, setchosenItemContext] = useState({});
     const [chosenPackageContext, setchosenPackageContext] = useState({});
     const [chosenHubContext, setchosenHubContext] = useState({});
@@ -1128,6 +1129,8 @@ export const Contexthandlerscontext_provider = (props) => {
                 buttonLoadingContext,
                 setbuttonLoadingContext,
                 isPhoneValidContext,
+                chosenMerchantSettlemant,
+                setchosenMerchantSettlemant,
             }}
         >
             {props.children}
