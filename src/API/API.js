@@ -2865,6 +2865,173 @@ const API = () => {
             }
         `;
     };
+    const paginateSettlementTransactions = (payload) => {
+        return gql`
+            query paginateSettlementTransactions($input: PaginateSettlementTransactionsInput!) {
+                paginateSettlementTransactions(input: $input) {
+                    data {
+                        id
+                        type
+                        description
+                        fromAccountId
+                        sheetOrderId
+                        toAccountId
+                        merchantSettlementId
+                        amount
+                        currency
+                        receipt
+                        status
+                        auditedById
+                        createdAt
+                        lastModified
+                        sheetOrder {
+                            id
+                            sheetId
+                            orderId
+                            adminPass
+                            financePass
+                            shippingCollected
+                            amountCollected
+                            transactionId
+                            assignedById
+                            createdAt
+                            lastModified
+                            order {
+                                id
+                                type
+                                createdAt
+                                shippingPrice
+                                originalPrice
+                                paidToMerchant
+                                merchant {
+                                    id
+                                    name
+                                }
+                                previousOrder {
+                                    id
+                                    type
+                                }
+                                parentOrder {
+                                    id
+                                    type
+                                }
+                                failsAndAssigns
+                                returnPackage {
+                                    id
+                                    sku
+                                    type
+                                    hubId
+                                    courierId
+                                    toInventoryId
+                                    toMerchantId
+                                    status
+                                    createdAt
+                                    lastModified
+                                    signatureId
+                                    signatureFile {
+                                        id
+                                        key
+                                        url
+                                        name
+                                    }
+                                    inventory {
+                                        name
+                                        id
+                                    }
+                                    merchant {
+                                        name
+                                        id
+                                    }
+                                    courier {
+                                        name
+                                        id
+                                    }
+                                    countAndSum
+                                }
+                                address {
+                                    country
+                                    city
+                                    streetAddress
+                                    buildingNumber
+                                    apartmentFloor
+                                }
+                                courier {
+                                    id
+                                    name
+                                }
+                                price
+                                paymentType
+                                status
+                                orderDate
+                                currency
+                                otherId
+                                shopifyName
+                                merchantCustomer {
+                                    id
+                                    customerName
+                                    customer {
+                                        email
+                                        phone
+                                        id
+                                    }
+                                }
+                                address {
+                                    country
+                                    city
+                                    streetAddress
+                                    buildingNumber
+                                    apartmentFloor
+                                }
+                                orderItems {
+                                    id
+                                    orderId
+                                    count
+                                    unitPrice
+                                    unitDiscount
+                                    partialCount
+                                    info {
+                                        name
+                                        imageUrl
+                                        sku
+                                        item {
+                                            name
+                                        }
+                                    }
+                                }
+                                latestHistory {
+                                    description
+                                }
+                                canOpen
+                                fragile
+                                deliveryPart
+                                sheetOrder {
+                                    id
+                                    sheetId
+                                    orderId
+                                    adminPass
+                                    financePass
+                                    shippingCollected
+                                    amountCollected
+                                    transactionId
+                                    createdAt
+                                    lastModified
+                                    sheet {
+                                        status
+                                        user {
+                                            name
+                                            email
+                                            id
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    cursor
+                }
+            }
+        `;
+    };
     const fetchTransactions = (payload) => {
         return gql`
             query paginateFinancialTransaction($input: FinancialTransactionPaginationInput!) {
@@ -4142,6 +4309,7 @@ const API = () => {
         createMerchantSettlement,
         paginateShippingCollections,
         processShippingTaxes,
+        paginateSettlementTransactions,
     };
 };
 export default API;
