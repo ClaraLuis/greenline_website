@@ -34,7 +34,7 @@ const HubDetails = (props) => {
     const [search, setSearch] = useState('');
 
     const [filterUsers, setfilterUsers] = useState({
-        isAsc: true,
+        isAsc: false,
         limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,

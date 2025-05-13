@@ -60,8 +60,8 @@ const ExpensesTable = (props) => {
             
              
             )} */}
-            <table style={{}} className={'table'}>
-                <thead>
+            <table className="table table-hover">
+                <thead style={{ position: 'sticky', top: '0px' }}>
                     <th>#</th>
                     <th>Type</th>
                     <th>From Account</th>

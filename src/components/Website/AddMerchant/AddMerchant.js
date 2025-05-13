@@ -98,7 +98,7 @@ const AddMerchant = (props) => {
         staleTime: Infinity,
     });
     const [filterMerchants, setfilterMerchants] = useState({
-        isAsc: true,
+        isAsc: false,
         limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
@@ -941,8 +941,8 @@ const AddMerchant = (props) => {
                                             {!fetchGovernoratesQuery?.loading && (
                                                 <div class={generalstyles.card + ' row m-0 w-100'}>
                                                     <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
-                                                        <table style={{}} className={'table'}>
-                                                            <thead>
+                                                        <table className="table table-hover">
+                                                            <thead style={{ position: 'sticky', top: '0px' }}>
                                                                 <th style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}></th>
                                                                 <th>VAT (14%)</th>
                                                                 <th>Post (10%)</th>

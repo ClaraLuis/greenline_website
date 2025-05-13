@@ -63,8 +63,8 @@ const ItemInfo = (props) => {
                                         </div>
                                     )}
                                     {props?.fetchItemHistoryQuery?.paginateItemHistory?.data?.length != 0 && (
-                                        <table style={{}} className={'table text-capitalize'}>
-                                            <thead>
+                                        <table className="table table-hover">
+                                            <thead style={{ position: 'sticky', top: '0px' }}>
                                                 <th>Quantity</th>
                                                 <th style={{ minWidth: '400px' }}>Description</th>
                                                 <th>User</th>

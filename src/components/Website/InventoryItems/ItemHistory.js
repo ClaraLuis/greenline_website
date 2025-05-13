@@ -40,7 +40,7 @@ const ItemHistory = (props) => {
 
     const [fetchItemHistoryQuery, setfetchItemHistoryQuery] = useState({});
     const [fetchItemHistoryfilter, setfetchItemHistoryfilter] = useState({
-        isAsc: true,
+        isAsc: false,
         limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
@@ -123,6 +123,27 @@ const ItemHistory = (props) => {
                                 <AccordionItemPanel>
                                     <hr className="mt-2 mb-3" />
                                     <div class="row m-0 w-100">
+                                        <div class="col-lg-3" style={{ marginBottom: '15px' }}>
+                                            <div class="row m-0 w-100  ">
+                                                <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                    <label class={formstyles.form__label}>Order</label>
+                                                    <Select
+                                                        options={[
+                                                            { label: 'Ascending', value: true },
+                                                            { label: 'Descending', value: false },
+                                                        ]}
+                                                        styles={defaultstyles}
+                                                        value={[
+                                                            { label: 'Ascending', value: true },
+                                                            { label: 'Descending', value: false },
+                                                        ].find((option) => option.value === (fetchItemHistoryfilter?.isAsc ?? true))}
+                                                        onChange={(option) => {
+                                                            setfetchItemHistoryfilter({ ...fetchItemHistoryfilter, isAsc: option?.value });
+                                                        }}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
                                         {cookies.get('merchantId') == undefined && cookies.get('userInfo')?.type != 'merchant' && (
                                             <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
                                                 <MerchantSelectComponent
@@ -326,8 +347,8 @@ const ItemHistory = (props) => {
 
                                             {fetchItemHistoryQuery?.paginateItemHistory?.data?.length != 0 && (
                                                 <>
-                                                    <table style={{}} className={'table text-capitalize'}>
-                                                        <thead>
+                                                    <table className="table table-hover">
+                                                        <thead style={{ position: 'sticky', top: '0px' }}>
                                                             {/* <th>id</th> */}
                                                             <th>SKU</th>
                                                             <th>Inventory</th>

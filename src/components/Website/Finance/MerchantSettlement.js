@@ -38,7 +38,7 @@ const MerchantSettlement = (props) => {
     const { lang, langdetect } = useContext(LanguageContext);
 
     const [filterobj, setfilterobj] = useState({
-        isAsc: true,
+        isAsc: false,
         limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
@@ -52,7 +52,7 @@ const MerchantSettlement = (props) => {
         setpageactive_context('/merchantsettlements');
         setpagetitle_context('Finance');
         setfilterobj({
-            isAsc: true,
+            isAsc: false,
             limit: 20,
             afterCursor: undefined,
             beforeCursor: undefined,

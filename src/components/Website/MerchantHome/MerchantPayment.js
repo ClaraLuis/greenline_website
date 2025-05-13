@@ -42,7 +42,7 @@ const MerchantPayment = (props) => {
     const [selectedArray, setselectedArray] = useState([]);
 
     const [filterobj, setfilterobj] = useState({
-        isAsc: true,
+        isAsc: false,
         limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
@@ -63,7 +63,7 @@ const MerchantPayment = (props) => {
         setpagetitle_context('Merchant');
 
         setfilterobj({
-            isAsc: true,
+            isAsc: false,
             limit: 20,
             afterCursor: undefined,
             beforeCursor: undefined,
@@ -134,6 +134,27 @@ const MerchantPayment = (props) => {
                                         <AccordionItemPanel>
                                             <hr className="mt-2 mb-3" />
                                             <div class="row m-0 w-100">
+                                                <div class="col-lg-3" style={{ marginBottom: '15px' }}>
+                                                    <div class="row m-0 w-100  ">
+                                                        <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                            <label class={formstyles.form__label}>Order</label>
+                                                            <Select
+                                                                options={[
+                                                                    { label: 'Ascending', value: true },
+                                                                    { label: 'Descending', value: false },
+                                                                ]}
+                                                                styles={defaultstyles}
+                                                                value={[
+                                                                    { label: 'Ascending', value: true },
+                                                                    { label: 'Descending', value: false },
+                                                                ].find((option) => option.value === (filterobj?.isAsc ?? true))}
+                                                                onChange={(option) => {
+                                                                    setfilterobj({ ...filterobj, isAsc: option?.value });
+                                                                }}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
                                                 <div class=" col-lg-3 mb-md-2">
                                                     <span>Date Range</span>
                                                     <div class="mt-1" style={{ width: '100%' }}>

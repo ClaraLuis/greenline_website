@@ -332,8 +332,8 @@ th {
     display: flex;
     flex: 150 0 auto;
     margin-bottom: 10px;
-    position: sticky !important;
-    top: -10px;
+    /* position: sticky !important; */
+    /* top: -10px !important; */
     /* border: 2px solid #eceffa; */
     background-color: white;
     border-radius: 0.5rem;

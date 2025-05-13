@@ -45,7 +45,7 @@ const FinancialAccounts = (props) => {
         userId: undefined,
     });
     const [filterobj, setfilterobj] = useState({
-        isAsc: true,
+        isAsc: false,
         limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
@@ -57,21 +57,21 @@ const FinancialAccounts = (props) => {
         setpageactive_context('/financialaccounts');
         setpagetitle_context('Finance');
         setfilterobj({
-            isAsc: true,
+            isAsc: false,
             limit: 20,
             afterCursor: undefined,
             beforeCursor: undefined,
         });
     }, []);
     const [filterUsers, setfilterUsers] = useState({
-        isAsc: true,
+        isAsc: false,
         limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
     });
     const fetchusers = useQueryGQL('', fetchUsers(), filterUsers);
     const [filterMerchants, setfilterMerchants] = useState({
-        isAsc: true,
+        isAsc: false,
         limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,

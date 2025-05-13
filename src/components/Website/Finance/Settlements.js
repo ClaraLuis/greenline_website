@@ -52,7 +52,7 @@ const Settlements = (props) => {
     const [paginateMerchantDebtsLazyQuery] = useLazyQueryGQL(paginateMerchantDebts());
 
     const [settlementsFilter, setsettlementsFilter] = useState({
-        isAsc: true,
+        isAsc: false,
         limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
@@ -179,8 +179,8 @@ const Settlements = (props) => {
                                                         Orders
                                                     </div>
                                                     <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-3 '}>
-                                                        <table className={'table'}>
-                                                            <thead>
+                                                        <table className="table table-hover">
+                                                            <thead style={{ position: 'sticky', top: '0px' }}>
                                                                 <th style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>#</th>
                                                                 <th style={{ maxWidth: '150px', minWidth: '150px', width: '150px' }}>Type</th>
                                                                 <th style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>Amount</th>
@@ -270,8 +270,8 @@ const Settlements = (props) => {
                                                         Services
                                                     </div>
                                                     <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-3 '}>
-                                                        <table className={'table'}>
-                                                            <thead>
+                                                        <table className="table table-hover">
+                                                            <thead style={{ position: 'sticky', top: '0px' }}>
                                                                 <th style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>#</th>
                                                                 <th style={{ maxWidth: '150px', minWidth: '150px', width: '150px' }}>Type</th>
                                                                 <th style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>Amount</th>
@@ -353,8 +353,8 @@ const Settlements = (props) => {
                                                     style={{ border: '1px solid #eee', borderRadius: '0.5rem' }}
                                                     className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}
                                                 >
-                                                    <table className={'table'}>
-                                                        <thead>
+                                                    <table className="table table-hover">
+                                                        <thead style={{ position: 'sticky', top: '0px' }}>
                                                             <th style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>Orders</th>
                                                             <th style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>Amount</th>
                                                             <th style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>Shipping</th>
@@ -400,8 +400,8 @@ const Settlements = (props) => {
                                                     style={{ border: '1px solid #eee', borderRadius: '0.5rem' }}
                                                     className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 mt-2'}
                                                 >
-                                                    <table className={'table'}>
-                                                        <thead>
+                                                    <table className="table table-hover">
+                                                        <thead style={{ position: 'sticky', top: '0px' }}>
                                                             <th style={{ maxWidth: '150px', minWidth: '150px', width: '150px' }}>Service</th>
                                                             <th style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>Amount</th>
                                                         </thead>

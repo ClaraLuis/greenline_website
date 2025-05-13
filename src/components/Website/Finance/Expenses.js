@@ -48,7 +48,7 @@ const Expenses = (props) => {
     });
 
     const [filterTransactionsObj, setfilterTransactionsObj] = useState({
-        isAsc: true,
+        isAsc: false,
         limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
@@ -58,7 +58,7 @@ const Expenses = (props) => {
         type: undefined,
     });
     const [filterExpensesObj, setfilterExpensesObj] = useState({
-        isAsc: true,
+        isAsc: false,
         limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
@@ -159,6 +159,27 @@ const Expenses = (props) => {
                                     <AccordionItemPanel>
                                         <hr className="mt-2 mb-3" />
                                         <div class="row m-0 w-100">
+                                            <div class="col-lg-3" style={{ marginBottom: '15px' }}>
+                                                <div class="row m-0 w-100  ">
+                                                    <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                        <label class={formstyles.form__label}>Order</label>
+                                                        <Select
+                                                            options={[
+                                                                { label: 'Ascending', value: true },
+                                                                { label: 'Descending', value: false },
+                                                            ]}
+                                                            styles={defaultstyles}
+                                                            value={[
+                                                                { label: 'Ascending', value: true },
+                                                                { label: 'Descending', value: false },
+                                                            ].find((option) => option.value === (filterExpensesObj?.isAsc ?? true))}
+                                                            onChange={(option) => {
+                                                                setfilterExpensesObj({ ...filterExpensesObj, isAsc: option?.value });
+                                                            }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
                                                 <MultiSelect
                                                     title={'Type'}

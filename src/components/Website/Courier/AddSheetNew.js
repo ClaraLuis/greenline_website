@@ -41,7 +41,7 @@ const AddSheetNew = (props) => {
     const [assignOpenModal, setassignOpenModal] = useState(false);
 
     const [filterCouriers, setfilterCouriers] = useState({
-        isAsc: true,
+        isAsc: false,
         limit: 10,
         afterCursor: undefined,
         beforeCursor: undefined,
@@ -49,7 +49,7 @@ const AddSheetNew = (props) => {
     const fetchCouriersQuery = useQueryGQL('cache-first', fetchCouriers(), filterCouriers);
 
     const [filterHubs, setfilterHubs] = useState({
-        isAsc: true,
+        isAsc: false,
         limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,

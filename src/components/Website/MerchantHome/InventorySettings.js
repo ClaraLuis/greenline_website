@@ -73,7 +73,7 @@ const InventorySettings = (props) => {
     const { lang, langdetect } = useContext(LanguageContext);
 
     const [filterSentTransactionsObj, setfilterSentTransactionsObj] = useState({
-        isAsc: true,
+        isAsc: false,
         limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
@@ -204,7 +204,7 @@ const InventorySettings = (props) => {
         if (queryParameters.get('merchantId')) {
             findOneMerchantFunction();
             setfilterSentTransactionsObj({
-                isAsc: true,
+                isAsc: false,
                 limit: 20,
                 afterCursor: undefined,
                 beforeCursor: undefined,

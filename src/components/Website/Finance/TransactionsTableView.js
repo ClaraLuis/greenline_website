@@ -107,9 +107,9 @@ const TransactionsTableView = (props) => {
                         </div>
                     )}
                     {props?.query?.data[props?.paginationAttr]?.data?.length != 0 && (
-                        <div className="table-responsive">
+                        <div style={{ maxHeight: '400px' }} className="table-responsive">
                             <table className="table table-hover">
-                                <thead>
+                                <thead style={{ position: 'sticky', top: '0px' }}>
                                     <tr>
                                         <th>ID</th>
                                         <th>Amount</th>
@@ -341,8 +341,8 @@ const TransactionsTableView = (props) => {
                 </Modal.Header>
                 <Modal.Body>
                     <div class="row m-0 w-100 py-2">
-                        <table style={{}} className={'table'}>
-                            <thead>
+                        <table className="table table-hover">
+                            <thead style={{ position: 'sticky', top: '0px' }}>
                                 <th>Status</th>
                                 <th>Date</th>
                                 <th>By</th>

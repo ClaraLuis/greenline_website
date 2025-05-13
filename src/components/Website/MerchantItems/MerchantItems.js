@@ -776,7 +776,7 @@ keep data consistent.</span></p>
 
     const [payload, setPayload] = useState({
         limit: 20,
-        isAsc: true,
+        isAsc: false,
         afterCursor: '',
         beforeCursor: '',
         name: '',

@@ -25,7 +25,7 @@ const AddEditSecuritylayers = (props) => {
     });
 
     const [filterUsers, setfilterUsers] = useState({
-        isAsc: true,
+        isAsc: false,
         limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,

@@ -139,7 +139,7 @@ const OrderInfo = (props) => {
     const [itemsModal, setitemsModal] = useState({ open: false, items: [], itemstobeadded: [] });
     const [filter, setfilter] = useState({
         limit: 20,
-        isAsc: true,
+        isAsc: false,
         afterCursor: '',
         beforeCursor: '',
         name: undefined,

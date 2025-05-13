@@ -12,7 +12,7 @@ const MerchantSelectComponent = (props) => {
     const { isAuth } = useContext(Contexthandlerscontext);
 
     const [filterMerchants, setfilterMerchants] = useState({
-        isAsc: true,
+        isAsc: false,
         limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,

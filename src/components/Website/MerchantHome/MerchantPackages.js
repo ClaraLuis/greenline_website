@@ -40,7 +40,7 @@ const MerchantPackages = (props) => {
 
     const [filter, setfilter] = useState({
         limit: 20,
-        isAsc: true,
+        isAsc: false,
         afterCursor: '',
         beforeCursor: '',
         assigned: undefined,
@@ -162,6 +162,27 @@ const MerchantPackages = (props) => {
                                                     }}
                                                 />
                                             </div> */}
+                                                <div class="col-lg-3" style={{ marginBottom: '15px' }}>
+                                                    <div class="row m-0 w-100  ">
+                                                        <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                            <label class={formstyles.form__label}>Order</label>
+                                                            <Select
+                                                                options={[
+                                                                    { label: 'Ascending', value: true },
+                                                                    { label: 'Descending', value: false },
+                                                                ]}
+                                                                styles={defaultstyles}
+                                                                value={[
+                                                                    { label: 'Ascending', value: true },
+                                                                    { label: 'Descending', value: false },
+                                                                ].find((option) => option.value === (filter?.isAsc ?? true))}
+                                                                onChange={(option) => {
+                                                                    setfilter({ ...filter, isAsc: option?.value });
+                                                                }}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
                                                 <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
                                                     <label for="name" class={formstyles.form__label}>
                                                         Status

@@ -129,8 +129,8 @@ const AddInvoice = (props) => {
                                             Orders
                                         </div>
                                         <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-3 '}>
-                                            <table className={'table'}>
-                                                <thead>
+                                            <table className="table table-hover">
+                                                <thead style={{ position: 'sticky', top: '0px' }}>
                                                     <th>#</th>
                                                     <th>Items Count</th>
                                                     <th>Merchant</th>
