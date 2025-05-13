@@ -31,7 +31,7 @@ const RentPage = (props) => {
     const { lang, langdetect } = useContext(LanguageContext);
 
     const [filterSentTransactionsObj, setfilterSentTransactionsObj] = useState({
-        isAsc: true,
+        isAsc: false,
         limit: 3,
         afterCursor: undefined,
         beforeCursor: undefined,

@@ -63,7 +63,7 @@ const FinanceTransactions = (props) => {
     });
 
     const [filterTransactionsObj, setfilterTransactionsObj] = useState({
-        isAsc: true,
+        isAsc: false,
         limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
@@ -77,7 +77,7 @@ const FinanceTransactions = (props) => {
     const { refetch: refetchAllTransactionsQuery } = useQueryGQL('', fetchTransactions(), filterTransactionsObj);
 
     const [filterAllFinancialAccountsObj, setfilterAllFinancialAccountsObj] = useState({
-        isAsc: true,
+        isAsc: false,
         limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
@@ -218,6 +218,27 @@ const FinanceTransactions = (props) => {
                                         <div class="row m-0 w-100">
                                             <div class="col-lg-12 p-0">
                                                 <div class="row m-0 w-100">
+                                                    <div class="col-lg-3" style={{ marginBottom: '15px' }}>
+                                                        <div class="row m-0 w-100  ">
+                                                            <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                                <label class={formstyles.form__label}>Order</label>
+                                                                <Select
+                                                                    options={[
+                                                                        { label: 'Ascending', value: true },
+                                                                        { label: 'Descending', value: false },
+                                                                    ]}
+                                                                    styles={defaultstyles}
+                                                                    value={[
+                                                                        { label: 'Ascending', value: true },
+                                                                        { label: 'Descending', value: false },
+                                                                    ].find((option) => option.value === (filterTransactionsObj?.isAsc ?? true))}
+                                                                    onChange={(option) => {
+                                                                        setfilterTransactionsObj({ ...filterTransactionsObj, isAsc: option?.value });
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                     {isAuth([1, 51]) && (
                                                         <div className="col-lg-2 p-0 mb-2 d-flex align-items-center ">
                                                             <div className="row m-0 w-100 d-flex ">

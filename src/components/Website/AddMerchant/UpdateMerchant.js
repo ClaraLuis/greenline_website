@@ -99,7 +99,7 @@ const UpdateMerchant = (props) => {
         addressId: merchantPayload?.addressId ?? undefined,
     });
     const [filterUsers, setfilterUsers] = useState({
-        isAsc: true,
+        isAsc: false,
         limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,

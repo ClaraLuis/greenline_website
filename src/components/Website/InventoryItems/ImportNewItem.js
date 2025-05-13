@@ -96,7 +96,7 @@ const ImportNewItem = (props) => {
 
     const [merchantFilter, setmerchantFilter] = useState({
         limit: 20,
-        isAsc: true,
+        isAsc: false,
         afterCursor: '',
         beforeCursor: '',
         name: undefined,

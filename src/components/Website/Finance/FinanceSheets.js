@@ -45,7 +45,7 @@ const FinanceSheets = (props) => {
 
     const [filter, setfilter] = useState({
         limit: 20,
-        isAsc: true,
+        isAsc: false,
         afterCursor: '',
         beforeCursor: '',
         statuses: ['inProgress', 'waitingForAdminApproval', 'waitingForFinanceApproval'],
@@ -55,7 +55,7 @@ const FinanceSheets = (props) => {
     const refetchCourierSheets = () => fetchSheetsQuery.refetch();
 
     const [filterCouriers, setfilterCouriers] = useState({
-        isAsc: true,
+        isAsc: false,
         limit: 10,
         afterCursor: undefined,
         beforeCursor: undefined,
@@ -111,6 +111,27 @@ const FinanceSheets = (props) => {
                                 <AccordionItemPanel>
                                     <hr className="mt-2 mb-3" />
                                     <div class="row m-0 w-100">
+                                        <div class="col-lg-3" style={{ marginBottom: '15px' }}>
+                                            <div class="row m-0 w-100  ">
+                                                <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                    <label class={formstyles.form__label}>Order</label>
+                                                    <Select
+                                                        options={[
+                                                            { label: 'Ascending', value: true },
+                                                            { label: 'Descending', value: false },
+                                                        ]}
+                                                        styles={defaultstyles}
+                                                        value={[
+                                                            { label: 'Ascending', value: true },
+                                                            { label: 'Descending', value: false },
+                                                        ].find((option) => option.value === (filter?.isAsc ?? true))}
+                                                        onChange={(option) => {
+                                                            setfilter({ ...filter, isAsc: option?.value });
+                                                        }}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
                                             <SelectComponent
                                                 title={'Courier'}

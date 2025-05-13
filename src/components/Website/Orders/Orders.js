@@ -231,6 +231,27 @@ const Orders = (props) => {
                                     <AccordionItemPanel>
                                         <hr className="mt-2 mb-3" />
                                         <div class="row m-0 w-100">
+                                            <div class="col-lg-3" style={{ marginBottom: '15px' }}>
+                                                <div class="row m-0 w-100  ">
+                                                    <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                        <label class={formstyles.form__label}>Order</label>
+                                                        <Select
+                                                            options={[
+                                                                { label: 'Ascending', value: true },
+                                                                { label: 'Descending', value: false },
+                                                            ]}
+                                                            styles={defaultstyles}
+                                                            value={[
+                                                                { label: 'Ascending', value: true },
+                                                                { label: 'Descending', value: false },
+                                                            ].find((option) => option.value === (filterorders?.isAsc ?? true))}
+                                                            onChange={(option) => {
+                                                                setfilterorders({ ...filterorders, isAsc: option?.value });
+                                                            }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <div className="col-lg-2 p-0 mb-2 d-flex align-items-center ">
                                                 <div className="row m-0 w-100 d-flex ">
                                                     <label className={`${formstyles.switch}  my-0`}>

@@ -58,8 +58,8 @@ const ItemsTable = (props) => {
                                     </div>
                                 )} */}
             {fetchusers?.data?.length != 0 && (
-                <table style={{}} className={'table'}>
-                    <thead>
+                <table className="table table-hover">
+                    <thead style={{ position: 'sticky', top: '0px' }}>
                         <th style={{ minWidth: '100px', maxWidth: '100px' }}>SKU</th>
                         <th>Name</th>
 

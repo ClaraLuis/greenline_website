@@ -60,14 +60,14 @@ const FinancialAccountInfo = (props) => {
     const [expensepayload, setexpensepayload] = useState({});
 
     const [filterobj, setfilterobj] = useState({
-        isAsc: true,
+        isAsc: false,
         limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
         name: queryParameters.get('accountName'),
     });
     const [filterSentTransactionsObj, setfilterSentTransactionsObj] = useState({
-        isAsc: true,
+        isAsc: false,
         limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
@@ -76,7 +76,7 @@ const FinancialAccountInfo = (props) => {
     });
 
     // const [filterReceivedTransactionsObj, setfilterReceivedTransactionsObj] = useState({
-    //     isAsc: true,
+    //     isAsc: false,
     //     limit: 20,
     //     afterCursor: undefined,
     //     beforeCursor: undefined,
@@ -89,7 +89,7 @@ const FinancialAccountInfo = (props) => {
     // const fetchReceivedTransactionsQuery = useQueryGQL('', fetchTransactions(), filterReceivedTransactionsObj);
 
     const [filterAllFinancialAccountsObj, setfilterAllFinancialAccountsObj] = useState({
-        isAsc: true,
+        isAsc: false,
         limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,

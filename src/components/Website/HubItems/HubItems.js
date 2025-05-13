@@ -38,7 +38,7 @@ const HubItems = (props) => {
 
     const [filter, setfilter] = useState({
         limit: 20,
-        isAsc: true,
+        isAsc: false,
         afterCursor: '',
         beforeCursor: '',
         name: undefined,

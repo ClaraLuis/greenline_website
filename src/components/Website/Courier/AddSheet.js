@@ -63,7 +63,7 @@ const AddSheet = (props) => {
     });
     const fetchOrdersQuery = useQueryGQL('', fetchOrders(), filterorders); //network only
     const [filterCouriers, setfilterCouriers] = useState({
-        isAsc: true,
+        isAsc: false,
         limit: 10,
         afterCursor: undefined,
         beforeCursor: undefined,

@@ -535,8 +535,8 @@ const TransactionsTable = (props) => {
                 </Modal.Header>
                 <Modal.Body>
                     <div class="row m-0 w-100 py-2">
-                        <table style={{}} className={'table'}>
-                            <thead>
+                        <table className="table table-hover">
+                            <thead style={{ position: 'sticky', top: '0px' }}>
                                 <th>Status</th>
                                 <th>Date</th>
                                 <th>By</th>

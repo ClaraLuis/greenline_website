@@ -24,6 +24,8 @@ import SelectComponent from '../../SelectComponent.js';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 import TransactionsTable from './TransactionsTable.js';
 import Decimal from 'decimal.js';
+import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
+
 const RentBills = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
@@ -49,7 +51,7 @@ const RentBills = (props) => {
         userId: undefined,
     });
     const [filterobj, setfilterobj] = useState({
-        isAsc: true,
+        isAsc: false,
         limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
@@ -59,7 +61,7 @@ const RentBills = (props) => {
     });
 
     const [filterobj1, setfilterobj1] = useState({
-        isAsc: true,
+        isAsc: false,
         limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
@@ -73,7 +75,7 @@ const RentBills = (props) => {
 
     const { isAsc, limit, processing, ...filteredFilterObj } = filterobj;
     const [filterAllFinancialAccountsObj, setfilterAllFinancialAccountsObj] = useState({
-        isAsc: true,
+        isAsc: false,
         limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
@@ -85,7 +87,7 @@ const RentBills = (props) => {
         setpageactive_context('/rentbills');
         setpagetitle_context('Finance');
         setfilterobj({
-            isAsc: true,
+            isAsc: false,
             limit: 20,
             afterCursor: undefined,
             beforeCursor: undefined,
@@ -168,6 +170,27 @@ const RentBills = (props) => {
                                 <AccordionItemPanel>
                                     <hr className="mt-2 mb-3" />
                                     <div class="row m-0 w-100">
+                                        <div class="col-lg-3" style={{ marginBottom: '15px' }}>
+                                            <div class="row m-0 w-100  ">
+                                                <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                    <label class={formstyles.form__label}>Order</label>
+                                                    <Select
+                                                        options={[
+                                                            { label: 'Ascending', value: true },
+                                                            { label: 'Descending', value: false },
+                                                        ]}
+                                                        styles={defaultstyles}
+                                                        value={[
+                                                            { label: 'Ascending', value: true },
+                                                            { label: 'Descending', value: false },
+                                                        ].find((option) => option.value === (filterobj?.isAsc ?? true))}
+                                                        onChange={(option) => {
+                                                            setfilterobj({ ...filterobj, isAsc: option?.value });
+                                                        }}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class=" col-lg-3 mb-md-2">
                                             <span>Date Range</span>
                                             <div class="mt-1" style={{ width: '100%' }}>

@@ -39,7 +39,7 @@ const MerchantReturnPackageInfo = (props) => {
     const [signaturemodal, setsignaturemodal] = useState(false);
     const [filter, setfilter] = useState({
         limit: 20,
-        isAsc: true,
+        isAsc: false,
         afterCursor: undefined,
         beforeCursor: undefined,
         assignedToPackage: undefined,

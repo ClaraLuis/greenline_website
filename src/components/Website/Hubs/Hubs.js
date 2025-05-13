@@ -50,7 +50,7 @@ const Hubs = (props) => {
     });
 
     const [filterHubs, setfilterHubs] = useState({
-        isAsc: true,
+        isAsc: false,
         limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,

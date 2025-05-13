@@ -65,6 +65,27 @@ const MerchantSelect = (props) => {
                             <AccordionItemPanel>
                                 <hr className="mt-2 mb-3" />
                                 <div class="row m-0 w-100">
+                                    <div class="col-lg-3" style={{ marginBottom: '15px' }}>
+                                        <div class="row m-0 w-100  ">
+                                            <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                <label class={formstyles.form__label}>Order</label>
+                                                <Select
+                                                    options={[
+                                                        { label: 'Ascending', value: true },
+                                                        { label: 'Descending', value: false },
+                                                    ]}
+                                                    styles={defaultstyles}
+                                                    value={[
+                                                        { label: 'Ascending', value: true },
+                                                        { label: 'Descending', value: false },
+                                                    ].find((option) => option.value === (props?.filter?.isAsc ?? true))}
+                                                    onChange={(option) => {
+                                                        props?.setfilter({ ...props?.filter, isAsc: option?.value });
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
                                         <MerchantSelectComponent
                                             type="single"

@@ -22,6 +22,7 @@ import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, Ac
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 import MerchantSelectComponent from '../../selectComponents/MerchantSelectComponent.js';
 import Cookies from 'universal-cookie';
+import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -35,7 +36,7 @@ const MerchantSettlements = (props) => {
     const { lang, langdetect } = useContext(LanguageContext);
 
     const [filterobj, setfilterobj] = useState({
-        isAsc: true,
+        isAsc: false,
         limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
@@ -47,7 +48,7 @@ const MerchantSettlements = (props) => {
         setpageactive_context('/merchantsettlements');
         setpagetitle_context('Finance');
         setfilterobj({
-            isAsc: true,
+            isAsc: false,
             limit: 20,
             afterCursor: undefined,
             beforeCursor: undefined,
@@ -103,6 +104,27 @@ const MerchantSettlements = (props) => {
                                     <AccordionItemPanel>
                                         <hr className="mt-2 mb-3" />
                                         <div class="row m-0 w-100">
+                                            <div class="col-lg-3" style={{ marginBottom: '15px' }}>
+                                                <div class="row m-0 w-100  ">
+                                                    <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                        <label class={formstyles.form__label}>Order</label>
+                                                        <Select
+                                                            options={[
+                                                                { label: 'Ascending', value: true },
+                                                                { label: 'Descending', value: false },
+                                                            ]}
+                                                            styles={defaultstyles}
+                                                            value={[
+                                                                { label: 'Ascending', value: true },
+                                                                { label: 'Descending', value: false },
+                                                            ].find((option) => option.value === (filterobj?.isAsc ?? true))}
+                                                            onChange={(option) => {
+                                                                setfilterobj({ ...filterobj, isAsc: option?.value });
+                                                            }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
                                                 <MerchantSelectComponent
                                                     type="single"

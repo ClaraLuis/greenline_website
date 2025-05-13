@@ -45,7 +45,7 @@ const ShippingCollections = (props) => {
         afterCursor: undefined,
         beforeCursor: undefined,
         hubId: undefined,
-        isAsc: true,
+        isAsc: false,
         limit: 20,
         merchantId: undefined,
     });
@@ -68,7 +68,7 @@ const ShippingCollections = (props) => {
     const [paginateShippingCollectionsLazyQuery] = useLazyQueryGQL(paginateShippingCollections());
 
     const [filterobj, setfilterobj] = useState({
-        isAsc: true,
+        isAsc: false,
         limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
@@ -80,7 +80,7 @@ const ShippingCollections = (props) => {
 
     const { isAsc, limit, processing, ...filteredFilterObj } = filterobj;
     const [filterHubs, setfilterHubs] = useState({
-        isAsc: true,
+        isAsc: false,
         limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
@@ -189,6 +189,27 @@ const ShippingCollections = (props) => {
                                         <AccordionItemPanel>
                                             <hr className="mt-2 mb-3" />
                                             <div class="row m-0 w-100">
+                                                <div class="col-lg-3" style={{ marginBottom: '15px' }}>
+                                                    <div class="row m-0 w-100  ">
+                                                        <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                            <label class={formstyles.form__label}>Order</label>
+                                                            <Select
+                                                                options={[
+                                                                    { label: 'Ascending', value: true },
+                                                                    { label: 'Descending', value: false },
+                                                                ]}
+                                                                styles={defaultstyles}
+                                                                value={[
+                                                                    { label: 'Ascending', value: true },
+                                                                    { label: 'Descending', value: false },
+                                                                ].find((option) => option.value === (filterShippingCollections?.isAsc ?? true))}
+                                                                onChange={(option) => {
+                                                                    setfilterShippingCollections({ ...filterShippingCollections, isAsc: option?.value });
+                                                                }}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
                                                 {isAuth([1]) && (
                                                     <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
                                                         <MerchantSelectComponent

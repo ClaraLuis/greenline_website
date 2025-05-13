@@ -44,7 +44,7 @@ const FilesPopup = (props) => {
     const [paginateFilesQuery, setpaginateFilesQuery] = useState([]);
     const { useQueryGQL, paginateFiles, fetchMerchants, useLazyQueryGQL } = API();
     const [filterFiles, setfilterFiles] = useState({
-        isAsc: true,
+        isAsc: false,
         limit: 60,
         afterCursor: undefined,
         beforeCursor: undefined,

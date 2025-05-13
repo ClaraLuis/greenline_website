@@ -69,7 +69,7 @@ const Merchants = (props) => {
     });
 
     const [filterMerchants, setfilterMerchants] = useState({
-        isAsc: true,
+        isAsc: false,
         limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,

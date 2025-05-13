@@ -32,7 +32,7 @@ const AddressInfo = (props) => {
 
     const [addUser1] = useMutationGQL(addUser(props?.addresspayload));
     const [filterUsers, setfilterUsers] = useState({
-        isAsc: true,
+        isAsc: false,
         limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,

@@ -19,6 +19,8 @@ import Cookies from 'universal-cookie';
 import Pagination from '../../Pagination.js';
 import SelectComponent from '../../SelectComponent.js';
 import OrdersTable from '../Orders/OrdersTable.js';
+import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
+
 const { ValueContainer, Placeholder } = components;
 
 const ActionCenter = (props) => {
@@ -45,7 +47,7 @@ const ActionCenter = (props) => {
     const [selectedOrders, setSelectedOrders] = useState([]);
 
     const [filterHubs, setfilterHubs] = useState({
-        isAsc: true,
+        isAsc: false,
         limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
@@ -129,6 +131,27 @@ const ActionCenter = (props) => {
                                     <AccordionItemPanel>
                                         <hr className="mt-2 mb-3" />
                                         <div class="row m-0 w-100">
+                                            <div class="col-lg-3" style={{ marginBottom: '15px' }}>
+                                                <div class="row m-0 w-100  ">
+                                                    <div class={`${formstyles.form__group} ${formstyles.field}`}>
+                                                        <label class={formstyles.form__label}>Order</label>
+                                                        <Select
+                                                            options={[
+                                                                { label: 'Ascending', value: true },
+                                                                { label: 'Descending', value: false },
+                                                            ]}
+                                                            styles={defaultstyles}
+                                                            value={[
+                                                                { label: 'Ascending', value: true },
+                                                                { label: 'Descending', value: false },
+                                                            ].find((option) => option.value === (filterorders?.isAsc ?? true))}
+                                                            onChange={(option) => {
+                                                                setfilterorders({ ...filterorders, isAsc: option?.value });
+                                                            }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
                                             {isAuth([1, 63]) && (
                                                 <div class="col-lg-3" style={{ marginBottom: '15px' }}>
                                                     <SelectComponent

@@ -134,7 +134,7 @@ const AddOrder = (props) => {
 
     const [filter, setfilter] = useState({
         limit: 20,
-        isAsc: true,
+        isAsc: false,
         afterCursor: '',
         beforeCursor: '',
         name: undefined,
@@ -369,7 +369,7 @@ const AddOrder = (props) => {
         setmerchantId(merchantIdtemp);
         setfilter({
             limit: 20,
-            isAsc: true,
+            isAsc: false,
             afterCursor: '',
             beforeCursor: '',
             name: undefined,
