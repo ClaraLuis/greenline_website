@@ -52,7 +52,7 @@ const UsersTable = (props) => {
                             {props?.fetchusers?.data?.paginateUsers?.data?.map((item, index) => {
                                 return (
                                     <div className={props?.card}>
-                                        <div class={generalstyles.card + ' p-3 row m-0 w-100 allcentered'}>
+                                        <div class={generalstyles.card + ' p-3 row m-0 w-100 '}>
                                             <div className="col-lg-8 p-0  text-capitalize mb-2">
                                                 <span style={{ fontWeight: 700 }}>{item?.name}</span>
                                             </div>
@@ -184,29 +184,29 @@ const UsersTable = (props) => {
                                                     {item?.email}
                                                 </span>
                                             </div>
-                                            <div className="col-lg-12 p-0 mb-1">
+                                            <div className="col-lg-6 p-0 mb-1">
                                                 <span style={{ fontWeight: 600 }} class="d-flex align-items-center text-capitalize">
                                                     <TbUserPentagon class="mr-1" />
                                                     {item?.type?.split(/(?=[A-Z])/).join(' ')}
                                                     {item?.employee?.type ? ',' : ''} {item?.employee?.type?.split(/(?=[A-Z])/).join(' ')}
                                                 </span>
                                             </div>
-                                            {item?.hub && (
-                                                <div className="col-lg-12 p-0 mb-1">
-                                                    <span style={{ fontWeight: 600 }} class="d-flex align-items-center text-capitalize">
-                                                        <TbBuilding class="mr-1" />
-                                                        {item?.hub?.name}
-                                                    </span>
-                                                </div>
-                                            )}
-                                            {item?.inventory && (
-                                                <div className="col-lg-12 p-0 mb-1">
-                                                    <span style={{ fontWeight: 600 }} class="d-flex align-items-center text-capitalize">
-                                                        <TbBuildingWarehouse class="mr-1" />
-                                                        {item?.inventory?.name}
-                                                    </span>
-                                                </div>
-                                            )}
+                                            {/* {item?.hub && ( */}
+                                            <div className="col-lg-6 p-0 mb-1">
+                                                <span style={{ fontWeight: 600 }} class="d-flex align-items-center text-capitalize">
+                                                    <TbBuilding class="mr-1" />
+                                                    {item?.hub?.name ?? 'No Hub'}
+                                                </span>
+                                            </div>
+                                            {/* )} */}
+                                            {/* {item?.inventory && ( */}
+                                            <div className="col-lg-6 p-0 mb-1">
+                                                <span style={{ fontWeight: 600 }} class="d-flex align-items-center text-capitalize">
+                                                    <TbBuildingWarehouse class="mr-1" />
+                                                    {item?.inventory?.name ?? 'No Inventory'}
+                                                </span>
+                                            </div>
+                                            {/* )} */}
 
                                             <div className="col-lg-12 p-0 ">
                                                 <span style={{ fontWeight: 600 }} class="d-flex align-items-center">

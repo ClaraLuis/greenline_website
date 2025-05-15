@@ -25,6 +25,7 @@ import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 import TransactionsTable from './TransactionsTable.js';
 import Decimal from 'decimal.js';
 import MerchantSelectComponent from '../../selectComponents/MerchantSelectComponent.js';
+import { FaLayerGroup } from 'react-icons/fa';
 const Settlements = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
@@ -59,39 +60,43 @@ const Settlements = (props) => {
         merchantId: queryParameters.get('merchantId') ?? undefined,
     });
     useEffect(async () => {
-        try {
-            var { data } = await paginateSettlementPayoutsLazyQuery({
-                variables: { input: { ...settlementsFilter, merchantId: parseInt(queryParameters.get('merchantId')) } },
-            });
-            setfetchSettlementsQuery({ data: data });
-        } catch (e) {
-            let errorMessage = 'An unexpected error occurred';
-            if (e.graphQLErrors && e.graphQLErrors.length > 0) {
-                errorMessage = e.graphQLErrors[0].message || errorMessage;
-            } else if (e.networkError) {
-                errorMessage = e.networkError.message || errorMessage;
-            } else if (e.message) {
-                errorMessage = e.message;
+        if (parseInt(queryParameters.get('merchantId'))) {
+            try {
+                var { data } = await paginateSettlementPayoutsLazyQuery({
+                    variables: { input: { ...settlementsFilter, merchantId: parseInt(queryParameters.get('merchantId')) } },
+                });
+                setfetchSettlementsQuery({ data: data });
+            } catch (e) {
+                let errorMessage = 'An unexpected error occurred';
+                if (e.graphQLErrors && e.graphQLErrors.length > 0) {
+                    errorMessage = e.graphQLErrors[0].message || errorMessage;
+                } else if (e.networkError) {
+                    errorMessage = e.networkError.message || errorMessage;
+                } else if (e.message) {
+                    errorMessage = e.message;
+                }
+                NotificationManager.warning(errorMessage, 'Warning!');
             }
-            NotificationManager.warning(errorMessage, 'Warning!');
         }
     }, [settlementsFilter]);
     useEffect(async () => {
-        try {
-            var { data } = await paginateMerchantDebtsLazyQuery({
-                variables: { input: { ...settlementsFilter, merchantId: parseInt(queryParameters.get('merchantId')) } },
-            });
-            setfetchMerchantDebtsQuery({ data: data });
-        } catch (e) {
-            let errorMessage = 'An unexpected error occurred';
-            if (e.graphQLErrors && e.graphQLErrors.length > 0) {
-                errorMessage = e.graphQLErrors[0].message || errorMessage;
-            } else if (e.networkError) {
-                errorMessage = e.networkError.message || errorMessage;
-            } else if (e.message) {
-                errorMessage = e.message;
+        if (parseInt(queryParameters.get('merchantId'))) {
+            try {
+                var { data } = await paginateMerchantDebtsLazyQuery({
+                    variables: { input: { ...settlementsFilter, merchantId: parseInt(queryParameters.get('merchantId')) } },
+                });
+                setfetchMerchantDebtsQuery({ data: data });
+            } catch (e) {
+                let errorMessage = 'An unexpected error occurred';
+                if (e.graphQLErrors && e.graphQLErrors.length > 0) {
+                    errorMessage = e.graphQLErrors[0].message || errorMessage;
+                } else if (e.networkError) {
+                    errorMessage = e.networkError.message || errorMessage;
+                } else if (e.message) {
+                    errorMessage = e.message;
+                }
+                NotificationManager.warning(errorMessage, 'Warning!');
             }
-            NotificationManager.warning(errorMessage, 'Warning!');
         }
     }, [settlementsFilter]);
 
@@ -178,86 +183,100 @@ const Settlements = (props) => {
                                                     <div class="col-lg-12 p-0" style={{ fontSize: '17px', fontWeight: 700 }}>
                                                         Orders
                                                     </div>
-                                                    <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-3 '}>
-                                                        <table className="table table-hover">
-                                                            <thead style={{ position: 'sticky', top: '0px' }}>
-                                                                <th style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>#</th>
-                                                                <th style={{ maxWidth: '150px', minWidth: '150px', width: '150px' }}>Type</th>
-                                                                <th style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>Amount</th>
-                                                                <th style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>Shipping</th>
-                                                                <th style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>Total</th>
-                                                            </thead>
-                                                            <tbody>
-                                                                {/* {alert(JSON.stringify(fetchSettlementsQuery?.data?.paginateSettlementPayouts?.))} */}
-                                                                {fetchSettlementsQuery?.data?.paginateSettlementPayouts?.data?.map((item, index) => {
-                                                                    var selected = false;
-                                                                    settlementPayload?.sheetOrderIds?.map((orderitem, orderindex) => {
-                                                                        if (orderitem?.id == item?.id) {
-                                                                            selected = true;
-                                                                        }
-                                                                    });
-                                                                    return (
-                                                                        <tr
-                                                                            style={{ background: selected ? 'var(--secondary)' : '' }}
-                                                                            onClick={() => {
-                                                                                var temp = { ...settlementPayload };
-                                                                                var exist = false;
-                                                                                var chosenindex = null;
-                                                                                temp.sheetOrderIds.map((i, ii) => {
-                                                                                    if (i.id == item.id) {
-                                                                                        exist = true;
-                                                                                        chosenindex = ii;
+                                                    {fetchSettlementsQuery?.data?.paginateSettlementPayouts?.data?.length != 0 && (
+                                                        <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-3 '}>
+                                                            <table className="table table-hover">
+                                                                <thead style={{ position: 'sticky', top: '0px' }}>
+                                                                    <th style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>#</th>
+                                                                    <th style={{ maxWidth: '150px', minWidth: '150px', width: '150px' }}>Type</th>
+                                                                    <th style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>Amount</th>
+                                                                    <th style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>Shipping</th>
+                                                                    <th style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>Total</th>
+                                                                </thead>
+                                                                <tbody>
+                                                                    {/* {alert(JSON.stringify(fetchSettlementsQuery?.data?.paginateSettlementPayouts?.))} */}
+                                                                    {fetchSettlementsQuery?.data?.paginateSettlementPayouts?.data?.map((item, index) => {
+                                                                        var selected = false;
+                                                                        settlementPayload?.sheetOrderIds?.map((orderitem, orderindex) => {
+                                                                            if (orderitem?.id == item?.id) {
+                                                                                selected = true;
+                                                                            }
+                                                                        });
+                                                                        return (
+                                                                            <tr
+                                                                                style={{ background: selected ? 'var(--secondary)' : '' }}
+                                                                                onClick={() => {
+                                                                                    var temp = { ...settlementPayload };
+                                                                                    var exist = false;
+                                                                                    var chosenindex = null;
+                                                                                    temp.sheetOrderIds.map((i, ii) => {
+                                                                                        if (i.id == item.id) {
+                                                                                            exist = true;
+                                                                                            chosenindex = ii;
+                                                                                        }
+                                                                                    });
+                                                                                    if (!exist) {
+                                                                                        temp.sheetOrderIds.push(item);
+                                                                                    } else {
+                                                                                        temp.sheetOrderIds.splice(chosenindex, 1);
                                                                                     }
-                                                                                });
-                                                                                if (!exist) {
-                                                                                    temp.sheetOrderIds.push(item);
-                                                                                } else {
-                                                                                    temp.sheetOrderIds.splice(chosenindex, 1);
-                                                                                }
-                                                                                setsettlementPayload({ ...temp });
-                                                                            }}
-                                                                        >
-                                                                            <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
-                                                                                <p className={' m-0 p-0 wordbreak '}>{item?.id}</p>
-                                                                            </td>
-                                                                            <td style={{ maxWidth: '150px', minWidth: '150px', width: '150px' }}>
-                                                                                <div
-                                                                                    style={{ color: 'white' }}
-                                                                                    className={' wordbreak bg-primary rounded-pill font-weight-600 allcentered mx-1 text-capitalize'}
-                                                                                >
-                                                                                    {item?.order?.type?.split(/(?=[A-Z])/).join(' ')}
-                                                                                </div>
-                                                                            </td>
-                                                                            <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
-                                                                                <p className="m-0 p-0 wordbreak">
-                                                                                    {item?.transactions?.map((i) => (i.type === 'merchantOrderPayment' ? i.amount : 0))}
-                                                                                </p>
-                                                                            </td>
-                                                                            <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
-                                                                                <p className="m-0 p-0 wordbreak">
-                                                                                    {item?.transactions?.map((i) => (i.type === 'shippingCollection' ? i.amount * -1 : 0))}
-                                                                                </p>
-                                                                            </td>
-                                                                            <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
-                                                                                <p className={' m-0 p-0 wordbreak '}>
-                                                                                    {new Decimal(item?.transactions?.reduce((sum, i) => (i.type === 'merchantOrderPayment' ? sum + i.amount : sum), 0))
-                                                                                        .plus(
-                                                                                            new Decimal(
-                                                                                                item?.transactions?.reduce(
-                                                                                                    (sum, i) => (i.type === 'shippingCollection' ? sum + i.amount * -1 : sum),
-                                                                                                    0,
-                                                                                                ),
-                                                                                            ),
+                                                                                    setsettlementPayload({ ...temp });
+                                                                                }}
+                                                                            >
+                                                                                <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
+                                                                                    <p className={' m-0 p-0 wordbreak '}>{item?.id}</p>
+                                                                                </td>
+                                                                                <td style={{ maxWidth: '150px', minWidth: '150px', width: '150px' }}>
+                                                                                    <div
+                                                                                        style={{ color: 'white' }}
+                                                                                        className={' wordbreak bg-primary rounded-pill font-weight-600 allcentered mx-1 text-capitalize'}
+                                                                                    >
+                                                                                        {item?.order?.type?.split(/(?=[A-Z])/).join(' ')}
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
+                                                                                    <p className="m-0 p-0 wordbreak">
+                                                                                        {item?.transactions?.map((i) => (i.type === 'merchantOrderPayment' ? i.amount : 0))}
+                                                                                    </p>
+                                                                                </td>
+                                                                                <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
+                                                                                    <p className="m-0 p-0 wordbreak">
+                                                                                        {item?.transactions?.map((i) => (i.type === 'shippingCollection' ? i.amount * -1 : 0))}
+                                                                                    </p>
+                                                                                </td>
+                                                                                <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
+                                                                                    <p className={' m-0 p-0 wordbreak '}>
+                                                                                        {new Decimal(
+                                                                                            item?.transactions?.reduce((sum, i) => (i.type === 'merchantOrderPayment' ? sum + i.amount : sum), 0),
                                                                                         )
-                                                                                        .toNumber()}{' '}
-                                                                                </p>
-                                                                            </td>
-                                                                        </tr>
-                                                                    );
-                                                                })}
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
+                                                                                            .plus(
+                                                                                                new Decimal(
+                                                                                                    item?.transactions?.reduce(
+                                                                                                        (sum, i) => (i.type === 'shippingCollection' ? sum + i.amount * -1 : sum),
+                                                                                                        0,
+                                                                                                    ),
+                                                                                                ),
+                                                                                            )
+                                                                                            .toNumber()}{' '}
+                                                                                    </p>
+                                                                                </td>
+                                                                            </tr>
+                                                                        );
+                                                                    })}
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    )}
+                                                    {fetchSettlementsQuery?.data?.paginateSettlementPayouts?.data?.length == 0 && (
+                                                        <div style={{ height: '20vh' }} class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
+                                                            <div class="row m-0 w-100">
+                                                                <FaLayerGroup size={40} class=" col-lg-12" />
+                                                                <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
+                                                                    No Orders
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    )}
                                                 </>
                                             )}
                                         </div>
@@ -269,66 +288,78 @@ const Settlements = (props) => {
                                                     <div class="col-lg-12 p-0" style={{ fontSize: '17px', fontWeight: 700 }}>
                                                         Services
                                                     </div>
-                                                    <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-3 '}>
-                                                        <table className="table table-hover">
-                                                            <thead style={{ position: 'sticky', top: '0px' }}>
-                                                                <th style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>#</th>
-                                                                <th style={{ maxWidth: '150px', minWidth: '150px', width: '150px' }}>Type</th>
-                                                                <th style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>Amount</th>
-                                                            </thead>
-                                                            <tbody>
-                                                                {/* {alert(JSON.stringify(fetchMerchantDebtsQuery?.data?.paginateSettlementPayouts?.))} */}
-                                                                {fetchMerchantDebtsQuery?.data?.paginateMerchantDebts?.data?.map((item, index) => {
-                                                                    var selected = false;
-                                                                    settlementPayload?.merchantDebtIds?.map((orderitem, orderindex) => {
-                                                                        if (orderitem?.id == item?.id) {
-                                                                            selected = true;
-                                                                        }
-                                                                    });
-                                                                    return (
-                                                                        <tr
-                                                                            style={{ background: selected ? 'var(--secondary)' : '' }}
-                                                                            onClick={() => {
-                                                                                var temp = { ...settlementPayload };
-                                                                                var exist = false;
-                                                                                var chosenindex = null;
-                                                                                temp.merchantDebtIds.map((i, ii) => {
-                                                                                    if (i.id == item.id) {
-                                                                                        exist = true;
-                                                                                        chosenindex = ii;
+                                                    {fetchMerchantDebtsQuery?.data?.paginateMerchantDebts?.data?.length != 0 && (
+                                                        <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-3 '}>
+                                                            <table className="table table-hover">
+                                                                <thead style={{ position: 'sticky', top: '0px' }}>
+                                                                    <th style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>#</th>
+                                                                    <th style={{ maxWidth: '150px', minWidth: '150px', width: '150px' }}>Type</th>
+                                                                    <th style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>Amount</th>
+                                                                </thead>
+                                                                <tbody>
+                                                                    {/* {alert(JSON.stringify(fetchMerchantDebtsQuery?.data?.paginateSettlementPayouts?.))} */}
+                                                                    {fetchMerchantDebtsQuery?.data?.paginateMerchantDebts?.data?.map((item, index) => {
+                                                                        var selected = false;
+                                                                        settlementPayload?.merchantDebtIds?.map((orderitem, orderindex) => {
+                                                                            if (orderitem?.id == item?.id) {
+                                                                                selected = true;
+                                                                            }
+                                                                        });
+                                                                        return (
+                                                                            <tr
+                                                                                style={{ background: selected ? 'var(--secondary)' : '' }}
+                                                                                onClick={() => {
+                                                                                    var temp = { ...settlementPayload };
+                                                                                    var exist = false;
+                                                                                    var chosenindex = null;
+                                                                                    temp.merchantDebtIds.map((i, ii) => {
+                                                                                        if (i.id == item.id) {
+                                                                                            exist = true;
+                                                                                            chosenindex = ii;
+                                                                                        }
+                                                                                    });
+                                                                                    if (!exist) {
+                                                                                        temp.merchantDebtIds.push(item);
+                                                                                    } else {
+                                                                                        temp.merchantDebtIds.splice(chosenindex, 1);
                                                                                     }
-                                                                                });
-                                                                                if (!exist) {
-                                                                                    temp.merchantDebtIds.push(item);
-                                                                                } else {
-                                                                                    temp.merchantDebtIds.splice(chosenindex, 1);
-                                                                                }
-                                                                                setsettlementPayload({ ...temp });
-                                                                            }}
-                                                                        >
-                                                                            <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
-                                                                                <p className={' m-0 p-0 wordbreak '}>{item?.id}</p>
-                                                                            </td>
-                                                                            <td style={{ maxWidth: '150px', minWidth: '150px', width: '150px' }}>
-                                                                                <p className={' m-0 p-0 wordbreak '}>
-                                                                                    {' '}
-                                                                                    <div
-                                                                                        style={{ color: 'white' }}
-                                                                                        className={' wordbreak bg-primary rounded-pill font-weight-600 allcentered mx-1 text-capitalize'}
-                                                                                    >
-                                                                                        {item?.type?.split(/(?=[A-Z])/).join(' ')}
-                                                                                    </div>
-                                                                                </p>
-                                                                            </td>
-                                                                            <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
-                                                                                <p className={' m-0 p-0 wordbreak '}>{item?.amount}</p>
-                                                                            </td>
-                                                                        </tr>
-                                                                    );
-                                                                })}
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
+                                                                                    setsettlementPayload({ ...temp });
+                                                                                }}
+                                                                            >
+                                                                                <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
+                                                                                    <p className={' m-0 p-0 wordbreak '}>{item?.id}</p>
+                                                                                </td>
+                                                                                <td style={{ maxWidth: '150px', minWidth: '150px', width: '150px' }}>
+                                                                                    <p className={' m-0 p-0 wordbreak '}>
+                                                                                        {' '}
+                                                                                        <div
+                                                                                            style={{ color: 'white' }}
+                                                                                            className={' wordbreak bg-primary rounded-pill font-weight-600 allcentered mx-1 text-capitalize'}
+                                                                                        >
+                                                                                            {item?.type?.split(/(?=[A-Z])/).join(' ')}
+                                                                                        </div>
+                                                                                    </p>
+                                                                                </td>
+                                                                                <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
+                                                                                    <p className={' m-0 p-0 wordbreak '}>{item?.amount}</p>
+                                                                                </td>
+                                                                            </tr>
+                                                                        );
+                                                                    })}
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    )}
+                                                    {fetchMerchantDebtsQuery?.data?.paginateMerchantDebts?.data?.length == 0 && (
+                                                        <div style={{ height: '20vh' }} class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
+                                                            <div class="row m-0 w-100">
+                                                                <FaLayerGroup size={40} class=" col-lg-12" />
+                                                                <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
+                                                                    No Services
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    )}
                                                 </>
                                             )}
                                         </div>

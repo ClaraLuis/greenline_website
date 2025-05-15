@@ -532,6 +532,12 @@ const API = () => {
                         merchant {
                             name
                         }
+                        inventory {
+                            name
+                        }
+                        hub {
+                            name
+                        }
                     }
                     accessToken
                 }
@@ -928,6 +934,8 @@ const API = () => {
             query findOrders($input: PaginateOrdersInput!) {
                 paginateOrders(input: $input) {
                     data {
+                        previousOrderId
+                        expectedPrice
                         id
                         type
                         createdAt
@@ -1197,6 +1205,8 @@ const API = () => {
             query paginateOrdersInInventory($input: PaginateOrdersInInventoryInput!) {
                 paginateOrdersInInventory(input: $input) {
                     data {
+                        expectedPrice
+                        previousOrderId
                         id
                         createdAt
                         otherId

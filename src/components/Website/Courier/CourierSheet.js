@@ -153,9 +153,10 @@ const CourierSheet = (props) => {
 
         return amount.toFixed(2);
     };
-
     useEffect(() => {
-        const total = new Decimal(calculateAmountCollected()).plus(new Decimal(calculateAmountCollectedReturn()));
+        const collected = new Decimal(calculateAmountCollected() || 0);
+        const collectedReturn = new Decimal(calculateAmountCollectedReturn() || 0);
+        const total = collected.plus(collectedReturn);
         settotal(total.toFixed(2));
     }, [statuspayload]);
 

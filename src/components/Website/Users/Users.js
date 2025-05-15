@@ -8,6 +8,7 @@ import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 import { components } from 'react-select';
 import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
+import Select from 'react-select';
 
 // Icons
 import API from '../../../API/API.js';
@@ -17,6 +18,7 @@ import UsersTable from './UsersTable.js';
 import SelectComponent from '../../SelectComponent.js';
 import MultiSelect from '../../MultiSelect.js';
 import MerchantSelectComponent from '../../selectComponents/MerchantSelectComponent.js';
+import { defaultstyles } from '../Generalfiles/selectstyles.js';
 
 const { ValueContainer, Placeholder } = components;
 
