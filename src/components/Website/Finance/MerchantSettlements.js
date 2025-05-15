@@ -23,6 +23,8 @@ import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 import MerchantSelectComponent from '../../selectComponents/MerchantSelectComponent.js';
 import Cookies from 'universal-cookie';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
+import Select from 'react-select';
+import { defaultstyles } from '../Generalfiles/selectstyles.js';
 
 const { ValueContainer, Placeholder } = components;
 

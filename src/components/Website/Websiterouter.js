@@ -62,7 +62,7 @@ import InventorySettings from './MerchantHome/InventorySettings.js';
 import Fulfilled from './MerchantOrders/Fulfilled.js';
 import RentPage from './MerchantHome/RentPage.js';
 import WebToken from './WebToken/WebToken.js';
-import { TbApi, TbLogout } from 'react-icons/tb';
+import { TbApi, TbBuilding, TbBuildingWarehouse, TbLogout, TbUserPentagon } from 'react-icons/tb';
 import ItemDetails from './MerchantItems/ItemDetails.js';
 import UserPermissions from './Users/UserPermissions.js';
 import NotFound from './NotFound.js';
@@ -190,11 +190,27 @@ const App = (props) => {
                                             <span style={{ fontWeight: 400 }}> {user?.name}</span>
                                         </span>
                                     </div>
-                                    <div class="col-lg-12 py-0 text-capitalize">
-                                        <span style={{ fontSize: '13px', color: 'grey' }}>
-                                            {' '}
-                                            {user?.type} {user?.merchant?.name ? ', ' + user.merchant?.name : ''}
-                                        </span>
+                                    <div class="col-lg-12 p-0 d0flex align-items-center">
+                                        <div class="row m-0 w-100">
+                                            <div class="col-lg-6 py-0 text-capitalize">
+                                                <span style={{ fontSize: '13px', color: 'grey' }}>
+                                                    <TbUserPentagon class="mr-1" />
+                                                    {user?.type} {user?.merchant?.name ? ', ' + user.merchant?.name : ''}
+                                                </span>
+                                            </div>
+                                            <div class="col-lg-6 py-0 text-capitalize">
+                                                <span style={{ fontSize: '13px', color: 'grey' }} class="d-flex align-items-center text-capitalize">
+                                                    <TbBuilding class="mr-1" />
+                                                    {user?.hub?.name ?? 'No Hub'}
+                                                </span>
+                                            </div>
+                                            <div class="col-lg-6 py-0 text-capitalize">
+                                                <span style={{ fontSize: '13px', color: 'grey' }} class="d-flex align-items-center text-capitalize">
+                                                    <TbBuildingWarehouse class="mr-1" />
+                                                    {user?.inventory?.name ?? 'No Inventory'}
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="col-lg-12">
                                         <hr class="p-0 m-0" />

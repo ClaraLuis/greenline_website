@@ -468,18 +468,21 @@ const AddOrder = (props) => {
                                             class={!item.isChecked ? generalstyles.tab + ' allcentered' : `${generalstyles.tab} ${generalstyles.tab_active}` + ' allcentered'}
                                         >
                                             {item.name}
-                                            {((index == 0 && orderpayload?.items?.length == 0) ||
-                                                (index == 1 &&
-                                                    (orderpayload?.customerId?.length == 0 ||
-                                                        orderpayload?.customerId == undefined ||
-                                                        orderpayload?.address?.length == 0 ||
-                                                        orderpayload?.address == undefined)) ||
-                                                (index == 2 &&
-                                                    ((orderpayload?.returnOrderItems?.length == 0 && externalOrder) ||
+                                            {((index === 0 && orderpayload?.items?.length === 0) ||
+                                                (index === 1 &&
+                                                    orderpayload?.sameCustomerInfo !== true &&
+                                                    (orderpayload?.customerId?.length === 0 ||
+                                                        orderpayload?.customerId === undefined ||
+                                                        orderpayload?.address?.length === 0 ||
+                                                        orderpayload?.address === undefined)) ||
+                                                (index === 2 &&
+                                                    ((orderpayload?.returnOrderItems?.length === 0 && externalOrder) ||
                                                         !previousOrderType ||
-                                                        (!externalOrder && previousOrderType == 'd' && (orderpayload?.previousOrderId?.length == 0 || orderpayload?.previousOrderId == undefined)) ||
-                                                        (!externalOrder && previousOrderType == 'r' && (orderpayload?.returnOrderId?.length == 0 || orderpayload?.returnOrderId == undefined))))) && (
-                                                <RiErrorWarningFill color="var(--danger)" size={20} class="ml-2" />
+                                                        (!externalOrder && previousOrderType === 'd' && (orderpayload?.previousOrderId?.length === 0 || orderpayload?.previousOrderId === undefined)) ||
+                                                        (!externalOrder &&
+                                                            previousOrderType === 'r' &&
+                                                            (orderpayload?.returnOrderId?.length === 0 || orderpayload?.returnOrderId === undefined))))) && (
+                                                <RiErrorWarningFill color="var(--danger)" size={20} className="ml-2" />
                                             )}
                                         </div>
                                     );
@@ -492,13 +495,12 @@ const AddOrder = (props) => {
                                     setbuttonLoadingContext(true);
                                     try {
                                         if (
-                                            orderpayload?.customerId?.length != 0 &&
-                                            orderpayload?.address?.length != 0 &&
-                                            orderpayload?.ordertype?.length != 0 &&
-                                            orderpayload?.canbeopened?.length != 0 &&
-                                            orderpayload?.fragile?.length != 0 &&
-                                            orderpayload?.partialdelivery?.length != 0 &&
-                                            orderpayload?.items?.length != 0
+                                            ((orderpayload?.customerId?.length !== 0 && orderpayload?.address?.length !== 0) || orderpayload?.sameCustomerInfo === true) &&
+                                            orderpayload?.ordertype?.length !== 0 &&
+                                            orderpayload?.canbeopened?.length !== 0 &&
+                                            orderpayload?.fragile?.length !== 0 &&
+                                            orderpayload?.partialdelivery?.length !== 0 &&
+                                            orderpayload?.items?.length !== 0
                                         ) {
                                             var temp = [];
                                             var temp1 = [];
@@ -512,7 +514,8 @@ const AddOrder = (props) => {
                                             await setcartItems([...temp]);
                                             await addOrderMutation();
                                             setTimeout(() => {
-                                                history.push('/merchantorders');
+                                                // history.push('/merchantorders');
+                                                window.open('/merchantorders', '_self');
                                             }, 500);
                                         } else {
                                             NotificationManager.warning('Complete the missing fields', 'Warning!');

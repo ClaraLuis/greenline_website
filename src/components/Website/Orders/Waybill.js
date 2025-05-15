@@ -73,12 +73,22 @@ const Waybill = ({ order }) => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="company-info p-1 col-lg-4 col-md-4">
+                            <div style={{ borderInlineEnd: '2px solid #eee' }} className="company-info p-1 col-lg-4 col-md-4">
                                 <div class="row m-0 w-100">
                                     <div class="col-lg-12 p-0 ">
                                         Order Type:{' '}
                                         <span style={{ fontWeight: 700 }} class="text-capitalize">
                                             {order?.type}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="company-info p-1 col-lg-4 col-md-4">
+                                <div class="row m-0 w-100">
+                                    <div class="col-lg-12 p-0 ">
+                                        Expects Return:{' '}
+                                        <span style={{ fontWeight: 700 }} class="text-capitalize">
+                                            {order?.type === 'exchange' && order?.previousOrderId ? 'Yes' : 'No'}
                                         </span>
                                     </div>
                                 </div>
@@ -136,7 +146,7 @@ const Waybill = ({ order }) => {
                                             </div>
                                             <div className="col-lg-12 p-0">
                                                 <span style={{ fontWeight: 600, fontSize: '10px' }}>
-                                                    {new Decimal(order?.price || 0).toFixed(2)} {order?.currency}
+                                                    {new Decimal(order?.expectedPrice || 0).toFixed(2)} {order?.currency}
                                                 </span>
                                             </div>
                                         </div>
