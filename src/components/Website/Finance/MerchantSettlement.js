@@ -91,49 +91,18 @@ const MerchantSettlement = (props) => {
                                 Merchant Settlement
                             </p>
                         </div>
-                        <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-end pb-2 '}></div>
-                    </div>
-                </div>{' '}
-                {chosenMerchantSettlemant != undefined && chosenMerchantSettlemant && JSON.stringify(chosenMerchantSettlemant) != '{}' && (
-                    <div class="col-lg-12 px-1">
-                        <div className="col-lg-4">
-                            <div class={generalstyles.card + ' p-3 row m-0 w-100 allcentered'}>
-                                <div className="col-lg-6 p-0">
-                                    <span style={{ fontSize: '12px', color: 'grey' }}># {chosenMerchantSettlemant?.id}</span>
-                                </div>
-                                <div className="col-lg-6 p-0 d-flex justify-content-end align-items-center">
-                                    <div class="row m-0 w-100 d-flrx justify-content-end align-items-center"></div>
-                                </div>
-                                <div className="col-lg-12 p-0 my-2">
-                                    <hr className="m-0" />
-                                </div>
-
-                                <div className="col-lg-6 p-0 mb-2">
-                                    <span class="d-flex align-items-center" style={{ fontWeight: 600 }}>
-                                        <FaMoneyBill class="mr-1" />
-                                        {chosenMerchantSettlemant?.totalAmount}
-                                    </span>
-                                </div>
-                                <div className="col-lg-6 p-0 mb-2 d-flex justify-content-end">
-                                    <span class="d-flex align-items-center" style={{ fontWeight: 500, color: 'grey', fontSize: '12px' }}>
-                                        <IoMdTime class="mr-1" />
-                                        {dateformatter(chosenMerchantSettlemant?.createdAt)}
-                                    </span>
-                                </div>
-                                <div class="col-lg-12 p-0 allcentered mt-2">
-                                    <button
-                                        onClick={() => {
-                                            window.open(chosenMerchantSettlemant.pdfUrl, '_blank');
-                                        }}
-                                        class={generalstyles.roundbutton}
-                                    >
-                                        View PDF
-                                    </button>
-                                </div>
-                            </div>
+                        <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-end pb-2 '}>
+                            <button
+                                onClick={() => {
+                                    window.open(chosenMerchantSettlemant.pdfUrl, '_blank');
+                                }}
+                                class={generalstyles.roundbutton}
+                            >
+                                View PDF
+                            </button>
                         </div>
                     </div>
-                )}
+                </div>{' '}
                 {isAuth([1, 51, 52, 122]) && (
                     <div class={' row m-0 w-100'}>
                         <div class="col-lg-12 p-0 mb-3">
@@ -150,6 +119,8 @@ const MerchantSettlement = (props) => {
                                     width={'50%'}
                                     query={paginateSettlementTransactionsQuery}
                                     paginationAttr="paginateSettlementTransactions"
+                                    allowAction={false}
+                                    hasOrder={true}
                                     // srctype="courierCollection"
                                 />
                             </div>

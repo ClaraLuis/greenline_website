@@ -667,6 +667,7 @@ const OrdersTable = (props) => {
                                               name: 'Order Date',
                                               attr: 'orderDate',
                                               type: 'date',
+                                              allowBeforeToday: false,
                                               size: '12',
                                           },
                                           {
@@ -693,6 +694,7 @@ const OrdersTable = (props) => {
                                               name: 'Order Date',
                                               attr: 'orderDate',
                                               type: 'date',
+                                              allowBeforeToday: false,
                                               size: '12',
                                           },
                                           {

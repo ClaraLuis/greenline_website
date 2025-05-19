@@ -169,6 +169,8 @@ async function refreshAuthToken() {
             const newAccessToken = data?.signIn?.accessToken;
             const userInfo = data?.signIn?.user;
 
+            setUserInfoContext(data?.signIn?.user);
+
             cookies.set('accessToken', newAccessToken);
             cookies.set('userInfo', JSON.stringify(userInfo));
             if (userInfo?.merchantId?.length != 0 && userInfo?.merchantId != undefined && userInfo?.merchantId != null) {
