@@ -114,6 +114,7 @@ const Form = (props) => {
                                     props?.setpayload({ ...temp });
                                 }}
                                 type={'date'}
+                                min={item?.allowBeforeToday ? '' : new Date().toISOString().split('T')[0]}
                             />
                         </div>
                     );

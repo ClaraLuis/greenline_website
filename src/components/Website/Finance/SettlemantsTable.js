@@ -54,14 +54,7 @@ const SettlemantsTable = (props) => {
                 <div class="row m-0 w-100">
                     {props?.paginateMerchantSettlementsQuery?.data[props?.attr]?.data?.map((item, index) => {
                         return (
-                            <div
-                                onClick={() => {
-                                    setchosenMerchantSettlemant(item);
-                                    history.push('/merchantsettlement?id=' + item.id);
-                                }}
-                                style={{ cursor: 'pointer' }}
-                                className="col-lg-4"
-                            >
+                            <div className="col-lg-4">
                                 <div class={generalstyles.card + ' p-3 row m-0 w-100 allcentered'}>
                                     <div className="col-lg-6 p-0">
                                         <span style={{ fontSize: '12px', color: 'grey' }}># {item?.id}</span>
@@ -86,14 +79,25 @@ const SettlemantsTable = (props) => {
                                         </span>
                                     </div>
                                     <div class="col-lg-12 p-0 allcentered mt-2">
-                                        <button
-                                            onClick={() => {
-                                                window.open(item.pdfUrl, '_blank');
-                                            }}
-                                            class={generalstyles.roundbutton}
-                                        >
-                                            View PDF
-                                        </button>
+                                        <div class="row m-0 w-100 allcentered">
+                                            <button
+                                                onClick={() => {
+                                                    window.open(item.pdfUrl, '_blank');
+                                                }}
+                                                class={generalstyles.roundbutton + ' mx-1'}
+                                            >
+                                                View PDF
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    setchosenMerchantSettlemant(item);
+                                                    history.push('/merchantsettlement?id=' + item.id);
+                                                }}
+                                                class={generalstyles.roundbutton}
+                                            >
+                                                View Details
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

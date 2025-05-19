@@ -117,7 +117,7 @@ const TransactionsTableView = (props) => {
                                         <th>Type</th>
                                         {props?.srctype === 'all' && <th>From</th>}
                                         {props?.srctype === 'all' && <th>To</th>}
-                                        {props?.srctype !== 'all' && <th>Account</th>}
+                                        {props?.srctype !== 'all' && props?.allowAction != false && <th>Account</th>}
                                         {(props?.srctype === 'all' || props?.srctype === 'courierCollection') && <th>Order</th>}
                                         <th>Date</th>
                                         <th>Actions</th>
@@ -186,7 +186,7 @@ const TransactionsTableView = (props) => {
                                                     </td>
                                                 )}
 
-                                                {props?.srctype !== 'all' && (
+                                                {props?.srctype !== 'all' && props?.allowAction != false && (
                                                     <td>
                                                         {item?.toAccount?.id === props?.accountId ? (
                                                             <span className="text-primary">
@@ -237,53 +237,57 @@ const TransactionsTableView = (props) => {
                                                         {dateformatter(item?.createdAt)}
                                                     </small>
                                                 </td>
-
                                                 <td>
                                                     <div className="d-flex">
-                                                        {item?.toAccount?.id === props?.accountId && (
-                                                            <button
-                                                                onClick={(e) => {
-                                                                    e.stopPropagation();
-                                                                    if (props?.srctype === 'expenses' && !isAuth([1, 51, 24])) {
-                                                                        NotificationManager.warning('Not Authorized', 'Warning!');
-                                                                        return;
-                                                                    }
-                                                                    setstatuspayload({ ...statuspayload, id: item?.id });
-                                                                    setchangestatusmodal(true);
-                                                                }}
-                                                                className="btn btn-sm btn-icon"
-                                                                title="Edit"
-                                                            >
-                                                                <TbEdit size={18} />
-                                                            </button>
+                                                        {props?.allowAction != false && (
+                                                            <>
+                                                                {item?.toAccount?.id === props?.accountId && (
+                                                                    <button
+                                                                        onClick={(e) => {
+                                                                            e.stopPropagation();
+                                                                            if (props?.srctype === 'expenses' && !isAuth([1, 51, 24])) {
+                                                                                NotificationManager.warning('Not Authorized', 'Warning!');
+                                                                                return;
+                                                                            }
+                                                                            setstatuspayload({ ...statuspayload, id: item?.id });
+                                                                            setchangestatusmodal(true);
+                                                                        }}
+                                                                        className="btn btn-sm btn-icon"
+                                                                        title="Edit"
+                                                                    >
+                                                                        <TbEdit size={18} />
+                                                                    </button>
+                                                                )}
+
+                                                                {item?.fromAccount?.id === props?.accountId && item?.status === 'pendingReceiver' && (
+                                                                    <button
+                                                                        onClick={async (e) => {
+                                                                            e.stopPropagation();
+                                                                            await setstatuspayload({ ...statuspayload, id: item?.id, status: 'cancel' });
+                                                                            if (window.confirm('Are you sure you want to cancel this transaction')) {
+                                                                                if (buttonLoadingContext) return;
+                                                                                setbuttonLoadingContext(true);
+                                                                                const { data } = isAuth([1, 51])
+                                                                                    ? await updateAnyFinancialTransactionMutation()
+                                                                                    : await updateMyFinancialTransactionMutation();
+
+                                                                                if (data?.updateAnyFinancialTransaction?.success) {
+                                                                                    props?.refetchFunc?.();
+                                                                                } else {
+                                                                                    NotificationManager.warning(data?.updateAnyFinancialTransaction?.message, 'Warning!');
+                                                                                }
+                                                                                setbuttonLoadingContext(false);
+                                                                            }
+                                                                        }}
+                                                                        className="btn btn-sm btn-icon"
+                                                                        title="Cancel"
+                                                                        disabled={buttonLoadingContext}
+                                                                    >
+                                                                        <FcCancel size={18} />
+                                                                    </button>
+                                                                )}
+                                                            </>
                                                         )}
-
-                                                        {item?.fromAccount?.id === props?.accountId && item?.status === 'pendingReceiver' && (
-                                                            <button
-                                                                onClick={async (e) => {
-                                                                    e.stopPropagation();
-                                                                    await setstatuspayload({ ...statuspayload, id: item?.id, status: 'cancel' });
-                                                                    if (window.confirm('Are you sure you want to cancel this transaction')) {
-                                                                        if (buttonLoadingContext) return;
-                                                                        setbuttonLoadingContext(true);
-                                                                        const { data } = isAuth([1, 51]) ? await updateAnyFinancialTransactionMutation() : await updateMyFinancialTransactionMutation();
-
-                                                                        if (data?.updateAnyFinancialTransaction?.success) {
-                                                                            props?.refetchFunc?.();
-                                                                        } else {
-                                                                            NotificationManager.warning(data?.updateAnyFinancialTransaction?.message, 'Warning!');
-                                                                        }
-                                                                        setbuttonLoadingContext(false);
-                                                                    }
-                                                                }}
-                                                                className="btn btn-sm btn-icon"
-                                                                title="Cancel"
-                                                                disabled={buttonLoadingContext}
-                                                            >
-                                                                <FcCancel size={18} />
-                                                            </button>
-                                                        )}
-
                                                         {props?.hasOrder && item?.sheetOrder?.order?.id && (
                                                             <Dropdown onClick={(e) => e.stopPropagation()}>
                                                                 <Dropdown.Toggle variant="link" className="btn btn-sm btn-icon">

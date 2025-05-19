@@ -2374,6 +2374,7 @@ const OrderInfo = (props) => {
                                               name: 'Order Date',
                                               attr: 'orderDate',
                                               type: 'date',
+                                              allowBeforeToday: false,
                                               size: '12',
                                           },
                                           {
@@ -2399,6 +2400,7 @@ const OrderInfo = (props) => {
                                           {
                                               name: 'Order Date',
                                               attr: 'orderDate',
+                                              allowBeforeToday: false,
                                               type: 'date',
                                               size: '12',
                                           },

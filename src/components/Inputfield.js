@@ -21,6 +21,7 @@ const Inputfield = (props) => {
                     class={formstyles.form__field}
                     value={props?.value}
                     placeholder={props?.placeholder}
+                    min={props?.min}
                     style={{
                         border: props?.value?.length == 0 && props?.submit && props?.type != 'time' ? '1px solid var(--danger)' : '',
                     }}
