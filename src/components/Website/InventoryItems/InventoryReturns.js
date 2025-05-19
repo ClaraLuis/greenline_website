@@ -6,6 +6,7 @@ import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
 import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 import { FaWindowMinimize } from 'react-icons/fa';
+import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
@@ -17,6 +18,8 @@ import Pagination from '../../Pagination.js';
 import SelectComponent from '../../SelectComponent.js';
 import ReturnsTable from '../MerchantHome/ReturnsTable.js';
 import InventorySelectComponent from '../../selectComponents/InventorySelectComponent.js';
+import Select, { components } from 'react-select';
+import { defaultstyles } from '../Generalfiles/selectstyles.js';
 
 const InventoryReturns = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);

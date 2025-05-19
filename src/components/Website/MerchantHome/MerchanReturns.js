@@ -18,6 +18,8 @@ import Pagination from '../../Pagination.js';
 import SelectComponent from '../../SelectComponent.js';
 import ReturnsTable from './ReturnsTable.js';
 import MerchantSelectComponent from '../../selectComponents/MerchantSelectComponent.js';
+import { defaultstyles } from '../Generalfiles/selectstyles.js';
+import Select, { components } from 'react-select';
 
 const MerchanReturns = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);

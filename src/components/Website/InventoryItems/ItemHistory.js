@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { components } from 'react-select';
+
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
@@ -13,6 +13,7 @@ import { FaLayerGroup } from 'react-icons/fa';
 import { DateRangePicker } from 'rsuite';
 import Inputfield from '../../Inputfield.js';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
+import Select, { components } from 'react-select';
 
 // Icons
 import { IoMdClose } from 'react-icons/io';
@@ -24,6 +25,7 @@ import SelectComponent from '../../SelectComponent.js';
 import { AiOutlineClose } from 'react-icons/ai';
 import MerchantSelectComponent from '../../selectComponents/MerchantSelectComponent.js';
 import InventorySelectComponent from '../../selectComponents/InventorySelectComponent.js';
+import { defaultstyles } from '../Generalfiles/selectstyles.js';
 
 const { ValueContainer, Placeholder } = components;
 
