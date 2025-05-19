@@ -25,6 +25,8 @@ import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 import TransactionsTable from './TransactionsTable.js';
 import Decimal from 'decimal.js';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
+import { defaultstyles } from '../Generalfiles/selectstyles.js';
+import Select, { components } from 'react-select';
 
 const RentBills = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);

@@ -27,6 +27,8 @@ import Decimal from 'decimal.js';
 import MerchantSelectComponent from '../../selectComponents/MerchantSelectComponent.js';
 import TransactionsTableView from './TransactionsTableView.js';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
+import { defaultstyles } from '../Generalfiles/selectstyles.js';
+import Select, { components } from 'react-select';
 
 const CourierCollection = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);

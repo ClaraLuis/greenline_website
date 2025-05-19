@@ -1,27 +1,24 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
-import { components } from 'react-select';
 import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
+import Select, { components } from 'react-select';
 
 // Icons
-import { Modal } from 'react-bootstrap';
-import { IoMdClose } from 'react-icons/io';
-import API from '../../../API/API.js';
-import Form from '../../Form.js';
-import Barchart from '../../graphs/Barchart.js';
-import Piechart from '../../graphs/Piechart.js';
-import Multilinechart from '../../graphs/Multilinechart.js';
-import { DateRangePicker } from 'rsuite';
-import MultiSelect from '../../MultiSelect.js';
+import Decimal from 'decimal.js';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import { FaLayerGroup } from 'react-icons/fa';
-import Decimal from 'decimal.js';
+import { DateRangePicker } from 'rsuite';
+import API from '../../../API/API.js';
+import Barchart from '../../graphs/Barchart.js';
+import Multilinechart from '../../graphs/Multilinechart.js';
+import Piechart from '../../graphs/Piechart.js';
 import MerchantSelectComponent from '../../selectComponents/MerchantSelectComponent.js';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
+import { defaultstyles } from '../Generalfiles/selectstyles.js';
 
 const { ValueContainer, Placeholder } = components;
 

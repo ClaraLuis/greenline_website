@@ -282,6 +282,8 @@ const UpdateMerchant = (props) => {
                                                         <div class={`${formstyles.form__group} ${formstyles.field}`}>
                                                             <label class={formstyles.form__label}>Currency</label>
                                                             <Select
+
+                                                            
                                                                 options={[
                                                                     { label: 'EGP', value: 'EGP' },
                                                                     { label: 'USD', value: 'USD' },
