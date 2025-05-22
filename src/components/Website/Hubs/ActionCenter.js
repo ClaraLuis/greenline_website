@@ -135,16 +135,16 @@ const ActionCenter = (props) => {
                                             <div class="col-lg-3" style={{ marginBottom: '15px' }}>
                                                 <div class="row m-0 w-100  ">
                                                     <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                                        <label class={formstyles.form__label}>Order</label>
+                                                        <label class={formstyles.form__label}>Order by</label>
                                                         <Select
                                                             options={[
-                                                                { label: 'Ascending', value: true },
-                                                                { label: 'Descending', value: false },
+                                                                { label: 'Oldest', value: true },
+                                                                { label: 'Latest', value: false },
                                                             ]}
                                                             styles={defaultstyles}
                                                             value={[
-                                                                { label: 'Ascending', value: true },
-                                                                { label: 'Descending', value: false },
+                                                                { label: 'Oldest', value: true },
+                                                                { label: 'Latest', value: false },
                                                             ].find((option) => option.value === (filterorders?.isAsc ?? true))}
                                                             onChange={(option) => {
                                                                 setfilterorders({ ...filterorders, isAsc: option?.value });

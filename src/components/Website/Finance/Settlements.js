@@ -586,6 +586,42 @@ const Settlements = (props) => {
                     </div>
                 </Modal.Body>
             </Modal>
+            <Modal
+                show={!queryParameters.get('merchantId')}
+                // onHide={() => {
+                //     setcreatesettlementModal({ open: false });
+                // }}
+                centered
+                size={'md'}
+            >
+                <Modal.Header>
+                    <div className="row w-100 m-0 p-0 d-flex align-items-center">
+                        <div class="col-lg-6 ">
+                            <div className="row w-100 m-0 p-0 d-flex align-items-center">Choose Merchant</div>
+                        </div>
+                    </div>
+                </Modal.Header>
+                <Modal.Body>
+                    <div class="row m-0 w-100 px-4 pt-0 pb-4">
+                        <div class="col-lg-12 p-0">
+                            <MerchantSelectComponent
+                                type="single"
+                                label={'name'}
+                                value={'id'}
+                                payload={settlementsFilter}
+                                payloadAttr={'merchantId'}
+                                removeAll={true}
+                                onClick={(option) => {
+                                    if (option != undefined) {
+                                        history.push('/settlements?merchantId=' + option.id + '&m=' + option.name);
+                                    } else {
+                                    }
+                                }}
+                            />
+                        </div>
+                    </div>
+                </Modal.Body>
+            </Modal>
         </div>
     );
 };
