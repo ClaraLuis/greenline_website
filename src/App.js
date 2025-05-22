@@ -152,6 +152,12 @@ async function refreshAuthToken() {
                                 merchant {
                                     name
                                 }
+                                inventory {
+                                    name
+                                }
+                                hub {
+                                    name
+                                }
                             }
                             accessToken
                         }

@@ -28,6 +28,7 @@ import Pagination from '../../Pagination.js';
 import SelectComponent from '../../SelectComponent.js';
 import * as XLSX from 'xlsx';
 import TransactionsTableView from './TransactionsTableView.js';
+import FinanceSelectComponent from '../../selectComponents/FinanceSelectComponent.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -221,16 +222,16 @@ const FinanceTransactions = (props) => {
                                                     <div class="col-lg-3" style={{ marginBottom: '15px' }}>
                                                         <div class="row m-0 w-100  ">
                                                             <div class={`${formstyles.form__group} ${formstyles.field}`}>
-                                                                <label class={formstyles.form__label}>Order</label>
+                                                                <label class={formstyles.form__label}>Order by</label>
                                                                 <Select
                                                                     options={[
-                                                                        { label: 'Ascending', value: true },
-                                                                        { label: 'Descending', value: false },
+                                                                        { label: 'Oldest', value: true },
+                                                                        { label: 'Latest', value: false },
                                                                     ]}
                                                                     styles={defaultstyles}
                                                                     value={[
-                                                                        { label: 'Ascending', value: true },
-                                                                        { label: 'Descending', value: false },
+                                                                        { label: 'Oldest', value: true },
+                                                                        { label: 'Latest', value: false },
                                                                     ].find((option) => option.value === (filterTransactionsObj?.isAsc ?? true))}
                                                                     onChange={(option) => {
                                                                         setfilterTransactionsObj({ ...filterTransactionsObj, isAsc: option?.value });
@@ -414,75 +415,6 @@ const FinanceTransactions = (props) => {
                     )}
                 </div>
 
-                {/* <div class={generalstyles.card + ' mb-3 col-lg-12 p-2'}>
-                    <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
-                        <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
-                            <AccordionItemHeading>
-                                <AccordionItemButton>
-                                    <div class="row m-0 w-100">
-                                        <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
-                                            <p class={generalstyles.cardTitle + '  m-0 p-0 '}>Filter:</p>
-                                        </div>
-                                        <div class="col-lg-4 col-md-4 col-sm-4 p-0 d-flex align-items-center justify-content-end">
-                                            <AccordionItemState>
-                                                {(state) => {
-                                                    if (state.expanded == true) {
-                                                        return (
-                                                            <i class="h-100 d-flex align-items-center justify-content-center">
-                                                                <BsChevronUp />
-                                                            </i>
-                                                        );
-                                                    } else {
-                                                        return (
-                                                            <i class="h-100 d-flex align-items-center justify-content-center">
-                                                                 <BsChevronDown />
-                                                            </i>
-                                                        );
-                                                    }
-                                                }}
-                                            </AccordionItemState>
-                                        </div>
-                                    </div>
-                                </AccordionItemButton>
-                            </AccordionItemHeading>
-                            <AccordionItemPanel>
-                                <hr className="mt-2 mb-3" />
-                                <div class="row m-0 w-100">
-                                    <div class={'col-lg-2'} style={{ marginBottom: '15px' }}>
-                                        <label for="name" class={formstyles.form__label}>
-                                            Type
-                                        </label>
-                                        <Select
-                                            options={[{ label: 'All', value: 'all' }, ...expenseTypeContext]}
-                                            styles={defaultstyles}
-                                            value={
-                                                [{ label: 'All', value: 'all' }, ...expenseTypeContext]
-                                                // .filter((option) => option.value == props?.payload[item?.attr])
-                                            }
-                                            onChange={(option) => {
-                                                // props?.setsubmit(false);
-                                                // var temp = { ...props?.payload };
-                                                // temp[item?.attr] = option.value;
-                                                // props?.setpayload({ ...temp });
-                                            }}
-                                        />
-                                    </div>
-                                </div>
-                            </AccordionItemPanel>
-                        </AccordionItem>
-                    </Accordion>
-                </div>
-
-                <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
-                    <div class={' col-lg-12 col-md-12 col-sm-12 p-0 d-flex align-items-center justify-content-start '}>
-                        <p class=" p-0 m-0" style={{ fontSize: '15px' }}>
-                            <span style={{ color: 'var(--info)' }}>Expenses</span>
-                        </p>
-                    </div>
-                    <div   className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
-                        <ExpensesTable />
-                    </div>
-                </div> */}
                 <Modal
                     show={openModal?.open}
                     onHide={() => {
@@ -542,7 +474,17 @@ const FinanceTransactions = (props) => {
                                 {isAuth([1, 51]) && (
                                     <div class="col-lg-12 mb-3">
                                         <div class="row m-0 w-100">
-                                            <SelectComponent
+                                            <FinanceSelectComponent
+                                                removeAll={true}
+                                                type="single"
+                                                title="From Account"
+                                                label={'name'}
+                                                value={'id'}
+                                                payload={transactionpayload}
+                                                payloadAttr="fromAccountId"
+                                                onClick={(option) => settransactionpayload({ ...transactionpayload, fromAccountId: option?.id })}
+                                            />
+                                            {/* <SelectComponent
                                                 removeAll={true}
                                                 title="From Account"
                                                 filter={filterAllFinancialAccountsObj}
@@ -554,23 +496,20 @@ const FinanceTransactions = (props) => {
                                                 label="name"
                                                 value="id"
                                                 onClick={(option) => settransactionpayload({ ...transactionpayload, fromAccountId: option?.id })}
-                                            />
+                                            /> */}
                                         </div>
                                     </div>
                                 )}
                                 <div class="col-lg-12 mb-3">
                                     <div class="row m-0 w-100">
-                                        <SelectComponent
+                                        <FinanceSelectComponent
                                             removeAll={true}
+                                            type="single"
                                             title="To Account"
-                                            filter={filterAllFinancialAccountsObj}
-                                            setfilter={setfilterAllFinancialAccountsObj}
-                                            options={fetchAllFinancialAccountsQuery}
-                                            attr="paginateFinancialAccounts"
+                                            label={'name'}
+                                            value={'id'}
                                             payload={transactionpayload}
                                             payloadAttr="toAccountId"
-                                            label="name"
-                                            value="id"
                                             onClick={(option) => settransactionpayload({ ...transactionpayload, toAccountId: option?.id })}
                                         />
                                     </div>
