@@ -2009,6 +2009,135 @@ const API = () => {
                             assignedById
                             createdAt
                             lastModified
+                            order {
+                                id
+                                type
+                                createdAt
+                                shippingPrice
+                                originalPrice
+                                paidToMerchant
+                                merchant {
+                                    id
+                                    name
+                                }
+                                previousOrder {
+                                    id
+                                    type
+                                }
+                                parentOrder {
+                                    id
+                                    type
+                                }
+                                failsAndAssigns
+                                returnPackage {
+                                    id
+                                    sku
+                                    type
+                                    hubId
+                                    courierId
+                                    toInventoryId
+                                    toMerchantId
+                                    status
+                                    createdAt
+                                    lastModified
+                                    signatureId
+                                    signatureFile {
+                                        id
+                                        key
+                                        url
+                                        name
+                                    }
+                                    inventory {
+                                        name
+                                        id
+                                    }
+                                    merchant {
+                                        name
+                                        id
+                                    }
+                                    courier {
+                                        name
+                                        id
+                                    }
+                                    countAndSum
+                                }
+                                address {
+                                    country
+                                    city
+                                    streetAddress
+                                    buildingNumber
+                                    apartmentFloor
+                                }
+                                courier {
+                                    id
+                                    name
+                                }
+                                price
+                                paymentType
+                                status
+                                orderDate
+                                currency
+                                otherId
+                                shopifyName
+                                merchantCustomer {
+                                    id
+                                    customerName
+                                    customer {
+                                        email
+                                        phone
+                                        id
+                                    }
+                                }
+                                address {
+                                    country
+                                    city
+                                    streetAddress
+                                    buildingNumber
+                                    apartmentFloor
+                                }
+                                orderItems {
+                                    id
+                                    orderId
+                                    count
+                                    unitPrice
+                                    unitDiscount
+                                    partialCount
+                                    info {
+                                        name
+                                        imageUrl
+                                        sku
+                                        item {
+                                            name
+                                        }
+                                    }
+                                }
+                                latestHistory {
+                                    description
+                                }
+                                canOpen
+                                fragile
+                                deliveryPart
+                                sheetOrder {
+                                    id
+                                    sheetId
+                                    orderId
+                                    adminPass
+                                    financePass
+                                    shippingCollected
+                                    amountCollected
+                                    transactionId
+                                    createdAt
+                                    lastModified
+                                    sheet {
+                                        status
+                                        user {
+                                            name
+                                            email
+                                            id
+                                        }
+                                    }
+                                }
+                            }
                         }
                         taxedShipping {
                             id
