@@ -207,6 +207,7 @@ const CourierCollection = (props) => {
                                                     label={'name'}
                                                     value={'id'}
                                                     onClick={(option) => {
+                                                        setselectedArray([]);
                                                         var temp = filterobj?.merchantIds ?? [];
                                                         if (option != undefined) {
                                                             var exist = false;

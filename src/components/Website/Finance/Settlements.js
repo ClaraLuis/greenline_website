@@ -247,17 +247,18 @@ const Settlements = (props) => {
                                                                                 <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
                                                                                     <p className={' m-0 p-0 wordbreak '}>
                                                                                         {new Decimal(
-                                                                                            item?.transactions?.reduce((sum, i) => (i.type === 'merchantOrderPayment' ? sum + i.amount : sum), 0),
+                                                                                            item?.transactions?.reduce(
+                                                                                                (sum, i) => (i.type === 'merchantOrderPayment' ? new Decimal(sum).plus(i.amount) : new Decimal(sum)),
+                                                                                                new Decimal(0),
+                                                                                            ),
                                                                                         )
                                                                                             .plus(
-                                                                                                new Decimal(
-                                                                                                    item?.transactions?.reduce(
-                                                                                                        (sum, i) => (i.type === 'shippingCollection' ? sum + i.amount * -1 : sum),
-                                                                                                        0,
-                                                                                                    ),
+                                                                                                item?.transactions?.reduce(
+                                                                                                    (sum, i) => (i.type === 'shippingCollection' ? new Decimal(sum).minus(i.amount) : new Decimal(sum)),
+                                                                                                    new Decimal(0),
                                                                                                 ),
                                                                                             )
-                                                                                            .toNumber()}{' '}
+                                                                                            .toNumber()}
                                                                                     </p>
                                                                                 </td>
                                                                             </tr>
@@ -408,13 +409,19 @@ const Settlements = (props) => {
                                                                         </td>
                                                                         <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
                                                                             <p className={' m-0 p-0 wordbreak '}>
-                                                                                {new Decimal(item?.transactions?.reduce((sum, i) => (i.type === 'merchantOrderPayment' ? sum + i.amount : sum), 0))
+                                                                                {new Decimal(
+                                                                                    item?.transactions?.reduce(
+                                                                                        (sum, i) => (i.type === 'merchantOrderPayment' ? new Decimal(sum).plus(i.amount) : new Decimal(sum)),
+                                                                                        new Decimal(0),
+                                                                                    ),
+                                                                                )
                                                                                     .plus(
-                                                                                        new Decimal(
-                                                                                            item?.transactions?.reduce((sum, i) => (i.type === 'shippingCollection' ? sum + i.amount * -1 : sum), 0),
+                                                                                        item?.transactions?.reduce(
+                                                                                            (sum, i) => (i.type === 'shippingCollection' ? new Decimal(sum).minus(i.amount) : new Decimal(sum)),
+                                                                                            new Decimal(0),
                                                                                         ),
                                                                                     )
-                                                                                    .toNumber()}{' '}
+                                                                                    .toNumber()}
                                                                             </p>
                                                                         </td>
                                                                     </tr>
@@ -471,9 +478,15 @@ const Settlements = (props) => {
                                                     <div>Orders</div>
                                                     <div style={{ fontWeight: 700 }}>
                                                         {settlementPayload?.sheetOrderIds?.reduce((acc, item) => {
-                                                            const merchantAmount = item?.transactions?.reduce((sum, i) => (i.type === 'merchantOrderPayment' ? sum + i.amount : sum), 0);
-                                                            const shippingAmount = item?.transactions?.reduce((sum, i) => (i.type === 'shippingCollection' ? sum + i.amount * -1 : sum), 0);
-                                                            return acc + new Decimal(merchantAmount).plus(new Decimal(shippingAmount)).toNumber();
+                                                            const merchantAmount = item?.transactions?.reduce(
+                                                                (sum, i) => (i.type === 'merchantOrderPayment' ? new Decimal(sum).plus(i.amount) : new Decimal(sum)),
+                                                                new Decimal(0),
+                                                            );
+                                                            const shippingAmount = item?.transactions?.reduce(
+                                                                (sum, i) => (i.type === 'shippingCollection' ? new Decimal(sum).minus(i.amount) : new Decimal(sum)),
+                                                                new Decimal(0),
+                                                            );
+                                                            return new Decimal(acc).plus(merchantAmount.plus(shippingAmount)).toNumber();
                                                         }, 0)}
                                                     </div>
                                                 </div>
@@ -493,13 +506,19 @@ const Settlements = (props) => {
                                                         {
                                                             new Decimal(
                                                                 settlementPayload?.sheetOrderIds?.reduce((acc, item) => {
-                                                                    const merchantAmount = item?.transactions?.reduce((sum, i) => (i.type === 'merchantOrderPayment' ? sum + i.amount : sum), 0);
-                                                                    const shippingAmount = item?.transactions?.reduce((sum, i) => (i.type === 'shippingCollection' ? sum + i.amount * -1 : sum), 0);
-                                                                    return acc + new Decimal(merchantAmount).plus(new Decimal(shippingAmount)).toNumber();
-                                                                }, 0),
+                                                                    const merchantAmount = item?.transactions?.reduce(
+                                                                        (sum, i) => (i.type === 'merchantOrderPayment' ? new Decimal(sum).plus(i.amount) : new Decimal(sum)),
+                                                                        new Decimal(0),
+                                                                    );
+                                                                    const shippingAmount = item?.transactions?.reduce(
+                                                                        (sum, i) => (i.type === 'shippingCollection' ? new Decimal(sum).minus(i.amount) : new Decimal(sum)),
+                                                                        new Decimal(0),
+                                                                    );
+                                                                    return new Decimal(acc).plus(merchantAmount.plus(shippingAmount));
+                                                                }, new Decimal(0)),
                                                             )
-                                                                .plus(new Decimal(settlementPayload?.merchantDebtIds?.reduce((sum, item) => sum + new Decimal(item?.amount || 0).toNumber(), 0)))
-                                                                .toFixed(2) /* Or use .toNumber() if you don't need fixed precision */
+                                                                .plus(settlementPayload?.merchantDebtIds?.reduce((sum, item) => new Decimal(sum).plus(item?.amount || 0), new Decimal(0)))
+                                                                .toFixed(2) // Use .toNumber() if you don't want fixed decimal places
                                                         }
                                                     </div>
                                                 </div>

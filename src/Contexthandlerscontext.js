@@ -579,18 +579,18 @@ export const Contexthandlerscontext_provider = (props) => {
                     //     permissionpage: [1],
                     //     show: isAuth([1, 51, 19]),
                     // },
-                    {
-                        name: 'Merchant Order Payments',
-                        isselected: false,
-                        icon: (
-                            <i class={'allcentered'}>
-                                <BiSolidCoinStack size={18} />
-                            </i>
-                        ),
-                        path: '/merchantfinance',
-                        permissionpage: [1],
-                        show: isAuth([1, 51, 110]),
-                    },
+                    // {
+                    //     name: 'Merchant Order Payments',
+                    //     isselected: false,
+                    //     icon: (
+                    //         <i class={'allcentered'}>
+                    //             <BiSolidCoinStack size={18} />
+                    //         </i>
+                    //     ),
+                    //     path: '/merchantfinance',
+                    //     permissionpage: [1],
+                    //     show: isAuth([1, 51, 110]),
+                    // },
                     {
                         name: 'Transactions',
                         isselected: false,
