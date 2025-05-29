@@ -46,6 +46,7 @@ const Settlements = (props) => {
     }, []);
 
     const [createsettlementModal, setcreatesettlementModal] = useState(false);
+    const [choosemerchant, setchoosemerchant] = useState(false);
     const [fetchSettlementsQuery, setfetchSettlementsQuery] = useState([]);
     const [fetchMerchantDebtsQuery, setfetchMerchantDebtsQuery] = useState([]);
 
@@ -105,6 +106,11 @@ const Settlements = (props) => {
         sheetOrderIds: settlementPayload?.sheetOrderIds?.map((item) => item.id)?.length != 0 ? settlementPayload?.sheetOrderIds?.map((item) => item.id) : undefined,
         merchantDebtIds: settlementPayload?.merchantDebtIds?.map((item) => item.id)?.length != 0 ? settlementPayload?.merchantDebtIds?.map((item) => item.id) : undefined,
     });
+    useEffect(() => {
+        if (!queryParameters.get('merchantId')) {
+            setchoosemerchant(true);
+        }
+    }, [queryParameters.get('merchantId')]);
 
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
@@ -224,7 +230,7 @@ const Settlements = (props) => {
                                                                                 }}
                                                                             >
                                                                                 <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
-                                                                                    <p className={' m-0 p-0 wordbreak '}>{item?.id}</p>
+                                                                                    <p className={' m-0 p-0 wordbreak '}>{item?.order?.id}</p>
                                                                                 </td>
                                                                                 <td style={{ maxWidth: '150px', minWidth: '150px', width: '150px' }}>
                                                                                     <div
@@ -236,12 +242,12 @@ const Settlements = (props) => {
                                                                                 </td>
                                                                                 <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
                                                                                     <p className="m-0 p-0 wordbreak">
-                                                                                        {item?.transactions?.map((i) => (i.type === 'merchantOrderPayment' ? i.amount : 0))}
+                                                                                        {item?.transactions?.map((i) => (i.type === 'merchantOrderPayment' ? i.amount : ''))}
                                                                                     </p>
                                                                                 </td>
                                                                                 <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
                                                                                     <p className="m-0 p-0 wordbreak">
-                                                                                        {item?.transactions?.map((i) => (i.type === 'shippingCollection' ? i.amount * -1 : 0))}
+                                                                                        {item?.transactions?.map((i) => (i.type === 'shippingCollection' ? i.amount * -1 : ''))}
                                                                                     </p>
                                                                                 </td>
                                                                                 <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
@@ -606,10 +612,10 @@ const Settlements = (props) => {
                 </Modal.Body>
             </Modal>
             <Modal
-                show={!queryParameters.get('merchantId')}
-                // onHide={() => {
-                //     setcreatesettlementModal({ open: false });
-                // }}
+                show={choosemerchant}
+                onHide={() => {
+                    setchoosemerchant(false);
+                }}
                 centered
                 size={'md'}
             >

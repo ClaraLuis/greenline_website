@@ -175,7 +175,7 @@ async function refreshAuthToken() {
             const newAccessToken = data?.signIn?.accessToken;
             const userInfo = data?.signIn?.user;
 
-            setUserInfoContext(data?.signIn?.user);
+            // setUserInfoContext(data?.signIn?.user);
 
             cookies.set('accessToken', newAccessToken);
             cookies.set('userInfo', JSON.stringify(userInfo));
