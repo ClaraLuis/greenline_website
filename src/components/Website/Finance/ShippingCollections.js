@@ -36,7 +36,8 @@ const ShippingCollections = (props) => {
     let history = useHistory();
     const cookies = new Cookies();
 
-    const { setpageactive_context, setpagetitle_context, dateformatter, isAuth, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, dateformatter, isAuth, buttonLoadingContext, setbuttonLoadingContext, useLoadQueryParamsToPayload, updateQueryParamContext } =
+        useContext(Contexthandlerscontext);
     const { useQueryGQL, paginateShippingCollections, fetchHubs, processShippingTaxes, useMutationGQL, useLazyQueryGQL } = API();
     const { lang, langdetect } = useContext(LanguageContext);
     const [total, setTotal] = useState(0);
@@ -49,6 +50,8 @@ const ShippingCollections = (props) => {
         limit: 20,
         merchantId: undefined,
     });
+    useLoadQueryParamsToPayload(setfilterShippingCollections);
+
     const [submit, setsubmit] = useState(false);
 
     const [selectedArray, setselectedArray] = useState([]);
@@ -205,6 +208,7 @@ const ShippingCollections = (props) => {
                                                                 ].find((option) => option.value === (filterShippingCollections?.isAsc ?? true))}
                                                                 onChange={(option) => {
                                                                     setfilterShippingCollections({ ...filterShippingCollections, isAsc: option?.value });
+                                                                    updateQueryParamContext('isAsc', option?.value);
                                                                 }}
                                                             />
                                                         </div>
@@ -222,8 +226,10 @@ const ShippingCollections = (props) => {
                                                             onClick={(option) => {
                                                                 if (option === 'All') {
                                                                     setfilterShippingCollections({ ...filterShippingCollections, merchantId: undefined });
+                                                                    updateQueryParamContext('merchantId', undefined);
                                                                 } else {
                                                                     setfilterShippingCollections({ ...filterShippingCollections, merchantId: option.id });
+                                                                    updateQueryParamContext('merchantId', option.id);
                                                                 }
                                                             }}
                                                         />
@@ -243,6 +249,7 @@ const ShippingCollections = (props) => {
                                                         payloadAttr={'hubId'}
                                                         onClick={(option) => {
                                                             setfilterShippingCollections({ ...filterShippingCollections, hubId: option?.id });
+                                                            updateQueryParamContext('hubId', option.id);
                                                         }}
                                                     />
                                                 </div>

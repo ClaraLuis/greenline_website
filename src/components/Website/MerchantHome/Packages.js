@@ -42,6 +42,8 @@ const Packages = (props) => {
         setbuttonLoadingContext,
         setchosenPackageContext,
         isAuth,
+        updateQueryParamContext,
+        useLoadQueryParamsToPayload,
     } = useContext(Contexthandlerscontext);
     const { useMutationGQL, fetchMerchants, assignPackageToCourier, fetchCouriers, fetchPackages, useQueryGQL, fetchInventories } = API();
     const { lang, langdetect } = useContext(LanguageContext);
@@ -69,6 +71,7 @@ const Packages = (props) => {
         beforeCursor: '',
         assigned: undefined,
     });
+    useLoadQueryParamsToPayload(setfilter);
 
     const fetchPackagesQuery = useQueryGQL('', fetchPackages(), filter);
     const refetchPackagesQuery = () => fetchPackagesQuery.refetch();
@@ -145,6 +148,7 @@ const Packages = (props) => {
                                                             ].find((option) => option.value === (filter?.isAsc ?? true))}
                                                             onChange={(option) => {
                                                                 setfilter({ ...filter, isAsc: option?.value });
+                                                                updateQueryParamContext('isAsc', option?.value);
                                                             }}
                                                         />
                                                     </div>
@@ -163,6 +167,7 @@ const Packages = (props) => {
                                                     payloadAttr={'courierId'}
                                                     onClick={(option) => {
                                                         setfilter({ ...filter, courierId: option?.id });
+                                                        updateQueryParamContext('courierId', option?.id);
                                                     }}
                                                 />
                                             </div>
@@ -176,6 +181,7 @@ const Packages = (props) => {
                                                     value={[{ label: 'All', value: undefined }, ...returnPackageTypeContext].filter((option) => option.value == filter?.type)}
                                                     onChange={(option) => {
                                                         setfilter({ ...filter, type: option.value });
+                                                        updateQueryParamContext('type', option?.value);
                                                     }}
                                                 />
                                             </div>
@@ -189,6 +195,7 @@ const Packages = (props) => {
                                                     value={[{ label: 'All', value: undefined }, ...returnPackageStatusContext].filter((option) => option.value == filter?.status)}
                                                     onChange={(option) => {
                                                         setfilter({ ...filter, status: option.value });
+                                                        updateQueryParamContext('status', option?.value);
                                                     }}
                                                 />
                                             </div>
@@ -210,6 +217,7 @@ const Packages = (props) => {
                                                     ].filter((option) => option.value == filter?.assigned)}
                                                     onChange={(option) => {
                                                         setfilter({ ...filter, assigned: option.value });
+                                                        updateQueryParamContext('assigned', option?.value);
                                                     }}
                                                 />
                                             </div>
@@ -223,6 +231,7 @@ const Packages = (props) => {
                                                         payloadAttr={'toMerchantId'}
                                                         onClick={(option) => {
                                                             setfilter({ ...filter, toMerchantId: option?.id ?? undefined });
+                                                            updateQueryParamContext('toMerchantId', option?.id ?? undefined);
                                                         }}
                                                     />
                                                 </div>
@@ -237,6 +246,7 @@ const Packages = (props) => {
                                                         payloadAttr={'toInventoryId'}
                                                         onClick={(option) => {
                                                             setfilter({ ...filter, toInventoryId: option?.id });
+                                                            updateQueryParamContext('toInventoryId', option?.id);
                                                         }}
                                                     />
                                                 </div>

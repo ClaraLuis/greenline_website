@@ -33,7 +33,8 @@ const { ValueContainer, Placeholder } = components;
 const InventoryItems = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, dateformatter, isAuth, setpagetitle_context, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, dateformatter, isAuth, setpagetitle_context, buttonLoadingContext, setbuttonLoadingContext, useLoadQueryParamsToPayload, updateQueryParamContext } =
+        useContext(Contexthandlerscontext);
     const {
         useMutationNoInputGQL,
         useQueryGQL,
@@ -150,6 +151,7 @@ const InventoryItems = (props) => {
         beforeCursor: null,
         inventoryIds: [],
     });
+    useLoadQueryParamsToPayload(setfilterItemInBox);
 
     const fetchItemsInBoxQuery = useQueryGQL('', fetchItemsInBox(), filterItemInBox);
     const { refetch: refetchfetchItemsInBox } = useQueryGQL('', fetchItemsInBox(), filterItemInBox);
@@ -340,6 +342,7 @@ const InventoryItems = (props) => {
                                                             ].find((option) => option.value === (filterItemInBox?.isAsc ?? true))}
                                                             onChange={(option) => {
                                                                 setfilterItemInBox({ ...filterItemInBox, isAsc: option?.value });
+                                                                updateQueryParamContext('isAsc', option?.value);
                                                             }}
                                                         />
                                                     </div>
@@ -366,6 +369,7 @@ const InventoryItems = (props) => {
                                                         }
 
                                                         setfilterItemInBox({ ...filterItemInBox, merchantIds: tempArray?.length != 0 ? tempArray : undefined });
+                                                        updateQueryParamContext('merchantIds', tempArray?.length != 0 ? tempArray : undefined);
                                                     }}
                                                 />
                                             </div>

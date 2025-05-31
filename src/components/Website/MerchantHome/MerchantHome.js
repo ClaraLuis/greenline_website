@@ -28,7 +28,8 @@ const MerchantHome = (props) => {
     const thirtyDaysAgo = new Date(today);
     thirtyDaysAgo.setDate(today.getDate() - 30);
     let history = useHistory();
-    const { setpageactive_context, inventoryRentTypeContext, isAuth, setpagetitle_context, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, inventoryRentTypeContext, isAuth, setpagetitle_context, buttonLoadingContext, useLoadQueryParamsToPayload, updateQueryParamContext } =
+        useContext(Contexthandlerscontext);
     const { createInventory, useMutationGQL, paginateInventoryRentTransaction, useQueryGQL, ordersDeliverableSummary, graphOrders, mostSoldItems, fetchMerchants } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -41,6 +42,7 @@ const MerchantHome = (props) => {
     const [filterordersDeliverableSummary, setfilterordersDeliverableSummary] = useState({
         startDate: '2024-06-28T18:38:47.762Z',
     });
+    useLoadQueryParamsToPayload(setfilterordersDeliverableSummary);
     const ordersDeliverableSummaryQuery = useQueryGQL('cache-first', ordersDeliverableSummary(), filterordersDeliverableSummary);
 
     const [filtergraphOrders, setfiltergraphOrders] = useState({
@@ -243,6 +245,7 @@ const MerchantHome = (props) => {
                                                             ].find((option) => option.value === (filterordersDeliverableSummary?.isAsc ?? true))}
                                                             onChange={(option) => {
                                                                 setfilterordersDeliverableSummary({ ...filterordersDeliverableSummary, isAsc: option?.value });
+                                                                updateQueryParamContext('isAsc', option?.value);
                                                             }}
                                                         />
                                                     </div>
@@ -277,7 +280,9 @@ const MerchantHome = (props) => {
                                                                 }
                                                             }
                                                             setmerchants([...temp]);
+
                                                             setfilterordersDeliverableSummary({ ...filterordersDeliverableSummary, merchantIds: tempArray?.length != 0 ? tempArray : undefined });
+                                                            updateQueryParamContext('merchantIds', tempArray?.length != 0 ? tempArray : undefined);
                                                         }}
                                                     />
                                                 </div>

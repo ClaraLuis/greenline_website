@@ -35,8 +35,18 @@ const { ValueContainer, Placeholder } = components;
 const FinanceTransactions = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, isAuth, dateformatter, setpagetitle_context, transactionStatusTypeContext, transactionTypeContext, buttonLoadingContext, setbuttonLoadingContext } =
-        useContext(Contexthandlerscontext);
+    const {
+        setpageactive_context,
+        isAuth,
+        dateformatter,
+        setpagetitle_context,
+        transactionStatusTypeContext,
+        transactionTypeContext,
+        buttonLoadingContext,
+        setbuttonLoadingContext,
+        useLoadQueryParamsToPayload,
+        updateQueryParamContext,
+    } = useContext(Contexthandlerscontext);
     const { fetchUsers, useQueryGQL, sendAnyFinancialTransaction, useMutationGQL, fetchTransactions, fetchFinancialAccounts, sendMyFinancialTransaction } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -74,6 +84,8 @@ const FinanceTransactions = (props) => {
         type: undefined,
         fromMyAccount: true,
     });
+    useLoadQueryParamsToPayload(setfilterTransactionsObj);
+
     const fetchAllTransactionsQuery = useQueryGQL('', fetchTransactions(), filterTransactionsObj);
     const { refetch: refetchAllTransactionsQuery } = useQueryGQL('', fetchTransactions(), filterTransactionsObj);
 
@@ -235,6 +247,7 @@ const FinanceTransactions = (props) => {
                                                                     ].find((option) => option.value === (filterTransactionsObj?.isAsc ?? true))}
                                                                     onChange={(option) => {
                                                                         setfilterTransactionsObj({ ...filterTransactionsObj, isAsc: option?.value });
+                                                                        updateQueryParamContext('isAsc', option?.value);
                                                                     }}
                                                                 />
                                                             </div>
@@ -250,6 +263,7 @@ const FinanceTransactions = (props) => {
                                                                         onChange={(e) => {
                                                                             e.stopPropagation();
                                                                             setfilterTransactionsObj({ ...filterTransactionsObj, fromMyAccount: !filterTransactionsObj?.fromMyAccount });
+                                                                            updateQueryParamContext('fromMyAccount', !filterTransactionsObj?.fromMyAccount);
                                                                         }}
                                                                     />
                                                                     <span className={`${formstyles.slider} ${formstyles.round}`}></span>
@@ -277,6 +291,7 @@ const FinanceTransactions = (props) => {
                                                                         ...filterTransactionsObj,
                                                                         otherAccountId: option?.id,
                                                                     });
+                                                                    updateQueryParamContext('otherAccountId', option?.id);
                                                                 }}
                                                             />
                                                         </div>
@@ -299,6 +314,7 @@ const FinanceTransactions = (props) => {
                                                                             ...filterTransactionsObj,
                                                                             fromAccountId: option?.id,
                                                                         });
+                                                                        updateQueryParamContext('fromAccountId', option?.id);
                                                                     }}
                                                                 />
                                                             </div>
@@ -318,6 +334,7 @@ const FinanceTransactions = (props) => {
                                                                             ...filterTransactionsObj,
                                                                             toAccountId: option?.id,
                                                                         });
+                                                                        updateQueryParamContext('toAccountId', option?.id);
                                                                     }}
                                                                 />
                                                             </div>
@@ -335,6 +352,7 @@ const FinanceTransactions = (props) => {
                                                     value={[{ label: 'All', value: undefined }, ...transactionTypeContext].filter((option) => option.value == filterTransactionsObj?.type)}
                                                     onChange={(option) => {
                                                         setfilterTransactionsObj({ ...filterTransactionsObj, type: option.value });
+                                                        updateQueryParamContext('type', option.value);
                                                     }}
                                                 />
                                             </div>
@@ -348,6 +366,7 @@ const FinanceTransactions = (props) => {
                                                     value={[{ label: 'All', value: undefined }, ...transactionStatusTypeContext].filter((option) => option.value == filterTransactionsObj?.status)}
                                                     onChange={(option) => {
                                                         setfilterTransactionsObj({ ...filterTransactionsObj, status: option.value });
+                                                        updateQueryParamContext('status', option.value);
                                                     }}
                                                 />
                                             </div>

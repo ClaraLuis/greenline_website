@@ -32,8 +32,17 @@ import { AiOutlineClose } from 'react-icons/ai';
 const CourierSheet = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, courierSheetStatusesContext, dateformatter, setpagetitle_context, isAuth, buttonLoadingContext, setbuttonLoadingContext, orderStatusEnumContext } =
-        useContext(Contexthandlerscontext);
+    const {
+        setpageactive_context,
+        courierSheetStatusesContext,
+        dateformatter,
+        setpagetitle_context,
+        isAuth,
+        buttonLoadingContext,
+        setbuttonLoadingContext,
+        orderStatusEnumContext,
+        updateQueryParamContext,
+    } = useContext(Contexthandlerscontext);
     const { useLazyQueryGQL, useQueryGQL, fetchCourierSheet, updateCourierSheet, useMutationGQL, updateOrdersStatus, fetchInventories, fetchMerchants } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);

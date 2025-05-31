@@ -27,7 +27,8 @@ import MerchantSelectComponent from '../../selectComponents/MerchantSelectCompon
 const MerchantPackages = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setchosenPackageContext, returnPackageStatusContext, isAuth, dateformatter, setpagetitle_context } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setchosenPackageContext, returnPackageStatusContext, isAuth, dateformatter, setpagetitle_context, useLoadQueryParamsToPayload, updateQueryParamContext } =
+        useContext(Contexthandlerscontext);
     const { fetchPackages, useQueryGQL, findReturnPackageBySku, useLazyQueryGQL, fetchMerchants } = API();
     const cookies = new Cookies();
 
@@ -48,7 +49,7 @@ const MerchantPackages = (props) => {
         type: 'merchant',
         toMerchantId: undefined,
     });
-
+    useLoadQueryParamsToPayload(setfilter);
     const fetchPackagesQuery = useQueryGQL('', fetchPackages(), filter);
 
     useEffect(() => {
@@ -178,6 +179,7 @@ const MerchantPackages = (props) => {
                                                                 ].find((option) => option.value === (filter?.isAsc ?? true))}
                                                                 onChange={(option) => {
                                                                     setfilter({ ...filter, isAsc: option?.value });
+                                                                    updateQueryParamContext('isAsc', option?.value);
                                                                 }}
                                                             />
                                                         </div>
@@ -193,6 +195,7 @@ const MerchantPackages = (props) => {
                                                         value={[{ label: 'All', value: undefined }, ...returnPackageStatusContext].filter((option) => option.value == filter?.status)}
                                                         onChange={(option) => {
                                                             setfilter({ ...filter, status: option.value });
+                                                            updateQueryParamContext('status', option?.value);
                                                         }}
                                                     />
                                                 </div>
@@ -206,6 +209,7 @@ const MerchantPackages = (props) => {
                                                             payloadAttr={'toMerchantId'}
                                                             onClick={(option) => {
                                                                 setfilter({ ...filter, toMerchantId: option?.id ?? undefined });
+                                                                updateQueryParamContext('toMerchantId', option?.id ?? undefined);
                                                             }}
                                                         />
                                                     </div>

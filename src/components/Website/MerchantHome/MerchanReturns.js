@@ -24,7 +24,8 @@ import Select, { components } from 'react-select';
 const MerchanReturns = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, isAuth, returnPackageTypeContext, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, isAuth, returnPackageTypeContext, buttonLoadingContext, setbuttonLoadingContext, useLoadQueryParamsToPayload, updateQueryParamContext } =
+        useContext(Contexthandlerscontext);
     const { useMutationGQL, fetchMerchants, findItemReturnByOrder, useLazyQueryGQL, fetchMerchantItemReturns, useQueryGQL, createReturnPackage } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -48,6 +49,7 @@ const MerchanReturns = (props) => {
         assignedToPackage: false,
         merchantId: undefined,
     });
+    useLoadQueryParamsToPayload(setfilter);
     const fetchMerchantItemReturnsQuery = useQueryGQL('', fetchMerchantItemReturns(), filter);
     const refetchMerchantItemReturnsQuery = () => fetchMerchantItemReturnsQuery.refetch();
 
@@ -193,6 +195,7 @@ const MerchanReturns = (props) => {
                                                             ].find((option) => option.value === (filter?.isAsc ?? true))}
                                                             onChange={(option) => {
                                                                 setfilter({ ...filter, isAsc: option?.value });
+                                                                updateQueryParamContext('isAsc', option?.value);
                                                             }}
                                                         />
                                                     </div>
@@ -208,6 +211,7 @@ const MerchanReturns = (props) => {
                                                     onClick={(option) => {
                                                         setfilter({ ...filter, merchantId: option?.id });
                                                         setpackagepayload({ ...packagepayload, toMerchantId: option?.id, ids: [] });
+                                                        updateQueryParamContext('merchantId', option?.id);
                                                     }}
                                                 />
                                             </div>
@@ -398,7 +402,7 @@ const MerchanReturns = (props) => {
                                     if (buttonLoadingContext) return;
                                     setbuttonLoadingContext(true);
                                     try {
-                                        if (packagepayload?.ids?.length != 0 && packagepayload?.toMerchantId != undefined) {
+                                        if (packagepayload?.ids?.length != 0) {
                                             try {
                                                 var temp = [];
                                                 await packagepayload?.ids?.map((item, index) => {

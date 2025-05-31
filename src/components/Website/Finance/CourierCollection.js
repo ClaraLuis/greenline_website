@@ -33,7 +33,8 @@ import Select, { components } from 'react-select';
 const CourierCollection = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, isAuth, setpagetitle_context, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, isAuth, setpagetitle_context, buttonLoadingContext, setbuttonLoadingContext, useLoadQueryParamsToPayload, updateQueryParamContext } =
+        useContext(Contexthandlerscontext);
     const {
         useQueryGQL,
         calculateFinancialTransactionsTotal,
@@ -72,6 +73,8 @@ const CourierCollection = (props) => {
         merchantIds: undefined,
     });
 
+    useLoadQueryParamsToPayload(setfilterobj);
+
     const fetchCourierCollectionTransactionsQuery = useQueryGQL('', fetchCourierCollectionTransactions(), filterobj);
     const { isAsc, limit, processing, ...filteredFilterObj } = filterobj;
     const calculateFinancialTransactionsTotalQuery = useQueryGQL('', calculateFinancialTransactionsTotal(), { ...filteredFilterObj, category: 'courierCollection' });
@@ -87,13 +90,6 @@ const CourierCollection = (props) => {
     useEffect(() => {
         setpageactive_context('/couriercollections');
         setpagetitle_context('Finance');
-        setfilterobj({
-            isAsc: false,
-            limit: 20,
-            afterCursor: undefined,
-            beforeCursor: undefined,
-            merchantIds: undefined,
-        });
     }, []);
 
     // const { refetch: refetchCourierCollectionTransactionsQuery } = useQueryGQL('', fetchCourierCollectionTransactions(), filterobj);
@@ -193,9 +189,10 @@ const CourierCollection = (props) => {
                                                             value={[
                                                                 { label: 'Oldest', value: true },
                                                                 { label: 'Latest', value: false },
-                                                            ].find((option) => option.value === (filterobj?.isAsc ?? true))}
+                                                            ].find((option) => option.value === (filterobj?.isAsc === 'false' ? false : Boolean(filterobj?.isAsc)))}
                                                             onChange={(option) => {
                                                                 setfilterobj({ ...filterobj, isAsc: option?.value });
+                                                                updateQueryParamContext('isAsc', option?.value);
                                                             }}
                                                         />
                                                     </div>
@@ -203,29 +200,28 @@ const CourierCollection = (props) => {
                                             </div>
                                             <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
                                                 <MerchantSelectComponent
-                                                    type="single"
+                                                    type="multi"
+                                                    attr={'paginateMerchants'}
                                                     label={'name'}
                                                     value={'id'}
+                                                    selected={filterobj?.merchantIds}
                                                     onClick={(option) => {
-                                                        setselectedArray([]);
-                                                        var temp = filterobj?.merchantIds ?? [];
-                                                        if (option != undefined) {
-                                                            var exist = false;
-                                                            filterobj?.merchantIds?.map((i, ii) => {
-                                                                if (i == option?.id) {
-                                                                    exist = true;
-                                                                }
-                                                            });
-                                                            if (!exist) {
-                                                                chosenMerchantsArray.push(option);
-                                                                temp.push(option?.id);
-                                                            }
+                                                        const tempArray = [...(filterobj?.merchantIds ?? [])];
+
+                                                        if (option === 'All') {
+                                                            setfilterobj({ ...filterobj, merchantIds: undefined });
+                                                            updateQueryParamContext('merchantIds', undefined);
                                                         } else {
-                                                            temp = undefined;
-                                                            setchosenMerchantsArray([]);
+                                                            const index = tempArray.indexOf(option?.id);
+                                                            if (index === -1) {
+                                                                tempArray.push(option?.id);
+                                                            } else {
+                                                                tempArray.splice(index, 1);
+                                                            }
+
+                                                            setfilterobj({ ...filterobj, merchantIds: tempArray.length ? tempArray : undefined });
+                                                            updateQueryParamContext('merchantIds', tempArray);
                                                         }
-                                                        setfilterobj({ ...filterobj, merchantIds: temp });
-                                                        refetchCourierCollectionTransactionsQuery();
                                                     }}
                                                 />
                                             </div>

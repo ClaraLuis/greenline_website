@@ -29,8 +29,18 @@ const { ValueContainer, Placeholder } = components;
 const Expenses = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, isAuth, setpagetitle_context, expenseTypeContext, transactionStatusTypeContext, transactionTypeContext, buttonLoadingContext, setbuttonLoadingContext } =
-        useContext(Contexthandlerscontext);
+    const {
+        setpageactive_context,
+        isAuth,
+        setpagetitle_context,
+        expenseTypeContext,
+        transactionStatusTypeContext,
+        transactionTypeContext,
+        buttonLoadingContext,
+        setbuttonLoadingContext,
+        updateQueryParamContext,
+        useLoadQueryParamsToPayload,
+    } = useContext(Contexthandlerscontext);
     const { fetchUsers, useQueryGQL, createExpense, useMutationGQL, fetchExpenses, fetchFinancialAccounts, sendMyFinancialTransaction } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -66,6 +76,7 @@ const Expenses = (props) => {
         fromDate: undefined,
         toDate: undefined,
     });
+    useLoadQueryParamsToPayload(setfilterExpensesObj);
 
     const fetchExpensesQuery = useQueryGQL('', fetchExpenses(), filterExpensesObj);
     // const { refetch: refetchExpensesQuery } = useQueryGQL('', fetchExpenses(), filterExpensesObj);
@@ -175,6 +186,7 @@ const Expenses = (props) => {
                                                             ].find((option) => option.value === (filterExpensesObj?.isAsc ?? true))}
                                                             onChange={(option) => {
                                                                 setfilterExpensesObj({ ...filterExpensesObj, isAsc: option?.value });
+                                                                updateQueryParamContext('isAsc', option?.value);
                                                             }}
                                                         />
                                                     </div>
@@ -199,6 +211,7 @@ const Expenses = (props) => {
                                                             }
                                                         }
                                                         setfilterExpensesObj({ ...filterExpensesObj, types: tempArray?.length != 0 ? tempArray : undefined });
+                                                        updateQueryParamContext('types', tempArray?.length != 0 ? tempArray : undefined);
                                                     }}
                                                 />
                                             </div>

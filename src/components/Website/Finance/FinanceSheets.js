@@ -29,7 +29,7 @@ const { ValueContainer, Placeholder } = components;
 const FinanceSheets = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, courierSheetStatusesContext, isAuth } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, courierSheetStatusesContext, isAuth, useLoadQueryParamsToPayload, updateQueryParamContext } = useContext(Contexthandlerscontext);
     const { fetchCouriers, useQueryGQL, fetchCourierSheets } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -50,6 +50,8 @@ const FinanceSheets = (props) => {
         beforeCursor: '',
         statuses: ['inProgress', 'waitingForAdminApproval', 'waitingForFinanceApproval'],
     });
+    useLoadQueryParamsToPayload(setfilter);
+
     const fetchSheetsQuery = useQueryGQL('', fetchCourierSheets(), filter);
     // const { refetch: refetchCourierSheets } = useQueryGQL('', fetchCourierSheets(), filter);
     const refetchCourierSheets = () => fetchSheetsQuery.refetch();
@@ -127,6 +129,7 @@ const FinanceSheets = (props) => {
                                                         ].find((option) => option.value === (filter?.isAsc ?? true))}
                                                         onChange={(option) => {
                                                             setfilter({ ...filter, isAsc: option?.value });
+                                                            updateQueryParamContext('isAsc', option?.value);
                                                         }}
                                                     />
                                                 </div>
@@ -145,6 +148,7 @@ const FinanceSheets = (props) => {
                                                 payloadAttr={'courierId'}
                                                 onClick={(option) => {
                                                     setfilter({ ...filter, courierId: option?.id });
+                                                    updateQueryParamContext('courierId', option?.id);
                                                 }}
                                             />
                                         </div>
@@ -158,7 +162,7 @@ const FinanceSheets = (props) => {
                                                 onClick={(option) => {
                                                     var tempArray = [...(filter?.statuses ?? [])];
                                                     if (option == 'All') {
-                                                        tempArray = undefined;
+                                                        tempArray = ['inProgress', 'waitingForAdminApproval', 'waitingForFinanceApproval', 'completed'];
                                                     } else {
                                                         if (!tempArray?.includes(option.value)) {
                                                             tempArray.push(option.value);
@@ -168,6 +172,7 @@ const FinanceSheets = (props) => {
                                                     }
 
                                                     setfilter({ ...filter, statuses: tempArray?.length != 0 ? tempArray : undefined });
+                                                    updateQueryParamContext('statuses', tempArray?.length != 0 ? tempArray : undefined);
                                                 }}
                                             />
                                         </div>

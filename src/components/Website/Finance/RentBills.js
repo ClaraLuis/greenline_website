@@ -31,7 +31,8 @@ import Select, { components } from 'react-select';
 const RentBills = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, isAuth, setpagetitle_context, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, isAuth, setpagetitle_context, buttonLoadingContext, setbuttonLoadingContext, useLoadQueryParamsToPayload, updateQueryParamContext } =
+        useContext(Contexthandlerscontext);
     const { useQueryGQL, useMutationGQL, fetchInventoryRentBills, completeInventoryRentTransactions, fetchFinancialAccounts } = API();
     const cookies = new Cookies();
 
@@ -62,16 +63,7 @@ const RentBills = (props) => {
         toDate: undefined,
     });
 
-    const [filterobj1, setfilterobj1] = useState({
-        isAsc: false,
-        limit: 20,
-        afterCursor: undefined,
-        beforeCursor: undefined,
-
-        statuses: undefined,
-        fromDate: undefined,
-        toDate: undefined,
-    });
+    useLoadQueryParamsToPayload(setfilterobj);
 
     const fetchInventoryRentBillsQuery = useQueryGQL('', fetchInventoryRentBills(), filterobj);
 
@@ -188,6 +180,7 @@ const RentBills = (props) => {
                                                         ].find((option) => option.value === (filterobj?.isAsc ?? true))}
                                                         onChange={(option) => {
                                                             setfilterobj({ ...filterobj, isAsc: option?.value });
+                                                            updateQueryParamContext('isAsc', option?.value);
                                                         }}
                                                     />
                                                 </div>
@@ -219,36 +212,6 @@ const RentBills = (props) => {
                                                         setfilterobj({ ...filterobj, fromDate: null, toDate: null });
                                                     }}
                                                 />
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-12">
-                                            <div class="row m-0 w-100">
-                                                {chosenMerchantsArray?.map((item, index) => {
-                                                    return (
-                                                        <div
-                                                            style={{
-                                                                background: '#ECECEC',
-                                                                padding: '5px 10px',
-                                                                cursor: 'pointer',
-                                                                borderRadius: '8px',
-                                                                justifyContent: 'space-between',
-                                                                width: 'fit-content',
-                                                                fontSize: '11px',
-                                                                minWidth: 'fit-content',
-                                                            }}
-                                                            className="d-flex align-items-center mr-2 mb-1"
-                                                            onClick={() => {
-                                                                var temp = [...filterobj?.merchantIds];
-                                                                chosenMerchantsArray.splice(index, 1);
-                                                                temp.splice(index, 1);
-                                                                setfilterobj({ ...filterobj, merchantIds: temp });
-                                                            }}
-                                                        >
-                                                            {item?.name}
-                                                            <AiOutlineClose size={12} color="#6C757D" className="ml-2" />
-                                                        </div>
-                                                    );
-                                                })}
                                             </div>
                                         </div>
                                     </div>

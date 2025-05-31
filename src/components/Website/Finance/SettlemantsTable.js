@@ -69,7 +69,7 @@ const SettlemantsTable = (props) => {
                                     <div className="col-lg-6 p-0 mb-2">
                                         <span class="d-flex align-items-center" style={{ fontWeight: 600 }}>
                                             <FaMoneyBill class="mr-1" />
-                                            {item?.totalAmount}
+                                            {item?.totalAmount} EGP
                                         </span>
                                     </div>
                                     <div className="col-lg-6 p-0 mb-2 d-flex justify-content-end">

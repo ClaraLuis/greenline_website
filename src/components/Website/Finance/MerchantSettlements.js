@@ -31,7 +31,8 @@ const { ValueContainer, Placeholder } = components;
 const MerchantSettlements = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, isAuth, financialAccountTypeContext, setpagetitle_context, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, isAuth, financialAccountTypeContext, setpagetitle_context, buttonLoadingContext, setbuttonLoadingContext, useLoadQueryParamsToPayload, updateQueryParamContext } =
+        useContext(Contexthandlerscontext);
     const { paginateMerchantSettlements, useQueryGQL, fetchUsers, fetchMerchants, useMutationGQL, createFinancialAccount, updateFinancialAccount } = API();
     const cookies = new Cookies();
 
@@ -43,18 +44,13 @@ const MerchantSettlements = (props) => {
         afterCursor: undefined,
         beforeCursor: undefined,
     });
+    useLoadQueryParamsToPayload(setfilterobj);
 
     const paginateMerchantSettlementsQuery = useQueryGQL('', paginateMerchantSettlements(), filterobj);
     // const fetchusers = [];
     useEffect(() => {
         setpageactive_context('/merchantsettlements');
         setpagetitle_context('Finance');
-        setfilterobj({
-            isAsc: false,
-            limit: 20,
-            afterCursor: undefined,
-            beforeCursor: undefined,
-        });
     }, []);
 
     return (
@@ -122,6 +118,7 @@ const MerchantSettlements = (props) => {
                                                             ].find((option) => option.value === (filterobj?.isAsc ?? true))}
                                                             onChange={(option) => {
                                                                 setfilterobj({ ...filterobj, isAsc: option?.value });
+                                                                updateQueryParamContext('isAsc', option?.value);
                                                             }}
                                                         />
                                                     </div>
@@ -137,8 +134,10 @@ const MerchantSettlements = (props) => {
                                                     onClick={(option) => {
                                                         if (option === 'All') {
                                                             setfilterobj({ ...filterobj, merchantId: undefined });
+                                                            updateQueryParamContext('merchantId', undefined);
                                                         } else {
                                                             setfilterobj({ ...filterobj, merchantId: option.id });
+                                                            updateQueryParamContext('merchantId', option.id);
                                                         }
                                                     }}
                                                 />

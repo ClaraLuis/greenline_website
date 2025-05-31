@@ -38,7 +38,7 @@ const Orders = (props) => {
     let history = useHistory();
     const cookies = new Cookies();
 
-    const { setpageactive_context, setpagetitle_context, dateformatter, orderStatusEnumContext, isAuth, setchosenOrderContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, dateformatter, orderStatusEnumContext, isAuth, updateQueryParamContext, useLoadQueryParamsToPayload } = useContext(Contexthandlerscontext);
     const { fetchMerchants, useQueryGQL, fetchOrdersInInventory, fetchInventories } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -53,6 +53,8 @@ const Orders = (props) => {
         limit: 20,
         outOfStock: false,
     });
+    useLoadQueryParamsToPayload(setfilterorders);
+
     const fetchOrdersInInventoryQuery = useQueryGQL('', fetchOrdersInInventory(), filterorders);
     const { refetch: refetchOrdersInInventory } = useQueryGQL('', fetchOrdersInInventory(), filterorders);
     const [selectedOrders, setSelectedOrders] = useState([]);
@@ -264,6 +266,7 @@ const Orders = (props) => {
                                                                     ...filterorders,
                                                                     outOfStock: !filterorders?.outOfStock,
                                                                 });
+                                                                updateQueryParamContext('outOfStock', !filterorders?.outOfStock);
                                                             }}
                                                         />
                                                         <span className={`${formstyles.slider} ${formstyles.round}`}></span>
@@ -282,6 +285,7 @@ const Orders = (props) => {
 
                                                         if (option === 'All') {
                                                             setfilterorders({ ...filterorders, merchantIds: undefined });
+                                                            updateQueryParamContext('merchantIds', undefined);
                                                         } else {
                                                             const index = tempArray.indexOf(option?.id);
                                                             if (index === -1) {
@@ -291,6 +295,7 @@ const Orders = (props) => {
                                                             }
 
                                                             setfilterorders({ ...filterorders, merchantIds: tempArray.length ? tempArray : undefined });
+                                                            updateQueryParamContext('merchantIds', tempArray.length ? tempArray : undefined);
                                                         }
                                                     }}
                                                 />
@@ -339,8 +344,10 @@ const Orders = (props) => {
                                                                 }
 
                                                                 setfilterorders({ ...filterorders, statuses: tempArray.length ? tempArray : undefined });
+                                                                updateQueryParamContext('statuses', tempArray.length ? tempArray : undefined);
                                                             } else {
                                                                 setfilterorders({ ...filterorders, statuses: undefined });
+                                                                updateQueryParamContext('statuses', undefined);
                                                             }
                                                         }}
                                                     />
@@ -363,6 +370,7 @@ const Orders = (props) => {
                                                             ...filterorders,
                                                             inventoryId: option ? option.id : undefined,
                                                         });
+                                                        updateQueryParamContext('inventoryId', option ? option.id : undefined);
                                                     }}
                                                 />
                                             </div>
@@ -377,6 +385,8 @@ const Orders = (props) => {
                                                                 const tempArray = [...(filterorders?.orderIds ?? [])];
                                                                 tempArray.push(orderId);
                                                                 setfilterorders({ ...filterorders, orderIds: tempArray });
+                                                                updateQueryParamContext('orderIds', tempArray);
+
                                                                 e.target.value = '';
                                                             } else {
                                                                 NotificationManager.warning('', 'Already exists');
@@ -405,6 +415,7 @@ const Orders = (props) => {
                                                                     const tempArray = [...filterorders.orderIds];
                                                                     tempArray.splice(orderIndex, 1);
                                                                     setfilterorders({ ...filterorders, orderIds: tempArray.length ? tempArray : undefined });
+                                                                    updateQueryParamContext('orderIds', tempArray.length ? tempArray : undefined);
                                                                 }}
                                                             >
                                                                 {orderItem}
