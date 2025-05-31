@@ -25,7 +25,7 @@ import InventorySelectComponent from '../../selectComponents/InventorySelectComp
 const InventoryPackages = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, returnPackageStatusContext, isAuth, dateformatter } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, returnPackageStatusContext, isAuth, dateformatter, useLoadQueryParamsToPayload, updateQueryParamContext } = useContext(Contexthandlerscontext);
     const { fetchPackages, useQueryGQL, findReturnPackageBySku, useLazyQueryGQL, fetchInventories } = API();
     const cookies = new Cookies();
 
@@ -45,6 +45,7 @@ const InventoryPackages = (props) => {
         status: undefined,
         type: 'inventory',
     });
+    useLoadQueryParamsToPayload(setfilter);
 
     const fetchPackagesQuery = useQueryGQL('', fetchPackages(), filter);
 
@@ -176,6 +177,7 @@ const InventoryPackages = (props) => {
                                                                 ].find((option) => option.value === (filter?.isAsc ?? true))}
                                                                 onChange={(option) => {
                                                                     setfilter({ ...filter, isAsc: option?.value });
+                                                                    updateQueryParamContext('isAsc', option?.value);
                                                                 }}
                                                             />
                                                         </div>
@@ -191,6 +193,7 @@ const InventoryPackages = (props) => {
                                                         value={[{ label: 'All', value: undefined }, ...returnPackageStatusContext].filter((option) => option.value == filter?.status)}
                                                         onChange={(option) => {
                                                             setfilter({ ...filter, status: option.value });
+                                                            updateQueryParamContext('status', option?.value);
                                                         }}
                                                     />
                                                 </div>
@@ -204,6 +207,7 @@ const InventoryPackages = (props) => {
                                                             payloadAttr={'toInventoryId'}
                                                             onClick={(option) => {
                                                                 setfilter({ ...filter, toInventoryId: option?.id });
+                                                                updateQueryParamContext('toInventoryId', option?.id);
                                                             }}
                                                         />
                                                     </div>

@@ -34,7 +34,7 @@ const MerchantPayment = (props) => {
     let history = useHistory();
     const [total, setTotal] = useState(0);
 
-    const { setpageactive_context, isAuth, setpagetitle_context } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, isAuth, setpagetitle_context, useLoadQueryParamsToPayload, updateQueryParamContext } = useContext(Contexthandlerscontext);
     const { useQueryGQL, fetchMerchantPaymentTransactions, merchantPaymentsSummary } = API();
     const cookies = new Cookies();
 
@@ -49,6 +49,7 @@ const MerchantPayment = (props) => {
         merchantIds: undefined,
         processing: undefined,
     });
+    useLoadQueryParamsToPayload(setfilterobj);
 
     const fetchMerchantPaymentTransactionsQuery = useQueryGQL('', fetchMerchantPaymentTransactions(), filterobj);
     const [filterMerchanrPaymentSummaryObj, setfilterMerchanrPaymentSummaryObj] = useState({
@@ -61,15 +62,6 @@ const MerchantPayment = (props) => {
     useEffect(() => {
         setpageactive_context('/merchantpayment');
         setpagetitle_context('Merchant');
-
-        setfilterobj({
-            isAsc: false,
-            limit: 20,
-            afterCursor: undefined,
-            beforeCursor: undefined,
-            merchantIds: undefined,
-            processing: undefined,
-        });
     }, []);
 
     useEffect(() => {
@@ -150,6 +142,7 @@ const MerchantPayment = (props) => {
                                                                 ].find((option) => option.value === (filterobj?.isAsc ?? true))}
                                                                 onChange={(option) => {
                                                                     setfilterobj({ ...filterobj, isAsc: option?.value });
+                                                                    updateQueryParamContext('isAsc', option?.value);
                                                                 }}
                                                             />
                                                         </div>

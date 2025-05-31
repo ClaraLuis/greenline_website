@@ -34,8 +34,17 @@ import InventorySelectComponent from '../../selectComponents/InventorySelectComp
 const InventoryRent = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, inventoryRentTypeContext, returnPackageTypeContext, dateformatter, buttonLoadingContext, setbuttonLoadingContext, setchosenPackageContext } =
-        useContext(Contexthandlerscontext);
+    const {
+        setpageactive_context,
+        setpagetitle_context,
+        inventoryRentTypeContext,
+        returnPackageTypeContext,
+        dateformatter,
+        buttonLoadingContext,
+        setbuttonLoadingContext,
+        useLoadQueryParamsToPayload,
+        updateQueryParamContext,
+    } = useContext(Contexthandlerscontext);
     const {
         useMutationGQL,
         fetchMerchants,
@@ -82,6 +91,7 @@ const InventoryRent = (props) => {
         beforeCursor: '',
         assigned: undefined,
     });
+    useLoadQueryParamsToPayload(setfilter);
 
     const paginateInventoryRentsQuery = useQueryGQL('', paginateInventoryRents(), filter);
 
@@ -176,6 +186,7 @@ const InventoryRent = (props) => {
                                                             ].find((option) => option.value === (filter?.isAsc ?? true))}
                                                             onChange={(option) => {
                                                                 setfilter({ ...filter, isAsc: option?.value });
+                                                                updateQueryParamContext('isAsc', option?.value);
                                                             }}
                                                         />
                                                     </div>
@@ -193,6 +204,7 @@ const InventoryRent = (props) => {
 
                                                             if (option === 'All') {
                                                                 setfilter({ ...filter, merchantIds: undefined });
+                                                                updateQueryParamContext('merchantIds', undefined);
                                                             } else {
                                                                 const index = tempArray.indexOf(option?.id);
                                                                 if (index === -1) {
@@ -201,6 +213,7 @@ const InventoryRent = (props) => {
                                                                     tempArray.splice(index, 1);
                                                                 }
                                                                 setfilter({ ...filter, merchantIds: tempArray.length ? tempArray : undefined });
+                                                                updateQueryParamContext('merchantIds', tempArray.length ? tempArray : undefined);
                                                             }
                                                         }}
                                                     />
@@ -218,6 +231,7 @@ const InventoryRent = (props) => {
 
                                                             if (option === 'All') {
                                                                 setfilter({ ...filter, inventoryIds: undefined });
+                                                                updateQueryParamContext('inventoryIds', undefined);
                                                             } else {
                                                                 const index = tempArray.indexOf(option?.id);
                                                                 if (index === -1) {
@@ -226,6 +240,7 @@ const InventoryRent = (props) => {
                                                                     tempArray.splice(index, 1);
                                                                 }
                                                                 setfilter({ ...filter, inventoryIds: tempArray.length ? tempArray : undefined });
+                                                                updateQueryParamContext('inventoryIds', tempArray.length ? tempArray : undefined);
                                                             }
                                                         }}
                                                     />

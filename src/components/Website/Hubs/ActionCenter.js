@@ -29,7 +29,17 @@ const ActionCenter = (props) => {
     let history = useHistory();
     const cookies = new Cookies();
 
-    const { setpageactive_context, setpagetitle_context, dateformatter, orderStatusEnumContext, isAuth, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
+    const {
+        setpageactive_context,
+        setpagetitle_context,
+        dateformatter,
+        orderStatusEnumContext,
+        isAuth,
+        buttonLoadingContext,
+        setbuttonLoadingContext,
+        useLoadQueryParamsToPayload,
+        updateQueryParamContext,
+    } = useContext(Contexthandlerscontext);
     const { fetchMerchants, useQueryGQL, paginateUnresolvedOrders, fetchHubs, updateupdateOrderIdsStatus, useMutationGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -42,6 +52,7 @@ const ActionCenter = (props) => {
         // fromDate: new Date(new Date().setDate(new Date().getDate() - 30)).toISOString().split('T')[0],
         // toDate: new Date().toISOString().split('T')[0],
     });
+    useLoadQueryParamsToPayload(setfilterorders);
 
     const paginateUnresolvedOrdersQuery = useQueryGQL('', paginateUnresolvedOrders(), filterorders);
 
@@ -148,6 +159,7 @@ const ActionCenter = (props) => {
                                                             ].find((option) => option.value === (filterorders?.isAsc ?? true))}
                                                             onChange={(option) => {
                                                                 setfilterorders({ ...filterorders, isAsc: option?.value });
+                                                                updateQueryParamContext('isAsc', option?.value);
                                                             }}
                                                         />
                                                     </div>
@@ -167,6 +179,7 @@ const ActionCenter = (props) => {
                                                         payloadAttr={'hubId'}
                                                         onClick={(option) => {
                                                             setfilterorders({ ...filterorders, hubId: option?.id });
+                                                            updateQueryParamContext('hubId', option?.id);
                                                         }}
                                                     />
                                                 </div>

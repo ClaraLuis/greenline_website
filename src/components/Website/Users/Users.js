@@ -25,7 +25,8 @@ const { ValueContainer, Placeholder } = components;
 const Users = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, dateformatter, isAuth, userTypeContext, employeeTypeContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, dateformatter, isAuth, userTypeContext, employeeTypeContext, useLoadQueryParamsToPayload, updateQueryParamContext } =
+        useContext(Contexthandlerscontext);
     const { fetchUsers, useQueryGQL, fetchMerchants, fetchHubs } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -48,6 +49,7 @@ const Users = (props) => {
         afterCursor: undefined,
         beforeCursor: undefined,
     });
+    useLoadQueryParamsToPayload(setfilterUsers);
 
     const fetchusers = useQueryGQL('', fetchUsers(), filterUsers);
     const { refetch: refetchUsers } = useQueryGQL('', fetchUsers(), filterUsers);
@@ -158,6 +160,7 @@ const Users = (props) => {
                                                                 ].find((option) => option.value === (filterUsers?.isAsc ?? true))}
                                                                 onChange={(option) => {
                                                                     setfilterUsers({ ...filterUsers, isAsc: option?.value });
+                                                                    updateQueryParamContext('isAsc', option?.value);
                                                                 }}
                                                             />
                                                         </div>
@@ -172,6 +175,7 @@ const Users = (props) => {
                                                         value={'id'}
                                                         onClick={(option) => {
                                                             setfilterUsers({ ...filterUsers, merchantId: option?.id });
+                                                            updateQueryParamContext('merchantId', option?.id);
                                                         }}
                                                     />
                                                 </div>
@@ -188,6 +192,7 @@ const Users = (props) => {
                                                         value={'id'}
                                                         onClick={(option) => {
                                                             setfilterUsers({ ...filterUsers, hubId: option?.id });
+                                                            updateQueryParamContext('hubId', option?.id);
                                                         }}
                                                     />
                                                 </div>
@@ -203,6 +208,7 @@ const Users = (props) => {
 
                                                             if (option === 'All') {
                                                                 setfilterUsers({ ...filterUsers, employeeTypes: undefined });
+                                                                updateQueryParamContext('employeeTypes', undefined);
                                                             } else {
                                                                 const index = tempArray.indexOf(option?.value);
                                                                 if (index === -1) {
@@ -212,6 +218,7 @@ const Users = (props) => {
                                                                 }
 
                                                                 setfilterUsers({ ...filterUsers, employeeTypes: tempArray.length ? tempArray : undefined });
+                                                                updateQueryParamContext('employeeTypes', tempArray.length ? tempArray : undefined);
                                                             }
                                                         }}
                                                     />
@@ -228,6 +235,7 @@ const Users = (props) => {
 
                                                             if (option === 'All') {
                                                                 setfilterUsers({ ...filterUsers, types: undefined });
+                                                                updateQueryParamContext('types', undefined);
                                                             } else {
                                                                 const index = tempArray.indexOf(option?.value);
                                                                 if (index === -1) {
@@ -237,6 +245,7 @@ const Users = (props) => {
                                                                 }
 
                                                                 setfilterUsers({ ...filterUsers, types: tempArray.length ? tempArray : undefined });
+                                                                updateQueryParamContext('types', tempArray.length ? tempArray : undefined);
                                                             }
                                                         }}
                                                     />

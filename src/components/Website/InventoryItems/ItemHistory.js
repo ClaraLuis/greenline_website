@@ -32,7 +32,7 @@ const { ValueContainer, Placeholder } = components;
 const ItemHistory = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, dateformatter, isAuth, setpagetitle_context, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, dateformatter, isAuth, setpagetitle_context, buttonLoadingContext, useLoadQueryParamsToPayload, updateQueryParamContext } = useContext(Contexthandlerscontext);
     const { fetchUsers, useQueryGQL, fetchInventories, useMutationGQL, addInventory, fetchItemsInBox, fetchMerchants, importNew, fetchItemHistory, exportItem, importItem, useLazyQueryGQL } = API();
 
     const cookies = new Cookies();
@@ -47,6 +47,7 @@ const ItemHistory = (props) => {
         afterCursor: undefined,
         beforeCursor: undefined,
     });
+    useLoadQueryParamsToPayload(setfetchItemHistoryfilter);
 
     const fetchitemhistorfunc = async () => {
         if (fetchItemHistoryfilter?.name == undefined) {
@@ -141,6 +142,7 @@ const ItemHistory = (props) => {
                                                         ].find((option) => option.value === (fetchItemHistoryfilter?.isAsc ?? true))}
                                                         onChange={(option) => {
                                                             setfetchItemHistoryfilter({ ...fetchItemHistoryfilter, isAsc: option?.value });
+                                                            updateQueryParamContext('isAsc', option?.value);
                                                         }}
                                                     />
                                                 </div>
@@ -156,6 +158,7 @@ const ItemHistory = (props) => {
                                                     payloadAttr={'merchantId'}
                                                     onClick={(option) => {
                                                         setfetchItemHistoryfilter({ ...fetchItemHistoryfilter, merchantId: option?.id });
+                                                        updateQueryParamContext('merchantId', option?.id);
                                                     }}
                                                 />
                                             </div>
@@ -170,6 +173,7 @@ const ItemHistory = (props) => {
                                                 payloadAttr={'inventoryId'}
                                                 onClick={async (option) => {
                                                     setfetchItemHistoryfilter({ ...fetchItemHistoryfilter, inventoryId: option?.id });
+                                                    updateQueryParamContext('inventoryId', option?.id);
                                                 }}
                                             />
                                         </div>
@@ -233,6 +237,8 @@ const ItemHistory = (props) => {
                                                                 ...fetchItemHistoryfilter,
                                                                 orderIds: temp,
                                                             });
+                                                            updateQueryParamContext('orderIds', temp);
+
                                                             e.target.value = '';
                                                         }
                                                     }

@@ -37,7 +37,17 @@ const MerchantOrders = (props) => {
     let history = useHistory();
     const cookies = new Cookies();
 
-    const { setpageactive_context, orderStatusEnumContext, orderTypeContext, paymentTypeContext, isAuth, courierSheetStatusesContext, setpagetitle_context } = useContext(Contexthandlerscontext);
+    const {
+        setpageactive_context,
+        orderStatusEnumContext,
+        orderTypeContext,
+        paymentTypeContext,
+        isAuth,
+        courierSheetStatusesContext,
+        setpagetitle_context,
+        updateQueryParamContext,
+        useLoadQueryParamsToPayload,
+    } = useContext(Contexthandlerscontext);
     const { fetchMerchants, useQueryGQL, useLazyQueryGQL, fetchOrders, fetchCouriers, fetchGovernorates, findAllZones, fetchHubs } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -48,6 +58,8 @@ const MerchantOrders = (props) => {
     const [filterorders, setfilterorders] = useState({
         limit: 20,
     });
+    useLoadQueryParamsToPayload(setfilterorders);
+
     const [fetchOrdersQuery, setfetchOrdersQuery] = useState({});
     const fetchGovernoratesQuery = useQueryGQL('', fetchGovernorates());
 
@@ -267,6 +279,7 @@ const MerchantOrders = (props) => {
                                                             ].find((option) => option.value === (filterorders?.isAsc ?? true))}
                                                             onChange={(option) => {
                                                                 setfilterorders({ ...filterorders, isAsc: option?.value });
+                                                                updateQueryParamContext('isAsc', option?.value);
                                                             }}
                                                         />
                                                     </div>
@@ -286,6 +299,7 @@ const MerchantOrders = (props) => {
                                                         payloadAttr={'hubId'}
                                                         onClick={(option) => {
                                                             setfilterorders({ ...filterorders, hubId: option?.id });
+                                                            updateQueryParamContext('hubId', option?.id);
                                                         }}
                                                     />
                                                 </div>
@@ -312,6 +326,7 @@ const MerchantOrders = (props) => {
                                                             }
 
                                                             setfilterorders({ ...filterorders, merchantIds: tempArray?.length != 0 ? tempArray : undefined });
+                                                            updateQueryParamContext('merchantIds', tempArray?.length != 0 ? tempArray : undefined);
                                                         }}
                                                     />
                                                 </div>
@@ -336,6 +351,7 @@ const MerchantOrders = (props) => {
                                                             }
                                                         }
                                                         setfilterorders({ ...filterorders, statuses: tempArray?.length != 0 ? tempArray : undefined });
+                                                        updateQueryParamContext('statuses', tempArray?.length != 0 ? tempArray : undefined);
                                                     }}
                                                 />
                                             </div>
@@ -358,6 +374,7 @@ const MerchantOrders = (props) => {
                                                             }
                                                         }
                                                         setfilterorders({ ...filterorders, types: tempArray?.length != 0 ? tempArray : undefined });
+                                                        updateQueryParamContext('types', tempArray?.length != 0 ? tempArray : undefined);
                                                     }}
                                                 />
                                             </div>
@@ -380,6 +397,7 @@ const MerchantOrders = (props) => {
                                                             }
                                                         }
                                                         setfilterorders({ ...filterorders, paymentTypes: tempArray?.length != 0 ? tempArray : undefined });
+                                                        updateQueryParamContext('paymentTypes', tempArray?.length != 0 ? tempArray : undefined);
                                                     }}
                                                 />
                                             </div>
@@ -406,6 +424,7 @@ const MerchantOrders = (props) => {
                                                                 }
                                                             }
                                                             setfilterorders({ ...filterorders, courierIds: tempArray?.length != 0 ? tempArray : undefined });
+                                                            updateQueryParamContext('courierIds', tempArray?.length != 0 ? tempArray : undefined);
                                                         }}
                                                     />
                                                 </div>
@@ -430,6 +449,7 @@ const MerchantOrders = (props) => {
                                                             }
                                                         }
                                                         setfilterorders({ ...filterorders, governorateIds: tempArray?.length != 0 ? tempArray : undefined });
+                                                        updateQueryParamContext('governorateIds', tempArray?.length != 0 ? tempArray : undefined);
                                                     }}
                                                 />
                                             </div>
@@ -457,6 +477,7 @@ const MerchantOrders = (props) => {
                                                             }
                                                         }
                                                         setfilterorders({ ...filterorders, zoneIds: tempArray?.length != 0 ? tempArray : undefined });
+                                                        updateQueryParamContext('zoneIds', tempArray?.length != 0 ? tempArray : undefined);
                                                     }}
                                                 />
                                             </div>
@@ -480,6 +501,7 @@ const MerchantOrders = (props) => {
                                                                 }
                                                             }
                                                             setfilterorders({ ...filterorders, manifestStatuses: tempArray?.length != 0 ? tempArray : undefined });
+                                                            updateQueryParamContext('manifestStatuses', tempArray?.length != 0 ? tempArray : undefined);
                                                         }}
                                                     />
                                                 </div>
@@ -538,6 +560,8 @@ const MerchantOrders = (props) => {
                                                                     ...filterorders,
                                                                     orderIds: temp,
                                                                 });
+                                                                updateQueryParamContext('orderIds', temp);
+
                                                                 e.target.value = '';
                                                             }
                                                         }
@@ -567,6 +591,7 @@ const MerchantOrders = (props) => {
                                                                             ...filterorders,
                                                                             orderIds: temp?.length != 0 ? temp : undefined,
                                                                         });
+                                                                        updateQueryParamContext('orderIds', temp?.length != 0 ? temp : undefined);
                                                                     }}
                                                                 >
                                                                     {orderItem}

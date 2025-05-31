@@ -36,7 +36,8 @@ import TransactionsTableView from './TransactionsTableView.js';
 const MerchantPayments = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, isAuth, setpagetitle_context, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, isAuth, setpagetitle_context, buttonLoadingContext, setbuttonLoadingContext, useLoadQueryParamsToPayload, updateQueryParamContext } =
+        useContext(Contexthandlerscontext);
     const {
         useQueryGQL,
         fetchMerchants,
@@ -73,6 +74,7 @@ const MerchantPayments = (props) => {
         merchantIds: undefined,
         processing: undefined,
     });
+    useLoadQueryParamsToPayload(setfilterobj);
     const [filterMerchanrPaymentSummaryObj, setfilterMerchanrPaymentSummaryObj] = useState({
         // merchantIds: [1],
         startDate: undefined,
@@ -87,15 +89,6 @@ const MerchantPayments = (props) => {
     useEffect(() => {
         setpageactive_context('/merchantpayments');
         setpagetitle_context('Finance');
-
-        setfilterobj({
-            isAsc: false,
-            limit: 20,
-            afterCursor: undefined,
-            beforeCursor: undefined,
-            merchantIds: undefined,
-            processing: undefined,
-        });
     }, []);
 
     const { refetch: refetchMerchantPaymentTransactionsQuery } = useQueryGQL('', fetchMerchantPaymentTransactions(), filterobj);
@@ -225,6 +218,7 @@ const MerchantPayments = (props) => {
                                                             ].find((option) => option.value === (filterobj?.isAsc ?? true))}
                                                             onChange={(option) => {
                                                                 setfilterobj({ ...filterobj, isAsc: option?.value });
+                                                                updateQueryParamContext('isAsc', option?.value);
                                                             }}
                                                         />
                                                     </div>
@@ -232,6 +226,31 @@ const MerchantPayments = (props) => {
                                             </div>
                                             <div class={'col-lg-2'} style={{ marginBottom: '15px' }}>
                                                 <MerchantSelectComponent
+                                                    type="multi"
+                                                    attr={'paginateMerchants'}
+                                                    label={'name'}
+                                                    value={'id'}
+                                                    selected={filterobj?.merchantIds}
+                                                    onClick={(option) => {
+                                                        const tempArray = [...(filterobj?.merchantIds ?? [])];
+
+                                                        if (option === 'All') {
+                                                            setfilterobj({ ...filterobj, merchantIds: undefined });
+                                                            updateQueryParamContext('merchantIds', undefined);
+                                                        } else {
+                                                            const index = tempArray.indexOf(option?.id);
+                                                            if (index === -1) {
+                                                                tempArray.push(option?.id);
+                                                            } else {
+                                                                tempArray.splice(index, 1);
+                                                            }
+
+                                                            setfilterobj({ ...filterobj, merchantIds: tempArray.length ? tempArray : undefined });
+                                                            updateQueryParamContext('merchantIds', tempArray);
+                                                        }
+                                                    }}
+                                                />
+                                                {/* <MerchantSelectComponent
                                                     type="single"
                                                     label={'name'}
                                                     value={'id'}
@@ -255,8 +274,9 @@ const MerchantPayments = (props) => {
                                                         }
 
                                                         setfilterobj({ ...filterobj, merchantIds: temp });
+                                                        updateQueryParamContext('merchantIds', temp);
                                                     }}
-                                                />
+                                                /> */}
                                             </div>
                                             <div class={'col-lg-2'} style={{ marginBottom: '15px' }}>
                                                 <label for="name" class={formstyles.form__label}>
@@ -276,6 +296,7 @@ const MerchantPayments = (props) => {
                                                     ].filter((option) => option?.id == filterobj?.processing)}
                                                     onChange={(option) => {
                                                         setfilterobj({ ...filterobj, processing: option.value });
+                                                        updateQueryParamContext('processing', option.value);
                                                     }}
                                                 />
                                             </div>

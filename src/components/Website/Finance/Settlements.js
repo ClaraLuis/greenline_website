@@ -60,6 +60,7 @@ const Settlements = (props) => {
         beforeCursor: undefined,
         merchantId: queryParameters.get('merchantId') ?? undefined,
     });
+
     useEffect(async () => {
         if (parseInt(queryParameters.get('merchantId'))) {
             try {

@@ -1074,9 +1074,50 @@ export const Contexthandlerscontext_provider = (props) => {
         // { label: 'Cancel', value: 'cancel' },
         // { label: 'Fail', value: 'fail' },
     ];
+    const updateQueryParamContext = (key, value) => {
+        const searchParams = new URLSearchParams(window.location.search);
+
+        if (Array.isArray(value) || typeof value === 'object') {
+            const serialized = JSON.stringify(value);
+            searchParams.set(key, serialized);
+        } else if (value !== undefined && value !== null) {
+            searchParams.set(key, String(value));
+        } else {
+            searchParams.delete(key);
+        }
+
+        const newSearch = searchParams.toString();
+        const newPath = `${window.location.pathname}${newSearch ? '?' + newSearch : ''}`;
+        window.open(newPath, '_self'); // Replaces the current page without opening a new tab
+    };
+
+    function useLoadQueryParamsToPayload(setPayload) {
+        useEffect(() => {
+            const searchParams = new URLSearchParams(window.location.search);
+            const newPayload = {};
+
+            for (const [key, value] of searchParams.entries()) {
+                try {
+                    // Try to parse as JSON
+                    const parsed = JSON.parse(value);
+                    newPayload[key] = parsed;
+                } catch (err) {
+                    // If it's not JSON, keep it as string
+
+                    newPayload[key] = value;
+                }
+            }
+            // alert(JSON.stringify(newPayload));
+
+            setPayload((prev) => ({ ...prev, ...newPayload }));
+        }, [window.location.search, setPayload]);
+    }
+
     return (
         <Contexthandlerscontext.Provider
             value={{
+                useLoadQueryParamsToPayload,
+                updateQueryParamContext,
                 pagesarray_context,
                 setpagesarray_context,
                 pagetitle_context,

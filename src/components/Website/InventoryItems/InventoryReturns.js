@@ -24,7 +24,8 @@ import { defaultstyles } from '../Generalfiles/selectstyles.js';
 const InventoryReturns = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, paymentTypeContext, isAuth, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, paymentTypeContext, isAuth, buttonLoadingContext, setbuttonLoadingContext, useLoadQueryParamsToPayload, updateQueryParamContext } =
+        useContext(Contexthandlerscontext);
     const { useMutationGQL, fetchMerchants, fetchInventories, fetchCustomerAddresses, fetchInventoryItemReturns, useQueryGQL, createReturnPackage } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -44,6 +45,7 @@ const InventoryReturns = (props) => {
         assigned: false,
         inventoryId: undefined,
     });
+    useLoadQueryParamsToPayload(setfilter);
 
     const fetchInventoryItemReturnsQuery = useQueryGQL('', fetchInventoryItemReturns(), filter);
     // const { refetch: refetchInventoryItemReturnsQuery } = useQueryGQL('', fetchInventoryItemReturns(), filter);
@@ -52,7 +54,7 @@ const InventoryReturns = (props) => {
     const [createReturnPackageMutation] = useMutationGQL(createReturnPackage(), {
         orderItemIds: cartItems,
         type: 'inventory',
-        toInventoryId: packagepayload?.toInventoryId,
+        toInventoryId: packagepayload?.toInventoryId ?? filter?.inventoryId,
     });
 
     useEffect(() => {
@@ -115,6 +117,7 @@ const InventoryReturns = (props) => {
                                                             ].find((option) => option.value === (filter?.isAsc ?? true))}
                                                             onChange={(option) => {
                                                                 setfilter({ ...filter, isAsc: option?.value });
+                                                                updateQueryParamContext('isAsc', option?.value);
                                                             }}
                                                         />
                                                     </div>
@@ -130,6 +133,7 @@ const InventoryReturns = (props) => {
                                                     onClick={(option) => {
                                                         setfilter({ ...filter, inventoryId: option?.id });
                                                         setpackagepayload({ ...packagepayload, toInventoryId: option?.id });
+                                                        updateQueryParamContext('inventoryId', option?.id);
                                                     }}
                                                 />
                                             </div>
@@ -260,7 +264,7 @@ const InventoryReturns = (props) => {
                                     if (buttonLoadingContext) return;
                                     setbuttonLoadingContext(true);
                                     try {
-                                        if (packagepayload?.ids?.length != 0 && packagepayload?.type?.length != 0 && packagepayload?.toInventoryId?.length != 0) {
+                                        if (packagepayload?.ids?.length != 0 && packagepayload?.type?.length != 0) {
                                             try {
                                                 var temp = [];
                                                 await packagepayload?.ids?.map((item, index) => {

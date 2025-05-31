@@ -35,7 +35,8 @@ const Finance = (props) => {
     let history = useHistory();
     const cookies = new Cookies();
 
-    const { setpageactive_context, setpagetitle_context, dateformatter, isAuth, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, dateformatter, isAuth, buttonLoadingContext, setbuttonLoadingContext, updateQueryParamContext, useLoadQueryParamsToPayload } =
+        useContext(Contexthandlerscontext);
     const { useQueryGQL, merchantPaymentsSummary, fetchMerchants, fetchMerchantPaymentTransactions, calculateFinancialTransactionsTotal, completeMerchantPayments, useMutationGQL } = API();
     const { lang, langdetect } = useContext(LanguageContext);
     const [total, setTotal] = useState(0);
@@ -58,7 +59,7 @@ const Finance = (props) => {
         balance: 0,
         userId: undefined,
     });
-
+    useLoadQueryParamsToPayload(setfilterMerchanrPaymentSummaryObj);
     const merchantPaymentsSummaryQuery = useQueryGQL('', merchantPaymentsSummary(), filterMerchanrPaymentSummaryObj);
 
     const [filterobj, setfilterobj] = useState({
@@ -167,6 +168,7 @@ const Finance = (props) => {
                                                                 ].find((option) => option.value === (filterMerchanrPaymentSummaryObj?.isAsc ?? true))}
                                                                 onChange={(option) => {
                                                                     setfilterMerchanrPaymentSummaryObj({ ...filterMerchanrPaymentSummaryObj, isAsc: option?.value });
+                                                                    updateQueryParamContext('isAsc', option?.value);
                                                                 }}
                                                             />
                                                         </div>
@@ -194,6 +196,7 @@ const Finance = (props) => {
                                                                     }
 
                                                                     setfilterMerchanrPaymentSummaryObj({ ...filterMerchanrPaymentSummaryObj, merchantIds: tempArray.length ? tempArray : undefined });
+                                                                    updateQueryParamContext('merchantIds', tempArray.length ? tempArray : undefined);
                                                                 }
                                                             }}
                                                         />
@@ -244,13 +247,14 @@ const Finance = (props) => {
                                                             { label: 'Completed', value: false },
                                                         ]}
                                                         styles={defaultstyles}
-                                                        defaultValue={[
+                                                        value={[
                                                             { label: 'All', value: undefined },
                                                             { label: 'Processing', value: true },
                                                             { label: 'Completed', value: false },
-                                                        ].filter((option) => option?.id == filterobj?.processing)}
+                                                        ].find((option) => option.value === filterobj?.processing)}
                                                         onChange={(option) => {
                                                             setfilterobj({ ...filterobj, processing: option.value });
+                                                            updateQueryParamContext('processing', option.value);
                                                         }}
                                                     />
                                                 </div>
