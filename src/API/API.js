@@ -1555,6 +1555,24 @@ const API = () => {
         `;
     };
 
+    const findOneMerchantSettlement = (payload) => {
+        return gql`
+            query findOneMerchantSettlement($id: Int!) {
+                findOneMerchantSettlement(id: $id) {
+                    id
+                    merchantId
+                    totalAmount
+                    pdfKey
+                    createdAt
+                    merchant {
+                        name
+                    }
+                    pdfUrl
+                }
+            }
+        `;
+    };
+
     const findOneItem = (payload) => {
         return gql`
             query findOneItem($input: FindOneItemInput!) {
@@ -4444,6 +4462,7 @@ const API = () => {
         paginateShippingCollections,
         processShippingTaxes,
         paginateSettlementTransactions,
+        findOneMerchantSettlement,
     };
 };
 export default API;

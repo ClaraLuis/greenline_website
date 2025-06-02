@@ -32,7 +32,7 @@ const MerchantSettlement = (props) => {
     let history = useHistory();
     const { setpageactive_context, isAuth, chosenMerchantSettlemant, setchosenMerchantSettlemant, setpagetitle_context, buttonLoadingContext, setbuttonLoadingContext, dateformatter } =
         useContext(Contexthandlerscontext);
-    const { paginateSettlementTransactions, useQueryGQL, fetchUsers, fetchMerchants, useMutationGQL, createFinancialAccount, useLazyQueryGQL } = API();
+    const { paginateSettlementTransactions, findOneMerchantSettlement, fetchUsers, fetchMerchants, useMutationGQL, createFinancialAccount, useLazyQueryGQL } = API();
     const cookies = new Cookies();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -43,6 +43,7 @@ const MerchantSettlement = (props) => {
         afterCursor: undefined,
         beforeCursor: undefined,
     });
+    const [findOneMerchantSettlementQuery] = useLazyQueryGQL(findOneMerchantSettlement());
 
     const [paginateSettlementTransactionsQuery, setpaginateSettlementTransactionsQuery] = useState({});
 
@@ -78,6 +79,28 @@ const MerchantSettlement = (props) => {
                 }
                 NotificationManager.warning(errorMessage, 'Warning!');
             }
+            if (JSON.stringify(chosenMerchantSettlemant) == '{}') {
+                try {
+                    var { data } = await findOneMerchantSettlementQuery({
+                        variables: {
+                            id: parseInt(queryParameters?.get('id')),
+                        },
+                    });
+                    if (data?.findOneMerchantSettlement) {
+                        setchosenMerchantSettlemant({ ...data?.findOneMerchantSettlement });
+                    }
+                } catch (e) {
+                    let errorMessage = 'An unexpected error occurred';
+                    if (e.graphQLErrors && e.graphQLErrors.length > 0) {
+                        errorMessage = e.graphQLErrors[0].message || errorMessage;
+                    } else if (e.networkError) {
+                        errorMessage = e.networkError.message || errorMessage;
+                    } else if (e.message) {
+                        errorMessage = e.message;
+                    }
+                    NotificationManager.warning(errorMessage, 'Warning!');
+                }
+            }
         }
     }, [filterobj]);
 
@@ -88,18 +111,31 @@ const MerchantSettlement = (props) => {
                     <div class={generalstyles.card + ' m-0 row w-100 '}>
                         <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
                             <p class=" p-0 m-0" style={{ fontSize: '27px' }}>
-                                {queryParameters.get('merchant')}, Settlement
+                                {chosenMerchantSettlemant?.merchant?.name}, Settlement
                             </p>
                         </div>
                         <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-end pb-2 '}>
                             <button
                                 onClick={() => {
-                                    window.open(queryParameters.get('pdf'), '_blank');
+                                    window.open(chosenMerchantSettlemant?.pdfUrl, '_blank');
                                 }}
                                 class={generalstyles.roundbutton}
                             >
                                 View PDF
                             </button>
+                        </div>
+                        <div className="col-lg-6 p-0 my-2 d-flex ">
+                            <div class="row m-0 w-100 align-items-center">
+                                <span style={{ color: 'white' }} className="badge bg-primary text-capitalize">
+                                    {chosenMerchantSettlemant?.totalAmount} EGP
+                                </span>
+                            </div>
+                        </div>
+                        <div className="col-lg-6 p-0 my-2 d-flex justify-content-end">
+                            <span class="d-flex align-items-center" style={{ fontWeight: 500, color: 'grey', fontSize: '12px' }}>
+                                <IoMdTime class="mr-1" />
+                                {dateformatter(chosenMerchantSettlemant?.createdAt)}
+                            </span>
                         </div>
                     </div>
                 </div>{' '}
