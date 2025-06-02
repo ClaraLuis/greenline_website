@@ -93,7 +93,7 @@ const SettlemantsTable = (props) => {
                                             <button
                                                 onClick={() => {
                                                     setchosenMerchantSettlemant(item);
-                                                    history.push('/merchantsettlement?id=' + item.id + '&merchant=' + item?.merchant?.name + '&pdf=' + item?.pdfUrl);
+                                                    history.push('/merchantsettlement?id=' + item.id);
                                                 }}
                                                 class={generalstyles.roundbutton}
                                             >
