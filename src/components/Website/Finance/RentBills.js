@@ -80,13 +80,6 @@ const RentBills = (props) => {
     useEffect(() => {
         setpageactive_context('/rentbills');
         setpagetitle_context('Finance');
-        setfilterobj({
-            isAsc: false,
-            limit: 20,
-            afterCursor: undefined,
-            beforeCursor: undefined,
-            merchantIds: undefined,
-        });
     }, []);
 
     const refetchInventoryRentBillsQuery = () => fetchInventoryRentBillsQuery.refetch();
@@ -284,6 +277,7 @@ const RentBills = (props) => {
                                     <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
                                         <TransactionsTable
                                             hasOrder={true}
+                                            enableEdit={false}
                                             width={'50%'}
                                             query={fetchInventoryRentBillsQuery}
                                             paginationAttr="paginateInventoryRentBills"

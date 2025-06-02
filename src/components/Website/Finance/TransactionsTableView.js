@@ -135,9 +135,17 @@ const TransactionsTableView = (props) => {
                                                 className={selected ? 'table-active' : ''}
                                             >
                                                 <td>#{item?.id}</td>
-                                                <td>
-                                                    {item?.amount} {item?.currency}
-                                                </td>
+                                                {props?.amountCondition && (
+                                                    <td>
+                                                        {item?.type != 'merchantOrderPayment' ? '-' : ''} {item?.amount} {item?.currency}
+                                                    </td>
+                                                )}
+                                                {!props?.amountCondition && (
+                                                    <td>
+                                                        {item?.amount} {item?.currency}
+                                                    </td>
+                                                )}
+
                                                 <td>
                                                     {item?.status && (
                                                         <span

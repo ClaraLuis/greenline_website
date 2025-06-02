@@ -88,13 +88,13 @@ const MerchantSettlement = (props) => {
                     <div class={generalstyles.card + ' m-0 row w-100 '}>
                         <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
                             <p class=" p-0 m-0" style={{ fontSize: '27px' }}>
-                                Merchant Settlement
+                                {queryParameters.get('merchant')}, Settlement
                             </p>
                         </div>
                         <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-end pb-2 '}>
                             <button
                                 onClick={() => {
-                                    window.open(chosenMerchantSettlemant.pdfUrl, '_blank');
+                                    window.open(queryParameters.get('pdf'), '_blank');
                                 }}
                                 class={generalstyles.roundbutton}
                             >
@@ -104,27 +104,30 @@ const MerchantSettlement = (props) => {
                     </div>
                 </div>{' '}
                 {isAuth([1, 51, 52, 122]) && (
-                    <div class={' row m-0 w-100'}>
-                        <div class="col-lg-12 p-0 mb-3">
-                            <Pagination
-                                beforeCursor={paginateSettlementTransactionsQuery?.data?.paginateSettlementTransactions?.cursor?.beforeCursor}
-                                afterCursor={paginateSettlementTransactionsQuery?.data?.paginateSettlementTransactions?.cursor?.afterCursor}
-                                filter={filterobj}
-                                setfilter={setfilterobj}
-                            />
-                        </div>
-                        {paginateSettlementTransactionsQuery?.data?.paginateSettlementTransactions && (
-                            <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
-                                <TransactionsTableView
-                                    width={'50%'}
-                                    query={paginateSettlementTransactionsQuery}
-                                    paginationAttr="paginateSettlementTransactions"
-                                    allowAction={false}
-                                    hasOrder={true}
-                                    // srctype="courierCollection"
+                    <div class="col-lg-12 px-3">
+                        <div class={generalstyles.card + ' m-0 row w-100 '}>
+                            <div class="col-lg-12 p-0 mb-3">
+                                <Pagination
+                                    beforeCursor={paginateSettlementTransactionsQuery?.data?.paginateSettlementTransactions?.cursor?.beforeCursor}
+                                    afterCursor={paginateSettlementTransactionsQuery?.data?.paginateSettlementTransactions?.cursor?.afterCursor}
+                                    filter={filterobj}
+                                    setfilter={setfilterobj}
                                 />
                             </div>
-                        )}
+                            {paginateSettlementTransactionsQuery?.data?.paginateSettlementTransactions && (
+                                <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
+                                    <TransactionsTableView
+                                        width={'50%'}
+                                        query={paginateSettlementTransactionsQuery}
+                                        amountCondition={true}
+                                        paginationAttr="paginateSettlementTransactions"
+                                        allowAction={false}
+                                        hasOrder={true}
+                                        // srctype="courierCollection"
+                                    />
+                                </div>
+                            )}
+                        </div>
                     </div>
                 )}
             </div>

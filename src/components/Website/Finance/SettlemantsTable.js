@@ -57,7 +57,9 @@ const SettlemantsTable = (props) => {
                             <div className="col-lg-4">
                                 <div class={generalstyles.card + ' p-3 row m-0 w-100 allcentered'}>
                                     <div className="col-lg-6 p-0">
-                                        <span style={{ fontSize: '12px', color: 'grey' }}># {item?.id}</span>
+                                        <span style={{ fontSize: '12px', color: 'grey' }}>
+                                            # {item?.id},{item?.merchant?.name}
+                                        </span>
                                     </div>
                                     <div className="col-lg-6 p-0 d-flex justify-content-end align-items-center">
                                         <div class="row m-0 w-100 d-flrx justify-content-end align-items-center"></div>
@@ -91,7 +93,7 @@ const SettlemantsTable = (props) => {
                                             <button
                                                 onClick={() => {
                                                     setchosenMerchantSettlemant(item);
-                                                    history.push('/merchantsettlement?id=' + item.id);
+                                                    history.push('/merchantsettlement?id=' + item.id + '&merchant=' + item?.merchant?.name + '&pdf=' + item?.pdfUrl);
                                                 }}
                                                 class={generalstyles.roundbutton}
                                             >

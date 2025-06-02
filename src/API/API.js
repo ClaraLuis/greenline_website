@@ -8,7 +8,8 @@ import { getAuth, signOut } from 'firebase/auth';
 const API = () => {
     const cookies = new Cookies();
 
-    const { setUserInfoContext, UserInfoContext } = useContext(Contexthandlerscontext);
+    const { setUserInfoContext, UserInfoContext, ready } = useContext(Contexthandlerscontext);
+
     var accessToken =
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InNKa1lDeVFWOU5RREhEYVdLaUZHWmFZblY3UDIiLCJodWJJZCI6MSwiaW52ZW50b3J5SWQiOm51bGwsInR5cGUiOiJFbXBsb3llZSIsIm1lcmNoYW50SWQiOm51bGwsInJvbGVzIjpbMV0sImlhdCI6MTcxMjg0MTk2OSwiZXhwIjoxNzE2ODQzNzY5fQ.vb1L0BcnM0TeJiJmbmAlMm5EB7TVTBq4TCgw3r24x2w';
 
@@ -633,6 +634,9 @@ const API = () => {
                         pdfKey
                         createdAt
                         pdfUrl
+                        merchant {
+                            name
+                        }
                     }
                 }
             }
@@ -4281,28 +4285,19 @@ const API = () => {
     };
 
     const useLazyQueryGQL = (query, fetchPolicy) => {
-        // alert(JSON.stringify(fetchPolicy) + ' ' + JSON.stringify(query));
         const mutation = useLazyQuery(query, {
             fetchPolicy: fetchPolicy ?? 'network-only',
-            // context: {
-            //     headers: {
-            //         Authorization: ` Bearer ${accessToken}`,
-            //     },
-            // },
         });
         return mutation;
     };
+
     const useQueryGQL = (fetchPolicy, query, payload) => {
         return useQuery(query, {
             fetchPolicy: fetchPolicy?.length != 0 ? fetchPolicy : 'network-only',
             variables: {
                 input: payload,
             },
-            // context: {
-            //     headers: {
-            //         Authorization: `Bearer ${accessToken}`,
-            //     },
-            // },
+            skip: !ready,
         });
     };
     const fetchAllCountries = (axiosdata) => {
