@@ -171,7 +171,7 @@ const TransactionsTable = (props) => {
                                                     <div style={{ color: 'white' }} className={' wordbreak bg-primary rounded-pill font-weight-600 allcentered mx-1 text-capitalize'}>
                                                         {item?.type?.split(/(?=[A-Z])/).join(' ')}
                                                     </div>
-                                                    {item?.toAccount?.id == props?.accountId && (
+                                                    {item?.toAccount?.id == props?.accountId && props?.enableEdit != undefined && props?.enableEdit == true && (
                                                         <button
                                                             onClick={() => {
                                                                 if (props?.srctype == 'expenses' && !isAuth([1, 51, 24])) {

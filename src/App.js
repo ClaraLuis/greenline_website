@@ -204,7 +204,7 @@ const App = (props) => {
     let history = useHistory();
     const [nointernetconnection, setnointernetconnection] = useState(false);
 
-    const { loggedincontext, loggedincontextLoading } = useContext(Loggedincontext);
+    const { loggedincontext, loggedincontextLoading, setReady, ready } = useContext(Loggedincontext);
     window.addEventListener('offline', function (e) {
         setnointernetconnection(true);
     });
@@ -217,6 +217,22 @@ const App = (props) => {
         // alert();
     }, []);
 
+    // if (!ready) {
+    //     return (
+    //         <div style={{ height: '100vh' }} className="row w-100 allcentered m-0">
+    //             <div className="col-lg-12 p-0">
+    //                 <div className="row m-0 w-100">
+    //                     <div className="col-lg-12 p-0 d-flex allcentered">
+    //                         <img style={{ objectFit: 'contain', width: '15vh', height: '15vh' }} src={logo} />
+    //                     </div>
+    //                     <div className="col-lg-12 p-0 d-flex allcentered mt-3">
+    //                         <p className="font-weight-600">Loading...</p>
+    //                     </div>
+    //                 </div>
+    //             </div>
+    //         </div>
+    //     );
+    // }
     return (
         <ApolloProvider client={client}>
             <Contexthandlerscontext_provider>

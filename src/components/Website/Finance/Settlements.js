@@ -405,7 +405,7 @@ const Settlements = (props) => {
                                                                 return (
                                                                     <tr>
                                                                         <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
-                                                                            <p className={' m-0 p-0 wordbreak '}>{item?.id}</p>
+                                                                            <p className={' m-0 p-0 wordbreak '}>{item?.order?.id}</p>
                                                                         </td>
 
                                                                         <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>

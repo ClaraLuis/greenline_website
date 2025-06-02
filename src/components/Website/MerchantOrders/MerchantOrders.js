@@ -47,6 +47,7 @@ const MerchantOrders = (props) => {
         setpagetitle_context,
         updateQueryParamContext,
         useLoadQueryParamsToPayload,
+        ready,
     } = useContext(Contexthandlerscontext);
     const { fetchMerchants, useQueryGQL, useLazyQueryGQL, fetchOrders, fetchCouriers, fetchGovernorates, findAllZones, fetchHubs } = API();
 
@@ -110,10 +111,12 @@ const MerchantOrders = (props) => {
     }, [filterorders]);
 
     const refetchOrders = async () => {
-        var { data } = await fetchOrdersLazyQuey({
-            variables: { input: filterorders },
-        });
-        setfetchOrdersQuery({ data: data });
+        if (ready) {
+            var { data } = await fetchOrdersLazyQuey({
+                variables: { input: filterorders },
+            });
+            setfetchOrdersQuery({ data: data });
+        }
     };
     const exportToExcel = (data, fileName) => {
         const worksheet = XLSX.utils.json_to_sheet(data);

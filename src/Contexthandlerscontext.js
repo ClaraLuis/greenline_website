@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { FiUsers } from 'react-icons/fi';
 
 import { useMutation, useQuery } from 'react-query';
@@ -18,6 +18,7 @@ import { IoMdHome } from 'react-icons/io';
 import { FaMap } from 'react-icons/fa';
 import { PhoneNumberUtil } from 'google-libphonenumber';
 import { TbArrowsExchange, TbBuilding, TbBuildingStore, TbBuildingWarehouse, TbMoneybag, TbPackages, TbTruckDelivery } from 'react-icons/tb';
+import { Loggedincontext } from './Loggedincontext';
 export const Contexthandlerscontext = React.createContext();
 export const Contexthandlerscontext_provider = (props) => {
     let history = useHistory();
@@ -1088,34 +1089,38 @@ export const Contexthandlerscontext_provider = (props) => {
 
         const newSearch = searchParams.toString();
         const newPath = `${window.location.pathname}${newSearch ? '?' + newSearch : ''}`;
-        window.open(newPath, '_self'); // Replaces the current page without opening a new tab
+
+        // This updates the URL without reloading the page
+        window.history.replaceState(null, '', newPath);
     };
+    const [ready, setReady] = useState(false);
 
     function useLoadQueryParamsToPayload(setPayload) {
         useEffect(() => {
+            setReady(false); // Mark ready once params are loaded
+
             const searchParams = new URLSearchParams(window.location.search);
             const newPayload = {};
 
             for (const [key, value] of searchParams.entries()) {
                 try {
-                    // Try to parse as JSON
                     const parsed = JSON.parse(value);
                     newPayload[key] = parsed;
                 } catch (err) {
-                    // If it's not JSON, keep it as string
-
                     newPayload[key] = value;
                 }
             }
-            // alert(JSON.stringify(newPayload));
 
             setPayload((prev) => ({ ...prev, ...newPayload }));
+            setReady(true); // Mark ready once params are loaded
         }, [window.location.search, setPayload]);
     }
 
     return (
         <Contexthandlerscontext.Provider
             value={{
+                ready,
+                setReady,
                 useLoadQueryParamsToPayload,
                 updateQueryParamContext,
                 pagesarray_context,
