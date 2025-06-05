@@ -400,7 +400,7 @@ const UserInfo = (props) => {
                                     submit={submit}
                                     setsubmit={setsubmit}
                                     attr={
-                                        isAuth([52])
+                                        cookies.get('userInfo')?.permissions?.some((p) => p.permissionId === 52)
                                             ? [
                                                   { name: 'Name', attr: 'name', size: '6' },
 
