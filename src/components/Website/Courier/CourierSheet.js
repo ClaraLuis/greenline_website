@@ -180,7 +180,7 @@ const CourierSheet = (props) => {
         amountCollected: calculateAmountCollected(),
         description: statuspayload?.description,
         postponeDate: statuspayload?.postponeDate,
-        shippingCollected: statuspayload?.shippingCollected,
+        shippingCollected: statuspayload?.status === 'postponed' || statuspayload?.status === 'failedDeliveryAttempt' ? 'notCollected' : statuspayload?.shippingCollected,
         partialItems: statuspayload?.partialItems,
         returnOrderUpdateInput: statuspayload?.previousOrder
             ? {
@@ -2310,7 +2310,11 @@ const CourierSheet = (props) => {
                                             NotificationManager.warning('Enter Amount Collected.', 'Warning!');
                                             return;
                                         }
-                                        if (statuspayload?.shippingCollected?.length == 0 || !statuspayload?.shippingCollected) {
+                                        if (
+                                            (statuspayload?.shippingCollected?.length == 0 || !statuspayload?.shippingCollected) &&
+                                            statuspayload?.status !== 'postponed' &&
+                                            statuspayload?.status !== 'failedDeliveryAttempt'
+                                        ) {
                                             NotificationManager.warning('Enter Shipping.', 'Warning!');
                                             return;
                                         }
