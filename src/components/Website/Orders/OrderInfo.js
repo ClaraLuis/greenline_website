@@ -55,6 +55,7 @@ const OrderInfo = (props) => {
         buttonLoadingContext,
         setbuttonLoadingContext,
         setchosenPackageContext,
+        useLoadQueryParamsToPayload,
     } = useContext(Contexthandlerscontext);
     const {
         useQueryGQL,
@@ -259,6 +260,8 @@ const OrderInfo = (props) => {
         freeShipping: true,
         originalPrice: true,
     });
+    const [filterLoadQueryParamsToPayload, setfilterLoadQueryParamsToPayload] = useState({});
+    useLoadQueryParamsToPayload(setfilterLoadQueryParamsToPayload);
 
     const [requestOrderReturnMutation] = useMutationGQL(requestOrderReturn(), {
         orderId: parseInt(queryParameters.get('orderId')),
