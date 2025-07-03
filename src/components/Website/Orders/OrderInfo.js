@@ -332,7 +332,7 @@ const OrderInfo = (props) => {
     const [addOrderItemsMutation] = useMutationGQL(addOrderItems(), {
         orderId: parseInt(queryParameters?.get('orderId')),
         orderItems: itemsModal?.itemstobeadded ?? undefined,
-        keepCurrentPrice: true,
+        keepOriginalPrice: itemsModal?.keepOriginalPrice ?? false,
         newPrice: newPrice?.length ? newPrice : undefined,
     });
 
@@ -2193,15 +2193,59 @@ const OrderInfo = (props) => {
                 </Modal.Header>
                 <Modal.Body>
                     <div class="row m-0 w-100 py-2">
+                        <div class="col-lg-12 p-0">
+                            <div class="row m-0 w-100">
+                                {chosenOrderContext?.originalPrice == true && (
+                                    <div className="col-lg-3 p-0 mb-2 d-flex align-items-center ">
+                                        <div className="row m-0 w-100 d-flex ">
+                                            <label className={`${formstyles.switch}  my-0`}>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={chosenOrderContext?.originalPrice == false ? false : itemsModal?.keepOriginalPrice}
+                                                    onChange={(e) => {
+                                                        e.stopPropagation();
+                                                        setitemsModal({
+                                                            ...itemsModal,
+                                                            keepOriginalPrice: itemsModal?.keepOriginalPrice ? false : true,
+                                                        });
+                                                    }}
+                                                />
+                                                <span className={`${formstyles.slider} ${formstyles.round}`}></span>
+                                            </label>
+                                            <p className={`${generalstyles.checkbox_label} mb-0 text-focus text-capitalize cursor-pointer font_14 ml-2 mr-2 wordbreak`}>Keep Original Price</p>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {(!itemsModal?.keepOriginalPrice || chosenOrderContext?.originalPrice == false) && (
+                                    <div class={'col-lg-9 p-0 mb-2'}>
+                                        <label style={{ fontSize: '1.8vh' }} class="m-0 mb-2">
+                                            New Price
+                                        </label>
+                                        <Inputfield
+                                            hideLabel={true}
+                                            placeholder={'price'}
+                                            value={newPrice}
+                                            onChange={(event) => {
+                                                setnewPrice(event.target.value);
+                                            }}
+                                            type={'number'}
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
                         <div class="col-lg-6 p-0 mb-3">
                             <button
                                 class={generalstyles.roundbutton}
                                 onClick={async () => {
-                                    if (chosenOrderContext?.originalPrice == false) {
-                                        setorderLogsModal({ open: true, type: 'price', func: 'additems' });
+                                    if ((chosenOrderContext?.originalPrice == false || itemsModal?.keepOriginalPrice == false || itemsModal?.keepOriginalPrice == undefined) && !newPrice?.length) {
+                                        NotificationManager.warning('Price is maindatory', 'Warning');
                                         return;
                                     }
                                     addOrderItemsFunc();
+                                    // setorderLogsModal({ open: true, type: 'price', func: 'additems' });
                                 }}
                             >
                                 {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
