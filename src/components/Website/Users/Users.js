@@ -295,6 +295,7 @@ const Users = (props) => {
                         <>
                             <div class="col-lg-12 p-0 mb-2">
                                 <Pagination
+                                    total={fetchusers?.data?.paginateUsers?.totalCount}
                                     beforeCursor={fetchusers?.data?.paginateUsers?.cursor?.beforeCursor}
                                     afterCursor={fetchusers?.data?.paginateUsers?.cursor?.afterCursor}
                                     filter={filterUsers}

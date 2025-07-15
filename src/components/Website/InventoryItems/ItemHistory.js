@@ -325,6 +325,7 @@ const ItemHistory = (props) => {
                 <div class="col-lg-12 px-3">
                     <div class="col-lg-12 p-0 mb-2">
                         <Pagination
+                            total={fetchItemHistoryQuery?.paginateItemHistory?.totalCount}
                             beforeCursor={fetchItemHistoryQuery?.paginateItemHistory?.cursor?.beforeCursor}
                             afterCursor={fetchItemHistoryQuery?.paginateItemHistory?.cursor?.afterCursor}
                             filter={fetchItemHistoryfilter}

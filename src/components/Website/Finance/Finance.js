@@ -344,6 +344,7 @@ const Finance = (props) => {
                             {/* )} */}
                             <div class="col-lg-12 p-0 mb-3">
                                 <Pagination
+                                    total={fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.totalCount}
                                     beforeCursor={fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.cursor?.beforeCursor}
                                     afterCursor={fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.cursor?.afterCursor}
                                     filter={filterobj}

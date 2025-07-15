@@ -11,6 +11,7 @@ import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import API from '../../../API/API.js';
+import { AiOutlineClose } from 'react-icons/ai';
 
 import { FiCheckCircle, FiCircle } from 'react-icons/fi';
 import { NotificationManager } from 'react-notifications';
@@ -21,6 +22,7 @@ import OrdersTable from '../Orders/OrdersTable.js';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
 import Select, { components } from 'react-select';
+import Inputfield from '../../Inputfield.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -209,6 +211,120 @@ const ActionCenter = (props) => {
                                                     />
                                                 </div>
                                             </div>
+                                            <div class="col-lg-3">
+                                                <Inputfield
+                                                    placeholder={'Order Ids'}
+                                                    onKeyDown={(e) => {
+                                                        if (e.key == 'Enter' && e.target.value?.length != 0) {
+                                                            var exists = filterorders?.orderIds?.includes(parseInt(e?.target?.value));
+                                                            if (exists) {
+                                                                NotificationManager.warning('', 'Already exists');
+                                                            } else {
+                                                                var temp = [...(filterorders?.orderIds ?? [])];
+                                                                temp.push(parseInt(e.target.value));
+                                                                setfilterorders({
+                                                                    ...filterorders,
+                                                                    orderIds: temp,
+                                                                });
+                                                                updateQueryParamContext('orderIds', temp);
+
+                                                                e.target.value = '';
+                                                            }
+                                                        }
+                                                    }}
+                                                    type={'number'}
+                                                />
+                                                <div class="col-lg-12 p-0">
+                                                    <div class="row m-0 w-100 scrollmenuclasssubscrollbar" style={{ overflow: 'scroll', flexWrap: 'nowrap' }}>
+                                                        {filterorders?.orderIds?.map((orderItem, orderIndex) => {
+                                                            return (
+                                                                <div
+                                                                    style={{
+                                                                        background: '#ECECEC',
+                                                                        padding: '5px 10px',
+                                                                        cursor: 'pointer',
+                                                                        borderRadius: '8px',
+                                                                        justifyContent: 'space-between',
+                                                                        width: 'fit-content',
+                                                                        fontSize: '11px',
+                                                                        minWidth: 'fit-content',
+                                                                    }}
+                                                                    className="d-flex align-items-center mr-2 mb-1"
+                                                                    onClick={() => {
+                                                                        var temp = filterorders.orderIds ?? [];
+                                                                        temp.splice(orderIndex, 1);
+                                                                        setfilterorders({
+                                                                            ...filterorders,
+                                                                            orderIds: temp?.length != 0 ? temp : undefined,
+                                                                        });
+                                                                        updateQueryParamContext('orderIds', temp?.length != 0 ? temp : undefined);
+                                                                    }}
+                                                                >
+                                                                    {orderItem}
+                                                                    <AiOutlineClose size={12} color="#6C757D" className="ml-2" />
+                                                                </div>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <Inputfield
+                                                    placeholder={'Mercnant Ids'}
+                                                    onKeyDown={(e) => {
+                                                        if (e.key == 'Enter' && e.target.value?.length != 0) {
+                                                            var exists = filterorders?.MerchantIds?.includes(parseInt(e?.target?.value));
+                                                            if (exists) {
+                                                                NotificationManager.warning('', 'Already exists');
+                                                            } else {
+                                                                var temp = [...(filterorders?.MerchantIds ?? [])];
+                                                                temp.push(parseInt(e.target.value));
+                                                                setfilterorders({
+                                                                    ...filterorders,
+                                                                    MerchantIds: temp,
+                                                                });
+                                                                updateQueryParamContext('MerchantIds', temp);
+
+                                                                e.target.value = '';
+                                                            }
+                                                        }
+                                                    }}
+                                                    type={'number'}
+                                                />
+                                                <div class="col-lg-12 p-0">
+                                                    <div class="row m-0 w-100 scrollmenuclasssubscrollbar" style={{ overflow: 'scroll', flexWrap: 'nowrap' }}>
+                                                        {filterorders?.MerchantIds?.map((orderItem, orderIndex) => {
+                                                            return (
+                                                                <div
+                                                                    style={{
+                                                                        background: '#ECECEC',
+                                                                        padding: '5px 10px',
+                                                                        cursor: 'pointer',
+                                                                        borderRadius: '8px',
+                                                                        justifyContent: 'space-between',
+                                                                        width: 'fit-content',
+                                                                        fontSize: '11px',
+                                                                        minWidth: 'fit-content',
+                                                                    }}
+                                                                    className="d-flex align-items-center mr-2 mb-1"
+                                                                    onClick={() => {
+                                                                        var temp = filterorders.MerchantIds ?? [];
+                                                                        temp.splice(orderIndex, 1);
+                                                                        setfilterorders({
+                                                                            ...filterorders,
+                                                                            MerchantIds: temp?.length != 0 ? temp : undefined,
+                                                                        });
+                                                                        updateQueryParamContext('MerchantIds', temp?.length != 0 ? temp : undefined);
+                                                                    }}
+                                                                >
+                                                                    {orderItem}
+                                                                    <AiOutlineClose size={12} color="#6C757D" className="ml-2" />
+                                                                </div>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </AccordionItemPanel>
                                 </AccordionItem>
@@ -327,6 +443,7 @@ const ActionCenter = (props) => {
 
                         <div class="col-lg-12 p-0 mb-2">
                             <Pagination
+                                total={paginateUnresolvedOrdersQuery?.data?.paginateUnresolvedOrders?.totalCount}
                                 beforeCursor={paginateUnresolvedOrdersQuery?.data?.paginateUnresolvedOrders?.cursor?.beforeCursor}
                                 afterCursor={paginateUnresolvedOrdersQuery?.data?.paginateUnresolvedOrders?.cursor?.afterCursor}
                                 filter={filterorders}
@@ -344,6 +461,7 @@ const ActionCenter = (props) => {
                         </div>
                         <div class="col-lg-12 p-0">
                             <Pagination
+                                total={paginateUnresolvedOrdersQuery?.data?.paginateUnresolvedOrders?.totalCount}
                                 beforeCursor={paginateUnresolvedOrdersQuery?.data?.paginateUnresolvedOrders?.cursor?.beforeCursor}
                                 afterCursor={paginateUnresolvedOrdersQuery?.data?.paginateUnresolvedOrders?.cursor?.afterCursor}
                                 filter={filterorders}

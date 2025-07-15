@@ -147,6 +147,7 @@ const InventoryReturns = (props) => {
                                 {' '}
                                 <div class="col-lg-12 p-0 mb-3">
                                     <Pagination
+                                        total={fetchInventoryItemReturnsQuery?.data?.paginateInventoryReturns?.totalCount}
                                         beforeCursor={fetchInventoryItemReturnsQuery?.data?.paginateInventoryReturns?.cursor?.beforeCursor}
                                         afterCursor={fetchInventoryItemReturnsQuery?.data?.paginateInventoryReturns?.cursor?.afterCursor}
                                         filter={filter}
@@ -177,6 +178,7 @@ const InventoryReturns = (props) => {
                                 />
                                 <div class="col-lg-12 p-0">
                                     <Pagination
+                                        total={fetchInventoryItemReturnsQuery?.data?.paginateInventoryReturns?.totalCount}
                                         beforeCursor={fetchInventoryItemReturnsQuery?.data?.paginateInventoryReturns?.cursor?.beforeCursor}
                                         afterCursor={fetchInventoryItemReturnsQuery?.data?.paginateInventoryReturns?.cursor?.afterCursor}
                                         filter={filter}

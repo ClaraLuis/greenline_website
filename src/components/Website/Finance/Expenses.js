@@ -265,6 +265,7 @@ const Expenses = (props) => {
                         <>
                             <div class="col-lg-12 p-0 mb-3">
                                 <Pagination
+                                    total={fetchExpensesQuery?.data?.paginateExpenses?.totalCount}
                                     beforeCursor={fetchExpensesQuery?.data?.paginateExpenses?.cursor?.beforeCursor}
                                     afterCursor={fetchExpensesQuery?.data?.paginateExpenses?.cursor?.afterCursor}
                                     filter={filterExpensesObj}

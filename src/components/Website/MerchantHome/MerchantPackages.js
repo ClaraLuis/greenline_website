@@ -264,6 +264,7 @@ const MerchantPackages = (props) => {
                             <>
                                 <div class="col-lg-12 p-0 mb-3">
                                     <Pagination
+                                        total={fetchPackagesQuery?.data?.paginateReturnPackages?.totalCount}
                                         beforeCursor={fetchPackagesQuery?.data?.paginateReturnPackages?.cursor?.beforeCursor}
                                         afterCursor={fetchPackagesQuery?.data?.paginateReturnPackages?.cursor?.afterCursor}
                                         filter={filter}
@@ -366,6 +367,7 @@ const MerchantPackages = (props) => {
                                 })}
                                 <div class="col-lg-12 p-0">
                                     <Pagination
+                                        total={fetchPackagesQuery?.data?.paginateReturnPackages?.totalCount}
                                         beforeCursor={fetchPackagesQuery?.data?.paginateReturnPackages?.cursor?.beforeCursor}
                                         afterCursor={fetchPackagesQuery?.data?.paginateReturnPackages?.cursor?.afterCursor}
                                         filter={filter}

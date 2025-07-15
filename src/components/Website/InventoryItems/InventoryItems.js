@@ -469,6 +469,7 @@ const InventoryItems = (props) => {
                                 <>
                                     <div class="col-lg-12 p-0 mb-2">
                                         <Pagination
+                                            total={fetchItemsInBoxQuery?.data?.paginateItemInBox?.totalCount}
                                             beforeCursor={fetchItemsInBoxQuery?.data?.paginateItemInBox?.cursor?.beforeCursor}
                                             afterCursor={fetchItemsInBoxQuery?.data?.paginateItemInBox?.cursor?.afterCursor}
                                             filter={filterItemInBox}

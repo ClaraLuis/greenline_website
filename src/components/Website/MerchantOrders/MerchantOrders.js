@@ -693,6 +693,7 @@ const MerchantOrders = (props) => {
 
                         <div class="col-lg-12 p-0 mb-2">
                             <Pagination
+                                total={fetchOrdersQuery?.data?.paginateOrders?.totalCount}
                                 beforeCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.beforeCursor}
                                 afterCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.afterCursor}
                                 filter={filterorders}
@@ -712,6 +713,7 @@ const MerchantOrders = (props) => {
                         </div>
                         <div class="col-lg-12 p-0">
                             <Pagination
+                                total={fetchOrdersQuery?.data?.paginateOrders?.totalCount}
                                 beforeCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.beforeCursor}
                                 afterCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.afterCursor}
                                 filter={filterorders}

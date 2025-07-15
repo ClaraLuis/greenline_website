@@ -253,6 +253,7 @@ const InventoryRent = (props) => {
                         </div>
                         <div class="col-lg-12 p-0 mb-3">
                             <Pagination
+                                total={paginateInventoryRentsQuery?.data?.paginateInventoryRents?.totalCount}
                                 beforeCursor={paginateInventoryRentsQuery?.data?.paginateInventoryRents?.cursor?.beforeCursor}
                                 afterCursor={paginateInventoryRentsQuery?.data?.paginateInventoryRents?.cursor?.afterCursor}
                                 filter={filter}
@@ -455,6 +456,7 @@ const InventoryRent = (props) => {
                         })}
                         <div class="col-lg-12 p-0">
                             <Pagination
+                                total={paginateInventoryRentsQuery?.data?.paginateInventoryRents?.totalCount}
                                 beforeCursor={paginateInventoryRentsQuery?.data?.paginateInventoryRents?.cursor?.beforeCursor}
                                 afterCursor={paginateInventoryRentsQuery?.data?.paginateInventoryRents?.cursor?.afterCursor}
                                 filter={filter}
@@ -700,6 +702,7 @@ const InventoryRent = (props) => {
                                 <div class="row m-0 w-100">
                                     <div class="col-lg-12 p-0 mb-3">
                                         <Pagination
+                                            total={fetchSenttTransactionsQuery?.data?.paginateInventoryRentTransaction?.totalCount}
                                             beforeCursor={fetchSenttTransactionsQuery?.data?.paginateInventoryRentTransaction?.cursor?.beforeCursor}
                                             afterCursor={fetchSenttTransactionsQuery?.data?.paginateInventoryRentTransaction?.cursor?.afterCursor}
                                             filter={filterSentTransactionsObj}
@@ -742,6 +745,7 @@ const InventoryRent = (props) => {
                                     })}
                                     <div class="col-lg-12 p-0 mb-3">
                                         <Pagination
+                                            total={fetchSenttTransactionsQuery?.data?.paginateInventoryRentTransaction?.totalCount}
                                             beforeCursor={fetchSenttTransactionsQuery?.data?.paginateInventoryRentTransaction?.cursor?.beforeCursor}
                                             afterCursor={fetchSenttTransactionsQuery?.data?.paginateInventoryRentTransaction?.cursor?.afterCursor}
                                             filter={filterSentTransactionsObj}

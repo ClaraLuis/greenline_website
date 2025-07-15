@@ -460,6 +460,7 @@ const FilesPopup = (props) => {
                                     </div>
                                     <div class="col-lg-12 p-0 mb-3">
                                         <Pagination
+                                            total={paginateFilesQuery?.data?.paginateFiles?.totalCount}
                                             beforeCursor={paginateFilesQuery?.data?.paginateFiles?.cursor?.beforeCursor}
                                             afterCursor={paginateFilesQuery?.data?.paginateFiles?.cursor?.afterCursor}
                                             filter={filterFiles}

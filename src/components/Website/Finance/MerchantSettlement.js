@@ -144,6 +144,7 @@ const MerchantSettlement = (props) => {
                         <div class={generalstyles.card + ' m-0 row w-100 '}>
                             <div class="col-lg-12 p-0 mb-3">
                                 <Pagination
+                                    total={paginateSettlementTransactionsQuery?.data?.paginateSettlementTransactions?.totalCount}
                                     beforeCursor={paginateSettlementTransactionsQuery?.data?.paginateSettlementTransactions?.cursor?.beforeCursor}
                                     afterCursor={paginateSettlementTransactionsQuery?.data?.paginateSettlementTransactions?.cursor?.afterCursor}
                                     filter={filterobj}
