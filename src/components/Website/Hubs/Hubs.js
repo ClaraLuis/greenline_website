@@ -29,7 +29,7 @@ const { ValueContainer, Placeholder } = components;
 const Hubs = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, dateformatter, isAuth } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, useLoadQueryParamsToPayload, isAuth } = useContext(Contexthandlerscontext);
     const { fetchHubs, useQueryGQL } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -57,6 +57,8 @@ const Hubs = (props) => {
     });
 
     const fetchHubsQuery = useQueryGQL('', fetchHubs(), filterHubs);
+    useLoadQueryParamsToPayload(setfilterHubs);
+
     useEffect(() => {
         setpageactive_context('/hubs');
         setpagetitle_context('Hubs');
@@ -110,6 +112,7 @@ const Hubs = (props) => {
                         <>
                             <div class="col-lg-12 p-0 mb-2">
                                 <Pagination
+                                    total={fetchHubsQuery?.data?.paginateHubs?.totalCount}
                                     beforeCursor={fetchHubsQuery?.data?.paginateHubs?.cursor?.beforeCursor}
                                     afterCursor={fetchHubsQuery?.data?.paginateHubs?.cursor?.afterCursor}
                                     filter={filterHubs}

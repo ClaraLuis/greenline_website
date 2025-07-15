@@ -22,7 +22,8 @@ const { ValueContainer, Placeholder } = components;
 const FinancialAccounts = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, isAuth, financialAccountTypeContext, setpagetitle_context, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, isAuth, financialAccountTypeContext, setpagetitle_context, buttonLoadingContext, setbuttonLoadingContext, useLoadQueryParamsToPayload } =
+        useContext(Contexthandlerscontext);
     const { fetchFinancialAccounts, useQueryGQL, fetchUsers, fetchMerchants, useMutationGQL, createFinancialAccount, updateFinancialAccount } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -52,6 +53,8 @@ const FinancialAccounts = (props) => {
     });
 
     const fetchFinancialAccountsQuery = useQueryGQL('', fetchFinancialAccounts(), filterobj);
+    useLoadQueryParamsToPayload(setfilterobj);
+
     // const fetchusers = [];
     useEffect(() => {
         setpageactive_context('/financialaccounts');
@@ -120,6 +123,7 @@ const FinancialAccounts = (props) => {
                     <div class={' row m-0 w-100'}>
                         <div class="col-lg-12 p-0 mb-3">
                             <Pagination
+                                total={fetchFinancialAccountsQuery?.data?.paginateFinancialAccounts?.totalCount}
                                 beforeCursor={fetchFinancialAccountsQuery?.data?.paginateFinancialAccounts?.cursor?.beforeCursor}
                                 afterCursor={fetchFinancialAccountsQuery?.data?.paginateFinancialAccounts?.cursor?.afterCursor}
                                 filter={filterobj}

@@ -28,7 +28,8 @@ const { ValueContainer, Placeholder } = components;
 const Merchants = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, inventoryRentTypeContext, chosenMerchantContext, isAuth, setpagetitle_context, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, inventoryRentTypeContext, chosenMerchantContext, isAuth, setpagetitle_context, buttonLoadingContext, setbuttonLoadingContext, useLoadQueryParamsToPayload } =
+        useContext(Contexthandlerscontext);
     const { useQueryGQL, useMutationGQL, addMerchant, fetchMerchants, fetchItemHistory, exportItem, createInventoryRent, updateInventoryRent } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -74,6 +75,8 @@ const Merchants = (props) => {
         afterCursor: undefined,
         beforeCursor: undefined,
     });
+    useLoadQueryParamsToPayload(setfilterMerchants);
+
     const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
     const { refetch: refetchMerchants } = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
     const [search, setSearch] = useState('');
@@ -181,6 +184,7 @@ const Merchants = (props) => {
                                 {' '}
                                 <div class="col-lg-12 mb-2 p-0">
                                     <Pagination
+                                        total={fetchMerchantsQuery?.data?.paginateMerchants?.totalCount}
                                         beforeCursor={fetchMerchantsQuery?.data?.paginateMerchants?.cursor?.beforeCursor}
                                         afterCursor={fetchMerchantsQuery?.data?.paginateMerchants?.cursor?.afterCursor}
                                         filter={filterMerchants}

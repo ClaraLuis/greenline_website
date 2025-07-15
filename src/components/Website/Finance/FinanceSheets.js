@@ -188,6 +188,7 @@ const FinanceSheets = (props) => {
                             {' '}
                             <div class="col-lg-12 p-0 mb-3">
                                 <Pagination
+                                    total={fetchSheetsQuery?.data?.paginateCourierSheets?.totalCount}
                                     beforeCursor={fetchSheetsQuery?.data?.paginateCourierSheets?.cursor?.beforeCursor}
                                     afterCursor={fetchSheetsQuery?.data?.paginateCourierSheets?.cursor?.afterCursor}
                                     filter={filter}

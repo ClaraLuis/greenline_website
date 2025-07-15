@@ -601,6 +601,7 @@ const AddOrder = (props) => {
                             </div>
                             <div class="col-lg-12 p-0 mb-3">
                                 <Pagination
+                                    total={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.totalCount}
                                     beforeCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.beforeCursor}
                                     afterCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.afterCursor}
                                     filter={filter}
@@ -674,6 +675,7 @@ const AddOrder = (props) => {
                             />
                             <div class="col-lg-12 p-0">
                                 <Pagination
+                                    total={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.totalCount}
                                     beforeCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.beforeCursor}
                                     afterCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.afterCursor}
                                     filter={filter}
@@ -1448,6 +1450,7 @@ const AddOrder = (props) => {
                                         </div>
                                         <div class="col-lg-12 p-0 mb-3">
                                             <Pagination
+                                                total={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.totalCount}
                                                 beforeCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.beforeCursor}
                                                 afterCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.afterCursor}
                                                 filter={filter}
@@ -1521,6 +1524,7 @@ const AddOrder = (props) => {
                                         />
                                         <div class="col-lg-12 p-0">
                                             <Pagination
+                                                total={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.totalCount}
                                                 beforeCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.beforeCursor}
                                                 afterCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.afterCursor}
                                                 filter={filter}
@@ -1566,6 +1570,7 @@ const AddOrder = (props) => {
                                         </div>
                                         <div class="col-lg-12 p-0 mb-3">
                                             <Pagination
+                                                total={fetchOrdersQuery?.data?.paginateOrders?.totalCount}
                                                 beforeCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.beforeCursor}
                                                 afterCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.afterCursor}
                                                 filter={filterorders}
@@ -1658,6 +1663,7 @@ const AddOrder = (props) => {
                                         })}
                                         <div class="col-lg-12 p-0">
                                             <Pagination
+                                                total={fetchOrdersQuery?.data?.paginateOrders?.totalCount}
                                                 beforeCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.beforeCursor}
                                                 afterCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.afterCursor}
                                                 filter={filterorders}

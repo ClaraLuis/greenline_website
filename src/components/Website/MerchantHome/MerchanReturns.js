@@ -301,6 +301,7 @@ const MerchanReturns = (props) => {
                                 {' '}
                                 <div class="col-lg-12 p-0 mb-3">
                                     <Pagination
+                                        total={fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.totalCount}
                                         beforeCursor={fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.cursor?.beforeCursor}
                                         afterCursor={fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.cursor?.afterCursor}
                                         filter={filter}
@@ -330,6 +331,7 @@ const MerchanReturns = (props) => {
                                 />
                                 <div class="col-lg-12 p-0">
                                     <Pagination
+                                        total={fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.totalCount}
                                         beforeCursor={fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.cursor?.beforeCursor}
                                         afterCursor={fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.cursor?.afterCursor}
                                         filter={filter}

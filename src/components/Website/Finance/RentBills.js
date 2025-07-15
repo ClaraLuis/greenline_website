@@ -268,6 +268,7 @@ const RentBills = (props) => {
 
                                     <div class="col-lg-12 p-0 mb-3">
                                         <Pagination
+                                            total={fetchInventoryRentBillsQuery?.data?.paginateInventoryRentBills?.totalCount}
                                             beforeCursor={fetchInventoryRentBillsQuery?.data?.paginateInventoryRentBills?.cursor?.beforeCursor}
                                             afterCursor={fetchInventoryRentBillsQuery?.data?.paginateInventoryRentBills?.cursor?.afterCursor}
                                             filter={filterobj}

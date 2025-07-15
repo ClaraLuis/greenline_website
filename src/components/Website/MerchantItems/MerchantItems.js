@@ -763,7 +763,8 @@ keep data consistent.</span></p>
   `;
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, setpagetitle_context, dateformatter, setimportedDataContext, isAuth, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, setpagetitle_context, dateformatter, setimportedDataContext, isAuth, buttonLoadingContext, setbuttonLoadingContext, useLoadQueryParamsToPayload } =
+        useContext(Contexthandlerscontext);
     const { fetchMerchantItems, useQueryGQL, useMutationNoInputGQL, uploadExcelFile, addCompoundItem, fetchMerchants } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
@@ -784,6 +785,7 @@ keep data consistent.</span></p>
         merchantId: parseInt(cookies.get('merchantId')),
     });
     const fetchMerchantItemsQuery = useQueryGQL('', fetchMerchantItems(), payload);
+    useLoadQueryParamsToPayload(setPayload);
 
     const { refetch: refetchItems } = useQueryGQL('', fetchMerchantItems(), payload);
     const [uploadExcelFileMutation] = useMutationNoInputGQL(uploadExcelFile(), { base64File: csvFile });
@@ -965,6 +967,7 @@ keep data consistent.</span></p>
                         {/* <div class={generalstyles.card + ' row m-0 w-100'}> */}
                         <div class="col-lg-12 mb-2 p-0 mb-3">
                             <Pagination
+                                total={fetchMerchantItemsQuery?.data?.paginateItems?.totalCount}
                                 beforeCursor={fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.beforeCursor}
                                 afterCursor={fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.afterCursor}
                                 filter={payload}
@@ -976,6 +979,7 @@ keep data consistent.</span></p>
                         </div>
                         <div class="col-lg-12 p-0">
                             <Pagination
+                                total={fetchMerchantItemsQuery?.data?.paginateItems?.totalCount}
                                 beforeCursor={fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.beforeCursor}
                                 afterCursor={fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.afterCursor}
                                 filter={payload}

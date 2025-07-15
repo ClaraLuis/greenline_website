@@ -355,6 +355,7 @@ const CourierCollection = (props) => {
 
                                     <div class="col-lg-12 p-0 mb-3">
                                         <Pagination
+                                            total={fetchCourierCollectionTransactionsQuery?.data?.paginateCourierCollectionTransactions?.totalCount}
                                             beforeCursor={fetchCourierCollectionTransactionsQuery?.data?.paginateCourierCollectionTransactions?.cursor?.beforeCursor}
                                             afterCursor={fetchCourierCollectionTransactionsQuery?.data?.paginateCourierCollectionTransactions?.cursor?.afterCursor}
                                             filter={filterobj}

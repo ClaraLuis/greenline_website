@@ -599,6 +599,7 @@ const API = () => {
                         name
                     }
                     cursor
+                    totalCount
                 }
             }
         `;
@@ -616,6 +617,7 @@ const API = () => {
                         createdAt
                     }
                     cursor
+                    totalCount
                 }
             }
         `;
@@ -659,6 +661,7 @@ const API = () => {
                         }
                     }
                     cursor
+                    totalCount
                 }
             }
         `;
@@ -678,6 +681,7 @@ const API = () => {
                         lastModified
                     }
                     cursor
+                    totalCount
                 }
             }
         `;
@@ -713,6 +717,7 @@ const API = () => {
                         }
                     }
                     cursor
+                    totalCount
                 }
             }
         `;
@@ -789,6 +794,7 @@ const API = () => {
                         }
                     }
                     cursor
+                    totalCount
                 }
             }
         `;
@@ -813,6 +819,7 @@ const API = () => {
                         }
                     }
                     cursor
+                    totalCount
                 }
             }
         `;
@@ -907,6 +914,7 @@ const API = () => {
                         }
                     }
                     cursor
+                    totalCount
                 }
             }
         `;
@@ -928,6 +936,7 @@ const API = () => {
                         }
                     }
                     cursor
+                    totalCount
                 }
             }
         `;
@@ -1069,6 +1078,7 @@ const API = () => {
                         }
                     }
                     cursor
+                    totalCount
                 }
             }
         `;
@@ -1199,6 +1209,7 @@ const API = () => {
                         }
                     }
                     cursor
+                    totalCount
                 }
             }
         `;
@@ -1322,6 +1333,7 @@ const API = () => {
                         }
                     }
                     cursor
+                    totalCount
                 }
             }
         `;
@@ -1355,6 +1367,7 @@ const API = () => {
                             country
                         }
                     }
+                    totalCount
                     cursor
                 }
             }
@@ -1399,6 +1412,7 @@ const API = () => {
                             }
                         }
                     }
+                    totalCount
                     cursor
                 }
             }
@@ -1415,6 +1429,7 @@ const API = () => {
                         email
                         phone
                     }
+                    totalCount
                     cursor
                 }
             }
@@ -1434,6 +1449,7 @@ const API = () => {
                         lastModified
                         deletedAt
                     }
+                    totalCount
                     cursor
                 }
             }
@@ -1459,6 +1475,7 @@ const API = () => {
                             lastModified
                         }
                     }
+                    totalCount
                     cursor
                 }
             }
@@ -2257,6 +2274,7 @@ const API = () => {
                         }
                     }
                     cursor
+                    totalCount
                 }
             }
         `;
@@ -2398,6 +2416,7 @@ const API = () => {
                         lastModified
                     }
                     cursor
+                    totalCount
                 }
             }
         `;
@@ -2526,6 +2545,7 @@ const API = () => {
                         deliveryPart
                     }
                     cursor
+                    totalCount
                 }
             }
         `;
@@ -2599,6 +2619,7 @@ const API = () => {
                         createdAt
                     }
                     cursor
+                    totalCount
                 }
             }
         `;
@@ -2640,6 +2661,7 @@ const API = () => {
                         }
                     }
                     cursor
+                    totalCount
                 }
             }
         `;
@@ -2663,6 +2685,7 @@ const API = () => {
                     }
 
                     cursor
+                    totalCount
                 }
             }
         `;
@@ -2681,7 +2704,7 @@ const API = () => {
                         lastModified
                         deletedAt
                     }
-
+                    totalCount
                     cursor
                 }
             }
@@ -2696,7 +2719,7 @@ const API = () => {
                         id
                         name
                     }
-
+                    totalCount
                     cursor
                 }
             }
@@ -2770,6 +2793,7 @@ const API = () => {
                         }
                         createdAt
                     }
+                    totalCount
                     cursor
                 }
             }
@@ -2812,6 +2836,7 @@ const API = () => {
                             buildingNumber
                         }
                     }
+                    totalCount
                     cursor
                 }
             }
@@ -2832,6 +2857,7 @@ const API = () => {
                             customerId
                         }
                     }
+                    totalCount
                     cursor
                 }
             }
@@ -2872,6 +2898,7 @@ const API = () => {
                         }
                         createdAt
                     }
+                    totalCount
                     cursor
                 }
             }
@@ -2891,6 +2918,7 @@ const API = () => {
                         comment
                         createdAt
                     }
+                    totalCount
                     cursor
                 }
             }
@@ -3002,6 +3030,7 @@ const API = () => {
                             customerName
                         }
                     }
+                    totalCount
                     cursor
                 }
             }
@@ -3021,6 +3050,7 @@ const API = () => {
                         balance
                         createdAt
                     }
+                    totalCount
                     cursor
                 }
             }
@@ -3189,6 +3219,7 @@ const API = () => {
                         }
                     }
                     cursor
+                    totalCount
                 }
             }
         `;
@@ -4059,6 +4090,7 @@ const API = () => {
                         createdAt
                     }
                     cursor
+                    totalCount
                 }
             }
         `;
@@ -4120,6 +4152,7 @@ const API = () => {
                         createdAt
                     }
                     cursor
+                    totalCount
                 }
             }
         `;
@@ -4207,6 +4240,7 @@ const API = () => {
                         createdAt
                     }
                     cursor
+                    totalCount
                 }
             }
         `;
@@ -4271,6 +4305,7 @@ const API = () => {
                         createdAt
                     }
                     cursor
+                    totalCount
                 }
             }
         `;

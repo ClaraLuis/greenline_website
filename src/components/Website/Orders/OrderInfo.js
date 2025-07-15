@@ -2254,6 +2254,7 @@ const OrderInfo = (props) => {
                         </div>
                         <div class="col-lg-6 p-0 mb-3">
                             <Pagination
+                                total={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.totalCount}
                                 beforeCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.beforeCursor}
                                 afterCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.afterCursor}
                                 filter={filter}

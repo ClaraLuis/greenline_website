@@ -174,6 +174,7 @@ const MerchantReturnPackageInfo = (props) => {
                             />
                             <div class="col-lg-12 p-0">
                                 <Pagination
+                                    total={paginateReturnPackageHistoryQuery?.data?.paginateReturnPackageHistory?.totalCount}
                                     beforeCursor={fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.cursor?.beforeCursor}
                                     afterCursor={fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.cursor?.afterCursor}
                                     filter={filter}
@@ -250,6 +251,7 @@ const MerchantReturnPackageInfo = (props) => {
                             {paginateReturnPackageHistoryQuery?.data?.paginateReturnPackageHistory?.data?.length != 0 && (
                                 <div class="col-lg-12 p-0">
                                     <Pagination
+                                        total={paginateReturnPackageHistoryQuery?.data?.paginateReturnPackageHistory?.totalCount}
                                         beforeCursor={paginateReturnPackageHistoryQuery?.data?.paginateReturnPackageHistory?.data?.beforeCursor}
                                         afterCursor={paginateReturnPackageHistoryQuery?.data?.paginateReturnPackageHistory?.data?.afterCursor}
                                         filter={filterordershistory}

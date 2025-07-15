@@ -153,6 +153,7 @@ const MerchantSettlements = (props) => {
                     <div class={' row m-0 w-100'}>
                         <div class="col-lg-12 p-0 mb-3">
                             <Pagination
+                                total={paginateMerchantSettlementsQuery?.data?.paginateMerchantSettlements?.totalCount}
                                 beforeCursor={paginateMerchantSettlementsQuery?.data?.paginateMerchantSettlements?.cursor?.beforeCursor}
                                 afterCursor={paginateMerchantSettlementsQuery?.data?.paginateMerchantSettlements?.cursor?.afterCursor}
                                 filter={filterobj}

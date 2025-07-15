@@ -225,6 +225,7 @@ const ImportNewItem = (props) => {
                         </div>
                         <div class="col-lg-12 p-0">
                             <Pagination
+                                total={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.totalCount}
                                 beforeCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.beforeCursor}
                                 afterCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.afterCursor}
                                 filter={merchantFilter}
@@ -245,6 +246,7 @@ const ImportNewItem = (props) => {
                         </div>
                         <div class="col-lg-12 p-0">
                             <Pagination
+                                total={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.totalCount}
                                 beforeCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.beforeCursor}
                                 afterCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.afterCursor}
                                 filter={merchantFilter}

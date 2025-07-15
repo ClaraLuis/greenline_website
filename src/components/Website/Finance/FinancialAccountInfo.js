@@ -230,6 +230,7 @@ const FinancialAccountInfo = (props) => {
                                     <>
                                         <div class="col-lg-12 p-0">
                                             <Pagination
+                                                total={fetchSenttTransactionsQuery?.data?.paginateFinancialTransaction?.totalCount}
                                                 beforeCursor={fetchSenttTransactionsQuery?.data?.paginateFinancialTransaction?.cursor?.beforeCursor}
                                                 afterCursor={fetchSenttTransactionsQuery?.data?.paginateFinancialTransaction?.cursor?.afterCursor}
                                                 filter={filterSentTransactionsObj}

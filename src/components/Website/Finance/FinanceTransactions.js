@@ -412,6 +412,7 @@ const FinanceTransactions = (props) => {
                         <>
                             <div class="col-lg-12 p-0 mb-3">
                                 <Pagination
+                                    total={fetchAllTransactionsQuery?.data?.paginateFinancialTransaction?.totalCount}
                                     beforeCursor={fetchAllTransactionsQuery?.data?.paginateFinancialTransaction?.cursor?.beforeCursor}
                                     afterCursor={fetchAllTransactionsQuery?.data?.paginateFinancialTransaction?.cursor?.afterCursor}
                                     filter={filterTransactionsObj}

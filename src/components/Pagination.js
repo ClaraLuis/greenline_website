@@ -16,14 +16,22 @@ const Pagination = (props) => {
                 <FormControl sx={{ minWidth: 65, maxHeight: 30 }} size="small">
                     <Select
                         style={{ height: 30 }}
-                        value={props?.filter?.limit}
+                        value={props?.filter?.limit || ''}
                         onChange={(event) => {
-                            props?.setfilter({ ...props?.filter, limit: event.target.value, beforeCursor: null, afterCursor: null });
+                            props?.setfilter({
+                                ...props?.filter,
+                                limit: event.target.value,
+                                beforeCursor: null,
+                                afterCursor: null,
+                            });
                         }}
+                        renderValue={(selected) => (props?.total ? `${selected >= props?.total ? props?.total : selected} of ${props?.total}` : `${selected}`)}
                     >
-                        {array?.map((item, index) => {
-                            return <MenuItem value={item}>{item}</MenuItem>;
-                        })}
+                        {array?.map((item, index) => (
+                            <MenuItem key={index} value={item}>
+                                {item}
+                            </MenuItem>
+                        ))}
                     </Select>
                 </FormControl>
             </div>
