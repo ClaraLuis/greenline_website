@@ -126,7 +126,7 @@ export class LanguageProvider extends Component {
                     contactpersonnumber: 'Contact person number',
                     streetname: 'Street name',
                     buildingnumber: 'Building number',
-                    apartmentnumber: 'Apartment number',
+                    apartmentNumber: 'Apartment number',
                     bio: 'Bio',
                     birthdate: 'Birth date',
                     female: 'Female',

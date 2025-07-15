@@ -128,7 +128,14 @@ const ReturnsTable = (props) => {
                                         </div>
                                     )} */}
                                     <div class="col-lg-12 py-2 px-3">
-                                        <span style={{ fontSize: '12px', color: 'grey' }}># {item?.id}</span>
+                                        <div class="row m-0 w-100">
+                                            <div class="col-lg-12 p-0 mb-1">
+                                                <span style={{ fontSize: '12px', color: 'grey' }}># {item?.id}</span>
+                                            </div>
+                                            <div class="col-lg-12 p-0">
+                                                <span style={{ fontSize: '12px' }}>{item?.merchant?.name}</span>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div className="col-lg-12 p-0 my-2">
                                         <hr className="m-0" />

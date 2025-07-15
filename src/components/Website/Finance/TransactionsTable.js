@@ -416,7 +416,7 @@ const TransactionsTable = (props) => {
                                                                 {item?.sheetOrder?.order?.address?.country}, {item?.sheetOrder?.order?.address?.city},{' '}
                                                                 <span style={{ fontWeight: 600, fontSize: '13px' }}>
                                                                     {item?.sheetOrder?.order?.address?.streetAddress}, Building {item?.sheetOrder?.order?.address?.buildingNumber}, Floor{' '}
-                                                                    {item?.sheetOrder?.order?.address?.apartmentFloor}
+                                                                    {item?.sheetOrder?.order?.address?.apartmentNumber}
                                                                 </span>
                                                             </span>
                                                         </div>

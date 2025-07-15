@@ -12,7 +12,9 @@ import API from '../../../API/API.js';
 import { IoMdClose } from 'react-icons/io';
 import { MdOutlineInventory2 } from 'react-icons/md';
 import Pagination from '../../Pagination.js';
+import { FiUser, FiUsers } from 'react-icons/fi';
 
+import { PiMotorcycleFill } from 'react-icons/pi';
 import Timeline from '@mui/lab/Timeline';
 import TimelineConnector from '@mui/lab/TimelineConnector';
 import TimelineContent from '@mui/lab/TimelineContent';
@@ -31,13 +33,12 @@ const ReturnPackageInfo = (props) => {
     const cookies = new Cookies();
     const [signaturemodal, setsignaturemodal] = useState(false);
 
-    const { setpageactive_context, chosenPackageContext, dateformatter, setchosenPackageContext, orderTypeContext } = useContext(Contexthandlerscontext);
+    const { useLoadQueryParamsToPayload, chosenPackageContext, dateformatter, setchosenPackageContext, orderTypeContext } = useContext(Contexthandlerscontext);
     const { useQueryGQL, useLazyQueryGQL, paginateReturnPackageHistory, fetchInventoryItemReturns, findOneReturnPackage, fetchOrdersInInventory, fetchOrderHistory, createInventoryRent } = API();
     const steps = ['Merchant Info', 'Shipping', 'Inventory Settings'];
     const [inventoryModal, setinventoryModal] = useState({ open: false, items: [] });
     const [outOfStock, setoutOfStock] = useState(false);
     const [diffInDays, setdiffInDays] = useState(0);
-
     const [filter, setfilter] = useState({
         limit: 20,
         isAsc: false,
@@ -51,50 +52,12 @@ const ReturnPackageInfo = (props) => {
         limit: 20,
         packageId: parseInt(queryParameters?.get('packageId')),
     });
+    useLoadQueryParamsToPayload(setfilterordershistory);
+
     const fetchInventoryItemReturnsQuery = useQueryGQL('', fetchInventoryItemReturns(), filter);
     // const fetchOrderHistoryQuery = useQueryGQL('', fetchOrderHistory(), filterordershistory);
     const paginateReturnPackageHistoryQuery = useQueryGQL('', paginateReturnPackageHistory(), filterordershistory);
     const [findOneReturnPackageLazyQuery] = useLazyQueryGQL(findOneReturnPackage());
-
-    const organizeInventory = (inventory) => {
-        const racks = {};
-
-        inventory.forEach((item) => {
-            const box = item.box;
-            const pallet = box.pallet;
-            const rack = pallet.rack;
-
-            const rackId = rack.id;
-            if (!racks[rackId]) {
-                racks[rackId] = {
-                    rack,
-                    pallets: {},
-                };
-            }
-
-            const palletId = pallet.id;
-            const palletLevel = pallet.level;
-            if (!racks[rackId].pallets[palletLevel]) {
-                racks[rackId].pallets[palletLevel] = {};
-            }
-
-            if (!racks[rackId].pallets[palletLevel][palletId]) {
-                racks[rackId].pallets[palletLevel][palletId] = {
-                    pallet,
-                    boxes: [],
-                };
-            }
-
-            racks[rackId].pallets[palletLevel][palletId].boxes.push({ box: box, count: item.count });
-        });
-
-        // Sort pallets within each rack by level
-        Object.values(racks).forEach((rack) => {
-            rack.pallets = Object.fromEntries(Object.entries(rack.pallets).sort(([levelA], [levelB]) => levelA - levelB));
-        });
-
-        return racks;
-    };
 
     const dateformatterDayAndMonth = (date) => {
         const d = new Date(date);
@@ -259,11 +222,19 @@ const ReturnPackageInfo = (props) => {
                                                     </TimelineSeparator>
                                                     <TimelineContent style={{ fontWeight: 600, color: 'black', textTransform: 'capitalize' }}>
                                                         {historyItem?.status.split(/(?=[A-Z])/).join(' ')}{' '}
+                                                        {cookies.get('userInfo')?.type != 'merchant' && (
+                                                            <span class="d-flex align-items-center" style={{ fontWeight: 400 }}>
+                                                                <FiUser class="mr-2" />
+                                                                {historyItem?.user?.name}
+                                                            </span>
+                                                        )}
                                                         {historyItem?.courier?.name && cookies.get('userInfo')?.type != 'merchant' && (
                                                             <>
-                                                                {' '}
-                                                                <br />
-                                                                <span style={{ fontWeight: 400 }}>{historyItem?.courier?.name}</span>
+                                                                <span class="d-flex align-items-center" style={{ fontWeight: 400 }}>
+                                                                    <PiMotorcycleFill class="mr-2" />
+
+                                                                    {historyItem?.courier?.name}
+                                                                </span>
                                                             </>
                                                         )}
                                                     </TimelineContent>

@@ -89,7 +89,7 @@ const UpdateMerchant = (props) => {
                       country: addresspayload?.country,
                       city: addresspayload?.city,
                       buildingNumber: addresspayload?.buildingNumber,
-                      apartmentFloor: addresspayload?.apartmentFloor,
+                      apartmentNumber: addresspayload?.apartmentNumber,
                       streetAddress: addresspayload?.streetAddress,
                       zoneId: addresspayload?.zoneId,
                       governorateId:
@@ -127,7 +127,7 @@ const UpdateMerchant = (props) => {
                     country: data?.findOneMerchant?.address?.country,
                     city: data?.findOneMerchant?.address?.city,
                     buildingNumber: data?.findOneMerchant?.address?.buildingNumber,
-                    apartmentFloor: data?.findOneMerchant?.address?.apartmentFloor,
+                    apartmentNumber: data?.findOneMerchant?.address?.apartmentNumber,
                     streetAddress: data?.findOneMerchant?.address?.streetAddress,
                     ownerName: data?.findOneMerchant?.owner?.name,
                     ownerPhone: data?.findOneMerchant?.owner?.phone,
@@ -138,7 +138,7 @@ const UpdateMerchant = (props) => {
                     country: data?.findOneMerchant?.address?.country ?? 'Egypt',
                     city: data?.findOneMerchant?.address?.city,
                     buildingNumber: data?.findOneMerchant?.address?.buildingNumber,
-                    apartmentFloor: data?.findOneMerchant?.address?.apartmentFloor,
+                    apartmentNumber: data?.findOneMerchant?.address?.apartmentNumber,
                     streetAddress: data?.findOneMerchant?.address?.streetAddress,
                 });
             }
@@ -177,7 +177,7 @@ const UpdateMerchant = (props) => {
                     country: data?.findOneMerchant?.address?.country,
                     city: data?.findOneMerchant?.address?.city,
                     buildingNumber: data?.findOneMerchant?.address?.buildingNumber,
-                    apartmentFloor: data?.findOneMerchant?.address?.apartmentFloor,
+                    apartmentNumber: data?.findOneMerchant?.address?.apartmentNumber,
                     streetAddress: data?.findOneMerchant?.address?.streetAddress,
                     ownerName: data?.findOneMerchant?.owner?.name,
                     ownerPhone: data?.findOneMerchant?.owner?.phone,
@@ -188,7 +188,7 @@ const UpdateMerchant = (props) => {
                     country: data?.findOneMerchant?.address?.country ?? 'Egypt',
                     city: data?.findOneMerchant?.address?.city,
                     buildingNumber: data?.findOneMerchant?.address?.buildingNumber,
-                    apartmentFloor: data?.findOneMerchant?.address?.apartmentFloor,
+                    apartmentNumber: data?.findOneMerchant?.address?.apartmentNumber,
                     streetAddress: data?.findOneMerchant?.address?.streetAddress,
                 });
             }
@@ -282,8 +282,6 @@ const UpdateMerchant = (props) => {
                                                         <div class={`${formstyles.form__group} ${formstyles.field}`}>
                                                             <label class={formstyles.form__label}>Currency</label>
                                                             <Select
-
-                                                            
                                                                 options={[
                                                                     { label: 'EGP', value: 'EGP' },
                                                                     { label: 'USD', value: 'USD' },
@@ -547,7 +545,7 @@ const UpdateMerchant = (props) => {
                                                                               optionLabel: 'name',
                                                                           },
                                                                           { name: 'Building Number', attr: 'buildingNumber', size: '6' },
-                                                                          { name: 'Apartment Floor', attr: 'apartmentFloor', size: '6' },
+                                                                          { name: 'Apartment Floor', attr: 'apartmentNumber', size: '6' },
                                                                           { name: 'Street Address', attr: 'streetAddress', type: 'textarea', size: '12' },
                                                                       ]
                                                                     : [
@@ -583,7 +581,7 @@ const UpdateMerchant = (props) => {
                                                                               optionLabel: 'name',
                                                                           },
                                                                           { name: 'Building Number', attr: 'buildingNumber', size: '6' },
-                                                                          { name: 'Apartment Floor', attr: 'apartmentFloor', size: '6' },
+                                                                          { name: 'Apartment Floor', attr: 'apartmentNumber', size: '6' },
                                                                           { name: 'Street Address', attr: 'streetAddress', type: 'textarea', size: '12' },
                                                                       ]
                                                             }
@@ -626,7 +624,7 @@ const UpdateMerchant = (props) => {
 
                                                                                                 <div class="col-lg-12">
                                                                                                     Building: <span style={{ fontWeight: 600 }}>{item?.address?.buildingNumber}</span>, Floor:{' '}
-                                                                                                    <span style={{ fontWeight: 600 }}>{item?.address?.apartmentFloor}</span>
+                                                                                                    <span style={{ fontWeight: 600 }}>{item?.address?.apartmentNumber}</span>
                                                                                                 </div>
 
                                                                                                 <div class="col-lg-12">
@@ -670,7 +668,7 @@ const UpdateMerchant = (props) => {
                                                                                                     Building Number: <span style={{ fontWeight: 600 }}>{item?.address?.buildingNumber}</span>
                                                                                                 </div>
                                                                                                 <div class="col-lg-12">
-                                                                                                    Floor: <span style={{ fontWeight: 600 }}>{item?.address?.apartmentFloor}</span>
+                                                                                                    Floor: <span style={{ fontWeight: 600 }}>{item?.address?.apartmentNumber}</span>
                                                                                                 </div>
 
                                                                                                 <div class="col-lg-12">
@@ -706,7 +704,7 @@ const UpdateMerchant = (props) => {
                                                                                     country: addresspayload?.country,
                                                                                     streetAddress: addresspayload?.streetAddress,
                                                                                     buildingNumber: addresspayload?.buildingNumber,
-                                                                                    apartmentFloor: addresspayload?.apartmentFloor,
+                                                                                    apartmentNumber: addresspayload?.apartmentNumber,
                                                                                     zoneId: addresspayload?.zoneId,
                                                                                     merchantId: parseInt(queryParameters?.get('merchantId')),
                                                                                 },
@@ -802,7 +800,7 @@ const UpdateMerchant = (props) => {
                                                             <div class="row m-0 w-100  ">
                                                                 <div class={`${formstyles.form__group} ${formstyles.field}`}>
                                                                     <label class={formstyles.form__label}>Apartment Floor</label>
-                                                                    <div>{merchantPayload?.address?.apartmentFloor}</div>
+                                                                    <div>{merchantPayload?.address?.apartmentNumber}</div>
                                                                 </div>
                                                             </div>
                                                         </div>

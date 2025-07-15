@@ -18,7 +18,9 @@ import TimelineContent from '@mui/lab/TimelineContent';
 import TimelineDot from '@mui/lab/TimelineDot';
 import TimelineItem from '@mui/lab/TimelineItem';
 import TimelineSeparator from '@mui/lab/TimelineSeparator';
+import { FiUser, FiUsers } from 'react-icons/fi';
 
+import { PiMotorcycleFill } from 'react-icons/pi';
 import TimelineOppositeContent, { timelineOppositeContentClasses } from '@mui/lab/TimelineOppositeContent';
 import { TbTruckDelivery } from 'react-icons/tb';
 import Cookies from 'universal-cookie';
@@ -29,7 +31,7 @@ const MerchantReturnPackageInfo = (props) => {
     let history = useHistory();
     const cookies = new Cookies();
 
-    const { setpageactive_context, chosenPackageContext, setchosenPackageContext, dateformatter, setchosenOrderContext, returnPackageStatusContext, setpagetitle_context } =
+    const { setpageactive_context, chosenPackageContext, setchosenPackageContext, dateformatter, setchosenOrderContext, useLoadQueryParamsToPayload, setpagetitle_context } =
         useContext(Contexthandlerscontext);
     const { useQueryGQL, fetchPackages, fetchGovernorates, fetchMerchantItemReturns, updateMerchantDomesticShipping, findOneReturnPackage, useLazyQueryGQL, paginateReturnPackageHistory } = API();
     useEffect(() => {
@@ -51,6 +53,8 @@ const MerchantReturnPackageInfo = (props) => {
         limit: 20,
         packageId: parseInt(queryParameters?.get('packageId')),
     });
+    useLoadQueryParamsToPayload(setfilterordershistory);
+
     const [findOneReturnPackageLazyQuery] = useLazyQueryGQL(findOneReturnPackage());
 
     const paginateReturnPackageHistoryQuery = useQueryGQL('', paginateReturnPackageHistory(), filterordershistory);
@@ -221,12 +225,19 @@ const MerchantReturnPackageInfo = (props) => {
                                                     </TimelineSeparator>
                                                     <TimelineContent style={{ fontWeight: 600, color: 'black', textTransform: 'capitalize' }}>
                                                         {historyItem?.status.split(/(?=[A-Z])/).join(' ')} <br />
-                                                        {cookies.get('userInfo')?.type != 'merchant' && <span style={{ fontWeight: 500 }}>{historyItem?.user?.name}</span>}
+                                                        {cookies.get('userInfo')?.type != 'merchant' && (
+                                                            <span class="d-flex align-items-center" style={{ fontWeight: 400 }}>
+                                                                <FiUser class="mr-2" />
+                                                                {historyItem?.user?.name}
+                                                            </span>
+                                                        )}
                                                         {historyItem?.courier?.name && cookies.get('userInfo')?.type != 'merchant' && (
                                                             <>
-                                                                {' '}
-                                                                <br />
-                                                                <span style={{ fontWeight: 400 }}>{historyItem?.courier?.name}</span>
+                                                                <span class="d-flex align-items-center" style={{ fontWeight: 400 }}>
+                                                                    <PiMotorcycleFill class="mr-2" />
+
+                                                                    {historyItem?.courier?.name}
+                                                                </span>
                                                             </>
                                                         )}
                                                     </TimelineContent>

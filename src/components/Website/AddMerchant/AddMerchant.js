@@ -121,7 +121,7 @@ const AddMerchant = (props) => {
                       country: addresspayload?.country,
                       city: addresspayload?.city,
                       buildingNumber: addresspayload?.buildingNumber,
-                      apartmentFloor: addresspayload?.apartmentFloor,
+                      apartmentNumber: addresspayload?.apartmentNumber,
                       streetAddress: addresspayload?.streetAddress,
                       zoneId: addresspayload?.zone,
                       governorateId:
@@ -563,7 +563,7 @@ const AddMerchant = (props) => {
                                                                               optionLabel: 'name',
                                                                           },
                                                                           { name: 'Building Number', attr: 'buildingNumber', size: '6' },
-                                                                          { name: 'Apartment Floor', attr: 'apartmentFloor', size: '6' },
+                                                                          { name: 'Apartment Floor', attr: 'apartmentNumber', size: '6' },
                                                                           { name: 'Street Address', attr: 'streetAddress', type: 'textarea', size: '12' },
                                                                       ]
                                                                     : [
@@ -599,7 +599,7 @@ const AddMerchant = (props) => {
                                                                               optionLabel: 'name',
                                                                           },
                                                                           { name: 'Building Number', attr: 'buildingNumber', size: '6' },
-                                                                          { name: 'Apartment Floor', attr: 'apartmentFloor', size: '6' },
+                                                                          { name: 'Apartment Floor', attr: 'apartmentNumber', size: '6' },
                                                                           { name: 'Street Address', attr: 'streetAddress', type: 'textarea', size: '12' },
                                                                       ]
                                                             }
@@ -626,7 +626,7 @@ const AddMerchant = (props) => {
                                                                                         country: addresspayload?.country,
                                                                                         streetAddress: addresspayload?.streetAddress,
                                                                                         buildingNumber: addresspayload?.buildingNumber,
-                                                                                        apartmentFloor: addresspayload?.apartmentFloor,
+                                                                                        apartmentNumber: addresspayload?.apartmentNumber,
                                                                                         zoneId: addresspayload?.zone,
 
                                                                                         merchantId: merchantId,
@@ -693,7 +693,7 @@ const AddMerchant = (props) => {
 
                                                                                                 <div class="col-lg-12">
                                                                                                     Building: <span style={{ fontWeight: 600 }}>{item?.address?.buildingNumber}</span>, Floor:{' '}
-                                                                                                    <span style={{ fontWeight: 600 }}>{item?.address?.apartmentFloor}</span>
+                                                                                                    <span style={{ fontWeight: 600 }}>{item?.address?.apartmentNumber}</span>
                                                                                                 </div>
 
                                                                                                 <div class="col-lg-12">
@@ -737,7 +737,7 @@ const AddMerchant = (props) => {
                                                                                                     Building Number: <span style={{ fontWeight: 600 }}>{item?.address?.buildingNumber}</span>
                                                                                                 </div>
                                                                                                 <div class="col-lg-12">
-                                                                                                    Floor: <span style={{ fontWeight: 600 }}>{item?.address?.apartmentFloor}</span>
+                                                                                                    Floor: <span style={{ fontWeight: 600 }}>{item?.address?.apartmentNumber}</span>
                                                                                                 </div>
 
                                                                                                 <div class="col-lg-12">

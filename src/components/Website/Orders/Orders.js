@@ -192,7 +192,7 @@ const Orders = (props) => {
                                                 City: address?.city,
                                                 'Street Address': address?.streetAddress?.trim(),
                                                 'Building No.': address?.buildingNumber,
-                                                Floor: address?.apartmentFloor,
+                                                Floor: address?.apartmentNumber,
                                                 'Courier Name': courier?.name,
                                                 'History Description': latestHistory?.description,
                                                 'Sheet ID': sheetOrder?.sheetId,

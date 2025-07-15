@@ -892,7 +892,7 @@ const API = () => {
                                     city
                                     streetAddress
                                     buildingNumber
-                                    apartmentFloor
+                                    apartmentNumber
                                 }
                                 merchantCustomer {
                                     id
@@ -996,7 +996,7 @@ const API = () => {
                             city
                             streetAddress
                             buildingNumber
-                            apartmentFloor
+                            apartmentNumber
                         }
                         courier {
                             id
@@ -1023,7 +1023,7 @@ const API = () => {
                             city
                             streetAddress
                             buildingNumber
-                            apartmentFloor
+                            apartmentNumber
                         }
                         orderItems {
                             id
@@ -1126,7 +1126,7 @@ const API = () => {
                             city
                             streetAddress
                             buildingNumber
-                            apartmentFloor
+                            apartmentNumber
                         }
                         courier {
                             id
@@ -1153,7 +1153,7 @@ const API = () => {
                             city
                             streetAddress
                             buildingNumber
-                            apartmentFloor
+                            apartmentNumber
                         }
                         orderItems {
                             id
@@ -1267,7 +1267,7 @@ const API = () => {
                             city
                             streetAddress
                             buildingNumber
-                            apartmentFloor
+                            apartmentNumber
                         }
                         merchantCustomer {
                             id
@@ -1348,7 +1348,7 @@ const API = () => {
                             type
                         }
                         address {
-                            apartmentFloor
+                            apartmentNumber
                             streetAddress
                             buildingNumber
                             city
@@ -1500,7 +1500,7 @@ const API = () => {
                         city
                         streetAddress
                         buildingNumber
-                        apartmentFloor
+                        apartmentNumber
                         zone {
                             name
                             id
@@ -1715,7 +1715,7 @@ const API = () => {
                     city
                     streetAddress
                     buildingNumber
-                    apartmentFloor
+                    apartmentNumber
                 }
                 failsAndAssigns
                 courier {
@@ -1858,7 +1858,7 @@ const API = () => {
                         city
                         streetAddress
                         buildingNumber
-                        apartmentFloor
+                        apartmentNumber
                     }
                     courier {
                         id
@@ -2088,7 +2088,7 @@ const API = () => {
                                     city
                                     streetAddress
                                     buildingNumber
-                                    apartmentFloor
+                                    apartmentNumber
                                 }
                                 courier {
                                     id
@@ -2115,7 +2115,7 @@ const API = () => {
                                     city
                                     streetAddress
                                     buildingNumber
-                                    apartmentFloor
+                                    apartmentNumber
                                 }
                                 orderItems {
                                     id
@@ -2279,7 +2279,7 @@ const API = () => {
                         city
                         streetAddress
                         buildingNumber
-                        apartmentFloor
+                        apartmentNumber
                     }
                     courier {
                         id
@@ -2421,7 +2421,7 @@ const API = () => {
                             city
                             streetAddress
                             buildingNumber
-                            apartmentFloor
+                            apartmentNumber
                         }
                         courier {
                             id
@@ -2446,7 +2446,7 @@ const API = () => {
                             city
                             streetAddress
                             buildingNumber
-                            apartmentFloor
+                            apartmentNumber
                         }
                         returnPackage {
                             id
@@ -2548,7 +2548,7 @@ const API = () => {
                             city
                             streetAddress
                             buildingNumber
-                            apartmentFloor
+                            apartmentNumber
                         }
                         courier {
                             id
@@ -2807,7 +2807,7 @@ const API = () => {
                             id
                             country
                             city
-                            apartmentFloor
+                            apartmentNumber
                             streetAddress
                             buildingNumber
                         }
@@ -2982,7 +2982,7 @@ const API = () => {
                         city
                         streetAddress
                         buildingNumber
-                        apartmentFloor
+                        apartmentNumber
                         createdAt
                     }
                 }
@@ -3114,7 +3114,7 @@ const API = () => {
                                     city
                                     streetAddress
                                     buildingNumber
-                                    apartmentFloor
+                                    apartmentNumber
                                 }
                                 courier {
                                     id
@@ -3141,7 +3141,7 @@ const API = () => {
                                     city
                                     streetAddress
                                     buildingNumber
-                                    apartmentFloor
+                                    apartmentNumber
                                 }
                                 orderItems {
                                     id
@@ -3335,7 +3335,7 @@ const API = () => {
                                     streetAddress
                                     zipCode
                                     buildingNumber
-                                    apartmentFloor
+                                    apartmentNumber
                                     createdAt
                                     lastModified
                                 }
@@ -3569,7 +3569,7 @@ const API = () => {
                                         streetAddress
                                         zipCode
                                         buildingNumber
-                                        apartmentFloor
+                                        apartmentNumber
                                         createdAt
                                         lastModified
                                         zone {
@@ -4043,7 +4043,7 @@ const API = () => {
                                     city
                                     streetAddress
                                     buildingNumber
-                                    apartmentFloor
+                                    apartmentNumber
                                 }
                                 merchantCustomer {
                                     id
@@ -4104,7 +4104,7 @@ const API = () => {
                                     city
                                     streetAddress
                                     buildingNumber
-                                    apartmentFloor
+                                    apartmentNumber
                                 }
                                 merchantCustomer {
                                     id
@@ -4157,7 +4157,7 @@ const API = () => {
                                     city
                                     streetAddress
                                     buildingNumber
-                                    apartmentFloor
+                                    apartmentNumber
                                 }
                                 previousOrderId
                                 previousOrder {
