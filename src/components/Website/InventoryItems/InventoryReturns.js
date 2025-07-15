@@ -30,6 +30,8 @@ const InventoryReturns = (props) => {
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [cartItems, setcartItems] = useState([]);
+    const [search, setsearch] = useState('');
+
     const [packagepayload, setpackagepayload] = useState({
         ids: [],
         type: 'inventory',
@@ -141,6 +143,51 @@ const InventoryReturns = (props) => {
                                     </AccordionItemPanel>
                                 </AccordionItem>
                             </Accordion>
+                        </div>
+                        <div class="col-lg-12 p-0">
+                            <div class={generalstyles.card + ' row m-0 w-100'}>
+                                <div class="col-lg-10 p-0 ">
+                                    <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
+                                        <input
+                                            type="number"
+                                            class={formstyles.form__field}
+                                            value={search}
+                                            placeholder={'Search by ID'}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter') {
+                                                    if (search?.length != 0) {
+                                                        setfilter({ ...filter, inventoryId: parseInt(search) });
+                                                    } else {
+                                                        setfilter({ ...filter, inventoryId: undefined });
+                                                    }
+
+                                                    setsearch('');
+                                                }
+                                            }}
+                                            onChange={(event) => {
+                                                setsearch(event.target.value);
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 p-0 allcentered">
+                                    <button
+                                        style={{ height: '30px', minWidth: '80%' }}
+                                        class={generalstyles.roundbutton + ' allcentered p-0'}
+                                        onClick={() => {
+                                            if (search?.length != 0) {
+                                                setfilter({ ...filter, inventoryId: parseInt(search) });
+                                            } else {
+                                                setfilter({ ...filter, inventoryId: undefined });
+                                            }
+
+                                            setsearch('');
+                                        }}
+                                    >
+                                        Search
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                         {isAuth([1, 94, 61]) && (
                             <>

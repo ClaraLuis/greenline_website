@@ -335,7 +335,7 @@ const MerchantOrders = (props) => {
                                                 </div>
                                             )}
 
-                                            <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                            {/* <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
                                                 <MultiSelect
                                                     title={'Status'}
                                                     options={orderStatusEnumContext}
@@ -357,7 +357,62 @@ const MerchantOrders = (props) => {
                                                         updateQueryParamContext('statuses', tempArray?.length != 0 ? tempArray : undefined);
                                                     }}
                                                 />
-                                            </div>
+                                            </div> */}
+                                            <>
+                                                <div class="col-lg-3" style={{ marginBottom: '15px' }}>
+                                                    <MultiSelect
+                                                        title="Status"
+                                                        options={orderStatusEnumContext}
+                                                        label="label"
+                                                        value="value"
+                                                        selected={filterorders?.statuses}
+                                                        onClick={(option) => {
+                                                            const tempArray = [...(filterorders?.statuses ?? [])];
+                                                            if (option.value) {
+                                                                const index = tempArray.indexOf(option.value);
+                                                                if (index === -1) {
+                                                                    tempArray.push(option.value);
+                                                                } else {
+                                                                    tempArray.splice(index, 1);
+                                                                }
+
+                                                                setfilterorders({ ...filterorders, statuses: tempArray.length ? tempArray : undefined });
+
+                                                                updateQueryParamContext('statuses', tempArray.length ? tempArray : undefined);
+                                                            } else {
+                                                                setfilterorders({ ...filterorders, statuses: undefined, statusStartDate: undefined, statusEndDate: undefined });
+
+                                                                updateQueryParamContext('statuses', undefined);
+                                                            }
+                                                        }}
+                                                    />
+                                                </div>
+                                                {filterorders?.statuses != undefined && (
+                                                    <div class="col-lg-3 mb-md-2">
+                                                        <span>Status Date Range</span>
+                                                        <div class="mt-1" style={{ width: '100%' }}>
+                                                            <DateRangePicker
+                                                                onChange={(event) => {
+                                                                    if (event != null) {
+                                                                        setfilterorders({
+                                                                            ...filterorders,
+                                                                            statusStartDate: event[0],
+                                                                            statusEndDate: event[1],
+                                                                        });
+                                                                    }
+                                                                }}
+                                                                onClean={() => {
+                                                                    setfilterorders({
+                                                                        ...filterorders,
+                                                                        statusStartDate: null,
+                                                                        statusEndDate: null,
+                                                                    });
+                                                                }}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </>
                                             <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
                                                 <MultiSelect
                                                     title={'Types'}
@@ -551,26 +606,61 @@ const MerchantOrders = (props) => {
                                             <div class="col-lg-3">
                                                 <Inputfield
                                                     placeholder={'Order Ids'}
+                                                    type="text"
                                                     onKeyDown={(e) => {
-                                                        if (e.key == 'Enter' && e.target.value?.length != 0) {
-                                                            var exists = filterorders?.orderIds?.includes(parseInt(e?.target?.value));
-                                                            if (exists) {
-                                                                NotificationManager.warning('', 'Already exists');
-                                                            } else {
-                                                                var temp = [...(filterorders?.orderIds ?? [])];
-                                                                temp.push(parseInt(e.target.value));
-                                                                setfilterorders({
-                                                                    ...filterorders,
-                                                                    orderIds: temp,
-                                                                });
-                                                                updateQueryParamContext('orderIds', temp);
+                                                        if (e.key === 'Enter' && e.target.value?.trim().length !== 0) {
+                                                            const input = e.target.value;
+                                                            const values = Array.from(
+                                                                new Set(
+                                                                    input
+                                                                        .split(/[\s,]+/) // Split by comma, space, or any whitespace (includes newline, tabs)
+                                                                        .map((v) => parseInt(v.trim()))
+                                                                        .filter((v) => !isNaN(v)),
+                                                                ),
+                                                            );
 
-                                                                e.target.value = '';
+                                                            const existing = filterorders?.orderIds ?? [];
+                                                            const newValues = values.filter((id) => !existing.includes(id));
+
+                                                            if (newValues.length === 0) {
+                                                                NotificationManager.warning('', 'All values already exist');
+                                                            } else {
+                                                                const updated = [...existing, ...newValues];
+                                                                setfilterorders({ ...filterorders, orderIds: updated });
+                                                                updateQueryParamContext('orderIds', updated);
                                                             }
+
+                                                            e.target.value = '';
                                                         }
                                                     }}
-                                                    type={'number'}
+                                                    onPaste={(e) => {
+                                                        e.preventDefault();
+                                                        const paste = e.clipboardData.getData('text');
+
+                                                        const values = Array.from(
+                                                            new Set(
+                                                                paste
+                                                                    .split(/[\s,]+/) // Same split logic: spaces, commas, or newlines
+                                                                    .map((v) => parseInt(v.trim()))
+                                                                    .filter((v) => !isNaN(v)),
+                                                            ),
+                                                        );
+
+                                                        const existing = filterorders?.orderIds ?? [];
+                                                        const newValues = values.filter((id) => !existing.includes(id));
+
+                                                        if (newValues.length === 0) {
+                                                            NotificationManager.warning('', 'All values already exist');
+                                                        } else {
+                                                            const updated = [...existing, ...newValues];
+                                                            setfilterorders({ ...filterorders, orderIds: updated });
+                                                            updateQueryParamContext('orderIds', updated);
+                                                        }
+
+                                                        e.target.value = '';
+                                                    }}
                                                 />
+
                                                 <div class="col-lg-12 p-0">
                                                     <div class="row m-0 w-100 scrollmenuclasssubscrollbar" style={{ overflow: 'scroll', flexWrap: 'nowrap' }}>
                                                         {filterorders?.orderIds?.map((orderItem, orderIndex) => {

@@ -27,6 +27,7 @@ const Inputfield = (props) => {
                     }}
                     onChange={props?.onChange}
                     onKeyDown={props?.onKeyDown}
+                    onWheel={(e) => e.target.blur()}
                 />
                 {props?.value?.length == 0 && props?.submit && props?.type != 'time' && (
                     <div class="col-lg-12 px-2 pt-2" style={{ color: 'var(--danger)', fontSize: '11px' }}>
