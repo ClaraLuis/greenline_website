@@ -317,12 +317,12 @@ textarea {
         max-width: 30% !important;
     }
     .form__label {
-        position: absolute;
-        top: 0;
+        /* position: absolute; */
+        /* top: 0; */
         display: block;
         transition: 0.2s;
-        font-size: 1.5vh;
-        color: #533e2d9d !important;
+        font-size: 0.75rem;
+        color: black !important;
     }
 }
 @media screen and (max-width: 600px) {

@@ -22,7 +22,19 @@ import { Loggedincontext } from './Loggedincontext';
 export const Contexthandlerscontext = React.createContext();
 export const Contexthandlerscontext_provider = (props) => {
     let history = useHistory();
-    const [hidesidenav_context, sethidesidenav_context] = useState(false);
+
+    function useWindowWidth() {
+        const [width, setWidth] = useState(window.innerWidth);
+        useEffect(() => {
+            const handleResize = () => setWidth(window.innerWidth);
+            window.addEventListener('resize', handleResize);
+            return () => window.removeEventListener('resize', handleResize);
+        }, []);
+        return width;
+    }
+    const width = useWindowWidth();
+    const isSmallScreen = width < 768;
+    const [hidesidenav_context, sethidesidenav_context] = useState(isSmallScreen ? true : false);
     const [scroll, setScroll] = useState(false);
     const [openloginmodalcontext, setopenloginmodalcontext] = useState(true);
     const [allcachedproductscontext, setallcachedproductscontext] = useState([]);
@@ -1119,6 +1131,7 @@ export const Contexthandlerscontext_provider = (props) => {
     return (
         <Contexthandlerscontext.Provider
             value={{
+                isSmallScreen,
                 ready,
                 setReady,
                 useLoadQueryParamsToPayload,

@@ -158,7 +158,7 @@ const UserInfo = (props) => {
                 >
                     <Modal.Header>
                         <div className="row w-100 m-0 p-0">
-                            <div class="col-lg-6 pt-3 ">
+                            <div class="col-lg-6 col-md-10 pt-3 ">
                                 {props?.payload.functype == 'edit' && <div className="row w-100 m-0 p-0">User : {props?.payload.name}</div>}
                                 {props?.payload.functype == 'add' && <div className="row w-100 m-0 p-0">Add User</div>}
                             </div>
@@ -193,7 +193,7 @@ const UserInfo = (props) => {
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-6 mb-3">
+                                    <div class="col-lg-6 col-lg-12 mb-3">
                                         <div class="row m-0 w-100">
                                             <div class="form__group field">
                                                 <label class="form__label" style={{ marginBottom: 0, fontSize: '13px', color: 'grey' }}>
@@ -204,7 +204,7 @@ const UserInfo = (props) => {
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-6 mb-3">
+                                    <div class="col-lg-6 col-lg-12 mb-3">
                                         <div class="row m-0 w-100">
                                             <div class="form__group field">
                                                 <label class="form__label" style={{ marginBottom: 0, fontSize: '13px', color: 'grey' }}>
@@ -214,7 +214,7 @@ const UserInfo = (props) => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-lg-6 mb-3">
+                                    <div class="col-lg-6 col-lg-12 mb-3">
                                         <div class="row m-0 w-100">
                                             <div class="form__group field">
                                                 <label class="form__label" style={{ marginBottom: 0, fontSize: '13px', color: 'grey' }}>
@@ -224,7 +224,7 @@ const UserInfo = (props) => {
                                             </div>
                                         </div>
                                     </div>
-                                    {/* <div class="col-lg-6 mb-3">
+                                    {/* <div class="col-lg-6 col-lg-12 mb-3">
                                         <div class="row m-0 w-100">
                                             <div class="form__group field">
                                                 <label class="form__label" style={{ marginBottom: 0, fontSize: '13px', color: 'grey' }}>
@@ -235,7 +235,7 @@ const UserInfo = (props) => {
                                         </div>
                                     </div> */}
                                     {props?.payload?.hub && (
-                                        <div class="col-lg-6 mb-3">
+                                        <div class="col-lg-6 col-lg-12 mb-3">
                                             <div class="row m-0 w-100">
                                                 <div class="form__group field">
                                                     <label class="form__label" style={{ marginBottom: 0, fontSize: '13px', color: 'grey' }}>
@@ -248,7 +248,7 @@ const UserInfo = (props) => {
                                     )}
 
                                     {props?.payload?.merchant && (
-                                        <div class="col-lg-6 mb-3">
+                                        <div class="col-lg-6 col-lg-12 mb-3">
                                             <div class="row m-0 w-100">
                                                 <div class="form__group field">
                                                     <label class="form__label" style={{ marginBottom: 0, fontSize: '13px', color: 'grey' }}>
@@ -261,7 +261,7 @@ const UserInfo = (props) => {
                                     )}
                                     {props?.payload?.type != 'merchant' && (
                                         <>
-                                            <div class="col-lg-6 mb-3">
+                                            <div class="col-lg-6 col-lg-12 mb-3">
                                                 <div class="row m-0 w-100">
                                                     <div class="form__group field">
                                                         <label class="form__label" style={{ marginBottom: 0, fontSize: '13px', color: 'grey' }}>
@@ -271,7 +271,7 @@ const UserInfo = (props) => {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-6 mb-3">
+                                            <div class="col-lg-6 col-lg-12 mb-3">
                                                 <div class="row m-0 w-100">
                                                     <div class="form__group field">
                                                         <label class="form__label" style={{ marginBottom: 0, fontSize: '13px', color: 'grey' }}>
@@ -282,7 +282,7 @@ const UserInfo = (props) => {
                                                 </div>
                                             </div>
 
-                                            <div class="col-lg-6 mb-3">
+                                            <div class="col-lg-6 col-lg-12 mb-3">
                                                 <div class="row m-0 w-100">
                                                     <div class="form__group field">
                                                         <label class="form__label" style={{ marginBottom: 0, fontSize: '13px', color: 'grey' }}>
@@ -293,7 +293,7 @@ const UserInfo = (props) => {
                                                 </div>
                                             </div>
 
-                                            <div class="col-lg-6 mb-3">
+                                            <div class="col-lg-6 col-lg-12 mb-3">
                                                 <div class="row m-0 w-100">
                                                     <div class="form__group field">
                                                         <label class="form__label" style={{ marginBottom: 0, fontSize: '13px', color: 'grey' }}>
@@ -304,7 +304,7 @@ const UserInfo = (props) => {
                                                 </div>
                                             </div>
 
-                                            <div class="col-lg-6 mb-3">
+                                            <div class="col-lg-6 col-lg-12 mb-3">
                                                 <div class="row m-0 w-100">
                                                     <div class="form__group field">
                                                         <label class="form__label" style={{ marginBottom: 0, fontSize: '13px', color: 'grey' }}>
@@ -642,7 +642,7 @@ const UserInfo = (props) => {
             >
                 <Modal.Header>
                     <div className="row w-100 m-0 p-0">
-                        <div class="col-lg-6 pt-3 ">
+                        <div class="col-lg-6 col-md-10 pt-3 ">
                             <div className="row w-100 m-0 p-0">Change Permissions</div>
                         </div>
                         <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">

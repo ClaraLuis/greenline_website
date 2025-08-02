@@ -22,6 +22,7 @@ import Cookies from 'universal-cookie';
 import Pagination from '../../Pagination.js';
 import Form from '../../Form.js';
 import { NotificationManager } from 'react-notifications';
+import { BiSearch } from 'react-icons/bi';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -122,7 +123,7 @@ const Merchants = (props) => {
                                     <span style={{ color: 'var(--info)' }}>Merchants </span>
                                 </p>
                             </div>
-                            <div class={' col-lg-6 col-md-6 col-sm-12 p-0 d-flex align-items-center justify-content-end  px-2 '}>
+                            <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-end  px-2 '}>
                                 <p class=" p-0 m-0" style={{ fontSize: '14px' }}>
                                     <span
                                         onClick={() => {
@@ -152,7 +153,7 @@ const Merchants = (props) => {
                             <div class={generalstyles.card + ' row m-0 w-100 my-2 p-2 px-2'}>
                                 <div class="col-lg-12 p-0 ">
                                     <div class="row m-0 w-100 d-flex align-items-center">
-                                        <div class="col-lg-10">
+                                        <div class="col-lg-10 col-md-10">
                                             <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
                                                 <input
                                                     class={formstyles.form__field}
@@ -164,15 +165,18 @@ const Merchants = (props) => {
                                                 />
                                             </div>
                                         </div>
-                                        <div class="col-lg-2 allcenered">
+                                        <div class="col-lg-2  col-md-2 allcenered p-md-0">
                                             <button
                                                 onClick={() => {
                                                     setfilterMerchants({ ...filterMerchants, name: search?.length == 0 ? undefined : search });
                                                 }}
-                                                style={{ height: '35px', marginInlineStart: '5px' }}
+                                                style={{ height: '35px', marginInlineStart: '5px', minWidth: 'auto' }}
                                                 class={generalstyles.roundbutton + '  allcentered bg-primary-light'}
                                             >
-                                                search
+                                                <div class="d-flex d-md-none">search</div>
+                                                <div class="d-none d-md-flex">
+                                                    <BiSearch />
+                                                </div>
                                             </button>
                                         </div>
                                     </div>
@@ -199,7 +203,7 @@ const Merchants = (props) => {
                                                     style={{ backgroundColor: 'white', border: chosenMerchantContext?.id == item?.id ? '1px solid var(--success)' : '' }}
                                                     class={generalstyles.card + ' row m-0 w-100 p-3  d-flex align-items-center'}
                                                 >
-                                                    <div class="col-lg-8 p-0 mb-1 ">
+                                                    <div class="col-lg-8 col-md-8 p-0 mb-1 ">
                                                         <div class="row m-0 w-100 d-flex align-items-center">
                                                             <div style={{ width: '30px', height: '30px', marginInlineEnd: '10px' }}>
                                                                 <img src={user} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
@@ -210,7 +214,7 @@ const Merchants = (props) => {
                                                             </span>
                                                         </div>
                                                     </div>
-                                                    <div class="col-lg-4 p-0 mb-1 d-flex justify-content-end align-items-center">
+                                                    <div class="col-lg-4 col-md-4 p-0 mb-1 d-flex justify-content-end align-items-center">
                                                         <Dropdown>
                                                             <Dropdown.Toggle>
                                                                 <div
@@ -311,7 +315,7 @@ const Merchants = (props) => {
             >
                 <Modal.Header>
                     <div className="row w-100 m-0 p-0">
-                        <div class="col-lg-6 pt-3 ">{merchantPayload.functype == 'add' && <div className="row w-100 m-0 p-0">Add Merchant</div>}</div>
+                        <div class="col-lg-6 col-md-10 pt-3 ">{merchantPayload.functype == 'add' && <div className="row w-100 m-0 p-0">Add Merchant</div>}</div>
                         <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
                             <div
                                 class={'close-modal-container'}
@@ -387,7 +391,7 @@ const Merchants = (props) => {
             >
                 <Modal.Header>
                     <div className="row w-100 m-0 p-0">
-                        <div class="col-lg-6 pt-3 "></div>
+                        <div class="col-lg-6 col-md-10 pt-3 "></div>
                         <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
                             <div
                                 class={'close-modal-container'}

@@ -58,7 +58,7 @@ const AccountsTable = (props) => {
                                     <div className="col-lg-6 p-0">
                                         <span style={{ fontSize: '12px', color: 'grey' }}># {item?.id}</span>
                                     </div>
-                                    <div className="col-lg-6 p-0 d-flex justify-content-end align-items-center">
+                                    <div className="col-lg-6 col-md-6 p-0 d-flex justify-content-end align-items-center">
                                         <div class="row m-0 w-100 d-flrx justify-content-end align-items-center">
                                             <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered text-capitalize '}>
                                                 {/* {financialAccountTypeContext?.map((i, ii) => {
@@ -113,7 +113,7 @@ const AccountsTable = (props) => {
                                             {item?.balance}
                                         </span>
                                     </div>
-                                    <div className="col-lg-6 p-0 mb-2 d-flex justify-content-end">
+                                    <div className="col-lg-6 col-md-6 p-0 mb-2 d-flex justify-content-end">
                                         <span class="d-flex align-items-center" style={{ fontWeight: 500, color: 'grey', fontSize: '12px' }}>
                                             <IoMdTime class="mr-1" />
                                             {dateformatter(item?.createdAt)}

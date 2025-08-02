@@ -120,7 +120,7 @@ const InventoryDetails = (props) => {
                                 Inventory Details
                             </p>
                         </div>
-                        <div class="col-lg-6 d-flex justify-content-end ">
+                        <div class="col-lg-6 col-md-6 d-flex justify-content-end ">
                             {(racks?.length != 0 || pallets?.length != 0 || boxes?.length != 0) && (
                                 <div class="row m-0 w-100 d-flex justify-content-end">
                                     <button
@@ -637,7 +637,7 @@ const InventoryDetails = (props) => {
                 >
                     <Modal.Header>
                         <div className="row w-100 m-0 p-0">
-                            <div class="col-lg-6 pt-3 ">
+                            <div class="col-lg-6 col-md-10 pt-3 ">
                                 <div className="row w-100 m-0 p-0">Boxes</div>
                             </div>
                             <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
@@ -670,7 +670,7 @@ const InventoryDetails = (props) => {
                 >
                     <Modal.Header>
                         <div className="row w-100 m-0 p-0">
-                            <div class="col-lg-6 pt-3 ">
+                            <div class="col-lg-6 col-md-10 pt-3 ">
                                 <div className="row w-100 m-0 p-0">{merchantModal?.type == 'edit' ? 'Edit' : merchantModal?.type == 'addlevels' ? 'Add Levels' : 'Choose Merchant'}</div>
                             </div>
                             <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">

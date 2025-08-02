@@ -19,6 +19,7 @@ import SelectComponent from '../../SelectComponent.js';
 import MultiSelect from '../../MultiSelect.js';
 import MerchantSelectComponent from '../../selectComponents/MerchantSelectComponent.js';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
+import { BiSearch } from 'react-icons/bi';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -259,7 +260,7 @@ const Users = (props) => {
                     </div>
                     <div class={' col-lg-12 px-3 '}>
                         <div class={generalstyles.card + ' row m-0 w-100 d-flex align-items-center'}>
-                            <div class="col-lg-10">
+                            <div class="col-lg-10 col-md-10">
                                 <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
                                     <input
                                         // disabled={props?.disabled}
@@ -278,15 +279,18 @@ const Users = (props) => {
                                     />
                                 </div>
                             </div>
-                            <div class="col-lg-2 allcenered">
+                            <div class="col-lg-2  col-md-2 allcenered p-md-0">
                                 <button
                                     onClick={() => {
                                         setfilterUsers({ ...filterUsers, name: search?.length == 0 ? undefined : search });
                                     }}
-                                    style={{ height: '35px', marginInlineStart: '5px' }}
+                                    style={{ height: '35px', marginInlineStart: '5px', minWidth: 'auto' }}
                                     class={generalstyles.roundbutton + '  allcentered bg-primary-light'}
                                 >
-                                    search
+                                    <div class="d-flex d-md-none">search</div>
+                                    <div class="d-none d-md-flex">
+                                        <BiSearch />
+                                    </div>
                                 </button>
                             </div>
                         </div>

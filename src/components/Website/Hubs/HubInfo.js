@@ -85,7 +85,7 @@ const HubInfo = (props) => {
             >
                 <Modal.Header>
                     <div className="row w-100 m-0 p-0">
-                        <div class="col-lg-6 pt-3 ">
+                        <div class="col-lg-6 col-md-10 pt-3 ">
                             {props?.payload.functype == 'edit' && <div className="row w-100 m-0 p-0">Hub : {props?.payload.name}</div>}
                             {props?.payload.functype == 'add' && <div className="row w-100 m-0 p-0">Add Hub</div>}
                         </div>

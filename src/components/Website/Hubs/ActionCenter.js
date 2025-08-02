@@ -111,7 +111,7 @@ const ActionCenter = (props) => {
                                 Orders
                             </p>
                         </div>
-                        <div className="col-lg-6 p-0 d-flex align-items-center justify-content-end">
+                        <div className="col-lg-6 col-md-6 p-0 d-flex align-items-center justify-content-end">
                             <button
                                 class={generalstyles.roundbutton + ' allcentered  p-0'}
                                 onClick={() => {
@@ -338,7 +338,7 @@ const ActionCenter = (props) => {
                         {isAuth([1, 105]) && (
                             <div class="col-lg-12 px-3">
                                 <div class={generalstyles.card + ' row m-0 w-100'}>
-                                    <div className="col-lg-6 p-0 d-flex justify-content-end ">
+                                    <div className="col-lg-6 col-md-6 p-0 d-flex justify-content-end ">
                                         <div
                                             onClick={() => {
                                                 var temp = [];
@@ -384,7 +384,7 @@ const ActionCenter = (props) => {
                                             {selectedOrders?.length != paginateUnresolvedOrdersQuery?.data?.paginateUnresolvedOrders?.data?.length ? 'Select All' : 'Deselect All'}
                                         </div>
                                     </div>
-                                    <div class="col-lg-6 d-flex justify-content-end">
+                                    <div class="col-lg-6 col-md-6 d-flex justify-content-end">
                                         <div className="row m-0 w-100 d-flex justify-content-end">
                                             {(ordersWithDetails?.every((i) => i.status === 'failedDeliveryAttempt') || ordersWithDetails?.every((i) => i.status === 'inResolution')) &&
                                                 ordersWithDetails?.length != 0 && (

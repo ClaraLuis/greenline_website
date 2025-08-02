@@ -126,7 +126,7 @@ const AddSheet = (props) => {
                 <div class={' row m-0 p-0 w-100'}>
                     <div className={' col-lg-8 p-1 py-0 '}>
                         <div class="row m-0 w-100">
-                            <div class="col-lg-10 p-0 ">
+                            <div class="col-lg-10 col-md-10 p-0 ">
                                 <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
                                     <input
                                         class={formstyles.form__field}
@@ -138,7 +138,7 @@ const AddSheet = (props) => {
                                     />
                                 </div>
                             </div>
-                            <div class="col-lg-2 p-0 allcentered">
+                            <div class="col-lg-2 col-md-2 p-0 allcentered">
                                 <button
                                     style={{ height: '30px', minWidth: '80%' }}
                                     class={generalstyles.roundbutton + ' allcentered p-0'}
@@ -190,7 +190,7 @@ const AddSheet = (props) => {
                                                     <div className="col-lg-6 p-0">
                                                         <span style={{ fontWeight: 700 }}># {item?.id}</span>
                                                     </div>
-                                                    <div className="col-lg-6 p-0 d-flex justify-content-end align-items-center">
+                                                    <div className="col-lg-6 col-md-6 p-0 d-flex justify-content-end align-items-center">
                                                         <div
                                                             className={
                                                                 item.status == 'delivered'
@@ -222,7 +222,7 @@ const AddSheet = (props) => {
                                                     </div>
                                                     <div className="col-lg-12 p-0 ">
                                                         <span style={{ fontWeight: 600 }}>
-                                                            {item?.address?.streetAddress}, {item?.address?.buildingNumber}, {item?.address?.apartmentNumber}
+                                                            {item?.address?.streetAddress}, {item?.address?.buildingNumber}, {item?.address?.buildingNumber}
                                                         </span>
                                                     </div>
                                                 </div>
@@ -258,7 +258,7 @@ const AddSheet = (props) => {
                                                                 <div style={{ fontWeight: 700 }} class="col-lg-10 p-0 mb-2">
                                                                     # {item?.id}
                                                                 </div>
-                                                                <div class="col-lg-2 p-0 allcentered">
+                                                                <div class="col-lg-2 col-md-2 p-0 allcentered">
                                                                     <BsTrash
                                                                         onClick={() => {
                                                                             var temp = { ...sheetpayload };
@@ -284,7 +284,7 @@ const AddSheet = (props) => {
                                                                         </div>
                                                                         <div className="col-lg-12 p-0 ">
                                                                             <span style={{ fontWeight: 600 }}>
-                                                                                {item?.address?.streetAddress}, {item?.address?.buildingNumber}, {item?.address?.apartmentNumber}
+                                                                                {item?.address?.streetAddress}, {item?.address?.buildingNumber}, {item?.address?.buildingNumber}
                                                                             </span>
                                                                         </div>
                                                                     </div>
@@ -352,7 +352,7 @@ const AddSheet = (props) => {
             >
                 <Modal.Header>
                     <div className="row w-100 m-0 p-0">
-                        <div class="col-lg-6 pt-3 ">{/* <div className="row w-100 m-0 p-0">Update Sheet Status</div> */}</div>
+                        <div class="col-lg-6 col-md-10 pt-3 ">{/* <div className="row w-100 m-0 p-0">Update Sheet Status</div> */}</div>
                         <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
                             <div
                                 class={'close-modal-container'}

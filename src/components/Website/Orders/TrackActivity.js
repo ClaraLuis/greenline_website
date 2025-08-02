@@ -168,14 +168,14 @@ const TrackActivity = (props) => {
 
                                     <div class="col-lg-6">
                                         <div style={{ minHeight: '400px', maxHeight: '400px' }} class={generalstyles.card + ' row m-0 w-100 d-flex align-content-start'}>
-                                            <div className="col-lg-4 p-0">
+                                            <div className="col-lg-4 col-md-4 p-0">
                                                 <div class="row m-0 w-100 d-flex align-items-center">
                                                     <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
                                                         # {chosenOrderContext?.id}
                                                     </span>{' '}
                                                 </div>
                                             </div>
-                                            <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
+                                            <div className="col-lg-8 col-md-8 p-0 d-flex justify-content-end align-items-center">
                                                 <div class="row m-0 w-100  d-flex justify-content-end align-items-center">
                                                     {outOfStock && queryParameters?.get('type') == 'inventory' && (
                                                         <div className={'mr-1 wordbreak text-danger bg-light-danger rounded-pill font-weight-600 '}>Out Of Stock</div>

@@ -887,12 +887,12 @@ keep data consistent.</span></p>
                     <div class="row  m-0 w-100 px-3">
                         <div class="col-lg-12 p-0">
                             <div class={generalstyles.card + ' row m-0 w-100'}>
-                                <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
+                                <div class={' col-lg-6 col-md-6 p-0 d-flex align-items-center justify-content-start pb-2 '}>
                                     <p class=" p-0 m-0" style={{ fontSize: '27px' }}>
                                         Merchant Items
                                     </p>
                                 </div>
-                                <div class={' col-lg-6 col-md-6 col-sm-6 p-0 pr-3 pr-md-1 pr-sm-0 d-flex align-items-center justify-content-end pb-1 '}>
+                                <div class={' col-lg-6 p-0 pr-3 pr-md-1 pr-sm-0 d-flex align-items-center justify-content-end pb-1 '}>
                                     <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
                                         <button
                                             style={{ height: '35px' }}
@@ -934,7 +934,7 @@ keep data consistent.</span></p>
                     <>
                         <div class="col-lg-12 px-3">
                             <div class={generalstyles.card + ' row m-0 w-100 mb-4 p-2 px-2'}>
-                                <div class="col-lg-6">
+                                <div class="col-lg-6 mb-md-2 ">
                                     <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
                                         <input
                                             // disabled={props?.disabled}
@@ -1000,7 +1000,7 @@ keep data consistent.</span></p>
             >
                 <Modal.Header>
                     <div className="row w-100 m-0 p-0">
-                        <div class="col-lg-6 pt-3 ">
+                        <div class="col-lg-6 col-md-10 pt-3 ">
                             <div className="row w-100 m-0 p-0">Choose Merchant</div>
                         </div>
                         <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
@@ -1047,7 +1047,7 @@ keep data consistent.</span></p>
             >
                 <Modal.Header>
                     <div className="row w-100 m-0 p-0">
-                        <div class="col-lg-6 pt-3 ">
+                        <div class="col-lg-6 col-md-10 pt-3 ">
                             <div className="row w-100 m-0 p-0">Import CSV</div>
                         </div>
                         <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">

@@ -12,7 +12,7 @@ import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
-import { BiMinus } from 'react-icons/bi';
+import { BiMinus, BiSearch } from 'react-icons/bi';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import { MdOutlineLocationOn } from 'react-icons/md';
 import { RiErrorWarningFill } from 'react-icons/ri';
@@ -197,7 +197,7 @@ const AddOrder = (props) => {
         country: addresspayload?.country,
         streetAddress: addresspayload?.streetAddress,
         buildingNumber: addresspayload?.buildingNumber,
-        apartmentNumber: addresspayload?.apartmentNumber,
+        buildingNumber: addresspayload?.buildingNumber,
         merchantId: merchantId,
         zoneId: addresspayload?.zone,
         governorateId: addresspayload?.country == 'Egypt' ? fetchGovernoratesQuery?.data?.findAllDomesticGovernorates?.filter((item) => item.name == addresspayload?.city)[0]?.id : undefined,
@@ -568,7 +568,7 @@ const AddOrder = (props) => {
                         <div class="row m-0 w-100">
                             <div class="col-lg-12 p-0 ">
                                 <div class={generalstyles.card + ' row m-0 w-100 d-flex align-items-center'}>
-                                    <div class="col-lg-10 p-0">
+                                    <div class="col-lg-10 col-md-10 p-0">
                                         <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
                                             <input
                                                 // disabled={props?.disabled}
@@ -582,10 +582,8 @@ const AddOrder = (props) => {
                                             />
                                         </div>
                                     </div>
-                                    <div class="col-lg-2 p-1">
+                                    <div class="col-lg-2 col-md-2 p-md-0">
                                         <button
-                                            style={{ height: '35px' }}
-                                            class={generalstyles.roundbutton + ' p-0 allcentered bg-primary-light'}
                                             onClick={() => {
                                                 if (search.length == 0) {
                                                     setfilter({ ...filter, name: undefined });
@@ -593,8 +591,13 @@ const AddOrder = (props) => {
                                                     setfilter({ ...filter, name: search });
                                                 }
                                             }}
+                                            style={{ height: '35px', marginInlineStart: '5px', minWidth: 'auto' }}
+                                            class={generalstyles.roundbutton + '  allcentered bg-primary-light'}
                                         >
-                                            search
+                                            <div class="d-flex d-md-none">search</div>
+                                            <div class="d-none d-md-flex">
+                                                <BiSearch />
+                                            </div>
                                         </button>
                                     </div>
                                 </div>
@@ -1053,7 +1056,7 @@ const AddOrder = (props) => {
                                                                               optionLabel: 'name',
                                                                           },
                                                                           { name: 'Building Number', attr: 'buildingNumber', size: '6' },
-                                                                          { name: 'Apartment Floor', attr: 'apartmentNumber', size: '6' },
+                                                                          { name: 'Apartment Floor', attr: 'buildingNumber', size: '6' },
                                                                           { name: 'Street Address', attr: 'streetAddress', type: 'textarea', size: '12' },
                                                                       ]
                                                                     : [
@@ -1089,7 +1092,7 @@ const AddOrder = (props) => {
                                                                               optionLabel: 'name',
                                                                           },
                                                                           { name: 'Building Number', attr: 'buildingNumber', size: '6' },
-                                                                          { name: 'Apartment Floor', attr: 'apartmentNumber', size: '6' },
+                                                                          { name: 'Apartment Floor', attr: 'buildingNumber', size: '6' },
                                                                           { name: 'Street Address', attr: 'streetAddress', type: 'textarea', size: '12' },
                                                                       ]
                                                             }
@@ -1110,7 +1113,7 @@ const AddOrder = (props) => {
                                                                                 country: addresspayload?.country,
                                                                                 streetAddress: addresspayload?.streetAddress,
                                                                                 buildingNumber: addresspayload?.buildingNumber,
-                                                                                apartmentNumber: addresspayload?.apartmentNumber,
+                                                                                buildingNumber: addresspayload?.buildingNumber,
                                                                                 zoneId: addresspayload?.zone,
                                                                                 merchantId: merchantId,
                                                                             },
@@ -1227,7 +1230,7 @@ const AddOrder = (props) => {
 
                                                                                         <div class="col-lg-12">
                                                                                             Building: <span style={{ fontWeight: 600 }}>{item?.address?.buildingNumber}</span>, Floor:{' '}
-                                                                                            <span style={{ fontWeight: 600 }}>{item?.address?.apartmentNumber}</span>
+                                                                                            <span style={{ fontWeight: 600 }}>{item?.address?.buildingNumber}</span>
                                                                                         </div>
 
                                                                                         <div class="col-lg-12">
@@ -1303,7 +1306,7 @@ const AddOrder = (props) => {
                                                                                             Building Number: <span style={{ fontWeight: 600 }}>{item?.address?.buildingNumber}</span>
                                                                                         </div>
                                                                                         <div class="col-lg-12">
-                                                                                            Floor: <span style={{ fontWeight: 600 }}>{item?.address?.apartmentNumber}</span>
+                                                                                            Floor: <span style={{ fontWeight: 600 }}>{item?.address?.buildingNumber}</span>
                                                                                         </div>
 
                                                                                         <div class="col-lg-12">
@@ -1350,7 +1353,7 @@ const AddOrder = (props) => {
                                                                                 Building Number: <span style={{ fontWeight: 600 }}>{item?.details?.buildingNumber}</span>
                                                                             </div>
                                                                             <div class="col-lg-12">
-                                                                                Floor: <span style={{ fontWeight: 600 }}>{item?.details?.apartmentNumber}</span>
+                                                                                Floor: <span style={{ fontWeight: 600 }}>{item?.details?.buildingNumber}</span>
                                                                             </div>
 
                                                                             <div class="col-lg-12">
@@ -1417,7 +1420,7 @@ const AddOrder = (props) => {
                                     <>
                                         <div class="col-lg-12 p-0 my-3 ">
                                             <div class={generalstyles.card + ' row m-0 w-100 d-flex align-items-center'}>
-                                                <div class="col-lg-10 p-0">
+                                                <div class="col-lg-10 col-md-10 p-0">
                                                     <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
                                                         <input
                                                             // disabled={props?.disabled}
@@ -1431,10 +1434,8 @@ const AddOrder = (props) => {
                                                         />
                                                     </div>
                                                 </div>
-                                                <div class="col-lg-2 p-1">
+                                                <div class="col-lg-2 col-md-2 p-md-0">
                                                     <button
-                                                        style={{ height: '35px' }}
-                                                        class={generalstyles.roundbutton + ' p-0 allcentered bg-primary-light'}
                                                         onClick={() => {
                                                             if (search.length == 0) {
                                                                 setfilter({ ...filter, name: undefined });
@@ -1442,8 +1443,13 @@ const AddOrder = (props) => {
                                                                 setfilter({ ...filter, name: search });
                                                             }
                                                         }}
+                                                        style={{ height: '35px', marginInlineStart: '5px', minWidth: 'auto' }}
+                                                        class={generalstyles.roundbutton + '  allcentered bg-primary-light'}
                                                     >
-                                                        search
+                                                        <div class="d-flex d-md-none">search</div>
+                                                        <div class="d-none d-md-flex">
+                                                            <BiSearch />
+                                                        </div>
                                                     </button>
                                                 </div>
                                             </div>
@@ -1537,7 +1543,7 @@ const AddOrder = (props) => {
                                     <>
                                         <div class="col-lg-12 p-0 my-3 ">
                                             <div class={generalstyles.card + ' row m-0 w-100 d-flex align-items-center'}>
-                                                <div class="col-lg-10 p-0">
+                                                <div class="col-lg-10 col-md-10 p-0">
                                                     <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
                                                         <input
                                                             // disabled={props?.disabled}
@@ -1551,10 +1557,8 @@ const AddOrder = (props) => {
                                                         />
                                                     </div>
                                                 </div>
-                                                <div class="col-lg-2 p-1">
+                                                <div class="col-lg-2 col-md-2 p-md-0">
                                                     <button
-                                                        style={{ height: '35px' }}
-                                                        class={generalstyles.roundbutton + ' p-0 allcentered bg-primary-light'}
                                                         onClick={() => {
                                                             if (search.length == 0) {
                                                                 setfilter({ ...filter, name: undefined });
@@ -1562,8 +1566,13 @@ const AddOrder = (props) => {
                                                                 setfilter({ ...filter, name: search });
                                                             }
                                                         }}
+                                                        style={{ height: '35px', marginInlineStart: '5px', minWidth: 'auto' }}
+                                                        class={generalstyles.roundbutton + '  allcentered bg-primary-light'}
                                                     >
-                                                        search
+                                                        <div class="d-flex d-md-none">search</div>
+                                                        <div class="d-none d-md-flex">
+                                                            <BiSearch />
+                                                        </div>
                                                     </button>
                                                 </div>
                                             </div>
@@ -1621,7 +1630,7 @@ const AddOrder = (props) => {
                                                             <div className="col-lg-6 p-0">
                                                                 <span style={{ fontWeight: 700 }}># {item?.id}</span>
                                                             </div>
-                                                            <div className="col-lg-6 p-0 d-flex justify-content-end align-items-center">
+                                                            <div className="col-lg-6 col-md-6 p-0 d-flex justify-content-end align-items-center">
                                                                 <div
                                                                     className={
                                                                         item.status == 'delivered'
@@ -1653,7 +1662,7 @@ const AddOrder = (props) => {
                                                             </div>
                                                             <div className="col-lg-12 p-0 ">
                                                                 <span style={{ fontWeight: 600 }}>
-                                                                    {item?.address?.streetAddress}, {item?.address?.buildingNumber}, {item?.address?.apartmentNumber}
+                                                                    {item?.address?.streetAddress}, {item?.address?.buildingNumber}, {item?.address?.buildingNumber}
                                                                 </span>
                                                             </div>
                                                         </div>
@@ -1806,7 +1815,7 @@ const AddOrder = (props) => {
                                                                     />
                                                                 </div>
                                                             </div>
-                                                            <div class="col-lg-4 p-0 wordbreak" style={{ fontWeight: 700, fontSize: '12px' }}>
+                                                            <div class="col-lg-4 col-md-4 p-0 wordbreak" style={{ fontWeight: 700, fontSize: '12px' }}>
                                                                 {item?.item?.name}
                                                             </div>
 
@@ -1941,7 +1950,7 @@ const AddOrder = (props) => {
                                                                         />
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-lg-4 p-0 wordbreak" style={{ fontWeight: 700, fontSize: '12px' }}>
+                                                                <div class="col-lg-4 col-md-4 p-0 wordbreak" style={{ fontWeight: 700, fontSize: '12px' }}>
                                                                     {item?.item?.name}
                                                                 </div>
 
@@ -2052,7 +2061,7 @@ const AddOrder = (props) => {
 
                         <div class="col-lg-12 p-0 mt-2">
                             <div class="row m-0 w-100 d-flex">
-                                <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4">
+                                <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4 col-md-4">
                                     <div class="row m-0 w-100">
                                         <div class="col-lg-12 p-0 allcentered text-center">
                                             <span style={{ fontWeight: 400, fontSize: '11px' }}>Price</span>
@@ -2112,7 +2121,7 @@ const AddOrder = (props) => {
                                         </div>
                                     </div>
                                 </div>
-                                <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4">
+                                <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4 col-md-4">
                                     <div class="row m-0 w-100">
                                         <div class="col-lg-12 p-0 allcentered text-center">
                                             <span style={{ fontWeight: 400, fontSize: '11px' }}>Shipping</span>
@@ -2122,7 +2131,7 @@ const AddOrder = (props) => {
                                         </div>
                                     </div>
                                 </div>
-                                <div style={{ fontWeight: 600, fontSize: '15px' }} className=" p-0 mb-2 allcentered col-lg-4">
+                                <div style={{ fontWeight: 600, fontSize: '15px' }} className=" p-0 mb-2 allcentered col-lg-4 col-md-4">
                                     <div class="row m-0 w-100">
                                         <div class="col-lg-12 p-0 allcentered text-center">
                                             <span style={{ fontWeight: 400, fontSize: '11px' }}>Total</span>

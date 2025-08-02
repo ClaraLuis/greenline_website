@@ -30,6 +30,7 @@ import { FiCheckCircle, FiCircle } from 'react-icons/fi';
 import WaybillPrint from './WaybillPrint.js';
 import FulfillModal from './FulfillModal.js';
 import MerchantSelectComponent from '../../selectComponents/MerchantSelectComponent.js';
+import { BiSearch } from 'react-icons/bi';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -192,7 +193,7 @@ const Orders = (props) => {
                                                 City: address?.city,
                                                 'Street Address': address?.streetAddress?.trim(),
                                                 'Building No.': address?.buildingNumber,
-                                                Floor: address?.apartmentNumber,
+                                                Floor: address?.buildingNumber,
                                                 'Courier Name': courier?.name,
                                                 'History Description': latestHistory?.description,
                                                 'Sheet ID': sheetOrder?.sheetId,
@@ -438,7 +439,7 @@ const Orders = (props) => {
                     <div class={generalstyles.card + ' row m-0 w-100 my-2 p-2 px-2'}>
                         <div class="col-lg-12 p-0 ">
                             <div class="row m-0 w-100 d-flex align-items-center">
-                                <div class="col-lg-10">
+                                <div class="col-lg-10 col-md-10">
                                     <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
                                         <input
                                             // disabled={props?.disabled}
@@ -458,15 +459,18 @@ const Orders = (props) => {
                                         />
                                     </div>
                                 </div>
-                                <div class="col-lg-2 allcenered">
+                                <div class="col-lg-2  col-md-2 allcenered p-md-0">
                                     <button
                                         onClick={() => {
                                             setfilterorders({ ...filterorders, name: search?.length == 0 ? undefined : search });
                                         }}
-                                        style={{ height: '35px', marginInlineStart: '5px' }}
+                                        style={{ height: '35px', marginInlineStart: '5px', minWidth: 'auto' }}
                                         class={generalstyles.roundbutton + '  allcentered bg-primary-light'}
                                     >
-                                        search
+                                        <div class="d-flex d-md-none">search</div>
+                                        <div class="d-none d-md-flex">
+                                            <BiSearch />
+                                        </div>
                                     </button>
                                 </div>
                             </div>
@@ -478,7 +482,7 @@ const Orders = (props) => {
                     <div class={' row m-0 w-100'}>
                         <div class="col-lg-12 px-3">
                             <div class={generalstyles.card + ' row m-0 w-100'}>
-                                <div className="col-lg-6 p-0 d-flex justify-content-end ">
+                                <div className="col-lg-6 col-md-6 p-0 d-flex justify-content-end ">
                                     <div
                                         onClick={() => {
                                             var temp = [];
@@ -524,7 +528,7 @@ const Orders = (props) => {
                                         {selectedOrders?.length != fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.data?.length ? 'Select All' : 'Deselect All'}
                                     </div>
                                 </div>
-                                <div class="col-lg-6 d-flex justify-content-end">
+                                <div class="col-lg-6 col-md-6 d-flex justify-content-end">
                                     {' '}
                                     {waybills?.length > 0 && <WaybillPrint waybills={waybills} />}
                                     {/* {selectedOrders?.length != 0 && (
@@ -583,7 +587,7 @@ const Orders = (props) => {
             >
                 <Modal.Header>
                     <div className="row w-100 m-0 p-0">
-                        <div class="col-lg-6 pt-3 ">
+                        <div class="col-lg-6 col-md-10 pt-3 ">
                             <div className="row w-100 m-0 p-0">Choose Merchant</div>
                         </div>
                         <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">

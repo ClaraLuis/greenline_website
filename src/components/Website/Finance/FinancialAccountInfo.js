@@ -150,7 +150,7 @@ const FinancialAccountInfo = (props) => {
                         <div className="col-lg-6 p-0">
                             <span style={{ fontWeight: 700, fontSize: '16px' }}># {accountItem?.id}</span>
                         </div>
-                        <div className="col-lg-6 p-0 d-flex justify-content-end align-items-center">
+                        <div className="col-lg-6 col-md-6 p-0 d-flex justify-content-end align-items-center">
                             <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered text-capitalize '}>
                                 {/* {financialAccountTypeContext?.map((i, ii) => {
                                     if (i.value == accountItem?.type) {
@@ -266,7 +266,7 @@ const FinancialAccountInfo = (props) => {
                 >
                     <Modal.Header>
                         <div className="row w-100 m-0 p-0">
-                            <div class="col-lg-6 pt-3 ">
+                            <div class="col-lg-6 col-md-10 pt-3 ">
                                 <div className="row w-100 m-0 p-0 text-capitalize">{openModal?.type}</div>
                             </div>
                             <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">

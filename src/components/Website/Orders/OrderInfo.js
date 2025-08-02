@@ -205,7 +205,7 @@ const OrderInfo = (props) => {
         country: addresspayload?.country,
         streetAddress: addresspayload?.streetAddress,
         buildingNumber: addresspayload?.buildingNumber,
-        apartmentNumber: addresspayload?.apartmentNumber,
+        buildingNumber: addresspayload?.buildingNumber,
         merchantId: chosenOrderContext?.merchant?.id,
         zoneId: addresspayload?.zone,
         governorateId: addresspayload?.country == 'Egypt' ? fetchGovernoratesQuery?.data?.findAllDomesticGovernorates?.filter((item) => item.name == addresspayload?.city)[0]?.id : undefined,
@@ -671,53 +671,56 @@ const OrderInfo = (props) => {
                                                 </div>
                                             </div>
                                             <div class="col-lg-8 d-flex justify-content-end mb-3">
-                                                <WaybillPrint waybills={[chosenOrderContext]} />
+                                                <div class="row m-0 w-100 d-flex justify-content-end">
+                                                    <WaybillPrint waybills={[chosenOrderContext]} />
 
-                                                <button
-                                                    style={{ height: '35px' }}
-                                                    class={generalstyles.roundbutton + '  allcentered mx-1 ml-2'}
-                                                    onClick={async () => {
-                                                        await setorderLogsModal({ open: true, type: 'price' });
-                                                    }}
-                                                >
-                                                    <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Change order price</p>
-                                                </button>
-                                                <button
-                                                    style={{ height: '35px' }}
-                                                    class={generalstyles.roundbutton + ' mx-1 allcentered'}
-                                                    onClick={async () => {
-                                                        await setorderLogsModal({ open: true, type: 'logs' });
-                                                    }}
-                                                >
-                                                    <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Order Logs</p>
-                                                </button>
-                                                {chosenOrderContext?.type == 'delivery' && (
                                                     <button
                                                         style={{ height: '35px' }}
-                                                        class={generalstyles.roundbutton + ' allcentered mx-1'}
-                                                        onClick={() => {
-                                                            if (chosenOrderContext?.status == 'delivered' || chosenOrderContext?.status == 'partiallyDelivered') {
-                                                                setrequestReturnPayload({ ...requestReturnPayload, chosenOrderContext, orderId: chosenOrderContext.id });
-                                                                setreturnOrderModal(true);
-                                                            } else {
-                                                                NotificationManager.warning('Order is not yet delivered', 'Warning!');
-                                                            }
+                                                        class={generalstyles.roundbutton + '  allcentered mx-1 ml-2  mb-1'}
+                                                        onClick={async () => {
+                                                            await setorderLogsModal({ open: true, type: 'price' });
                                                         }}
                                                     >
-                                                        <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Request Return</p>
+                                                        <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Change order price</p>
                                                     </button>
-                                                )}
-                                                {chosenOrderContext?.type == 'return' && (
+
                                                     <button
                                                         style={{ height: '35px' }}
-                                                        class={generalstyles.roundbutton + ' allcenetered mx-1'}
-                                                        onClick={() => {
-                                                            history.push('/addorder?merchantId=' + chosenOrderContext?.merchant?.id + '&order=' + chosenOrderContext?.id);
+                                                        class={generalstyles.roundbutton + ' allcentered mx-1  mb-1'}
+                                                        onClick={async () => {
+                                                            await setorderLogsModal({ open: true, type: 'logs' });
                                                         }}
                                                     >
-                                                        <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Attach Exhange Order</p>
+                                                        <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Order Logs</p>
                                                     </button>
-                                                )}
+                                                    {chosenOrderContext?.type == 'delivery' && (
+                                                        <button
+                                                            style={{ height: '35px' }}
+                                                            class={generalstyles.roundbutton + ' allcentered mx-1  mb-1'}
+                                                            onClick={() => {
+                                                                if (chosenOrderContext?.status == 'delivered' || chosenOrderContext?.status == 'partiallyDelivered') {
+                                                                    setrequestReturnPayload({ ...requestReturnPayload, chosenOrderContext, orderId: chosenOrderContext.id });
+                                                                    setreturnOrderModal(true);
+                                                                } else {
+                                                                    NotificationManager.warning('Order is not yet delivered', 'Warning!');
+                                                                }
+                                                            }}
+                                                        >
+                                                            <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Request Return</p>
+                                                        </button>
+                                                    )}
+                                                    {chosenOrderContext?.type == 'return' && (
+                                                        <button
+                                                            style={{ height: '35px' }}
+                                                            class={generalstyles.roundbutton + ' allcenetered mx-1  mb-1'}
+                                                            onClick={() => {
+                                                                history.push('/addorder?merchantId=' + chosenOrderContext?.merchant?.id + '&order=' + chosenOrderContext?.id);
+                                                            }}
+                                                        >
+                                                            <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Attach Exhange Order</p>
+                                                        </button>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -841,7 +844,7 @@ const OrderInfo = (props) => {
                                                 )}
                                                 {chosenOrderContext?.returnPackage != null && (
                                                     <>
-                                                        <div className="col-lg-4 p-0">
+                                                        <div className="col-lg-4 col-md-4 p-0">
                                                             <div class="row m-0 w-100 d-flex align-items-center">
                                                                 {cookies.get('userInfo')?.type == 'merchant' && (
                                                                     <span style={{ fontWeight: 600 }} class="text-capitalize">
@@ -853,7 +856,7 @@ const OrderInfo = (props) => {
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
+                                                        <div className="col-lg-8 col-md-8 p-0 d-flex justify-content-end align-items-center">
                                                             {chosenOrderContext?.returnPackage?.count && (
                                                                 <div
                                                                     style={{
@@ -1148,7 +1151,7 @@ const OrderInfo = (props) => {
                                                                             style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
                                                                         />
                                                                     </div>
-                                                                    <div class="col-lg-4 d-flex align-items-center">
+                                                                    <div class="col-lg-4 col-md-7 d-flex align-items-center">
                                                                         {/* {queryParameters?.get('type') == 'inventory' && ( */}
                                                                         <div className="row m-0 w-100">
                                                                             <div style={{ fontSize: '13px' }} className={' col-lg-12 p-0'}>
@@ -1161,8 +1164,8 @@ const OrderInfo = (props) => {
                                                                         {/* )} */}
                                                                     </div>
 
-                                                                    <div className="col-lg-5">
-                                                                        <div className="row m-0 w-100 d-flex align-items-center justify-content-end">
+                                                                    <div className="col-lg-5 col-md-12 mt-md-2">
+                                                                        <div className="row m-0 w-100 d-flex align-items-center justify-content-end justify-content-md-cebter">
                                                                             <div className="mr-2">
                                                                                 {orderItem?.partial ? (
                                                                                     <div style={{ border: '1px solid #eee', borderRadius: '8px', fontWeight: 700 }} className="row m-0 w-100 p-1 px-3">
@@ -1238,7 +1241,7 @@ const OrderInfo = (props) => {
                                                     <div class="col-lg-12 p-0 mt-2">
                                                         <div className="row m-0 w-100 d-flex justify-content-center">
                                                             <>
-                                                                <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4">
+                                                                <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4 col-md-4">
                                                                     <div className="row m-0 w-100">
                                                                         <div className="col-lg-12 p-0 allcentered text-center">
                                                                             <span style={{ fontWeight: 400, fontSize: '11px' }}>Price</span>
@@ -1252,7 +1255,7 @@ const OrderInfo = (props) => {
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4">
+                                                                <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4 col-md-4">
                                                                     <div className="row m-0 w-100">
                                                                         <div className="col-lg-12 p-0 allcentered text-center">
                                                                             <span style={{ fontWeight: 400, fontSize: '11px' }}>Shipping</span>
@@ -1268,7 +1271,7 @@ const OrderInfo = (props) => {
                                                                 </div>
                                                             </>
 
-                                                            <div style={{ fontWeight: 600, fontSize: '15px' }} className="p-0 mb-2 allcentered col-lg-4">
+                                                            <div style={{ fontWeight: 600, fontSize: '15px' }} className="p-0 mb-2 allcentered col-lg-4 col-md-4">
                                                                 <div className="row m-0 w-100">
                                                                     <div className="col-lg-12 p-0 allcentered text-center">
                                                                         <span style={{ fontWeight: 400, fontSize: '11px' }}>Total</span>
@@ -1291,10 +1294,10 @@ const OrderInfo = (props) => {
                                         <div class="col-lg-4">
                                             {!editCustomer && (
                                                 <div style={{ minHeight: '140px' }} class={generalstyles.card + ' row m-0 w-100 p-4'}>
-                                                    <div className="col-lg-6 p-0 mb-2 text-capitalize">
+                                                    <div className="col-lg-6 col-md-6 p-0 mb-2 text-capitalize">
                                                         <span style={{ fontWeight: 600 }}>{chosenOrderContext?.merchantCustomer?.customerName}</span>
                                                     </div>
-                                                    <div className="col-lg-6 p-0 mb-2 text-capitalize d-flex justify-content-end">
+                                                    <div className="col-lg-6 col-md-6 p-0 mb-2 text-capitalize d-flex justify-content-end">
                                                         <div
                                                             style={{ height: '30px', width: '30px' }}
                                                             class="iconhover allcentered"
@@ -1350,7 +1353,7 @@ const OrderInfo = (props) => {
                                                     <div className="col-lg-12 p-0 ">
                                                         <span style={{ fontWeight: 600, fontSize: '13px' }}>
                                                             {chosenOrderContext?.address?.streetAddress}, Building {chosenOrderContext?.address?.buildingNumber}, Floor{' '}
-                                                            {chosenOrderContext?.address?.apartmentNumber}
+                                                            {chosenOrderContext?.address?.buildingNumber}
                                                         </span>
                                                     </div>
                                                 </div>
@@ -1712,7 +1715,7 @@ const OrderInfo = (props) => {
                                                                                           optionLabel: 'name',
                                                                                       },
                                                                                       { name: 'Building Number', attr: 'buildingNumber', size: '6' },
-                                                                                      { name: 'Apartment Floor', attr: 'apartmentNumber', size: '6' },
+                                                                                      { name: 'Apartment Floor', attr: 'buildingNumber', size: '6' },
                                                                                       { name: 'Street Address', attr: 'streetAddress', type: 'textarea', size: '12' },
                                                                                   ]
                                                                                 : [
@@ -1749,7 +1752,7 @@ const OrderInfo = (props) => {
                                                                                           optionLabel: 'name',
                                                                                       },
                                                                                       { name: 'Building Number', attr: 'buildingNumber', size: '6' },
-                                                                                      { name: 'Apartment Floor', attr: 'apartmentNumber', size: '6' },
+                                                                                      { name: 'Apartment Floor', attr: 'buildingNumber', size: '6' },
                                                                                       { name: 'Street Address', attr: 'streetAddress', type: 'textarea', size: '12' },
                                                                                   ]
                                                                         }
@@ -1774,7 +1777,7 @@ const OrderInfo = (props) => {
                                                                                             country: addresspayload?.country,
                                                                                             streetAddress: addresspayload?.streetAddress,
                                                                                             buildingNumber: addresspayload?.buildingNumber,
-                                                                                            apartmentNumber: addresspayload?.apartmentNumber,
+                                                                                            buildingNumber: addresspayload?.buildingNumber,
                                                                                             zoneId: addresspayload?.zone,
                                                                                             merchantId: chosenOrderContext?.merchant?.id,
                                                                                         },
@@ -1891,7 +1894,7 @@ const OrderInfo = (props) => {
 
                                                                                                     <div class="col-lg-12">
                                                                                                         Building: <span style={{ fontWeight: 600 }}>{item?.address?.buildingNumber}</span>, Floor:{' '}
-                                                                                                        <span style={{ fontWeight: 600 }}>{item?.address?.apartmentNumber}</span>
+                                                                                                        <span style={{ fontWeight: 600 }}>{item?.address?.buildingNumber}</span>
                                                                                                     </div>
 
                                                                                                     <div class="col-lg-12">
@@ -1967,7 +1970,7 @@ const OrderInfo = (props) => {
                                                                                                         Building Number: <span style={{ fontWeight: 600 }}>{item?.address?.buildingNumber}</span>
                                                                                                     </div>
                                                                                                     <div class="col-lg-12">
-                                                                                                        Floor: <span style={{ fontWeight: 600 }}>{item?.address?.apartmentNumber}</span>
+                                                                                                        Floor: <span style={{ fontWeight: 600 }}>{item?.address?.buildingNumber}</span>
                                                                                                     </div>
 
                                                                                                     <div class="col-lg-12">
@@ -2014,7 +2017,7 @@ const OrderInfo = (props) => {
                                                                                             Building Number: <span style={{ fontWeight: 600 }}>{item?.details?.buildingNumber}</span>
                                                                                         </div>
                                                                                         <div class="col-lg-12">
-                                                                                            Floor: <span style={{ fontWeight: 600 }}>{item?.details?.apartmentNumber}</span>
+                                                                                            Floor: <span style={{ fontWeight: 600 }}>{item?.details?.buildingNumber}</span>
                                                                                         </div>
 
                                                                                         <div class="col-lg-12">
@@ -2125,31 +2128,31 @@ const OrderInfo = (props) => {
                                             <div style={{ minHeight: '140px' }} class={generalstyles.card + ' row m-0 w-100 p-4'}>
                                                 <div style={{ fontSize: '12px' }} className="col-lg-12 p-0 mt-2">
                                                     <div className="row m-0 w-100 d-flex align-items-center">
-                                                        <div className="col-lg-4 p-0">
+                                                        <div className="col-lg-4 col-md-4 p-0">
                                                             <div className="text-capitalize">Can Be Opened</div>
                                                             <div style={{ fontWeight: 600 }} className="text-capitalize">
                                                                 {chosenOrderContext?.canBeOpened == 1 ? 'Yes' : 'No'}
                                                             </div>
                                                         </div>
-                                                        <div className="col-lg-4 p-0">
+                                                        <div className="col-lg-4 col-md-4 p-0">
                                                             <div className="text-capitalize">Fragile</div>
                                                             <div style={{ fontWeight: 600 }} className="text-capitalize">
                                                                 {chosenOrderContext?.fragile == 1 ? 'Yes' : 'No'}
                                                             </div>
                                                         </div>
-                                                        <div className="col-lg-4 p-0">
+                                                        <div className="col-lg-4 col-md-4 p-0">
                                                             <div className="text-capitalize">Partial Delivery</div>
                                                             <div style={{ fontWeight: 600 }} className="text-capitalize">
                                                                 {chosenOrderContext?.deliveryPart == 1 ? 'Yes' : 'No'}
                                                             </div>
                                                         </div>
-                                                        <div className="col-lg-4 p-0 mt-2">
+                                                        <div className="col-lg-4 col-md-4 p-0 mt-2">
                                                             <div className="text-capitalize">Payment Method</div>
                                                             <div style={{ fontWeight: 600 }} className="text-capitalize">
                                                                 {chosenOrderContext?.paymentType}
                                                             </div>
                                                         </div>
-                                                        <div className="col-lg-4 p-0 mt-2">
+                                                        <div className="col-lg-4 col-md-4 p-0 mt-2">
                                                             <div className="text-capitalize">Order Type</div>
                                                             <div style={{ fontWeight: 600 }} className="text-capitalize">
                                                                 {chosenOrderContext?.type}
@@ -2176,7 +2179,7 @@ const OrderInfo = (props) => {
             >
                 <Modal.Header>
                     <div className="row w-100 m-0 p-0">
-                        <div class="col-lg-6 pt-3 ">
+                        <div class="col-lg-6 col-md-10 pt-3 ">
                             <div className="row w-100 m-0 p-0">Items</div>
                         </div>
                         <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
@@ -2322,7 +2325,7 @@ const OrderInfo = (props) => {
             >
                 <Modal.Header>
                     <div className="row w-100 m-0 p-0">
-                        <div class="col-lg-6 pt-3 ">
+                        <div class="col-lg-6 col-md-10 pt-3 ">
                             <div className="row w-100 m-0 p-0">Place in warehouse</div>
                         </div>
                         <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
@@ -2394,7 +2397,7 @@ const OrderInfo = (props) => {
             >
                 <Modal.Header>
                     <div className="row w-100 m-0 p-0">
-                        <div class="col-lg-6 pt-3 ">
+                        <div class="col-lg-6 col-md-10 pt-3 ">
                             <div className="row w-100 m-0 p-0">Request Return</div>
                         </div>
                         <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
@@ -2511,7 +2514,7 @@ const OrderInfo = (props) => {
             >
                 <Modal.Header>
                     <div className="row w-100 m-0 p-0">
-                        <div class="col-lg-6 pt-3 ">
+                        <div class="col-lg-6 col-md-10 pt-3 ">
                             <div className="row w-100 m-0 p-0">Transaction</div>
                         </div>
                         <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
@@ -2620,7 +2623,7 @@ const OrderInfo = (props) => {
             >
                 <Modal.Header>
                     <div className="row w-100 m-0 p-0">
-                        <div class="col-lg-6 pt-3 ">
+                        <div class="col-lg-6 col-md-10 pt-3 ">
                             {orderLogsModal.type == 'logs' && <div className="row w-100 m-0 p-0">Order Logs</div>}
                             {orderLogsModal.type == 'price' && !orderLogsModal?.func && <div className="row w-100 m-0 p-0">Change Order Price</div>}
                             {orderLogsModal.type == 'price' && orderLogsModal?.func && <div className="row w-100 m-0 p-0">Enter New Order Price</div>}

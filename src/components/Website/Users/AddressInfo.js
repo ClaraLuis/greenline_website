@@ -71,7 +71,7 @@ const AddressInfo = (props) => {
             >
                 <Modal.Header>
                     <div className="row w-100 m-0 p-0">
-                        <div class="col-lg-6 pt-3 ">
+                        <div class="col-lg-6 col-md-10 pt-3 ">
                             {props?.addresspayload.functype == 'edit' && <div className="row w-100 m-0 p-0">Address:</div>}
                             {props?.addresspayload.functype == 'add' && <div className="row w-100 m-0 p-0">Add Address</div>}
                         </div>

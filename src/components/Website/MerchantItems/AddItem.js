@@ -1509,7 +1509,7 @@ const AddItem = (props) => {
                                         <div key={colorIndex} style={{ border: '1px solid #eee', borderRadius: '0.25rem', fontSize: '13px', cursor: 'pointer' }} className="p-3 mb-2">
                                             <div class="col-lg-12 p-0">
                                                 <div class="row m-0 w-100">
-                                                    <div className="col-lg-10 p-0 text-capitalize" onClick={() => handleColorClick(color)}>
+                                                    <div className="col-lg-10 col-md-10 p-0 text-capitalize" onClick={() => handleColorClick(color)}>
                                                         {color}
                                                     </div>
                                                     <div className="col-lg-2 p-0 mb-2" style={{ color: 'grey', fontSize: '12px' }} onClick={() => handleColorClick(color)}>

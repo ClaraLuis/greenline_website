@@ -43,7 +43,7 @@ const Waybill = ({ order }) => {
                                 <br />
                                 {order?.address?.buildingNumber && (
                                     <>
-                                        {order?.address?.buildingNumber}, {order?.address?.apartmentNumber}
+                                        {order?.address?.buildingNumber}, {order?.address?.buildingNumber}
                                     </>
                                 )}
                             </div>
@@ -121,7 +121,7 @@ const Waybill = ({ order }) => {
                         <div className="row allcentered w-100 m-0 p-1">
                             <div className="col-lg-12 p-0 mt-2">
                                 <div className="row m-0 w-100 d-flex">
-                                    <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4 col-md-4">
+                                    <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4 col-md-4 col-md-4">
                                         <div className="row m-0 w-100">
                                             <div className="col-lg-12 p-0 allcentered text-center">
                                                 <span style={{ fontWeight: 400, fontSize: '11px' }}>Price</span>
@@ -133,7 +133,7 @@ const Waybill = ({ order }) => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4 col-md-4">
+                                    <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4 col-md-4 col-md-4">
                                         <div className="row m-0 w-100">
                                             <div className="col-lg-12 p-0 allcentered text-center">
                                                 <span style={{ fontWeight: 400, fontSize: '11px' }}>Shipping</span>
@@ -145,7 +145,7 @@ const Waybill = ({ order }) => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div style={{ fontWeight: 600, fontSize: '15px' }} className="p-0 mb-2 allcentered col-lg-4 col-md-4">
+                                    <div style={{ fontWeight: 600, fontSize: '15px' }} className="p-0 mb-2 allcentered col-lg-4 col-md-4 col-md-4">
                                         <div className="row m-0 w-100">
                                             <div className="col-lg-12 p-0 allcentered text-center">
                                                 <span style={{ fontWeight: 400, fontSize: '11px' }}>Total</span>

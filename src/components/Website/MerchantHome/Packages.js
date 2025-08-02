@@ -28,6 +28,7 @@ import { TbTruckDelivery } from 'react-icons/tb';
 import Cookies from 'universal-cookie';
 import MerchantSelectComponent from '../../selectComponents/MerchantSelectComponent.js';
 import InventorySelectComponent from '../../selectComponents/InventorySelectComponent.js';
+import { BiSearch } from 'react-icons/bi';
 
 const Packages = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -259,7 +260,7 @@ const Packages = (props) => {
                         <div class={generalstyles.card + ' row m-0 w-100 my-2 p-2 px-0'}>
                             <div class="col-lg-12 p-0 ">
                                 <div class="row m-0 w-100 d-flex align-items-center">
-                                    <div class="col-lg-10">
+                                    <div class="col-lg-10 col-md-10">
                                         <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
                                             <input
                                                 class={formstyles.form__field}
@@ -271,15 +272,18 @@ const Packages = (props) => {
                                             />
                                         </div>
                                     </div>
-                                    <div class="col-lg-2 p-0 allcenered">
+                                    <div class="col-lg-2 col-md-2 p-0 allcenered">
                                         <button
                                             onClick={() => {
                                                 setfilter({ ...filter, sku: search?.length == 0 ? undefined : search });
                                             }}
-                                            style={{ height: '35px', marginInlineStart: '5px' }}
+                                            style={{ height: '35px', marginInlineStart: '5px', minWidth: 'auto' }}
                                             class={generalstyles.roundbutton + '  allcentered bg-primary-light'}
                                         >
-                                            search
+                                            <div class="d-flex d-md-none">Search</div>
+                                            <div class="d-none d-md-flex">
+                                                <BiSearch />
+                                            </div>
                                         </button>
                                     </div>
                                 </div>
@@ -339,12 +343,12 @@ const Packages = (props) => {
                                                 style={{ background: selected ? 'var(--secondary)' : 'white', transition: 'all 0.4s', cursor: 'pointer' }}
                                                 class={generalstyles.card + ' p-3 row  w-100   d-flex align-items-center'}
                                             >
-                                                <div className="col-lg-2 p-0">
+                                                <div className="col-lg-2 col-md-2 p-0">
                                                     <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
                                                         # {item?.id}
                                                     </span>
                                                 </div>
-                                                <div className="col-lg-10 p-0 d-flex justify-content-end align-items-center">
+                                                <div className="col-lg-10 col-md-10 p-0 d-flex justify-content-end align-items-center">
                                                     <div class="row m-0 w-100 d-fex justify-content-end align-items-center">
                                                         <div
                                                             className={
@@ -398,8 +402,8 @@ const Packages = (props) => {
                                                 </div>
                                                 <div class="col-lg-12 p-0 mb-2">
                                                     <div class="row m-0 w-100 d-flex align-items-center">
-                                                        <div class="col-lg-8 p-0">{item.type == 'merchant' ? item?.merchant?.name : item?.inventory?.name}</div>
-                                                        <div class="col-lg-4 p-0 d-flex justify-content-end">
+                                                        <div class="col-lg-8 col-md-8 p-0">{item.type == 'merchant' ? item?.merchant?.name : item?.inventory?.name}</div>
+                                                        <div class="col-lg-4 col-md-4 p-0 d-flex justify-content-end">
                                                             <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
                                                                 {item?.countAndSum?.sum} items
                                                             </span>
@@ -408,13 +412,13 @@ const Packages = (props) => {
                                                 </div>
                                                 <div class="col-lg-12 p-0 mb-2">
                                                     <div class="row m-0 w-100 d-flex align-items-center">
-                                                        <div class="col-lg-8 p-0">
+                                                        <div class="col-lg-8 col-md-8 p-0">
                                                             {' '}
                                                             <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
                                                                 {item?.sku}
                                                             </span>
                                                         </div>
-                                                        <div class="col-lg-4 p-0 d-flex justify-content-end">
+                                                        <div class="col-lg-4 col-md-4 p-0 d-flex justify-content-end">
                                                             <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
                                                                 {item?.countAndSum?.count} orders
                                                             </span>
@@ -423,7 +427,7 @@ const Packages = (props) => {
                                                 </div>
                                                 <div class="col-lg-12 p-0">
                                                     <div class="row m-0 w-100 d-flex align-items-center">
-                                                        <div class="col-lg-6 p-0">
+                                                        <div class="col-lg-6 col-md-6 p-0">
                                                             {item?.courier && cookies.get('userInfo')?.type != 'merchant' && (
                                                                 <div className="col-lg-12 p-0 mb-2 d-flex align-items-center">
                                                                     <TbTruckDelivery size={20} class="mr-1" />
@@ -434,7 +438,7 @@ const Packages = (props) => {
                                                                 </div>
                                                             )}
                                                         </div>
-                                                        <div class="col-lg-6 p-0 d-flex justify-content-end">
+                                                        <div class="col-lg-6 col-md-6 p-0 d-flex justify-content-end">
                                                             <span style={{ fontSize: '12px', color: 'grey' }} class="text-capitalize">
                                                                 {dateformatter(item?.createdAt)}
                                                             </span>

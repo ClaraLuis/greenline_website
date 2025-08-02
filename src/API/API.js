@@ -899,7 +899,7 @@ const API = () => {
                                     city
                                     streetAddress
                                     buildingNumber
-                                    apartmentNumber
+                                    buildingNumber
                                 }
                                 merchantCustomer {
                                     id
@@ -1005,7 +1005,7 @@ const API = () => {
                             city
                             streetAddress
                             buildingNumber
-                            apartmentNumber
+                            buildingNumber
                         }
                         courier {
                             id
@@ -1032,7 +1032,7 @@ const API = () => {
                             city
                             streetAddress
                             buildingNumber
-                            apartmentNumber
+                            buildingNumber
                         }
                         orderItems {
                             id
@@ -1042,6 +1042,7 @@ const API = () => {
                             unitDiscount
                             partialCount
                             info {
+                                fullName
                                 name
                                 imageUrl
                                 sku
@@ -1136,7 +1137,7 @@ const API = () => {
                             city
                             streetAddress
                             buildingNumber
-                            apartmentNumber
+                            buildingNumber
                         }
                         courier {
                             id
@@ -1163,7 +1164,7 @@ const API = () => {
                             city
                             streetAddress
                             buildingNumber
-                            apartmentNumber
+                            buildingNumber
                         }
                         orderItems {
                             id
@@ -1173,6 +1174,7 @@ const API = () => {
                             unitDiscount
                             partialCount
                             info {
+                                fullName
                                 name
                                 imageUrl
                                 sku
@@ -1278,7 +1280,7 @@ const API = () => {
                             city
                             streetAddress
                             buildingNumber
-                            apartmentNumber
+                            buildingNumber
                         }
                         merchantCustomer {
                             id
@@ -1306,6 +1308,7 @@ const API = () => {
                             partialCount
                             countInInventory
                             info {
+                                fullName
                                 name
                                 imageUrl
                                 sku
@@ -1360,7 +1363,7 @@ const API = () => {
                             type
                         }
                         address {
-                            apartmentNumber
+                            buildingNumber
                             streetAddress
                             buildingNumber
                             city
@@ -1517,7 +1520,7 @@ const API = () => {
                         city
                         streetAddress
                         buildingNumber
-                        apartmentNumber
+                        buildingNumber
                         zone {
                             name
                             id
@@ -1732,7 +1735,7 @@ const API = () => {
                     city
                     streetAddress
                     buildingNumber
-                    apartmentNumber
+                    buildingNumber
                 }
                 failsAndAssigns
                 courier {
@@ -1875,7 +1878,7 @@ const API = () => {
                         city
                         streetAddress
                         buildingNumber
-                        apartmentNumber
+                        buildingNumber
                     }
                     courier {
                         id
@@ -2105,7 +2108,7 @@ const API = () => {
                                     city
                                     streetAddress
                                     buildingNumber
-                                    apartmentNumber
+                                    buildingNumber
                                 }
                                 courier {
                                     id
@@ -2132,7 +2135,7 @@ const API = () => {
                                     city
                                     streetAddress
                                     buildingNumber
-                                    apartmentNumber
+                                    buildingNumber
                                 }
                                 orderItems {
                                     id
@@ -2142,6 +2145,7 @@ const API = () => {
                                     unitDiscount
                                     partialCount
                                     info {
+                                        fullName
                                         name
                                         imageUrl
                                         sku
@@ -2297,7 +2301,7 @@ const API = () => {
                         city
                         streetAddress
                         buildingNumber
-                        apartmentNumber
+                        buildingNumber
                     }
                     courier {
                         id
@@ -2440,7 +2444,7 @@ const API = () => {
                             city
                             streetAddress
                             buildingNumber
-                            apartmentNumber
+                            buildingNumber
                         }
                         courier {
                             id
@@ -2465,7 +2469,7 @@ const API = () => {
                             city
                             streetAddress
                             buildingNumber
-                            apartmentNumber
+                            buildingNumber
                         }
                         returnPackage {
                             id
@@ -2568,7 +2572,7 @@ const API = () => {
                             city
                             streetAddress
                             buildingNumber
-                            apartmentNumber
+                            buildingNumber
                         }
                         courier {
                             id
@@ -2831,7 +2835,7 @@ const API = () => {
                             id
                             country
                             city
-                            apartmentNumber
+                            buildingNumber
                             streetAddress
                             buildingNumber
                         }
@@ -3010,7 +3014,7 @@ const API = () => {
                         city
                         streetAddress
                         buildingNumber
-                        apartmentNumber
+                        buildingNumber
                         createdAt
                     }
                 }
@@ -3144,7 +3148,7 @@ const API = () => {
                                     city
                                     streetAddress
                                     buildingNumber
-                                    apartmentNumber
+                                    buildingNumber
                                 }
                                 courier {
                                     id
@@ -3171,9 +3175,9 @@ const API = () => {
                                     city
                                     streetAddress
                                     buildingNumber
-                                    apartmentNumber
+                                    buildingNumber
                                 }
-                                orderItems {
+                                 {
                                     id
                                     orderId
                                     count
@@ -3366,7 +3370,7 @@ const API = () => {
                                     streetAddress
                                     zipCode
                                     buildingNumber
-                                    apartmentNumber
+                                    buildingNumber
                                     createdAt
                                     lastModified
                                 }
@@ -3384,6 +3388,21 @@ const API = () => {
                                     lastModified
                                     deletedAt
                                     countInInventory
+                                    info {
+                                        id
+                                        sku
+                                        name
+                                        shopifyId
+                                        merchantSku
+                                        merchantId
+                                        itemId
+                                        isEnabled
+                                        imageUrl
+                                        price
+                                        weight
+                                        createdAt
+                                        fullName
+                                    }
                                 }
                                 previousOrder {
                                     id
@@ -3600,7 +3619,7 @@ const API = () => {
                                         streetAddress
                                         zipCode
                                         buildingNumber
-                                        apartmentNumber
+                                        buildingNumber
                                         createdAt
                                         lastModified
                                         zone {
@@ -4074,7 +4093,7 @@ const API = () => {
                                     city
                                     streetAddress
                                     buildingNumber
-                                    apartmentNumber
+                                    buildingNumber
                                 }
                                 merchantCustomer {
                                     id
@@ -4136,7 +4155,7 @@ const API = () => {
                                     city
                                     streetAddress
                                     buildingNumber
-                                    apartmentNumber
+                                    buildingNumber
                                 }
                                 merchantCustomer {
                                     id
@@ -4190,7 +4209,7 @@ const API = () => {
                                     city
                                     streetAddress
                                     buildingNumber
-                                    apartmentNumber
+                                    buildingNumber
                                 }
                                 previousOrderId
                                 previousOrder {

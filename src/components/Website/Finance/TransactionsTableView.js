@@ -198,12 +198,12 @@ const TransactionsTableView = (props) => {
                                                     <td>
                                                         {item?.toAccount?.id === props?.accountId ? (
                                                             <span className="text-primary">
-                                                                <MdOutlineAccountCircle className="me-1" />
+                                                                <MdOutlineAccountCircle size={13} class="mt-1" />
                                                                 {item?.fromAccount?.name ?? '-'}
                                                             </span>
                                                         ) : (
                                                             <span className="text-success">
-                                                                <MdOutlineAccountCircle className="me-1" />
+                                                                <MdOutlineAccountCircle size={13} class="mt-1" />
                                                                 {item?.toAccount?.name ?? '-'}
                                                             </span>
                                                         )}
@@ -336,7 +336,7 @@ const TransactionsTableView = (props) => {
             >
                 <Modal.Header>
                     <div className="row w-100 m-0 p-0">
-                        <div class="col-lg-6 pt-3 ">
+                        <div class="col-lg-6 col-md-10 pt-3 ">
                             <div className="row w-100 m-0 p-0">History</div>
                         </div>
                         <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
@@ -408,7 +408,7 @@ const TransactionsTableView = (props) => {
             >
                 <Modal.Header>
                     <div className="row w-100 m-0 p-0">
-                        <div class="col-lg-6 pt-3 ">
+                        <div class="col-lg-6 col-md-10 pt-3 ">
                             <div className="row w-100 m-0 p-0">Update Transaction Status</div>
                         </div>
                         <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">

@@ -360,14 +360,14 @@ const TransactionsTable = (props) => {
                                             {cookies.get('userInfo')?.type == 'merchant' && item?.sheetOrder?.order && (
                                                 <div className="col-lg-12 p-0">
                                                     <div style={{ border: '1px solid #eee' }} class={generalstyles.card + ' p-3 row m-0 w-100 '}>
-                                                        <div className="col-lg-4 p-0">
+                                                        <div className="col-lg-4 col-md-4 p-0">
                                                             <div class="row m-0 w-100 d-flex align-items-center">
                                                                 <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
                                                                     # {item?.sheetOrder?.order?.id}
                                                                 </span>{' '}
                                                             </div>
                                                         </div>
-                                                        <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
+                                                        <div className="col-lg-8 col-md-8 p-0 d-flex justify-content-end align-items-center">
                                                             <div class="row m-0 w-100  d-flex justify-content-end align-items-center">
                                                                 <div
                                                                     className={`wordbreak rounded-pill font-weight-600 text-capitalize ${
@@ -416,7 +416,7 @@ const TransactionsTable = (props) => {
                                                                 {item?.sheetOrder?.order?.address?.country}, {item?.sheetOrder?.order?.address?.city},{' '}
                                                                 <span style={{ fontWeight: 600, fontSize: '13px' }}>
                                                                     {item?.sheetOrder?.order?.address?.streetAddress}, Building {item?.sheetOrder?.order?.address?.buildingNumber}, Floor{' '}
-                                                                    {item?.sheetOrder?.order?.address?.apartmentNumber}
+                                                                    {item?.sheetOrder?.order?.address?.buildingNumber}
                                                                 </span>
                                                             </span>
                                                         </div>
@@ -518,7 +518,7 @@ const TransactionsTable = (props) => {
             >
                 <Modal.Header>
                     <div className="row w-100 m-0 p-0">
-                        <div class="col-lg-6 pt-3 ">
+                        <div class="col-lg-6 col-md-10 pt-3 ">
                             <div className="row w-100 m-0 p-0">History</div>
                         </div>
                         <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
@@ -590,7 +590,7 @@ const TransactionsTable = (props) => {
             >
                 <Modal.Header>
                     <div className="row w-100 m-0 p-0">
-                        <div class="col-lg-6 pt-3 ">
+                        <div class="col-lg-6 col-md-10 pt-3 ">
                             <div className="row w-100 m-0 p-0">Update Transaction Status</div>
                         </div>
                         <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">

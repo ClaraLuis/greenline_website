@@ -18,6 +18,7 @@ import { gql, useMutation, useQuery } from '@apollo/client';
 import AddEditSecuritylayers from '../Securitylayers/AddEditSecuritylayers.js';
 import UsersTable from '../Users/UsersTable.js';
 import Pagination from '../../Pagination.js';
+import { BiSearch } from 'react-icons/bi';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -105,7 +106,7 @@ const HubDetails = (props) => {
 
                                             <div class="col-lg-12 p-1 px-2 ">
                                                 <div class={generalstyles.card + ' row m-0 w-100 d-flex align-items-center '}>
-                                                    <div class="col-lg-10 p-0">
+                                                    <div class="col-lg-10 col-md-10 p-0">
                                                         <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
                                                             <input
                                                                 // disabled={props?.disabled}
@@ -119,15 +120,18 @@ const HubDetails = (props) => {
                                                             />
                                                         </div>
                                                     </div>
-                                                    <div class="col-lg-2 allcenered">
+                                                    <div class="col-lg-2  col-md-2 allcenered p-md-0">
                                                         <button
                                                             onClick={() => {
                                                                 setfilterUsers({ ...filterUsers, name: search?.length == 0 ? undefined : search });
                                                             }}
-                                                            style={{ height: '35px', marginInlineStart: '5px' }}
+                                                            style={{ height: '35px', marginInlineStart: '5px', minWidth: 'auto' }}
                                                             class={generalstyles.roundbutton + '  allcentered bg-primary-light'}
                                                         >
-                                                            search
+                                                            <div class="d-flex d-md-none">search</div>
+                                                            <div class="d-none d-md-flex">
+                                                                <BiSearch />
+                                                            </div>
                                                         </button>
                                                     </div>
                                                 </div>

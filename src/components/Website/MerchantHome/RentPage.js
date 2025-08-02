@@ -115,7 +115,7 @@ const RentPage = (props) => {
                                         <span style={{ color: 'var(--info)' }}>Transactions</span>
                                     </p>
                                 </div>
-                                <div class="col-lg-6 p-0 d-flex justify-content-end">
+                                <div class="col-lg-6 col-md-6 p-0 d-flex justify-content-end">
                                     <span
                                         onClick={() => {
                                             history.push('/merchantpayments');

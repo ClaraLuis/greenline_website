@@ -60,7 +60,7 @@ const Waybill = ({ order }) => {
                                 <br />
                                 {order?.address?.buildingNumber && (
                                     <>
-                                        {order?.address?.buildingNumber}, {order?.address?.apartmentNumber}
+                                        {order?.address?.buildingNumber}, {order?.address?.buildingNumber}
                                     </>
                                 )}
                             </div>

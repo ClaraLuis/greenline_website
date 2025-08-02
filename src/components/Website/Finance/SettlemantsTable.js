@@ -61,7 +61,7 @@ const SettlemantsTable = (props) => {
                                             # {item?.id},{item?.merchant?.name}
                                         </span>
                                     </div>
-                                    <div className="col-lg-6 p-0 d-flex justify-content-end align-items-center">
+                                    <div className="col-lg-6 col-md-6 p-0 d-flex justify-content-end align-items-center">
                                         <div class="row m-0 w-100 d-flrx justify-content-end align-items-center"></div>
                                     </div>
                                     <div className="col-lg-12 p-0 my-2">
@@ -74,7 +74,7 @@ const SettlemantsTable = (props) => {
                                             {item?.totalAmount} EGP
                                         </span>
                                     </div>
-                                    <div className="col-lg-6 p-0 mb-2 d-flex justify-content-end">
+                                    <div className="col-lg-6 col-md-6 p-0 mb-2 d-flex justify-content-end">
                                         <span class="d-flex align-items-center" style={{ fontWeight: 500, color: 'grey', fontSize: '12px' }}>
                                             <IoMdTime class="mr-1" />
                                             {dateformatter(item?.createdAt)}

@@ -16,6 +16,7 @@ import { BsTrash } from 'react-icons/bs';
 import { IoMdClose } from 'react-icons/io';
 import { NotificationManager } from 'react-notifications';
 import API from '../../../API/API.js';
+import { BiPlus } from 'react-icons/bi';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -134,7 +135,7 @@ const BatchScan = (props) => {
             <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
                 <div class="col-lg-12 px-3">
                     <div class={generalstyles.card + ' row m-0 w-100'}>
-                        <div class="col-lg-10 p-0 ">
+                        <div class="col-lg-10 col-md-10 p-0 ">
                             <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
                                 <input
                                     type="number"
@@ -174,7 +175,7 @@ const BatchScan = (props) => {
                                 />
                             </div>
                         </div>
-                        <div class="col-lg-2 p-0 allcentered">
+                        <div class="col-lg-2 col-md-2 p-0 allcentered">
                             <button
                                 style={{ height: '30px', minWidth: '80%' }}
                                 class={generalstyles.roundbutton + ' allcentered p-0'}
@@ -204,7 +205,10 @@ const BatchScan = (props) => {
                                     setsearch('');
                                 }}
                             >
-                                Add order
+                                <div class="d-flex d-md-none">Add order</div>
+                                <div class="d-none d-md-flex">
+                                    <BiPlus />
+                                </div>
                             </button>
                         </div>
                     </div>
@@ -250,7 +254,7 @@ const BatchScan = (props) => {
                                                             <div style={{ fontWeight: 700 }} class="col-lg-10 p-0 mb-2">
                                                                 # {item}
                                                             </div>
-                                                            <div class="col-lg-2 p-0 allcentered">
+                                                            <div class="col-lg-2 col-md-2 p-0 allcentered">
                                                                 <BsTrash
                                                                     onClick={() => {
                                                                         var temp = { ...sheetpayload };
@@ -299,7 +303,7 @@ const BatchScan = (props) => {
             >
                 <Modal.Header>
                     <div className="row w-100 m-0 p-0">
-                        <div class="col-lg-6 pt-3 ">
+                        <div class="col-lg-6 col-md-10 pt-3 ">
                             <div className="row w-100 m-0 p-0">Update Orders Status</div>
                         </div>
                         <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">

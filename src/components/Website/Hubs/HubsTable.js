@@ -75,11 +75,11 @@ const HubsTable = (props) => {
                                 return (
                                     <div className="col-lg-4">
                                         <div class={generalstyles.card + ' p-3 row m-0 w-100 allcentered'}>
-                                            <div className="col-lg-6 p-0  text-capitalize mb-2">
+                                            <div className="col-lg-6 col-md-6 p-0  text-capitalize mb-2">
                                                 <span style={{ fontWeight: 700 }}>{item?.name}</span>
                                             </div>
                                             {isAuth([1, 97]) && (
-                                                <div className="col-lg-6 p-0 mb-2 d-flex justify-content-end">
+                                                <div className="col-lg-6 col-md-6 p-0 mb-2 d-flex justify-content-end">
                                                     <div
                                                         onClick={async () => {
                                                             var temp = { ...item };
