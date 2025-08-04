@@ -297,7 +297,7 @@ const CourierCollection = (props) => {
                                 <div class={' row m-0 w-100 mb-2 p-0 px-0'}>
                                     <div class="col-lg-12 px-3">
                                         <div class={generalstyles.card + ' row m-0 w-100'}>
-                                            <div className="col-lg-6 p-0 d-flex justify-content-end ">
+                                            <div className="col-lg-6 col-md-6 p-0 d-flex justify-content-end ">
                                                 <div
                                                     onClick={() => {
                                                         var temp = [];
@@ -499,7 +499,7 @@ const CourierCollection = (props) => {
             >
                 <Modal.Header>
                     <div className="row w-100 m-0 p-0">
-                        <div class="col-lg-6 pt-3 ">
+                        <div class="col-lg-6 col-md-10 pt-3 ">
                             <div className="row w-100 m-0 p-0 text-capitalize">{payload?.type == 'transfer' ? 'Transfer' : 'Process'}</div>
                         </div>
                         <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">

@@ -307,12 +307,12 @@ const InventoryRent = (props) => {
                                         style={{ background: selected ? 'var(--secondary)' : 'white', transition: 'all 0.4s', cursor: 'pointer' }}
                                         class={generalstyles.card + ' p-3 row  w-100   d-flex align-items-center'}
                                     >
-                                        <div className="col-lg-4 p-0">
+                                        <div className="col-lg-4 col-md-4 p-0">
                                             <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
                                                 # {item?.id}, {item?.merchant?.name}
                                             </span>
                                         </div>
-                                        <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
+                                        <div className="col-lg-8 col-md-8 p-0 d-flex justify-content-end align-items-center">
                                             <div class="row m-0 w-100 d-fex justify-content-end align-items-center">
                                                 <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered mx-1 text-capitalize '}>
                                                     {item?.type?.split(/(?=[A-Z])/).join(' ')}
@@ -393,12 +393,12 @@ const InventoryRent = (props) => {
                                                 {item?.lastBillTransaction && (
                                                     <div class="col-lg-12 p-0 d-flex">
                                                         <div class="row m-0 w-100 " style={{ border: '1px solid #eee' }}>
-                                                            <div className="col-lg-4 p-0">
+                                                            <div className="col-lg-4 col-md-4 p-0">
                                                                 <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
                                                                     # {item?.lastBillTransaction?.id}
                                                                 </span>
                                                             </div>
-                                                            <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
+                                                            <div className="col-lg-8 col-md-8 p-0 d-flex justify-content-end align-items-center">
                                                                 <div class="row m-0 w-100 d-fex justify-content-end align-items-center">
                                                                     <div className={' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered mx-1 text-capitalize '}>
                                                                         {item?.lastBillTransaction?.status?.split(/(?=[A-Z])/).join(' ')}
@@ -415,7 +415,7 @@ const InventoryRent = (props) => {
                                                                             {item?.lastBillTransaction?.amount} {item?.lastBillTransaction?.currency} /{' '}
                                                                         </span>
                                                                     </div>
-                                                                    <div class="col-lg-6 p-0 d-flex justify-content-end">
+                                                                    <div class="col-lg-6 col-md-6 p-0 d-flex justify-content-end">
                                                                         <span style={{ fontSize: '12px', color: 'grey' }} class="text-capitalize">
                                                                             {dateformatter(item?.lastBillTransaction?.createdAt)}
                                                                         </span>
@@ -443,7 +443,7 @@ const InventoryRent = (props) => {
                                                             : 'month'}
                                                     </span>
                                                 </div>
-                                                <div class="col-lg-6 p-0 d-flex justify-content-end">
+                                                <div class="col-lg-6 col-md-6 p-0 d-flex justify-content-end">
                                                     <span style={{ fontSize: '12px', color: 'grey' }} class="text-capitalize">
                                                         {dateformatter(item?.createdAt)}
                                                     </span>
@@ -476,7 +476,7 @@ const InventoryRent = (props) => {
             >
                 <Modal.Header>
                     <div className="row w-100 m-0 p-0">
-                        <div class="col-lg-6 pt-3 "></div>
+                        <div class="col-lg-6 col-md-10 pt-3 "></div>
                         <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
                             <div
                                 class={'close-modal-container'}
@@ -648,7 +648,7 @@ const InventoryRent = (props) => {
             >
                 <Modal.Header>
                     <div className="row w-100 m-0 p-0">
-                        <div class="col-lg-6 pt-3 "></div>
+                        <div class="col-lg-6 col-md-10 pt-3 "></div>
                         <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
                             <div
                                 class={'close-modal-container'}

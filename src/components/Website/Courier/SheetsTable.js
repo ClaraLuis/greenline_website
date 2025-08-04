@@ -54,14 +54,14 @@ const SheetsTable = (props) => {
                                 <div style={{ background: 'white' }} class={generalstyles.card + '  row  w-100 '}>
                                     <div class="col-lg-12 p-0">
                                         <div class="row m-0 w-100 d-flex align-items-end">
-                                            <div className="col-lg-4 p-0">
+                                            <div className="col-lg-4 col-md-4 p-0">
                                                 <span style={{ fontSize: '12px', color: 'grey' }}># {item?.id}</span>
                                                 <br />
                                                 <span style={{ fontWeight: 600, fontSize: '12px' }} class="text-capitalize">
                                                     {item?.userInfo?.name}{' '}
                                                 </span>
                                             </div>
-                                            <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
+                                            <div className="col-lg-8 col-md-8 p-0 d-flex justify-content-end align-items-center">
                                                 <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
                                                     <div
                                                         className={
@@ -159,7 +159,7 @@ const SheetsTable = (props) => {
                                     <div className="col-lg-6 p-0 mb-2">
                                         <span style={{ fontWeight: 600 }}>{item?.orderCount}</span> Orders
                                     </div>
-                                    <div class="col-lg-6 p-0 mb-2 d-flex justify-content-end">
+                                    <div class="col-lg-6 col-md-6 p-0 mb-2 d-flex justify-content-end">
                                         <span class="d-flex align-items-center" style={{ fontWeight: 400, color: 'grey', fontSize: '10px' }}>
                                             <IoMdTime class="mr-1" />
                                             {dateformatter(item?.createdAt)}
@@ -240,7 +240,7 @@ const SheetsTable = (props) => {
             >
                 <Modal.Header>
                     <div className="row w-100 m-0 p-0">
-                        <div class="col-lg-6 pt-3 ">
+                        <div class="col-lg-6 col-md-10 pt-3 ">
                             <div className="row w-100 m-0 p-0">Update Manifest Status</div>
                         </div>
                         <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">

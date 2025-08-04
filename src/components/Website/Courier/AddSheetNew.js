@@ -14,6 +14,7 @@ import { BsTrash } from 'react-icons/bs';
 import { NotificationManager } from 'react-notifications';
 import API from '../../../API/API.js';
 import SelectComponent from '../../SelectComponent.js';
+import { BiPlus } from 'react-icons/bi';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -275,7 +276,7 @@ const AddSheetNew = (props) => {
                 )}
                 <div class="col-lg-12 px-3">
                     <div class={generalstyles.card + ' row m-0 w-100'}>
-                        <div class="col-lg-10 p-0 ">
+                        <div class="col-lg-10 col-md-10 p-0 ">
                             <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
                                 <input
                                     type="number"
@@ -315,7 +316,7 @@ const AddSheetNew = (props) => {
                                 />
                             </div>
                         </div>
-                        <div class="col-lg-2 p-0 allcentered">
+                        <div class="col-lg-2 col-md-2 p-0 allcentered">
                             <button
                                 style={{ height: '30px', minWidth: '80%' }}
                                 class={generalstyles.roundbutton + ' allcentered p-0'}
@@ -345,7 +346,10 @@ const AddSheetNew = (props) => {
                                     setsearch('');
                                 }}
                             >
-                                Add order
+                                <div class="d-flex d-md-none">Add order</div>
+                                <div class="d-none d-md-flex">
+                                    <BiPlus />
+                                </div>
                             </button>
                         </div>
                     </div>
@@ -381,10 +385,10 @@ const AddSheetNew = (props) => {
                                                             }}
                                                             class={generalstyles.card + ' p-2 row m-0 mb-3 w-100 allcentered'}
                                                         >
-                                                            <div className="col-lg-2 p-0">
+                                                            <div className="col-lg-2 col-md-2 p-0">
                                                                 <span style={{ fontWeight: 700 }}># {item?.id}</span>
                                                             </div>
-                                                            <div className="col-lg-10 p-0 d-flex justify-content-end align-items-center">
+                                                            <div className="col-lg-10 col-md-10 p-0 d-flex justify-content-end align-items-center">
                                                                 <div
                                                                     className={`${
                                                                         item.status == 'delivered'
@@ -450,7 +454,7 @@ const AddSheetNew = (props) => {
                                                             <div style={{ fontWeight: 700 }} class="col-lg-10 p-0 mb-2">
                                                                 # {item}
                                                             </div>
-                                                            <div class="col-lg-2 p-0 allcentered">
+                                                            <div class="col-lg-2 col-md-2 p-0 allcentered">
                                                                 <BsTrash
                                                                     onClick={() => {
                                                                         var temp = { ...sheetpayload };

@@ -165,7 +165,12 @@ button:focus {
 }
 @media screen and (max-width: 900px) {
     .app_main {
-        padding: 5px !important;
+        padding: 0px !important;
+    }
+}
+@media screen and (max-width: 500px) {
+    .app_main {
+        padding: 0px !important;
     }
 }
 .app_main_translated {

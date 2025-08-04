@@ -26,6 +26,7 @@ import { AiOutlineClose } from 'react-icons/ai';
 import MerchantSelectComponent from '../../selectComponents/MerchantSelectComponent.js';
 import InventorySelectComponent from '../../selectComponents/InventorySelectComponent.js';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
+import { BiSearch } from 'react-icons/bi';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -288,7 +289,7 @@ const ItemHistory = (props) => {
                     <div class={generalstyles.card + ' row m-0 w-100 p-2'}>
                         <div class="col-lg-12 p-0 ">
                             <div class="row m-0 w-100 d-flex align-items-center">
-                                <div class="col-lg-10">
+                                <div class="col-lg-10 col-md-10">
                                     <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
                                         <input
                                             // disabled={props?.disabled}
@@ -307,15 +308,18 @@ const ItemHistory = (props) => {
                                         />
                                     </div>
                                 </div>
-                                <div class="col-lg-2 allcenered">
+                                <div class="col-lg-2  col-md-2 allcenered p-md-0">
                                     <button
                                         onClick={() => {
                                             setfetchItemHistoryfilter({ ...fetchItemHistoryfilter, name: search?.length == 0 ? undefined : search });
                                         }}
-                                        style={{ height: '35px', marginInlineStart: '5px' }}
+                                        style={{ height: '35px', marginInlineStart: '5px', minWidth: 'auto' }}
                                         class={generalstyles.roundbutton + '  allcentered bg-primary-light'}
                                     >
-                                        search
+                                        <div class="d-flex d-md-none">search</div>
+                                        <div class="d-none d-md-flex">
+                                            <BiSearch />
+                                        </div>
                                     </button>
                                 </div>
                             </div>
@@ -356,75 +360,73 @@ const ItemHistory = (props) => {
 
                                             {fetchItemHistoryQuery?.paginateItemHistory?.data?.length != 0 && (
                                                 <>
-                                                    <table className="table table-hover">
-                                                        <thead style={{ position: 'sticky', top: '0px' }}>
-                                                            {/* <th>id</th> */}
-                                                            <th>SKU</th>
-                                                            <th>Inventory</th>
-                                                            {cookies.get('merchantId') == undefined && cookies.get('userInfo')?.type != 'merchant' && <th>Merchant</th>}
-                                                            <th>Current Stock</th>
-                                                            <th>Amount</th>
-                                                            <th>Stock Before</th>
-                                                            <th>Order</th>
-                                                            <th style={{ minWidth: '400px' }}>Description</th>
-                                                            {cookies.get('merchantId') == undefined && cookies.get('userInfo')?.type != 'merchant' && <th>User</th>}
-                                                            <th>Timestamp</th>
-                                                        </thead>
-                                                        <tbody>
-                                                            {fetchItemHistoryQuery?.paginateItemHistory?.data?.map((item, index) => {
-                                                                return (
-                                                                    <tr>
-                                                                        {/* <td>
-                                                                            <p className={' m-0 p-0 wordbreak '}>{item?.id}</p>
-                                                                        </td> */}
+                                                    <div className="table-responsive-custom">
+                                                        <table className="table table-hover">
+                                                            <thead style={{ position: 'sticky', top: '0px', backgroundColor: '#fff', zIndex: 2 }}>
+                                                                <tr>
+                                                                    <th>SKU</th>
+                                                                    <th>Inventory</th>
+                                                                    {cookies.get('merchantId') == undefined && cookies.get('userInfo')?.type != 'merchant' && <th>Merchant</th>}
+                                                                    <th>Current Stock</th>
+                                                                    <th>Amount</th>
+                                                                    <th>Stock Before</th>
+                                                                    <th>Order</th>
+                                                                    <th style={{ minWidth: '400px' }}>Description</th>
+                                                                    {cookies.get('merchantId') == undefined && cookies.get('userInfo')?.type != 'merchant' && <th>User</th>}
+                                                                    <th>Timestamp</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                {fetchItemHistoryQuery?.paginateItemHistory?.data?.map((item, index) => (
+                                                                    <tr key={index}>
                                                                         <td>
-                                                                            <p className={' m-0 p-0 wordbreak '}>{item?.itemInBox?.itemVariant?.sku ?? '-'}</p>
+                                                                            <p className="m-0 p-0 wordbreak">{item?.itemInBox?.itemVariant?.sku ?? '-'}</p>
                                                                         </td>
                                                                         <td>
-                                                                            <p className={' m-0 p-0 wordbreak '}>{item?.itemInBox?.inventory?.name ?? '-'}</p>
+                                                                            <p className="m-0 p-0 wordbreak">{item?.itemInBox?.inventory?.name ?? '-'}</p>
                                                                         </td>
+
+                                                                        {/* Merchant Column (conditionally shown) */}
                                                                         {cookies.get('merchantId') == undefined && cookies.get('userInfo')?.type != 'merchant' && (
                                                                             <td>
-                                                                                <p className={' m-0 p-0 wordbreak '}>{item?.itemInBox?.merchant?.name ?? '-'}</p>
+                                                                                <p className="m-0 p-0 wordbreak">{item?.itemInBox?.merchant?.name ?? '-'}</p>
                                                                             </td>
                                                                         )}
 
                                                                         <td>
-                                                                            <p className={' m-0 p-0 wordbreak '}>{item?.itemInBox?.itemVariant?.stockCount ?? '-'}</p>
+                                                                            <p className="m-0 p-0 wordbreak">{item?.itemInBox?.itemVariant?.stockCount ?? '-'}</p>
                                                                         </td>
                                                                         <td>
                                                                             <p style={{ color: item.amount < 0 ? 'var(--danger)' : 'var(--success)' }} className="m-0 p-0 wordbreak">
-                                                                                {item?.amount !== undefined ? (
-                                                                                    <>{item.amount < 0 ? <span>- {Math.abs(item.amount)}</span> : <span>+ {item.amount} </span>}</>
-                                                                                ) : (
-                                                                                    '-'
-                                                                                )}
+                                                                                {item?.amount !== undefined ? (item.amount < 0 ? `- ${Math.abs(item.amount)}` : `+ ${item.amount}`) : '-'}
                                                                             </p>
                                                                         </td>
-
                                                                         <td>
-                                                                            <p className={' m-0 p-0 wordbreak '}>{item?.amountBefore ?? '-'}</p>
+                                                                            <p className="m-0 p-0 wordbreak">{item?.amountBefore ?? '-'}</p>
                                                                         </td>
                                                                         <td>
-                                                                            <p className={' m-0 p-0 wordbreak '}>{item?.order?.id ?? '-'}</p>
-                                                                            <p className={' m-0 p-0 wordbreak '}>{item?.order?.status}</p>
+                                                                            <p className="m-0 p-0 wordbreak">{item?.order?.id ?? '-'}</p>
+                                                                            <p className="m-0 p-0 wordbreak">{item?.order?.status}</p>
                                                                         </td>
                                                                         <td style={{ minWidth: '400px' }}>
-                                                                            <p className={' m-0 p-0 wordbreak '}>{item?.description}</p>
+                                                                            <p className="m-0 p-0 wordbreak">{item?.description}</p>
                                                                         </td>
+
+                                                                        {/* User Column (conditionally shown) */}
                                                                         {cookies.get('merchantId') == undefined && cookies.get('userInfo')?.type != 'merchant' && (
                                                                             <td>
-                                                                                <p className={' m-0 p-0 wordbreak '}>{item?.user?.name}</p>
+                                                                                <p className="m-0 p-0 wordbreak">{item?.user?.name ?? '-'}</p>
                                                                             </td>
                                                                         )}
+
                                                                         <td>
-                                                                            <p className={' m-0 p-0 wordbreak '}>{dateformatter(item?.createdAt)}</p>
+                                                                            <p className="m-0 p-0 wordbreak">{dateformatter(item?.createdAt)}</p>
                                                                         </td>
                                                                     </tr>
-                                                                );
-                                                            })}
-                                                        </tbody>
-                                                    </table>
+                                                                ))}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
                                                 </>
                                             )}
                                             {/* <Pagespaginatecomponent

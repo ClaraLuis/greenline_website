@@ -30,7 +30,17 @@ const Sidenav = (props) => {
     const cookies = new Cookies();
 
     const [isScrolling, setIsScrolling] = useState(false);
-
+    function useWindowWidth() {
+        const [width, setWidth] = useState(window.innerWidth);
+        useEffect(() => {
+            const handleResize = () => setWidth(window.innerWidth);
+            window.addEventListener('resize', handleResize);
+            return () => window.removeEventListener('resize', handleResize);
+        }, []);
+        return width;
+    }
+    const width = useWindowWidth();
+    const isSmallScreen = width < 768;
     useEffect(() => {
         if (containerRef.current) {
             const handleScroll = () => {
@@ -71,13 +81,33 @@ const Sidenav = (props) => {
                 <div class="col-lg-12 p-0">
                     <div style={{ minHeight: '100vh' }} class="row m-0 w-100">
                         <div
-                            class={hidesidenav_context ? 'col-lg-12 h-100' : 'col-lg-3 h-100'}
-                            style={{ borderInlineEnd: hidesidenav_context ? '' : '1px solid rgba(40, 146, 253, .2)', minHeight: '100vh' }}
+                            class={hidesidenav_context ? 'col-lg-12 h-100' : 'col-lg-3 col-md-3 h-100'}
+                            style={{ borderInlineEnd: hidesidenav_context ? '' : '1px solid rgba(40, 146, 253, .2)', minHeight: '100vh', transition: 'width 0.4s ease' }}
                         >
                             <div class="row m-0 w-100">
-                                <div class="col-lg-12 allcentered py-2 px-0 ">
-                                    <div style={{ width: '200px' }}>
-                                        <img src={logo1} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                                <div
+                                    onClick={() => {
+                                        if (isSmallScreen) {
+                                            sethidesidenav_context(true);
+                                        }
+                                    }}
+                                    class="col-lg-12 allcentered py-2 px-0 "
+                                >
+                                    <div
+                                        style={{
+                                            width: hidesidenav_context ? '50px' : '50px',
+                                            transition: 'width 0.4s ease',
+                                        }}
+                                    >
+                                        <img
+                                            src={logo1}
+                                            style={{
+                                                width: '100%',
+                                                height: '100%',
+                                                objectFit: 'contain',
+                                                transition: 'all 0.4s ease',
+                                            }}
+                                        />
                                     </div>
                                 </div>
                                 {pagesarray_context.map((item, index) => {
@@ -117,7 +147,7 @@ const Sidenav = (props) => {
                                 })}
                             </div>
                         </div>
-                        <div class="col-lg-9 pt-3">
+                        <div class="col-lg-9 col-md-9 pt-3">
                             <div class="row m-0 w-100">
                                 <div
                                     class="col-lg-12 mb-2 "
@@ -150,6 +180,9 @@ const Sidenav = (props) => {
                                                             style={{ cursor: 'pointer' }}
                                                             to={subitem.path}
                                                             onClick={() => {
+                                                                if (isSmallScreen) {
+                                                                    sethidesidenav_context(true);
+                                                                }
                                                                 history.push(subitem.path);
                                                                 setpageactive_context(subitem.path);
                                                             }}

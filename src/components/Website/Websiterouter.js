@@ -84,16 +84,13 @@ const App = (props) => {
     const [isOpen, setIsOpen] = useState(false);
     const [isOpen1, setIsOpen1] = useState(false);
     const user = cookies.get('userInfo');
-    const { hidesidenav_context, sethidesidenav_context, setopenloginmodalcontext, openloginmodalcontext, pagetitle_context } = React.useContext(Contexthandlerscontext);
-    useEffect(() => {
-        // alert(JSON.stringify(user));
-    }, []);
+    const { hidesidenav_context, sethidesidenav_context, isSmallScreen, openloginmodalcontext, pagetitle_context } = React.useContext(Contexthandlerscontext);
 
     const headerSection = () => {
         return (
             <div class={generalstyles.header}>
                 <div class="row m-0 w-100">
-                    <div class="col-lg-6 p-0 px-2  ">
+                    <div class="col-lg-6 col-md-4 p-0 px-2  ">
                         <div class="row m-0 w-100">
                             <div
                                 onClick={() => {
@@ -119,7 +116,7 @@ const App = (props) => {
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-6 d-flex justify-content-end align-items-center ">
+                    <div class="col-lg-6 col-md-8 d-flex justify-content-end align-items-center ">
                         {/* <Dropdown show={isOpen1} onToggle={() => setIsOpen1(!isOpen1)}>
                             <Dropdown.Toggle>
                                 <div
@@ -192,19 +189,19 @@ const App = (props) => {
                                     </div>
                                     <div class="col-lg-12 p-0 d0flex align-items-center">
                                         <div class="row m-0 w-100">
-                                            <div class="col-lg-6 py-0 text-capitalize">
+                                            <div class="col-lg-6 col-md-12 py-0 text-capitalize">
                                                 <span style={{ fontSize: '13px', color: 'grey' }}>
                                                     <TbUserPentagon class="mr-1" />
                                                     {user?.type} {user?.merchant?.name ? ', ' + user.merchant?.name : ''}
                                                 </span>
                                             </div>
-                                            <div class="col-lg-6 py-0 text-capitalize">
+                                            <div class="col-lg-6 col-md-12 py-0 text-capitalize">
                                                 <span style={{ fontSize: '13px', color: 'grey' }} class="d-flex align-items-center text-capitalize">
                                                     <TbBuilding class="mr-1" />
                                                     {user?.hub?.name ?? 'No Hub'}
                                                 </span>
                                             </div>
-                                            <div class="col-lg-6 py-0 text-capitalize">
+                                            <div class="col-lg-6 col-md-12 py-0 text-capitalize">
                                                 <span style={{ fontSize: '13px', color: 'grey' }} class="d-flex align-items-center text-capitalize">
                                                     <TbBuildingWarehouse class="mr-1" />
                                                     {user?.inventory?.name ?? 'No Inventory'}
@@ -273,12 +270,44 @@ const App = (props) => {
                 <div class="row m-0 w-100 d-flex " style={{ maxHeight: '100vh', paddingRight: 0 }}>
                     {user?.permissions?.length != 0 && (
                         <>
-                            <div style={{ width: hidesidenav_context ? '4%' : '20%', transition: 'all 0.4s' }}>
-                                <div class={sidenavstyles.app_sidebar} style={{ width: hidesidenav_context ? '4%' : '20%', transition: 'all 0.4s' }}>
+                            {!isSmallScreen && (
+                                <div
+                                    style={{
+                                        width: hidesidenav_context ? '4%' : '20%',
+                                        transition: 'all 0.4s',
+                                        // position: 'absolute',
+                                        overflow: 'hidden',
+                                        // zIndex: 10000,
+                                        // backgroundColor: 'red',
+                                    }}
+                                >
+                                    <div
+                                        className={sidenavstyles.app_sidebar}
+                                        style={{
+                                            width: hidesidenav_context ? '4%' : '20%',
+                                            transition: 'all 0.4s',
+                                        }}
+                                    >
+                                        <Sidenav />
+                                    </div>
+                                </div>
+                            )}
+                            {isSmallScreen && (
+                                <div
+                                    style={{
+                                        width: hidesidenav_context ? '0%' : '100%',
+                                        transition: 'all 0.4s',
+                                        position: 'absolute',
+                                        overflow: 'hidden',
+                                        zIndex: 10000,
+                                        backgroundColor: 'white',
+                                    }}
+                                >
                                     <Sidenav />
                                 </div>
-                            </div>
-                            <div class="px-0" style={{ width: hidesidenav_context ? '96%' : '80%', transition: 'all 0.4s' }}>
+                            )}
+
+                            <div class="px-0" style={{ width: isSmallScreen ? '100%' : hidesidenav_context ? '96%' : '80%', transition: 'all 0.4s' }}>
                                 <div class={generalstyles.app_container + ' w-100 '}>
                                     <div class="row m-0 w-100">
                                         <div class={`${generalstyles.app_main}` + '  app_main  '}>

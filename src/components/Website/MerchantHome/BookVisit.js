@@ -101,7 +101,7 @@ const BookVisit = (props) => {
                                                     <div className="col-lg-6 p-0">
                                                         <span style={{ fontSize: '12px', color: 'grey' }}># {item?.id}</span>
                                                     </div>
-                                                    <div className="col-lg-6 p-0 d-flex justify-content-end align-items-center">
+                                                    <div className="col-lg-6 col-md-6 p-0 d-flex justify-content-end align-items-center">
                                                         <div
                                                             className={
                                                                 item.status == 'delivered'
@@ -133,7 +133,7 @@ const BookVisit = (props) => {
                                                     </div>
                                                     <div className="col-lg-12 p-0 ">
                                                         <span style={{ fontWeight: 600 }}>
-                                                            {item?.address?.streetAddress}, {item?.address?.buildingNumber}, {item?.address?.apartmentNumber}
+                                                            {item?.address?.streetAddress}, {item?.address?.buildingNumber}, {item?.address?.buildingNumber}
                                                         </span>
                                                     </div>
                                                     <div className="col-lg-12 p-0 d-flex justify-content-end ">
@@ -189,7 +189,7 @@ const BookVisit = (props) => {
                                                                 <div style={{ fontWeight: 700, fontSize: '16px' }} class="col-lg-10 p-0 mb-2">
                                                                     # {item?.id}
                                                                 </div>
-                                                                <div class="col-lg-2 p-0 allcentered">
+                                                                <div class="col-lg-2 col-md-2 p-0 allcentered">
                                                                     <BsTrash
                                                                         onClick={() => {
                                                                             var temp = { ...sheetpayload };
@@ -213,7 +213,7 @@ const BookVisit = (props) => {
                                                                         </div>
                                                                         <div className="col-lg-12 p-0 ">
                                                                             <span style={{ fontWeight: 600 }}>
-                                                                                {item?.address?.streetAddress}, {item?.address?.buildingNumber}, {item?.address?.apartmentNumber}
+                                                                                {item?.address?.streetAddress}, {item?.address?.buildingNumber}, {item?.address?.buildingNumber}
                                                                             </span>
                                                                         </div>
                                                                     </div>

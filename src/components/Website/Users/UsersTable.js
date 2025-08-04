@@ -52,12 +52,12 @@ const UsersTable = (props) => {
                             {props?.fetchusers?.data?.paginateUsers?.data?.map((item, index) => {
                                 return (
                                     <div className={props?.card}>
-                                        <div class={generalstyles.card + ' p-3 row m-0 w-100 '}>
-                                            <div className="col-lg-8 p-0  text-capitalize mb-2">
+                                        <div class={generalstyles.card + ' p-3 row m-0 w-100 d-flex align-items-center '}>
+                                            <div className="col-lg-8 col-md-8 p-0  text-capitalize mb-2">
                                                 <span style={{ fontWeight: 700 }}>{item?.name}</span>
                                             </div>
 
-                                            <div className="col-lg-4 p-0 mb-2 d-flex justify-content-end">
+                                            <div className="col-lg-4 col-md-4 p-0 mb-2 d-flex justify-content-end">
                                                 {item?.id?.length != 7 && (
                                                     <Dropdown>
                                                         <Dropdown.Toggle>

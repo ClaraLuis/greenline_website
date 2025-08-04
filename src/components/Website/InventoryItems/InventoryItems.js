@@ -27,6 +27,7 @@ import SkuPrint from '../MerchantItems/SkuPrint.js';
 import ImportNewItem from './ImportNewItem.js';
 import ItemInfo from './ItemInfo.js';
 import MerchantSelectComponent from '../../selectComponents/MerchantSelectComponent.js';
+import { BiSearch } from 'react-icons/bi';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -202,7 +203,7 @@ const InventoryItems = (props) => {
                                         </p>
                                     </div>
                                     {isAuth([1, 54, 4]) && (
-                                        <div class={' col-lg-6 col-md-6 col-sm-12 p-0 d-flex align-items-center justify-content-end mb-2 px-2 '}>
+                                        <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-end mb-2 px-2 '}>
                                             <button
                                                 style={{ height: '35px' }}
                                                 class={generalstyles.roundbutton + ''}
@@ -384,12 +385,12 @@ const InventoryItems = (props) => {
                     {cookies.get('userInfo')?.type != 'merchant' && (
                         <div class="col-lg-12 px-3">
                             <div class={generalstyles.card + ' row m-0 w-100'}>
-                                <div class={' col-lg-6 col-md-6 col-sm-12 p-0 d-flex align-items-center justify-content-start mb-2 px-2 '}>
+                                <div class={' col-lg-6 col-md-6 col-sm-4 p-0 d-flex align-items-center justify-content-start mb-2 px-2 '}>
                                     <p class=" p-0 m-0" style={{ fontSize: '15px' }}>
                                         <span style={{ color: 'var(--info)' }}>Items </span>
                                     </p>
                                 </div>
-                                <div class={' col-lg-6 col-md-6 col-sm-12 p-0 d-flex align-items-center justify-content-end mb-2 px-2 '}>
+                                <div class={' col-lg-6 col-md-6 col-sm-8 p-0 d-flex align-items-center justify-content-end mb-2 px-2 '}>
                                     <div className="row m-0 w-100 d-flex align-items-center justify-content-end">
                                         {selectedVariants?.length > 0 && <SkuPrint skus={selectedVariants} />}
                                         {isAuth([1, 54, 81]) && (
@@ -423,7 +424,7 @@ const InventoryItems = (props) => {
                                 <div class={generalstyles.card + ' row m-0 w-100 p-2'}>
                                     <div class="col-lg-12 p-0 ">
                                         <div class="row m-0 w-100 d-flex align-items-center">
-                                            <div class="col-lg-10">
+                                            <div class="col-lg-10 col-md-10">
                                                 <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
                                                     <input
                                                         // disabled={props?.disabled}
@@ -443,15 +444,18 @@ const InventoryItems = (props) => {
                                                     />
                                                 </div>
                                             </div>
-                                            <div class="col-lg-2 allcenered">
+                                            <div class="col-lg-2  col-md-2 allcenered p-md-0">
                                                 <button
                                                     onClick={() => {
                                                         setfilterItemInBox({ ...filterItemInBox, name: search?.length == 0 ? undefined : search });
                                                     }}
-                                                    style={{ height: '35px', marginInlineStart: '5px' }}
+                                                    style={{ height: '35px', marginInlineStart: '5px', minWidth: 'auto' }}
                                                     class={generalstyles.roundbutton + '  allcentered bg-primary-light'}
                                                 >
-                                                    search
+                                                    <div class="d-flex d-md-none">search</div>
+                                                    <div class="d-none d-md-flex">
+                                                        <BiSearch />
+                                                    </div>
                                                 </button>
                                             </div>
                                         </div>
@@ -535,7 +539,7 @@ const InventoryItems = (props) => {
                                                                     style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }}
                                                                 />
                                                             </div>
-                                                            <div class="col-lg-8 p-0 mb-2">
+                                                            <div class="col-lg-8 col-md-8 p-0 mb-2">
                                                                 <div class="row m-0 w-100 d-flex align-items-center">
                                                                     <div class="col-lg-12 p-0 ">
                                                                         {/* <div class="col-lg-12 p-0 " style={{ fontSize: '14px', fontWeight: 600 }}>
@@ -550,7 +554,7 @@ const InventoryItems = (props) => {
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-lg-2 p-0 mb-2">
+                                                            <div class="col-lg-2 col-md-2 p-0 mb-2">
                                                                 {isAuth([1, 54, 82, 6]) && (
                                                                     <button
                                                                         onClick={async (e) => {
@@ -580,10 +584,10 @@ const InventoryItems = (props) => {
                                                                         return (
                                                                             <div class="col-lg-12 p-0 mb-2">
                                                                                 <div class="row m-0 w-100 d-flex align-items-center p-1 px-2" style={{ background: '#F0F5F9', borderRadius: '0.5rem' }}>
-                                                                                    <div class="col-lg-6 p-0" style={{ fontSize: '14px', fontWeight: 600 }}>
+                                                                                    <div class="col-lg-6 col-md-6 p-0" style={{ fontSize: '14px', fontWeight: 600 }}>
                                                                                         {blockitem.count} Pieces
                                                                                     </div>
-                                                                                    <div className="col-lg-6 p-0">
+                                                                                    <div className="col-lg-6 col-md-6 p-0">
                                                                                         <div class="row m-0 w-100">
                                                                                             <div class="col-lg-12 p-0 my-2">
                                                                                                 <div class="row m-0 w-100 d-flex align-items-center justify-content-end">
@@ -676,7 +680,7 @@ const InventoryItems = (props) => {
             >
                 <Modal.Header>
                     <div className="row w-100 m-0 p-0">
-                        <div class="col-lg-6 pt-3 ">
+                        <div class="col-lg-6 col-md-10 pt-3 ">
                             {inventoryPayload.functype == 'edit' && <div className="row w-100 m-0 p-0">Item : {inventoryPayload.name}</div>}
                             {inventoryPayload.functype == 'add' && <div className="row w-100 m-0 p-0">Add Warehouse</div>}
                         </div>
@@ -837,7 +841,7 @@ const InventoryItems = (props) => {
                 {importmodal.type != 'delete' && (
                     <Modal.Header>
                         <div className="row w-100 m-0 p-0">
-                            <div class="col-lg-6 pt-3 ">
+                            <div class="col-lg-6 col-md-10 pt-3 ">
                                 <div className="row w-100 m-0 p-0">{importmodal?.type}</div>
                             </div>
                             <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">

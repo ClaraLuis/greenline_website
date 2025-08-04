@@ -1,35 +1,26 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
 import { components } from 'react-select';
-import { DateRangePicker } from 'rsuite';
 
 import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
-import Form from '../../Form.js';
 
-import { Modal } from 'react-bootstrap';
-import { IoIosArrowForward, IoMdClose } from 'react-icons/io';
+import Decimal from 'decimal.js';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
-import API from '../../../API/API.js';
-import MultiSelect from '../../MultiSelect.js';
-import TransactionsTableView from './TransactionsTableView.js';
-import * as XLSX from 'xlsx';
+import { NotificationManager } from 'react-notifications';
+import Select from 'react-select';
 import Cookies from 'universal-cookie';
-import Pagination from '../../Pagination.js';
+import API from '../../../API/API.js';
+import SelectComponent from '../../SelectComponent.js';
+import MerchantSelectComponent from '../../selectComponents/MerchantSelectComponent.js';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
-import Select from 'react-select';
-import Decimal from 'decimal.js';
-import { NotificationManager } from 'react-notifications';
-import MerchantSelectComponent from '../../selectComponents/MerchantSelectComponent.js';
-import SelectComponent from '../../SelectComponent.js';
-
-const { ValueContainer, Placeholder } = components;
+import TransactionsTableView from './TransactionsTableView.js';
 
 const ShippingCollections = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -39,8 +30,6 @@ const ShippingCollections = (props) => {
     const { setpageactive_context, setpagetitle_context, dateformatter, isAuth, buttonLoadingContext, setbuttonLoadingContext, useLoadQueryParamsToPayload, updateQueryParamContext } =
         useContext(Contexthandlerscontext);
     const { useQueryGQL, paginateShippingCollections, fetchHubs, processShippingTaxes, useMutationGQL, useLazyQueryGQL } = API();
-    const { lang, langdetect } = useContext(LanguageContext);
-    const [total, setTotal] = useState(0);
 
     const [filterShippingCollections, setfilterShippingCollections] = useState({
         afterCursor: undefined,
@@ -52,10 +41,7 @@ const ShippingCollections = (props) => {
     });
     useLoadQueryParamsToPayload(setfilterShippingCollections);
 
-    const [submit, setsubmit] = useState(false);
-
     const [selectedArray, setselectedArray] = useState([]);
-    const [openModal, setopenModal] = useState(false);
 
     const [payload, setpayload] = useState({
         functype: 'add',
@@ -228,8 +214,8 @@ const ShippingCollections = (props) => {
                                                                     setfilterShippingCollections({ ...filterShippingCollections, merchantId: undefined });
                                                                     updateQueryParamContext('merchantId', undefined);
                                                                 } else {
-                                                                    setfilterShippingCollections({ ...filterShippingCollections, merchantId: option.id });
-                                                                    updateQueryParamContext('merchantId', option.id);
+                                                                    setfilterShippingCollections({ ...filterShippingCollections, merchantId: option?.id });
+                                                                    updateQueryParamContext('merchantId', option?.id);
                                                                 }
                                                             }}
                                                         />

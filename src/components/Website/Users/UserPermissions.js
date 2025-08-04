@@ -83,7 +83,7 @@ const UserPermissions = (props) => {
             <div class="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
                 <div class="col-lg-12 px-3">
                     <div class={generalstyles.card + ' row m-0 w-100'}>
-                        <div class="col-lg-6 p-0">
+                        <div class="col-lg-6 col-md-6 p-0">
                             <div className="row m-0 w-100">
                                 <div class="col-lg-12 p-0" style={{ fontWeight: 600 }}>
                                     {userPayload?.name}
@@ -97,7 +97,7 @@ const UserPermissions = (props) => {
                             </div>
                         </div>
                         {!changepermissionsmodal && (
-                            <div class="col-lg-6 d-flex justify-content-end py-0">
+                            <div class="col-lg-6 col-md-6 d-flex justify-content-end py-0">
                                 <div
                                     onClick={() => {
                                         setchangepermissionsmodal(true);
@@ -105,7 +105,7 @@ const UserPermissions = (props) => {
                                     class={generalstyles.roundbutton + ' allcentered'}
                                     // style={{ textDecoration: 'underline', fontSize: '12px' }}
                                 >
-                                    Update permissions
+                                    Update
                                 </div>
                             </div>
                         )}

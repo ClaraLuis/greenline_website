@@ -11,7 +11,7 @@ import { Modal } from 'react-bootstrap';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
-import { BiPlus } from 'react-icons/bi';
+import { BiPlus, BiSearch } from 'react-icons/bi';
 import { IoIosArrowBack, IoMdClose } from 'react-icons/io';
 import { NotificationManager } from 'react-notifications';
 import Cookies from 'universal-cookie';
@@ -129,7 +129,7 @@ const ImportNewItem = (props) => {
         >
             <Modal.Header>
                 <div className="row w-100 m-0 p-0">
-                    <div class="col-lg-6 pt-3 ">
+                    <div class="col-lg-6 col-md-10 pt-3 ">
                         <div className="row w-100 m-0 p-0 d-flex align-items-center">
                             {step != 0 && (
                                 <IoIosArrowBack
@@ -192,7 +192,7 @@ const ImportNewItem = (props) => {
                         </div>
                         <div class="col-lg-12 p-0 my-3 ">
                             <div class="row m-0 w-100 d-flex align-items-center">
-                                <div class="col-lg-10 p-0">
+                                <div class="col-lg-10 col-md-10 p-0">
                                     <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
                                         <input
                                             // disabled={props?.disabled}
@@ -206,10 +206,8 @@ const ImportNewItem = (props) => {
                                         />
                                     </div>
                                 </div>
-                                <div class="col-lg-2 p-1">
+                                <div class="col-lg-2 col-md-2 p-md-0">
                                     <button
-                                        style={{ height: '35px' }}
-                                        class={generalstyles.roundbutton + ' p-0 allcentered bg-primary-light'}
                                         onClick={() => {
                                             if (search.length == 0) {
                                                 setmerchantFilter({ ...merchantFilter, name: undefined });
@@ -217,8 +215,13 @@ const ImportNewItem = (props) => {
                                                 setmerchantFilter({ ...merchantFilter, name: search });
                                             }
                                         }}
+                                        style={{ height: '35px', marginInlineStart: '5px', minWidth: 'auto' }}
+                                        class={generalstyles.roundbutton + '  allcentered bg-primary-light'}
                                     >
-                                        search
+                                        <div class="d-flex d-md-none">search</div>
+                                        <div class="d-none d-md-flex">
+                                            <BiSearch />
+                                        </div>
                                     </button>
                                 </div>
                             </div>
@@ -350,7 +353,7 @@ const ImportNewItem = (props) => {
                                                                 <div class="col-lg-6 p-0" style={{ fontWeight: 700 }}>
                                                                     Rack {item.name}
                                                                 </div>
-                                                                <div class="col-lg-6 p-0 d-flex justify-content-end">
+                                                                <div class="col-lg-6 col-md-6 p-0 d-flex justify-content-end">
                                                                     <div
                                                                         onClick={() => {
                                                                             props?.setimportItemPayload({ ...props?.importItemPayload, rackId: item.id });
@@ -384,7 +387,7 @@ const ImportNewItem = (props) => {
                                                                                                 <div class="col-lg-6 p-0" style={{ fontWeight: 700 }}>
                                                                                                     {pallet?.name}
                                                                                                 </div>
-                                                                                                <div class="col-lg-6 p-0 d-flex justify-content-end">
+                                                                                                <div class="col-lg-6 col-md-6 p-0 d-flex justify-content-end">
                                                                                                     <div
                                                                                                         onClick={() => {
                                                                                                             props?.setimportItemPayload({ ...props?.importItemPayload, palletId: pallet.id });

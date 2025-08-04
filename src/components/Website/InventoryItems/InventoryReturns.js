@@ -20,6 +20,7 @@ import ReturnsTable from '../MerchantHome/ReturnsTable.js';
 import InventorySelectComponent from '../../selectComponents/InventorySelectComponent.js';
 import Select, { components } from 'react-select';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
+import { BiSearch } from 'react-icons/bi';
 
 const InventoryReturns = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -146,7 +147,7 @@ const InventoryReturns = (props) => {
                         </div>
                         <div class="col-lg-12 p-0">
                             <div class={generalstyles.card + ' row m-0 w-100'}>
-                                <div class="col-lg-10 p-0 ">
+                                <div class="col-lg-10 col-md-10 p-0 ">
                                     <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
                                         <input
                                             type="number"
@@ -170,7 +171,7 @@ const InventoryReturns = (props) => {
                                         />
                                     </div>
                                 </div>
-                                <div class="col-lg-2 p-0 allcentered">
+                                <div class="col-lg-2 col-md-2 p-0 allcentered">
                                     <button
                                         style={{ height: '30px', minWidth: '80%' }}
                                         class={generalstyles.roundbutton + ' allcentered p-0'}
@@ -184,7 +185,10 @@ const InventoryReturns = (props) => {
                                             setsearch('');
                                         }}
                                     >
-                                        Search
+                                        <div class="d-flex d-md-none">Search</div>
+                                        <div class="d-none d-md-flex">
+                                            <BiSearch />
+                                        </div>
                                     </button>
                                 </div>
                             </div>
@@ -262,7 +266,7 @@ const InventoryReturns = (props) => {
                                                                     />
                                                                 </div>
                                                             </div>
-                                                            <div class="col-lg-4 p-0 wordbreak" style={{ fontWeight: 700, fontSize: '16px' }}>
+                                                            <div class="col-lg-4 col-md-4 p-0 wordbreak" style={{ fontWeight: 700, fontSize: '16px' }}>
                                                                 {item?.orderItem?.info?.name}
                                                             </div>
 

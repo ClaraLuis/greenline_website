@@ -175,7 +175,7 @@ const OrdersTable = (props) => {
                                         className="col-lg-6"
                                     >
                                         <div style={{ background: selected ? 'var(--secondary)' : 'white', transition: '0.4s' }} class={generalstyles.card + ' p-3 row m-0 w-100 '}>
-                                            <div className="col-lg-4 p-0">
+                                            <div className="col-lg-4 col-md-4 p-0">
                                                 <div class="row m-0 w-100 d-flex align-items-center">
                                                     <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
                                                         # {item?.id}
@@ -185,7 +185,7 @@ const OrdersTable = (props) => {
                                                     </span>
                                                 </div>
                                             </div>
-                                            <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
+                                            <div className="col-lg-8 col-md-12 p-0 d-flex justify-content-end align-items-center">
                                                 <div class="row m-0 w-100  d-flex justify-content-end align-items-center">
                                                     {props?.srcFrom == 'inventory' && outOfStock && item.status === 'idle' && (
                                                         <div className={'mr-1 wordbreak text-danger bg-light-danger rounded-pill font-weight-600 '}>Out Of Stock</div>
@@ -351,7 +351,7 @@ const OrdersTable = (props) => {
                                                                 <span style={{ fontWeight: 400, fontSize: '13px' }}>
                                                                     {item?.address?.country}, {item?.address?.city},{' '}
                                                                     <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                                        {item?.address?.streetAddress}, Building {item?.address?.buildingNumber}, Floor {item?.address?.apartmentNumber}
+                                                                        {item?.address?.streetAddress}, Building {item?.address?.buildingNumber}, Floor {item?.address?.buildingNumber}
                                                                     </span>
                                                                 </span>
                                                             </div>
@@ -401,7 +401,7 @@ const OrdersTable = (props) => {
 
                                                             <div className="col-lg-12 p-0 mt-2">
                                                                 <div className="row m-0 w-100 d-flex">
-                                                                    <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4">
+                                                                    <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4 col-md-4">
                                                                         <div className="row m-0 w-100">
                                                                             <div className="col-lg-12 p-0 allcentered text-center">
                                                                                 <span style={{ fontWeight: 400, fontSize: '11px' }}>Price</span>
@@ -413,7 +413,7 @@ const OrdersTable = (props) => {
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                    <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4">
+                                                                    <div style={{ borderRight: '1px solid #eee' }} className="p-0 mb-2 allcentered col-lg-4 col-md-4">
                                                                         <div className="row m-0 w-100">
                                                                             <div className="col-lg-12 p-0 allcentered text-center">
                                                                                 <span style={{ fontWeight: 400, fontSize: '11px' }}>Shipping</span>
@@ -428,7 +428,7 @@ const OrdersTable = (props) => {
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                    <div style={{ fontWeight: 600, fontSize: '15px' }} className="p-0 mb-2 allcentered col-lg-4">
+                                                                    <div style={{ fontWeight: 600, fontSize: '15px' }} className="p-0 mb-2 allcentered col-lg-4 col-md-4">
                                                                         <div className="row m-0 w-100">
                                                                             <div className="col-lg-12 p-0 allcentered text-center">
                                                                                 <span style={{ fontWeight: 400, fontSize: '11px' }}>Total</span>
@@ -550,17 +550,17 @@ const OrdersTable = (props) => {
                                                         item?.courier != undefined &&
                                                         item?.courier != null &&
                                                         cookies.get('userInfo')?.type != 'merchant' && (
-                                                            <div class="col-lg-6 p-0 d-flex align-items-center">
+                                                            <div class="col-lg-6 col-md-6 p-0 d-flex align-items-center">
                                                                 <BiUser class="mr-1" />
                                                                 <span style={{ fontWeight: 600 }}>{item?.courier?.name}</span>
                                                             </div>
                                                         )}
                                                     {/* {outOfStock && props?.srcFrom == 'inventory' && (
-                                                        <div class="col-lg-6 p-0 d-flex align-items-center">
+                                                        <div class="col-lg-6 col-md-6 p-0 d-flex align-items-center">
                                                             <div className={' wordbreak text-danger bg-light-danger rounded-pill font-weight-600 mr-1 '}>{diffInDays} days late</div>
                                                         </div>
                                                     )} */}
-                                                    <div class="col-lg-6 p-0 d-flex justify-content-end">
+                                                    <div class="col-lg-6 col-md-6 p-0 d-flex justify-content-end">
                                                         <div class="row m-0 w-100">
                                                             <div className={' m-0 p-0 col-lg-12 d-flex justify-content-end '}>{dateformatter(item.createdAt)}</div>
                                                             {/* {item.orderDate && <div className={' m-0 p-0 col-lg-12 d-flex justify-content-end'}>Date: {dateformatter(item.orderDate)}</div>} */}
@@ -587,7 +587,7 @@ const OrdersTable = (props) => {
             >
                 <Modal.Header>
                     <div className="row w-100 m-0 p-0">
-                        <div class="col-lg-6 pt-3 ">
+                        <div class="col-lg-6 col-md-10 pt-3 ">
                             <div className="row w-100 m-0 p-0">Update Order Status</div>
                         </div>
                         <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
@@ -639,7 +639,7 @@ const OrdersTable = (props) => {
             >
                 <Modal.Header>
                     <div className="row w-100 m-0 p-0">
-                        <div class="col-lg-6 pt-3 ">
+                        <div class="col-lg-6 col-md-10 pt-3 ">
                             <div className="row w-100 m-0 p-0">Request Return</div>
                         </div>
                         <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">
@@ -759,7 +759,7 @@ const OrdersTable = (props) => {
             >
                 <Modal.Header>
                     <div className="row w-100 m-0 p-0">
-                        <div class="col-lg-6 pt-3 ">
+                        <div class="col-lg-6 col-md-10 pt-3 ">
                             <div className="row w-100 m-0 p-0">Place in warehouse</div>
                         </div>
                         <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">

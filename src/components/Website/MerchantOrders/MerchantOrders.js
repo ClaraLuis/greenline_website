@@ -206,7 +206,7 @@ const MerchantOrders = (props) => {
                                                 City: address?.city,
                                                 'Street Address': address?.streetAddress?.trim(),
                                                 'Building No.': address?.buildingNumber,
-                                                Floor: address?.apartmentNumber,
+                                                Floor: address?.buildingNumber,
                                                 'Courier Name': courier?.name,
                                                 'History Description': latestHistory?.description,
                                                 'Sheet ID': sheetOrder?.sheetId,
@@ -705,7 +705,7 @@ const MerchantOrders = (props) => {
 
                 <div class="col-lg-12 px-3">
                     <div class={generalstyles.card + ' row m-0 w-100'}>
-                        <div class="col-lg-10 p-0 ">
+                        <div class="col-lg-10 col-md-10 p-0 ">
                             <div class={`${formstyles.form__group} ${formstyles.field}` + ' m-0'}>
                                 <input
                                     class={formstyles.form__field}
@@ -717,7 +717,7 @@ const MerchantOrders = (props) => {
                                 />
                             </div>
                         </div>
-                        <div class="col-lg-2 p-0 allcentered">
+                        <div class="col-lg-2 col-md-2 p-0 allcentered">
                             <button
                                 style={{ height: '35px', minWidth: '80%' }}
                                 class={generalstyles.roundbutton + ' allcentered p-0 bg-primary-light'}
@@ -735,7 +735,7 @@ const MerchantOrders = (props) => {
                     <div class={' row m-0 w-100'}>
                         <div class="col-lg-12 px-3">
                             <div class={generalstyles.card + ' row m-0 w-100'}>
-                                <div className="col-lg-6 p-0 d-flex justify-content-end ">
+                                <div className="col-lg-6 col-md-6 p-0 d-flex justify-content-end ">
                                     <div
                                         onClick={() => {
                                             var temp = [];
@@ -823,7 +823,7 @@ const MerchantOrders = (props) => {
             >
                 <Modal.Header>
                     <div className="row w-100 m-0 p-0">
-                        <div class="col-lg-6 pt-3 ">
+                        <div class="col-lg-6 col-md-10 pt-3 ">
                             <div className="row w-100 m-0 p-0">Choose Merchant</div>
                         </div>
                         <div class="col-lg-6 col-md-2 col-sm-2 d-flex align-items-center justify-content-end p-2">

@@ -440,7 +440,7 @@ const CourierSheet = (props) => {
                                     <AccordionItem uuid={index} style={{}} className={generalstyles.card + ' col-lg-12 p-4 mb-3'}>
                                         <div id={'id' + JSON.stringify(item.id)} className={' col-lg-12 p-0'}>
                                             <div className="row m-0 w-100">
-                                                <div className="col-lg-8 p-0">
+                                                <div className="col-lg-8 col-md-8 p-0">
                                                     <div className="row m-0 w-100">
                                                         <div className="col-lg-12 p-0">
                                                             <label style={{}} className={`${formstyles.checkbox} ${formstyles.checkbox_sub} ${formstyles.path}` + ' d-flex my-0 '}>
@@ -571,7 +571,7 @@ const CourierSheet = (props) => {
                                                     </div>{' '}
                                                 </div>
 
-                                                <div className="col-lg-4 p-0">
+                                                <div className="col-lg-4 col-md-4 p-0">
                                                     <div className="row m-0 w-100">
                                                         {type == 'finance' && (
                                                             <div className="col-lg-12 p-0 mb-2 d-flex justify-content-end">
@@ -1330,7 +1330,7 @@ const CourierSheet = (props) => {
                                                                 )}
                                                             </div>
                                                         </div>
-                                                        {/* <div class="col-lg-4 p-0">
+                                                        {/* <div class="col-lg-4 col-md-4 p-0">
                                                         <div class="row m-0 w-100 px-1">
                                                             <div class={`${formstyles.form__group} ${formstyles.field}`}>
                                                                
@@ -1391,7 +1391,7 @@ const CourierSheet = (props) => {
                     // style={{ cursor: props?.clickable ? 'pointer' : '' }}
                 >
                     <div style={{ background: 'white', margin: '0px' }} class={' p-3 row m-0 w-100 card'}>
-                        <div className="col-lg-4 p-0">
+                        <div className="col-lg-4 col-md-4 p-0">
                             <div class="row m-0 w-100 d-flex align-items-center">
                                 <span style={{ fontWeight: 600 }} class="text-capitalize">
                                     {submitSheetPayload?.userInfo?.name}{' '}
@@ -1404,7 +1404,7 @@ const CourierSheet = (props) => {
                                 </div>
                             </div>
                         </div>
-                        <div className="col-lg-8 p-0 d-flex justify-content-end align-items-center">
+                        <div className="col-lg-8 col-md-8 p-0 d-flex justify-content-end align-items-center">
                             <div
                                 className={
                                     submitSheetPayload.status == 'completed'
@@ -1592,7 +1592,7 @@ const CourierSheet = (props) => {
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-6 p-0 d-flex justify-content-end">
+                        <div class="col-lg-6 col-md-6 p-0 d-flex justify-content-end">
                             <button
                                 style={{ height: '35px' }}
                                 class={generalstyles.roundbutton}
