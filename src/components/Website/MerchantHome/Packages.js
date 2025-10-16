@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
+import shimmerstyles from '../Generalfiles/CSS_GENERAL/shimmer.module.css';
 // import { fetch_collection_data } from '../../../API/API';
 import { FaEllipsisV, FaLayerGroup, FaPlus, FaWindowMinimize } from 'react-icons/fa';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
@@ -301,7 +302,63 @@ const Packages = (props) => {
                                         loading={fetchPackagesQuery?.loading}
                                     />
                                 </div>
-                                {fetchPackagesQuery?.data?.paginateReturnPackages?.data?.length == 0 && (
+                                {fetchPackagesQuery?.loading && (
+                                    <div className="row m-0 w-100">
+                                        {[1, 2, 3, 4].map((item, index) => (
+                                            <div key={index} className="col-lg-6">
+                                                <div className={`${generalstyles.card} p-3 row m-0 w-100`}>
+                                                    <div className="col-lg-2 col-md-2 p-0">
+                                                        <div className={shimmerstyles.shimmer} style={{ height: '12px', width: '60px', borderRadius: '4px' }}></div>
+                                                    </div>
+                                                    <div className="col-lg-10 col-md-10 p-0 d-flex justify-content-end align-items-center">
+                                                        <div className="row m-0 w-100 d-flex justify-content-end align-items-center">
+                                                            <div className={shimmerstyles.shimmer} style={{ height: '24px', width: '100px', borderRadius: '20px', marginRight: '8px' }}></div>
+                                                            <div className={shimmerstyles.shimmer} style={{ height: '24px', width: '120px', borderRadius: '20px', marginRight: '8px' }}></div>
+                                                            <div className={shimmerstyles.shimmer} style={{ height: '28px', width: '28px', borderRadius: '4px' }}></div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="col-lg-12 p-0 my-2">
+                                                        <hr className="m-0" />
+                                                    </div>
+                                                    <div className="col-lg-12 p-0 mb-2">
+                                                        <div className="row m-0 w-100 d-flex align-items-center">
+                                                            <div className="col-lg-8 col-md-8 p-0">
+                                                                <div className={shimmerstyles.shimmer} style={{ height: '14px', width: '70%', borderRadius: '4px' }}></div>
+                                                            </div>
+                                                            <div className="col-lg-4 col-md-4 p-0 d-flex justify-content-end">
+                                                                <div className={shimmerstyles.shimmer} style={{ height: '13px', width: '60px', borderRadius: '4px' }}></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="col-lg-12 p-0 mb-2">
+                                                        <div className="row m-0 w-100 d-flex align-items-center">
+                                                            <div className="col-lg-8 col-md-8 p-0">
+                                                                <div className={shimmerstyles.shimmer} style={{ height: '13px', width: '50%', borderRadius: '4px' }}></div>
+                                                            </div>
+                                                            <div className="col-lg-4 col-md-4 p-0 d-flex justify-content-end">
+                                                                <div className={shimmerstyles.shimmer} style={{ height: '13px', width: '70px', borderRadius: '4px' }}></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="col-lg-12 p-0">
+                                                        <div className="row m-0 w-100 d-flex align-items-center">
+                                                            <div className="col-lg-6 col-md-6 p-0">
+                                                                <div className="d-flex align-items-center">
+                                                                    <div className={shimmerstyles.shimmer} style={{ height: '20px', width: '20px', borderRadius: '4px', marginRight: '8px' }}></div>
+                                                                    <div className={shimmerstyles.shimmer} style={{ height: '13px', width: '100px', borderRadius: '4px' }}></div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="col-lg-6 col-md-6 p-0 d-flex justify-content-end">
+                                                                <div className={shimmerstyles.shimmer} style={{ height: '12px', width: '80px', borderRadius: '4px' }}></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                                {!fetchPackagesQuery?.loading && fetchPackagesQuery?.data?.paginateReturnPackages?.data?.length == 0 && (
                                     <div style={{ height: '70vh' }} class="col-lg-12 p-0 w-100 allcentered align-items-center m-0 text-lightprimary">
                                         <div class="row m-0 w-100">
                                             <FaLayerGroup size={40} class=" col-lg-12" />
@@ -311,7 +368,7 @@ const Packages = (props) => {
                                         </div>
                                     </div>
                                 )}
-                                {fetchPackagesQuery?.data?.paginateReturnPackages?.data?.map((item, index) => {
+                                {!fetchPackagesQuery?.loading && fetchPackagesQuery?.data?.paginateReturnPackages?.data?.map((item, index) => {
                                     var selected = false;
                                     packagepayload?.ids?.map((packageitem) => {
                                         if (packageitem == item.id) {

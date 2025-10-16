@@ -151,6 +151,7 @@ const AddOrder = (props) => {
     const [checkCustomerNameSuggestions] = useLazyQueryGQL(fetchCustomerNameSuggestions());
     const [fetchMerchantItemVariantsQuery, setfetchMerchantItemVariantsQuery] = useState(null);
     const [fetchMerchantItemVariantsLazyQuery] = useLazyQueryGQL(fetchMerchantItemVariants());
+    const [fetchMerchantItemVariantsLoading, setFetchMerchantItemVariantsLoading] = useState(false);
 
     const [linkCustomerMutation] = useMutationGQL(linkCustomerMerchant(), {
         customerId: orderpayload?.customerIdForAddress,
@@ -383,12 +384,17 @@ const AddOrder = (props) => {
     useEffect(async () => {
         if (filter?.merchantId && filter?.merchantId != null && filter?.merchantId?.length != 0) {
             {
-                var { data } = await fetchMerchantItemVariantsLazyQuery({
-                    variables: {
-                        input: filter,
-                    },
-                });
-                setfetchMerchantItemVariantsQuery({ data: data });
+                setFetchMerchantItemVariantsLoading(true);
+                try {
+                    var { data } = await fetchMerchantItemVariantsLazyQuery({
+                        variables: {
+                            input: filter,
+                        },
+                    });
+                    setfetchMerchantItemVariantsQuery({ data: data });
+                } finally {
+                    setFetchMerchantItemVariantsLoading(false);
+                }
             }
         }
     }, [filter]);
@@ -611,10 +617,11 @@ const AddOrder = (props) => {
                                     afterCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.afterCursor}
                                     filter={filter}
                                     setfilter={setfilter}
-                                    loading={fetchMerchantItemVariantsQuery?.loading}
+                                    loading={fetchMerchantItemVariantsLoading}
                                 />
                             </div>
                             <ItemsTable
+                                fetchMerchantItemVariantsQuery={{ ...fetchMerchantItemVariantsQuery, loading: fetchMerchantItemVariantsLoading }}
                                 clickable={true}
                                 selectedItems={orderpayload?.items}
                                 addToCount={(item) => {
@@ -686,7 +693,7 @@ const AddOrder = (props) => {
                                     afterCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.afterCursor}
                                     filter={filter}
                                     setfilter={setfilter}
-                                    loading={fetchMerchantItemVariantsQuery?.loading}
+                                    loading={fetchMerchantItemVariantsLoading}
                                 />
                             </div>
                         </div>
@@ -1474,6 +1481,7 @@ const AddOrder = (props) => {
                                             />
                                         </div>
                                         <ItemsTable
+                                            fetchMerchantItemVariantsQuery={fetchMerchantItemVariantsQuery}
                                             clickable={true}
                                             selectedItems={orderpayload?.returnOrderItems}
                                             addToCount={(item) => {

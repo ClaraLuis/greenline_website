@@ -161,11 +161,11 @@ const MerchantSettlements = (props) => {
                                 loading={paginateMerchantSettlementsQuery?.loading}
                             />
                         </div>
-                        {paginateMerchantSettlementsQuery?.data?.paginateMerchantSettlements && (
+                        
                             <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
                                 <SettlemantsTable clickable={true} attr={'paginateMerchantSettlements'} paginateMerchantSettlementsQuery={paginateMerchantSettlementsQuery} />
                             </div>
-                        )}
+                        
                     </div>
                 )}
             </div>

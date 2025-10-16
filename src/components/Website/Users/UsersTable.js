@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
+import shimmerstyles from '../Generalfiles/CSS_GENERAL/shimmer.module.css';
 // import { fetch_collection_data } from '../../../API/API';
 import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 import { Dropdown } from 'react-bootstrap';
@@ -33,8 +34,34 @@ const UsersTable = (props) => {
     return (
         <>
             {props?.fetchusers?.loading && (
-                <div style={{ height: '70vh' }} class="row w-100 allcentered m-0">
-                    <CircularProgress color="var(--primary)" width="60px" height="60px" duration="1s" />
+                <div style={{ minHeight: '70vh' }} className="row m-0 w-100 d-flex align-content-start align-items-start justify-content-start">
+                    {[1, 2, 3, 4].map((item, index) => (
+                        <div key={index} className={props?.card}>
+                            <div className={`${generalstyles.card} p-3 row m-0 w-100 d-flex align-items-center`}>
+                                <div className="col-lg-8 col-md-8 p-0 mb-2">
+                                    <div className={shimmerstyles.shimmer} style={{ height: '20px', width: '60%' }}></div>
+                                </div>
+                                <div className="col-lg-4 col-md-4 p-0 mb-2 d-flex justify-content-end">
+                                    <div className={shimmerstyles.shimmer} style={{ height: '28px', width: '28px', borderRadius: '4px' }}></div>
+                                </div>
+                                <div className="col-lg-12 p-0 mb-1">
+                                    <div className={shimmerstyles.shimmer} style={{ height: '16px', width: '80%' }}></div>
+                                </div>
+                                <div className="col-lg-6 p-0 mb-1">
+                                    <div className={shimmerstyles.shimmer} style={{ height: '16px', width: '70%' }}></div>
+                                </div>
+                                <div className="col-lg-6 p-0 mb-1">
+                                    <div className={shimmerstyles.shimmer} style={{ height: '16px', width: '60%' }}></div>
+                                </div>
+                                <div className="col-lg-6 p-0 mb-1">
+                                    <div className={shimmerstyles.shimmer} style={{ height: '16px', width: '65%' }}></div>
+                                </div>
+                                <div className="col-lg-12 p-0">
+                                    <div className={shimmerstyles.shimmer} style={{ height: '16px', width: '50%' }}></div>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             )}
             {!props?.fetchusers?.loading && props?.fetchusers?.data != undefined && (

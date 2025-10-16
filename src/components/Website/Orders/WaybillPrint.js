@@ -295,8 +295,8 @@ const WaybillPrint = ({ waybills }) => {
                             </div>
                         ))}
                     </>
-                </LanguageContext.Provider>
-            </Contexthandlerscontext.Provider>,
+                        </LanguageContext.Provider>
+                    </Contexthandlerscontext.Provider>,
         );
     };
 
@@ -366,7 +366,7 @@ const WaybillPrint = ({ waybills }) => {
         // Pre-generate all barcodes BEFORE creating iframe
         // This is done synchronously and outside the print preview
         const barcodes = await preGenerateBarcodes();
-        
+
         // Create iframe synchronously (still within click handler)
         const iframe = document.createElement('iframe');
         iframe.style.position = 'fixed';
@@ -406,7 +406,7 @@ const WaybillPrint = ({ waybills }) => {
         // Reduced cleanup delay
         setTimeout(() => {
             if (iframe.parentNode) {
-                document.body.removeChild(iframe);
+            document.body.removeChild(iframe);
             }
         }, 500);
     };

@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
+import shimmerstyles from '../Generalfiles/CSS_GENERAL/shimmer.module.css';
 // import { fetch_collection_data } from '../../../API/API';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
 import { FaCheck, FaLayerGroup, FaPlus } from 'react-icons/fa';
@@ -770,8 +771,20 @@ const InventorySettings = (props) => {
                     {inventorySettings?.type == 'rack' && (
                         <div className="col-lg-12 p-0">
                             {fetchRacksQuery?.loading && (
-                                <div style={{ height: '70vh' }} className="row w-100 allcentered m-0">
-                                    <CircularProgress color="var(--primary)" width="60px" height="60px" duration="1s" />
+                                <div className="row m-0 w-100">
+                                    {[1, 2, 3, 4].map((item, index) => (
+                                        <div key={index} className="col-lg-6 mb-2">
+                                            <div className="row m-0 w-100 p-2" style={{ border: '1px solid #eee', borderRadius: '0.25rem', fontSize: '12px' }}>
+                                                <div className="col-lg-12 p-0">
+                                                    <div className="row m-0 w-100 d-flex align-items-center">
+                                                        <div className="col-lg-6 p-0">
+                                                            <div className={shimmerstyles.shimmer} style={{ height: '16px', width: '80px', borderRadius: '4px' }}></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
                             )}
                             {fetchRacksQuery?.paginateRacks != undefined && (
@@ -821,8 +834,20 @@ const InventorySettings = (props) => {
                     {inventorySettings?.type == 'box' && (
                         <div className="col-lg-12 p-0">
                             {fetchBoxesQuery?.loading && (
-                                <div style={{ height: '70vh' }} className="row w-100 allcentered m-0">
-                                    <CircularProgress color="var(--primary)" width="60px" height="60px" duration="1s" />
+                                <div className="row m-0 w-100">
+                                    {[1, 2, 3, 4].map((item, index) => (
+                                        <div key={index} className="col-lg-6 mb-2">
+                                            <div className="row m-0 w-100 p-2" style={{ border: '1px solid #eee', borderRadius: '0.25rem', fontSize: '12px' }}>
+                                                <div className="col-lg-12 p-0">
+                                                    <div className="row m-0 w-100 d-flex align-items-center">
+                                                        <div className="col-lg-6 p-0">
+                                                            <div className={shimmerstyles.shimmer} style={{ height: '16px', width: '80px', borderRadius: '4px' }}></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
                             )}
                             {fetchBoxesQuery?.paginateBoxes != undefined && (
@@ -872,8 +897,20 @@ const InventorySettings = (props) => {
                     {inventorySettings?.type == 'pallet' && (
                         <div className="col-lg-12 p-0">
                             {fetchPalletsQuery?.loading && (
-                                <div style={{ height: '70vh' }} className="row w-100 allcentered m-0">
-                                    <CircularProgress color="var(--primary)" width="60px" height="60px" duration="1s" />
+                                <div className="row m-0 w-100">
+                                    {[1, 2, 3, 4].map((item, index) => (
+                                        <div key={index} className="col-lg-6 mb-2">
+                                            <div className="row m-0 w-100 p-2" style={{ border: '1px solid #eee', borderRadius: '0.25rem', fontSize: '12px' }}>
+                                                <div className="col-lg-12 p-0">
+                                                    <div className="row m-0 w-100 d-flex align-items-center">
+                                                        <div className="col-lg-6 p-0">
+                                                            <div className={shimmerstyles.shimmer} style={{ height: '16px', width: '80px', borderRadius: '4px' }}></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
                             )}
                             {fetchPalletsQuery?.paginatePallets != undefined && (

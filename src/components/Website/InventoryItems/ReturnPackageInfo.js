@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
+import shimmerstyles from '../Generalfiles/CSS_GENERAL/shimmer.module.css';
 // import { fetch_collection_data } from '../../../API/API';
 
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
@@ -162,13 +163,56 @@ const ReturnPackageInfo = (props) => {
                             </div>
                         </div>
                         <div class={generalstyles.card + ' row m-0 w-100 p-4'}>
-                            <ReturnsTable
-                                clickable={false}
-                                background="#F0F5F9"
-                                type={'inventory'}
-                                card="col-lg-12 px-1"
-                                items={fetchInventoryItemReturnsQuery?.data?.paginateInventoryReturns?.data}
-                            />
+                            {fetchInventoryItemReturnsQuery?.loading && (
+                                <div className="row m-0 w-100">
+                                    {[1, 2, 3].map((item, index) => (
+                                        <div key={index} className="col-lg-12 px-1 mb-3">
+                                            <div className={`${generalstyles.card} p-3 row m-0 w-100`} style={{ background: '#F0F5F9' }}>
+                                                <div className="col-lg-12 p-0 d-flex">
+                                                    <div className={`${shimmerstyles.shimmer} mr-2`} style={{ height: '35px', width: '35px', borderRadius: '7px' }}></div>
+                                                    <div className="row m-0 w-100">
+                                                        <div className="col-lg-12 p-0">
+                                                            <div className={shimmerstyles.shimmer} style={{ height: '14px', width: '80%', borderRadius: '4px', marginBottom: '4px' }}></div>
+                                                        </div>
+                                                        <div className="col-lg-12 p-0">
+                                                            <div className={shimmerstyles.shimmer} style={{ height: '12px', width: '60%', borderRadius: '4px' }}></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="col-lg-12 p-0 my-2">
+                                                    <hr className="m-0" />
+                                                </div>
+                                                <div className="col-lg-12 p-0">
+                                                    <div className={shimmerstyles.shimmer} style={{ height: '12px', width: '100px', borderRadius: '4px' }}></div>
+                                                </div>
+                                                <div className="col-lg-12 p-0 mt-1">
+                                                    <div className={shimmerstyles.shimmer} style={{ height: '12px', width: '80px', borderRadius: '4px' }}></div>
+                                                </div>
+                                                <div className="col-lg-12 p-0 mt-2">
+                                                    <div className="row m-0 w-100">
+                                                        <div className="col-lg-6 p-0">
+                                                            <div className={shimmerstyles.shimmer} style={{ height: '12px', width: '60px', borderRadius: '4px' }}></div>
+                                                        </div>
+                                                        <div className="col-lg-6 p-0 d-flex justify-content-end">
+                                                            <div className={shimmerstyles.shimmer} style={{ height: '12px', width: '80px', borderRadius: '4px' }}></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                            {!fetchInventoryItemReturnsQuery?.loading && (
+                                <ReturnsTable
+                                    clickable={false}
+                                    background="#F0F5F9"
+                                    type={'inventory'}
+                                    card="col-lg-12 px-1"
+                                    items={fetchInventoryItemReturnsQuery?.data?.paginateInventoryReturns?.data}
+                                    fetchMerchantItemVariantsQuery={{ ...fetchInventoryItemReturnsQuery, loading: fetchInventoryItemReturnsQuery?.loading }}
+                                />
+                            )}
                             <div class="col-lg-12 p-0">
                                 <Pagination
                                     total={fetchInventoryItemReturnsQuery?.data?.paginateInventoryReturns?.totalCount}

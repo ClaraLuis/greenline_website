@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
+import shimmerstyles from '../Generalfiles/CSS_GENERAL/shimmer.module.css';
 // import { fetch_collection_data } from '../../../API/API';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
 import { FaCheck, FaLayerGroup } from 'react-icons/fa';
@@ -26,8 +27,32 @@ const ItemsTable = (props) => {
     return (
         <>
             {props?.fetchMerchantItemVariantsQuery?.loading && (
-                <div style={{ height: '70vh' }} class="row w-100 allcentered m-0">
-                    <CircularProgress color="var(--primary)" width="60px" height="60px" duration="1s" />
+                <div className="row m-0 w-100">
+                    {[1, 2, 3].map((item, index) => (
+                        <div key={index} className={props?.card}>
+                            <div className={`${generalstyles.card} p-3 row m-0 w-100`}>
+                                <div className="col-lg-12 p-0">
+                                    <div className={shimmerstyles.shimmer} style={{ width: '100%', height: '200px', borderRadius: '7px' }}></div>
+                                </div>
+                                <div className="col-lg-8 p-0 mt-2 wordbreak">
+                                    <div className={shimmerstyles.shimmer} style={{ height: '16px', width: '150px', borderRadius: '4px' }}></div>
+                                </div>
+                                <div className="col-lg-12 p-0">
+                                    <div className={shimmerstyles.shimmer} style={{ height: '13px', width: '120px', borderRadius: '4px' }}></div>
+                                </div>
+                                <div className="col-lg-12 p-0 mt-2">
+                                    <div className={shimmerstyles.shimmer} style={{ height: '15px', width: '100px', borderRadius: '4px' }}></div>
+                                </div>
+                                <div className="col-lg-12 p-0 mt-1">
+                                    <div className="row m-0 w-100">
+                                        {[1, 2, 3].map((color, colorindex) => (
+                                            <div key={colorindex} className={shimmerstyles.shimmer} style={{ width: '18px', height: '18px', borderRadius: '100%', marginInlineEnd: '5px' }}></div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             )}
             {!props?.items != undefined && (

@@ -165,7 +165,11 @@ const HubItems = (props) => {
 
                 <div class={generalstyles.card + ' row m-0 w-100'}>
                     <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
-                        <ItemsTable card="col-lg-4 px-1" items={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.data} />
+                        <ItemsTable 
+                            card="col-lg-4 px-1" 
+                            items={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.data}
+                            fetchMerchantItemVariantsQuery={{ ...fetchMerchantItemVariantsQuery, loading: fetchMerchantItemVariantsQuery?.loading }}
+                        />
                     </div>
                 </div>
             </div>

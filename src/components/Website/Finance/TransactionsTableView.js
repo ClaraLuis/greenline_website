@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
+import shimmerstyles from '../Generalfiles/CSS_GENERAL/shimmer.module.css';
 // import { fetch_collection_data } from '../../../API/API';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
 import { FaLayerGroup } from 'react-icons/fa';
@@ -90,8 +91,67 @@ const TransactionsTableView = (props) => {
     return (
         <>
             {props?.query?.loading && (
-                <div style={{ height: '70vh' }} class="row w-100 allcentered m-0">
-                    <CircularProgress color="var(--primary)" width="60px" height="60px" duration="1s" />
+                <div className="table-responsive">
+                    <table className="table table-hover">
+                        <thead style={{ position: 'sticky', top: '0px' }}>
+                            <tr>
+                                <th>ID</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Type</th>
+                                {props?.srctype === 'all' && <th>From</th>}
+                                {props?.srctype === 'all' && <th>To</th>}
+                                {props?.srctype !== 'all' && props?.allowAction != false && <th>Account</th>}
+                                {(props?.srctype === 'all' || props?.srctype === 'courierCollection') && <th>Order</th>}
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {[1, 2, 3, 4].map((item, index) => (
+                                <tr key={index}>
+                                    <td>
+                                        <div className={shimmerstyles.shimmer} style={{ height: '16px', width: '60px', borderRadius: '4px' }}></div>
+                                    </td>
+                                    <td>
+                                        <div className={shimmerstyles.shimmer} style={{ height: '16px', width: '100px', borderRadius: '4px' }}></div>
+                                    </td>
+                                    <td>
+                                        <div className={shimmerstyles.shimmer} style={{ height: '24px', width: '120px', borderRadius: '20px' }}></div>
+                                    </td>
+                                    <td>
+                                        <div className={shimmerstyles.shimmer} style={{ height: '24px', width: '100px', borderRadius: '20px' }}></div>
+                                    </td>
+                                    {props?.srctype === 'all' && (
+                                        <td>
+                                            <div className={shimmerstyles.shimmer} style={{ height: '16px', width: '140px', borderRadius: '4px' }}></div>
+                                        </td>
+                                    )}
+                                    {props?.srctype === 'all' && (
+                                        <td>
+                                            <div className={shimmerstyles.shimmer} style={{ height: '16px', width: '140px', borderRadius: '4px' }}></div>
+                                        </td>
+                                    )}
+                                    {props?.srctype !== 'all' && props?.allowAction != false && (
+                                        <td>
+                                            <div className={shimmerstyles.shimmer} style={{ height: '16px', width: '140px', borderRadius: '4px' }}></div>
+                                        </td>
+                                    )}
+                                    {(props?.srctype === 'all' || props?.srctype === 'courierCollection') && (
+                                        <td>
+                                            <div className={shimmerstyles.shimmer} style={{ height: '16px', width: '160px', borderRadius: '4px' }}></div>
+                                        </td>
+                                    )}
+                                    <td>
+                                        <div className={shimmerstyles.shimmer} style={{ height: '16px', width: '120px', borderRadius: '4px' }}></div>
+                                    </td>
+                                    <td>
+                                        <div className={shimmerstyles.shimmer} style={{ height: '24px', width: '60px', borderRadius: '4px' }}></div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
             )}
             {!props?.query?.loading && props?.query?.data != undefined && props?.query?.data && (

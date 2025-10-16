@@ -822,7 +822,7 @@ const MerchantOrders = (props) => {
                                 selectedOrders={selectedOrders}
                                 clickable={true}
                                 actiononclick={(order) => handleSelectOrder(order.id)}
-                                fetchOrdersQuery={fetchOrdersQuery}
+                                fetchOrdersQuery={{ ...fetchOrdersQuery, loading: fetchOrdersLoading }}
                                 attr={'paginateOrders'}
                                 srcFrom="merchant"
                             />

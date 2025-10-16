@@ -333,6 +333,7 @@ const MerchanReturns = (props) => {
                                     }}
                                     card="col-lg-6 "
                                     items={fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.data?.filter((item) => !packagepayload?.ids?.some((selected) => selected?.id === item?.id))}
+                                    fetchMerchantItemVariantsQuery={{ ...fetchMerchantItemReturnsQuery, loading: fetchMerchantItemReturnsQuery?.loading }}
                                 />
                                 <div class="col-lg-12 p-0">
                                     <Pagination

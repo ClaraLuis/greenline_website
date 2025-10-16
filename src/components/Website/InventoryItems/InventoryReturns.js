@@ -234,6 +234,7 @@ const InventoryReturns = (props) => {
                                     selectedItems={packagepayload.ids}
                                     card="col-lg-4 px-1"
                                     items={fetchInventoryItemReturnsQuery?.data?.paginateInventoryReturns?.data}
+                                    fetchMerchantItemVariantsQuery={{ ...fetchInventoryItemReturnsQuery, loading: fetchInventoryItemReturnsQuery?.loading }}
                                 />
                                 <div class="col-lg-12 p-0">
                                     <Pagination

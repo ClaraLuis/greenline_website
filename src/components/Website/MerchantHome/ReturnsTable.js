@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
+import shimmerstyles from '../Generalfiles/CSS_GENERAL/shimmer.module.css';
 // import { fetch_collection_data } from '../../../API/API';
 import { Modal } from 'react-bootstrap';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
@@ -71,25 +72,78 @@ const ReturnsTable = (props) => {
     return (
         <>
             {props?.fetchMerchantItemVariantsQuery?.loading && (
-                <div style={{ height: '70vh' }} class="row w-100 allcentered m-0">
-                    <CircularProgress color="var(--primary)" width="60px" height="60px" duration="1s" />
-                </div>
-            )}
-            {!props?.items != undefined && (
-                <>
-                    {props?.items?.length == 0 && (
-                        <div style={{ height: '70vh' }} class="col-lg-12 p-0 w-100 allcentered align-items-center m-0 text-lightprimary">
-                            <div class="row m-0 w-100">
-                                <FaLayerGroup size={40} class=" col-lg-12" />
-                                <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
-                                    No Returns
+                <div className="row m-0 w-100">
+                    {[1, 2, 3].map((item, index) => (
+                        <div key={index} className={props?.card}>
+                            <div className={`${generalstyles.card} p-0 row m-0 w-100`}>
+                                <div className="col-lg-12 py-2 px-3">
+                                    <div className="row m-0 w-100">
+                                        <div className="col-lg-12 p-0 mb-1">
+                                            <div className={shimmerstyles.shimmer} style={{ height: '12px', width: '60px', borderRadius: '4px' }}></div>
+                                        </div>
+                                        <div className="col-lg-12 p-0">
+                                            <div className={shimmerstyles.shimmer} style={{ height: '12px', width: '120px', borderRadius: '4px' }}></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-lg-12 p-0 my-2">
+                                    <hr className="m-0" />
+                                </div>
+                                <div className="col-lg-12 mb-1" style={{ color: 'grey', fontSize: '12px' }}>
+                                    <div className="row m-0 w-100 d-flex align-items-center justify-content-between">
+                                        <div className={shimmerstyles.shimmer} style={{ height: '12px', width: '40px', borderRadius: '4px' }}></div>
+                                    </div>
+                                </div>
+                                {[1, 2].map((subitem, subindex) => (
+                                    <div key={subindex} className="col-lg-12 mb-2">
+                                        <div style={{ border: '1px solid #eee', borderRadius: '0.25rem' }} className="row m-0 d-flex align-items-center w-100 p-2">
+                                            <div className={shimmerstyles.shimmer} style={{ height: '35px', width: '35px', borderRadius: '7px', marginInline: '5px' }}></div>
+                                            <div className="col-lg-8 d-flex align-items-center">
+                                                <div className="row m-0 w-100">
+                                                    <div className="col-lg-12 p-0 wordbreak wordbreak1">
+                                                        <div className={shimmerstyles.shimmer} style={{ height: '14px', width: '80%', borderRadius: '4px', marginBottom: '4px' }}></div>
+                                                    </div>
+                                                    <div className="col-lg-12 p-0 wordbreak wordbreak1">
+                                                        <div className={shimmerstyles.shimmer} style={{ height: '12px', width: '60%', borderRadius: '4px' }}></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className={shimmerstyles.shimmer} style={{ height: '30px', width: '30px', borderRadius: '4px' }}></div>
+                                        </div>
+                                    </div>
+                                ))}
+                                <div className="col-lg-8 p-0 mt-2 wordbreak">
+                                    <div className={shimmerstyles.shimmer} style={{ height: '16px', width: '150px', borderRadius: '4px' }}></div>
+                                </div>
+                                <div className="col-lg-12 p-0">
+                                    <div className={shimmerstyles.shimmer} style={{ height: '13px', width: '120px', borderRadius: '4px' }}></div>
+                                </div>
+                                <div className="col-lg-12 p-0 mt-2">
+                                    <div className={shimmerstyles.shimmer} style={{ height: '15px', width: '100px', borderRadius: '4px' }}></div>
+                                </div>
+                                <div className="col-lg-12 p-0 mt-1">
+                                    <div className="row m-0 w-100">
+                                        {[1, 2, 3].map((color, colorindex) => (
+                                            <div key={colorindex} className={shimmerstyles.shimmer} style={{ width: '18px', height: '18px', borderRadius: '100%', marginInlineEnd: '5px' }}></div>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    )}
-                </>
+                    ))}
+                </div>
             )}
-            {props?.items?.length != 0 && (
+            {!props?.fetchMerchantItemVariantsQuery?.loading && props?.items?.length === 0 && (
+                <div style={{ height: '70vh' }} class="col-lg-12 p-0 w-100 allcentered align-items-center m-0 text-lightprimary">
+                    <div class="row m-0 w-100">
+                        <FaLayerGroup size={40} class=" col-lg-12" />
+                        <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
+                            No Returns
+                        </div>
+                    </div>
+                </div>
+            )}
+            {!props?.fetchMerchantItemVariantsQuery?.loading && props?.items?.length > 0 && (
                 <div class="row m-0 w-100">
                     {props?.items?.map((item, index) => {
                         var selected = false;

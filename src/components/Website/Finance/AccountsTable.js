@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
+import shimmerstyles from '../Generalfiles/CSS_GENERAL/shimmer.module.css';
 // import { fetch_collection_data } from '../../../API/API';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
 import { FaEllipsisV, FaLayerGroup, FaMoneyBill } from 'react-icons/fa';
@@ -31,8 +32,37 @@ const AccountsTable = (props) => {
     return (
         <>
             {props?.fetchFinancialAccountsQuery?.loading && (
-                <div style={{ height: '70vh' }} class="row w-100 allcentered m-0">
-                    <CircularProgress color="var(--primary)" width="60px" height="60px" duration="1s" />
+                <div className="row m-0 w-100">
+                    {[1, 2, 3].map((item, index) => (
+                        <div key={index} className="col-lg-4">
+                            <div className={`${generalstyles.card} p-3 row m-0 w-100 allcentered`}>
+                                <div className="col-lg-6 p-0">
+                                    <div className={shimmerstyles.shimmer} style={{ height: '12px', width: '60px', borderRadius: '4px' }}></div>
+                                </div>
+                                <div className="col-lg-6 col-md-6 p-0 d-flex justify-content-end align-items-center">
+                                    <div className="row m-0 w-100 d-flex justify-content-end align-items-center">
+                                        <div className={shimmerstyles.shimmer} style={{ height: '24px', width: '100px', borderRadius: '20px', marginRight: '8px' }}></div>
+                                        <div className={shimmerstyles.shimmer} style={{ height: '28px', width: '28px', borderRadius: '4px' }}></div>
+                                    </div>
+                                </div>
+                                <div className="col-lg-12 p-0 my-2">
+                                    <hr className="m-0" />
+                                </div>
+                                <div className="col-lg-12 p-0 mb-2">
+                                    <div className={shimmerstyles.shimmer} style={{ height: '16px', width: '150px', borderRadius: '4px' }}></div>
+                                </div>
+                                <div className="col-lg-6 p-0 mb-2">
+                                    <div className={shimmerstyles.shimmer} style={{ height: '16px', width: '120px', borderRadius: '4px' }}></div>
+                                </div>
+                                <div className="col-lg-6 col-md-6 p-0 mb-2 d-flex justify-content-end">
+                                    <div className={shimmerstyles.shimmer} style={{ height: '12px', width: '100px', borderRadius: '4px' }}></div>
+                                </div>
+                                <div className="col-lg-12 p-0 allcentered mt-2">
+                                    <div className={shimmerstyles.shimmer} style={{ height: '35px', width: '150px', borderRadius: '20px' }}></div>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             )}
             {!props?.fetchFinancialAccountsQuery?.loading && props?.fetchFinancialAccountsQuery?.data != undefined && (

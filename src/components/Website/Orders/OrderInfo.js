@@ -2272,6 +2272,7 @@ const OrderInfo = (props) => {
                             />
                         </div>
                         <ItemsTable
+                            fetchMerchantItemVariantsQuery={fetchMerchantItemVariantsQuery}
                             clickable={true}
                             selectedItems={itemsModal?.items ?? []}
                             addToCount={(item) => {

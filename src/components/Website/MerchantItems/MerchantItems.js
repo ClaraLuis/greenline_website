@@ -976,7 +976,7 @@ keep data consistent.</span></p>
                             />
                         </div>
                         <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar px-1 '}>
-                            <ItemsTable card="col-lg-3" items={fetchMerchantItemsQuery?.data?.paginateItems?.data} showEllipsis={true} />
+                            <ItemsTable card="col-lg-3" items={fetchMerchantItemsQuery?.data?.paginateItems?.data} showEllipsis={true} fetchMerchantItemVariantsQuery={fetchMerchantItemsQuery} />
                         </div>
                         <div class="col-lg-12 p-0">
                             <Pagination

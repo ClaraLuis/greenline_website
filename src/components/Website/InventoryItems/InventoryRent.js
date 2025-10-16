@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
+import shimmerstyles from '../Generalfiles/CSS_GENERAL/shimmer.module.css';
 // import { fetch_collection_data } from '../../../API/API';
 import { FaEllipsisV, FaLayerGroup } from 'react-icons/fa';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
@@ -267,7 +268,40 @@ const InventoryRent = (props) => {
                                 loading={paginateInventoryRentsQuery?.loading}
                             />
                         </div>
-                        {paginateInventoryRentsQuery?.data?.paginateInventoryRents?.data?.length == 0 && (
+                        {paginateInventoryRentsQuery?.loading && (
+                            <div className="row m-0 w-100">
+                                {[1, 2, 3].map((item, index) => (
+                                    <div key={index} className="col-lg-6">
+                                        <div className={`${generalstyles.card} p-3 row w-100 d-flex align-items-center`}>
+                                            <div className="col-lg-4 col-md-4 p-0">
+                                                <div className={shimmerstyles.shimmer} style={{ height: '12px', width: '120px', borderRadius: '4px' }}></div>
+                                            </div>
+                                            <div className="col-lg-8 col-md-8 p-0 d-flex justify-content-end align-items-center">
+                                                <div className="row m-0 w-100 d-flex justify-content-end align-items-center">
+                                                    <div className={shimmerstyles.shimmer} style={{ height: '24px', width: '100px', borderRadius: '20px', marginRight: '8px' }}></div>
+                                                    <div className={shimmerstyles.shimmer} style={{ height: '30px', width: '30px', borderRadius: '4px', marginRight: '8px' }}></div>
+                                                    <div className={shimmerstyles.shimmer} style={{ height: '30px', width: '30px', borderRadius: '4px' }}></div>
+                                                </div>
+                                            </div>
+                                            <div className="col-lg-12 p-0 my-2">
+                                                <hr className="m-0" />
+                                            </div>
+                                            <div className="col-lg-12 p-0 mb-2">
+                                                <div className="row m-0 w-100 d-flex align-items-center">
+                                                    <div className="col-lg-6 p-0 d-flex">
+                                                        <div className={shimmerstyles.shimmer} style={{ height: '13px', width: '150px', borderRadius: '4px' }}></div>
+                                                    </div>
+                                                    <div className="col-lg-6 col-md-6 p-0 d-flex justify-content-end">
+                                                        <div className={shimmerstyles.shimmer} style={{ height: '12px', width: '100px', borderRadius: '4px' }}></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                        {!paginateInventoryRentsQuery?.loading && paginateInventoryRentsQuery?.data?.paginateInventoryRents?.data?.length == 0 && (
                             <div style={{ height: '70vh' }} class="col-lg-12 p-0 w-100 allcentered align-items-center m-0 text-lightprimary">
                                 <div class="row m-0 w-100">
                                     <FaLayerGroup size={40} class=" col-lg-12" />

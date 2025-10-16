@@ -15,7 +15,6 @@ import { NotificationManager } from 'react-notifications';
 import API from '../../../API/API.js';
 import Pagination from '../../Pagination.js';
 import SelectComponent from '../../SelectComponent.js';
-import ReturnsTable from '../MerchantHome/ReturnsTable.js';
 import OrdersTable from '../Orders/OrdersTable.js';
 
 const Fulfilled = (props) => {

@@ -5,6 +5,7 @@ import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
+import shimmerstyles from '../Generalfiles/CSS_GENERAL/shimmer.module.css';
 // import { fetch_collection_data } from '../../../API/API';
 import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
@@ -42,6 +43,7 @@ const ItemHistory = (props) => {
     const [search, setSearch] = useState('');
 
     const [fetchItemHistoryQuery, setfetchItemHistoryQuery] = useState({});
+    const [fetchItemHistoryLoading, setFetchItemHistoryLoading] = useState(false);
     const [fetchItemHistoryfilter, setfetchItemHistoryfilter] = useState({
         isAsc: false,
         limit: 20,
@@ -51,20 +53,25 @@ const ItemHistory = (props) => {
     useLoadQueryParamsToPayload(setfetchItemHistoryfilter);
 
     const fetchitemhistorfunc = async () => {
-        if (fetchItemHistoryfilter?.name == undefined) {
-            var { data } = await fetchItemHistorLazyQuery({
-                variables: {
-                    input: { ...fetchItemHistoryfilter, name: queryParameters?.get('id') },
-                },
-            });
-            setfetchItemHistoryQuery(data);
-        } else {
-            var { data } = await fetchItemHistorLazyQuery({
-                variables: {
-                    input: { ...fetchItemHistoryfilter },
-                },
-            });
-            setfetchItemHistoryQuery(data);
+        setFetchItemHistoryLoading(true);
+        try {
+            if (fetchItemHistoryfilter?.name == undefined) {
+                var { data } = await fetchItemHistorLazyQuery({
+                    variables: {
+                        input: { ...fetchItemHistoryfilter, name: queryParameters?.get('id') },
+                    },
+                });
+                setfetchItemHistoryQuery(data);
+            } else {
+                var { data } = await fetchItemHistorLazyQuery({
+                    variables: {
+                        input: { ...fetchItemHistoryfilter },
+                    },
+                });
+                setfetchItemHistoryQuery(data);
+            }
+        } finally {
+            setFetchItemHistoryLoading(false);
         }
     };
 
@@ -334,19 +341,57 @@ const ItemHistory = (props) => {
                             afterCursor={fetchItemHistoryQuery?.paginateItemHistory?.cursor?.afterCursor}
                             filter={fetchItemHistoryfilter}
                             setfilter={setfetchItemHistoryfilter}
-                            loading={fetchItemHistoryQuery?.loading}
+                            loading={fetchItemHistoryLoading}
                         />
                     </div>
                     <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>
                         <div class="col-lg-12 p-0">
                             <div style={{ fontSize: '14px' }} class="row m-0 w-100 pb-2">
                                 <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
-                                    {fetchItemHistoryQuery?.loading && (
-                                        <div style={{ height: '70vh' }} class="row w-100 allcentered m-0">
-                                            <CircularProgress color="var(--primary)" width="60px" height="60px" duration="1s" />
+                                    {fetchItemHistoryLoading && (
+                                        <div className="row m-0 w-100">
+                                            {[1, 2, 3, 4].map((item, index) => (
+                                                <tr key={index}>
+                                                    <td>
+                                                        <div className={shimmerstyles.shimmer} style={{ height: '16px', width: '120px', borderRadius: '4px' }}></div>
+                                                    </td>
+                                                    <td>
+                                                        <div className={shimmerstyles.shimmer} style={{ height: '16px', width: '150px', borderRadius: '4px' }}></div>
+                                                    </td>
+                                                    {cookies.get('merchantId') == undefined && cookies.get('userInfo')?.type != 'merchant' && (
+                                                        <td>
+                                                            <div className={shimmerstyles.shimmer} style={{ height: '16px', width: '140px', borderRadius: '4px' }}></div>
+                                                        </td>
+                                                    )}
+                                                    <td>
+                                                        <div className={shimmerstyles.shimmer} style={{ height: '16px', width: '60px', borderRadius: '4px' }}></div>
+                                                    </td>
+                                                    <td>
+                                                        <div className={shimmerstyles.shimmer} style={{ height: '16px', width: '80px', borderRadius: '4px' }}></div>
+                                                    </td>
+                                                    <td>
+                                                        <div className={shimmerstyles.shimmer} style={{ height: '16px', width: '60px', borderRadius: '4px' }}></div>
+                                                    </td>
+                                                    <td>
+                                                        <div className={shimmerstyles.shimmer} style={{ height: '16px', width: '100px', borderRadius: '4px', marginBottom: '4px' }}></div>
+                                                        <div className={shimmerstyles.shimmer} style={{ height: '16px', width: '80px', borderRadius: '4px' }}></div>
+                                                    </td>
+                                                    <td style={{ minWidth: '400px' }}>
+                                                        <div className={shimmerstyles.shimmer} style={{ height: '16px', width: '80%', borderRadius: '4px' }}></div>
+                                                    </td>
+                                                    {cookies.get('merchantId') == undefined && cookies.get('userInfo')?.type != 'merchant' && (
+                                                        <td>
+                                                            <div className={shimmerstyles.shimmer} style={{ height: '16px', width: '120px', borderRadius: '4px' }}></div>
+                                                        </td>
+                                                    )}
+                                                    <td>
+                                                        <div className={shimmerstyles.shimmer} style={{ height: '16px', width: '140px', borderRadius: '4px' }}></div>
+                                                    </td>
+                                                </tr>
+                                            ))}
                                         </div>
                                     )}
-                                    {!fetchItemHistoryQuery?.loading && (
+                                    {!fetchItemHistoryLoading && (
                                         <>
                                             {fetchItemHistoryQuery?.paginateItemHistory?.data?.length == 0 && (
                                                 <div style={{ height: '70vh' }} class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">

@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
+import shimmerstyles from '../Generalfiles/CSS_GENERAL/shimmer.module.css';
 // import { fetch_collection_data } from '../../../API/API';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
 import { FaLayerGroup, FaShopify } from 'react-icons/fa';
@@ -29,8 +30,45 @@ const ItemsTable = (props) => {
     return (
         <>
             {props?.fetchMerchantItemVariantsQuery?.loading && (
-                <div style={{ height: '70vh' }} class="row w-100 allcentered m-0">
-                    <CircularProgress color="var(--primary)" width="60px" height="60px" duration="1s" />
+                <div className="row m-0 w-100">
+                    {[1, 2, 3, 4].map((item, index) => (
+                        <div key={index} className={props?.card}>
+                            <div className={`${generalstyles.card} p-3 row m-0 w-100`}>
+                                <div className="col-lg-12 p-0">
+                                    <div style={{ width: '100%', height: '200px' }}>
+                                        <div className={shimmerstyles.shimmer} style={{ width: '100%', height: '100%', borderRadius: '0rem' }}></div>
+                                    </div>
+                                </div>
+                                <div className="col-lg-12 pl-0 pr-0 pb-0 wordbreak" style={{ paddingTop: '1.5rem' }}>
+                                    <div className="row m-0 w-100">
+                                        <div className="col-lg-12 p-0">
+                                            <div className={shimmerstyles.shimmer} style={{ height: '11px', width: '60%', borderRadius: '4px', marginBottom: '8px' }}></div>
+                                        </div>
+                                        <div className="col-lg-12 p-0">
+                                            <div className={shimmerstyles.shimmer} style={{ height: '16px', width: '80%', borderRadius: '4px' }}></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-lg-12 p-0 mt-2">
+                                    <div className={shimmerstyles.shimmer} style={{ height: '13px', width: '40%', borderRadius: '4px' }}></div>
+                                </div>
+                                <div className="col-lg-12 p-0 mt-2">
+                                    <div className={shimmerstyles.shimmer} style={{ height: '15px', width: '30%', borderRadius: '4px' }}></div>
+                                </div>
+                                <div className="col-lg-12 p-0 mt-1">
+                                    <div className="row m-0 w-100">
+                                        {[1, 2, 3].map((color, colorindex) => (
+                                            <div key={colorindex} className={shimmerstyles.shimmer} style={{ width: '18px', height: '18px', borderRadius: '100%', marginInlineEnd: '5px' }}></div>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div className="col-lg-12 p-0 mt-2 d-flex align-items-center justify-content-between">
+                                    <div className={shimmerstyles.shimmer} style={{ height: '11px', width: '30%', borderRadius: '4px' }}></div>
+                                    <div className={shimmerstyles.shimmer} style={{ height: '11px', width: '20%', borderRadius: '4px' }}></div>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             )}
             <>
@@ -57,7 +95,7 @@ const ItemsTable = (props) => {
                             }
                         });
                         return (
-                            <div class={props?.card}>
+                            <div key={item?.id ?? item?.sku ?? index} class={props?.card}>
                                 <div
                                     style={{
                                         backgroundColor: props?.selectBackground && selected ? 'var(--secondary)' : '',
@@ -147,6 +185,7 @@ const ItemsTable = (props) => {
                                     <div class="col-lg-12 p-0">
                                         <div style={{ width: '100%', height: '200px' }}>
                                             <img
+                                                key={item?.imageUrl ?? 'placeholder'}
                                                 src={
                                                     item?.imageUrl?.lenth != 0 && item?.imageUrl != null
                                                         ? item?.imageUrl

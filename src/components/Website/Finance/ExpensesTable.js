@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
+import shimmerstyles from '../Generalfiles/CSS_GENERAL/shimmer.module.css';
 // import { fetch_collection_data } from '../../../API/API';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
 import { FaLayerGroup } from 'react-icons/fa';
@@ -38,28 +39,44 @@ const ExpensesTable = (props) => {
 
     return (
         <>
-            {/*       
-      {fetchusers?.loading && (
-                            <div style={{ height: '70vh' }} class="row w-100 allcentered m-0">
-                                <CircularProgress color="var(--primary)" width="60px" height="60px" duration="1s" />
-                            </div>
-                        )}
-                        {!fetchusers?.loading && fetchusers?.data != undefined && (
-                            <>
-                                {fetchusers?.data?.paginateUsers?.data?.length == 0 && (
-                                    <div style={{ height: '70vh' }} class="col-lg-12 w-100 allcentered align-items-center m-0 text-lightprimary">
-                                        <div class="row m-0 w-100">
-                                            <FaLayerGroup size={40} class=" col-lg-12" />
-                                            <div class="col-lg-12 w-100 allcentered p-0 m-0" style={{ fontSize: '20px' }}>
-                                                No Users
-                                            </div>
-                                        </div>
-                                    </div>
-                                )} */}
-            {/* {fetchusers?.data?.length != 0 && (
-            
-             
-            )} */}
+            {props?.loading && (
+                <table className="table table-hover">
+                    <thead style={{ position: 'sticky', top: '0px' }}>
+                        <tr>
+                            <th>#</th>
+                            <th>Type</th>
+                            <th>From Account</th>
+                            <th>Amount</th>
+                            <th>Receipt</th>
+                            <th>Comment</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {[1, 2, 3, 4].map((item, index) => (
+                            <tr key={index}>
+                                <td>
+                                    <div className={shimmerstyles.shimmer} style={{ height: '16px', width: '40px', borderRadius: '4px' }}></div>
+                                </td>
+                                <td>
+                                    <div className={shimmerstyles.shimmer} style={{ height: '16px', width: '80px', borderRadius: '4px' }}></div>
+                                </td>
+                                <td>
+                                    <div className={shimmerstyles.shimmer} style={{ height: '16px', width: '120px', borderRadius: '4px' }}></div>
+                                </td>
+                                <td>
+                                    <div className={shimmerstyles.shimmer} style={{ height: '16px', width: '100px', borderRadius: '4px' }}></div>
+                                </td>
+                                <td>
+                                    <div className={shimmerstyles.shimmer} style={{ height: '16px', width: '80px', borderRadius: '4px' }}></div>
+                                </td>
+                                <td>
+                                    <div className={shimmerstyles.shimmer} style={{ height: '16px', width: '150px', borderRadius: '4px' }}></div>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            )}
             <table className="table table-hover">
                 <thead style={{ position: 'sticky', top: '0px' }}>
                     <th>#</th>

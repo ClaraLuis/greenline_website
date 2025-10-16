@@ -241,6 +241,7 @@ const ImportNewItem = (props) => {
                                 card="col-lg-3"
                                 clickable={true}
                                 items={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.data}
+                                fetchMerchantItemVariantsQuery={fetchMerchantItemVariantsQuery}
                                 actiononclick={(item) => {
                                     props?.setimportItemPayload({ ...props?.importItemPayload, itemVariantId: item?.id });
                                     setitemChosen({ ...item });
