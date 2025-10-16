@@ -143,9 +143,11 @@ const AddSheet = (props) => {
                                     style={{ height: '30px', minWidth: '80%' }}
                                     class={generalstyles.roundbutton + ' allcentered p-0'}
                                     onClick={() => {
+                                        if (fetchOrdersQuery?.loading) return;
                                         var temp = [parseInt(search)];
                                         setfilterorders({ ...filterorders, orderIds: temp });
                                     }}
+                                    disabled={fetchOrdersQuery?.loading}
                                 >
                                     search
                                 </button>

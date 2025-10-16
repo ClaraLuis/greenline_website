@@ -360,6 +360,7 @@ const CourierCollection = (props) => {
                                             afterCursor={fetchCourierCollectionTransactionsQuery?.data?.paginateCourierCollectionTransactions?.cursor?.afterCursor}
                                             filter={filterobj}
                                             setfilter={setfilterobj}
+                                            loading={fetchCourierCollectionTransactionsQuery?.loading}
                                         />
                                     </div>
                                     <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar px-3 py-0'}>

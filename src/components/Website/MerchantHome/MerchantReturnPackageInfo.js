@@ -179,6 +179,7 @@ const MerchantReturnPackageInfo = (props) => {
                                     afterCursor={fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.cursor?.afterCursor}
                                     filter={filter}
                                     setfilter={setfilter}
+                                    loading={paginateReturnPackageHistoryQuery?.loading}
                                 />
                             </div>
                         </div>
@@ -256,6 +257,7 @@ const MerchantReturnPackageInfo = (props) => {
                                         afterCursor={paginateReturnPackageHistoryQuery?.data?.paginateReturnPackageHistory?.data?.afterCursor}
                                         filter={filterordershistory}
                                         setfilter={setfilterordershistory}
+                                        loading={paginateReturnPackageHistoryQuery?.loading}
                                     />
                                 </div>
                             )}

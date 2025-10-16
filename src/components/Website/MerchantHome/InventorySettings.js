@@ -464,6 +464,7 @@ const InventorySettings = (props) => {
                                                             afterCursor={fetchSenttTransactionsQuery?.data?.paginateInventoryRentTransaction?.cursor?.afterCursor}
                                                             filter={filterSentTransactionsObj}
                                                             setfilter={setfilterSentTransactionsObj}
+                                                            loading={fetchSenttTransactionsQuery?.loading}
                                                         />
                                                     </div>
                                                     {fetchSenttTransactionsQuery.data?.paginateInventoryRentTransaction?.data?.map((item, index) => {
@@ -560,6 +561,7 @@ const InventorySettings = (props) => {
                                                             afterCursor={fetchSenttTransactionsQuery?.data?.paginateInventoryRentTransaction?.cursor?.afterCursor}
                                                             filter={filterSentTransactionsObj}
                                                             setfilter={setfilterSentTransactionsObj}
+                                                            loading={fetchSenttTransactionsQuery?.loading}
                                                         />
                                                     </div>
                                                 </div>

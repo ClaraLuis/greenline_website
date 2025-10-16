@@ -149,6 +149,7 @@ const MerchantSettlement = (props) => {
                                     afterCursor={paginateSettlementTransactionsQuery?.data?.paginateSettlementTransactions?.cursor?.afterCursor}
                                     filter={filterobj}
                                     setfilter={setfilterobj}
+                                    loading={paginateSettlementTransactionsQuery?.loading}
                                 />
                             </div>
                             {paginateSettlementTransactionsQuery?.data?.paginateSettlementTransactions && (

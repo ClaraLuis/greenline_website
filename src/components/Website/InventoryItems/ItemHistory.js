@@ -334,6 +334,7 @@ const ItemHistory = (props) => {
                             afterCursor={fetchItemHistoryQuery?.paginateItemHistory?.cursor?.afterCursor}
                             filter={fetchItemHistoryfilter}
                             setfilter={setfetchItemHistoryfilter}
+                            loading={fetchItemHistoryQuery?.loading}
                         />
                     </div>
                     <div class={generalstyles.card + ' row m-0 w-100 mb-2 p-2 px-3'}>

@@ -273,6 +273,7 @@ const RentBills = (props) => {
                                             afterCursor={fetchInventoryRentBillsQuery?.data?.paginateInventoryRentBills?.cursor?.afterCursor}
                                             filter={filterobj}
                                             setfilter={setfilterobj}
+                                            loading={fetchInventoryRentBillsQuery?.loading}
                                         />
                                     </div>
                                     <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>

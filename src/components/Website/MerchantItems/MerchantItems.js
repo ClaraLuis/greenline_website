@@ -972,6 +972,7 @@ keep data consistent.</span></p>
                                 afterCursor={fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.afterCursor}
                                 filter={payload}
                                 setfilter={setPayload}
+                                loading={fetchMerchantItemsQuery?.loading}
                             />
                         </div>
                         <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar px-1 '}>
@@ -984,6 +985,7 @@ keep data consistent.</span></p>
                                 afterCursor={fetchMerchantItemsQuery?.data?.paginateItems?.cursor?.afterCursor}
                                 filter={payload}
                                 setfilter={setPayload}
+                                loading={fetchMerchantItemsQuery?.loading}
                             />
                         </div>
                         {/* </div> */}

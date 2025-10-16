@@ -245,10 +245,12 @@ const FinanceTransactions = (props) => {
                                                                         { label: 'Oldest', value: true },
                                                                         { label: 'Latest', value: false },
                                                                     ].find((option) => option.value === (filterTransactionsObj?.isAsc ?? true))}
-                                                                    onChange={(option) => {
-                                                                        setfilterTransactionsObj({ ...filterTransactionsObj, isAsc: option?.value });
-                                                                        updateQueryParamContext('isAsc', option?.value);
-                                                                    }}
+                                                                onChange={(option) => {
+                                                                    if (fetchAllTransactionsQuery?.loading) return;
+                                                                    setfilterTransactionsObj({ ...filterTransactionsObj, isAsc: option?.value });
+                                                                    updateQueryParamContext('isAsc', option?.value);
+                                                                }}
+                                                                isDisabled={fetchAllTransactionsQuery?.loading}
                                                                 />
                                                             </div>
                                                         </div>
@@ -310,12 +312,14 @@ const FinanceTransactions = (props) => {
                                                                     payload={filterTransactionsObj}
                                                                     payloadAttr={'fromAccountId'}
                                                                     onClick={(option) => {
+                                                                        if (fetchAllTransactionsQuery?.loading) return;
                                                                         setfilterTransactionsObj({
                                                                             ...filterTransactionsObj,
                                                                             fromAccountId: option?.id,
                                                                         });
                                                                         updateQueryParamContext('fromAccountId', option?.id);
                                                                     }}
+                                                                    disabled={fetchAllTransactionsQuery?.loading}
                                                                 />
                                                             </div>
                                                             <div className={'col-lg-2'} style={{ marginBottom: '15px' }}>
@@ -330,12 +334,14 @@ const FinanceTransactions = (props) => {
                                                                     payload={filterTransactionsObj}
                                                                     payloadAttr={'toAccountId'}
                                                                     onClick={(option) => {
+                                                                        if (fetchAllTransactionsQuery?.loading) return;
                                                                         setfilterTransactionsObj({
                                                                             ...filterTransactionsObj,
                                                                             toAccountId: option?.id,
                                                                         });
                                                                         updateQueryParamContext('toAccountId', option?.id);
                                                                     }}
+                                                                    disabled={fetchAllTransactionsQuery?.loading}
                                                                 />
                                                             </div>
                                                         </>
@@ -351,9 +357,11 @@ const FinanceTransactions = (props) => {
                                                     styles={defaultstyles}
                                                     value={[{ label: 'All', value: undefined }, ...transactionTypeContext].filter((option) => option.value == filterTransactionsObj?.type)}
                                                     onChange={(option) => {
+                                                        if (fetchAllTransactionsQuery?.loading) return;
                                                         setfilterTransactionsObj({ ...filterTransactionsObj, type: option.value });
                                                         updateQueryParamContext('type', option.value);
                                                     }}
+                                                    isDisabled={fetchAllTransactionsQuery?.loading}
                                                 />
                                             </div>
                                             <div class={'col-lg-2'} style={{ marginBottom: '15px' }}>
@@ -365,9 +373,11 @@ const FinanceTransactions = (props) => {
                                                     styles={defaultstyles}
                                                     value={[{ label: 'All', value: undefined }, ...transactionStatusTypeContext].filter((option) => option.value == filterTransactionsObj?.status)}
                                                     onChange={(option) => {
+                                                        if (fetchAllTransactionsQuery?.loading) return;
                                                         setfilterTransactionsObj({ ...filterTransactionsObj, status: option.value });
                                                         updateQueryParamContext('status', option.value);
                                                     }}
+                                                    isDisabled={fetchAllTransactionsQuery?.loading}
                                                 />
                                             </div>
 
@@ -378,6 +388,7 @@ const FinanceTransactions = (props) => {
                                                         // disabledDate={allowedMaxDays(30)}
                                                         // value={[filterorders?.fromDate, filterorders?.toDate]}
                                                         onChange={(event) => {
+                                                            if (fetchAllTransactionsQuery?.loading) return;
                                                             if (event != null) {
                                                                 const start = event[0];
                                                                 const startdate = new Date(start);
@@ -394,8 +405,10 @@ const FinanceTransactions = (props) => {
                                                             }
                                                         }}
                                                         onClean={() => {
+                                                            if (fetchAllTransactionsQuery?.loading) return;
                                                             setfilterTransactionsObj({ ...filterTransactionsObj, fromDate: null, toDate: null });
                                                         }}
+                                                        disabled={fetchAllTransactionsQuery?.loading}
                                                     />
                                                 </div>
                                             </div>
@@ -417,6 +430,7 @@ const FinanceTransactions = (props) => {
                                     afterCursor={fetchAllTransactionsQuery?.data?.paginateFinancialTransaction?.cursor?.afterCursor}
                                     filter={filterTransactionsObj}
                                     setfilter={setfilterTransactionsObj}
+                                    loading={fetchAllTransactionsQuery?.loading}
                                 />
                             </div>
                             <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar py-0 px-3 '}>
@@ -589,7 +603,8 @@ const FinanceTransactions = (props) => {
                                             setbuttonLoadingContext(false);
                                         }}
                                     >
-                                        Add Transaction
+                                        {buttonLoadingContext && <CircularProgress color="white" width="15px" height="15px" duration="1s" />}
+                                        {!buttonLoadingContext && <span>Add Transaction</span>}
                                     </button>
                                 </div>
                             </>

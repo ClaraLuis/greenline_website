@@ -233,6 +233,7 @@ const ImportNewItem = (props) => {
                                 afterCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.afterCursor}
                                 filter={merchantFilter}
                                 setfilter={setmerchantFilter}
+                                loading={fetchMerchantItemVariantsQuery?.loading}
                             />
                         </div>
                         <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
@@ -254,6 +255,7 @@ const ImportNewItem = (props) => {
                                 afterCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.afterCursor}
                                 filter={merchantFilter}
                                 setfilter={setmerchantFilter}
+                                loading={fetchMerchantItemVariantsQuery?.loading}
                             />
                         </div>
                     </div>
@@ -525,9 +527,11 @@ const ImportNewItem = (props) => {
                                 payload={props?.importItemPayload}
                                 payloadAttr={'inventoryId'}
                                 onClick={(option) => {
+                                    if (fetchRacksQuery?.loading) return;
                                     props?.setimportItemPayload({ ...props?.importItemPayload, inventoryId: option?.id });
                                     setfilter({ ...filter, invetoryIds: [option?.id] });
                                 }}
+                                disabled={fetchRacksQuery?.loading}
                             />
                         </div>
                         {props?.importItemPayload?.inventoryId?.length != 0 && (

@@ -75,6 +75,7 @@ const Fulfilled = (props) => {
                                 afterCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.afterCursor}
                                 filter={filterorders}
                                 setfilter={setfilterorders}
+                                loading={fetchOrdersQuery?.loading}
                             />
                         </div>
                         <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
@@ -95,6 +96,7 @@ const Fulfilled = (props) => {
                                 afterCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.afterCursor}
                                 filter={filterorders}
                                 setfilter={setfilterorders}
+                                loading={fetchOrdersQuery?.loading}
                             />
                         </div>
                     </div>
@@ -123,8 +125,10 @@ const Fulfilled = (props) => {
                                 payload={orderpayload}
                                 payloadAttr={'toHubId'}
                                 onClick={(option) => {
+                                    if (fetchOrdersQuery?.loading) return;
                                     setorderpayload({ ...orderpayload, toHubId: option?.id });
                                 }}
+                                disabled={fetchOrdersQuery?.loading}
                                 removeAll={true}
                             />
                         </div>

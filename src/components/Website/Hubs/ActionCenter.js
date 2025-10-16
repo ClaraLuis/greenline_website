@@ -448,6 +448,7 @@ const ActionCenter = (props) => {
                                 afterCursor={paginateUnresolvedOrdersQuery?.data?.paginateUnresolvedOrders?.cursor?.afterCursor}
                                 filter={filterorders}
                                 setfilter={setfilterorders}
+                                loading={paginateUnresolvedOrdersQuery?.loading}
                             />
                         </div>
                         <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
@@ -466,6 +467,7 @@ const ActionCenter = (props) => {
                                 afterCursor={paginateUnresolvedOrdersQuery?.data?.paginateUnresolvedOrders?.cursor?.afterCursor}
                                 filter={filterorders}
                                 setfilter={setfilterorders}
+                                loading={paginateUnresolvedOrdersQuery?.loading}
                             />
                         </div>
                     </div>

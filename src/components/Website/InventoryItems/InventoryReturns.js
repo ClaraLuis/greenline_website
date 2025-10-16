@@ -119,9 +119,11 @@ const InventoryReturns = (props) => {
                                                                 { label: 'Latest', value: false },
                                                             ].find((option) => option.value === (filter?.isAsc ?? true))}
                                                             onChange={(option) => {
+                                                                if (fetchInventoryItemReturnsQuery?.loading) return;
                                                                 setfilter({ ...filter, isAsc: option?.value });
                                                                 updateQueryParamContext('isAsc', option?.value);
                                                             }}
+                                                            isDisabled={fetchInventoryItemReturnsQuery?.loading}
                                                         />
                                                     </div>
                                                 </div>
@@ -134,10 +136,12 @@ const InventoryReturns = (props) => {
                                                     payload={filter}
                                                     payloadAttr={'inventoryId'}
                                                     onClick={(option) => {
+                                                        if (fetchInventoryItemReturnsQuery?.loading) return;
                                                         setfilter({ ...filter, inventoryId: option?.id });
                                                         setpackagepayload({ ...packagepayload, toInventoryId: option?.id });
                                                         updateQueryParamContext('inventoryId', option?.id);
                                                     }}
+                                                    disabled={fetchInventoryItemReturnsQuery?.loading}
                                                 />
                                             </div>
                                         </div>
@@ -156,6 +160,7 @@ const InventoryReturns = (props) => {
                                             placeholder={'Search by ID'}
                                             onKeyDown={(e) => {
                                                 if (e.key === 'Enter') {
+                                                    if (fetchInventoryItemReturnsQuery?.loading) return;
                                                     if (search?.length != 0) {
                                                         setfilter({ ...filter, inventoryId: parseInt(search) });
                                                     } else {
@@ -176,6 +181,7 @@ const InventoryReturns = (props) => {
                                         style={{ height: '30px', minWidth: '80%' }}
                                         class={generalstyles.roundbutton + ' allcentered p-0'}
                                         onClick={() => {
+                                            if (fetchInventoryItemReturnsQuery?.loading) return;
                                             if (search?.length != 0) {
                                                 setfilter({ ...filter, inventoryId: parseInt(search) });
                                             } else {
@@ -184,6 +190,7 @@ const InventoryReturns = (props) => {
 
                                             setsearch('');
                                         }}
+                                        disabled={fetchInventoryItemReturnsQuery?.loading}
                                     >
                                         <div class="d-flex d-md-none">Search</div>
                                         <div class="d-none d-md-flex">
@@ -203,6 +210,7 @@ const InventoryReturns = (props) => {
                                         afterCursor={fetchInventoryItemReturnsQuery?.data?.paginateInventoryReturns?.cursor?.afterCursor}
                                         filter={filter}
                                         setfilter={setfilter}
+                                        loading={fetchInventoryItemReturnsQuery?.loading}
                                     />
                                 </div>
                                 <ReturnsTable
@@ -234,6 +242,7 @@ const InventoryReturns = (props) => {
                                         afterCursor={fetchInventoryItemReturnsQuery?.data?.paginateInventoryReturns?.cursor?.afterCursor}
                                         filter={filter}
                                         setfilter={setfilter}
+                                        loading={fetchInventoryItemReturnsQuery?.loading}
                                     />
                                 </div>
                             </>

@@ -270,6 +270,7 @@ const Expenses = (props) => {
                                     afterCursor={fetchExpensesQuery?.data?.paginateExpenses?.cursor?.afterCursor}
                                     filter={filterExpensesObj}
                                     setfilter={setfilterExpensesObj}
+                                    loading={fetchExpensesQuery?.loading}
                                 />
                             </div>
                             <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>

@@ -235,6 +235,7 @@ const FinancialAccountInfo = (props) => {
                                                 afterCursor={fetchSenttTransactionsQuery?.data?.paginateFinancialTransaction?.cursor?.afterCursor}
                                                 filter={filterSentTransactionsObj}
                                                 setfilter={setfilterSentTransactionsObj}
+                                                loading={fetchSenttTransactionsQuery?.loading}
                                             />
                                         </div>
                                         <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>

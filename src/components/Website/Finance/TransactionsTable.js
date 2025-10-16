@@ -219,7 +219,11 @@ const TransactionsTable = (props) => {
                                                             class={' iconhover allcentered '}
                                                             disabled={buttonLoadingContext}
                                                         >
-                                                            <FcCancel size={25} />
+                                                            {buttonLoadingContext ? (
+                                                                <CircularProgress color="var(--danger)" width="15px" height="15px" duration="1s" />
+                                                            ) : (
+                                                                <FcCancel size={25} />
+                                                            )}
                                                         </button>
                                                     )}
                                                     {props?.hasOrder && item?.sheetOrder?.order?.id && (

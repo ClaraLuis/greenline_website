@@ -310,6 +310,7 @@ const MerchanReturns = (props) => {
                                         afterCursor={fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.cursor?.afterCursor}
                                         filter={filter}
                                         setfilter={setfilter}
+                                        loading={fetchMerchantItemReturnsQuery?.loading}
                                     />
                                 </div>
                                 <ReturnsTable
@@ -340,6 +341,7 @@ const MerchanReturns = (props) => {
                                         afterCursor={fetchMerchantItemReturnsQuery?.data?.paginateItemReturns?.cursor?.afterCursor}
                                         filter={filter}
                                         setfilter={setfilter}
+                                        loading={fetchMerchantItemReturnsQuery?.loading}
                                     />
                                 </div>
                             </>

@@ -585,12 +585,14 @@ const AddOrder = (props) => {
                                     <div class="col-lg-2 col-md-2 p-md-0">
                                         <button
                                             onClick={() => {
+                                                if (fetchMerchantItemVariantsQuery?.loading) return;
                                                 if (search.length == 0) {
                                                     setfilter({ ...filter, name: undefined });
                                                 } else {
                                                     setfilter({ ...filter, name: search });
                                                 }
                                             }}
+                                            disabled={fetchMerchantItemVariantsQuery?.loading}
                                             style={{ height: '35px', marginInlineStart: '5px', minWidth: 'auto' }}
                                             class={generalstyles.roundbutton + '  allcentered bg-primary-light'}
                                         >
@@ -609,6 +611,7 @@ const AddOrder = (props) => {
                                     afterCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.afterCursor}
                                     filter={filter}
                                     setfilter={setfilter}
+                                    loading={fetchMerchantItemVariantsQuery?.loading}
                                 />
                             </div>
                             <ItemsTable
@@ -683,6 +686,7 @@ const AddOrder = (props) => {
                                     afterCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.afterCursor}
                                     filter={filter}
                                     setfilter={setfilter}
+                                    loading={fetchMerchantItemVariantsQuery?.loading}
                                 />
                             </div>
                         </div>
@@ -772,6 +776,7 @@ const AddOrder = (props) => {
                                                     setnewCustomer(false);
                                                     setnameSuggestions([]);
                                                     setsimilarAddresses([]);
+                                                    if (fetchOrdersQuery?.loading) return;
                                                     setuserAddresses([]);
                                                     setfilterCustomerPayload({ ...filterCustomerPayload, phone: phone, myCustomers: true });
                                                     setorderpayload({ ...orderpayload, phone: phone });
@@ -798,6 +803,7 @@ const AddOrder = (props) => {
                                                     setnewCustomer(false);
                                                     setsimilarAddresses([]);
                                                     setnameSuggestions([]);
+                                                    if (fetchOrdersQuery?.loading) return;
                                                     setuserAddresses([]);
                                                     setfilterCustomerPayload({ ...filterCustomerPayload, email: event.target.value, myCustomers: true });
                                                     setorderpayload({ ...orderpayload, email: event.target.value });
@@ -1437,12 +1443,15 @@ const AddOrder = (props) => {
                                                 <div class="col-lg-2 col-md-2 p-md-0">
                                                     <button
                                                         onClick={() => {
+                                                            if (fetchMerchantItemVariantsQuery?.loading) return;
+                                                            if (fetchMerchantItemVariantsQuery?.loading) return;
                                                             if (search.length == 0) {
                                                                 setfilter({ ...filter, name: undefined });
                                                             } else {
                                                                 setfilter({ ...filter, name: search });
                                                             }
                                                         }}
+                                                        disabled={fetchMerchantItemVariantsQuery?.loading}
                                                         style={{ height: '35px', marginInlineStart: '5px', minWidth: 'auto' }}
                                                         class={generalstyles.roundbutton + '  allcentered bg-primary-light'}
                                                     >
@@ -1461,6 +1470,7 @@ const AddOrder = (props) => {
                                                 afterCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.afterCursor}
                                                 filter={filter}
                                                 setfilter={setfilter}
+                                                loading={fetchMerchantItemVariantsQuery?.loading}
                                             />
                                         </div>
                                         <ItemsTable
@@ -1535,6 +1545,7 @@ const AddOrder = (props) => {
                                                 afterCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.afterCursor}
                                                 filter={filter}
                                                 setfilter={setfilter}
+                                                loading={fetchMerchantItemVariantsQuery?.loading}
                                             />
                                         </div>
                                     </>
@@ -1560,12 +1571,15 @@ const AddOrder = (props) => {
                                                 <div class="col-lg-2 col-md-2 p-md-0">
                                                     <button
                                                         onClick={() => {
+                                                            if (fetchMerchantItemVariantsQuery?.loading) return;
+                                                            if (fetchMerchantItemVariantsQuery?.loading) return;
                                                             if (search.length == 0) {
                                                                 setfilter({ ...filter, name: undefined });
                                                             } else {
                                                                 setfilter({ ...filter, name: search });
                                                             }
                                                         }}
+                                                        disabled={fetchMerchantItemVariantsQuery?.loading}
                                                         style={{ height: '35px', marginInlineStart: '5px', minWidth: 'auto' }}
                                                         class={generalstyles.roundbutton + '  allcentered bg-primary-light'}
                                                     >
@@ -1584,6 +1598,7 @@ const AddOrder = (props) => {
                                                 afterCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.afterCursor}
                                                 filter={filterorders}
                                                 setfilter={setfilterorders}
+                                                loading={fetchOrdersQuery?.loading}
                                             />
                                         </div>
                                         {fetchOrdersQuery?.data?.paginateOrders?.data?.length == 0 && (
@@ -1677,6 +1692,7 @@ const AddOrder = (props) => {
                                                 afterCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.afterCursor}
                                                 filter={filterorders}
                                                 setfilter={setfilterorders}
+                                                loading={fetchOrdersQuery?.loading}
                                             />
                                         </div>
                                     </>

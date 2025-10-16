@@ -128,6 +128,7 @@ const FinancialAccounts = (props) => {
                                 afterCursor={fetchFinancialAccountsQuery?.data?.paginateFinancialAccounts?.cursor?.afterCursor}
                                 filter={filterobj}
                                 setfilter={setfilterobj}
+                                loading={fetchFinancialAccountsQuery?.loading}
                             />
                         </div>
                         <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>

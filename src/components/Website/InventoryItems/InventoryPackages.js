@@ -68,6 +68,7 @@ const InventoryPackages = (props) => {
                 return; // Don't process barcode scanning when typing in an input field
             }
             if (e.key === 'Enter') {
+                if (fetchPackagesQuery?.loading) return;
                 const finalBarcode = barcode; // Add the last character (Enter) before clearing
                 setfilter({ ...filter, sku: finalBarcode.length === 0 ? undefined : finalBarcode });
                 setSearch(barcode); // Update the search state with the full scanned barcode
@@ -158,8 +159,10 @@ const InventoryPackages = (props) => {
                                                     styles={defaultstyles}
                                                     value={returnPackageTypeContext.filter((option) => option.value == filter?.assigned)}
                                                     onChange={(option) => {
+                                                        if (fetchPackagesQuery?.loading) return;
                                                         setfilter({ ...filter, assigned: option.value });
                                                     }}
+                                                    isDisabled={fetchPackagesQuery?.loading}
                                                 />
                                             </div> */}
                                                 <div class="col-lg-3" style={{ marginBottom: '15px' }}>
@@ -177,9 +180,11 @@ const InventoryPackages = (props) => {
                                                                     { label: 'Latest', value: false },
                                                                 ].find((option) => option.value === (filter?.isAsc ?? true))}
                                                                 onChange={(option) => {
+                                                                    if (fetchPackagesQuery?.loading) return;
                                                                     setfilter({ ...filter, isAsc: option?.value });
                                                                     updateQueryParamContext('isAsc', option?.value);
                                                                 }}
+                                                                isDisabled={fetchPackagesQuery?.loading}
                                                             />
                                                         </div>
                                                     </div>
@@ -193,9 +198,11 @@ const InventoryPackages = (props) => {
                                                         styles={defaultstyles}
                                                         value={[{ label: 'All', value: undefined }, ...returnPackageStatusContext].filter((option) => option.value == filter?.status)}
                                                         onChange={(option) => {
+                                                            if (fetchPackagesQuery?.loading) return;
                                                             setfilter({ ...filter, status: option.value });
                                                             updateQueryParamContext('status', option?.value);
                                                         }}
+                                                        isDisabled={fetchPackagesQuery?.loading}
                                                     />
                                                 </div>
                                                 {!cookies.get('userInfo')?.inventoryId && (
@@ -207,9 +214,11 @@ const InventoryPackages = (props) => {
                                                             payload={filter}
                                                             payloadAttr={'toInventoryId'}
                                                             onClick={(option) => {
+                                                                if (fetchPackagesQuery?.loading) return;
                                                                 setfilter({ ...filter, toInventoryId: option?.id });
                                                                 updateQueryParamContext('toInventoryId', option?.id);
                                                             }}
+                                                            disabled={fetchPackagesQuery?.loading}
                                                         />
                                                     </div>
                                                 )}
@@ -247,8 +256,10 @@ const InventoryPackages = (props) => {
                                         <div class="col-lg-2  col-md-2 allcenered p-md-0">
                                             <button
                                                 onClick={() => {
+                                                    if (fetchPackagesQuery?.loading) return;
                                                     setfilter({ ...filter, sku: search?.length == 0 ? undefined : search });
                                                 }}
+                                                disabled={fetchPackagesQuery?.loading}
                                                 style={{ height: '35px', marginInlineStart: '5px', minWidth: 'auto' }}
                                                 class={generalstyles.roundbutton + '  allcentered bg-primary-light'}
                                             >
@@ -273,6 +284,7 @@ const InventoryPackages = (props) => {
                                         afterCursor={fetchPackagesQuery?.data?.paginateReturnPackages?.cursor?.afterCursor}
                                         filter={filter}
                                         setfilter={setfilter}
+                                        loading={fetchPackagesQuery?.loading}
                                     />
                                 </div>
                                 {fetchPackagesQuery?.data?.paginateReturnPackages?.data?.length == 0 && (
@@ -375,6 +387,7 @@ const InventoryPackages = (props) => {
                                         afterCursor={fetchPackagesQuery?.data?.paginateReturnPackages?.cursor?.afterCursor}
                                         filter={filter}
                                         setfilter={setfilter}
+                                        loading={fetchPackagesQuery?.loading}
                                     />
                                 </div>
                             </>

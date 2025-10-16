@@ -273,6 +273,7 @@ const MerchantPackages = (props) => {
                                         afterCursor={fetchPackagesQuery?.data?.paginateReturnPackages?.cursor?.afterCursor}
                                         filter={filter}
                                         setfilter={setfilter}
+                                        loading={fetchPackagesQuery?.loading}
                                     />
                                 </div>
                                 {fetchPackagesQuery?.data?.paginateReturnPackages?.data?.length == 0 && (
@@ -376,6 +377,7 @@ const MerchantPackages = (props) => {
                                         afterCursor={fetchPackagesQuery?.data?.paginateReturnPackages?.cursor?.afterCursor}
                                         filter={filter}
                                         setfilter={setfilter}
+                                        loading={fetchPackagesQuery?.loading}
                                     />
                                 </div>
                             </>

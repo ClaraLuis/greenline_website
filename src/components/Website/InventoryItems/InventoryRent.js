@@ -185,9 +185,11 @@ const InventoryRent = (props) => {
                                                                 { label: 'Latest', value: false },
                                                             ].find((option) => option.value === (filter?.isAsc ?? true))}
                                                             onChange={(option) => {
+                                                                if (paginateInventoryRentsQuery?.loading) return;
                                                                 setfilter({ ...filter, isAsc: option?.value });
                                                                 updateQueryParamContext('isAsc', option?.value);
                                                             }}
+                                                            isDisabled={paginateInventoryRentsQuery?.loading}
                                                         />
                                                     </div>
                                                 </div>
@@ -200,6 +202,7 @@ const InventoryRent = (props) => {
                                                         value={'id'}
                                                         selected={filter?.merchantIds}
                                                         onClick={(option) => {
+                                                            if (paginateInventoryRentsQuery?.loading) return;
                                                             const tempArray = [...(filter?.merchantIds ?? [])];
 
                                                             if (option === 'All') {
@@ -216,6 +219,7 @@ const InventoryRent = (props) => {
                                                                 updateQueryParamContext('merchantIds', tempArray.length ? tempArray : undefined);
                                                             }
                                                         }}
+                                                        disabled={paginateInventoryRentsQuery?.loading}
                                                     />
                                                 </div>
                                             )}
@@ -227,6 +231,7 @@ const InventoryRent = (props) => {
                                                         value={'id'}
                                                         selected={filter?.inventoryIds}
                                                         onClick={(option) => {
+                                                            if (paginateInventoryRentsQuery?.loading) return;
                                                             const tempArray = [...(filter?.inventoryIds ?? [])];
 
                                                             if (option === 'All') {
@@ -243,6 +248,7 @@ const InventoryRent = (props) => {
                                                                 updateQueryParamContext('inventoryIds', tempArray.length ? tempArray : undefined);
                                                             }
                                                         }}
+                                                        disabled={paginateInventoryRentsQuery?.loading}
                                                     />
                                                 </div>
                                             )}
@@ -258,6 +264,7 @@ const InventoryRent = (props) => {
                                 afterCursor={paginateInventoryRentsQuery?.data?.paginateInventoryRents?.cursor?.afterCursor}
                                 filter={filter}
                                 setfilter={setfilter}
+                                loading={paginateInventoryRentsQuery?.loading}
                             />
                         </div>
                         {paginateInventoryRentsQuery?.data?.paginateInventoryRents?.data?.length == 0 && (
@@ -669,6 +676,7 @@ const InventoryRent = (props) => {
                                 <div class="mt-1" style={{ width: '100%' }}>
                                     <DateRangePicker
                                         onChange={(event) => {
+                                            if (fetchSenttTransactionsQuery?.loading) return;
                                             if (event != null) {
                                                 setfilterSentTransactionsObj({
                                                     ...filterSentTransactionsObj,
@@ -678,12 +686,14 @@ const InventoryRent = (props) => {
                                             }
                                         }}
                                         onClean={() => {
+                                            if (fetchSenttTransactionsQuery?.loading) return;
                                             setfilterSentTransactionsObj({
                                                 ...filterSentTransactionsObj,
                                                 startDate: null,
                                                 endDate: null,
                                             });
                                         }}
+                                        disabled={fetchSenttTransactionsQuery?.loading}
                                     />
                                 </div>
                             </div>

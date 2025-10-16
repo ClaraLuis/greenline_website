@@ -234,6 +234,7 @@ const MerchantPayment = (props) => {
                             afterCursor={fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.cursor?.afterCursor}
                             filter={filterobj}
                             setfilter={setfilterobj}
+                            loading={fetchMerchantPaymentTransactionsQuery?.loading}
                         />
                     </div>
                     <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar py-0 px-3 '}>

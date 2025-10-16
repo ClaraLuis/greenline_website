@@ -193,6 +193,7 @@ const Merchants = (props) => {
                                         afterCursor={fetchMerchantsQuery?.data?.paginateMerchants?.cursor?.afterCursor}
                                         filter={filterMerchants}
                                         setfilter={setfilterMerchants}
+                                        loading={fetchMerchantsQuery?.loading}
                                     />
                                 </div>
                                 <div style={{ minHeight: '60vh' }} class="row m-0 w-100 d-flex align-items-start align-content-start">

@@ -465,6 +465,7 @@ const FilesPopup = (props) => {
                                             afterCursor={paginateFilesQuery?.data?.paginateFiles?.cursor?.afterCursor}
                                             filter={filterFiles}
                                             setfilter={setfilterFiles}
+                                            loading={paginateFilesQuery?.loading}
                                         />
                                     </div>
                                     <div class="col-lg-12 my-3">

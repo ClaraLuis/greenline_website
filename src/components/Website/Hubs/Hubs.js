@@ -117,6 +117,7 @@ const Hubs = (props) => {
                                     afterCursor={fetchHubsQuery?.data?.paginateHubs?.cursor?.afterCursor}
                                     filter={filterHubs}
                                     setfilter={setfilterHubs}
+                                    loading={fetchHubsQuery?.loading}
                                 />
                             </div>
                             <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>

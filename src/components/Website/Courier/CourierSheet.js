@@ -1468,12 +1468,14 @@ const CourierSheet = (props) => {
                                                         type="checkbox"
                                                         checked={filterorders?.accepted}
                                                         onChange={(e) => {
+                                                            if (fetchCourierSheetLazyQuery?.loading) return;
                                                             e.stopPropagation();
                                                             setfilterorders({
                                                                 ...filterorders,
                                                                 accepted: filterorders?.accepted ? undefined : true,
                                                             });
                                                         }}
+                                                        disabled={fetchCourierSheetLazyQuery?.loading}
                                                     />
                                                     <span className={`${formstyles.slider} ${formstyles.round}`}></span>
                                                 </label>
@@ -1488,6 +1490,7 @@ const CourierSheet = (props) => {
                                                 value="value"
                                                 selected={filterorders?.statuses}
                                                 onClick={(option) => {
+                                                    if (fetchCourierSheetLazyQuery?.loading) return;
                                                     const tempArray = [...(filterorders?.statuses ?? [])];
 
                                                     if (option === 'All') {
@@ -1503,6 +1506,7 @@ const CourierSheet = (props) => {
                                                         setfilterorders({ ...filterorders, statuses: tempArray.length ? tempArray : undefined });
                                                     }
                                                 }}
+                                                disabled={fetchCourierSheetLazyQuery?.loading}
                                             />
                                         </div>
 
@@ -1511,6 +1515,7 @@ const CourierSheet = (props) => {
                                                 placeholder="Order Ids"
                                                 onKeyDown={(e) => {
                                                     if (e.key === 'Enter' && e.target.value?.length !== 0) {
+                                                        if (fetchCourierSheetLazyQuery?.loading) return;
                                                         const orderId = parseInt(e.target.value);
                                                         if (!filterorders?.orderIds?.includes(orderId)) {
                                                             const tempArray = [...(filterorders?.orderIds ?? [])];
@@ -1522,6 +1527,7 @@ const CourierSheet = (props) => {
                                                         }
                                                     }
                                                 }}
+                                                disabled={fetchCourierSheetLazyQuery?.loading}
                                                 type="number"
                                             />
                                             <div class="col-lg-12 p-0">
@@ -1532,7 +1538,7 @@ const CourierSheet = (props) => {
                                                             style={{
                                                                 background: '#ECECEC',
                                                                 padding: '5px 10px',
-                                                                cursor: 'pointer',
+                                                                cursor: fetchCourierSheetLazyQuery?.loading ? 'not-allowed' : 'pointer',
                                                                 borderRadius: '8px',
                                                                 justifyContent: 'space-between',
                                                                 width: 'fit-content',
@@ -1541,6 +1547,7 @@ const CourierSheet = (props) => {
                                                             }}
                                                             className="d-flex align-items-center mr-2 mb-1"
                                                             onClick={() => {
+                                                                if (fetchCourierSheetLazyQuery?.loading) return;
                                                                 const tempArray = [...filterorders.orderIds];
                                                                 tempArray.splice(orderIndex, 1);
                                                                 setfilterorders({ ...filterorders, orderIds: tempArray.length ? tempArray : undefined });

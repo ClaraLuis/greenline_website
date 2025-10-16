@@ -229,12 +229,14 @@ const InventoryItems = (props) => {
                                             {fetchinventories?.data?.paginateInventories?.cursor?.beforeCursor != null && (
                                                 <div
                                                     onClick={() => {
+                                                        if (fetchinventories?.loading) return;
                                                         setfilterInventories({
                                                             ...filterInventories,
                                                             beforeCursor: fetchinventories?.data?.paginateInventories?.cursor?.beforeCursor,
                                                             afterCursor: null,
                                                         });
                                                     }}
+                                                    disabled={fetchinventories?.loading}
                                                     class={'text-secondaryhover'}
                                                 >
                                                     <MdArrowBackIos />
@@ -273,12 +275,14 @@ const InventoryItems = (props) => {
                                             {fetchinventories?.data?.paginateInventories?.cursor?.afterCursor != null && (
                                                 <div
                                                     onClick={() => {
+                                                        if (fetchinventories?.loading) return;
                                                         setfilterInventories({
                                                             ...filterInventories,
                                                             afterCursor: fetchinventories?.data?.paginateInventories?.cursor?.afterCursor,
                                                             beforeCursor: null,
                                                         });
                                                     }}
+                                                    disabled={fetchinventories?.loading}
                                                     class={'text-secondaryhover'}
                                                 >
                                                     <MdArrowForwardIos />
@@ -342,9 +346,11 @@ const InventoryItems = (props) => {
                                                                 { label: 'Latest', value: false },
                                                             ].find((option) => option.value === (filterItemInBox?.isAsc ?? true))}
                                                             onChange={(option) => {
+                                                                if (fetchItemsInBoxQuery?.loading) return;
                                                                 setfilterItemInBox({ ...filterItemInBox, isAsc: option?.value });
                                                                 updateQueryParamContext('isAsc', option?.value);
                                                             }}
+                                                            isDisabled={fetchItemsInBoxQuery?.loading}
                                                         />
                                                     </div>
                                                 </div>
@@ -357,6 +363,7 @@ const InventoryItems = (props) => {
                                                     value={'id'}
                                                     selected={filterItemInBox?.merchantIds}
                                                     onClick={(option) => {
+                                                        if (fetchItemsInBoxQuery?.loading) return;
                                                         var tempArray = filterItemInBox?.merchantIds ?? [];
 
                                                         if (option == 'All') {
@@ -372,6 +379,7 @@ const InventoryItems = (props) => {
                                                         setfilterItemInBox({ ...filterItemInBox, merchantIds: tempArray?.length != 0 ? tempArray : undefined });
                                                         updateQueryParamContext('merchantIds', tempArray?.length != 0 ? tempArray : undefined);
                                                     }}
+                                                    disabled={fetchItemsInBoxQuery?.loading}
                                                 />
                                             </div>
                                         </div>
@@ -433,9 +441,10 @@ const InventoryItems = (props) => {
                                                         value={search}
                                                         placeholder={'Search by name or SKU'}
                                                         onKeyDown={(e) => {
-                                                            if (e.key === 'Enter') {
-                                                                setfilterItemInBox({ ...filterItemInBox, name: search?.length == 0 ? undefined : search });
-                                                            }
+                                                        if (e.key === 'Enter') {
+                                                            if (fetchItemsInBoxQuery?.loading) return;
+                                                            setfilterItemInBox({ ...filterItemInBox, name: search?.length == 0 ? undefined : search });
+                                                        }
                                                         }}
                                                         onChange={(event) => {
                                                             setBarcode(event.target.value);
@@ -447,8 +456,10 @@ const InventoryItems = (props) => {
                                             <div class="col-lg-2  col-md-2 allcenered p-md-0">
                                                 <button
                                                     onClick={() => {
+                                                        if (fetchItemsInBoxQuery?.loading) return;
                                                         setfilterItemInBox({ ...filterItemInBox, name: search?.length == 0 ? undefined : search });
                                                     }}
+                                                    disabled={fetchItemsInBoxQuery?.loading}
                                                     style={{ height: '35px', marginInlineStart: '5px', minWidth: 'auto' }}
                                                     class={generalstyles.roundbutton + '  allcentered bg-primary-light'}
                                                 >
@@ -478,6 +489,7 @@ const InventoryItems = (props) => {
                                             afterCursor={fetchItemsInBoxQuery?.data?.paginateItemInBox?.cursor?.afterCursor}
                                             filter={filterItemInBox}
                                             setfilter={setfilterItemInBox}
+                                            loading={fetchItemsInBoxQuery?.loading}
                                         />
                                     </div>
                                     {fetchItemsInBoxQuery?.data?.paginateItemInBox?.data?.length == 0 && (

@@ -354,6 +354,7 @@ const UserInfo = (props) => {
                                                 size: '6',
                                                 attr: 'inventoryId',
                                                 type: 'fetchSelect',
+                                                disabled: fetchinventories?.loading,
                                             },
                                             {
                                                 title: 'Hub',
@@ -366,6 +367,7 @@ const UserInfo = (props) => {
                                                 size: '6',
                                                 attr: 'hubID',
                                                 type: 'fetchSelect',
+                                                disabled: fetchHubsQuery?.loading,
                                             },
                                             { name: 'Commission', attr: 'commission', size: '6', type: 'number' },
                                             { name: 'Salary', attr: 'salary', size: '6', type: 'number' },
@@ -423,15 +425,16 @@ const UserInfo = (props) => {
 
                                                   {
                                                       title: 'Merchant',
-                                                      filter: filterMerchants,
-                                                      setfilter: setfilterMerchants,
-                                                      options: fetchMerchantsQuery,
-                                                      optionsAttr: 'paginateMerchants',
-                                                      label: 'name',
-                                                      value: 'id',
-                                                      size: '6',
-                                                      attr: 'merchant',
-                                                      type: 'fetchSelect',
+                                                filter: filterMerchants,
+                                                setfilter: setfilterMerchants,
+                                                options: fetchMerchantsQuery,
+                                                optionsAttr: 'paginateMerchants',
+                                                label: 'name',
+                                                value: 'id',
+                                                size: '6',
+                                                attr: 'merchant',
+                                                type: 'fetchSelect',
+                                                disabled: fetchMerchantsQuery?.loading,
                                                   },
                                               ]
                                             : props?.payload?.type == 'employee' && props?.payload?.employeeType != 'inventory'

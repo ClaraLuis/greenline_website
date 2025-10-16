@@ -249,8 +249,10 @@ const Orders = (props) => {
                                                                 { label: 'Latest', value: false },
                                                             ].find((option) => option.value === (filterorders?.isAsc ?? true))}
                                                             onChange={(option) => {
+                                                                if (fetchOrdersInInventoryQuery?.loading) return;
                                                                 setfilterorders({ ...filterorders, isAsc: option?.value });
                                                             }}
+                                                            isDisabled={fetchOrdersInInventoryQuery?.loading}
                                                         />
                                                     </div>
                                                 </div>
@@ -262,6 +264,7 @@ const Orders = (props) => {
                                                             type="checkbox"
                                                             checked={filterorders?.outOfStock}
                                                             onChange={(e) => {
+                                                                if (fetchOrdersInInventoryQuery?.loading) return;
                                                                 e.stopPropagation();
                                                                 setfilterorders({
                                                                     ...filterorders,
@@ -269,6 +272,7 @@ const Orders = (props) => {
                                                                 });
                                                                 updateQueryParamContext('outOfStock', !filterorders?.outOfStock);
                                                             }}
+                                                            disabled={fetchOrdersInInventoryQuery?.loading}
                                                         />
                                                         <span className={`${formstyles.slider} ${formstyles.round}`}></span>
                                                     </label>
@@ -307,6 +311,7 @@ const Orders = (props) => {
                                                 <div class="mt-1" style={{ width: '100%' }}>
                                                     <DateRangePicker
                                                         onChange={(event) => {
+                                                            if (fetchOrdersInInventoryQuery?.loading) return;
                                                             if (event != null) {
                                                                 setfilterorders({
                                                                     ...filterorders,
@@ -316,12 +321,14 @@ const Orders = (props) => {
                                                             }
                                                         }}
                                                         onClean={() => {
+                                                            if (fetchOrdersInInventoryQuery?.loading) return;
                                                             setfilterorders({
                                                                 ...filterorders,
                                                                 fromDate: null,
                                                                 toDate: null,
                                                             });
                                                         }}
+                                                        disabled={fetchOrdersInInventoryQuery?.loading}
                                                     />
                                                 </div>
                                             </div>
@@ -367,12 +374,14 @@ const Orders = (props) => {
                                                     payload={filterorders}
                                                     payloadAttr="inventoryId"
                                                     onClick={(option) => {
+                                                        if (fetchOrdersInInventoryQuery?.loading) return;
                                                         setfilterorders({
                                                             ...filterorders,
                                                             inventoryId: option ? option.id : undefined,
                                                         });
                                                         updateQueryParamContext('inventoryId', option ? option.id : undefined);
                                                     }}
+                                                    disabled={fetchOrdersInInventoryQuery?.loading}
                                                 />
                                             </div>
 
@@ -553,6 +562,7 @@ const Orders = (props) => {
                                 afterCursor={fetchOrdersInInventoryQuery?.data?.paginateOrdersInInventory?.cursor?.afterCursor}
                                 filter={filterorders}
                                 setfilter={setfilterorders}
+                                loading={fetchOrdersInInventoryQuery?.loading}
                             />
                         </div>
                         <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>

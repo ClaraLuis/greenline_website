@@ -291,7 +291,11 @@ const TransactionsTableView = (props) => {
                                                                         title="Cancel"
                                                                         disabled={buttonLoadingContext}
                                                                     >
-                                                                        <FcCancel size={18} />
+                                                                        {buttonLoadingContext ? (
+                                                                            <CircularProgress color="var(--danger)" width="15px" height="15px" duration="1s" />
+                                                                        ) : (
+                                                                            <FcCancel size={18} />
+                                                                        )}
                                                                     </button>
                                                                 )}
                                                             </>

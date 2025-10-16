@@ -244,9 +244,11 @@ const MerchantHome = (props) => {
                                                                 { label: 'Latest', value: false },
                                                             ].find((option) => option.value === (filterordersDeliverableSummary?.isAsc ?? true))}
                                                             onChange={(option) => {
+                                                                if (ordersDeliverableSummaryQuery?.loading) return;
                                                                 setfilterordersDeliverableSummary({ ...filterordersDeliverableSummary, isAsc: option?.value });
                                                                 updateQueryParamContext('isAsc', option?.value);
                                                             }}
+                                                            isDisabled={ordersDeliverableSummaryQuery?.loading}
                                                         />
                                                     </div>
                                                 </div>
@@ -259,6 +261,7 @@ const MerchantHome = (props) => {
                                                         value={'id'}
                                                         selected={filterordersDeliverableSummary?.merchantIds}
                                                         onClick={(option) => {
+                                                            if (ordersDeliverableSummaryQuery?.loading) return;
                                                             var tempArray = [...(filterordersDeliverableSummary?.merchantIds ?? [])];
                                                             var temp = [...merchants];
                                                             if (option == 'All') {
@@ -284,6 +287,7 @@ const MerchantHome = (props) => {
                                                             setfilterordersDeliverableSummary({ ...filterordersDeliverableSummary, merchantIds: tempArray?.length != 0 ? tempArray : undefined });
                                                             updateQueryParamContext('merchantIds', tempArray?.length != 0 ? tempArray : undefined);
                                                         }}
+                                                        disabled={ordersDeliverableSummaryQuery?.loading}
                                                     />
                                                 </div>
                                             )}
@@ -293,6 +297,7 @@ const MerchantHome = (props) => {
                                                 <div class="mt-1" style={{ width: '100%' }}>
                                                     <DateRangePicker
                                                         onChange={(event) => {
+                                                            if (ordersDeliverableSummaryQuery?.loading) return;
                                                             if (event != null) {
                                                                 setfilterordersDeliverableSummary({
                                                                     ...filterordersDeliverableSummary,
@@ -302,12 +307,14 @@ const MerchantHome = (props) => {
                                                             }
                                                         }}
                                                         onClean={() => {
+                                                            if (ordersDeliverableSummaryQuery?.loading) return;
                                                             setfilterordersDeliverableSummary({
                                                                 ...filterordersDeliverableSummary,
                                                                 startDate: '2024-06-28T18:38:47.762Z',
                                                                 endDate: undefined,
                                                             });
                                                         }}
+                                                        disabled={ordersDeliverableSummaryQuery?.loading}
                                                     />
                                                 </div>
                                             </div>

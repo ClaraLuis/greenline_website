@@ -386,6 +386,7 @@ const UpdateMerchant = (props) => {
                                                             size: '12',
                                                             attr: 'ownerID',
                                                             type: 'fetchSelect',
+                                                            disabled: fetchusers?.loading,
                                                         },
                                                     ]}
                                                     payload={merchantPayload}

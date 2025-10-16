@@ -123,8 +123,10 @@ const HubDetails = (props) => {
                                                     <div class="col-lg-2  col-md-2 allcenered p-md-0">
                                                         <button
                                                             onClick={() => {
+                                                                if (fetchusers?.loading) return;
                                                                 setfilterUsers({ ...filterUsers, name: search?.length == 0 ? undefined : search });
                                                             }}
+                                                            disabled={fetchusers?.loading}
                                                             style={{ height: '35px', marginInlineStart: '5px', minWidth: 'auto' }}
                                                             class={generalstyles.roundbutton + '  allcentered bg-primary-light'}
                                                         >
@@ -147,6 +149,7 @@ const HubDetails = (props) => {
                                                     afterCursor={fetchusers?.data?.paginateUsers?.cursor?.afterCursor}
                                                     filter={filterUsers}
                                                     setfilter={setfilterUsers}
+                                                    loading={fetchusers?.loading}
                                                 />
                                             </div>
                                         </div>

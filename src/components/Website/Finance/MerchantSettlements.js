@@ -158,6 +158,7 @@ const MerchantSettlements = (props) => {
                                 afterCursor={paginateMerchantSettlementsQuery?.data?.paginateMerchantSettlements?.cursor?.afterCursor}
                                 filter={filterobj}
                                 setfilter={setfilterobj}
+                                loading={paginateMerchantSettlementsQuery?.loading}
                             />
                         </div>
                         {paginateMerchantSettlementsQuery?.data?.paginateMerchantSettlements && (

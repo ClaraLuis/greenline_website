@@ -167,9 +167,11 @@ const Finance = (props) => {
                                                                     { label: 'Latest', value: false },
                                                                 ].find((option) => option.value === (filterMerchanrPaymentSummaryObj?.isAsc ?? true))}
                                                                 onChange={(option) => {
+                                                                    if (merchantPaymentsSummaryQuery?.loading) return;
                                                                     setfilterMerchanrPaymentSummaryObj({ ...filterMerchanrPaymentSummaryObj, isAsc: option?.value });
                                                                     updateQueryParamContext('isAsc', option?.value);
                                                                 }}
+                                                                isDisabled={merchantPaymentsSummaryQuery?.loading}
                                                             />
                                                         </div>
                                                     </div>
@@ -183,6 +185,7 @@ const Finance = (props) => {
                                                             value={'id'}
                                                             selected={filterMerchanrPaymentSummaryObj?.merchantIds}
                                                             onClick={(option) => {
+                                                                if (merchantPaymentsSummaryQuery?.loading) return;
                                                                 const tempArray = [...(filterMerchanrPaymentSummaryObj?.merchantIds ?? [])];
 
                                                                 if (option === 'All') {
@@ -199,6 +202,7 @@ const Finance = (props) => {
                                                                     updateQueryParamContext('merchantIds', tempArray.length ? tempArray : undefined);
                                                                 }
                                                             }}
+                                                            disabled={merchantPaymentsSummaryQuery?.loading}
                                                         />
                                                     </div>
                                                 )}
@@ -208,6 +212,7 @@ const Finance = (props) => {
                                                     <div class="mt-1" style={{ width: '100%' }}>
                                                         <DateRangePicker
                                                             onChange={(event) => {
+                                                                if (merchantPaymentsSummaryQuery?.loading) return;
                                                                 if (event != null) {
                                                                     setfilterMerchanrPaymentSummaryObj({
                                                                         ...filterMerchanrPaymentSummaryObj,
@@ -222,6 +227,7 @@ const Finance = (props) => {
                                                                 }
                                                             }}
                                                             onClean={() => {
+                                                                if (merchantPaymentsSummaryQuery?.loading) return;
                                                                 setfilterMerchanrPaymentSummaryObj({
                                                                     ...filterMerchanrPaymentSummaryObj,
                                                                     startDate: null,
@@ -233,6 +239,7 @@ const Finance = (props) => {
                                                                     toDate: null,
                                                                 });
                                                             }}
+                                                            disabled={merchantPaymentsSummaryQuery?.loading}
                                                         />
                                                     </div>
                                                 </div>
@@ -253,9 +260,11 @@ const Finance = (props) => {
                                                             { label: 'Completed', value: false },
                                                         ].find((option) => option.value === filterobj?.processing)}
                                                         onChange={(option) => {
+                                                            if (fetchMerchantPaymentTransactionsQuery?.loading) return;
                                                             setfilterobj({ ...filterobj, processing: option.value });
                                                             updateQueryParamContext('processing', option.value);
                                                         }}
+                                                        isDisabled={fetchMerchantPaymentTransactionsQuery?.loading}
                                                     />
                                                 </div>
                                             </div>
@@ -349,6 +358,7 @@ const Finance = (props) => {
                                     afterCursor={fetchMerchantPaymentTransactionsQuery?.data?.paginateMerchantPaymentTransactions?.cursor?.afterCursor}
                                     filter={filterobj}
                                     setfilter={setfilterobj}
+                                    loading={fetchMerchantPaymentTransactionsQuery?.loading}
                                 />
                             </div>
                             <div className={' col-lg-12 table_responsive  scrollmenuclasssubscrollbar px-3 py-0 '}>

@@ -158,9 +158,11 @@ const CourierSheets = (props) => {
                                                             { label: 'Latest', value: false },
                                                         ].find((option) => option.value === (filter?.isAsc ?? true))}
                                                         onChange={(option) => {
+                                                            if (fetchSheetsQuery?.loading) return;
                                                             setfilter({ ...filter, isAsc: option?.value });
                                                             updateQueryParamContext('isAsc', option?.value);
                                                         }}
+                                                        isDisabled={fetchSheetsQuery?.loading}
                                                     />
                                                 </div>
                                             </div>
@@ -177,9 +179,11 @@ const CourierSheets = (props) => {
                                                 payload={filter}
                                                 payloadAttr={'courierId'}
                                                 onClick={(option) => {
+                                                    if (fetchSheetsQuery?.loading) return;
                                                     setfilter({ ...filter, courierId: option?.id });
                                                     updateQueryParamContext('courierId', option?.id);
                                                 }}
+                                                disabled={fetchSheetsQuery?.loading}
                                             />
                                         </div>
                                         <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
@@ -190,6 +194,7 @@ const CourierSheets = (props) => {
                                                 value={'value'}
                                                 selected={filter?.statuses}
                                                 onClick={(option) => {
+                                                    if (fetchSheetsQuery?.loading) return;
                                                     var tempArray = [...(filter?.statuses ?? [])];
                                                     if (option == 'All') {
                                                         tempArray = ['inProgress', 'waitingForAdminApproval', 'waitingForFinanceApproval', 'completed'];
@@ -204,6 +209,7 @@ const CourierSheets = (props) => {
                                                     setfilter({ ...filter, statuses: tempArray?.length != 0 ? tempArray : undefined });
                                                     updateQueryParamContext('statuses', tempArray);
                                                 }}
+                                                disabled={fetchSheetsQuery?.loading}
                                             />
                                         </div>
                                         <div class="col-lg-3 mb-md-2">
@@ -211,6 +217,7 @@ const CourierSheets = (props) => {
                                             <div class="mt-1" style={{ width: '100%' }}>
                                                 <DateRangePicker
                                                     onChange={(event) => {
+                                                        if (fetchSheetsQuery?.loading) return;
                                                         if (event != null) {
                                                             setfilter({
                                                                 ...filter,
@@ -220,12 +227,14 @@ const CourierSheets = (props) => {
                                                         }
                                                     }}
                                                     onClean={() => {
+                                                        if (fetchSheetsQuery?.loading) return;
                                                         setfilter({
                                                             ...filter,
                                                             fromDate: null,
                                                             toDate: null,
                                                         });
                                                     }}
+                                                    disabled={fetchSheetsQuery?.loading}
                                                 />
                                             </div>
                                         </div>
@@ -245,6 +254,7 @@ const CourierSheets = (props) => {
                                     afterCursor={fetchSheetsQuery?.data?.paginateCourierSheets?.cursor?.afterCursor}
                                     filter={filter}
                                     setfilter={setfilter}
+                                    loading={fetchSheetsQuery?.loading}
                                 />
                             </div>
                             {fetchSheetsQuery?.data?.paginateCourierSheets?.data?.length == 0 && (

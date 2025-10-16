@@ -193,6 +193,7 @@ const FinanceSheets = (props) => {
                                     afterCursor={fetchSheetsQuery?.data?.paginateCourierSheets?.cursor?.afterCursor}
                                     filter={filter}
                                     setfilter={setfilter}
+                                    loading={fetchSheetsQuery?.loading}
                                 />
                             </div>
                             <div class={' row m-0 w-100'}>

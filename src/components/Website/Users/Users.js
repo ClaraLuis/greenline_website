@@ -160,9 +160,11 @@ const Users = (props) => {
                                                                     { label: 'Latest', value: false },
                                                                 ].find((option) => option.value === (filterUsers?.isAsc ?? true))}
                                                                 onChange={(option) => {
+                                                                    if (fetchusers?.loading) return;
                                                                     setfilterUsers({ ...filterUsers, isAsc: option?.value });
                                                                     updateQueryParamContext('isAsc', option?.value);
                                                                 }}
+                                                                isDisabled={fetchusers?.loading}
                                                             />
                                                         </div>
                                                     </div>
@@ -175,9 +177,11 @@ const Users = (props) => {
                                                         label={'name'}
                                                         value={'id'}
                                                         onClick={(option) => {
+                                                            if (fetchusers?.loading) return;
                                                             setfilterUsers({ ...filterUsers, merchantId: option?.id });
                                                             updateQueryParamContext('merchantId', option?.id);
                                                         }}
+                                                        disabled={fetchusers?.loading}
                                                     />
                                                 </div>
                                                 <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
@@ -192,9 +196,11 @@ const Users = (props) => {
                                                         label={'name'}
                                                         value={'id'}
                                                         onClick={(option) => {
+                                                            if (fetchusers?.loading) return;
                                                             setfilterUsers({ ...filterUsers, hubId: option?.id });
                                                             updateQueryParamContext('hubId', option?.id);
                                                         }}
+                                                        disabled={fetchusers?.loading}
                                                     />
                                                 </div>
                                                 <div class="col-lg-3" style={{ marginBottom: '15px' }}>
@@ -205,6 +211,7 @@ const Users = (props) => {
                                                         value="value"
                                                         selected={filterUsers?.employeeTypes}
                                                         onClick={(option) => {
+                                                            if (fetchusers?.loading) return;
                                                             const tempArray = [...(filterUsers?.employeeTypes ?? [])];
 
                                                             if (option === 'All') {
@@ -222,6 +229,7 @@ const Users = (props) => {
                                                                 updateQueryParamContext('employeeTypes', tempArray.length ? tempArray : undefined);
                                                             }
                                                         }}
+                                                        disabled={fetchusers?.loading}
                                                     />
                                                 </div>
                                                 <div class="col-lg-3" style={{ marginBottom: '15px' }}>
@@ -232,6 +240,7 @@ const Users = (props) => {
                                                         value="value"
                                                         selected={filterUsers?.types}
                                                         onClick={(option) => {
+                                                            if (fetchusers?.loading) return;
                                                             const tempArray = [...(filterUsers?.types ?? [])];
 
                                                             if (option === 'All') {
@@ -249,6 +258,7 @@ const Users = (props) => {
                                                                 updateQueryParamContext('types', tempArray.length ? tempArray : undefined);
                                                             }
                                                         }}
+                                                        disabled={fetchusers?.loading}
                                                     />
                                                 </div>
                                             </div>
@@ -270,9 +280,11 @@ const Users = (props) => {
                                         placeholder={'Search by name, email, or phone'}
                                         onKeyDown={(e) => {
                                             if (e.key === 'Enter') {
+                                                if (fetchusers?.loading) return;
                                                 setfilterUsers({ ...filterUsers, name: search?.length == 0 ? undefined : search });
                                             }
                                         }}
+                                        disabled={fetchusers?.loading}
                                         onChange={(event) => {
                                             setSearch(event.target.value);
                                         }}
@@ -282,8 +294,10 @@ const Users = (props) => {
                             <div class="col-lg-2  col-md-2 allcenered p-md-0">
                                 <button
                                     onClick={() => {
+                                        if (fetchusers?.loading) return;
                                         setfilterUsers({ ...filterUsers, name: search?.length == 0 ? undefined : search });
                                     }}
+                                    disabled={fetchusers?.loading}
                                     style={{ height: '35px', marginInlineStart: '5px', minWidth: 'auto' }}
                                     class={generalstyles.roundbutton + '  allcentered bg-primary-light'}
                                 >
@@ -304,6 +318,7 @@ const Users = (props) => {
                                     afterCursor={fetchusers?.data?.paginateUsers?.cursor?.afterCursor}
                                     filter={filterUsers}
                                     setfilter={setfilterUsers}
+                                    loading={fetchusers?.loading}
                                 />
                             </div>
                             <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>

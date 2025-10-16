@@ -27,6 +27,8 @@ const UsersTable = (props) => {
     const { setpageactive_context, setpagetitle_context, dateformatter, isAuth } = useContext(Contexthandlerscontext);
 
     const { lang, langdetect } = useContext(LanguageContext);
+    
+    const [resettingPasswordUserId, setResettingPasswordUserId] = useState(null);
 
     return (
         <>
@@ -108,23 +110,34 @@ const UsersTable = (props) => {
                                                             )}
                                                             {isAuth([1, 80]) && (
                                                                 <Dropdown.Item
-                                                                    onClick={() => {
+                                                                    onClick={async () => {
+                                                                        if (resettingPasswordUserId === item.id) return;
+                                                                        setResettingPasswordUserId(item.id);
                                                                         const auth = getAuth();
-                                                                        sendPasswordResetEmail(auth, item.email)
-                                                                            .then(() => {
-                                                                                NotificationManager.success('Password reset email sent!', 'Success');
-                                                                            })
-                                                                            .catch((error) => {
-                                                                                const errorCode = error.code;
-                                                                                const errorMessage = error.message;
-                                                                                NotificationManager.warning(errorMessage, 'Warning');
-
-                                                                                // ..
-                                                                            });
+                                                                        try {
+                                                                            await sendPasswordResetEmail(auth, item.email);
+                                                                            NotificationManager.success('Password reset email sent!', 'Success');
+                                                                        } catch (error) {
+                                                                            const errorCode = error.code;
+                                                                            const errorMessage = error.message;
+                                                                            NotificationManager.warning(errorMessage, 'Warning');
+                                                                        } finally {
+                                                                            setResettingPasswordUserId(null);
+                                                                        }
                                                                     }}
                                                                     class="py-2"
+                                                                    disabled={resettingPasswordUserId === item.id}
                                                                 >
-                                                                    <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Change Password</p>
+                                                                    <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>
+                                                                        {resettingPasswordUserId === item.id ? (
+                                                                            <>
+                                                                                <CircularProgress color="var(--primary)" width="15px" height="15px" duration="1s" />
+                                                                                <span className="ml-2">Sending...</span>
+                                                                            </>
+                                                                        ) : (
+                                                                            'Change Password'
+                                                                        )}
+                                                                    </p>
                                                                 </Dropdown.Item>
                                                             )}
                                                             {isAuth([1, 46, 52]) && (

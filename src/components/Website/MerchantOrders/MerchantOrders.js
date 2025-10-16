@@ -62,6 +62,7 @@ const MerchantOrders = (props) => {
     useLoadQueryParamsToPayload(setfilterorders);
 
     const [fetchOrdersQuery, setfetchOrdersQuery] = useState({});
+    const [fetchOrdersLoading, setFetchOrdersLoading] = useState(false);
     const fetchGovernoratesQuery = useQueryGQL('', fetchGovernorates());
 
     const [fetchOrdersLazyQuey] = useLazyQueryGQL(fetchOrders(), 'cache-first');
@@ -112,10 +113,15 @@ const MerchantOrders = (props) => {
 
     const refetchOrders = async () => {
         if (ready) {
-            var { data } = await fetchOrdersLazyQuey({
-                variables: { input: filterorders },
-            });
-            setfetchOrdersQuery({ data: data });
+            setFetchOrdersLoading(true);
+            try {
+                var { data } = await fetchOrdersLazyQuey({
+                    variables: { input: filterorders },
+                });
+                setfetchOrdersQuery({ data: data });
+            } finally {
+                setFetchOrdersLoading(false);
+            }
         }
     };
     const exportToExcel = (data, fileName) => {
@@ -281,9 +287,11 @@ const MerchantOrders = (props) => {
                                                                 { label: 'Latest', value: false },
                                                             ].find((option) => option.value === (filterorders?.isAsc ?? true))}
                                                             onChange={(option) => {
+                                                                if (fetchOrdersLoading) return;
                                                                 setfilterorders({ ...filterorders, isAsc: option?.value });
                                                                 updateQueryParamContext('isAsc', option?.value);
                                                             }}
+                                                            isDisabled={fetchOrdersLoading}
                                                         />
                                                     </div>
                                                 </div>
@@ -301,9 +309,11 @@ const MerchantOrders = (props) => {
                                                         payload={filterorders}
                                                         payloadAttr={'hubId'}
                                                         onClick={(option) => {
+                                                            if (fetchOrdersLoading) return;
                                                             setfilterorders({ ...filterorders, hubId: option?.id });
                                                             updateQueryParamContext('hubId', option?.id);
                                                         }}
+                                                        disabled={fetchOrdersLoading}
                                                     />
                                                 </div>
                                             )}
@@ -367,6 +377,7 @@ const MerchantOrders = (props) => {
                                                         value="value"
                                                         selected={filterorders?.statuses}
                                                         onClick={(option) => {
+                                                            if (fetchOrdersLoading) return;
                                                             const tempArray = [...(filterorders?.statuses ?? [])];
                                                             if (option.value) {
                                                                 const index = tempArray.indexOf(option.value);
@@ -385,6 +396,7 @@ const MerchantOrders = (props) => {
                                                                 updateQueryParamContext('statuses', undefined);
                                                             }
                                                         }}
+                                                        disabled={fetchOrdersLoading}
                                                     />
                                                 </div>
                                                 {filterorders?.statuses != undefined && (
@@ -392,22 +404,25 @@ const MerchantOrders = (props) => {
                                                         <span>Status Date Range</span>
                                                         <div class="mt-1" style={{ width: '100%' }}>
                                                             <DateRangePicker
-                                                                onChange={(event) => {
-                                                                    if (event != null) {
-                                                                        setfilterorders({
-                                                                            ...filterorders,
-                                                                            statusStartDate: event[0],
-                                                                            statusEndDate: event[1],
-                                                                        });
-                                                                    }
-                                                                }}
-                                                                onClean={() => {
-                                                                    setfilterorders({
-                                                                        ...filterorders,
-                                                                        statusStartDate: null,
-                                                                        statusEndDate: null,
-                                                                    });
-                                                                }}
+                                                        onChange={(event) => {
+                                                            if (fetchOrdersLoading) return;
+                                                            if (event != null) {
+                                                                setfilterorders({
+                                                                    ...filterorders,
+                                                                    statusStartDate: event[0],
+                                                                    statusEndDate: event[1],
+                                                                });
+                                                            }
+                                                        }}
+                                                        onClean={() => {
+                                                            if (fetchOrdersLoading) return;
+                                                            setfilterorders({
+                                                                ...filterorders,
+                                                                statusStartDate: null,
+                                                                statusEndDate: null,
+                                                            });
+                                                        }}
+                                                        disabled={fetchOrdersLoading}
                                                             />
                                                         </div>
                                                     </div>
@@ -421,6 +436,7 @@ const MerchantOrders = (props) => {
                                                     value={'value'}
                                                     selected={filterorders?.types}
                                                     onClick={(option) => {
+                                                        if (fetchOrdersLoading) return;
                                                         var tempArray = [...(filterorders?.types ?? [])];
                                                         if (option == 'All') {
                                                             tempArray = undefined;
@@ -434,6 +450,7 @@ const MerchantOrders = (props) => {
                                                         setfilterorders({ ...filterorders, types: tempArray?.length != 0 ? tempArray : undefined });
                                                         updateQueryParamContext('types', tempArray?.length != 0 ? tempArray : undefined);
                                                     }}
+                                                    disabled={fetchOrdersLoading}
                                                 />
                                             </div>
                                             <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
@@ -444,6 +461,7 @@ const MerchantOrders = (props) => {
                                                     value={'value'}
                                                     selected={filterorders?.paymentTypes}
                                                     onClick={(option) => {
+                                                        if (fetchOrdersLoading) return;
                                                         var tempArray = [...(filterorders?.paymentTypes ?? [])];
                                                         if (option == 'All') {
                                                             tempArray = undefined;
@@ -457,6 +475,7 @@ const MerchantOrders = (props) => {
                                                         setfilterorders({ ...filterorders, paymentTypes: tempArray?.length != 0 ? tempArray : undefined });
                                                         updateQueryParamContext('paymentTypes', tempArray?.length != 0 ? tempArray : undefined);
                                                     }}
+                                                    disabled={fetchOrdersLoading}
                                                 />
                                             </div>
                                             {isAuth([1]) && (
@@ -471,6 +490,7 @@ const MerchantOrders = (props) => {
                                                         value={'id'}
                                                         selected={filterorders?.courierIds}
                                                         onClick={(option) => {
+                                                            if (fetchOrdersLoading) return;
                                                             var tempArray = [...(filterorders?.courierIds ?? [])];
                                                             if (option == 'All') {
                                                                 tempArray = undefined;
@@ -484,6 +504,7 @@ const MerchantOrders = (props) => {
                                                             setfilterorders({ ...filterorders, courierIds: tempArray?.length != 0 ? tempArray : undefined });
                                                             updateQueryParamContext('courierIds', tempArray?.length != 0 ? tempArray : undefined);
                                                         }}
+                                                        disabled={fetchOrdersLoading}
                                                     />
                                                 </div>
                                             )}
@@ -496,6 +517,7 @@ const MerchantOrders = (props) => {
                                                     value={'id'}
                                                     selected={filterorders?.governorateIds}
                                                     onClick={(option) => {
+                                                        if (fetchOrdersLoading) return;
                                                         var tempArray = [...(filterorders?.governorateIds ?? [])];
                                                         if (option == 'All') {
                                                             tempArray = undefined;
@@ -509,6 +531,7 @@ const MerchantOrders = (props) => {
                                                         setfilterorders({ ...filterorders, governorateIds: tempArray?.length != 0 ? tempArray : undefined });
                                                         updateQueryParamContext('governorateIds', tempArray?.length != 0 ? tempArray : undefined);
                                                     }}
+                                                    disabled={fetchOrdersLoading}
                                                 />
                                             </div>
                                             <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
@@ -524,6 +547,7 @@ const MerchantOrders = (props) => {
                                                     value={'id'}
                                                     selected={filterorders?.zoneIds}
                                                     onClick={(option) => {
+                                                        if (fetchOrdersLoading) return;
                                                         var tempArray = [...(filterorders?.zoneIds ?? [])];
                                                         if (option == 'All') {
                                                             tempArray = undefined;
@@ -537,6 +561,7 @@ const MerchantOrders = (props) => {
                                                         setfilterorders({ ...filterorders, zoneIds: tempArray?.length != 0 ? tempArray : undefined });
                                                         updateQueryParamContext('zoneIds', tempArray?.length != 0 ? tempArray : undefined);
                                                     }}
+                                                    disabled={fetchOrdersLoading}
                                                 />
                                             </div>
                                             {isAuth([1]) && (
@@ -788,6 +813,7 @@ const MerchantOrders = (props) => {
                                 afterCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.afterCursor}
                                 filter={filterorders}
                                 setfilter={setfilterorders}
+                                loading={fetchOrdersLoading}
                             />
                         </div>
                         <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-1'}>
@@ -808,6 +834,7 @@ const MerchantOrders = (props) => {
                                 afterCursor={fetchOrdersQuery?.data?.paginateOrders?.cursor?.afterCursor}
                                 filter={filterorders}
                                 setfilter={setfilterorders}
+                                loading={fetchOrdersLoading}
                             />
                         </div>
                     </div>

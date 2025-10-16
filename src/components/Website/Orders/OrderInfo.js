@@ -1213,7 +1213,11 @@ const OrderInfo = (props) => {
                                                                                     }
                                                                                 }}
                                                                             >
-                                                                                <TbTrash color="var(--danger)" />
+                                                                                {buttonLoadingContext ? (
+                                                                                    <CircularProgress color="var(--danger)" width="15px" height="15px" duration="1s" />
+                                                                                ) : (
+                                                                                    <TbTrash color="var(--danger)" />
+                                                                                )}
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -1423,6 +1427,7 @@ const OrderInfo = (props) => {
                                                                                     setcustomerFound(false);
                                                                                     setopenModal(false);
                                                                                     setnewCustomer(false);
+                                                                                    if (buttonLoadingContext) return;
                                                                                     setnameSuggestions([]);
                                                                                     setsimilarAddresses([]);
                                                                                     setfilterCustomerPayload({ ...filterCustomerPayload, phone: phone, myCustomers: true });
@@ -1448,6 +1453,7 @@ const OrderInfo = (props) => {
                                                                         placeholder={'email'}
                                                                         value={orderpayload?.email}
                                                                         onChange={(event) => {
+                                                                            if (buttonLoadingContext) return;
                                                                             setcustomerFound(false);
                                                                             setopenModal(false);
                                                                             setnewCustomer(false);
@@ -2262,6 +2268,7 @@ const OrderInfo = (props) => {
                                 afterCursor={fetchMerchantItemVariantsQuery?.data?.paginateItemVariants?.cursor?.afterCursor}
                                 filter={filter}
                                 setfilter={setfilter}
+                                loading={fetchMerchantItemVariantsQuery?.loading}
                             />
                         </div>
                         <ItemsTable
