@@ -156,7 +156,11 @@ const HubItems = (props) => {
                                 class={formstyles.form__field}
                                 // value={}
                                 placeholder={'Search by name or SKU'}
-
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        // Hook into your filter state when implemented
+                                    }
+                                }}
                                 // onChange={}
                             />
                         </div>

@@ -159,6 +159,12 @@ const Merchants = (props) => {
                                                     class={formstyles.form__field}
                                                     value={search}
                                                     placeholder={'Search by name'}
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === 'Enter') {
+                                                            if (fetchMerchants?.loading) return;
+                                                            setfilterMerchants({ ...filterMerchants, name: search?.length == 0 ? undefined : search });
+                                                        }
+                                                    }}
                                                     onChange={(event) => {
                                                         setSearch(event.target.value);
                                                     }}

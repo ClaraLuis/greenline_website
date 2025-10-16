@@ -784,16 +784,22 @@ keep data consistent.</span></p>
         sku: '',
         merchantId: parseInt(cookies.get('merchantId')),
     });
+    const [nameSearch, setNameSearch] = useState('');
+    const [skuSearch, setSkuSearch] = useState('');
     const fetchMerchantItemsQuery = useQueryGQL('', fetchMerchantItems(), payload);
     useLoadQueryParamsToPayload(setPayload);
-
-    const { refetch: refetchItems } = useQueryGQL('', fetchMerchantItems(), payload);
     const [uploadExcelFileMutation] = useMutationNoInputGQL(uploadExcelFile(), { base64File: csvFile });
     useEffect(() => {
         setpageactive_context('/merchantitems');
         setpagetitle_context('Merchant');
-        refetchItems();
+        // Initial data is fetched by useQueryGQL; avoid redundant refetch
     }, []);
+
+    // Keep local inputs in sync when payload changes externally (e.g., from URL)
+    useEffect(() => {
+        setNameSearch(payload?.name ?? '');
+        setSkuSearch(payload?.sku ?? '');
+    }, [payload?.name, payload?.sku]);
 
     // const handleDownload = () => {
     //     // Prepare the data in row format
@@ -926,7 +932,7 @@ keep data consistent.</span></p>
                                 </div>
                             </div>
                         </div>
-                        {cookies.get('merchantId') == undefined && <MerchantSelect fiter={payload} setFilter={setPayload} />}
+                        {!cookies.get('merchantId') && <MerchantSelect filter={payload} setFilter={setPayload} />}
                     </div>
                 </div>
 
@@ -940,10 +946,15 @@ keep data consistent.</span></p>
                                             // disabled={props?.disabled}
                                             // type={props?.type}
                                             class={formstyles.form__field}
-                                            value={payload?.name}
+                                            value={nameSearch}
                                             placeholder={'Search by name '}
-                                            onChange={() => {
-                                                setPayload({ ...payload, name: event.target.value });
+                                            onChange={(event) => {
+                                                setNameSearch(event.target.value);
+                                            }}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter') {
+                                                    setPayload({ ...payload, name: nameSearch?.length ? nameSearch : undefined, afterCursor: '', beforeCursor: '' });
+                                                }
                                             }}
                                         />
                                     </div>
@@ -954,10 +965,15 @@ keep data consistent.</span></p>
                                             // disabled={props?.disabled}
                                             // type={props?.type}
                                             class={formstyles.form__field}
-                                            value={payload?.sku}
+                                            value={skuSearch}
                                             placeholder={'Search by SKU'}
-                                            onChange={() => {
-                                                setPayload({ ...payload, sku: event.target.value });
+                                            onChange={(event) => {
+                                                setSkuSearch(event.target.value);
+                                            }}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter') {
+                                                    setPayload({ ...payload, sku: skuSearch?.length ? skuSearch : undefined, afterCursor: '', beforeCursor: '' });
+                                                }
                                             }}
                                         />
                                     </div>

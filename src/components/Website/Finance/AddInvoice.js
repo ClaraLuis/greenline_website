@@ -94,6 +94,12 @@ const AddInvoice = (props) => {
                                             class={formstyles.form__field}
                                             value={search}
                                             placeholder={'Search by order number'}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter') {
+                                                    if (fetchOrdersQuery?.loading) return;
+                                                    setfilterOrders({ ...filterOrders, orderId: search?.length == 0 ? undefined : search });
+                                                }
+                                            }}
                                             onChange={(event) => {
                                                 setsearch(event.target.value);
                                             }}

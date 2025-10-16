@@ -585,13 +585,23 @@ const AddOrder = (props) => {
                                                 onChange={() => {
                                                     setsearch(event.target.value);
                                                 }}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') {
+                                                        if (fetchMerchantItemVariantsLoading) return;
+                                                        if (search.length == 0) {
+                                                            setfilter({ ...filter, name: undefined });
+                                                        } else {
+                                                            setfilter({ ...filter, name: search });
+                                                        }
+                                                    }
+                                                }}
                                             />
                                         </div>
                                     </div>
                                     <div class="col-lg-2 col-md-2 p-md-0">
                                         <button
                                             onClick={() => {
-                                                if (fetchMerchantItemVariantsQuery?.loading) return;
+                                                if (fetchMerchantItemVariantsLoading) return;
                                                 if (search.length == 0) {
                                                     setfilter({ ...filter, name: undefined });
                                                 } else {

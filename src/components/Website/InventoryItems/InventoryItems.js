@@ -155,6 +155,19 @@ const InventoryItems = (props) => {
     });
     useLoadQueryParamsToPayload(setfilterItemInBox);
 
+    // Keep URL query params in sync when filter changes via Pagination or manual actions
+    const setFilterItemInBoxAndSync = (value) => {
+        const next = typeof value === 'function' ? value(filterItemInBox) : value;
+        setfilterItemInBox(next);
+        updateQueryParamContext('name', next?.name ?? undefined);
+        updateQueryParamContext('afterCursor', next?.afterCursor ?? undefined);
+        updateQueryParamContext('beforeCursor', next?.beforeCursor ?? undefined);
+        updateQueryParamContext('limit', next?.limit ?? undefined);
+        updateQueryParamContext('inventoryIds', next?.inventoryIds && next?.inventoryIds?.length ? next.inventoryIds : undefined);
+        updateQueryParamContext('merchantIds', next?.merchantIds && next?.merchantIds?.length ? next.merchantIds : undefined);
+        updateQueryParamContext('isAsc', next?.isAsc ?? undefined);
+    };
+
     const fetchItemsInBoxQuery = useQueryGQL('', fetchItemsInBox(), filterItemInBox);
     const { refetch: refetchfetchItemsInBox } = useQueryGQL('', fetchItemsInBox(), filterItemInBox);
 
@@ -162,6 +175,19 @@ const InventoryItems = (props) => {
         setpageactive_context('/inventoryitems');
         setpagetitle_context('Warehouses');
     }, []);
+
+    // Reset inventoryPayload when modal opens for adding new warehouse
+    useEffect(() => {
+        if (openInventoryModal && inventoryPayload.functype === 'add') {
+            setinventoryPayload({
+                functype: 'add',
+                id: '',
+                name: '',
+                long: '',
+                lat: '',
+            });
+        }
+    }, [openInventoryModal]);
     const [barcode, setBarcode] = useState('');
     useEffect(() => {
         const handleKeyDown = (e) => {
@@ -172,7 +198,7 @@ const InventoryItems = (props) => {
                 return; // Don't process barcode scanning when typing in an input field
             }
             if (e.key === 'Enter') {
-                setfilterItemInBox({ ...filterItemInBox, name: barcode.length === 0 ? undefined : barcode });
+                setFilterItemInBoxAndSync({ ...filterItemInBox, name: barcode.length === 0 ? undefined : barcode });
                 setSearch(barcode); // Update the search state with the scanned barcode
             } else {
                 setBarcode((prevBarcode) => prevBarcode + e.key);
@@ -420,7 +446,7 @@ const InventoryItems = (props) => {
                                     </p>
                                 </div>
                                 <div class={' col-lg-6 col-md-6 col-sm-8 p-0 d-flex align-items-center justify-content-end mb-2 px-2 '}>
-                                    <div className="row m-0 w-100 d-flex align-items-center justify-content-end">
+                                                <div className="row m-0 w-100 d-flex align-items-center justify-content-end">
                                         {selectedVariants?.length > 0 && <SkuPrint skus={selectedVariants} />}
                                         {isAuth([1, 54, 81]) && (
                                             <button
@@ -464,7 +490,8 @@ const InventoryItems = (props) => {
                                                         onKeyDown={(e) => {
                                                         if (e.key === 'Enter') {
                                                             if (fetchItemsInBoxQuery?.loading) return;
-                                                            setfilterItemInBox({ ...filterItemInBox, name: search?.length == 0 ? undefined : search });
+                                                            const next = { ...filterItemInBox, name: search?.length == 0 ? undefined : search };
+                                                            setFilterItemInBoxAndSync(next);
                                                         }
                                                         }}
                                                         onChange={(event) => {
@@ -478,7 +505,8 @@ const InventoryItems = (props) => {
                                                 <button
                                                     onClick={() => {
                                                         if (fetchItemsInBoxQuery?.loading) return;
-                                                        setfilterItemInBox({ ...filterItemInBox, name: search?.length == 0 ? undefined : search });
+                                                        const next = { ...filterItemInBox, name: search?.length == 0 ? undefined : search };
+                                                        setFilterItemInBoxAndSync(next);
                                                     }}
                                                     disabled={fetchItemsInBoxQuery?.loading}
                                                     style={{ height: '35px', marginInlineStart: '5px', minWidth: 'auto' }}
@@ -525,7 +553,7 @@ const InventoryItems = (props) => {
                                             beforeCursor={fetchItemsInBoxQuery?.data?.paginateItemInBox?.cursor?.beforeCursor}
                                             afterCursor={fetchItemsInBoxQuery?.data?.paginateItemInBox?.cursor?.afterCursor}
                                             filter={filterItemInBox}
-                                            setfilter={setfilterItemInBox}
+                                            setfilter={setFilterItemInBoxAndSync}
                                             loading={fetchItemsInBoxQuery?.loading}
                                         />
                                     </div>
@@ -803,6 +831,9 @@ const InventoryItems = (props) => {
                                         type={'number'}
                                         class={formstyles.form__field}
                                         value={inventoryPayload.numberOfRacks}
+                                        onFocus={(e) => {
+                                            e.target.select();
+                                        }}
                                         onChange={(event) => {
                                             setinventoryPayload({ ...inventoryPayload, numberOfRacks: event.target.value });
                                         }}
@@ -819,6 +850,9 @@ const InventoryItems = (props) => {
                                         type={'number'}
                                         class={formstyles.form__field}
                                         value={inventoryPayload.rackLevel}
+                                        onFocus={(e) => {
+                                            e.target.select();
+                                        }}
                                         onChange={(event) => {
                                             setinventoryPayload({ ...inventoryPayload, rackLevel: event.target.value });
                                         }}
@@ -834,6 +868,9 @@ const InventoryItems = (props) => {
                                         type={'number'}
                                         class={formstyles.form__field}
                                         value={inventoryPayload.palletPerRack}
+                                        onFocus={(e) => {
+                                            e.target.select();
+                                        }}
                                         onChange={(event) => {
                                             setinventoryPayload({ ...inventoryPayload, palletPerRack: event.target.value });
                                         }}
@@ -850,6 +887,9 @@ const InventoryItems = (props) => {
                                         type={'number'}
                                         class={formstyles.form__field}
                                         value={inventoryPayload.boxPerPallet}
+                                        onFocus={(e) => {
+                                            e.target.select();
+                                        }}
                                         onChange={(event) => {
                                             setinventoryPayload({ ...inventoryPayload, boxPerPallet: event.target.value });
                                         }}

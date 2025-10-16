@@ -80,7 +80,7 @@ const MerchantSelect = (props) => {
                                                         { label: 'Latest', value: false },
                                                     ].find((option) => option.value === (props?.filter?.isAsc ?? true))}
                                                     onChange={(option) => {
-                                                        props?.setfilter({ ...props?.filter, isAsc: option?.value });
+                                                        props?.setFilter({ ...props?.filter, isAsc: option?.value });
                                                     }}
                                                 />
                                             </div>

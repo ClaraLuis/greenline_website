@@ -107,6 +107,13 @@ const ImportNewItem = (props) => {
 
     const [fetchRacksLazyQuery] = useLazyQueryGQL(fetchRacks());
 
+    // When opening the dialog, prefill the search input from the last applied filter
+    useEffect(() => {
+        if (props?.openModal) {
+            setsearch(merchantFilter?.name ?? '');
+        }
+    }, [props?.openModal]);
+
     return (
         <Modal
             show={props?.openModal}
@@ -200,6 +207,15 @@ const ImportNewItem = (props) => {
                                             class={formstyles.form__field}
                                             value={search}
                                             placeholder={'Search by name, SKU '}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter') {
+                                                    if (search.length == 0) {
+                                                        setmerchantFilter({ ...merchantFilter, name: undefined });
+                                                    } else {
+                                                        setmerchantFilter({ ...merchantFilter, name: search });
+                                                    }
+                                                }
+                                            }}
                                             onChange={(event) => {
                                                 setsearch(event.target.value);
                                             }}

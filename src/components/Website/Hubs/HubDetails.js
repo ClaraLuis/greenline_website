@@ -114,6 +114,12 @@ const HubDetails = (props) => {
                                                                 class={formstyles.form__field}
                                                                 value={search}
                                                                 placeholder={'Search by name, email, or phone'}
+                                                                onKeyDown={(e) => {
+                                                                    if (e.key === 'Enter') {
+                                                                        if (fetchusers?.loading) return;
+                                                                        setfilterUsers({ ...filterUsers, name: search?.length == 0 ? undefined : search });
+                                                                    }
+                                                                }}
                                                                 onChange={(event) => {
                                                                     setSearch(event.target.value);
                                                                 }}

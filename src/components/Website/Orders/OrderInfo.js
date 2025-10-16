@@ -296,6 +296,13 @@ const OrderInfo = (props) => {
         setpagetitle_context('Merchant');
     }, []);
 
+    // Reset newPrice when orderLogsModal opens for price change
+    useEffect(() => {
+        if (!orderLogsModal.open && newPrice) {
+            setnewPrice(null);
+        }
+    }, [orderLogsModal.open, orderLogsModal.type]);
+
     useEffect(() => {
         if (JSON.stringify(chosenOrderContext) == '{}') {
             fetchOrder();
@@ -382,13 +389,16 @@ const OrderInfo = (props) => {
         if (buttonLoadingContext) return;
         setbuttonLoadingContext(true);
         try {
+            if (!newPrice) {
+                NotificationManager.warning('Please enter a new price', 'Warning!');
+                return;
+            }
             var { data } = await changeOrderPriceMutation();
             if (data?.changeOrderPrice?.success == true) {
                 await fetchOrder();
 
                 NotificationManager.success('Success!', '');
                 setorderLogsModal({ open: false });
-                setnewPrice(null);
             } else {
                 NotificationManager.warning(data?.changeOrderPrice?.message, 'Warning!');
             }

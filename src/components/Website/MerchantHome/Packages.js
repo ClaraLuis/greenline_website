@@ -270,6 +270,12 @@ const Packages = (props) => {
                                                 onChange={(event) => {
                                                     setSearch(event.target.value);
                                                 }}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') {
+                                                        if (fetchPackagesQuery?.loading) return;
+                                                        setfilter({ ...filter, sku: search?.length == 0 ? undefined : search });
+                                                    }
+                                                }}
                                             />
                                         </div>
                                     </div>
