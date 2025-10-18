@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
@@ -7,33 +7,23 @@ import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
-import { AiOutlineClose } from 'react-icons/ai';
-import { DateRangePicker } from 'rsuite';
 
+import Decimal from 'decimal.js';
 import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 import { Modal } from 'react-bootstrap';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
-import { FiCheckCircle, FiCircle } from 'react-icons/fi';
+import { FaLayerGroup } from 'react-icons/fa';
 import { IoMdClose } from 'react-icons/io';
 import { NotificationManager } from 'react-notifications';
 import Cookies from 'universal-cookie';
 import API from '../../../API/API.js';
-import Form from '../../Form.js';
-import Pagination from '../../Pagination.js';
-import SelectComponent from '../../SelectComponent.js';
-import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
-import TransactionsTable from './TransactionsTable.js';
-import Decimal from 'decimal.js';
 import MerchantSelectComponent from '../../selectComponents/MerchantSelectComponent.js';
-import { FaLayerGroup } from 'react-icons/fa';
+import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 const Settlements = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
     const { setpageactive_context, isAuth, setpagetitle_context, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
     const { useQueryGQL, useMutationGQL, createMerchantSettlement, paginateSettlementPayouts, paginateMerchantDebts, useLazyQueryGQL } = API();
-    const cookies = new Cookies();
-
-    const { lang, langdetect } = useContext(LanguageContext);
 
     const [settlementPayload, setsettlementPayload] = useState({
         sheetOrderIds: [],
@@ -243,29 +233,40 @@ const Settlements = (props) => {
                                                                                 </td>
                                                                                 <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
                                                                                     <p className="m-0 p-0 wordbreak">
-                                                                                        {item?.transactions?.map((i) => (i.type === 'merchantOrderPayment' ? i.amount : ''))}
+                                                                                        {item?.transactions?.some((i) => i.type === 'merchantOrderPayment')
+                                                                                            ? item.transactions
+                                                                                                  .filter((i) => i.type === 'merchantOrderPayment')
+                                                                                                  .map((i) => i.amount)
+                                                                                                  .join(', ')
+                                                                                            : 0}
                                                                                     </p>
                                                                                 </td>
+
                                                                                 <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
                                                                                     <p className="m-0 p-0 wordbreak">
-                                                                                        {item?.transactions?.map((i) => (i.type === 'shippingCollection' ? i.amount * -1 : ''))}
+                                                                                        {item?.transactions?.some((i) => i.type === 'shippingCollection')
+                                                                                            ? item.transactions
+                                                                                                  .filter((i) => i.type === 'shippingCollection')
+                                                                                                  .map((i) => i.amount * -1)
+                                                                                                  .join(', ')
+                                                                                            : 0}
                                                                                     </p>
                                                                                 </td>
+
                                                                                 <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
-                                                                                    <p className={' m-0 p-0 wordbreak '}>
-                                                                                        {new Decimal(
-                                                                                            item?.transactions?.reduce(
+                                                                                    <p className="m-0 p-0 wordbreak">
+                                                                                        {(() => {
+                                                                                            const merchantPayment = item?.transactions?.reduce(
                                                                                                 (sum, i) => (i.type === 'merchantOrderPayment' ? new Decimal(sum).plus(i.amount) : new Decimal(sum)),
                                                                                                 new Decimal(0),
-                                                                                            ),
-                                                                                        )
-                                                                                            .plus(
-                                                                                                item?.transactions?.reduce(
-                                                                                                    (sum, i) => (i.type === 'shippingCollection' ? new Decimal(sum).minus(i.amount) : new Decimal(sum)),
-                                                                                                    new Decimal(0),
-                                                                                                ),
-                                                                                            )
-                                                                                            .toNumber()}
+                                                                                            );
+                                                                                            const shippingCollection = item?.transactions?.reduce(
+                                                                                                (sum, i) => (i.type === 'shippingCollection' ? new Decimal(sum).minus(i.amount) : new Decimal(sum)),
+                                                                                                new Decimal(0),
+                                                                                            );
+                                                                                            const total = merchantPayment.plus(shippingCollection).toNumber();
+                                                                                            return total !== 0 ? total : 0;
+                                                                                        })()}
                                                                                     </p>
                                                                                 </td>
                                                                             </tr>
@@ -544,6 +545,7 @@ const Settlements = (props) => {
                                                         //    await refetchfetchItemsInBox();
                                                         NotificationManager.success(data?.createMerchantSettlement?.message, 'Success!');
                                                         setcreatesettlementModal({ open: true, data: data });
+                                                        window.location.reload();
                                                     } else {
                                                         NotificationManager.warning(data?.createMerchantSettlement?.message, 'Warning!');
                                                     }

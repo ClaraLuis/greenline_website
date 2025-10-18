@@ -298,12 +298,20 @@ const MerchantHome = (props) => {
                                                     <DateRangePicker
                                                         onChange={(event) => {
                                                             if (ordersDeliverableSummaryQuery?.loading) return;
+
                                                             if (event != null) {
-                                                                setfilterordersDeliverableSummary({
-                                                                    ...filterordersDeliverableSummary,
-                                                                    startDate: event[0],
-                                                                    endDate: event[1],
-                                                                });
+                                                                const toUTCDate = (d) => {
+                                                                    const date = new Date(d);
+                                                                    return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+                                                                };
+
+                                                                const [start, end] = event;
+
+                                                                setfilterordersDeliverableSummary((prev) => ({
+                                                                    ...prev,
+                                                                    startDate: toUTCDate(start).toISOString(),
+                                                                    endDate: toUTCDate(end).toISOString(),
+                                                                }));
                                                             }
                                                         }}
                                                         onClean={() => {

@@ -1,33 +1,29 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { Modal } from 'react-bootstrap';
+import { IoMdClose } from 'react-icons/io';
 import { useHistory } from 'react-router-dom';
-import TextareaAutosize from 'react-textarea-autosize';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
-import { IoMdClose } from 'react-icons/io';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
-import { Modal } from 'react-bootstrap';
-import { DateRangePicker } from 'rsuite';
 
 import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 
-import API from '../../../API/API.js';
-import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
-import { NotificationManager } from 'react-notifications';
+import Decimal from 'decimal.js';
+import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
+import { AiOutlineClose } from 'react-icons/ai';
+import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import { FaCheck } from 'react-icons/fa';
 import { IoMdTime } from 'react-icons/io';
-import CircularProgress from 'react-cssfx-loading/lib/CircularProgress/index.js';
-import Form from '../../Form.js';
-import Select from 'react-select';
-import { defaultstyles } from '../Generalfiles/selectstyles.js';
-import Inputfield from '../../Inputfield.js';
-import Decimal from 'decimal.js';
 import { IoChevronBackOutline } from 'react-icons/io5';
-import OrderItemsModal from './OrderItemsModal.js';
+import { NotificationManager } from 'react-notifications';
+import Select from 'react-select';
+import API from '../../../API/API.js';
+import Inputfield from '../../Inputfield.js';
 import MultiSelect from '../../MultiSelect.js';
-import SelectComponent from '../../SelectComponent.js';
-import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
-import { AiOutlineClose } from 'react-icons/ai';
+import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
+import { defaultstyles } from '../Generalfiles/selectstyles.js';
+import OrderItemsModal from './OrderItemsModal.js';
 
 const CourierSheet = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);

@@ -380,18 +380,18 @@ const InventorySettings = (props) => {
                                                 ]}
                                                 onChange={(event) => {
                                                     if (event != null) {
-                                                        const start = event[0];
-                                                        const startdate = new Date(start);
-                                                        const year1 = startdate.getFullYear();
-                                                        const month1 = startdate.getMonth() + 1; // Months are zero-indexed
-                                                        const day1 = startdate.getDate();
+                                                        const toUTCDate = (d) => {
+                                                            const date = new Date(d);
+                                                            return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+                                                        };
 
-                                                        const end = event[1];
-                                                        const enddate = new Date(end);
-                                                        const year2 = enddate.getFullYear();
-                                                        const month2 = enddate.getMonth() + 1; // Months are zero-indexed
-                                                        const day2 = enddate.getDate();
-                                                        setfilterSentTransactionsObj({ ...filterSentTransactionsObj, startDate: event[0], endDate: event[1] });
+                                                        const [start, end] = event;
+
+                                                        setfilterSentTransactionsObj({
+                                                            ...filterSentTransactionsObj,
+                                                            startDate: toUTCDate(start).toISOString(),
+                                                            endDate: toUTCDate(end).toISOString(),
+                                                        });
                                                     }
                                                 }}
                                                 onClean={() => {

@@ -313,10 +313,17 @@ const Orders = (props) => {
                                                         onChange={(event) => {
                                                             if (fetchOrdersInInventoryQuery?.loading) return;
                                                             if (event != null) {
+                                                                const toUTCDate = (d) => {
+                                                                    const date = new Date(d);
+                                                                    return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+                                                                };
+
+                                                                const [start, end] = event;
+
                                                                 setfilterorders({
                                                                     ...filterorders,
-                                                                    fromDate: event[0],
-                                                                    toDate: event[1],
+                                                                    fromDate: toUTCDate(start).toISOString(),
+                                                                    toDate: toUTCDate(end).toISOString(),
                                                                 });
                                                             }
                                                         }}

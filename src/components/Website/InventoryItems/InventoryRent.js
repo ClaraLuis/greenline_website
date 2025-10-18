@@ -711,11 +711,19 @@ const InventoryRent = (props) => {
                                     <DateRangePicker
                                         onChange={(event) => {
                                             if (fetchSenttTransactionsQuery?.loading) return;
+
+                                            const toUTCDate = (d) => {
+                                                const date = new Date(d);
+                                                return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+                                            };
+
                                             if (event != null) {
+                                                const [start, end] = event;
+
                                                 setfilterSentTransactionsObj({
                                                     ...filterSentTransactionsObj,
-                                                    startDate: event[0],
-                                                    endDate: event[1],
+                                                    startDate: toUTCDate(start).toISOString(),
+                                                    endDate: toUTCDate(end).toISOString(),
                                                 });
                                             }
                                         }}

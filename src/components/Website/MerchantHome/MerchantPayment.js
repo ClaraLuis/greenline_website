@@ -154,12 +154,24 @@ const MerchantPayment = (props) => {
                                                         <DateRangePicker
                                                             onChange={(event) => {
                                                                 if (event != null) {
-                                                                    setfilterMerchanrPaymentSummaryObj({
-                                                                        ...filterMerchanrPaymentSummaryObj,
-                                                                        startDate: event[0],
-                                                                        endDate: event[1],
-                                                                    });
-                                                                    setfilterobj({ ...filterobj, fromDate: event[0], toDate: event[1] });
+                                                                    const toUTCDate = (d) => {
+                                                                        const date = new Date(d);
+                                                                        return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+                                                                    };
+
+                                                                    const [start, end] = event;
+
+                                                                    setfilterMerchanrPaymentSummaryObj((prev) => ({
+                                                                        ...prev,
+                                                                        startDate: toUTCDate(start).toISOString(),
+                                                                        endDate: toUTCDate(end).toISOString(),
+                                                                    }));
+
+                                                                    setfilterobj((prev) => ({
+                                                                        ...prev,
+                                                                        fromDate: toUTCDate(start).toISOString(),
+                                                                        toDate: toUTCDate(end).toISOString(),
+                                                                    }));
                                                                 }
                                                             }}
                                                             onClean={() => {

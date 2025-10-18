@@ -223,23 +223,17 @@ const Expenses = (props) => {
                                                         // value={[filterExpensesObj?.fromDate, filterExpensesObj?.toDate]}
                                                         onChange={(event) => {
                                                             if (event != null) {
-                                                                const start = event[0];
-                                                                const startdate = new Date(start);
-                                                                const year1 = startdate.getFullYear();
-                                                                const month1 = startdate.getMonth() + 1; // Months are zero-indexed
-                                                                const day1 = startdate.getDate();
+                                                                const toUTCDate = (d) => {
+                                                                    const date = new Date(d);
+                                                                    return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+                                                                };
 
-                                                                const end = event[1];
-                                                                const enddate = new Date(end);
-                                                                const year2 = enddate.getFullYear();
-                                                                const month2 = enddate.getMonth() + 1; // Months are zero-indexed
-                                                                const day2 = enddate.getDate();
+                                                                const [start, end] = event;
+
                                                                 setfilterExpensesObj({
                                                                     ...filterExpensesObj,
-                                                                    fromDate: event[0],
-                                                                    toDate: event[1],
-                                                                    // from_date: year1 + '-' + month1 + '-' + day1,
-                                                                    // to_date: year2 + '-' + month2 + '-' + day2,
+                                                                    fromDate: toUTCDate(start).toISOString(),
+                                                                    toDate: toUTCDate(end).toISOString(),
                                                                 });
                                                             }
                                                         }}
