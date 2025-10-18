@@ -404,25 +404,32 @@ const MerchantOrders = (props) => {
                                                         <span>Status Date Range</span>
                                                         <div class="mt-1" style={{ width: '100%' }}>
                                                             <DateRangePicker
-                                                        onChange={(event) => {
-                                                            if (fetchOrdersLoading) return;
-                                                            if (event != null) {
-                                                                setfilterorders({
-                                                                    ...filterorders,
-                                                                    statusStartDate: event[0],
-                                                                    statusEndDate: event[1],
-                                                                });
-                                                            }
-                                                        }}
-                                                        onClean={() => {
-                                                            if (fetchOrdersLoading) return;
-                                                            setfilterorders({
-                                                                ...filterorders,
-                                                                statusStartDate: null,
-                                                                statusEndDate: null,
-                                                            });
-                                                        }}
-                                                        disabled={fetchOrdersLoading}
+                                                                onChange={(event) => {
+                                                                    if (fetchOrdersLoading) return;
+                                                                    if (event != null) {
+                                                                        const toUTCDate = (d) => {
+                                                                            const date = new Date(d);
+                                                                            return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+                                                                        };
+
+                                                                        const [start, end] = event;
+
+                                                                        setfilterorders((prev) => ({
+                                                                            ...prev,
+                                                                            statusStartDate: toUTCDate(start).toISOString(),
+                                                                            statusEndDate: toUTCDate(end).toISOString(),
+                                                                        }));
+                                                                    }
+                                                                }}
+                                                                onClean={() => {
+                                                                    if (fetchOrdersLoading) return;
+                                                                    setfilterorders({
+                                                                        ...filterorders,
+                                                                        statusStartDate: null,
+                                                                        statusEndDate: null,
+                                                                    });
+                                                                }}
+                                                                disabled={fetchOrdersLoading}
                                                             />
                                                         </div>
                                                     </div>
@@ -597,24 +604,17 @@ const MerchantOrders = (props) => {
                                                         // value={[filterorders?.fromDate, filterorders?.toDate]}
                                                         onChange={(event) => {
                                                             if (event != null) {
-                                                                const start = event[0];
-                                                                const startdate = new Date(start);
-                                                                const year1 = startdate.getFullYear();
-                                                                const month1 = startdate.getMonth() + 1; // Months are zero-indexed
-                                                                const day1 = startdate.getDate();
+                                                                const toUTCDate = (d) => {
+                                                                    const date = new Date(d);
+                                                                    return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+                                                                };
 
-                                                                const end = event[1];
-                                                                const enddate = new Date(end);
-                                                                const year2 = enddate.getFullYear();
-                                                                const month2 = enddate.getMonth() + 1; // Months are zero-indexed
-                                                                const day2 = enddate.getDate();
+                                                                const [start, end] = event;
 
                                                                 setfilterorders({
                                                                     ...filterorders,
-                                                                    fromDate: event[0],
-                                                                    toDate: event[1],
-                                                                    // from_date: year1 + '-' + month1 + '-' + day1,
-                                                                    // to_date: year2 + '-' + month2 + '-' + day2,
+                                                                    fromDate: toUTCDate(start).toISOString(),
+                                                                    toDate: toUTCDate(end).toISOString(),
                                                                 });
                                                             }
                                                         }}

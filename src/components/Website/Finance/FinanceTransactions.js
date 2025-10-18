@@ -245,12 +245,12 @@ const FinanceTransactions = (props) => {
                                                                         { label: 'Oldest', value: true },
                                                                         { label: 'Latest', value: false },
                                                                     ].find((option) => option.value === (filterTransactionsObj?.isAsc ?? true))}
-                                                                onChange={(option) => {
-                                                                    if (fetchAllTransactionsQuery?.loading) return;
-                                                                    setfilterTransactionsObj({ ...filterTransactionsObj, isAsc: option?.value });
-                                                                    updateQueryParamContext('isAsc', option?.value);
-                                                                }}
-                                                                isDisabled={fetchAllTransactionsQuery?.loading}
+                                                                    onChange={(option) => {
+                                                                        if (fetchAllTransactionsQuery?.loading) return;
+                                                                        setfilterTransactionsObj({ ...filterTransactionsObj, isAsc: option?.value });
+                                                                        updateQueryParamContext('isAsc', option?.value);
+                                                                    }}
+                                                                    isDisabled={fetchAllTransactionsQuery?.loading}
                                                                 />
                                                             </div>
                                                         </div>
@@ -389,19 +389,20 @@ const FinanceTransactions = (props) => {
                                                         // value={[filterorders?.fromDate, filterorders?.toDate]}
                                                         onChange={(event) => {
                                                             if (fetchAllTransactionsQuery?.loading) return;
-                                                            if (event != null) {
-                                                                const start = event[0];
-                                                                const startdate = new Date(start);
-                                                                const year1 = startdate.getFullYear();
-                                                                const month1 = startdate.getMonth() + 1; // Months are zero-indexed
-                                                                const day1 = startdate.getDate();
 
-                                                                const end = event[1];
-                                                                const enddate = new Date(end);
-                                                                const year2 = enddate.getFullYear();
-                                                                const month2 = enddate.getMonth() + 1; // Months are zero-indexed
-                                                                const day2 = enddate.getDate();
-                                                                setfilterTransactionsObj({ ...filterTransactionsObj, fromDate: event[0], toDate: event[1] });
+                                                            const toUTCDate = (d) => {
+                                                                const date = new Date(d);
+                                                                return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+                                                            };
+
+                                                            if (event != null) {
+                                                                const [start, end] = event;
+
+                                                                setfilterTransactionsObj({
+                                                                    ...filterTransactionsObj,
+                                                                    fromDate: toUTCDate(start).toISOString(),
+                                                                    toDate: toUTCDate(end).toISOString(),
+                                                                });
                                                             }
                                                         }}
                                                         onClean={() => {

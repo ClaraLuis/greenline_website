@@ -308,12 +308,24 @@ const MerchantPayments = (props) => {
                                                         // value={[filterorders?.fromDate, filterorders?.toDate]}
                                                         onChange={(event) => {
                                                             if (event != null) {
+                                                                const toUTCDate = (d) => {
+                                                                    const date = new Date(d);
+                                                                    return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+                                                                };
+
+                                                                const [start, end] = event;
+
                                                                 setfilterMerchanrPaymentSummaryObj({
                                                                     ...filterMerchanrPaymentSummaryObj,
-                                                                    startDate: event[0],
-                                                                    endDate: event[1],
+                                                                    startDate: toUTCDate(start).toISOString(),
+                                                                    endDate: toUTCDate(end).toISOString(),
                                                                 });
-                                                                setfilterobj({ ...filterobj, fromDate: event[0], toDate: event[1] });
+
+                                                                setfilterobj({
+                                                                    ...filterobj,
+                                                                    fromDate: toUTCDate(start).toISOString(),
+                                                                    toDate: toUTCDate(end).toISOString(),
+                                                                });
                                                             }
                                                         }}
                                                         onClean={() => {

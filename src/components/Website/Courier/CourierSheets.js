@@ -217,12 +217,17 @@ const CourierSheets = (props) => {
                                             <div class="mt-1" style={{ width: '100%' }}>
                                                 <DateRangePicker
                                                     onChange={(event) => {
-                                                        if (fetchSheetsQuery?.loading) return;
+                                                        const toUTCDate = (d) => {
+                                                            const date = new Date(d);
+                                                            return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+                                                        };
+
                                                         if (event != null) {
+                                                            const [start, end] = event;
                                                             setfilter({
                                                                 ...filter,
-                                                                fromDate: event[0],
-                                                                toDate: event[1],
+                                                                fromDate: toUTCDate(start).toISOString(),
+                                                                toDate: toUTCDate(end).toISOString(),
                                                             });
                                                         }
                                                     }}

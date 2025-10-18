@@ -213,16 +213,25 @@ const Finance = (props) => {
                                                         <DateRangePicker
                                                             onChange={(event) => {
                                                                 if (merchantPaymentsSummaryQuery?.loading) return;
+
+                                                                const toUTCDate = (d) => {
+                                                                    const date = new Date(d);
+                                                                    return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+                                                                };
+
                                                                 if (event != null) {
+                                                                    const [start, end] = event;
+
                                                                     setfilterMerchanrPaymentSummaryObj({
                                                                         ...filterMerchanrPaymentSummaryObj,
-                                                                        startDate: event[0],
-                                                                        endDate: event[1],
+                                                                        startDate: toUTCDate(start).toISOString(),
+                                                                        endDate: toUTCDate(end).toISOString(),
                                                                     });
+
                                                                     setfilterobj({
                                                                         ...filterobj,
-                                                                        fromDate: event[0],
-                                                                        toDate: event[1],
+                                                                        fromDate: toUTCDate(start).toISOString(),
+                                                                        toDate: toUTCDate(end).toISOString(),
                                                                     });
                                                                 }
                                                             }}

@@ -194,10 +194,17 @@ const ActionCenter = (props) => {
                                                         // value={[filterorders?.fromDate ? new Date(filterorders.fromDate) : null, filterorders?.toDate ? new Date(filterorders.toDate) : null]}
                                                         onChange={(event) => {
                                                             if (event != null) {
+                                                                const toUTCDate = (d) => {
+                                                                    const date = new Date(d);
+                                                                    return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+                                                                };
+
+                                                                const [start, end] = event;
+
                                                                 setfilterorders({
                                                                     ...filterorders,
-                                                                    fromDate: event[0],
-                                                                    toDate: event[1],
+                                                                    fromDate: toUTCDate(start).toISOString(),
+                                                                    toDate: toUTCDate(end).toISOString(),
                                                                 });
                                                             }
                                                         }}
