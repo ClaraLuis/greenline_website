@@ -56,6 +56,13 @@ const Orders = (props) => {
     });
     useLoadQueryParamsToPayload(setfilterorders);
 
+    // Sync search state with filterorders.name from URL
+    useEffect(() => {
+        if (filterorders?.name) {
+            setSearch(filterorders.name);
+        }
+    }, [filterorders?.name]);
+
     const fetchOrdersInInventoryQuery = useQueryGQL('', fetchOrdersInInventory(), filterorders);
     const { refetch: refetchOrdersInInventory } = useQueryGQL('', fetchOrdersInInventory(), filterorders);
     const [selectedOrders, setSelectedOrders] = useState([]);
@@ -106,6 +113,7 @@ const Orders = (props) => {
 
             if (e.key === 'Enter') {
                 setfilterorders({ ...filterorders, name: barcode.length === 0 ? undefined : barcode });
+                updateQueryParamContext('name', barcode.length === 0 ? undefined : barcode);
                 setSearch(barcode); // Update the search state with the scanned barcode
                 // setBarcode(''); // Clear the barcode state
             } else {
@@ -262,15 +270,16 @@ const Orders = (props) => {
                                                     <label className={`${formstyles.switch}  my-0`}>
                                                         <input
                                                             type="checkbox"
-                                                            checked={filterorders?.outOfStock}
+                                                            checked={filterorders?.outOfStock || false}
                                                             onChange={(e) => {
                                                                 if (fetchOrdersInInventoryQuery?.loading) return;
                                                                 e.stopPropagation();
+                                                                const newValue = !filterorders?.outOfStock;
                                                                 setfilterorders({
                                                                     ...filterorders,
-                                                                    outOfStock: !filterorders?.outOfStock,
+                                                                    outOfStock: newValue,
                                                                 });
-                                                                updateQueryParamContext('outOfStock', !filterorders?.outOfStock);
+                                                                updateQueryParamContext('outOfStock', newValue);
                                                             }}
                                                             disabled={fetchOrdersInInventoryQuery?.loading}
                                                         />
@@ -310,6 +319,7 @@ const Orders = (props) => {
                                                 <span>Date Range</span>
                                                 <div class="mt-1" style={{ width: '100%' }}>
                                                     <DateRangePicker
+                                                        value={filterorders?.fromDate && filterorders?.toDate ? [new Date(filterorders.fromDate), new Date(filterorders.toDate)] : null}
                                                         onChange={(event) => {
                                                             if (fetchOrdersInInventoryQuery?.loading) return;
                                                             if (event != null) {
@@ -319,21 +329,35 @@ const Orders = (props) => {
                                                                 };
 
                                                                 const [start, end] = event;
+                                                                const fromDate = toUTCDate(start).toISOString();
+                                                                const toDate = toUTCDate(end).toISOString();
 
                                                                 setfilterorders({
                                                                     ...filterorders,
-                                                                    fromDate: toUTCDate(start).toISOString(),
-                                                                    toDate: toUTCDate(end).toISOString(),
+                                                                    fromDate: fromDate,
+                                                                    toDate: toDate,
                                                                 });
+                                                                updateQueryParamContext('fromDate', fromDate);
+                                                                updateQueryParamContext('toDate', toDate);
+                                                            } else {
+                                                                setfilterorders({
+                                                                    ...filterorders,
+                                                                    fromDate: undefined,
+                                                                    toDate: undefined,
+                                                                });
+                                                                updateQueryParamContext('fromDate', undefined);
+                                                                updateQueryParamContext('toDate', undefined);
                                                             }
                                                         }}
                                                         onClean={() => {
                                                             if (fetchOrdersInInventoryQuery?.loading) return;
                                                             setfilterorders({
                                                                 ...filterorders,
-                                                                fromDate: null,
-                                                                toDate: null,
+                                                                fromDate: undefined,
+                                                                toDate: undefined,
                                                             });
+                                                            updateQueryParamContext('fromDate', undefined);
+                                                            updateQueryParamContext('toDate', undefined);
                                                         }}
                                                         disabled={fetchOrdersInInventoryQuery?.loading}
                                                     />
@@ -358,14 +382,78 @@ const Orders = (props) => {
                                                                     tempArray.splice(index, 1);
                                                                 }
 
-                                                                setfilterorders({ ...filterorders, statuses: tempArray.length ? tempArray : undefined });
+                                                                setfilterorders({ 
+                                                                    ...filterorders, 
+                                                                    statuses: tempArray.length ? tempArray : undefined,
+                                                                    // Clear status dates when statuses change to all/undefined
+                                                                    statusStartDate: tempArray.length ? filterorders?.statusStartDate : undefined,
+                                                                    statusEndDate: tempArray.length ? filterorders?.statusEndDate : undefined
+                                                                });
                                                                 updateQueryParamContext('statuses', tempArray.length ? tempArray : undefined);
                                                             } else {
-                                                                setfilterorders({ ...filterorders, statuses: undefined });
+                                                                setfilterorders({ 
+                                                                    ...filterorders, 
+                                                                    statuses: undefined,
+                                                                    // Clear status dates when statuses change to all
+                                                                    statusStartDate: undefined,
+                                                                    statusEndDate: undefined
+                                                                });
                                                                 updateQueryParamContext('statuses', undefined);
                                                             }
                                                         }}
                                                     />
+                                                </div>
+                                            )}
+
+                                            {/* Status Date Range - only show when specific statuses are selected */}
+                                            {window.location.pathname !== '/handpicked' && filterorders?.statuses && filterorders?.statuses?.length > 0 && (
+                                                <div class="col-lg-3 mb-md-2">
+                                                    <span>Status Date Range</span>
+                                                    <div class="mt-1" style={{ width: '100%' }}>
+                                                        <DateRangePicker
+                                                            value={filterorders?.statusStartDate && filterorders?.statusEndDate ? [new Date(filterorders.statusStartDate), new Date(filterorders.statusEndDate)] : null}
+                                                            onChange={(event) => {
+                                                                if (fetchOrdersInInventoryQuery?.loading) return;
+                                                                if (event != null) {
+                                                                    const toUTCDate = (d) => {
+                                                                        const date = new Date(d);
+                                                                        return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+                                                                    };
+
+                                                                    const [start, end] = event;
+                                                                    const statusStartDate = toUTCDate(start).toISOString();
+                                                                    const statusEndDate = toUTCDate(end).toISOString();
+
+                                                                    setfilterorders({
+                                                                        ...filterorders,
+                                                                        statusStartDate: statusStartDate,
+                                                                        statusEndDate: statusEndDate,
+                                                                    });
+                                                                    updateQueryParamContext('statusStartDate', statusStartDate);
+                                                                    updateQueryParamContext('statusEndDate', statusEndDate);
+                                                                } else {
+                                                                    setfilterorders({
+                                                                        ...filterorders,
+                                                                        statusStartDate: undefined,
+                                                                        statusEndDate: undefined,
+                                                                    });
+                                                                    updateQueryParamContext('statusStartDate', undefined);
+                                                                    updateQueryParamContext('statusEndDate', undefined);
+                                                                }
+                                                            }}
+                                                            onClean={() => {
+                                                                if (fetchOrdersInInventoryQuery?.loading) return;
+                                                                setfilterorders({
+                                                                    ...filterorders,
+                                                                    statusStartDate: undefined,
+                                                                    statusEndDate: undefined,
+                                                                });
+                                                                updateQueryParamContext('statusStartDate', undefined);
+                                                                updateQueryParamContext('statusEndDate', undefined);
+                                                            }}
+                                                            disabled={fetchOrdersInInventoryQuery?.loading}
+                                                        />
+                                                    </div>
                                                 </div>
                                             )}
 
@@ -397,20 +485,62 @@ const Orders = (props) => {
                                                     placeholder="Order Ids"
                                                     onKeyDown={(e) => {
                                                         if (e.key === 'Enter' && e.target.value?.length !== 0) {
-                                                            const orderId = parseInt(e.target.value);
-                                                            if (!filterorders?.orderIds?.includes(orderId)) {
-                                                                const tempArray = [...(filterorders?.orderIds ?? [])];
-                                                                tempArray.push(orderId);
-                                                                setfilterorders({ ...filterorders, orderIds: tempArray });
-                                                                updateQueryParamContext('orderIds', tempArray);
+                                                            const raw = e.target.value;
+                                                            const parts = raw.split(/[\n,]+/)
+                                                                .map((v) => v.trim())
+                                                                .filter((v) => v.length > 0);
+                                                            const values = Array.from(
+                                                                new Set(
+                                                                    parts
+                                                                        .map((v) => parseInt(v))
+                                                                        .filter((v) => !isNaN(v)),
+                                                                ),
+                                                            );
 
-                                                                e.target.value = '';
+                                                            const existing = filterorders?.orderIds ?? [];
+                                                            const newValues = values.filter((id) => !existing.includes(id));
+
+                                                            if (newValues.length === 0) {
+                                                                NotificationManager.warning('', 'All values already exist');
                                                             } else {
-                                                                NotificationManager.warning('', 'Already exists');
+                                                                const updated = [...existing, ...newValues];
+                                                                setfilterorders({ ...filterorders, orderIds: updated });
+                                                                updateQueryParamContext('orderIds', updated);
                                                             }
+
+                                                            e.target.value = '';
                                                         }
                                                     }}
-                                                    type="number"
+                                                    onPaste={(e) => {
+                                                        const text = e.clipboardData?.getData('text');
+                                                        if (!text) return;
+                                                        e.preventDefault();
+
+                                                        const parts = text
+                                                            .split(/[\n,]+/)
+                                                            .map((v) => v.trim())
+                                                            .filter((v) => v.length > 0);
+
+                                                        const values = Array.from(
+                                                            new Set(
+                                                                parts
+                                                                    .map((v) => parseInt(v))
+                                                                    .filter((v) => !isNaN(v)),
+                                                            ),
+                                                        );
+
+                                                        const existing = filterorders?.orderIds ?? [];
+                                                        const newValues = values.filter((id) => !existing.includes(id));
+
+                                                        if (newValues.length === 0) {
+                                                            NotificationManager.warning('', 'All values already exist');
+                                                        } else {
+                                                            const updated = [...existing, ...newValues];
+                                                            setfilterorders({ ...filterorders, orderIds: updated });
+                                                            updateQueryParamContext('orderIds', updated);
+                                                        }
+                                                    }}
+                                                    type="text"
                                                 />
                                                 <div class="col-lg-12 p-0">
                                                     <div class="row m-0 w-100 scrollmenuclasssubscrollbar" style={{ overflow: 'scroll', flexWrap: 'nowrap' }}>
@@ -466,6 +596,7 @@ const Orders = (props) => {
                                             onKeyDown={(e) => {
                                                 if (e.key === 'Enter') {
                                                     setfilterorders({ ...filterorders, name: search?.length == 0 ? undefined : search });
+                                                    updateQueryParamContext('name', search?.length == 0 ? undefined : search);
                                                 }
                                             }}
                                             onChange={(event) => {
@@ -479,6 +610,7 @@ const Orders = (props) => {
                                     <button
                                         onClick={() => {
                                             setfilterorders({ ...filterorders, name: search?.length == 0 ? undefined : search });
+                                            updateQueryParamContext('name', search?.length == 0 ? undefined : search);
                                         }}
                                         style={{ height: '35px', marginInlineStart: '5px', minWidth: 'auto' }}
                                         class={generalstyles.roundbutton + '  allcentered bg-primary-light'}

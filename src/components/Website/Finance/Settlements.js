@@ -503,7 +503,7 @@ const Settlements = (props) => {
                                                 <div class="row m-0 w-100 d-flex align-items-center justify-content-between">
                                                     <div>Services</div>
                                                     <div style={{ fontWeight: 700 }}>
-                                                        {settlementPayload?.merchantDebtIds?.reduce((sum, item) => sum + new Decimal(item?.amount || 0).toNumber(), 0)}
+                                                        {settlementPayload?.merchantDebtIds?.reduce((sum, item) => sum + new Decimal(item?.amount || 0).mul(-1).toNumber(), 0)}
                                                     </div>
                                                 </div>
                                             </div>
@@ -525,7 +525,7 @@ const Settlements = (props) => {
                                                                     return new Decimal(acc).plus(merchantAmount.plus(shippingAmount));
                                                                 }, new Decimal(0)),
                                                             )
-                                                                .plus(settlementPayload?.merchantDebtIds?.reduce((sum, item) => new Decimal(sum).plus(item?.amount || 0), new Decimal(0)))
+                                                                .minus(settlementPayload?.merchantDebtIds?.reduce((sum, item) => new Decimal(sum).plus(item?.amount || 0), new Decimal(0)))
                                                                 .toFixed(2) // Use .toNumber() if you don't want fixed decimal places
                                                         }
                                                     </div>

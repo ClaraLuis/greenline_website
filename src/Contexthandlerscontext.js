@@ -1115,10 +1115,22 @@ export const Contexthandlerscontext_provider = (props) => {
             const newPayload = {};
 
             for (const [key, value] of searchParams.entries()) {
-                try {
-                    const parsed = JSON.parse(value);
-                    newPayload[key] = parsed;
-                } catch (err) {
+                // Only try to JSON.parse if the value looks like JSON (starts with [ or {)
+                if (value.startsWith('[') || value.startsWith('{')) {
+                    try {
+                        const parsed = JSON.parse(value);
+                        newPayload[key] = parsed;
+                    } catch (err) {
+                        newPayload[key] = value;
+                    }
+                } else if (value === 'true') {
+                    newPayload[key] = true;
+                } else if (value === 'false') {
+                    newPayload[key] = false;
+                } else if (!isNaN(value) && value !== '') {
+                    newPayload[key] = Number(value);
+                } else {
+                    // For plain strings, use as-is
                     newPayload[key] = value;
                 }
             }

@@ -61,6 +61,13 @@ const MerchantOrders = (props) => {
     });
     useLoadQueryParamsToPayload(setfilterorders);
 
+    // Sync search state with filterorders.name from URL
+    useEffect(() => {
+        if (filterorders?.name) {
+            setsearch(filterorders.name);
+        }
+    }, [filterorders?.name]);
+
     const [fetchOrdersQuery, setfetchOrdersQuery] = useState({});
     const [fetchOrdersLoading, setFetchOrdersLoading] = useState(false);
     const fetchGovernoratesQuery = useQueryGQL('', fetchGovernorates());
@@ -394,6 +401,8 @@ const MerchantOrders = (props) => {
                                                                 setfilterorders({ ...filterorders, statuses: undefined, statusStartDate: undefined, statusEndDate: undefined });
 
                                                                 updateQueryParamContext('statuses', undefined);
+                                                                updateQueryParamContext('statusStartDate', undefined);
+                                                                updateQueryParamContext('statusEndDate', undefined);
                                                             }
                                                         }}
                                                         disabled={fetchOrdersLoading}
@@ -404,6 +413,7 @@ const MerchantOrders = (props) => {
                                                         <span>Status Date Range</span>
                                                         <div class="mt-1" style={{ width: '100%' }}>
                                                             <DateRangePicker
+                                                                value={filterorders?.statusStartDate && filterorders?.statusEndDate ? [new Date(filterorders.statusStartDate), new Date(filterorders.statusEndDate)] : null}
                                                                 onChange={(event) => {
                                                                     if (fetchOrdersLoading) return;
                                                                     if (event != null) {
@@ -413,21 +423,35 @@ const MerchantOrders = (props) => {
                                                                         };
 
                                                                         const [start, end] = event;
+                                                                        const statusStartDate = toUTCDate(start).toISOString();
+                                                                        const statusEndDate = toUTCDate(end).toISOString();
 
                                                                         setfilterorders((prev) => ({
                                                                             ...prev,
-                                                                            statusStartDate: toUTCDate(start).toISOString(),
-                                                                            statusEndDate: toUTCDate(end).toISOString(),
+                                                                            statusStartDate: statusStartDate,
+                                                                            statusEndDate: statusEndDate,
                                                                         }));
+                                                                        updateQueryParamContext('statusStartDate', statusStartDate);
+                                                                        updateQueryParamContext('statusEndDate', statusEndDate);
+                                                                    } else {
+                                                                        setfilterorders((prev) => ({
+                                                                            ...prev,
+                                                                            statusStartDate: undefined,
+                                                                            statusEndDate: undefined,
+                                                                        }));
+                                                                        updateQueryParamContext('statusStartDate', undefined);
+                                                                        updateQueryParamContext('statusEndDate', undefined);
                                                                     }
                                                                 }}
                                                                 onClean={() => {
                                                                     if (fetchOrdersLoading) return;
                                                                     setfilterorders({
                                                                         ...filterorders,
-                                                                        statusStartDate: null,
-                                                                        statusEndDate: null,
+                                                                        statusStartDate: undefined,
+                                                                        statusEndDate: undefined,
                                                                     });
+                                                                    updateQueryParamContext('statusStartDate', undefined);
+                                                                    updateQueryParamContext('statusEndDate', undefined);
                                                                 }}
                                                                 disabled={fetchOrdersLoading}
                                                             />
@@ -600,8 +624,7 @@ const MerchantOrders = (props) => {
                                                 <span>Date Range</span>
                                                 <div class="mt-1" style={{ width: '100%' }}>
                                                     <DateRangePicker
-                                                        // disabledDate={allowedMaxDays(30)}
-                                                        // value={[filterorders?.fromDate, filterorders?.toDate]}
+                                                        value={filterorders?.fromDate && filterorders?.toDate ? [new Date(filterorders.fromDate), new Date(filterorders.toDate)] : null}
                                                         onChange={(event) => {
                                                             if (event != null) {
                                                                 const toUTCDate = (d) => {
@@ -610,20 +633,34 @@ const MerchantOrders = (props) => {
                                                                 };
 
                                                                 const [start, end] = event;
+                                                                const fromDate = toUTCDate(start).toISOString();
+                                                                const toDate = toUTCDate(end).toISOString();
 
                                                                 setfilterorders({
                                                                     ...filterorders,
-                                                                    fromDate: toUTCDate(start).toISOString(),
-                                                                    toDate: toUTCDate(end).toISOString(),
+                                                                    fromDate: fromDate,
+                                                                    toDate: toDate,
                                                                 });
+                                                                updateQueryParamContext('fromDate', fromDate);
+                                                                updateQueryParamContext('toDate', toDate);
+                                                            } else {
+                                                                setfilterorders({
+                                                                    ...filterorders,
+                                                                    fromDate: undefined,
+                                                                    toDate: undefined,
+                                                                });
+                                                                updateQueryParamContext('fromDate', undefined);
+                                                                updateQueryParamContext('toDate', undefined);
                                                             }
                                                         }}
                                                         onClean={() => {
                                                             setfilterorders({
                                                                 ...filterorders,
-                                                                fromDate: null,
-                                                                toDate: null,
+                                                                fromDate: undefined,
+                                                                toDate: undefined,
                                                             });
+                                                            updateQueryParamContext('fromDate', undefined);
+                                                            updateQueryParamContext('toDate', undefined);
                                                         }}
                                                     />
                                                 </div>
@@ -739,6 +776,12 @@ const MerchantOrders = (props) => {
                                     onChange={(event) => {
                                         setsearch(event.target.value);
                                     }}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            setfilterorders({ ...filterorders, name: search?.length == 0 ? undefined : search });
+                                            updateQueryParamContext('name', search?.length == 0 ? undefined : search);
+                                        }
+                                    }}
                                 />
                             </div>
                         </div>
@@ -748,6 +791,7 @@ const MerchantOrders = (props) => {
                                 class={generalstyles.roundbutton + ' allcentered p-0 bg-primary-light'}
                                 onClick={() => {
                                     setfilterorders({ ...filterorders, name: search });
+                                    updateQueryParamContext('name', search);
                                 }}
                             >
                                 search
