@@ -1167,9 +1167,9 @@ const OrderInfo = (props) => {
                                                                             <div style={{ fontSize: '13px' }} className={' col-lg-12 p-0'}>
                                                                                 {orderItem?.info?.fullName}
                                                                             </div>
-                                                                            {/* <div style={{ color: 'lightgray', fontSize: '13px' }} className="col-lg-12 p-0">
+                                                                            <div style={{ color: 'grey', fontSize: '11px' }} className="col-lg-12 p-0">
                                                                                 {orderItem?.info?.sku}
-                                                                            </div> */}
+                                                                            </div>
                                                                         </div>
                                                                         {/* )} */}
                                                                     </div>
@@ -1731,7 +1731,7 @@ const OrderInfo = (props) => {
                                                                                           optionLabel: 'name',
                                                                                       },
                                                                                       { name: 'Building Number', attr: 'buildingNumber', size: '6' },
-                                                                                      { name: 'Apartment Floor', attr: 'buildingNumber', size: '6' },
+                                                                                      //   { name: 'Apartment Floor', attr: 'buildingNumber', size: '6' },
                                                                                       { name: 'Street Address', attr: 'streetAddress', type: 'textarea', size: '12' },
                                                                                   ]
                                                                                 : [
@@ -1768,7 +1768,7 @@ const OrderInfo = (props) => {
                                                                                           optionLabel: 'name',
                                                                                       },
                                                                                       { name: 'Building Number', attr: 'buildingNumber', size: '6' },
-                                                                                      { name: 'Apartment Floor', attr: 'buildingNumber', size: '6' },
+                                                                                      //   { name: 'Apartment Floor', attr: 'buildingNumber', size: '6' },
                                                                                       { name: 'Street Address', attr: 'streetAddress', type: 'textarea', size: '12' },
                                                                                   ]
                                                                         }
@@ -1985,9 +1985,9 @@ const OrderInfo = (props) => {
                                                                                                     <div class="col-lg-12">
                                                                                                         Building Number: <span style={{ fontWeight: 600 }}>{item?.address?.buildingNumber}</span>
                                                                                                     </div>
-                                                                                                    <div class="col-lg-12">
+                                                                                                    {/* <div class="col-lg-12">
                                                                                                         Floor: <span style={{ fontWeight: 600 }}>{item?.address?.buildingNumber}</span>
-                                                                                                    </div>
+                                                                                                    </div> */}
 
                                                                                                     <div class="col-lg-12">
                                                                                                         Address: <span style={{ fontWeight: 600 }}>{item?.address?.streetAddress}</span>
@@ -2032,9 +2032,9 @@ const OrderInfo = (props) => {
                                                                                         <div class="col-lg-12">
                                                                                             Building Number: <span style={{ fontWeight: 600 }}>{item?.details?.buildingNumber}</span>
                                                                                         </div>
-                                                                                        <div class="col-lg-12">
+                                                                                        {/* <div class="col-lg-12">
                                                                                             Floor: <span style={{ fontWeight: 600 }}>{item?.details?.buildingNumber}</span>
-                                                                                        </div>
+                                                                                        </div> */}
 
                                                                                         <div class="col-lg-12">
                                                                                             Address: <span style={{ fontWeight: 600 }}>{item?.details?.streetAddress}</span>

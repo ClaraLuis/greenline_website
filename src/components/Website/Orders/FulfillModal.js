@@ -1,34 +1,27 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
-import { FaEllipsisV, FaLayerGroup, FaShopify } from 'react-icons/fa';
 import { components } from 'react-select';
-import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 
-import { Dropdown, Modal } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
-import { BiUser } from 'react-icons/bi';
 import { IoMdClose } from 'react-icons/io';
-import { MdOutlineInventory2, MdOutlineLocationOn } from 'react-icons/md';
-import Form from '../../Form.js';
-import API from '../../../API/API.js';
 import { NotificationManager } from 'react-notifications';
+import API from '../../../API/API.js';
 import WaybillPrint from './WaybillPrint.js';
 
 const { ValueContainer, Placeholder } = components;
 
 const FulfillModal = (props) => {
-    const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { orderStatusEnumContext, dateformatter, orderTypeContext, setchosenOrderContext, chosenOrderContext, isAuth, buttonLoadingContext, setbuttonLoadingContext } =
-        useContext(Contexthandlerscontext);
-    const { requestOrderReturn, useMutationGQL, updateOrdersStatus } = API();
+    const { chosenOrderContext, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
+    const { useMutationGQL, updateOrdersStatus } = API();
     const { lang, langdetect } = useContext(LanguageContext);
 
     const [itemScanned, setitemScanned] = useState([]);

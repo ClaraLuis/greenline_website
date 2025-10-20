@@ -89,7 +89,6 @@ const UpdateMerchant = (props) => {
                       country: addresspayload?.country,
                       city: addresspayload?.city,
                       buildingNumber: addresspayload?.buildingNumber,
-                      buildingNumber: addresspayload?.buildingNumber,
                       streetAddress: addresspayload?.streetAddress,
                       zoneId: addresspayload?.zoneId,
                       governorateId:
@@ -127,7 +126,6 @@ const UpdateMerchant = (props) => {
                     country: data?.findOneMerchant?.address?.country,
                     city: data?.findOneMerchant?.address?.city,
                     buildingNumber: data?.findOneMerchant?.address?.buildingNumber,
-                    buildingNumber: data?.findOneMerchant?.address?.buildingNumber,
                     streetAddress: data?.findOneMerchant?.address?.streetAddress,
                     ownerName: data?.findOneMerchant?.owner?.name,
                     ownerPhone: data?.findOneMerchant?.owner?.phone,
@@ -137,7 +135,6 @@ const UpdateMerchant = (props) => {
                 setaddresspayload({
                     country: data?.findOneMerchant?.address?.country ?? 'Egypt',
                     city: data?.findOneMerchant?.address?.city,
-                    buildingNumber: data?.findOneMerchant?.address?.buildingNumber,
                     buildingNumber: data?.findOneMerchant?.address?.buildingNumber,
                     streetAddress: data?.findOneMerchant?.address?.streetAddress,
                 });
@@ -177,7 +174,6 @@ const UpdateMerchant = (props) => {
                     country: data?.findOneMerchant?.address?.country,
                     city: data?.findOneMerchant?.address?.city,
                     buildingNumber: data?.findOneMerchant?.address?.buildingNumber,
-                    buildingNumber: data?.findOneMerchant?.address?.buildingNumber,
                     streetAddress: data?.findOneMerchant?.address?.streetAddress,
                     ownerName: data?.findOneMerchant?.owner?.name,
                     ownerPhone: data?.findOneMerchant?.owner?.phone,
@@ -187,7 +183,6 @@ const UpdateMerchant = (props) => {
                 setaddresspayload({
                     country: data?.findOneMerchant?.address?.country ?? 'Egypt',
                     city: data?.findOneMerchant?.address?.city,
-                    buildingNumber: data?.findOneMerchant?.address?.buildingNumber,
                     buildingNumber: data?.findOneMerchant?.address?.buildingNumber,
                     streetAddress: data?.findOneMerchant?.address?.streetAddress,
                 });
@@ -546,7 +541,7 @@ const UpdateMerchant = (props) => {
                                                                               optionLabel: 'name',
                                                                           },
                                                                           { name: 'Building Number', attr: 'buildingNumber', size: '6' },
-                                                                          { name: 'Apartment Floor', attr: 'buildingNumber', size: '6' },
+                                                                          //   { name: 'Apartment Floor', attr: 'buildingNumber', size: '6' },
                                                                           { name: 'Street Address', attr: 'streetAddress', type: 'textarea', size: '12' },
                                                                       ]
                                                                     : [
@@ -582,7 +577,7 @@ const UpdateMerchant = (props) => {
                                                                               optionLabel: 'name',
                                                                           },
                                                                           { name: 'Building Number', attr: 'buildingNumber', size: '6' },
-                                                                          { name: 'Apartment Floor', attr: 'buildingNumber', size: '6' },
+                                                                          //   { name: 'Apartment Floor', attr: 'buildingNumber', size: '6' },
                                                                           { name: 'Street Address', attr: 'streetAddress', type: 'textarea', size: '12' },
                                                                       ]
                                                             }
@@ -668,9 +663,9 @@ const UpdateMerchant = (props) => {
                                                                                                 <div class="col-lg-12">
                                                                                                     Building Number: <span style={{ fontWeight: 600 }}>{item?.address?.buildingNumber}</span>
                                                                                                 </div>
-                                                                                                <div class="col-lg-12">
+                                                                                                {/* <div class="col-lg-12">
                                                                                                     Floor: <span style={{ fontWeight: 600 }}>{item?.address?.buildingNumber}</span>
-                                                                                                </div>
+                                                                                                </div> */}
 
                                                                                                 <div class="col-lg-12">
                                                                                                     Address: <span style={{ fontWeight: 600 }}>{item?.address?.streetAddress}</span>
@@ -704,7 +699,6 @@ const UpdateMerchant = (props) => {
                                                                                     city: addresspayload?.city,
                                                                                     country: addresspayload?.country,
                                                                                     streetAddress: addresspayload?.streetAddress,
-                                                                                    buildingNumber: addresspayload?.buildingNumber,
                                                                                     buildingNumber: addresspayload?.buildingNumber,
                                                                                     zoneId: addresspayload?.zoneId,
                                                                                     merchantId: parseInt(queryParameters?.get('merchantId')),
@@ -797,14 +791,14 @@ const UpdateMerchant = (props) => {
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="col-lg-6">
+                                                        {/* <div class="col-lg-6">
                                                             <div class="row m-0 w-100  ">
                                                                 <div class={`${formstyles.form__group} ${formstyles.field}`}>
                                                                     <label class={formstyles.form__label}>Apartment Floor</label>
                                                                     <div>{merchantPayload?.address?.buildingNumber}</div>
                                                                 </div>
                                                             </div>
-                                                        </div>
+                                                        </div> */}
                                                         <div class="col-lg-12">
                                                             <div class="row m-0 w-100  ">
                                                                 <div class={`${formstyles.form__group} ${formstyles.field}`}>

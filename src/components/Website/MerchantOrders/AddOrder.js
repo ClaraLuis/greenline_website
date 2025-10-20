@@ -1079,7 +1079,7 @@ const AddOrder = (props) => {
                                                                               optionLabel: 'name',
                                                                           },
                                                                           { name: 'Building Number', attr: 'buildingNumber', size: '6' },
-                                                                          { name: 'Apartment Floor', attr: 'buildingNumber', size: '6' },
+                                                                          //   { name: 'Apartment Floor', attr: 'buildingNumber', size: '6' },
                                                                           { name: 'Street Address', attr: 'streetAddress', type: 'textarea', size: '12' },
                                                                       ]
                                                                     : [
@@ -1115,7 +1115,7 @@ const AddOrder = (props) => {
                                                                               optionLabel: 'name',
                                                                           },
                                                                           { name: 'Building Number', attr: 'buildingNumber', size: '6' },
-                                                                          { name: 'Apartment Floor', attr: 'buildingNumber', size: '6' },
+                                                                          //   { name: 'Apartment Floor', attr: 'buildingNumber', size: '6' },
                                                                           { name: 'Street Address', attr: 'streetAddress', type: 'textarea', size: '12' },
                                                                       ]
                                                             }
@@ -1375,9 +1375,9 @@ const AddOrder = (props) => {
                                                                             <div class="col-lg-12">
                                                                                 Building Number: <span style={{ fontWeight: 600 }}>{item?.details?.buildingNumber}</span>
                                                                             </div>
-                                                                            <div class="col-lg-12">
+                                                                            {/* <div class="col-lg-12">
                                                                                 Floor: <span style={{ fontWeight: 600 }}>{item?.details?.buildingNumber}</span>
-                                                                            </div>
+                                                                            </div> */}
 
                                                                             <div class="col-lg-12">
                                                                                 Address: <span style={{ fontWeight: 600 }}>{item?.details?.streetAddress}</span>
