@@ -904,7 +904,9 @@ keep data consistent.</span></p>
                                             style={{ height: '35px' }}
                                             class={generalstyles.roundbutton + '  mb-1 mx-2'}
                                             onClick={() => {
-                                                if (isAuth([1, 52, 74])) {
+                                                if (cookies.get('merchantId')) {
+                                                    history.push('/additem?merchantId=' + cookies.get('merchantId'));
+                                                } else if (isAuth([1, 52, 74])) {
                                                     setmerchantModal(true);
                                                     settype('additem');
                                                 } else {
@@ -918,7 +920,10 @@ keep data consistent.</span></p>
                                             style={{ height: '35px' }}
                                             class={generalstyles.roundbutton + '  mb-1 '}
                                             onClick={() => {
-                                                if (isAuth([1, 52, 75])) {
+                                                if (cookies.get('merchantId')) {
+                                                    settype(cookies.get('merchantId'));
+                                                    setimportModal(true);
+                                                } else if (isAuth([1, 52, 75])) {
                                                     setmerchantModal(true);
                                                     settype('importbulk');
                                                 } else {
