@@ -529,7 +529,7 @@ const Settlements = (props) => {
                                                                 .toFixed(2) // Use .toNumber() if you don't want fixed decimal places
                                                         }
                                                     </div>
-                                                </div>
+                                            </div>
                                             </div>
                                         </div>
                                     </div>

@@ -3177,7 +3177,7 @@ const API = () => {
                                     buildingNumber
                                     buildingNumber
                                 }
-                                 {
+                                 orderItems{
                                     id
                                     orderId
                                     count
