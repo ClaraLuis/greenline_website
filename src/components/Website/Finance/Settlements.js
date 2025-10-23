@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
-import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
 
@@ -15,7 +14,6 @@ import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import { FaLayerGroup } from 'react-icons/fa';
 import { IoMdClose } from 'react-icons/io';
 import { NotificationManager } from 'react-notifications';
-import Cookies from 'universal-cookie';
 import API from '../../../API/API.js';
 import MerchantSelectComponent from '../../selectComponents/MerchantSelectComponent.js';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
@@ -529,7 +527,7 @@ const Settlements = (props) => {
                                                                 .toFixed(2) // Use .toNumber() if you don't want fixed decimal places
                                                         }
                                                     </div>
-                                            </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
