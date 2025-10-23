@@ -30,7 +30,7 @@ const UserInfo = (props) => {
     const cookies = new Cookies();
 
     const { isPhoneValidContext, userTypeContext, employeeTypeContext, isAuth, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
-    const { useQueryGQL, fetchUsers, useMutationGQL, addUser, editUserType, fetchMerchants, fetchInventories, fetchHubs, updateEmployeeInfo } = API();
+    const { useQueryGQL, removeUser, useMutationGQL, addUser, useMutationNoInputGQL, fetchMerchants, fetchInventories, fetchHubs, updateEmployeeInfo } = API();
 
     const { lang, langdetect } = useContext(LanguageContext);
     const [submit, setsubmit] = useState(false);
@@ -86,6 +86,7 @@ const UserInfo = (props) => {
         inventoryId: props?.payload?.inventoryId,
         id: props?.payload?.id,
     });
+    const [removeUserMutation] = useMutationNoInputGQL(removeUser(), { removeUserId: props?.payload?.id });
 
     const [filterHubs, setfilterHubs] = useState({
         isAsc: false,
@@ -127,6 +128,39 @@ const UserInfo = (props) => {
                 } else {
                     NotificationManager.warning(data?.createUser?.message, 'Warning!');
                 }
+            }
+        } catch (error) {
+            let errorMessage = 'An unexpected error occurred';
+            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                errorMessage = error.graphQLErrors[0].message || errorMessage;
+            } else if (error.networkError) {
+                errorMessage = error.networkError.message || errorMessage;
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+
+            NotificationManager.warning(errorMessage, 'Warning!');
+            console.error('Error adding user:', error);
+        }
+        setbuttonLoadingContext(false);
+    };
+
+    const handleDeleteUser = async () => {
+        if (buttonLoadingContext) return;
+        setbuttonLoadingContext(true);
+
+        try {
+            var { data } = await removeUserMutation();
+            if (data?.removeUser) {
+                props?.setopenModal(false);
+                setedit(false);
+
+                if (props?.refetchUsers) {
+                    props?.refetchUsers();
+                }
+                NotificationManager.success('', 'Success');
+            } else {
+                NotificationManager.warning(data?.updateEmployeeInfo?.message, 'Warning!');
             }
         } catch (error) {
             let errorMessage = 'An unexpected error occurred';
@@ -380,6 +414,13 @@ const UserInfo = (props) => {
                                         button1onClick={() => {
                                             handleAddUser();
                                         }}
+                                        button2disabled={buttonLoadingContext}
+                                        button2={props?.payload?.functype == 'edit'}
+                                        button2class={generalstyles.roundbutton + '  mr-2 '}
+                                        button2placeholder={'Delete'}
+                                        button2onClick={() => {
+                                            handleDeleteUser();
+                                        }}
                                     />
                                 </>
                             )}
@@ -425,16 +466,16 @@ const UserInfo = (props) => {
 
                                                   {
                                                       title: 'Merchant',
-                                                filter: filterMerchants,
-                                                setfilter: setfilterMerchants,
-                                                options: fetchMerchantsQuery,
-                                                optionsAttr: 'paginateMerchants',
-                                                label: 'name',
-                                                value: 'id',
-                                                size: '6',
-                                                attr: 'merchant',
-                                                type: 'fetchSelect',
-                                                disabled: fetchMerchantsQuery?.loading,
+                                                      filter: filterMerchants,
+                                                      setfilter: setfilterMerchants,
+                                                      options: fetchMerchantsQuery,
+                                                      optionsAttr: 'paginateMerchants',
+                                                      label: 'name',
+                                                      value: 'id',
+                                                      size: '6',
+                                                      attr: 'merchant',
+                                                      type: 'fetchSelect',
+                                                      disabled: fetchMerchantsQuery?.loading,
                                                   },
                                               ]
                                             : props?.payload?.type == 'employee' && props?.payload?.employeeType != 'inventory'
@@ -605,6 +646,13 @@ const UserInfo = (props) => {
                                         }
 
                                         handleAddUser();
+                                    }}
+                                    button2disabled={buttonLoadingContext}
+                                    button2={props?.payload?.functype == 'edit'}
+                                    button2class={generalstyles.roundbutton + '  mr-2 '}
+                                    button2placeholder={'Delete'}
+                                    button2onClick={() => {
+                                        handleDeleteUser();
                                     }}
                                 />
                             )}

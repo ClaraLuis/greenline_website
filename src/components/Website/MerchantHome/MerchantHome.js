@@ -296,6 +296,7 @@ const MerchantHome = (props) => {
                                                 <span>Date Range</span>
                                                 <div class="mt-1" style={{ width: '100%' }}>
                                                     <DateRangePicker
+                                                        showOneCalendar
                                                         onChange={(event) => {
                                                             if (ordersDeliverableSummaryQuery?.loading) return;
 

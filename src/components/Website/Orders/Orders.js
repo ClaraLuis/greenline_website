@@ -319,6 +319,7 @@ const Orders = (props) => {
                                                 <span>Date Range</span>
                                                 <div class="mt-1" style={{ width: '100%' }}>
                                                     <DateRangePicker
+                                                        showOneCalendar
                                                         value={filterorders?.fromDate && filterorders?.toDate ? [new Date(filterorders.fromDate), new Date(filterorders.toDate)] : null}
                                                         onChange={(event) => {
                                                             if (fetchOrdersInInventoryQuery?.loading) return;
@@ -382,21 +383,21 @@ const Orders = (props) => {
                                                                     tempArray.splice(index, 1);
                                                                 }
 
-                                                                setfilterorders({ 
-                                                                    ...filterorders, 
+                                                                setfilterorders({
+                                                                    ...filterorders,
                                                                     statuses: tempArray.length ? tempArray : undefined,
                                                                     // Clear status dates when statuses change to all/undefined
                                                                     statusStartDate: tempArray.length ? filterorders?.statusStartDate : undefined,
-                                                                    statusEndDate: tempArray.length ? filterorders?.statusEndDate : undefined
+                                                                    statusEndDate: tempArray.length ? filterorders?.statusEndDate : undefined,
                                                                 });
                                                                 updateQueryParamContext('statuses', tempArray.length ? tempArray : undefined);
                                                             } else {
-                                                                setfilterorders({ 
-                                                                    ...filterorders, 
+                                                                setfilterorders({
+                                                                    ...filterorders,
                                                                     statuses: undefined,
                                                                     // Clear status dates when statuses change to all
                                                                     statusStartDate: undefined,
-                                                                    statusEndDate: undefined
+                                                                    statusEndDate: undefined,
                                                                 });
                                                                 updateQueryParamContext('statuses', undefined);
                                                             }
@@ -411,7 +412,12 @@ const Orders = (props) => {
                                                     <span>Status Date Range</span>
                                                     <div class="mt-1" style={{ width: '100%' }}>
                                                         <DateRangePicker
-                                                            value={filterorders?.statusStartDate && filterorders?.statusEndDate ? [new Date(filterorders.statusStartDate), new Date(filterorders.statusEndDate)] : null}
+                                                            showOneCalendar
+                                                            value={
+                                                                filterorders?.statusStartDate && filterorders?.statusEndDate
+                                                                    ? [new Date(filterorders.statusStartDate), new Date(filterorders.statusEndDate)]
+                                                                    : null
+                                                            }
                                                             onChange={(event) => {
                                                                 if (fetchOrdersInInventoryQuery?.loading) return;
                                                                 if (event != null) {
@@ -486,16 +492,11 @@ const Orders = (props) => {
                                                     onKeyDown={(e) => {
                                                         if (e.key === 'Enter' && e.target.value?.length !== 0) {
                                                             const raw = e.target.value;
-                                                            const parts = raw.split(/[\n,]+/)
+                                                            const parts = raw
+                                                                .split(/[\n,]+/)
                                                                 .map((v) => v.trim())
                                                                 .filter((v) => v.length > 0);
-                                                            const values = Array.from(
-                                                                new Set(
-                                                                    parts
-                                                                        .map((v) => parseInt(v))
-                                                                        .filter((v) => !isNaN(v)),
-                                                                ),
-                                                            );
+                                                            const values = Array.from(new Set(parts.map((v) => parseInt(v)).filter((v) => !isNaN(v))));
 
                                                             const existing = filterorders?.orderIds ?? [];
                                                             const newValues = values.filter((id) => !existing.includes(id));
@@ -521,13 +522,7 @@ const Orders = (props) => {
                                                             .map((v) => v.trim())
                                                             .filter((v) => v.length > 0);
 
-                                                        const values = Array.from(
-                                                            new Set(
-                                                                parts
-                                                                    .map((v) => parseInt(v))
-                                                                    .filter((v) => !isNaN(v)),
-                                                            ),
-                                                        );
+                                                        const values = Array.from(new Set(parts.map((v) => parseInt(v)).filter((v) => !isNaN(v))));
 
                                                         const existing = filterorders?.orderIds ?? [];
                                                         const newValues = values.filter((id) => !existing.includes(id));

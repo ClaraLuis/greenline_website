@@ -21,15 +21,15 @@ const { ValueContainer, Placeholder } = components;
 const FulfillModal = (props) => {
     let history = useHistory();
     const { chosenOrderContext, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
-    const { useMutationGQL, updateOrdersStatus } = API();
+    const { useMutationGQL, updateupdateOrderIdsStatus } = API();
     const { lang, langdetect } = useContext(LanguageContext);
 
     const [itemScanned, setitemScanned] = useState([]);
     const [index, setindex] = useState(0);
 
-    const [updateOrdersStatusMutation] = useMutationGQL(updateOrdersStatus(), {
+    const [updateOrdersStatusMutation] = useMutationGQL(updateupdateOrderIdsStatus(), {
         status: 'fulfilled',
-        sheetOrderId: chosenOrderContext?.sheetOrder?.id,
+        ids: [chosenOrderContext?.id],
     });
 
     const [barcode, setBarcode] = useState('');
