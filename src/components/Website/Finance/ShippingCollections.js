@@ -1,10 +1,8 @@
 import { useContext, useEffect, useMemo, useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
-import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
-import { components } from 'react-select';
+import { Modal } from 'react-bootstrap';
 
 import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
@@ -14,19 +12,17 @@ import Decimal from 'decimal.js';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import { NotificationManager } from 'react-notifications';
 import Select from 'react-select';
-import Cookies from 'universal-cookie';
 import API from '../../../API/API.js';
 import SelectComponent from '../../SelectComponent.js';
 import MerchantSelectComponent from '../../selectComponents/MerchantSelectComponent.js';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
 import TransactionsTableView from './TransactionsTableView.js';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.js';
 
 const ShippingCollections = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const cookies = new Cookies();
-
     const { setpageactive_context, setpagetitle_context, dateformatter, isAuth, buttonLoadingContext, setbuttonLoadingContext, useLoadQueryParamsToPayload, updateQueryParamContext } =
         useContext(Contexthandlerscontext);
     const { useQueryGQL, paginateShippingCollections, fetchHubs, processShippingTaxes, useMutationGQL, useLazyQueryGQL } = API();
@@ -42,6 +38,7 @@ const ShippingCollections = (props) => {
     useLoadQueryParamsToPayload(setfilterShippingCollections);
 
     const [selectedArray, setselectedArray] = useState([]);
+    const [choosemerchant, setchoosemerchant] = useState(false);
 
     const [payload, setpayload] = useState({
         functype: 'add',
@@ -88,35 +85,40 @@ const ShippingCollections = (props) => {
     });
     const fetchTaxes = async () => {
         try {
-            var { data } = await paginateShippingCollectionsLazyQuery({
+            const { data } = await paginateShippingCollectionsLazyQuery({
                 variables: { input: { ...filterShippingCollections } },
             });
-            // setpaginateShippingCollectionsQuery({ data: { ...paginateShippingCollections?.data, data } });
+
             setpaginateShippingCollectionsQuery((prev) => {
                 const oldData = prev?.data?.paginateShippingCollections?.data || [];
                 const newData = data?.paginateShippingCollections?.data || [];
 
+                // ✅ remove duplicates based on "id" or unique key
+                const mergedData = [...oldData, ...newData.filter((newItem) => !oldData.some((oldItem) => oldItem.id === newItem.id))];
+
                 return {
+                    ...prev,
                     data: {
                         paginateShippingCollections: {
                             ...data?.paginateShippingCollections,
-                            data: [...oldData, ...newData],
+                            data: mergedData,
                         },
                     },
                 };
             });
         } catch (e) {
             let errorMessage = 'An unexpected error occurred';
-            if (e.graphQLErrors && e.graphQLErrors.length > 0) {
-                errorMessage = e.graphQLErrors[0].message || errorMessage;
+            if (e.graphQLErrors?.length > 0) {
+                errorMessage = e.graphQLErrors[0]?.message || errorMessage;
             } else if (e.networkError) {
                 errorMessage = e.networkError.message || errorMessage;
             } else if (e.message) {
                 errorMessage = e.message;
             }
-            NotificationManager.warning(errorMessage, 'Warning!');
+            NotificationManager.error(errorMessage, 'Error');
         }
     };
+
     const refetchTaxes = async () => {
         try {
             var { data } = await paginateShippingCollectionsLazyQuery({
@@ -138,6 +140,12 @@ const ShippingCollections = (props) => {
     useEffect(async () => {
         fetchTaxes();
     }, [filterShippingCollections]);
+    useEffect(() => {
+        if (!queryParameters.get('merchantId')) {
+            setchoosemerchant(true);
+        }
+    }, [queryParameters.get('merchantId')]);
+
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
             <div class="row m-0 w-100 d-flex align-items-start justify-content-start mt-sm-2 pb-5 pb-md-0">
@@ -204,18 +212,15 @@ const ShippingCollections = (props) => {
                                                     <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
                                                         <MerchantSelectComponent
                                                             type="single"
-                                                            attr={'paginateMerchants'}
                                                             label={'name'}
                                                             value={'id'}
                                                             payload={filterShippingCollections}
                                                             payloadAttr={'merchantId'}
+                                                            removeAll={true}
                                                             onClick={(option) => {
-                                                                if (option === 'All') {
-                                                                    setfilterShippingCollections({ ...filterShippingCollections, merchantId: undefined });
-                                                                    updateQueryParamContext('merchantId', undefined);
+                                                                if (option != undefined) {
+                                                                    history.push('/shippingcollections?merchantId=' + option.id);
                                                                 } else {
-                                                                    setfilterShippingCollections({ ...filterShippingCollections, merchantId: option?.id });
-                                                                    updateQueryParamContext('merchantId', option?.id);
                                                                 }
                                                             }}
                                                         />
@@ -377,6 +382,42 @@ const ShippingCollections = (props) => {
                     </div>
                 )}
             </div>
+            <Modal
+                show={choosemerchant}
+                onHide={() => {
+                    setchoosemerchant(false);
+                }}
+                centered
+                size={'md'}
+            >
+                <Modal.Header>
+                    <div className="row w-100 m-0 p-0 d-flex align-items-center">
+                        <div class="col-lg-6 ">
+                            <div className="row w-100 m-0 p-0 d-flex align-items-center">Choose Merchant</div>
+                        </div>
+                    </div>
+                </Modal.Header>
+                <Modal.Body>
+                    <div class="row m-0 w-100 px-4 pt-0 pb-4">
+                        <div class="col-lg-12 p-0">
+                            <MerchantSelectComponent
+                                type="single"
+                                label={'name'}
+                                value={'id'}
+                                payload={filterShippingCollections}
+                                payloadAttr={'merchantId'}
+                                removeAll={true}
+                                onClick={(option) => {
+                                    if (option != undefined) {
+                                        history.push('/shippingcollections?merchantId=' + option.id);
+                                    } else {
+                                    }
+                                }}
+                            />
+                        </div>
+                    </div>
+                </Modal.Body>
+            </Modal>
         </div>
     );
 };

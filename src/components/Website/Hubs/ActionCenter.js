@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
@@ -9,20 +9,21 @@ import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
 import { DateRangePicker } from 'rsuite';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
+import { AiOutlineClose } from 'react-icons/ai';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import API from '../../../API/API.js';
-import { AiOutlineClose } from 'react-icons/ai';
 
 import { FiCheckCircle, FiCircle } from 'react-icons/fi';
 import { NotificationManager } from 'react-notifications';
+import Select, { components } from 'react-select';
 import Cookies from 'universal-cookie';
+import Inputfield from '../../Inputfield.js';
 import Pagination from '../../Pagination.js';
 import SelectComponent from '../../SelectComponent.js';
-import OrdersTable from '../Orders/OrdersTable.js';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
-import Select, { components } from 'react-select';
-import Inputfield from '../../Inputfield.js';
+import OrdersTable from '../Orders/OrdersTable.js';
+import MerchantSelectComponent from '../../selectComponents/MerchantSelectComponent.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -218,6 +219,33 @@ const ActionCenter = (props) => {
                                                     />
                                                 </div>
                                             </div>
+                                            <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
+                                                <MerchantSelectComponent
+                                                    type="multi"
+                                                    attr={'paginateMerchants'}
+                                                    label={'name'}
+                                                    value={'id'}
+                                                    selected={filterorders?.merchantIds}
+                                                    onClick={(option) => {
+                                                        const tempArray = [...(filterorders?.merchantIds ?? [])];
+
+                                                        if (option === 'All') {
+                                                            setfilterorders({ ...filterorders, merchantIds: undefined });
+                                                            updateQueryParamContext('merchantIds', undefined);
+                                                        } else {
+                                                            const index = tempArray.indexOf(option?.id);
+                                                            if (index === -1) {
+                                                                tempArray.push(option?.id);
+                                                            } else {
+                                                                tempArray.splice(index, 1);
+                                                            }
+
+                                                            setfilterorders({ ...filterorders, merchantIds: tempArray.length ? tempArray : undefined });
+                                                            updateQueryParamContext('merchantIds', tempArray);
+                                                        }
+                                                    }}
+                                                />
+                                            </div>
                                             <div class="col-lg-3">
                                                 <Inputfield
                                                     placeholder={'Order Ids'}
@@ -265,63 +293,6 @@ const ActionCenter = (props) => {
                                                                             orderIds: temp?.length != 0 ? temp : undefined,
                                                                         });
                                                                         updateQueryParamContext('orderIds', temp?.length != 0 ? temp : undefined);
-                                                                    }}
-                                                                >
-                                                                    {orderItem}
-                                                                    <AiOutlineClose size={12} color="#6C757D" className="ml-2" />
-                                                                </div>
-                                                            );
-                                                        })}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <Inputfield
-                                                    placeholder={'Mercnant Ids'}
-                                                    onKeyDown={(e) => {
-                                                        if (e.key == 'Enter' && e.target.value?.length != 0) {
-                                                            var exists = filterorders?.MerchantIds?.includes(parseInt(e?.target?.value));
-                                                            if (exists) {
-                                                                NotificationManager.warning('', 'Already exists');
-                                                            } else {
-                                                                var temp = [...(filterorders?.MerchantIds ?? [])];
-                                                                temp.push(parseInt(e.target.value));
-                                                                setfilterorders({
-                                                                    ...filterorders,
-                                                                    MerchantIds: temp,
-                                                                });
-                                                                updateQueryParamContext('MerchantIds', temp);
-
-                                                                e.target.value = '';
-                                                            }
-                                                        }
-                                                    }}
-                                                    type={'number'}
-                                                />
-                                                <div class="col-lg-12 p-0">
-                                                    <div class="row m-0 w-100 scrollmenuclasssubscrollbar" style={{ overflow: 'scroll', flexWrap: 'nowrap' }}>
-                                                        {filterorders?.MerchantIds?.map((orderItem, orderIndex) => {
-                                                            return (
-                                                                <div
-                                                                    style={{
-                                                                        background: '#ECECEC',
-                                                                        padding: '5px 10px',
-                                                                        cursor: 'pointer',
-                                                                        borderRadius: '8px',
-                                                                        justifyContent: 'space-between',
-                                                                        width: 'fit-content',
-                                                                        fontSize: '11px',
-                                                                        minWidth: 'fit-content',
-                                                                    }}
-                                                                    className="d-flex align-items-center mr-2 mb-1"
-                                                                    onClick={() => {
-                                                                        var temp = filterorders.MerchantIds ?? [];
-                                                                        temp.splice(orderIndex, 1);
-                                                                        setfilterorders({
-                                                                            ...filterorders,
-                                                                            MerchantIds: temp?.length != 0 ? temp : undefined,
-                                                                        });
-                                                                        updateQueryParamContext('MerchantIds', temp?.length != 0 ? temp : undefined);
                                                                     }}
                                                                 >
                                                                     {orderItem}

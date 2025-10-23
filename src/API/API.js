@@ -3177,7 +3177,7 @@ const API = () => {
                                     buildingNumber
                                     buildingNumber
                                 }
-                                 orderItems{
+                                orderItems {
                                     id
                                     orderId
                                     count
@@ -3264,6 +3264,18 @@ const API = () => {
                             deletedAt
                         }
                         fromAccount {
+                            id
+                            name
+                            type
+                            userId
+                            merchantId
+                            currency
+                            balance
+                            createdAt
+                            lastModified
+                            deletedAt
+                        }
+                        toAccount {
                             id
                             name
                             type
