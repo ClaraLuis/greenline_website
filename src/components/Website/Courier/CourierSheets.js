@@ -1,26 +1,24 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
 import generalstyles from '../Generalfiles/CSS_GENERAL/general.module.css';
 // import { fetch_collection_data } from '../../../API/API';
-import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
-import { FaLayerGroup } from 'react-icons/fa';
 import Select, { components } from 'react-select';
+import { DateRangePicker } from 'rsuite';
 import formstyles from '../Generalfiles/CSS_GENERAL/form.module.css';
 import { defaultstyles } from '../Generalfiles/selectstyles.js';
-import { DateRangePicker } from 'rsuite';
 
 import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
-import API from '../../../API/API.js';
-import SheetsTable from './SheetsTable.js';
-import Pagination from '../../Pagination.js';
 import * as XLSX from 'xlsx';
-import SelectComponent from '../../SelectComponent.js';
+import API from '../../../API/API.js';
 import MultiSelect from '../../MultiSelect.js';
+import Pagination from '../../Pagination.js';
+import SelectComponent from '../../SelectComponent.js';
+import SheetsTable from './SheetsTable.js';
 
 const { ValueContainer, Placeholder } = components;
 
@@ -216,6 +214,7 @@ const CourierSheets = (props) => {
                                             <span>Date Range</span>
                                             <div class="mt-1" style={{ width: '100%' }}>
                                                 <DateRangePicker
+                                                    showOneCalendar
                                                     onChange={(event) => {
                                                         const toUTCDate = (d) => {
                                                             const date = new Date(d);

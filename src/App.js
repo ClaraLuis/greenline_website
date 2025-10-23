@@ -11,6 +11,8 @@ import { Routedispatcherprovider } from './Routedispatcher';
 import './components/Website/Generalfiles/CSS_GENERAL/bootstrap.css';
 import './components/Website/Generalfiles/CSS_GENERAL/dropdown.css';
 import './trans.css';
+import 'rsuite/dist/rsuite.min.css';
+
 import CircularProgress from 'react-cssfx-loading/lib/CircularProgress';
 // import pepsicologoresp from './components/Website/Generalfiles/images/pepsicologoresp.png';
 import axios from 'axios';

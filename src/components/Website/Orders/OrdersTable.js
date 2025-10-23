@@ -268,7 +268,11 @@ const OrdersTable = (props) => {
                                                                 : item.status === 'postponed'
                                                                 ? 'text-warning bg-light-warning rounded-pill-hover text-capitalize'
                                                                 : 'text-warning bg-light-warning text-capitalize'
-                                                        } ${item?.latestHistory?.description ? 'rounded-pill-hover text-capitalize' : ''}`}
+                                                        } ${
+                                                            item?.latestHistory?.toHub?.name || item?.latestHistory?.description || item?.latestHistory?.fromHub?.name || item.orderDate
+                                                                ? 'rounded-pill-hover text-capitalize'
+                                                                : ''
+                                                        }`}
                                                     >
                                                         {/* {orderStatusEnumContext?.map((i, ii) => {
                                                             if (i.value == item?.status) {
@@ -277,14 +281,31 @@ const OrdersTable = (props) => {
                                                         })} */}
                                                         {item?.status?.split(/(?=[A-Z])/).join(' ')}
 
-                                                        {(item?.latestHistory?.description || item.orderDate) && (
-                                                            <div class="hovercontainer">
-                                                                <div class="row m-0 w-100">
-                                                                    {item.orderDate && item.status === 'postponed' && <div class="col-lg-12 p-0 mb-2">Postponed Date:</div>}
-                                                                    {item.orderDate && item.status === 'postponed' && <div class="col-lg-12 p-0 mb-2">{dateformatter(item.orderDate)}</div>}
+                                                        {(item?.latestHistory?.toHub?.name || item?.latestHistory?.description || item?.latestHistory?.fromHub?.name || item.orderDate) && (
+                                                            <div className="hovercontainer">
+                                                                <div className="row m-0 w-100">
+                                                                    {item.orderDate && item.status === 'postponed' && (
+                                                                        <>
+                                                                            <div className="col-lg-12 p-0 mb-2">Postponed Date:</div>
+                                                                            <div className="col-lg-12 p-0 mb-2">{dateformatter(item.orderDate)}</div>
+                                                                        </>
+                                                                    )}
 
-                                                                    {item?.latestHistory?.description && <div class="col-lg-12 p-0">Description:</div>}
-                                                                    {item?.latestHistory?.description && <div class="col-lg-12 p-0">{item?.latestHistory?.description}</div>}
+                                                                    {/* Priority display */}
+                                                                    {(() => {
+                                                                        const displayText = item?.latestHistory?.toHub?.name || item?.latestHistory?.description || item?.latestHistory?.fromHub?.name;
+
+                                                                        if (!displayText) return null;
+
+                                                                        const label = item?.latestHistory?.toHub?.name ? 'To Hub:' : item?.latestHistory?.description ? 'Description:' : 'From Hub:';
+
+                                                                        return (
+                                                                            <>
+                                                                                <div className="col-lg-12 p-0">{label}</div>
+                                                                                <div className="col-lg-12 p-0">{displayText}</div>
+                                                                            </>
+                                                                        );
+                                                                    })()}
                                                                 </div>
                                                             </div>
                                                         )}

@@ -413,7 +413,13 @@ const MerchantOrders = (props) => {
                                                         <span>Status Date Range</span>
                                                         <div class="mt-1" style={{ width: '100%' }}>
                                                             <DateRangePicker
-                                                                value={filterorders?.statusStartDate && filterorders?.statusEndDate ? [new Date(filterorders.statusStartDate), new Date(filterorders.statusEndDate)] : null}
+                                                                showOneCalendar
+                                                                oneTap
+                                                                value={
+                                                                    filterorders?.statusStartDate && filterorders?.statusEndDate
+                                                                        ? [new Date(filterorders.statusStartDate), new Date(filterorders.statusEndDate)]
+                                                                        : null
+                                                                }
                                                                 onChange={(event) => {
                                                                     if (fetchOrdersLoading) return;
                                                                     if (event != null) {
@@ -624,6 +630,7 @@ const MerchantOrders = (props) => {
                                                 <span>Date Range</span>
                                                 <div class="mt-1" style={{ width: '100%' }}>
                                                     <DateRangePicker
+                                                        showOneCalendar
                                                         value={filterorders?.fromDate && filterorders?.toDate ? [new Date(filterorders.fromDate), new Date(filterorders.toDate)] : null}
                                                         onChange={(event) => {
                                                             if (event != null) {

@@ -189,6 +189,7 @@ const ItemHistory = (props) => {
                                             <span>Date Range</span>
                                             <div class="mt-1" style={{ width: '100%' }}>
                                                 <DateRangePicker
+                                                    showOneCalendar
                                                     // disabledDate={allowedMaxDays(30)}
                                                     // value={[fetchItemHistoryfilter?.fromDate, fetchItemHistoryfilter?.toDate]}
                                                     onChange={(event) => {
