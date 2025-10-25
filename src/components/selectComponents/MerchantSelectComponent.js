@@ -1,5 +1,5 @@
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect, useMemo } from 'react';
 import { components } from 'react-select';
 
 import MultiSelect from '../MultiSelect';
@@ -11,13 +11,19 @@ const MerchantSelectComponent = (props) => {
     const { useQueryGQL, fetchMerchants } = API();
     const { isAuth } = useContext(Contexthandlerscontext);
 
-    const [filterMerchants, setfilterMerchants] = useState({
+    // Memoize the initial filter to prevent unnecessary re-renders
+    const initialFilter = useMemo(() => ({
         isAsc: false,
         limit: 20,
         afterCursor: undefined,
         beforeCursor: undefined,
-    });
+    }), []);
+
+    const [filterMerchants, setfilterMerchants] = useState(initialFilter);
+    
+    // Always use cache-first policy - let Apollo handle caching properly
     const fetchMerchantsQuery = useQueryGQL('cache-first', fetchMerchants(), filterMerchants);
+
     if (props?.type == 'multi') {
         return (
             <>

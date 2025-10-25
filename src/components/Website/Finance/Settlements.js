@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Contexthandlerscontext } from '../../../Contexthandlerscontext.js';
 import { LanguageContext } from '../../../LanguageContext.js';
@@ -9,9 +9,7 @@ import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
 // Icons
 
 import Decimal from 'decimal.js';
-import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel, AccordionItemState } from 'react-accessible-accordion';
 import { Modal } from 'react-bootstrap';
-import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import { FaLayerGroup } from 'react-icons/fa';
 import { IoMdClose } from 'react-icons/io';
 import { NotificationManager } from 'react-notifications';
@@ -19,15 +17,72 @@ import Cookies from 'universal-cookie';
 import API from '../../../API/API.js';
 import MerchantSelectComponent from '../../selectComponents/MerchantSelectComponent.js';
 import '../Generalfiles/CSS_GENERAL/react-accessible-accordion.css';
+// Utility functions for number formatting and calculations
+const formatNumber = (num) => {
+    if (num === null || num === undefined || isNaN(num)) return '0';
+    return new Decimal(num).toFixed(2);
+};
+
+const calculateOrderTotal = (item) => {
+    if (!item?.transactions) return 0;
+    
+    const merchantPayment = item.transactions.reduce(
+        (sum, i) => (i.type === 'merchantOrderPayment' ? new Decimal(sum).plus(i.amount) : new Decimal(sum)),
+        new Decimal(0)
+    );
+    const shippingCollection = item.transactions.reduce(
+        (sum, i) => (i.type === 'shippingCollection' ? new Decimal(sum).minus(i.amount) : new Decimal(sum)),
+        new Decimal(0)
+    );
+    return merchantPayment.plus(shippingCollection).toNumber();
+};
+
+const calculateMerchantPayment = (item) => {
+    if (!item?.transactions) return 0;
+    return item.transactions
+        .filter(i => i.type === 'merchantOrderPayment')
+        .reduce((sum, i) => new Decimal(sum).plus(i.amount), new Decimal(0))
+        .toNumber();
+};
+
+const calculateShippingCollection = (item) => {
+    if (!item?.transactions) return 0;
+    return item.transactions
+        .filter(i => i.type === 'shippingCollection')
+        .reduce((sum, i) => new Decimal(sum).minus(i.amount), new Decimal(0))
+        .toNumber();
+};
+
 const Settlements = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
     let history = useHistory();
-    const { setpageactive_context, isAuth, setpagetitle_context, buttonLoadingContext, setbuttonLoadingContext } = useContext(Contexthandlerscontext);
+    const { setpageactive_context, isAuth, setpagetitle_context, buttonLoadingContext, setbuttonLoadingContext, ready, setReady } = useContext(Contexthandlerscontext);
     const { useQueryGQL, useMutationGQL, createMerchantSettlement, paginateSettlementPayouts, paginateMerchantDebts, useLazyQueryGQL } = API();
 
     const [settlementPayload, setsettlementPayload] = useState({
         sheetOrderIds: [],
         merchantDebtIds: [],
+    });
+    
+    // Use ref to persist state across re-renders
+    const settlementPayloadRef = useRef({
+        sheetOrderIds: [],
+        merchantDebtIds: [],
+    });
+    
+    // Sync ref with state
+    useEffect(() => {
+        settlementPayloadRef.current = settlementPayload;
+    }, [settlementPayload]);
+    
+    // Track component renders
+    const renderCount = useRef(0);
+    renderCount.current += 1;
+    
+    // Debug component renders
+    useEffect(() => {
+        console.log('🔄 Component rendered, count:', renderCount.current);
+        console.log('Current settlement payload:', settlementPayload);
     });
 
     useEffect(() => {
@@ -51,57 +106,122 @@ const Settlements = (props) => {
         merchantId: queryParameters.get('merchantId') ?? undefined,
     });
 
-    useEffect(async () => {
-        if (parseInt(queryParameters.get('merchantId'))) {
-            try {
-                var { data } = await paginateSettlementPayoutsLazyQuery({
-                    variables: { input: { ...settlementsFilter, merchantId: parseInt(queryParameters.get('merchantId')) } },
-                });
-                setfetchSettlementsQuery({ data: data });
-            } catch (e) {
-                let errorMessage = 'An unexpected error occurred';
-                if (e.graphQLErrors && e.graphQLErrors.length > 0) {
-                    errorMessage = e.graphQLErrors[0].message || errorMessage;
-                } else if (e.networkError) {
-                    errorMessage = e.networkError.message || errorMessage;
-                } else if (e.message) {
-                    errorMessage = e.message;
-                }
-                NotificationManager.warning(errorMessage, 'Warning!');
+    // Initialize ready state by setting it to true immediately
+    useEffect(() => {
+        setReady(true);
+    }, [setReady]);
+
+    // Optimized data fetching with combined useEffect
+    const fetchData = useCallback(async () => {
+        console.log('🔄 fetchData called');
+        const merchantId = parseInt(queryParameters.get('merchantId'));
+        if (!merchantId) return;
+
+        const input = { ...settlementsFilter, merchantId };
+        
+        try {
+            const [settlementsResult, debtsResult] = await Promise.all([
+                paginateSettlementPayoutsLazyQuery({ variables: { input } }),
+                paginateMerchantDebtsLazyQuery({ variables: { input } })
+            ]);
+            
+            setfetchSettlementsQuery({ data: settlementsResult.data });
+            setfetchMerchantDebtsQuery({ data: debtsResult.data });
+        } catch (e) {
+            let errorMessage = 'An unexpected error occurred';
+            if (e.graphQLErrors && e.graphQLErrors.length > 0) {
+                errorMessage = e.graphQLErrors[0].message || errorMessage;
+            } else if (e.networkError) {
+                errorMessage = e.networkError.message || errorMessage;
+            } else if (e.message) {
+                errorMessage = e.message;
             }
+            NotificationManager.warning(errorMessage, 'Warning!');
         }
-    }, [settlementsFilter]);
-    useEffect(async () => {
-        if (parseInt(queryParameters.get('merchantId'))) {
-            try {
-                var { data } = await paginateMerchantDebtsLazyQuery({
-                    variables: { input: { ...settlementsFilter, merchantId: parseInt(queryParameters.get('merchantId')) } },
-                });
-                setfetchMerchantDebtsQuery({ data: data });
-            } catch (e) {
-                let errorMessage = 'An unexpected error occurred';
-                if (e.graphQLErrors && e.graphQLErrors.length > 0) {
-                    errorMessage = e.graphQLErrors[0].message || errorMessage;
-                } else if (e.networkError) {
-                    errorMessage = e.networkError.message || errorMessage;
-                } else if (e.message) {
-                    errorMessage = e.message;
-                }
-                NotificationManager.warning(errorMessage, 'Warning!');
-            }
-        }
-    }, [settlementsFilter]);
+    }, [settlementsFilter, paginateSettlementPayoutsLazyQuery, paginateMerchantDebtsLazyQuery]);
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
 
     const [createMerchantSettlementMutation] = useMutationGQL(createMerchantSettlement(), {
         merchantId: parseInt(settlementsFilter?.merchantId),
-        sheetOrderIds: settlementPayload?.sheetOrderIds?.map((item) => item.id)?.length != 0 ? settlementPayload?.sheetOrderIds?.map((item) => item.id) : undefined,
-        merchantDebtIds: settlementPayload?.merchantDebtIds?.map((item) => item.id)?.length != 0 ? settlementPayload?.merchantDebtIds?.map((item) => item.id) : undefined,
     });
     useEffect(() => {
         if (!queryParameters.get('merchantId')) {
             setchoosemerchant(true);
         }
     }, [queryParameters.get('merchantId')]);
+
+    // Memoized calculations for selected settlement totals
+    const selectedOrdersTotal = useMemo(() => {
+        if (!settlementPayload?.sheetOrderIds?.length) return 0;
+        return settlementPayload.sheetOrderIds.reduce((acc, item) => {
+            return new Decimal(acc).plus(calculateOrderTotal(item)).toNumber();
+        }, 0);
+    }, [settlementPayload]);
+
+    const selectedServicesTotal = useMemo(() => {
+        if (!settlementPayload?.merchantDebtIds?.length) return 0;
+        return settlementPayload.merchantDebtIds.reduce((sum, item) => {
+            return new Decimal(sum).plus(item?.amount || 0).mul(-1).toNumber();
+        }, 0);
+    }, [settlementPayload]);
+
+    const selectedGrandTotal = useMemo(() => {
+        return new Decimal(selectedOrdersTotal).plus(selectedServicesTotal).toFixed(2);
+    }, [selectedOrdersTotal, selectedServicesTotal]);
+
+    // Debug settlement payload changes
+    useEffect(() => {
+        console.log('Settlement payload changed:', settlementPayload);
+        console.log('Render count:', renderCount.current);
+        
+        // Check if state was reset to empty arrays
+        if (settlementPayload.sheetOrderIds.length === 0 && settlementPayload.merchantDebtIds.length === 0) {
+            console.log('⚠️ Settlement payload was reset to empty arrays!');
+            console.trace('Stack trace for state reset:');
+        }
+    }, [settlementPayload]);
+
+
+    // Optimized click handlers
+    const handleOrderClick = useCallback((item) => {
+        console.log('Order clicked:', item.id);
+        setsettlementPayload(prev => {
+            const exists = prev.sheetOrderIds.some(i => i.id === item.id);
+            const nextSheetOrderIds = exists
+                ? prev.sheetOrderIds.filter(i => i.id !== item.id)
+                : [...prev.sheetOrderIds, item];
+            return { ...prev, sheetOrderIds: nextSheetOrderIds };
+        });
+    }, []);
+
+    const handleServiceClick = useCallback((item) => {
+        setsettlementPayload(prev => {
+            const exists = prev.merchantDebtIds.some(i => i.id === item.id);
+            const nextMerchantDebtIds = exists
+                ? prev.merchantDebtIds.filter(i => i.id !== item.id)
+                : [...prev.merchantDebtIds, item];
+            return { ...prev, merchantDebtIds: nextMerchantDebtIds };
+        });
+    }, []);
+
+    const handleMerchantSelect = useCallback((option) => {
+        console.log('handleMerchantSelect called with option:', option);
+        if (option) {
+            console.log('Resetting settlement payload in handleMerchantSelect');
+            // Reset settlement payload when changing merchant
+            setsettlementPayload({
+                sheetOrderIds: [],
+                merchantDebtIds: [],
+            });
+            // Navigate to new merchant
+            history.push(`/settlements?merchantId=${option.id}&m=${option.name}`);
+            // Close the modal
+            setchoosemerchant(false);
+        }
+    }, [history]);
 
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
@@ -111,62 +231,23 @@ const Settlements = (props) => {
                         Settlements
                     </p>
                 </div>
-                <div class="col-lg-12 px-3">
-                    <div style={{ borderRadius: '0.25rem', background: 'white' }} class={generalstyles.card + ' col-lg-12'}>
-                        <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
-                            <AccordionItem class={`${generalstyles.innercard}` + '  p-2'}>
-                                <AccordionItemHeading>
-                                    <AccordionItemButton>
-                                        <div class="row m-0 w-100">
-                                            <div class="col-lg-8 col-md-8 col-sm-8 p-0 d-flex align-items-center justify-content-start">
-                                                <p class={generalstyles.cardTitle + '  m-0 p-0 '}>Filter:</p>
-                                            </div>
-                                            <div class="col-lg-4 col-md-4 col-sm-4 p-0 d-flex align-items-center justify-content-end">
-                                                <AccordionItemState>
-                                                    {(state) => {
-                                                        if (state.expanded == true) {
-                                                            return (
-                                                                <i class="h-100 d-flex align-items-center justify-content-center">
-                                                                    <BsChevronUp />
-                                                                </i>
-                                                            );
-                                                        } else {
-                                                            return (
-                                                                <i class="h-100 d-flex align-items-center justify-content-center">
-                                                                    <BsChevronDown />
-                                                                </i>
-                                                            );
-                                                        }
-                                                    }}
-                                                </AccordionItemState>
-                                            </div>
-                                        </div>
-                                    </AccordionItemButton>
-                                </AccordionItemHeading>
-                                <AccordionItemPanel>
-                                    <hr className="mt-2 mb-3" />
-                                    <div class="row m-0 w-100">
-                                        <div class={'col-lg-3'} style={{ marginBottom: '15px' }}>
-                                            <MerchantSelectComponent
-                                                type="single"
-                                                label={'name'}
-                                                value={'id'}
-                                                payload={settlementsFilter}
-                                                payloadAttr={'merchantId'}
-                                                removeAll={true}
-                                                onClick={(option) => {
-                                                    if (option != undefined) {
-                                                        history.push('/settlements?merchantId=' + option.id + '&m=' + option.name);
-                                                    } else {
-                                                    }
-                                                }}
-                                            />
-                                        </div>
-                                    </div>
-                                </AccordionItemPanel>
-                            </AccordionItem>
-                        </Accordion>
-                    </div>
+                <div class="col-lg-12 px-3 d-flex justify-content-end mb-3">
+                    <button
+                        class={generalstyles.roundbutton + ' px-4 py-2'}
+                        onClick={() => {
+                            console.log('Change Merchant button clicked - resetting settlement payload');
+                            // Reset settlement payload when changing merchant
+                            setsettlementPayload({
+                                sheetOrderIds: [],
+                                merchantDebtIds: [],
+                            });
+                            // Open merchant selection modal
+                            setchoosemerchant(true);
+                        }}
+                        style={{ fontSize: '14px', minHeight: '40px' }}
+                    >
+                        Change Merchant
+                    </button>
                 </div>
                 {queryParameters?.get('merchantId') != undefined && (
                     <div class="col-lg-12 p-0 ">
@@ -202,23 +283,7 @@ const Settlements = (props) => {
                                                                         return (
                                                                             <tr
                                                                                 style={{ background: selected ? 'var(--secondary)' : '' }}
-                                                                                onClick={() => {
-                                                                                    var temp = { ...settlementPayload };
-                                                                                    var exist = false;
-                                                                                    var chosenindex = null;
-                                                                                    temp.sheetOrderIds.map((i, ii) => {
-                                                                                        if (i.id == item.id) {
-                                                                                            exist = true;
-                                                                                            chosenindex = ii;
-                                                                                        }
-                                                                                    });
-                                                                                    if (!exist) {
-                                                                                        temp.sheetOrderIds.push(item);
-                                                                                    } else {
-                                                                                        temp.sheetOrderIds.splice(chosenindex, 1);
-                                                                                    }
-                                                                                    setsettlementPayload({ ...temp });
-                                                                                }}
+                                                                                onClick={() => handleOrderClick(item)}
                                                                             >
                                                                                 <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
                                                                                     <p className={' m-0 p-0 wordbreak '}>{item?.order?.id}</p>
@@ -233,40 +298,19 @@ const Settlements = (props) => {
                                                                                 </td>
                                                                                 <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
                                                                                     <p className="m-0 p-0 wordbreak">
-                                                                                        {item?.transactions?.some((i) => i.type === 'merchantOrderPayment')
-                                                                                            ? item.transactions
-                                                                                                  .filter((i) => i.type === 'merchantOrderPayment')
-                                                                                                  .map((i) => i.amount)
-                                                                                                  .join(', ')
-                                                                                            : 0}
+                                                                                        {formatNumber(calculateMerchantPayment(item))}
                                                                                     </p>
                                                                                 </td>
 
                                                                                 <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
                                                                                     <p className="m-0 p-0 wordbreak">
-                                                                                        {item?.transactions?.some((i) => i.type === 'shippingCollection')
-                                                                                            ? item.transactions
-                                                                                                  .filter((i) => i.type === 'shippingCollection')
-                                                                                                  .map((i) => i.amount * -1)
-                                                                                                  .join(', ')
-                                                                                            : 0}
+                                                                                        {formatNumber(calculateShippingCollection(item))}
                                                                                     </p>
                                                                                 </td>
 
                                                                                 <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
                                                                                     <p className="m-0 p-0 wordbreak">
-                                                                                        {(() => {
-                                                                                            const merchantPayment = item?.transactions?.reduce(
-                                                                                                (sum, i) => (i.type === 'merchantOrderPayment' ? new Decimal(sum).plus(i.amount) : new Decimal(sum)),
-                                                                                                new Decimal(0),
-                                                                                            );
-                                                                                            const shippingCollection = item?.transactions?.reduce(
-                                                                                                (sum, i) => (i.type === 'shippingCollection' ? new Decimal(sum).minus(i.amount) : new Decimal(sum)),
-                                                                                                new Decimal(0),
-                                                                                            );
-                                                                                            const total = merchantPayment.plus(shippingCollection).toNumber();
-                                                                                            return total !== 0 ? total : 0;
-                                                                                        })()}
+                                                                                        {formatNumber(calculateOrderTotal(item))}
                                                                                     </p>
                                                                                 </td>
                                                                             </tr>
@@ -317,23 +361,7 @@ const Settlements = (props) => {
                                                                         return (
                                                                             <tr
                                                                                 style={{ background: selected ? 'var(--secondary)' : '' }}
-                                                                                onClick={() => {
-                                                                                    var temp = { ...settlementPayload };
-                                                                                    var exist = false;
-                                                                                    var chosenindex = null;
-                                                                                    temp.merchantDebtIds.map((i, ii) => {
-                                                                                        if (i.id == item.id) {
-                                                                                            exist = true;
-                                                                                            chosenindex = ii;
-                                                                                        }
-                                                                                    });
-                                                                                    if (!exist) {
-                                                                                        temp.merchantDebtIds.push(item);
-                                                                                    } else {
-                                                                                        temp.merchantDebtIds.splice(chosenindex, 1);
-                                                                                    }
-                                                                                    setsettlementPayload({ ...temp });
-                                                                                }}
+                                                                                onClick={() => handleServiceClick(item)}
                                                                             >
                                                                                 <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
                                                                                     <p className={' m-0 p-0 wordbreak '}>{item?.id}</p>
@@ -350,7 +378,7 @@ const Settlements = (props) => {
                                                                                     </p>
                                                                                 </td>
                                                                                 <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
-                                                                                    <p className={' m-0 p-0 wordbreak '}>{item?.amount}</p>
+                                                                                    <p className={' m-0 p-0 wordbreak '}>{formatNumber(item?.amount)}</p>
                                                                                 </td>
                                                                             </tr>
                                                                         );
@@ -410,26 +438,14 @@ const Settlements = (props) => {
                                                                         </td>
 
                                                                         <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
-                                                                            <p className="m-0 p-0 wordbreak">{item?.transactions?.map((i) => (i.type === 'merchantOrderPayment' ? i.amount : 0))}</p>
+                                                                            <p className="m-0 p-0 wordbreak">{formatNumber(calculateMerchantPayment(item))}</p>
                                                                         </td>
                                                                         <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
-                                                                            <p className="m-0 p-0 wordbreak">{item?.transactions?.map((i) => (i.type === 'shippingCollection' ? i.amount * -1 : 0))}</p>
+                                                                            <p className="m-0 p-0 wordbreak">{formatNumber(calculateShippingCollection(item))}</p>
                                                                         </td>
                                                                         <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
                                                                             <p className={' m-0 p-0 wordbreak '}>
-                                                                                {new Decimal(
-                                                                                    item?.transactions?.reduce(
-                                                                                        (sum, i) => (i.type === 'merchantOrderPayment' ? new Decimal(sum).plus(i.amount) : new Decimal(sum)),
-                                                                                        new Decimal(0),
-                                                                                    ),
-                                                                                )
-                                                                                    .plus(
-                                                                                        item?.transactions?.reduce(
-                                                                                            (sum, i) => (i.type === 'shippingCollection' ? new Decimal(sum).minus(i.amount) : new Decimal(sum)),
-                                                                                            new Decimal(0),
-                                                                                        ),
-                                                                                    )
-                                                                                    .toNumber()}
+                                                                                {formatNumber(calculateOrderTotal(item))}
                                                                             </p>
                                                                         </td>
                                                                     </tr>
@@ -468,7 +484,7 @@ const Settlements = (props) => {
                                                                             </p>
                                                                         </td>
                                                                         <td style={{ maxWidth: '100px', minWidth: '100px', width: '100px' }}>
-                                                                            <p className={' m-0 p-0 wordbreak '}>{item?.amount}</p>
+                                                                            <p className={' m-0 p-0 wordbreak '}>{formatNumber(item?.amount)}</p>
                                                                         </td>
                                                                     </tr>
                                                                 );
@@ -485,17 +501,7 @@ const Settlements = (props) => {
                                                 <div class="row m-0 w-100 d-flex align-items-center justify-content-between">
                                                     <div>Orders</div>
                                                     <div style={{ fontWeight: 700 }}>
-                                                        {settlementPayload?.sheetOrderIds?.reduce((acc, item) => {
-                                                            const merchantAmount = item?.transactions?.reduce(
-                                                                (sum, i) => (i.type === 'merchantOrderPayment' ? new Decimal(sum).plus(i.amount) : new Decimal(sum)),
-                                                                new Decimal(0),
-                                                            );
-                                                            const shippingAmount = item?.transactions?.reduce(
-                                                                (sum, i) => (i.type === 'shippingCollection' ? new Decimal(sum).minus(i.amount) : new Decimal(sum)),
-                                                                new Decimal(0),
-                                                            );
-                                                            return new Decimal(acc).plus(merchantAmount.plus(shippingAmount)).toNumber();
-                                                        }, 0)}
+                                                        {formatNumber(selectedOrdersTotal)}
                                                     </div>
                                                 </div>
                                             </div>
@@ -503,7 +509,7 @@ const Settlements = (props) => {
                                                 <div class="row m-0 w-100 d-flex align-items-center justify-content-between">
                                                     <div>Services</div>
                                                     <div style={{ fontWeight: 700 }}>
-                                                        {settlementPayload?.merchantDebtIds?.reduce((sum, item) => sum + new Decimal(item?.amount || 0).mul(-1).toNumber(), 0)}
+                                                        {formatNumber(selectedServicesTotal)}
                                                     </div>
                                                 </div>
                                             </div>
@@ -511,23 +517,7 @@ const Settlements = (props) => {
                                                 <div class="row m-0 w-100 d-flex align-items-center justify-content-between">
                                                     <div style={{ fontWeight: 700 }}>Total</div>
                                                     <div style={{ fontWeight: 700 }}>
-                                                        {
-                                                            new Decimal(
-                                                                settlementPayload?.sheetOrderIds?.reduce((acc, item) => {
-                                                                    const merchantAmount = item?.transactions?.reduce(
-                                                                        (sum, i) => (i.type === 'merchantOrderPayment' ? new Decimal(sum).plus(i.amount) : new Decimal(sum)),
-                                                                        new Decimal(0),
-                                                                    );
-                                                                    const shippingAmount = item?.transactions?.reduce(
-                                                                        (sum, i) => (i.type === 'shippingCollection' ? new Decimal(sum).minus(i.amount) : new Decimal(sum)),
-                                                                        new Decimal(0),
-                                                                    );
-                                                                    return new Decimal(acc).plus(merchantAmount.plus(shippingAmount));
-                                                                }, new Decimal(0)),
-                                                            )
-                                                                .minus(settlementPayload?.merchantDebtIds?.reduce((sum, item) => new Decimal(sum).plus(item?.amount || 0), new Decimal(0)))
-                                                                .toFixed(2) // Use .toNumber() if you don't want fixed decimal places
-                                                        }
+                                                        {selectedGrandTotal}
                                                     </div>
                                             </div>
                                             </div>
@@ -540,12 +530,16 @@ const Settlements = (props) => {
                                                 if (buttonLoadingContext) return;
                                                 setbuttonLoadingContext(true);
                                                 try {
-                                                    const { data } = await createMerchantSettlementMutation();
+                                                    const { data } = await createMerchantSettlementMutation({
+                                                        variables: {
+                                                            sheetOrderIds: settlementPayload?.sheetOrderIds?.map((item) => item.id)?.length != 0 ? settlementPayload?.sheetOrderIds?.map((item) => item.id) : undefined,
+                                                            merchantDebtIds: settlementPayload?.merchantDebtIds?.map((item) => item.id)?.length != 0 ? settlementPayload?.merchantDebtIds?.map((item) => item.id) : undefined,
+                                                        }
+                                                    });
                                                     if (data?.createMerchantSettlement?.success) {
-                                                        //    await refetchfetchItemsInBox();
                                                         NotificationManager.success(data?.createMerchantSettlement?.message, 'Success!');
                                                         setcreatesettlementModal({ open: true, data: data });
-                                                        window.location.reload();
+                                                        // Don't reload immediately - let user close modal or view PDF first
                                                     } else {
                                                         NotificationManager.warning(data?.createMerchantSettlement?.message, 'Warning!');
                                                     }
@@ -577,6 +571,7 @@ const Settlements = (props) => {
                 show={createsettlementModal?.open}
                 onHide={() => {
                     setcreatesettlementModal({ open: false });
+                    window.location.reload(); // Refresh page when modal is closed
                 }}
                 centered
                 size={'md'}
@@ -591,6 +586,7 @@ const Settlements = (props) => {
                                 class={'close-modal-container'}
                                 onClick={() => {
                                     setcreatesettlementModal({ open: false });
+                                    window.location.reload(); // Refresh page when close button is clicked
                                 }}
                             >
                                 <IoMdClose />
@@ -600,12 +596,14 @@ const Settlements = (props) => {
                 </Modal.Header>
                 <Modal.Body>
                     <div class="row m-0 w-100 p-4">
-                        <div class="col-lg-12 p-0 mb-3">Tota: {createsettlementModal?.data?.createMerchantSettlement?.data?.total}</div>
+                        <div class="col-lg-12 p-0 mb-3">Total: {formatNumber(createsettlementModal?.data?.createMerchantSettlement?.data?.total)}</div>
                         <div class="col-lg-12 p-0 allcentered text-center">
                             <button
                                 class={generalstyles.roundbutton + ' allcentered w-100'}
                                 onClick={async () => {
                                     window.open(createsettlementModal?.data?.createMerchantSettlement?.data?.pdfUrl, '_blank');
+                                    setcreatesettlementModal({ open: false });
+                                    window.location.reload(); // Refresh page after opening PDF
                                 }}
                             >
                                 Open PDF
@@ -639,12 +637,7 @@ const Settlements = (props) => {
                                 payload={settlementsFilter}
                                 payloadAttr={'merchantId'}
                                 removeAll={true}
-                                onClick={(option) => {
-                                    if (option != undefined) {
-                                        history.push('/settlements?merchantId=' + option.id + '&m=' + option.name);
-                                    } else {
-                                    }
-                                }}
+                                onClick={handleMerchantSelect}
                             />
                         </div>
                     </div>
