@@ -477,7 +477,14 @@ const TransactionsTable = (props) => {
                                                 <div class="row m-0 w-100 justify-content-end">
                                                     {item?.auditedBy && (
                                                         <div className="col-lg-6 p-0 mb-1 d-flex ">
-                                                            <span class="d-flex align-items-center" style={{ fontWeight: 500, fontSize: '13px' }}>
+                                                            <span
+                                                                class="d-flex align-items-center"
+                                                                style={{
+                                                                    fontWeight: 500,
+                                                                    fontSize: '13px',
+                                                                    color: item?.auditedBy?.deletedAt ? 'var(--danger)' : undefined,
+                                                                }}
+                                                            >
                                                                 <TbUserDollar class="mr-1" />
                                                                 {item?.auditedBy?.name}
                                                             </span>

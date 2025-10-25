@@ -248,7 +248,14 @@ const AddSheet = (props) => {
                                     <div class="col-lg-12 mb-2" style={{ fontWeight: 600 }}>
                                         Sheet # {queryParameters.get('sheetId')}
                                     </div>
-                                    <div class="col-lg-12 mb-4">{fetchCourierSheetQuery?.data?.CourierSheet?.userInfo?.name}</div>
+                                    <div
+                                        class="col-lg-12 mb-4"
+                                        style={{
+                                            color: fetchCourierSheetQuery?.data?.CourierSheet?.userInfo?.deletedAt ? 'var(--danger)' : undefined,
+                                        }}
+                                    >
+                                        {fetchCourierSheetQuery?.data?.CourierSheet?.userInfo?.name}
+                                    </div>
                                 </>
                             )}
                             <div class="col-lg-12">

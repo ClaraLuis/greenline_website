@@ -1389,7 +1389,13 @@ const CourierSheet = (props) => {
                     <div style={{ background: 'white', margin: '0px' }} class={' p-3 row m-0 w-100 card'}>
                         <div className="col-lg-4 col-md-4 p-0">
                             <div class="row m-0 w-100 d-flex align-items-center">
-                                <span style={{ fontWeight: 600 }} class="text-capitalize">
+                                <span
+                                    style={{
+                                        fontWeight: 600,
+                                        color: submitSheetPayload?.userInfo?.deletedAt ? 'var(--danger)' : undefined,
+                                    }}
+                                    class="text-capitalize"
+                                >
                                     {submitSheetPayload?.userInfo?.name}{' '}
                                 </span>
                                 <div style={{ background: '#eee', color: 'black' }} className={' wordbreak rounded-pill font-weight-600 allcentered mx-1 '}>

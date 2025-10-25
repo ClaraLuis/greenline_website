@@ -88,7 +88,14 @@ const SheetsTable = (props) => {
                                             <div className="col-lg-4 col-md-4 p-0">
                                                 <span style={{ fontSize: '12px', color: 'grey' }}># {item?.id}</span>
                                                 <br />
-                                                <span style={{ fontWeight: 600, fontSize: '12px' }} class="text-capitalize">
+                                                <span
+                                                    style={{
+                                                        fontWeight: 600,
+                                                        fontSize: '12px',
+                                                        color: item?.userInfo?.deletedAt ? 'var(--danger)' : undefined,
+                                                    }}
+                                                    class="text-capitalize"
+                                                >
                                                     {item?.userInfo?.name}{' '}
                                                 </span>
                                             </div>

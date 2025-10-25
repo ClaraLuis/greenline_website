@@ -1027,7 +1027,15 @@ const OrderInfo = (props) => {
                                                                                     </>
                                                                                 )}
                                                                                 {cookies.get('userInfo')?.type == 'employee' && (
-                                                                                    <span style={{ fontSize: '12px', fontWeight: 400 }}>{historyItem?.user?.name}</span>
+                                                                                    <span
+                                                                                        style={{
+                                                                                            fontSize: '12px',
+                                                                                            fontWeight: 400,
+                                                                                            color: historyItem?.user?.deletedAt ? 'var(--danger)' : undefined,
+                                                                                        }}
+                                                                                    >
+                                                                                        {historyItem?.user?.name}
+                                                                                    </span>
                                                                                 )}
                                                                             </TimelineContent>
                                                                         </TimelineItem>
@@ -1095,7 +1103,15 @@ const OrderInfo = (props) => {
                                                                                     </span>{' '}
                                                                                     <br />
                                                                                     {cookies.get('userInfo')?.type == 'employee' && (
-                                                                                        <span style={{ fontSize: '14px', fontWeight: 400 }}>{historyItem?.auditedBy?.name}</span>
+                                                                                        <span
+                                                                                            style={{
+                                                                                                fontSize: '14px',
+                                                                                                fontWeight: 400,
+                                                                                                color: historyItem?.auditedBy?.deletedAt ? 'var(--danger)' : undefined,
+                                                                                            }}
+                                                                                        >
+                                                                                            {historyItem?.auditedBy?.name}
+                                                                                        </span>
                                                                                     )}
                                                                                 </div>
                                                                             </TimelineContent>
@@ -2611,7 +2627,14 @@ const OrderInfo = (props) => {
                                     <div class="row m-0 w-100 justify-content-end">
                                         {transactionModel?.item?.auditedBy && (
                                             <div className="col-lg-6 p-0 mb-1 d-flex ">
-                                                <span class="d-flex align-items-center" style={{ fontWeight: 500, fontSize: '13px' }}>
+                                                <span
+                                                    class="d-flex align-items-center"
+                                                    style={{
+                                                        fontWeight: 500,
+                                                        fontSize: '13px',
+                                                        color: transactionModel?.item?.auditedBy?.deletedAt ? 'var(--danger)' : undefined,
+                                                    }}
+                                                >
                                                     <TbUserDollar class="mr-1" />
                                                     {transactionModel?.item?.auditedBy?.name}
                                                 </span>
@@ -2697,7 +2720,17 @@ const OrderInfo = (props) => {
                                                     </TimelineSeparator>
                                                     <TimelineContent style={{ fontWeight: 600, color: 'black', textTransform: 'capitalize' }}>
                                                         {historyItem?.status.split(/(?=[A-Z])/).join(' ')} <br />
-                                                        {cookies.get('userInfo')?.type == 'employee' && <span style={{ fontSize: '14px', fontWeight: 400 }}>{historyItem?.user?.name}</span>}
+                                                        {cookies.get('userInfo')?.type == 'employee' && (
+                                                            <span
+                                                                style={{
+                                                                    fontSize: '14px',
+                                                                    fontWeight: 400,
+                                                                    color: historyItem?.user?.deletedAt ? 'var(--danger)' : undefined,
+                                                                }}
+                                                            >
+                                                                {historyItem?.user?.name}
+                                                            </span>
+                                                        )}
                                                     </TimelineContent>
                                                 </TimelineItem>
                                             );

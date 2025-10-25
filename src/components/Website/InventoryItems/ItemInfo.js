@@ -81,7 +81,12 @@ const ItemInfo = (props) => {
                                                                 <p className={' m-0 p-0 wordbreak '}>{item?.description}</p>
                                                             </td>
                                                             <td>
-                                                                <p className={' m-0 p-0 wordbreak '}>{item?.user?.name}</p>
+                                                                <p
+                                                                    className={' m-0 p-0 wordbreak '}
+                                                                    style={{ color: item?.user?.deletedAt ? 'var(--danger)' : undefined }}
+                                                                >
+                                                                    {item?.user?.name}
+                                                                </p>
                                                             </td>
                                                             <td>
                                                                 <p className={' m-0 p-0 wordbreak '}>{dateformatter(item?.createdAt)}</p>

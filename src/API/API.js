@@ -713,6 +713,7 @@ const API = () => {
                         user {
                             name
                             email
+                            deletedAt
                         }
                         inventory {
                             name
@@ -821,6 +822,7 @@ const API = () => {
                         createdAt
                         user {
                             name
+                            deletedAt
                         }
                         courier {
                             name
@@ -880,6 +882,7 @@ const API = () => {
                         auditedBy {
                             name
                             email
+                            deletedAt
                         }
 
                         fromAccount {
@@ -941,6 +944,7 @@ const API = () => {
                         createdAt
                         user {
                             name
+                            deletedAt
                         }
                     }
                     cursor
@@ -1088,6 +1092,7 @@ const API = () => {
                                     name
                                     email
                                     id
+                                    deletedAt
                                 }
                             }
                         }
@@ -1226,6 +1231,7 @@ const API = () => {
                                     name
                                     email
                                     id
+                                    deletedAt
                                 }
                             }
                         }
@@ -1289,6 +1295,7 @@ const API = () => {
                                     name
                                     email
                                     id
+                                    deletedAt
                                 }
                             }
                         }
@@ -2546,6 +2553,7 @@ const API = () => {
                                     name
                                     email
                                     id
+                                    deletedAt
                                 }
                             }
                         }
@@ -2816,6 +2824,7 @@ const API = () => {
                         }
                         user {
                             name
+                            deletedAt
                         }
                         order {
                             id
@@ -2925,6 +2934,7 @@ const API = () => {
                         orderCount
                         userInfo {
                             name
+                            deletedAt
                         }
                         createdAt
                     }
@@ -2963,6 +2973,7 @@ const API = () => {
                     orderCount
                     userInfo {
                         name
+                        deletedAt
                     }
                     createdAt
                     sheetOrders {
@@ -2974,6 +2985,7 @@ const API = () => {
                         orderId
                         assignedBy {
                             name
+                            deletedAt
                         }
                         order {
                             failsAndAssigns
@@ -4110,6 +4122,7 @@ const API = () => {
                         currency
                         auditedBy {
                             name
+                            deletedAt
                         }
                         fromAccount {
                             merchantId
@@ -4173,6 +4186,7 @@ const API = () => {
                         currency
                         auditedBy {
                             name
+                            deletedAt
                         }
                         fromAccount {
                             merchantId

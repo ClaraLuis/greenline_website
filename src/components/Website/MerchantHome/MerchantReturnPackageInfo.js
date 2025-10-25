@@ -272,7 +272,13 @@ const MerchantReturnPackageInfo = (props) => {
                                                     <TimelineContent style={{ fontWeight: 600, color: 'black', textTransform: 'capitalize' }}>
                                                         {historyItem?.status.split(/(?=[A-Z])/).join(' ')} <br />
                                                         {cookies.get('userInfo')?.type != 'merchant' && (
-                                                            <span class="d-flex align-items-center" style={{ fontWeight: 400 }}>
+                                                            <span
+                                                                class="d-flex align-items-center"
+                                                                style={{
+                                                                    fontWeight: 400,
+                                                                    color: historyItem?.user?.deletedAt ? 'var(--danger)' : undefined,
+                                                                }}
+                                                            >
                                                                 <FiUser class="mr-2" />
                                                                 {historyItem?.user?.name}
                                                             </span>
