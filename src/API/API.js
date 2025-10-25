@@ -28,6 +28,14 @@ const API = () => {
             }
         `;
     };
+    const removeUser = () => {
+        return gql`
+            mutation removeUser($removeUserId: String!) {
+                removeUser(id: $removeUserId)
+            }
+        `;
+    };
+
     const updateEmployeeInfo = () => {
         return gql`
             mutation updateEmployeeInfo($input: UpdateEmployeeInput!) {
@@ -1053,6 +1061,12 @@ const API = () => {
                         }
                         latestHistory {
                             description
+                            fromHub {
+                                name
+                            }
+                            toHub {
+                                name
+                            }
                         }
                         canOpen
                         fragile
@@ -1185,6 +1199,12 @@ const API = () => {
                         }
                         latestHistory {
                             description
+                            fromHub {
+                                name
+                            }
+                            toHub {
+                                name
+                            }
                         }
                         canOpen
                         fragile
@@ -2156,6 +2176,12 @@ const API = () => {
                                 }
                                 latestHistory {
                                     description
+                                    fromHub {
+                                        name
+                                    }
+                                    toHub {
+                                        name
+                                    }
                                 }
                                 canOpen
                                 fragile
@@ -3177,7 +3203,7 @@ const API = () => {
                                     buildingNumber
                                     buildingNumber
                                 }
-                                 orderItems{
+                                orderItems {
                                     id
                                     orderId
                                     count
@@ -3195,6 +3221,12 @@ const API = () => {
                                 }
                                 latestHistory {
                                     description
+                                    fromHub {
+                                        name
+                                    }
+                                    toHub {
+                                        name
+                                    }
                                 }
                                 canOpen
                                 fragile
@@ -3264,6 +3296,18 @@ const API = () => {
                             deletedAt
                         }
                         fromAccount {
+                            id
+                            name
+                            type
+                            userId
+                            merchantId
+                            currency
+                            balance
+                            createdAt
+                            lastModified
+                            deletedAt
+                        }
+                        toAccount {
                             id
                             name
                             type
@@ -4385,6 +4429,7 @@ const API = () => {
     return {
         useMutationGQL,
         addUser,
+        removeUser,
         updateEmployeeInfo,
         useQueryGQL,
         fetchUsers,
