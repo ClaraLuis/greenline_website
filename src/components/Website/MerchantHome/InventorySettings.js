@@ -534,7 +534,7 @@ const InventorySettings = (props) => {
                                                         onClick={async () => {
                                                             await setstatuspayload({ ...statuspayload, id: item?.id, status: 'cancel' });
                                                             if (window.confirm('Are you sure you want to cancel this transaction')) {
-                                                                if (isAuth([1, 51])) {
+                                                                if (isAuth([1, 134])) {
                                                                     var { data } = await updateAnyFinancialTransactionMutation();
                                                                 } else {
                                                                     var { data } = await updateMyFinancialTransactionMutation();

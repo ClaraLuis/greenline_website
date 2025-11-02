@@ -209,7 +209,7 @@ const SheetsTable = (props) => {
                                                 style={{ height: '30px' }}
                                                 class={generalstyles.roundbutton + ' p-0 allcentered'}
                                                 onClick={() => {
-                                                    if (isAuth([1, 34, 35, 53, 51])) {
+                                                    if (isAuth([1, 35])) {
                                                         if (props?.clickable) {
                                                             props?.onClick(item);
                                                         }

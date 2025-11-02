@@ -218,7 +218,7 @@ const TransactionsTable = (props) => {
                                                     {item?.toAccount?.id == props?.accountId && props?.enableEdit != undefined && props?.enableEdit == true && (
                                                         <button
                                                             onClick={() => {
-                                                                if (props?.srctype == 'expenses' && !isAuth([1, 51, 24])) {
+                                                                if (props?.srctype == 'expenses' && !isAuth([1, 24])) {
                                                                     NotificationManager.warning('Not Authorized', 'Warning!');
                                                                     return;
                                                                 }
@@ -241,7 +241,7 @@ const TransactionsTable = (props) => {
                                                                 if (window.confirm('Are you sure you want to cancel this transaction')) {
                                                                     if (buttonLoadingContext) return;
                                                                     setbuttonLoadingContext(true);
-                                                                    if (isAuth([1, 51])) {
+                                                                    if (isAuth([1, 134])) {
                                                                         var { data } = await updateAnyFinancialTransactionMutation();
                                                                     } else {
                                                                         var { data } = await updateMyFinancialTransactionMutation();
@@ -263,11 +263,7 @@ const TransactionsTable = (props) => {
                                                             class={' iconhover allcentered '}
                                                             disabled={buttonLoadingContext}
                                                         >
-                                                            {buttonLoadingContext ? (
-                                                                <CircularProgress color="var(--danger)" width="15px" height="15px" duration="1s" />
-                                                            ) : (
-                                                                <FcCancel size={25} />
-                                                            )}
+                                                            {buttonLoadingContext ? <CircularProgress color="var(--danger)" width="15px" height="15px" duration="1s" /> : <FcCancel size={25} />}
                                                         </button>
                                                     )}
                                                     {props?.hasOrder && item?.sheetOrder?.order?.id && (
@@ -523,7 +519,7 @@ const TransactionsTable = (props) => {
                                                         onClick={async () => {
                                                             await setstatuspayload({ ...statuspayload, id: item?.id, status: 'cancel' });
                                                             if (window.confirm('Are you sure you want to cancel this transaction')) {
-                                                                if (isAuth([1, 51])) {
+                                                                if (isAuth([1, 134])) {
                                                                     var { data } = await updateAnyFinancialTransactionMutation();
                                                                 } else {
                                                                     var { data } = await updateMyFinancialTransactionMutation();
@@ -688,7 +684,7 @@ const TransactionsTable = (props) => {
                                         if (buttonLoadingContext) return;
                                         setbuttonLoadingContext(true);
 
-                                        if (isAuth([1, 51])) {
+                                        if (isAuth([1, 134])) {
                                             var { data } = await updateAnyFinancialTransactionMutation();
                                         } else {
                                             var { data } = await updateMyFinancialTransactionMutation();

@@ -123,7 +123,7 @@ const ItemsTable = (props) => {
                                                     <TbEye color="white" size={17} />
                                                 </i>
                                             </a>
-                                            {isAuth([1, 52, 13]) && (
+                                            {isAuth([1, 13]) && (
                                                 <a
                                                     class={generalstyles.buttonxs + ' allcentered ml-2'}
                                                     onClick={async (e) => {

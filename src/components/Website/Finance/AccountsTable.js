@@ -98,7 +98,7 @@ const AccountsTable = (props) => {
                                                 })} */}
                                                 {item?.status?.split(/(?=[A-Z])/).join(' ')}
                                             </div>
-                                            {isAuth([1, 51, 21]) && (
+                                            {isAuth([1, 21]) && (
                                                 <Dropdown>
                                                     <Dropdown.Toggle>
                                                         <div
@@ -149,7 +149,7 @@ const AccountsTable = (props) => {
                                             {dateformatter(item?.createdAt)}
                                         </span>
                                     </div>
-                                    {isAuth([1, 51, 27]) && (
+                                    {isAuth([1, 27]) && (
                                         <div class="col-lg-12 p-0 allcentered mt-2">
                                             <button
                                                 onClick={() => {

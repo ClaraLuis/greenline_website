@@ -426,7 +426,7 @@ const MerchantPayments = (props) => {
                 <div class="col-lg-12 p-0 ">
                     <div class="row m-0 w-100">
                         <div class="col-lg-9 p-0">
-                            {isAuth([1, 51, 19, 60]) && (
+                            {isAuth([1, 19, 60]) && (
                                 <div class={' row m-0 w-100 mb-2 p-0 px-0'}>
                                     <div class="col-lg-12 px-3">
                                         <div class={generalstyles.card + ' row m-0 w-100'}>

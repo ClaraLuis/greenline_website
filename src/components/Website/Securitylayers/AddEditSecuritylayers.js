@@ -55,7 +55,7 @@ const AddEditSecuritylayers = (props) => {
         <div className="row m-0 w-100 p-md-2 pt-0">
             <div className="row m-0 w-100 d-flex align-items-center justify-content-start mt-sm-2 pb-5 pb-md-0">
                 <div className="row m-0 w-100">
-                    {isAuth([1, 43, 52, 78, 79]) && (
+                    {isAuth([1, 43, 131]) && (
                         <>
                             <div class="col-lg-12 p-0 mb-2">
                                 <Pagination

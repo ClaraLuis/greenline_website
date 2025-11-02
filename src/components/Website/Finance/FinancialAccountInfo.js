@@ -72,7 +72,7 @@ const FinancialAccountInfo = (props) => {
         afterCursor: undefined,
         beforeCursor: undefined,
         fromAccountId: parseInt(queryParameters.get('accountId')),
-        myHubOnly: isAuth([1, 51]) ? false : undefined,
+        myHubOnly: isAuth([1]) ? false : undefined,
     });
 
     // const [filterReceivedTransactionsObj, setfilterReceivedTransactionsObj] = useState({
@@ -81,7 +81,7 @@ const FinancialAccountInfo = (props) => {
     //     afterCursor: undefined,
     //     beforeCursor: undefined,
     //     toAccountId: parseInt(queryParameters.get('accountId')),
-    //     myHubOnly: isAuth([1, 51]) ? false : undefined,
+    //     myHubOnly: isAuth([1]) ? false : undefined,
     // });
 
     const fetchOneFinancialAccountsQuery = useQueryGQL('', fetchFinancialAccounts(), filterobj);
@@ -192,7 +192,7 @@ const FinancialAccountInfo = (props) => {
                         </div>
 
                         <div class={' col-lg-6 col-md-6 col-sm-6 p-0 pr-3 pr-md-1 pr-sm-0 d-flex align-items-center justify-content-end pb-1 '}>
-                            {/* {isAuth([1, 51, 28]) && (
+                            {/* {isAuth([1, 28]) && (
                                 <button
                                     style={{ height: '35px' }}
                                     class={generalstyles.roundbutton + '  mb-1 mx-1'}
@@ -226,7 +226,7 @@ const FinancialAccountInfo = (props) => {
                                         <span style={{ color: 'var(--info)' }}>Transactions</span>
                                     </p>
                                 </div>
-                                {isAuth([1, 51, 27]) && (
+                                {isAuth([1, 27]) && (
                                     <>
                                         <div class="col-lg-12 p-0">
                                             <Pagination
@@ -290,7 +290,7 @@ const FinancialAccountInfo = (props) => {
                                     submit={submit}
                                     setsubmit={setsubmit}
                                     attr={
-                                        isAuth([1, 51])
+                                        isAuth([1, 133])
                                             ? [
                                                   {
                                                       name: 'Type',
@@ -371,7 +371,7 @@ const FinancialAccountInfo = (props) => {
                                             transactionpayload?.toAccountId?.length != 0
                                         ) {
                                             try {
-                                                if (isAuth([1, 51])) {
+                                                if (isAuth([1, 133])) {
                                                     await sendAnyFinancialTransactionMutation();
                                                 } else {
                                                     await sendMyFinancialTransactionMutation();

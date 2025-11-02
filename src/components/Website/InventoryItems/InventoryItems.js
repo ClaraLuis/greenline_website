@@ -229,7 +229,7 @@ const InventoryItems = (props) => {
                                             <span style={{ color: 'var(--info)' }}>Warehouses </span>
                                         </p>
                                     </div>
-                                    {isAuth([1, 54, 4]) && (
+                                    {isAuth([1, 4]) && (
                                         <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-end mb-2 px-2 '}>
                                             <button
                                                 style={{ height: '35px' }}
@@ -270,7 +270,7 @@ const InventoryItems = (props) => {
                                         ))}
                                     </div>
                                 )}
-                                {isAuth([1, 54, 3]) && (
+                                {isAuth([1, 3]) && (
                                     <div style={{ width: '100px', overflowY: 'scroll', flexDirection: 'row', flexWrap: 'nowrap' }} class=" scrollmenuclasssubscrollbar row m-0 w-100">
                                         <div class="d-flex align-items-center ">
                                             {fetchinventories?.data?.paginateInventories?.cursor?.beforeCursor != null && (
@@ -446,9 +446,9 @@ const InventoryItems = (props) => {
                                     </p>
                                 </div>
                                 <div class={' col-lg-6 col-md-6 col-sm-8 p-0 d-flex align-items-center justify-content-end mb-2 px-2 '}>
-                                                <div className="row m-0 w-100 d-flex align-items-center justify-content-end">
+                                    <div className="row m-0 w-100 d-flex align-items-center justify-content-end">
                                         {selectedVariants?.length > 0 && <SkuPrint skus={selectedVariants} />}
-                                        {isAuth([1, 54, 81]) && (
+                                        {isAuth([1, 81]) && (
                                             <button
                                                 onClick={() => {
                                                     setimportItemPayload({
@@ -473,7 +473,7 @@ const InventoryItems = (props) => {
                             </div>
                         </div>
                     )}
-                    {isAuth([1, 54, 6]) && (
+                    {isAuth([1, 6]) && (
                         <>
                             <div class="col-lg-12 px-3">
                                 <div class={generalstyles.card + ' row m-0 w-100 p-2'}>
@@ -488,11 +488,11 @@ const InventoryItems = (props) => {
                                                         value={search}
                                                         placeholder={'Search by name or SKU'}
                                                         onKeyDown={(e) => {
-                                                        if (e.key === 'Enter') {
-                                                            if (fetchItemsInBoxQuery?.loading) return;
-                                                            const next = { ...filterItemInBox, name: search?.length == 0 ? undefined : search };
-                                                            setFilterItemInBoxAndSync(next);
-                                                        }
+                                                            if (e.key === 'Enter') {
+                                                                if (fetchItemsInBoxQuery?.loading) return;
+                                                                const next = { ...filterItemInBox, name: search?.length == 0 ? undefined : search };
+                                                                setFilterItemInBoxAndSync(next);
+                                                            }
                                                         }}
                                                         onChange={(event) => {
                                                             setBarcode(event.target.value);
@@ -632,7 +632,7 @@ const InventoryItems = (props) => {
                                                                 </div>
                                                             </div>
                                                             <div class="col-lg-2 col-md-2 p-0 mb-2">
-                                                                {isAuth([1, 54, 82, 6]) && (
+                                                                {isAuth([1, 82, 6]) && (
                                                                     <button
                                                                         onClick={async (e) => {
                                                                             e.stopPropagation();

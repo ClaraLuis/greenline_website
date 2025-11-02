@@ -28,7 +28,7 @@ const UsersTable = (props) => {
     const { setpageactive_context, setpagetitle_context, dateformatter, isAuth } = useContext(Contexthandlerscontext);
 
     const { lang, langdetect } = useContext(LanguageContext);
-    
+
     const [resettingPasswordUserId, setResettingPasswordUserId] = useState(null);
 
     return (
@@ -104,7 +104,7 @@ const UsersTable = (props) => {
                                                             </div>
                                                         </Dropdown.Toggle>
                                                         <Dropdown.Menu style={{ minWidth: '170px', fontSize: '12px' }}>
-                                                            {isAuth([1, 45, 52]) && (
+                                                            {isAuth([1, 45]) && (
                                                                 <Dropdown.Item
                                                                     onClick={() => {
                                                                         var temp = { ...item };
@@ -167,7 +167,7 @@ const UsersTable = (props) => {
                                                                     </p>
                                                                 </Dropdown.Item>
                                                             )}
-                                                            {isAuth([1, 46, 52]) && (
+                                                            {isAuth([1, 46]) && (
                                                                 // {isAuth([1, 46]) && (
                                                                 <Dropdown.Item
                                                                     onClick={() => {

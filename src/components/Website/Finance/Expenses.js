@@ -110,7 +110,7 @@ const Expenses = (props) => {
                             </p>
                         </div>
                         <div class={' col-lg-6 col-md-6 col-sm-6 p-0 pr-3 pr-md-1 pr-sm-0 d-flex align-items-center justify-content-end pb-1 '}>
-                            {isAuth([1, 51, 23]) && (
+                            {isAuth([1, 23]) && (
                                 <button
                                     style={{ height: '35px' }}
                                     class={generalstyles.roundbutton + '  mb-1 mx-1'}
@@ -134,7 +134,7 @@ const Expenses = (props) => {
                         </div>
                     </div>
                 </div>
-                {isAuth([1, 51, 22]) && (
+                {isAuth([1, 22]) && (
                     <div class="col-lg-12 p-0 px-2">
                         <div class={generalstyles.card + ' mb-3 col-lg-12 p-2'}>
                             <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
@@ -256,7 +256,7 @@ const Expenses = (props) => {
                     </div>
                 )}
                 <div class={' row m-0 w-100 mb-2 p-0 px-0'}>
-                    {isAuth([1, 51, 22]) && (
+                    {isAuth([1, 22]) && (
                         <>
                             <div class="col-lg-12 p-0 mb-3">
                                 <Pagination

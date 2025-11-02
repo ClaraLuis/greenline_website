@@ -182,7 +182,7 @@ const FinanceSheets = (props) => {
                         </Accordion>
                     </div>
                 </div>
-                {isAuth([1, 34, 53, 51]) && (
+                {isAuth([1, 136]) && (
                     <>
                         <div class="col-lg-12 px-3">
                             {' '}

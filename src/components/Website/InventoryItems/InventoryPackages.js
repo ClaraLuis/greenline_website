@@ -275,7 +275,7 @@ const InventoryPackages = (props) => {
                             </div>
                         </div>
 
-                        {isAuth([1, 54, 64, 2]) && (
+                        {isAuth([1, 64, 2]) && (
                             <>
                                 {' '}
                                 <div class="col-lg-12 p-0 mb-3">
@@ -352,89 +352,90 @@ const InventoryPackages = (props) => {
                                         </div>
                                     </div>
                                 )}
-                                {!fetchPackagesQuery?.loading && fetchPackagesQuery?.data?.paginateReturnPackages?.data?.map((item, index) => {
-                                    return (
-                                        <div
-                                            onClick={() => {
-                                                history.push('/returnpackageinfo?packageId=' + item?.id);
-                                            }}
-                                            style={{ cursor: 'pointer' }}
-                                            className="col-lg-4 "
-                                        >
+                                {!fetchPackagesQuery?.loading &&
+                                    fetchPackagesQuery?.data?.paginateReturnPackages?.data?.map((item, index) => {
+                                        return (
                                             <div
-                                                style={{ background: 'white', transition: 'all 0.4s', cursor: 'pointer' }}
-                                                class={generalstyles.card + ' p-3 row m-0 w-100   d-flex align-items-center'}
+                                                onClick={() => {
+                                                    history.push('/returnpackageinfo?packageId=' + item?.id);
+                                                }}
+                                                style={{ cursor: 'pointer' }}
+                                                className="col-lg-4 "
                                             >
-                                                <div className="col-lg-2 col-md-2 p-0">
-                                                    <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
-                                                        # {item?.id}
-                                                    </span>
-                                                </div>
-                                                <div className="col-lg-10 col-md-10 p-0 d-flex justify-content-end align-items-center">
-                                                    <div class="row m-0 w-100 d-fex justify-content-end align-items-center">
-                                                        <div
-                                                            className={
-                                                                item.status == 'delivered'
-                                                                    ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered  text-capitalize'
-                                                                    : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered text-capitalize'
-                                                            }
-                                                        >
-                                                            {item?.status?.split(/(?=[A-Z])/).join(' ')}
+                                                <div
+                                                    style={{ background: 'white', transition: 'all 0.4s', cursor: 'pointer' }}
+                                                    class={generalstyles.card + ' p-3 row m-0 w-100   d-flex align-items-center'}
+                                                >
+                                                    <div className="col-lg-2 col-md-2 p-0">
+                                                        <span style={{ fontSize: '12px', color: 'grey' }} class="mr-1">
+                                                            # {item?.id}
+                                                        </span>
+                                                    </div>
+                                                    <div className="col-lg-10 col-md-10 p-0 d-flex justify-content-end align-items-center">
+                                                        <div class="row m-0 w-100 d-fex justify-content-end align-items-center">
+                                                            <div
+                                                                className={
+                                                                    item.status == 'delivered'
+                                                                        ? ' wordbreak text-success bg-light-success rounded-pill font-weight-600 allcentered  text-capitalize'
+                                                                        : ' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 allcentered text-capitalize'
+                                                                }
+                                                            >
+                                                                {item?.status?.split(/(?=[A-Z])/).join(' ')}
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div className="col-lg-12 p-0 my-2">
-                                                    <hr className="m-0" />
-                                                </div>
-                                                <div class="col-lg-12 p-0 mb-2">
-                                                    <div class="row m-0 w-100 d-flex align-items-center">
-                                                        <div class="col-lg-8 col-md-8 p-0">{item.type == 'merchant' ? item?.merchant?.name : item?.inventory?.name}</div>
-                                                        <div class="col-lg-4 col-md-4 p-0 d-flex justify-content-end">
-                                                            <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
-                                                                {item?.countAndSum?.sum} items
-                                                            </span>
+                                                    <div className="col-lg-12 p-0 my-2">
+                                                        <hr className="m-0" />
+                                                    </div>
+                                                    <div class="col-lg-12 p-0 mb-2">
+                                                        <div class="row m-0 w-100 d-flex align-items-center">
+                                                            <div class="col-lg-8 col-md-8 p-0">{item.type == 'merchant' ? item?.merchant?.name : item?.inventory?.name}</div>
+                                                            <div class="col-lg-4 col-md-4 p-0 d-flex justify-content-end">
+                                                                <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
+                                                                    {item?.countAndSum?.sum} items
+                                                                </span>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-lg-12 p-0 mb-2">
-                                                    <div class="row m-0 w-100 d-flex align-items-center">
-                                                        <div class="col-lg-8 col-md-8 p-0">
-                                                            {' '}
-                                                            <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
-                                                                {item?.sku}
-                                                            </span>
-                                                        </div>
-                                                        <div class="col-lg-4 col-md-4 p-0 d-flex justify-content-end">
-                                                            <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
-                                                                {item?.countAndSum?.count} orders
-                                                            </span>
+                                                    <div class="col-lg-12 p-0 mb-2">
+                                                        <div class="row m-0 w-100 d-flex align-items-center">
+                                                            <div class="col-lg-8 col-md-8 p-0">
+                                                                {' '}
+                                                                <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
+                                                                    {item?.sku}
+                                                                </span>
+                                                            </div>
+                                                            <div class="col-lg-4 col-md-4 p-0 d-flex justify-content-end">
+                                                                <span style={{ fontWeight: 600, fontSize: '13px' }} class="text-capitalize">
+                                                                    {item?.countAndSum?.count} orders
+                                                                </span>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-lg-12 p-0">
-                                                    <div class="row m-0 w-100 d-flex align-items-center">
-                                                        <div class="col-lg-6 col-md-6 p-0">
-                                                            {item?.courier && cookies.get('userInfo')?.type != 'merchant' && (
-                                                                <div className="col-lg-12 p-0 mb-2 d-flex align-items-center">
-                                                                    <TbTruckDelivery size={20} class="mr-1" />
+                                                    <div class="col-lg-12 p-0">
+                                                        <div class="row m-0 w-100 d-flex align-items-center">
+                                                            <div class="col-lg-6 col-md-6 p-0">
+                                                                {item?.courier && cookies.get('userInfo')?.type != 'merchant' && (
+                                                                    <div className="col-lg-12 p-0 mb-2 d-flex align-items-center">
+                                                                        <TbTruckDelivery size={20} class="mr-1" />
 
-                                                                    <span style={{ fontWeight: 600 }} class="text-capitalize">
-                                                                        {item?.courier?.name}
-                                                                    </span>
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                        <div class="col-lg-6 col-md-6 p-0 d-flex justify-content-end">
-                                                            <span style={{ fontSize: '12px', color: 'grey' }} class="text-capitalize">
-                                                                {dateformatter(item?.createdAt)}
-                                                            </span>
+                                                                        <span style={{ fontWeight: 600 }} class="text-capitalize">
+                                                                            {item?.courier?.name}
+                                                                        </span>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                            <div class="col-lg-6 col-md-6 p-0 d-flex justify-content-end">
+                                                                <span style={{ fontSize: '12px', color: 'grey' }} class="text-capitalize">
+                                                                    {dateformatter(item?.createdAt)}
+                                                                </span>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    );
-                                })}
+                                        );
+                                    })}
                                 <div class="col-lg-12 p-0">
                                     <Pagination
                                         total={fetchPackagesQuery?.data?.paginateReturnPackages?.totalCount}

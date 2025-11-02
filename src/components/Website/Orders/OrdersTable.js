@@ -391,7 +391,7 @@ const OrdersTable = (props) => {
                                                                     </Dropdown.Item>
                                                                 )}
 
-                                                                {props?.srcFrom == 'merchant' && item?.type == 'delivery' && isAuth([1, 52, 92]) && (
+                                                                {props?.srcFrom == 'merchant' && item?.type == 'delivery' && isAuth([1, 92]) && (
                                                                     <Dropdown.Item
                                                                         onClick={() => {
                                                                             if (item?.status == 'delivered' || item?.status == 'partiallyDelivered') {

@@ -1607,7 +1607,7 @@ const CourierSheet = (props) => {
                                 class={generalstyles.roundbutton}
                                 disabled={buttonLoadingContext}
                                 onClick={() => {
-                                    if (isAuth([1, 53, 51, 35])) {
+                                    if (isAuth([1, 35])) {
                                         handleupdateCourierSheet();
                                     } else {
                                         NotificationManager.warning('Not Authorized', 'Warning!');

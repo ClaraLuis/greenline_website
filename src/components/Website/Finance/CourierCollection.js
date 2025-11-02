@@ -140,7 +140,7 @@ const CourierCollection = (props) => {
                         Courier Collections
                     </p>
                 </div>
-                {isAuth([1, 51, 107]) && (
+                {isAuth([1, 107]) && (
                     <div class="col-lg-12 px-3">
                         <div style={{ borderRadius: '0.25rem', background: 'white' }} class={generalstyles.card + ' col-lg-12'}>
                             <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
@@ -293,7 +293,7 @@ const CourierCollection = (props) => {
                 <div class="col-lg-12 p-0 ">
                     <div class="row m-0 w-100">
                         <div class="col-lg-9 p-0">
-                            {isAuth([1, 51, 107]) && (
+                            {isAuth([1, 107]) && (
                                 <div class={' row m-0 w-100 mb-2 p-0 px-0'}>
                                     <div class="col-lg-12 px-3">
                                         <div class={generalstyles.card + ' row m-0 w-100'}>
@@ -391,7 +391,7 @@ const CourierCollection = (props) => {
                                     <button
                                         class={generalstyles.roundbutton + ' allcentered w-100'}
                                         onClick={async () => {
-                                            if (!isAuth([1, 51, 108])) {
+                                            if (!isAuth([1, 108])) {
                                                 NotificationManager.warning('Not Authorized', 'Warning!');
                                                 return;
                                             }
@@ -412,7 +412,7 @@ const CourierCollection = (props) => {
                                     <button
                                         class={generalstyles.roundbutton + ' allcentered w-100'}
                                         onClick={async () => {
-                                            if (!isAuth([1, 51, 108])) {
+                                            if (!isAuth([1, 108])) {
                                                 NotificationManager.warning('Not Authorized', 'Warning!');
                                                 return;
                                             }
@@ -433,7 +433,7 @@ const CourierCollection = (props) => {
                                     <button
                                         class={generalstyles.roundbutton + ' allcentered w-100'}
                                         onClick={async () => {
-                                            if (!isAuth([1, 51, 109])) {
+                                            if (!isAuth([1, 109])) {
                                                 NotificationManager.warning('Not Authorized', 'Warning!');
                                                 return;
                                             }
@@ -456,7 +456,7 @@ const CourierCollection = (props) => {
                                     <button
                                         class={generalstyles.roundbutton + ' allcentered w-100'}
                                         onClick={async () => {
-                                            if (!isAuth([1, 51, 109])) {
+                                            if (!isAuth([1, 109])) {
                                                 NotificationManager.warning('Not Authorized', 'Warning!');
                                                 return;
                                             }
@@ -549,7 +549,7 @@ const CourierCollection = (props) => {
                             button1onClick={async () => {
                                 if (buttonLoadingContext) return;
                                 setbuttonLoadingContext(true);
-                                if (isAuth([1, 28, 51])) {
+                                if (isAuth([1, 28])) {
                                     if (payload?.type == 'transfer') {
                                         try {
                                             const { data } = await transferMyCourierCollectionFundsutation();

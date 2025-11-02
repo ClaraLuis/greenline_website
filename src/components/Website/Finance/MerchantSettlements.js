@@ -149,7 +149,7 @@ const MerchantSettlements = (props) => {
                         </div>
                     </div>
                 )}
-                {isAuth([1, 51, 52, 122]) && (
+                {isAuth([1, 122]) && (
                     <div class={' row m-0 w-100'}>
                         <div class="col-lg-12 p-0 mb-3">
                             <Pagination
@@ -161,11 +161,10 @@ const MerchantSettlements = (props) => {
                                 loading={paginateMerchantSettlementsQuery?.loading}
                             />
                         </div>
-                        
-                            <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
-                                <SettlemantsTable clickable={true} attr={'paginateMerchantSettlements'} paginateMerchantSettlementsQuery={paginateMerchantSettlementsQuery} />
-                            </div>
-                        
+
+                        <div className={generalstyles.subcontainertable + ' col-lg-12 table_responsive  scrollmenuclasssubscrollbar p-0 '}>
+                            <SettlemantsTable clickable={true} attr={'paginateMerchantSettlements'} paginateMerchantSettlementsQuery={paginateMerchantSettlementsQuery} />
+                        </div>
                     </div>
                 )}
             </div>

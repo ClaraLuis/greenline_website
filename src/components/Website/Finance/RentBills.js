@@ -217,7 +217,7 @@ const RentBills = (props) => {
                 <div class="col-lg-12 p-0 ">
                     <div class="row m-0 w-100">
                         <div class="col-lg-12 p-0">
-                            {isAuth([1, 51, 114]) && (
+                            {isAuth([1, 114]) && (
                                 <div class={' row m-0 w-100 mb-2 p-0 px-0'}>
                                     {/* <div class="col-lg-12 px-3">
                                         <div class={generalstyles.card + ' row m-0 w-100'}>
@@ -288,7 +288,7 @@ const RentBills = (props) => {
                                             refetchFunc={() => {
                                                 Refetch();
                                             }}
-                                            // allowSelect={isAuth([1, 51, 115]) ? true : false}
+                                            // allowSelect={isAuth([1, 115]) ? true : false}
                                             selectedArray={selectedArray}
                                             setselectedArray={setselectedArray}
                                         />
@@ -302,7 +302,7 @@ const RentBills = (props) => {
                                     <button
                                         class={generalstyles.roundbutton + ' allcentered w-100'}
                                         onClick={async () => {
-                                            if (!isAuth([1, 51, 115])) {
+                                            if (!isAuth([1, 115])) {
                                                 NotificationManager.warning('Not Authorized', 'Warning!');
                                                 return;
                                             }
@@ -323,7 +323,7 @@ const RentBills = (props) => {
                                     <button
                                         class={generalstyles.roundbutton + ' allcentered w-100'}
                                         onClick={async () => {
-                                            if (!isAuth([1, 51, 115])) {
+                                            if (!isAuth([1, 115])) {
                                                 NotificationManager.warning('Not Authorized', 'Warning!');
                                                 return;
                                             }
@@ -408,7 +408,7 @@ const RentBills = (props) => {
                             button1onClick={async () => {
                                 if (buttonLoadingContext) return;
                                 setbuttonLoadingContext(true);
-                                if (isAuth([1, 28, 51])) {
+                                if (isAuth([1, 28])) {
                                     try {
                                         const { data } = await completeInventoryRentTransactionsutation();
                                         refetchInventoryRentBillsQuery();

@@ -183,7 +183,7 @@ const MerchantHome = (props) => {
     }, []);
     return (
         <div class="row m-0 w-100 p-md-2 pt-2">
-            {isAuth([1, 52, 10]) && (
+            {isAuth([1, 10]) && (
                 <div class="row m-0 w-100 d-flex align-items-start justify-content-start mt-sm-2 pb-5 pb-md-0">
                     <div class="col-lg-12">
                         <div class={generalstyles.card + ' row m-0 w-100'}>

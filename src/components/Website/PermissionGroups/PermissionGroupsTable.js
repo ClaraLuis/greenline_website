@@ -110,7 +110,7 @@ const PermissionGroupsTable = (props) => {
                                                                 </div>
                                                             </Dropdown.Toggle>
                                                             <Dropdown.Menu style={{ minWidth: '170px', fontSize: '12px' }}>
-                                                                {isAuth([1, 46, 52]) && (
+                                                                {isAuth([1, 46]) && (
                                                                     <Dropdown.Item
                                                                         onClick={() => {
                                                                             history.push('/permissiongroupinfo?id=' + item?.id);

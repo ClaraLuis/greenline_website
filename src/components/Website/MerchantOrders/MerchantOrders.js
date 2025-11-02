@@ -153,7 +153,7 @@ const MerchantOrders = (props) => {
                                     style={{ height: '35px' }}
                                     class={generalstyles.roundbutton + '  mb-1 mx-2'}
                                     onClick={() => {
-                                        if (isAuth([1, 68, 52, 15])) {
+                                        if (isAuth([1, 68, 15])) {
                                             if (isAuth([1, 68])) {
                                                 setmerchantModal(true);
                                             } else {
@@ -243,7 +243,7 @@ const MerchantOrders = (props) => {
                     </div>
                 </div>
                 {/* {waybills?.length > 0 && <WaybillPrint waybills={waybills} />} */}
-                {(cookies.get('userInfo')?.type != 'merchant' || isAuth([1, 52, 14])) && (
+                {(cookies.get('userInfo')?.type != 'merchant' || isAuth([1, 14])) && (
                     <div class="col-lg-12 px-3">
                         <div class={generalstyles.card + ' mb-3 col-lg-12 p-2'}>
                             <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
@@ -807,7 +807,7 @@ const MerchantOrders = (props) => {
                     </div>
                 </div>
 
-                {isAuth([1, 52, 14, 63]) && (
+                {isAuth([1, 14, 63]) && (
                     <div class={' row m-0 w-100'}>
                         <div class="col-lg-12 px-3">
                             <div class={generalstyles.card + ' row m-0 w-100'}>

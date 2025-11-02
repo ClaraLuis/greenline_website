@@ -498,7 +498,7 @@ const AddSheetNew = (props) => {
                                 // style={{ height: '30px', minWidth: '80%' }}
                                 class={generalstyles.roundbutton + ' allcentered p-0'}
                                 onClick={() => {
-                                    if ((queryParameters.get('sheetId') == undefined && isAuth([1, 36, 53])) || (queryParameters.get('sheetId') != undefined && isAuth([1, 35, 53]))) {
+                                    if ((queryParameters.get('sheetId') == undefined && isAuth([1, 36])) || (queryParameters.get('sheetId') != undefined && isAuth([1, 35]))) {
                                         if ((sheetpayload?.courier?.length == 0 || sheetpayload?.courier == undefined) && queryParameters.get('sheetId') == undefined) {
                                             NotificationManager.warning('Choose Courier first', 'Warning!');
                                             return;
@@ -526,7 +526,7 @@ const AddSheetNew = (props) => {
                                 onClick={async () => {
                                     if (
                                         (window.location.pathname == '/dispatched' && !isAuth([1, 102])) ||
-                                        (window.location.pathname == '/fulfilled' && !isAuth([1, 54, 86])) ||
+                                        (window.location.pathname == '/fulfilled' && !isAuth([1, 86])) ||
                                         (window.location.pathname == '/sortfacilities' && !isAuth([1, 103])) ||
                                         (window.location.pathname == '/arrivedathub' && !isAuth([1, 101]))
                                     ) {

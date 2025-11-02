@@ -105,7 +105,7 @@ const FinancialAccounts = (props) => {
                             </p>
                         </div>
                         <div class={' col-lg-6 col-md-6 col-sm-6 p-0 d-flex align-items-center justify-content-end pb-2 '}>
-                            {isAuth([1, 51, 20]) && (
+                            {isAuth([1, 20]) && (
                                 <button
                                     style={{ height: '35px' }}
                                     class={generalstyles.roundbutton + '  mb-1 mx-1'}
@@ -119,7 +119,7 @@ const FinancialAccounts = (props) => {
                         </div>
                     </div>
                 </div>
-                {isAuth([1, 51, 19]) && (
+                {isAuth([1, 19]) && (
                     <div class={' row m-0 w-100'}>
                         <div class="col-lg-12 p-0 mb-3">
                             <Pagination

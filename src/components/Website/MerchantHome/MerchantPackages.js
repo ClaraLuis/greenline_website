@@ -264,7 +264,7 @@ const MerchantPackages = (props) => {
                             </div>
                         </div>
 
-                        {isAuth([1, 52, 64]) && (
+                        {isAuth([1, 64, 120]) && (
                             <>
                                 <div class="col-lg-12 p-0 mb-3">
                                     <Pagination

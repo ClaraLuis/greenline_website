@@ -906,7 +906,7 @@ keep data consistent.</span></p>
                                             onClick={() => {
                                                 if (cookies.get('merchantId')) {
                                                     history.push('/additem?merchantId=' + cookies.get('merchantId'));
-                                                } else if (isAuth([1, 52, 74])) {
+                                                } else if (isAuth([1, 74])) {
                                                     setmerchantModal(true);
                                                     settype('additem');
                                                 } else {
@@ -923,7 +923,7 @@ keep data consistent.</span></p>
                                                 if (cookies.get('merchantId')) {
                                                     settype(cookies.get('merchantId'));
                                                     setimportModal(true);
-                                                } else if (isAuth([1, 52, 75])) {
+                                                } else if (isAuth([1, 75])) {
                                                     setmerchantModal(true);
                                                     settype('importbulk');
                                                 } else {
@@ -941,7 +941,7 @@ keep data consistent.</span></p>
                     </div>
                 </div>
 
-                {isAuth([1, 52, 12]) && (
+                {isAuth([1, 12]) && (
                     <>
                         <div class="col-lg-12 px-3">
                             <div class={generalstyles.card + ' row m-0 w-100 mb-4 p-2 px-2'}>

@@ -313,7 +313,7 @@ const TransactionsTableView = (props) => {
                                                                     <button
                                                                         onClick={(e) => {
                                                                             e.stopPropagation();
-                                                                            if (props?.srctype === 'expenses' && !isAuth([1, 51, 24])) {
+                                                                            if (props?.srctype === 'expenses' && !isAuth([1, 24])) {
                                                                                 NotificationManager.warning('Not Authorized', 'Warning!');
                                                                                 return;
                                                                             }
@@ -335,7 +335,7 @@ const TransactionsTableView = (props) => {
                                                                             if (window.confirm('Are you sure you want to cancel this transaction')) {
                                                                                 if (buttonLoadingContext) return;
                                                                                 setbuttonLoadingContext(true);
-                                                                                const { data } = isAuth([1, 51])
+                                                                                const { data } = isAuth([1, 134])
                                                                                     ? await updateAnyFinancialTransactionMutation()
                                                                                     : await updateMyFinancialTransactionMutation();
 
@@ -515,7 +515,7 @@ const TransactionsTableView = (props) => {
                                         if (buttonLoadingContext) return;
                                         setbuttonLoadingContext(true);
 
-                                        if (isAuth([1, 51])) {
+                                        if (isAuth([1, 134])) {
                                             var { data } = await updateAnyFinancialTransactionMutation();
                                         } else {
                                             var { data } = await updateMyFinancialTransactionMutation();

@@ -443,7 +443,7 @@ const UserInfo = (props) => {
                                     submit={submit}
                                     setsubmit={setsubmit}
                                     attr={
-                                        cookies.get('userInfo')?.permissions?.some((p) => p.permissionId === 52)
+                                        cookies.get('userInfo')?.permissions?.some((p) => p.permissionId === 44) && cookies.get('userInfo')?.merchantId
                                             ? [
                                                   { name: 'Name', attr: 'name', size: '6' },
 

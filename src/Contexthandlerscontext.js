@@ -116,7 +116,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/users',
                         permissionpage: [1],
-                        show: isAuth([1, 43, 44, 45, 46, 52, 78, 79]),
+                        show: isAuth([1, 43, 44, 45, 46, 78, 79]),
                     },
                     {
                         name: 'Group Permissions',
@@ -128,7 +128,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/permissiongroups',
                         permissionpage: [1],
-                        show: isAuth([1, 43, 44, 45, 46, 52, 78, 79]),
+                        show: isAuth([1, 43, 44, 45, 46, 78, 79]),
                     },
                 ],
             },
@@ -162,7 +162,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/inventoryitems',
                         permissionpage: [1],
-                        show: isAuth([1, 54, 2, 3, 4, 6, 7, 8, 52, 81, 82, 77, 83]),
+                        show: isAuth([1, 2, 3, 4, 6, 7, 8, 81, 82, 77, 83]),
                     },
                     {
                         name: 'Inventory Rent',
@@ -186,7 +186,7 @@ export const Contexthandlerscontext_provider = (props) => {
                     //     ),
                     //     path: '/hubitems',
                     //     permissionpage: [1],
-                    //     show: isAuth([1, 54]),
+                    //     show: isAuth([1]),
                     // },
                     {
                         name: 'Orders',
@@ -198,7 +198,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/orders',
                         permissionpage: [1],
-                        show: isAuth([1, 54, 63]),
+                        show: isAuth([1, 63]),
                     },
 
                     {
@@ -211,7 +211,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/handpicked',
                         permissionpage: [1],
-                        show: isAuth([1, 54, 85]),
+                        show: isAuth([1, 85]),
                     },
                     {
                         name: 'Return Packages',
@@ -223,7 +223,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/inventorypackages',
                         permissionpage: [1],
-                        show: cookies.get('userInfo')?.type != 'merchant' && isAuth([1, 54, 64, 2]),
+                        show: cookies.get('userInfo')?.type != 'merchant' && isAuth([1, 64, 2]),
                     },
                     {
                         name: 'Dispatch',
@@ -235,7 +235,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/fulfilled',
                         permissionpage: [1],
-                        show: isAuth([1, 54, 86]),
+                        show: isAuth([1, 86]),
                     },
                     {
                         name: 'Inventory Rent',
@@ -247,7 +247,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/inventoryrent',
                         permissionpage: [1],
-                        show: isAuth([1, 54]),
+                        show: isAuth([1, 84]),
                     },
                     {
                         name: 'Inventory Logs',
@@ -259,7 +259,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/itemhistory',
                         permissionpage: [1],
-                        show: isAuth([1, 52]),
+                        show: isAuth([1, 6]),
                     },
                 ],
             },
@@ -306,7 +306,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/merchanthome',
                         permissionpage: [1],
-                        show: isAuth([1, 52, 10]) || cookies.get('merchantId') != undefined,
+                        show: isAuth([1, 10]) || cookies.get('merchantId') != undefined,
                     },
                     {
                         name: 'Items',
@@ -318,7 +318,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/merchantitems',
                         permissionpage: [1],
-                        show: isAuth([1, 52, 12, 74, 75, 12, 13]),
+                        show: isAuth([1, 12, 74, 75, 12, 13]),
                     },
                     {
                         name: 'Orders',
@@ -330,7 +330,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/merchantorders',
                         permissionpage: [1],
-                        show: isAuth([1, 52, 68, 14, 15]),
+                        show: isAuth([1, 63, 68, 14, 15]),
                     },
 
                     {
@@ -343,7 +343,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/merchantfinance',
                         permissionpage: [1],
-                        show: isAuth([1, 51, 19, 52]) && cookies.get('merchantId') != undefined,
+                        show: isAuth([1, 17, 19, 47]) && cookies.get('merchantId') != undefined,
                     },
                     {
                         name: 'Return Packages',
@@ -355,7 +355,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/merchantpackages',
                         permissionpage: [1],
-                        show: isAuth([1, 52, 64]) && cookies.get('merchantId') != undefined,
+                        show: isAuth([1, 120, 64]) && cookies.get('merchantId') != undefined,
                     },
                     // {
                     //     name: 'Webtoken',
@@ -367,7 +367,7 @@ export const Contexthandlerscontext_provider = (props) => {
                     //     ),
                     //     path: '/webtoken',
                     //     permissionpage: [1],
-                    //     show: isAuth([1, 52]),
+                    //     show: isAuth([1]),
                     // },
                 ],
             },
@@ -496,7 +496,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/courierhome',
                         permissionpage: [1],
-                        show: isAuth([1, 53, 30]),
+                        show: isAuth([1, 30]),
                     },
                     {
                         name: 'Manifest',
@@ -508,7 +508,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/couriersheets',
                         permissionpage: [1],
-                        show: isAuth([1, 53, 34, 35]),
+                        show: isAuth([1, 34, 35]),
                     },
                     // {
                     //     name: 'Orders',
@@ -520,7 +520,7 @@ export const Contexthandlerscontext_provider = (props) => {
                     //     ),
                     //     path: '/addsheet',
                     //     permissionpage: [1],
-                    //     show: isAuth([1, 53, 36]),
+                    //     show: isAuth([1, 36]),
                     // },
                     // {
                     //     name: 'Return Packages',
@@ -532,7 +532,7 @@ export const Contexthandlerscontext_provider = (props) => {
                     //     ),
                     //     path: '/courierpackages',
                     //     permissionpage: [1],
-                    //     show: isAuth([1, 53]),
+                    //     show: isAuth([1]),
                     // },
                 ],
             },
@@ -554,7 +554,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/financehome',
                         permissionpage: [1],
-                        show: isAuth([1, 51, 18]),
+                        show: isAuth([1, 18]),
                     },
                     {
                         name: 'Manifest',
@@ -566,7 +566,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/financesheets',
                         permissionpage: [1],
-                        show: isAuth([1, 51]),
+                        show: isAuth([1, 136]),
                     },
                     {
                         name: 'Financial Accounts',
@@ -578,7 +578,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/financialaccounts',
                         permissionpage: [1],
-                        show: isAuth([1, 51, 19]),
+                        show: isAuth([1, 19]),
                     },
                     {
                         name: 'Courier Collections',
@@ -590,7 +590,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/couriercollections',
                         permissionpage: [1],
-                        show: isAuth([1, 51, 107]),
+                        show: isAuth([1, 107]),
                     },
                     // {
                     //     name: 'Merchant Payments',
@@ -602,7 +602,7 @@ export const Contexthandlerscontext_provider = (props) => {
                     //     ),
                     //     path: '/merchantpayments',
                     //     permissionpage: [1],
-                    //     show: isAuth([1, 51, 19]),
+                    //     show: isAuth([1, 19]),
                     // },
                     // {
                     //     name: 'Merchant Order Payments',
@@ -614,7 +614,7 @@ export const Contexthandlerscontext_provider = (props) => {
                     //     ),
                     //     path: '/merchantfinance',
                     //     permissionpage: [1],
-                    //     show: isAuth([1, 51, 110]),
+                    //     show: isAuth([1, 110]),
                     // },
                     {
                         name: 'Transactions',
@@ -626,7 +626,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/financetransactions',
                         permissionpage: [1],
-                        show: isAuth([1, 51, 27]),
+                        show: isAuth([1, 27]),
                     },
                     {
                         name: 'Expenses',
@@ -638,7 +638,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/expenses',
                         permissionpage: [1],
-                        show: isAuth([1, 51]),
+                        show: isAuth([1, 22]),
                     },
                     {
                         name: 'Inventory Rent Bills',
@@ -650,7 +650,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/rentbills',
                         permissionpage: [1],
-                        show: isAuth([1, 51, 114]),
+                        show: isAuth([1, 114]),
                     },
                     {
                         name: 'Create Settlements',
@@ -674,7 +674,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/shippingcollections',
                         permissionpage: [1],
-                        show: isAuth([1, 51, 124]),
+                        show: isAuth([1, 124]),
                     },
                     {
                         name: 'Merchant Settlements',
@@ -686,7 +686,7 @@ export const Contexthandlerscontext_provider = (props) => {
                         ),
                         path: '/merchantsettlements',
                         permissionpage: [1],
-                        show: isAuth([1, 51, 52, 122]),
+                        show: isAuth([1, 122]),
                     },
                 ],
             },

@@ -330,7 +330,7 @@ const Finance = (props) => {
                                     </div>
                                 </div>
                             )}
-                            {/* {isAuth([1, 51, 52, 111]) && ( */}
+                            {/* {isAuth([1, 111]) && ( */}
                             <div class="col-lg-12 co-md-12 p-0 d-flex justify-content-end mb-3">
                                 <button
                                     style={{ height: '35px' }}

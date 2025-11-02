@@ -77,7 +77,7 @@ const CourierSheets = (props) => {
                                 style={{ height: '35px' }}
                                 class={generalstyles.roundbutton + '  mb-1'}
                                 onClick={() => {
-                                    if (isAuth([1, 36, 53])) {
+                                    if (isAuth([1, 36])) {
                                         history.push('/addsheet');
                                     } else {
                                         NotificationManager.warning('Not Authorized', 'Warning!');
@@ -249,7 +249,7 @@ const CourierSheets = (props) => {
                     </div>
                 </div>
                 <div class="col-lg-12 px-3">
-                    {isAuth([1, 34, 53, 51]) && (
+                    {isAuth([1, 34]) && (
                         <>
                             <div class="col-lg-12 p-0 mb-3">
                                 <Pagination

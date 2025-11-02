@@ -146,7 +146,7 @@ const FinanceTransactions = (props) => {
                         </div>
                         <div class={' col-lg-6 col-md-6 col-sm-6 p-0 pr-3 pr-md-1 pr-sm-0 d-flex align-items-center justify-content-end pb-1 '}>
                             <div class="row m-0 w-100 d-flex align-items-center justify-content-end ">
-                                {isAuth([1, 51, 112]) && (
+                                {isAuth([1, 112]) && (
                                     <button
                                         style={{ height: '35px' }}
                                         class={generalstyles.roundbutton + '  mb-1 mx-1'}
@@ -157,7 +157,7 @@ const FinanceTransactions = (props) => {
                                         Add Transaction
                                     </button>
                                 )}
-                                {isAuth([1, 51, 113]) && (
+                                {isAuth([1, 113]) && (
                                     <button
                                         style={{ height: '35px' }}
                                         class={generalstyles.roundbutton + '  mb-1 mx-1'}
@@ -193,7 +193,7 @@ const FinanceTransactions = (props) => {
                         </div>
                     </div>
                 </div>
-                {isAuth([1, 27, 51]) && (
+                {isAuth([1, 27]) && (
                     <div class="col-lg-12 p-0 px-2">
                         <div class={generalstyles.card + ' mb-3 col-lg-12 p-2'}>
                             <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
@@ -255,7 +255,7 @@ const FinanceTransactions = (props) => {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    {isAuth([1, 51]) && (
+                                                    {isAuth([1]) && (
                                                         <div className="col-lg-2 p-0 mb-2 d-flex align-items-center ">
                                                             <div className="row m-0 w-100 d-flex ">
                                                                 <label className={`${formstyles.switch}  my-0`}>
@@ -423,7 +423,7 @@ const FinanceTransactions = (props) => {
                 )}
 
                 <div class={' row m-0 w-100 mb-2 p-0 px-0'}>
-                    {isAuth([1, 27, 51]) && (
+                    {isAuth([1, 27]) && (
                         <>
                             <div class="col-lg-12 p-0 mb-3">
                                 <Pagination
@@ -507,7 +507,7 @@ const FinanceTransactions = (props) => {
                                         </div>
                                     </div>
                                 </div>
-                                {isAuth([1, 51]) && (
+                                {isAuth([1]) && (
                                     <div class="col-lg-12 mb-3">
                                         <div class="row m-0 w-100">
                                             <FinanceSelectComponent
@@ -580,7 +580,7 @@ const FinanceTransactions = (props) => {
                                             setbuttonLoadingContext(true);
                                             if (transactionpayload?.type && transactionpayload?.amount && transactionpayload?.fromAccountId && transactionpayload?.toAccountId) {
                                                 try {
-                                                    if (isAuth([1, 51])) {
+                                                    if (isAuth([1, 133])) {
                                                         await sendAnyFinancialTransactionMutation();
                                                     } else {
                                                         await sendMyFinancialTransactionMutation();

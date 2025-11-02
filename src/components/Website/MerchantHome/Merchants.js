@@ -127,7 +127,7 @@ const Merchants = (props) => {
                                 <p class=" p-0 m-0" style={{ fontSize: '14px' }}>
                                     <span
                                         onClick={() => {
-                                            if (isAuth([87, 1, 52])) {
+                                            if (isAuth([87, 1])) {
                                                 history.push('/addmerchant' + '?type=add' + '&step=0');
                                             } else {
                                                 NotificationManager.warning('Not Authorized', 'Warning');
@@ -189,7 +189,7 @@ const Merchants = (props) => {
                                 </div>
                             </div>
                         </div>
-                        {isAuth([1, 52, 91]) && (
+                        {isAuth([1, 91]) && (
                             <>
                                 {' '}
                                 <div class="col-lg-12 mb-2 p-0">
@@ -235,7 +235,7 @@ const Merchants = (props) => {
                                                                 </div>
                                                             </Dropdown.Toggle>
                                                             <Dropdown.Menu>
-                                                                {isAuth([1, 52, 88]) && (
+                                                                {isAuth([1, 88]) && (
                                                                     <Dropdown.Item
                                                                         class="py-2"
                                                                         onClick={() => {
@@ -252,7 +252,7 @@ const Merchants = (props) => {
                                                                         <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Inventory Rent</p>
                                                                     </Dropdown.Item>
                                                                 )}
-                                                                {isAuth([1, 52, 84]) && (
+                                                                {isAuth([1, 84]) && (
                                                                     <Dropdown.Item
                                                                         class="py-2"
                                                                         onClick={() => {
@@ -262,7 +262,7 @@ const Merchants = (props) => {
                                                                         <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>View Inventory</p>
                                                                     </Dropdown.Item>
                                                                 )}
-                                                                {isAuth([1, 52, 89]) && (
+                                                                {isAuth([1, 89]) && (
                                                                     <Dropdown.Item
                                                                         class="py-2"
                                                                         onClick={() => {
@@ -272,7 +272,7 @@ const Merchants = (props) => {
                                                                         <p class={' mb-0 pb-0 avenirmedium text-secondaryhover d-flex align-items-center '}>Shipping Prices</p>
                                                                     </Dropdown.Item>
                                                                 )}
-                                                                {isAuth([1, 52, 90]) && (
+                                                                {isAuth([1, 90]) && (
                                                                     <Dropdown.Item
                                                                         class="py-2"
                                                                         onClick={() => {

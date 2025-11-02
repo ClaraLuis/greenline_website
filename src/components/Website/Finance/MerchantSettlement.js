@@ -139,7 +139,7 @@ const MerchantSettlement = (props) => {
                         </div>
                     </div>
                 </div>{' '}
-                {isAuth([1, 51, 52, 122]) && (
+                {isAuth([1, 122]) && (
                     <div class="col-lg-12 px-3">
                         <div class={generalstyles.card + ' m-0 row w-100 '}>
                             <div class="col-lg-12 p-0 mb-3">
