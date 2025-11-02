@@ -75,6 +75,8 @@ import Settlements from './Finance/Settlements.js';
 import ShippingCollections from './Finance/ShippingCollections.js';
 import MerchantSettlements from './Finance/MerchantSettlements.js';
 import MerchantSettlement from './Finance/MerchantSettlement.js';
+import PermissionGroups from './PermissionGroups/PermissionGroups.js';
+import PermissionGroupInfo from './PermissionGroups/PermissionGroupInfo.js';
 const App = (props) => {
     const history = useHistory();
     const location = useLocation();
@@ -381,6 +383,8 @@ const App = (props) => {
                                                                 <Route exact path="/rentbills" component={RentBills} />
                                                                 <Route exact path="/settlements" component={Settlements} />
                                                                 <Route exact path="/shippingcollections" component={ShippingCollections} />
+                                                                <Route exact path="/permissiongroups" component={PermissionGroups} />
+                                                                <Route exact path="/permissiongroupinfo" component={PermissionGroupInfo} />
 
                                                                 <Route exact path="/merchantpayments" component={MerchantPayments} />
 

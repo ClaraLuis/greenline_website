@@ -35,7 +35,20 @@ const API = () => {
             }
         `;
     };
-
+    const createPermissionGroup = () => {
+        return gql`
+            mutation createPermissionGroup($input: CreatePermissionGroupInput!) {
+                createPermissionGroup(input: $input)
+            }
+        `;
+    };
+    const updatePermissionGroup = () => {
+        return gql`
+            mutation updatePermissionGroup($input: UpdatePermissionGroupInput!) {
+                updatePermissionGroup(input: $input)
+            }
+        `;
+    };
     const updateEmployeeInfo = () => {
         return gql`
             mutation updateEmployeeInfo($input: UpdateEmployeeInput!) {
@@ -216,6 +229,14 @@ const API = () => {
         return gql`
             mutation updateUserPermissionsOptimized($input: UpdateUserPermissionInputAdvanced!) {
                 updateUserPermissionsOptimized(input: $input)
+            }
+        `;
+    };
+
+    const updateUserPermissionGroups = () => {
+        return gql`
+            mutation updateUserPermissionGroups($input: UpdateUserPermissionGroupsInput!) {
+                updateUserPermissionGroups(input: $input)
             }
         `;
     };
@@ -605,6 +626,51 @@ const API = () => {
                         id
                         hubId
                         name
+                    }
+                    cursor
+                    totalCount
+                }
+            }
+        `;
+    };
+
+    const paginatePermissionGroups = (payload) => {
+        return gql`
+            query paginatePermissionGroups($input: PaginatePermissionGroupsInput!) {
+                paginatePermissionGroups(input: $input) {
+                    data {
+                        id
+                        name
+                        merchantVisible
+                        createdAt
+                        lastModified
+                        merchant {
+                            id
+                            shopifyShop
+                            name
+                            currency
+                            includesVat
+                            taxId
+                            bankNumber
+                            bankName
+                            ownerId
+                            addressId
+                            threshold
+                            overShipping
+                            webToken
+                            webTokenExpiration
+                            createdAt
+                            lastModified
+                        }
+                        permissions {
+                            id
+                            name
+                            type
+                            description
+                            merchantCanView
+                            createdAt
+                            lastModified
+                        }
                     }
                     cursor
                     totalCount
@@ -1596,6 +1662,48 @@ const API = () => {
                             name
                             id
                         }
+                    }
+                }
+            }
+        `;
+    };
+
+    const findOnePermissionGroup = (payload) => {
+        return gql`
+            query findOnePermissionGroup($id: Int!) {
+                findOnePermissionGroup(id: $id) {
+                    id
+                    name
+                    merchantVisible
+                    merchantId
+                    createdAt
+                    lastModified
+                    merchant {
+                        id
+                        shopifyShop
+                        name
+                        currency
+                        includesVat
+                        taxId
+                        bankNumber
+                        bankName
+                        ownerId
+                        addressId
+                        threshold
+                        overShipping
+                        webToken
+                        webTokenExpiration
+                        createdAt
+                        lastModified
+                    }
+                    permissions {
+                        id
+                        name
+                        type
+                        description
+                        merchantCanView
+                        createdAt
+                        lastModified
                     }
                 }
             }
@@ -4454,6 +4562,7 @@ const API = () => {
         fetchMerchantItems,
         addItem,
         fetchInventories,
+        paginatePermissionGroups,
         addInventory,
         fetchItemsInBox,
         importNew,
@@ -4565,6 +4674,7 @@ const API = () => {
         ordersDeliverableSummary,
         graphOrders,
         findOneUser,
+        findOnePermissionGroup,
         emailTaken,
         findItemReturnByOrder,
         findPublicOrder,
@@ -4576,6 +4686,9 @@ const API = () => {
         processShippingTaxes,
         paginateSettlementTransactions,
         findOneMerchantSettlement,
+        createPermissionGroup,
+        updatePermissionGroup,
+        updateUserPermissionGroups,
     };
 };
 export default API;
