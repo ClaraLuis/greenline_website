@@ -118,6 +118,18 @@ export const Contexthandlerscontext_provider = (props) => {
                         permissionpage: [1],
                         show: isAuth([1, 43, 44, 45, 46, 52, 78, 79]),
                     },
+                    {
+                        name: 'Group Permissions',
+                        isselected: false,
+                        icon: (
+                            <i class={'allcentered'}>
+                                <FiUsers size={18} />
+                            </i>
+                        ),
+                        path: '/permissiongroups',
+                        permissionpage: [1],
+                        show: isAuth([1, 43, 44, 45, 46, 52, 78, 79]),
+                    },
                 ],
             },
             {
