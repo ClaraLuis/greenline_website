@@ -414,7 +414,6 @@ const MerchantOrders = (props) => {
                                                         <div class="mt-1" style={{ width: '100%' }}>
                                                             <DateRangePicker
                                                                 showOneCalendar
-                                                                oneTap
                                                                 value={
                                                                     filterorders?.statusStartDate && filterorders?.statusEndDate
                                                                         ? [new Date(filterorders.statusStartDate), new Date(filterorders.statusEndDate)]
