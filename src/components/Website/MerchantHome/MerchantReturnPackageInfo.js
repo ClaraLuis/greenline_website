@@ -23,7 +23,7 @@ import { FiUser, FiUsers } from 'react-icons/fi';
 
 import { PiMotorcycleFill } from 'react-icons/pi';
 import TimelineOppositeContent, { timelineOppositeContentClasses } from '@mui/lab/TimelineOppositeContent';
-import { TbTruckDelivery } from 'react-icons/tb';
+import { TbBuilding, TbTruckDelivery } from 'react-icons/tb';
 import Cookies from 'universal-cookie';
 import { IoMdClose } from 'react-icons/io';
 
@@ -281,6 +281,18 @@ const MerchantReturnPackageInfo = (props) => {
                                                             >
                                                                 <FiUser class="mr-2" />
                                                                 {historyItem?.user?.name}
+                                                            </span>
+                                                        )}
+                                                        {historyItem?.transferredToId && (
+                                                            <span
+                                                                class="d-flex align-items-center"
+                                                                style={{
+                                                                    fontWeight: 400,
+                                                                    color: historyItem?.user?.deletedAt ? 'var(--danger)' : undefined,
+                                                                }}
+                                                            >
+                                                                <TbBuilding class="mr-2" />
+                                                                {historyItem?.transferredTo?.name}
                                                             </span>
                                                         )}
                                                         {historyItem?.courier?.name && cookies.get('userInfo')?.type != 'merchant' && (

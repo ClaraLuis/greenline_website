@@ -893,6 +893,28 @@ const API = () => {
                         courier {
                             name
                         }
+                        transferredTo {
+                            id
+                            name
+                            governorateId
+                            users {
+                                id
+                                type
+                                hubId
+                                merchantId
+                                inventoryId
+                                name
+                                email
+                                phone
+                                refreshToken
+                                createdAt
+                                lastModified
+                                deletedAt
+                            }
+                            location
+                            createdAt
+                            lastModified
+                        }
                     }
                     cursor
                     totalCount
