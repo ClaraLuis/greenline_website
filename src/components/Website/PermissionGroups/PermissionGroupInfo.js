@@ -25,6 +25,7 @@ const PermissionGroupInfo = (props) => {
     const [selectedPermissions, setSelectedPermissions] = useState([]);
     const [permissionsArray, setPermissionsArray] = useState([]);
     const [chooseMerchant, setChooseMerchant] = useState(false);
+    const [edit, setedit] = useState(false);
     const [payload, setPayload] = useState({ merchantId: undefined, merchantVisible: false, name: '' });
 
     const findPermissionsQuery = useQueryGQL('', findPermissions());
@@ -185,63 +186,135 @@ const PermissionGroupInfo = (props) => {
     return (
         <div className="row m-0 w-100 p-md-2 pt-2">
             <div className="col-12 px-3">
-                <h3 className="pb-2">Create Permission Group</h3>
-                <div className={`${generalstyles.card} row m-0 w-100`}>
-                    {permissionsArray.map((section, index) => (
-                        <div key={index} className="mb-3 col-lg-12 p-2 border rounded">
-                            <Accordion allowMultipleExpanded allowZeroExpanded>
-                                <AccordionItem className={`${generalstyles.innercard} p-2`}>
-                                    <AccordionItemHeading>
-                                        <AccordionItemButton>
-                                            <div className="row">
-                                                <div className="col-8 d-flex align-items-center">
-                                                    <p className={`${generalstyles.cardTitle} m-0`}>{section.type}:</p>
-                                                </div>
-                                                <div className="col-4 d-flex justify-content-end">
-                                                    <AccordionItemState>{(state) => (state.expanded ? <BsChevronUp /> : <BsChevronDown />)}</AccordionItemState>
-                                                </div>
-                                            </div>
-                                        </AccordionItemButton>
-                                    </AccordionItemHeading>
-                                    <AccordionItemPanel>
-                                        <hr className="mt-2 mb-3" />
-                                        <div className="row m-auto">
-                                            {section.permissions.map((perm, i) => {
-                                                const selected = isPermissionSelected(perm.id);
-                                                const adminSelected = isSectionAdminSelected(section.type);
-                                                const disabled = (adminSelected && !perm.name.includes('Admin')) || (selectedPermissions.includes(1) && perm.id !== 1);
-
-                                                return (
-                                                    <div key={i} className="col-xl-4 col-lg-4 col-md-6 mb-1">
-                                                        <label
-                                                            className={`${langdetect === 'en' ? formstyles.checkbox : formstyles.checkboxtranslated} ${formstyles.checkbox_sub} ${
-                                                                formstyles.path
-                                                            } d-flex mb-0`}
-                                                        >
-                                                            <input type="checkbox" checked={selected} disabled={disabled} onChange={() => handlePermissionChange(perm, section.type)} />
-                                                            <svg viewBox="0 0 21 21" className="h-100">
-                                                                <path d="M5,10.75 L8.5,14.25 L19.4,2.3 C18.8333,1.4333 18.0333,1 17,1 L4,1 C2.35,1 1,2.35 1,4 L1,17 C1,18.65 2.35,20 4,20 L17,20 C18.65,20 20,18.65 20,17 L20,8"></path>
-                                                            </svg>
-                                                            <p style={{ color: disabled ? 'grey' : '' }} className={`${generalstyles.checkbox_label} ml-2 mb-0 text-capitalize`}>
-                                                                {perm.name.split(/(?=[A-Z])/).join(' ')}
-                                                            </p>
-                                                        </label>
-                                                    </div>
-                                                );
-                                            })}
-                                        </div>
-                                    </AccordionItemPanel>
-                                </AccordionItem>
-                            </Accordion>
+                <div class="row m-0 w-10 mb-4">
+                    <div class="col-lg-6 col-md-6 p-0">
+                        <div className="row m-0 w-100">
+                            <div class="col-lg-12 p-0" style={{ fontWeight: 600, fontSize: '24px' }}>
+                                {queryParameters?.get('id') && edit ? 'Edit' : ''} {queryParameters?.get('id') ? payload.name : 'Create Permission Group'}
+                            </div>
                         </div>
-                    ))}
-
-                    <div className="col-12 d-flex justify-content-center mt-3">
-                        <button style={{ height: '35px' }} className={`${generalstyles.roundbutton}`} onClick={handleNextClick}>
-                            {buttonLoadingContext ? <CircularProgress color="white" width="15px" height="15px" duration="1s" /> : 'Next'}
-                        </button>
                     </div>
+                    {!edit && queryParameters?.get('id') && (
+                        <div class="col-lg-6 col-md-6 d-flex justify-content-end py-0">
+                            <div
+                                onClick={() => {
+                                    setedit(true);
+                                }}
+                                class={generalstyles.roundbutton + ' allcentered'}
+                                // style={{ textDecoration: 'underline', fontSize: '12px' }}
+                            >
+                                Edit
+                            </div>
+                        </div>
+                    )}
                 </div>
+                {edit && (
+                    <div className={`${generalstyles.card} row m-0 w-100`}>
+                        {permissionsArray.map((section, index) => (
+                            <div key={index} className="mb-3 col-lg-12 p-2 border rounded">
+                                <Accordion allowMultipleExpanded allowZeroExpanded>
+                                    <AccordionItem className={`${generalstyles.innercard} p-2`}>
+                                        <AccordionItemHeading>
+                                            <AccordionItemButton>
+                                                <div className="row">
+                                                    <div className="col-8 d-flex align-items-center">
+                                                        <p className={`${generalstyles.cardTitle} m-0`}>{section.type}:</p>
+                                                    </div>
+                                                    <div className="col-4 d-flex justify-content-end">
+                                                        <AccordionItemState>{(state) => (state.expanded ? <BsChevronUp /> : <BsChevronDown />)}</AccordionItemState>
+                                                    </div>
+                                                </div>
+                                            </AccordionItemButton>
+                                        </AccordionItemHeading>
+                                        <AccordionItemPanel>
+                                            <hr className="mt-2 mb-3" />
+                                            <div className="row m-auto">
+                                                {section.permissions.map((perm, i) => {
+                                                    const selected = isPermissionSelected(perm.id);
+                                                    const adminSelected = isSectionAdminSelected(section.type);
+                                                    const disabled = (adminSelected && !perm.name.includes('Admin')) || (selectedPermissions.includes(1) && perm.id !== 1);
+
+                                                    return (
+                                                        <div key={i} className={`card col-xl-4 col-lg-4 col-md-6 mb-1 p-3`}>
+                                                            <label
+                                                                className={`${langdetect === 'en' ? formstyles.checkbox : formstyles.checkboxtranslated} ${formstyles.checkbox_sub} ${
+                                                                    formstyles.path
+                                                                } d-flex mb-0`}
+                                                            >
+                                                                <input type="checkbox" checked={selected} disabled={disabled} onChange={() => handlePermissionChange(perm, section.type)} />
+                                                                <svg viewBox="0 0 21 21" className="h-100">
+                                                                    <path d="M5,10.75 L8.5,14.25 L19.4,2.3 C18.8333,1.4333 18.0333,1 17,1 L4,1 C2.35,1 1,2.35 1,4 L1,17 C1,18.65 2.35,20 4,20 L17,20 C18.65,20 20,18.65 20,17 L20,8"></path>
+                                                                </svg>
+                                                                <p style={{ color: disabled ? 'grey' : '' }} className={`${generalstyles.checkbox_label} ml-2 mb-0 text-capitalize`}>
+                                                                    <div class="row m-0 w-100">
+                                                                        <div class="col-lg-12 p-0 ">{perm.name.split(/(?=[A-Z])/).join(' ')}</div>
+                                                                        <div class="col-lg-12 p-0 " style={{ color: 'grey' }}>
+                                                                            {perm.description.split(/(?=[A-Z])/).join(' ')}
+                                                                        </div>
+                                                                    </div>
+                                                                </p>
+                                                            </label>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        </AccordionItemPanel>
+                                    </AccordionItem>
+                                </Accordion>
+                            </div>
+                        ))}
+
+                        <div className="col-12 d-flex justify-content-center mt-3">
+                            <button style={{ height: '35px' }} className={`${generalstyles.roundbutton}`} onClick={handleNextClick}>
+                                {buttonLoadingContext ? <CircularProgress color="white" width="15px" height="15px" duration="1s" /> : 'Next'}
+                            </button>
+                        </div>
+                    </div>
+                )}
+                {!edit && (
+                    <div className={`${generalstyles.card} row m-0 w-100`}>
+                        {permissionsArray.map((section, index) => {
+                            // check if at least one permission in this section is selected
+                            const hasSelected = section.permissions.some((perm) => isPermissionSelected(perm.id));
+
+                            if (!hasSelected) return null; // skip rendering this section
+
+                            return (
+                                <div key={index} className="mb-3 col-lg-12 p-2 border rounded">
+                                    <div className="row">
+                                        <div className="col-8 d-flex align-items-center">
+                                            <p className={`${generalstyles.cardTitle} m-0`}>{section.type}:</p>
+                                        </div>
+                                        <div className="col-4 d-flex justify-content-end">
+                                            <AccordionItemState>{(state) => (state.expanded ? <BsChevronUp /> : <BsChevronDown />)}</AccordionItemState>
+                                        </div>
+                                    </div>
+                                    <hr className="mt-2 mb-3" />
+                                    <div className="row m-auto">
+                                        {section.permissions.map((perm, i) => {
+                                            const selected = isPermissionSelected(perm.id);
+                                            const adminSelected = isSectionAdminSelected(section.type);
+                                            const disabled = (adminSelected && !perm.name.includes('Admin')) || (selectedPermissions.includes(1) && perm.id !== 1);
+
+                                            if (!selected) return null;
+
+                                            return (
+                                                <div key={i} className="card col-xl-4 col-lg-4 col-md-6 mb-1 p-3">
+                                                    <div className="row m-0 w-100 text-capitalize">
+                                                        <div className="col-lg-12 p-0">{perm.name.split(/(?=[A-Z])/).join(' ')}</div>
+                                                        <div className="col-lg-12 p-0" style={{ color: 'grey' }}>
+                                                            {perm.description.split(/(?=[A-Z])/).join(' ')}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                )}
             </div>
 
             {/* MODAL */}
