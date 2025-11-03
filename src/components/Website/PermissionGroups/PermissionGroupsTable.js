@@ -128,7 +128,7 @@ const PermissionGroupsTable = (props) => {
 
                                             <div className="col-lg-6 p-0 mb-1">
                                                 <span style={{ fontWeight: 600 }} class="d-flex align-items-center text-capitalize">
-                                                    permissions count: {item?.permissions?.length}
+                                                    {item?.permissions?.length} permissions
                                                 </span>
                                             </div>
                                         </div>
