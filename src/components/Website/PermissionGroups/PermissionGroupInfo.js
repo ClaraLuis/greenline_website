@@ -25,7 +25,7 @@ const PermissionGroupInfo = (props) => {
     const [selectedPermissions, setSelectedPermissions] = useState([]);
     const [permissionsArray, setPermissionsArray] = useState([]);
     const [chooseMerchant, setChooseMerchant] = useState(false);
-    const [edit, setedit] = useState(false);
+    const [edit, setedit] = useState(!queryParameters?.get('id') ? true : false);
     const [payload, setPayload] = useState({ merchantId: undefined, merchantVisible: false, name: '' });
 
     const findPermissionsQuery = useQueryGQL('', findPermissions());

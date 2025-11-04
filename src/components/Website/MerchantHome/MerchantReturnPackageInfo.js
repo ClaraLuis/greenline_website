@@ -26,6 +26,7 @@ import TimelineOppositeContent, { timelineOppositeContentClasses } from '@mui/la
 import { TbBuilding, TbTruckDelivery } from 'react-icons/tb';
 import Cookies from 'universal-cookie';
 import { IoMdClose } from 'react-icons/io';
+import { FaLayerGroup } from 'react-icons/fa';
 
 const MerchantReturnPackageInfo = (props) => {
     const queryParameters = new URLSearchParams(window.location.search);
