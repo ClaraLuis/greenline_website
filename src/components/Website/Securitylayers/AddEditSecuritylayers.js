@@ -35,10 +35,10 @@ const AddEditSecuritylayers = (props) => {
 
     const { refetch: refetchUsers } = useQueryGQL('', fetchUsers(), filterUsers);
 
-    // useEffect(() => {
-    //     const permissionIds = props?.payload?.userPermissions?.map((permission) => permission.permissionId) || [];
-    //     setselectedpermissions(permissionIds);
-    // }, [props?.payload]);
+    useEffect(() => {
+        const permissionIds = props?.payload?.permissionGroups?.map((permission) => permission.id) || [];
+        setselectedpermissions(permissionIds);
+    }, [props?.payload]);
 
     const [filterPermissionGroupsQuery, setfilterPermissionGroupsQuery] = useState({
         isAsc: false,

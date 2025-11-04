@@ -1512,6 +1512,23 @@ const API = () => {
                         hubId
                         merchantId
                         inventoryId
+                        permissionGroups {
+                            permissions {
+                                id
+                                name
+                                type
+                                description
+                                merchantCanView
+                                createdAt
+                                lastModified
+                            }
+                            id
+                            name
+                            merchantVisible
+                            merchantId
+                            createdAt
+                            lastModified
+                        }
                         employee {
                             id
                             type
@@ -1672,7 +1689,23 @@ const API = () => {
                     name
                     email
                     phone
-
+                    permissionGroups {
+                        permissions {
+                            id
+                            name
+                            type
+                            description
+                            merchantCanView
+                            createdAt
+                            lastModified
+                        }
+                        id
+                        name
+                        merchantVisible
+                        merchantId
+                        createdAt
+                        lastModified
+                    }
                     refreshToken
                     createdAt
                     lastModified

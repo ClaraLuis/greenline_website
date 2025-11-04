@@ -35,13 +35,6 @@ const UserPermissions = (props) => {
     const { lang, langdetect } = useContext(LanguageContext);
     const [userPayload, setuserPayload] = useState(undefined);
     const [changepermissionsmodal, setchangepermissionsmodal] = useState(false);
-    const groupedPermissions = _.groupBy(userPayload?.userPermissions, (permission) => permission.permission.type);
-
-    // Transform into desired format
-    const userPermissions = Object.keys(groupedPermissions).map((type) => ({
-        type,
-        permissions: groupedPermissions[type],
-    }));
 
     const [findOneUserQuery] = useLazyQueryGQL(findOneUser());
 
@@ -111,25 +104,43 @@ const UserPermissions = (props) => {
                         )}
                     </div>
                 </div>
-                {!changepermissionsmodal && (
+                {!changepermissionsmodal && userPayload?.permissionGroups?.length != 0 && (
                     <>
                         <div class="col-lg-12 px-3">
                             <div class={generalstyles.card + ' row m-0 w-100'}>
-                                {userPermissions?.map((item, index) => {
+                                {userPayload?.permissionGroups.map((permission) => {
+                                    // alert(JSON.stringify(permission?.permissions));
+                                    const groupedPermissions = _.groupBy(permission?.permissions, (p) => p?.type);
+
+                                    // Transform into desired format
+                                    const userPermissions = Object.keys(groupedPermissions).map((type) => ({
+                                        type,
+                                        permissions: groupedPermissions[type],
+                                    }));
+
                                     return (
-                                        <div class="col-lg-12 p-0 mb-2">
-                                            <div class="row m-0 w-100">
-                                                <div class="col-lg-12 p-0 mb-2 text-capitalize" style={{ fontWeight: 500 }}>
-                                                    {item?.type}
-                                                </div>
-                                                {item?.permissions?.map((permission, permissionIndex) => {
-                                                    return (
-                                                        <div class={' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 mr-2 mb-2 text-capitalize '}>
-                                                            {permission?.permission?.name?.split(/(?=[A-Z])/).join(' ')}
-                                                        </div>
-                                                    );
-                                                })}
+                                        <div class="col-lg-12 p-0 mb-3">
+                                            <div class="text-capitalize mb-2" style={{ fontSize: '18px', fontWeight: 600 }}>
+                                                {permission?.name}
                                             </div>
+                                            {userPermissions?.map((item, index) => {
+                                                return (
+                                                    <div class="col-lg-12 p-0 mb-2">
+                                                        <div class="row m-0 w-100">
+                                                            <div class="col-lg-12 p-0 mb-2 text-capitalize" style={{ fontWeight: 500 }}>
+                                                                {item?.type}
+                                                            </div>
+                                                            {item?.permissions?.map((permission, permissionIndex) => {
+                                                                return (
+                                                                    <div class={' wordbreak text-warning bg-light-warning rounded-pill font-weight-600 mr-2 mb-2 text-capitalize '}>
+                                                                        {permission?.name?.split(/(?=[A-Z])/).join(' ')}
+                                                                    </div>
+                                                                );
+                                                            })}
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
                                         </div>
                                     );
                                 })}
