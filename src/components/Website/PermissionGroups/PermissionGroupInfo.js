@@ -19,7 +19,7 @@ const PermissionGroupInfo = (props) => {
 
     const cookies = new Cookies();
     const { langdetect } = useContext(LanguageContext);
-    const { useQueryGQL, useMutationGQL, createPermissionGroup, findPermissions, findOnePermissionGroup, useLazyQueryGQL, updatePermissionGroup } = API();
+    const { useQueryGQL, useMutationGQL, createPermissionGroup, findPermissions, findOnePermissionGroup, useLazyQueryGQL, updatePermissionGroup, removePermissionGroup, useMutationNoInputGQL } = API();
     const { buttonLoadingContext, setbuttonLoadingContext, useLoadQueryParamsToPayload, setpageactive_context, setpagetitle_context } = useContext(Contexthandlerscontext);
 
     const [selectedPermissions, setSelectedPermissions] = useState([]);
@@ -105,6 +105,7 @@ const PermissionGroupInfo = (props) => {
         name: payload?.name,
         id: parseInt(queryParameters?.get('id')),
     });
+    const [removePermissionGroupMutation] = useMutationNoInputGQL(removePermissionGroup(), { id: parseInt(queryParameters?.get('id')) });
 
     const handleNextClick = () => {
         if (selectedPermissions.length === 0) {
@@ -139,6 +140,25 @@ const PermissionGroupInfo = (props) => {
                 } else {
                     NotificationManager.warning(data?.createPermissionGroup?.message || 'Something went wrong.', 'Warning!');
                 }
+            }
+        } catch (error) {
+            const msg = error?.graphQLErrors?.[0]?.message || error?.networkError?.message || error?.message || 'An unexpected error occurred.';
+            NotificationManager.warning(msg, 'Warning!');
+        } finally {
+            setbuttonLoadingContext(false);
+        }
+    };
+    const handleDeleteClick = async () => {
+        if (buttonLoadingContext) return;
+
+        setbuttonLoadingContext(true);
+        try {
+            const { data } = await removePermissionGroupMutation();
+            if (data?.removePermissionGroup?.success) {
+                NotificationManager.success(data.removePermissionGroup.message, 'Success!');
+                window.location.reload();
+            } else {
+                NotificationManager.warning(data?.removePermissionGroup?.message || 'Something went wrong.', 'Warning!');
             }
         } catch (error) {
             const msg = error?.graphQLErrors?.[0]?.message || error?.networkError?.message || error?.message || 'An unexpected error occurred.';
@@ -194,16 +214,23 @@ const PermissionGroupInfo = (props) => {
                             </div>
                         </div>
                     </div>
-                    {!edit && queryParameters?.get('id') && (
+                    {queryParameters?.get('id') && (
                         <div class="col-lg-6 col-md-6 d-flex justify-content-end py-0">
-                            <div
-                                onClick={() => {
-                                    setedit(true);
-                                }}
-                                class={generalstyles.roundbutton + ' allcentered'}
-                                // style={{ textDecoration: 'underline', fontSize: '12px' }}
-                            >
-                                Edit
+                            <div class="row m-0 w-100 d0flex align-items-center justify-content-end ">
+                                {!edit && (
+                                    <div
+                                        onClick={() => {
+                                            setedit(true);
+                                        }}
+                                        class={generalstyles.roundbutton + ' allcentered mr-2'}
+                                        // style={{ textDecoration: 'underline', fontSize: '12px' }}
+                                    >
+                                        Edit
+                                    </div>
+                                )}
+                                <button style={{ height: '35px' }} className={`${generalstyles.roundbutton} bg-danger bg-dangerhover`} onClick={handleDeleteClick}>
+                                    {buttonLoadingContext ? <CircularProgress color="white" width="15px" height="15px" duration="1s" /> : 'Delete'}
+                                </button>
                             </div>
                         </div>
                     )}
@@ -241,18 +268,20 @@ const PermissionGroupInfo = (props) => {
                                                                     formstyles.path
                                                                 } d-flex mb-0`}
                                                             >
-                                                                <input type="checkbox" checked={selected} disabled={disabled} onChange={() => handlePermissionChange(perm, section.type)} />
-                                                                <svg viewBox="0 0 21 21" className="h-100">
-                                                                    <path d="M5,10.75 L8.5,14.25 L19.4,2.3 C18.8333,1.4333 18.0333,1 17,1 L4,1 C2.35,1 1,2.35 1,4 L1,17 C1,18.65 2.35,20 4,20 L17,20 C18.65,20 20,18.65 20,17 L20,8"></path>
-                                                                </svg>
-                                                                <p style={{ color: disabled ? 'grey' : '' }} className={`${generalstyles.checkbox_label} ml-2 mb-0 text-capitalize`}>
+                                                                <div>
+                                                                    <input type="checkbox" checked={selected} disabled={disabled} onChange={() => handlePermissionChange(perm, section.type)} />
+                                                                    <svg viewBox="0 0 21 21" className="h-100">
+                                                                        <path d="M5,10.75 L8.5,14.25 L19.4,2.3 C18.8333,1.4333 18.0333,1 17,1 L4,1 C2.35,1 1,2.35 1,4 L1,17 C1,18.65 2.35,20 4,20 L17,20 C18.65,20 20,18.65 20,17 L20,8"></path>
+                                                                    </svg>
+                                                                </div>
+                                                                <span style={{ color: disabled ? 'grey' : '' }} className={`${generalstyles.checkbox_label} ml-2 mb-0 text-capitalize`}>
                                                                     <div class="row m-0 w-100">
                                                                         <div class="col-lg-12 p-0 ">{perm.name.split(/(?=[A-Z])/).join(' ')}</div>
                                                                         <div class="col-lg-12 p-0 " style={{ color: 'grey' }}>
                                                                             {perm.description.split(/(?=[A-Z])/).join(' ')}
                                                                         </div>
                                                                     </div>
-                                                                </p>
+                                                                </span>
                                                             </label>
                                                         </div>
                                                     );

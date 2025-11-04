@@ -354,10 +354,10 @@ textarea {
     cursor: pointer;
     /* display: inline-block; */
     position: relative;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    min-height: 1.4375em !important;
+    /* white-space: nowrap; */
+    /* overflow: hidden; */
+    /* text-overflow: ellipsis; */
+    /* min-height: 1.4375em !important; */
     font-size: 13px !important;
 
     padding: 0.75rem !important;
@@ -375,11 +375,11 @@ textarea {
     border-radius: 0.25rem;
     cursor: pointer;
     position: relative;
-    white-space: nowrap;
+    /* white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     max-height: 38px !important;
-    height: 28px !important;
+    height: 28px !important; */
     font-size: 10px !important;
 
     padding: 10px !important;

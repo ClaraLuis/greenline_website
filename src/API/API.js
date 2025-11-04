@@ -49,6 +49,13 @@ const API = () => {
             }
         `;
     };
+    const removePermissionGroup = () => {
+        return gql`
+            mutation removePermissionGroup($id: Int!) {
+                removePermissionGroup(id: $id)
+            }
+        `;
+    };
     const updateEmployeeInfo = () => {
         return gql`
             mutation updateEmployeeInfo($input: UpdateEmployeeInput!) {
@@ -4710,6 +4717,7 @@ const API = () => {
         findOneMerchantSettlement,
         createPermissionGroup,
         updatePermissionGroup,
+        removePermissionGroup,
         updateUserPermissionGroups,
     };
 };
