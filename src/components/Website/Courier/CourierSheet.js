@@ -392,6 +392,9 @@ const CourierSheet = (props) => {
                                 const value = subitem?.partialCount != null ? new Decimal(subitem.partialCount).toFixed(0) : new Decimal(subitem.count).toFixed(0);
                                 return value != 0;
                             } else {
+                                if (item?.order?.status === 'cancelled') {
+                                    return true;
+                                }
                                 // For non-return subitems, calculate remaining count
                                 const value = subitem?.partialCount != null ? new Decimal(subitem.count).minus(new Decimal(subitem.partialCount)).toFixed(0) : '0';
                                 // alert(value > 0);
@@ -1175,16 +1178,24 @@ const CourierSheet = (props) => {
                                                                                                     : new Decimal(subitem.count).toFixed(0)}
                                                                                             </div>
                                                                                         )}
-                                                                                        {item?.order?.type != 'return' && (
-                                                                                            <div
-                                                                                                style={{ borderRadius: '10px', fontWeight: 700, fontSize: '11px' }}
-                                                                                                className="p-1 px-2 mr-1 allcentered"
-                                                                                            >
-                                                                                                {subitem?.partialCount != null
-                                                                                                    ? new Decimal(subitem.count).minus(new Decimal(subitem.partialCount)).toFixed(0)
-                                                                                                    : '0'}
-                                                                                            </div>
-                                                                                        )}
+                                                                                        {item?.order?.type != 'return' &&
+                                                                                            (item?.order?.status === 'cancelled' ? (
+                                                                                                <div
+                                                                                                    style={{ borderRadius: '10px', fontWeight: 700, fontSize: '11px' }}
+                                                                                                    className="p-1 px-2 mr-1 allcentered"
+                                                                                                >
+                                                                                                    {new Decimal(subitem.count).toFixed(0)}
+                                                                                                </div>
+                                                                                            ) : (
+                                                                                                <div
+                                                                                                    style={{ borderRadius: '10px', fontWeight: 700, fontSize: '11px' }}
+                                                                                                    className="p-1 px-2 mr-1 allcentered"
+                                                                                                >
+                                                                                                    {subitem?.partialCount != null
+                                                                                                        ? new Decimal(subitem.count).minus(new Decimal(subitem.partialCount)).toFixed(0)
+                                                                                                        : '0'}
+                                                                                                </div>
+                                                                                            ))}
                                                                                         {type == 'admin' && (
                                                                                             <div style={{ width: '40px', height: '40px', borderRadius: '7px', marginInlineEnd: '5px' }}>
                                                                                                 <img
@@ -1198,18 +1209,24 @@ const CourierSheet = (props) => {
                                                                                             </div>
                                                                                         )}
                                                                                         <div style={{ marginTop: '10px' }}>
-                                                                                            {item?.order?.type != 'return' && (
-                                                                                                <div style={{ fontWeight: 700 }} className="mx-2">
-                                                                                                    {new Decimal(
-                                                                                                        subitem?.partialCount != null
-                                                                                                            ? new Decimal(subitem.count).minus(new Decimal(subitem.partialCount))
-                                                                                                            : new Decimal(0),
-                                                                                                    )
-                                                                                                        .times(new Decimal(subitem?.unitPrice))
-                                                                                                        .toFixed(2)}{' '}
-                                                                                                    {item?.order?.currency}
-                                                                                                </div>
-                                                                                            )}
+                                                                                            {item?.order?.type != 'return' &&
+                                                                                                (item.order?.status === 'cancelled' ? (
+                                                                                                    <div style={{ fontWeight: 700 }} className="mx-2">
+                                                                                                        {new Decimal(subitem.count).times(new Decimal(subitem?.unitPrice)).toFixed(2)}{' '}
+                                                                                                        {item?.order?.currency}
+                                                                                                    </div>
+                                                                                                ) : (
+                                                                                                    <div style={{ fontWeight: 700 }} className="mx-2">
+                                                                                                        {new Decimal(
+                                                                                                            subitem?.partialCount != null
+                                                                                                                ? new Decimal(subitem.count).minus(new Decimal(subitem.partialCount))
+                                                                                                                : new Decimal(0),
+                                                                                                        )
+                                                                                                            .times(new Decimal(subitem?.unitPrice))
+                                                                                                            .toFixed(2)}{' '}
+                                                                                                        {item?.order?.currency}
+                                                                                                    </div>
+                                                                                                ))}
                                                                                             {item?.order?.type == 'return' && (
                                                                                                 <div style={{ fontWeight: 700 }} className="mx-2">
                                                                                                     {new Decimal(
